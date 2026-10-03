@@ -17,7 +17,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurefunctionappflexconsumption
+    e2e-catalog-kind: azurefunctionappflexconsumption
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/azure/azurefunctionappflexconsumption/e2e/minimal-plan.yaml,catalog/azure/azurefunctionappflexconsumption/e2e/minimal-account.yaml,catalog/azure/azurefunctionappflexconsumption/e2e/minimal-container.yaml"

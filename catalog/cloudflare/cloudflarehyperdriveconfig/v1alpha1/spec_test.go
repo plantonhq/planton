@@ -20,7 +20,7 @@ func validHyperdrive() *CloudflareHyperdriveConfig {
 	return &CloudflareHyperdriveConfig{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareHyperdriveConfig",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-hyperdrive"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-hyperdrive"},
 		Spec: &CloudflareHyperdriveConfigSpec{
 			AccountId: validAccountID,
 			Name:      "app-prod-pg",

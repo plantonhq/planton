@@ -2,11 +2,11 @@
 
 **Date**: November 5, 2025  
 **Type**: New Feature  
-**Components**: API Definitions, GCP Provider, Cloud Resource Kind Registry, IaC Modules
+**Components**: API Definitions, GCP Provider, Catalog Kind Registry, IaC Modules
 
 ## Summary
 
-Added `GcpCertManagerCert`, a new cloud resource for provisioning and managing SSL/TLS certificates on Google Cloud Platform. The resource supports both Google Certificate Manager (modern, feature-rich) and Google-managed SSL certificates for load balancers (classic), with automatic DNS validation through Google Cloud DNS. This enables teams to declaratively manage SSL/TLS certificates as infrastructure-as-code alongside other GCP resources.
+Added `GcpCertManagerCert`, a new infra component for provisioning and managing SSL/TLS certificates on Google Cloud Platform. The resource supports both Google Certificate Manager (modern, feature-rich) and Google-managed SSL certificates for load balancers (classic), with automatic DNS validation through Google Cloud DNS. This enables teams to declaratively manage SSL/TLS certificates as infrastructure-as-code alongside other GCP resources.
 
 ## Motivation
 
@@ -32,9 +32,9 @@ Organizations deploying applications on GCP need SSL/TLS certificates for secure
 
 ## Solution / What's New
 
-### New Cloud Resource: GcpCertManagerCert
+### New Infra Component: GcpCertManagerCert
 
-A fully-featured cloud resource that provisions SSL/TLS certificates on GCP with automatic DNS validation, following Planton's uniform resource model.
+A fully-featured infra component that provisions SSL/TLS certificates on GCP with automatic DNS validation, following Planton's uniform resource model.
 
 **Key Capabilities**:
 - ✅ Dual certificate type support (Certificate Manager + Load Balancer)
@@ -60,7 +60,7 @@ Defines the main resource structure:
 message GcpCertManagerCert {
   string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1'];
   string kind = 2 [(buf.validate.field).string.const = 'GcpCertManagerCert'];
-  CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
   GcpCertManagerCertSpec spec = 4 [(buf.validate.field).required = true];
   GcpCertManagerCertStatus status = 5;
 }
@@ -119,12 +119,12 @@ enum CertificateType {
 - Enum validation for certificate types
 - Foreign key support for DNS zone references
 
-#### stack_outputs.proto
+#### outputs.proto
 
 Defines outputs returned after provisioning:
 
 ```proto
-message GcpCertManagerCertStackOutputs {
+message GcpCertManagerCertOutputs {
   string certificate_id = 1;           // Certificate resource ID
   string certificate_name = 2;         // Full resource name
   string certificate_domain_name = 3;  // Primary domain
@@ -132,9 +132,9 @@ message GcpCertManagerCertStackOutputs {
 }
 ```
 
-### 2. Cloud Resource Kind Registration
+### 2. Catalog Kind Registration
 
-**File**: `apis/project/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/project/planton/shared/catalogkind/catalog_kind.proto`
 
 Added enum entry in the GCP range (600-799):
 
@@ -252,7 +252,7 @@ func initializeLocals(...) *Locals {
     locals.GcpLabels = map[string]string{
         gcplabelkeys.Resource:     strconv.FormatBool(true),
         gcplabelkeys.ResourceName: target.Metadata.Name,
-        gcplabelkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_GcpCertManagerCert.String()),
+        gcplabelkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_GcpCertManagerCert.String()),
     }
     
     if target.Metadata.Id != "" {
@@ -548,8 +548,8 @@ Follows established patterns from other GCP resources:
 **Protocol Buffers** (4 files):
 - `api.proto` (29 lines)
 - `spec.proto` (77 lines)
-- `stack_outputs.proto` (24 lines)
-- `stack_input.proto` (14 lines)
+- `outputs.proto` (24 lines)
+- `iac_input.proto` (14 lines)
 
 **Pulumi Module** (7 files):
 - `main.go` (22 lines) - Entry point
@@ -615,7 +615,7 @@ spec:
     fieldPath: status.outputs.zone_name
 ```
 
-### With Cloud Resource Kind Registry
+### With Catalog Kind Registry
 
 Registered as enum value 619 in the GCP range, enabling:
 - Automatic ID generation with `gcpcert` prefix
@@ -829,7 +829,7 @@ Tested certificate creation:
 ---
 
 **Status**: ✅ Production Ready  
-**Cloud Resource Kind**: 619 (GCP range)  
+**Catalog Kind**: 619 (GCP range)  
 **ID Prefix**: gcpcert  
 **API Version**: gcp.planton.dev/v1  
 **Deployment**: Available via Pulumi and Terraform

@@ -5,10 +5,10 @@ package dev.planton.azure.azureeventgriddomain.v1alpha1;
 import "catalog/azure/azureeventgriddomain/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureEventgridDomainStackInput is the input to the IaC modules
+// AzureEventgridDomainIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureEventgridDomainStackInput {
+message AzureEventgridDomainIacInput {
   // The Event Grid domain resource to deploy.
   AzureEventgridDomain target = 1;
 

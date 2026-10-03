@@ -4,7 +4,7 @@
 #
 # READY-TO-RUN, NOT RUNNABLE AS-IS: Azure validates the asuid TXT record
 # against PUBLIC DNS while creating the binding, and the test tenant
-# owns no registrar-delegated domain (see this component's E2E profile).
+# owns no registrar-delegated domain (see this kind's E2E profile).
 # To run: replace domain_name with a hostname under a real domain
 # delegated to Azure DNS, publish the asuid.{domain_name} TXT record
 # (the app's custom_domain_verification_id output) and the CNAME to the
@@ -18,7 +18,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurecontainerappcustomdomain
+    e2e-catalog-kind: azurecontainerappcustomdomain
   annotations:
     planton.dev/e2e: "true"
   tags:

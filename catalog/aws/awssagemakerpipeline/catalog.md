@@ -4,7 +4,7 @@ Deploys an Amazon SageMaker pipeline — the ML workflow DAG of processing, trai
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SageMaker Pipeline** — named from `metadata.name`, with a Studio display name (the modules reuse the pipeline name when `displayName` is omitted, since the provider requires one), the execution role, the definition from its single declared source, and an optional default cap on parallel step execution (`parallelismMaxSteps`)
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with SageMaker control-plane permissions (`sagemaker:CreatePipeline` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with SageMaker control-plane permissions (`sagemaker:CreatePipeline` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -59,7 +59,7 @@ spec:
 planton apply -f sagemaker-pipeline.yaml
 ```
 
-This creates the pipeline shell with a placeholder single-step DAG (a Fail step is a legal one-node graph) — paste your SageMaker Python SDK `pipeline.definition()` output over it before starting real executions. A Stack Job tracks the provisioning in real time.
+This creates the pipeline shell with a placeholder single-step DAG (a Fail step is a legal one-node graph) — paste your SageMaker Python SDK `pipeline.definition()` output over it before starting real executions. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,16 +102,16 @@ These are the most important decisions when configuring a pipeline. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsIamRole** | `roleArn` | `status.outputs.role_arn` |
 | **AwsS3Bucket** | `definitionS3Location.bucket` | `status.outputs.bucket_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -128,7 +128,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the execution role every step runs as, wired via `roleArn`
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — holds the definition object on the S3 arm, wired via `definitionS3Location.bucket`
-- [**AWS SageMaker Model Registry**](/cloud-catalog/aws-sagemaker-model-registry) — where registration steps land versioned model packages
-- [**AWS SageMaker Feature Group**](/cloud-catalog/aws-sagemaker-feature-group) — feature stores pipelines ingest into and build training datasets from
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the execution role every step runs as, wired via `roleArn`
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — holds the definition object on the S3 arm, wired via `definitionS3Location.bucket`
+- [**AWS SageMaker Model Registry**](/infra-catalog/aws-sagemaker-model-registry) — where registration steps land versioned model packages
+- [**AWS SageMaker Feature Group**](/infra-catalog/aws-sagemaker-feature-group) — feature stores pipelines ingest into and build training datasets from

@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1;
 
-// AwsRedshiftServerlessNamespaceStackOutputs captures the observable
+// AwsRedshiftServerlessNamespaceOutputs captures the observable
 // identifiers of the namespace after deployment.
-message AwsRedshiftServerlessNamespaceStackOutputs {
+message AwsRedshiftServerlessNamespaceOutputs {
   // The namespace name. Exported because it is the join key workgroups
-  // attach with -- downstream references resolve against stack outputs,
+  // attach with -- downstream references resolve against outputs,
   // so the name must surface here even though it equals metadata.name.
   string namespace_name = 1;
 

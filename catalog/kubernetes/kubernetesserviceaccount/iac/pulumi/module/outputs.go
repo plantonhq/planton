@@ -1,11 +1,11 @@
-// Exports stack outputs; keys mirror KubernetesServiceAccountStackOutputs field names.
+// Exports outputs; keys mirror KubernetesServiceAccountOutputs field names.
 package module
 
 import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Output keys for stack outputs
+// Output keys for outputs
 const (
 	OutputServiceAccountName     = "service_account_name"
 	OutputNamespace              = "namespace"
@@ -13,7 +13,7 @@ const (
 	OutputWorkloadIdentityHandle = "workload_identity_handle"
 )
 
-// exportOutputs exports all stack outputs
+// exportOutputs exports all outputs
 func exportOutputs(ctx *pulumi.Context, locals *Locals) error {
 	ctx.Export(OutputServiceAccountName, pulumi.String(locals.ServiceAccountName))
 	ctx.Export(OutputNamespace, pulumi.String(locals.Namespace))

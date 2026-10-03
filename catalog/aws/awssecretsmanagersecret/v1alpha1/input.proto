@@ -5,9 +5,9 @@ package dev.planton.aws.awssecretsmanagersecret.v1alpha1;
 import "catalog/aws/awssecretsmanagersecret/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsSecretsManagerSecretStackInput is the input for the IaC modules that
+// AwsSecretsManagerSecretIacInput is the input for the IaC modules that
 // deploy the Secrets Manager secret.
-message AwsSecretsManagerSecretStackInput {
+message AwsSecretsManagerSecretIacInput {
   // target is the AwsSecretsManagerSecret resource to deploy.
   AwsSecretsManagerSecret target = 1;
   // provider_config contains the AWS provider credentials and configuration.

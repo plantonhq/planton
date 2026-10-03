@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awsiamsamlprovider
 spec:
@@ -29,7 +29,7 @@ spec:
       notes: The anchor receives no HTTP requests -- web ACLs and request filters have nothing to attach to.
     - control_id: rbac
       status: not_applicable
-      notes: The SAML provider grants nothing by itself -- it only proves assertions came from the declared IdP. WHO may federate and WHAT they may do is declared on the IAM roles whose trust policies name this provider's ARN in sts:AssumeRoleWithSAML statements -- the AwsIamRole component's territory. Managing the anchor itself is IAM-authorized on its ARN.
+      notes: The SAML provider grants nothing by itself -- it only proves assertions came from the declared IdP. WHO may federate and WHAT they may do is declared on the IAM roles whose trust policies name this provider's ARN in sts:AssumeRoleWithSAML statements -- the AwsIamRole kind's territory. Managing the anchor itself is IAM-authorized on its ARN.
     - control_id: workload-identity
       status: not_applicable
       notes: SAML federation is WORKFORCE federation -- humans signing in through an IdP -- not workload identity. Keyless workload identity (EKS IRSA, GitHub Actions OIDC) is the AwsIamOidcProvider/AwsIamRole territory.

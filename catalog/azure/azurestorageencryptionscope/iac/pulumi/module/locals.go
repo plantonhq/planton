@@ -16,11 +16,11 @@ var sourceStrings = map[azurestorageencryptionscopev1alpha1.AzureStorageEncrypti
 	azurestorageencryptionscopev1alpha1.AzureStorageEncryptionScopeSource_MICROSOFT_KEY_VAULT: "Microsoft.KeyVault",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurestorageencryptionscopev1alpha1.AzureStorageEncryptionScopeStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurestorageencryptionscopev1alpha1.AzureStorageEncryptionScopeIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureStorageEncryptionScope = stackInput.Target
-	locals.StorageAccountId = stackInput.Target.Spec.StorageAccountId.GetValue()
+	locals.AzureStorageEncryptionScope = iacInput.Target
+	locals.StorageAccountId = iacInput.Target.Spec.StorageAccountId.GetValue()
 
 	// No Azure tags: ARM does not support tags on encryptionScopes, so
 	// the platform's identity tags live on the parent account.

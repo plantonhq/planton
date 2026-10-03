@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -7,9 +7,9 @@
 # AZ-hours around the clock), so every meter -- ingestion, conversion,
 # partitioning, delivery -- follows producer traffic and an idle stream
 # bills nothing. Stated in exclusions, never padded into fabricated
-# dollars. Schema: finops/componentcostestimatemodel/v1.
+# dollars. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awskinesisfirehose
 spec:
@@ -20,7 +20,7 @@ spec:
       hours_per_month: 730
       exclusions:
         - Direct PUT ingestion bills per GB at tiered rates with every record rounded UP to the next 5 KB -- small-event workloads pay a multiple of their true bytes, and Firehose has no free allotment
-        - delivered objects bill S3 PUT requests and storage on the destination bucket's component; GZIP compression shrinks what lands there at no Firehose charge
+        - delivered objects bill S3 PUT requests and storage on the destination bucket's kind; GZIP compression shrinks what lands there at no Firehose charge
       notes: Zero committed cost -- the stream is delivery plumbing, and the ingestion meter starts with the first PutRecord; the 5 KB rounding rule makes producer-side batching the biggest lever.
     - preset: 02-opensearch-log-analytics
       region_assumption: us-east-1
@@ -29,9 +29,9 @@ spec:
       exclusions:
         - Direct PUT ingestion bills per GB with 5 KB per-record rounding
         - no vpc_config is set, so the per-AZ-hour VPC delivery meter -- the one charge that would run traffic-or-none -- never starts; delivery goes to the domain's public endpoint
-        - the OpenSearch domain's instances and storage bill on the referenced AwsOpenSearchDomain component
+        - the OpenSearch domain's instances and storage bill on the referenced AwsOpenSearchDomain kind
         - failed-document backups bill S3 requests and storage on the backup bucket
-      notes: Zero committed cost -- log volume drives everything; the heavy money in this pipeline is the OpenSearch domain itself, billing on its own component.
+      notes: Zero committed cost -- log volume drives everything; the heavy money in this pipeline is the OpenSearch domain itself, billing on its own kind.
     - preset: 03-http-endpoint-webhook
       region_assumption: us-east-1
       currency: USD
@@ -46,7 +46,7 @@ spec:
       currency: USD
       hours_per_month: 730
       exclusions:
-        - Kinesis-stream-source ingestion bills per GB with 5 KB per-record rounding; the source stream's own shard or on-demand meters bill on its AwsKinesisStream component
+        - Kinesis-stream-source ingestion bills per GB with 5 KB per-record rounding; the source stream's own shard or on-demand meters bill on its AwsKinesisStream kind
         - JSON-to-Parquet format conversion adds its per-GB charge on the same rounded volume
         - dynamic partitioning stacks per GB processed PLUS per 1,000 S3 objects delivered -- the 64 MiB buffer ceiling holds the object count down -- plus per-hour JQ processing while the metadata-extraction parser runs
         - delivered Parquet bills S3 requests and storage on the data-lake bucket; the Glue schema registry bills on its own service
@@ -66,6 +66,6 @@ spec:
       hours_per_month: 730
       exclusions:
         - Iceberg delivery bills per GB with NO 5 KB rounding; upsert semantics (unique_keys on order_id) change write behavior, not the rate
-        - the Iceberg tables' underlying S3 storage and the Glue Data Catalog bill on their own components
+        - the Iceberg tables' underlying S3 storage and the Glue Data Catalog bill on their own kinds
         - failed-data backups bill S3 requests and storage on the backup bucket
       notes: Zero committed cost -- change-data-capture into the lakehouse meters only the bytes that flow; the table storage the upserts accumulate lives on the destination's own bill.

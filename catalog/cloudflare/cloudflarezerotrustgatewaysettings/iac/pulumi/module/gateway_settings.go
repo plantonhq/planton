@@ -70,7 +70,7 @@ func gatewaySettings(
 
 	// PAC files fan out one provider resource per row, keyed by name so a
 	// row edit replaces only its own file. The server-assigned file ids are
-	// collected keyed by that same name for the pacfile_ids stack output.
+	// collected keyed by that same name for the pacfile_ids output.
 	//
 	// The slug is ALWAYS sent, derived deterministically from the row's
 	// name when unset: an omitted slug gets a RANDOM server-generated one

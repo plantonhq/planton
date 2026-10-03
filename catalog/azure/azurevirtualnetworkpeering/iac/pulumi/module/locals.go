@@ -19,11 +19,11 @@ type Locals struct {
 	RemoteVirtualNetworkId string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurevirtualnetworkpeeringv1alpha1.AzureVirtualNetworkPeeringStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurevirtualnetworkpeeringv1alpha1.AzureVirtualNetworkPeeringIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureVirtualNetworkPeering = stackInput.Target
-	target := stackInput.Target
+	locals.AzureVirtualNetworkPeering = iacInput.Target
+	target := iacInput.Target
 
 	locals.VirtualNetworkId = target.Spec.VirtualNetworkId.GetValue()
 	locals.RemoteVirtualNetworkId = target.Spec.RemoteVirtualNetworkId.GetValue()

@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package dev.planton.openfga.openfgastore.v1alpha1;
 
-// OpenFgaStoreStackOutputs contains the outputs from an OpenFGA Store deployment.
+// OpenFgaStoreOutputs contains the outputs from an OpenFGA Store deployment.
 //
 // These outputs provide essential identifiers for referencing the store
 // in subsequent operations (e.g., creating authorization models or relationship tuples).
 //
 // Reference:
 // - Terraform: https://registry.terraform.io/providers/openfga/openfga/latest/docs/resources/store#attributes-reference
-message OpenFgaStoreStackOutputs {
+message OpenFgaStoreOutputs {
   // id is the unique identifier of the OpenFGA store.
   // This is the primary identifier used in OpenFGA APIs to reference the store.
   //

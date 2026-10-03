@@ -28,7 +28,7 @@ go_test(
     deps = [
         "//catalog/kubernetes",
         "//shared",
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
         "//shared/foreignkey/v1:foreignkey",
         "@build_buf_go_protovalidate//:protovalidate",
         "@com_github_onsi_ginkgo_v2//:ginkgo",

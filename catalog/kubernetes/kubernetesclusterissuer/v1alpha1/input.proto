@@ -6,8 +6,8 @@ import "catalog/kubernetes/kubernetesclusterissuer/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
 // Input for the KubernetesClusterIssuer IaC stack.
-message KubernetesClusterIssuerStackInput {
-  // Target cloud-resource.
+message KubernetesClusterIssuerIacInput {
+  // Target infra-component.
   KubernetesClusterIssuer target = 1;
   // Kubernetes provider configuration (cluster credentials).
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

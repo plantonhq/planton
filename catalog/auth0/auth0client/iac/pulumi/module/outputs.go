@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// exportOutputs exports the stack outputs for the Auth0 client.
+// exportOutputs exports the outputs for the Auth0 client.
 // Fields available directly on the resource are exported inline.
 // Fields only available via the Management API read-back (client_secret,
 // token_endpoint_auth_method) are retrieved via LookupClient.

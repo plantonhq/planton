@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: cloudflareworkerskvpair
+    e2e-catalog-kind: cloudflareworkerskvpair
   annotations:
     planton.dev/e2e: "true"
   tags:

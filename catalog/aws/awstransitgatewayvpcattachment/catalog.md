@@ -4,7 +4,7 @@ Attaches a VPC to an AWS Transit Gateway — the connection that plugs one spoke
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Transit Gateway VPC Attachment** -- the link between the gateway and the VPC, with per-attachment DNS, IPv6, appliance-mode, and security-group-referencing options plus default-route-table membership dials
 - **Elastic Network Interfaces** -- one per chosen subnet, provisioned by AWS; traffic between the VPC and the gateway flows through these ENIs
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -55,7 +55,7 @@ spec:
 planton apply -f attachment.yaml
 ```
 
-This attaches the VPC through two Availability Zones with every behavior dial left unset — the attachment inherits all of the gateway's settings. A Stack Job tracks the provisioning in real time.
+This attaches the VPC through two Availability Zones with every behavior dial left unset — the attachment inherits all of the gateway's settings. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -100,7 +100,7 @@ These are the most important decisions when configuring an attachment. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -108,9 +108,9 @@ These are the most important decisions when configuring an attachment. Explore t
 | **AwsVpc** | `vpcId` | `status.outputs.vpc_id` |
 | **AwsSubnet** | `subnetIds[]` | `status.outputs.subnet_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -130,6 +130,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Transit Gateway**](/cloud-catalog/aws-transit-gateway) -- the hub this attachment joins; provides `transit_gateway_id`
-- [**AWS Transit Gateway Route Table**](/cloud-catalog/aws-transit-gateway-route-table) -- associates and propagates this attachment by its `attachment_id`
-- [**AWS VPC**](/cloud-catalog/aws-vpc) -- the network being attached; provides `vpc_id` and subnets
+- [**AWS Transit Gateway**](/infra-catalog/aws-transit-gateway) -- the hub this attachment joins; provides `transit_gateway_id`
+- [**AWS Transit Gateway Route Table**](/infra-catalog/aws-transit-gateway-route-table) -- associates and propagates this attachment by its `attachment_id`
+- [**AWS VPC**](/infra-catalog/aws-vpc) -- the network being attached; provides `vpc_id` and subnets

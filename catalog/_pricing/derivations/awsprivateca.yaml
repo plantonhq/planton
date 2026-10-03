@@ -7,9 +7,9 @@
 # the committed meter is the monthly CA fee, forked on a single field
 # (usage_mode, unset meaning GENERAL_PURPOSE). Per-certificate issuance
 # fees are one-time charges tiered on account-level monthly volume --
-# excluded, not derived. Schema: finops/componentcostderivation/v1.
+# excluded, not derived. Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsprivateca
 spec:
@@ -53,7 +53,7 @@ spec:
         - field_path: revocation.crl.enabled
           op: equals
           value: "true"
-      text: published CRLs land in the named S3 bucket, which bills storage and requests on the referenced AwsS3Bucket component
+      text: published CRLs land in the named S3 bucket, which bills storage and requests on the referenced AwsS3Bucket kind
   notes:
     - text: "The AWSCertificateManager offer waives the monthly fee for the FIRST private CA created in the account in EACH REGION, for its first 30 days (the $0.00 trial SKU). Account-and-region-level and time-boxed -- whether THIS manifest is that CA no manifest can see, so the estimate prices the full rate and states the allowance (the adjudicated account-allowance treatment)."
     - text: "Deletion parks the CA restorable for permanent_deletion_time_in_days (7-30, unset meaning 30) with no charge while parked -- but restoring a deleted CA back-bills the time between deletion and restore, per AWS's own pricing page. Billing stops for good only at permanent erasure or by never restoring. Disabling issuance (enabled: false) keeps the fee running."

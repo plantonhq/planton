@@ -15,7 +15,7 @@ func validD1() *CloudflareD1Database {
 	return &CloudflareD1Database{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareD1Database",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-d1-database"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-d1-database"},
 		Spec: &CloudflareD1DatabaseSpec{
 			AccountId:    validAccountID,
 			DatabaseName: "test-database",

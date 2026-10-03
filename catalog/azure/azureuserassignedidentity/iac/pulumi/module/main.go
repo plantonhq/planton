@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureuserassignedidentityv1alpha1.AzureUserAssignedIdentityStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureuserassignedidentityv1alpha1.AzureUserAssignedIdentityIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -53,7 +53,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureuserassignedidentityv1alpha
 		return errors.Wrapf(err, "failed to create user-assigned managed identity %s", spec.Name)
 	}
 
-	// Export stack outputs from the created resource. principal_id is what
+	// Export outputs from the created resource. principal_id is what
 	// role assignments grant to; client_id is what workloads present to
 	// authenticate as the identity; identity_id is what consuming resources
 	// (and federated credentials) attach to.

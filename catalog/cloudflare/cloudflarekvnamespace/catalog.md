@@ -4,7 +4,7 @@ Deploys a Workers KV namespace on Cloudflare for globally replicated, eventually
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Workers KV Namespace** -- a named key-value store in the Cloudflare account, identified by a unique namespace ID that Workers reference as a binding
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Workers KV permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Workers KV permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -45,7 +45,7 @@ spec:
 planton apply -f cloudflare-kv-namespace.yaml
 ```
 
-This creates a Workers KV namespace titled `session-cache-prod` in the account. The namespace ID is exported in stack outputs for binding to CloudflareWorker resources. A Stack Job tracks the provisioning in real time.
+This creates a Workers KV namespace titled `session-cache-prod` in the account. The namespace ID is exported in outputs for binding to CloudflareWorker resources. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -61,13 +61,13 @@ These are the most important decisions when configuring a KV namespace. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies -- the Cloudflare account is identified by the `accountId` string.
+This kind has no foreign key dependencies -- the Cloudflare account is identified by the `accountId` string.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -81,5 +81,5 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Cloudflare Worker**](/cloud-catalog/cloudflare-worker) -- binds the namespace (via `namespace_id`) for edge reads and runtime writes
-- [**Cloudflare Workers KV Pair**](/cloud-catalog/cloudflare-workers-kv-pair) -- seeds individual entries into this namespace as declarative resources
+- [**Cloudflare Worker**](/infra-catalog/cloudflare-worker) -- binds the namespace (via `namespace_id`) for edge reads and runtime writes
+- [**Cloudflare Workers KV Pair**](/infra-catalog/cloudflare-workers-kv-pair) -- seeds individual entries into this namespace as declarative resources

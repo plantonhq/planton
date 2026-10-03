@@ -4,9 +4,9 @@
 # the meters spin when a trigger (or a manual/debug run) executes it --
 # every meter below bills on the Azure Data Factory V2 service against
 # the factory, priced by which integration runtime class the run
-# executes on. Schema: finops/componentcostprofile/v1.
+# executes on. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azuredatafactorypipeline
 spec:

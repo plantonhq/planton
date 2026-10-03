@@ -1,7 +1,7 @@
 package mappingeval
 
 import (
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -39,7 +39,7 @@ type Scan struct {
 	Resources []ScannedResource `json:"resources"`
 }
 
-// GroundTruth is the answer key a proposal is graded against: the component
+// GroundTruth is the answer key a proposal is graded against: the kind
 // instances that were actually deployed, with their manifests, the account
 // resources each one owns, and what the scan structurally cannot see.
 type GroundTruth struct {
@@ -48,10 +48,10 @@ type GroundTruth struct {
 
 // GroundTruthInstance is one deployed component instance.
 type GroundTruthInstance struct {
-	// Component is the component directory name (e.g. "awsvpc").
-	Component string
-	// Kind is the component's resolved CloudResourceKind.
-	Kind cloudresourcekind.CloudResourceKind
+	// KindDir is the kind directory name (e.g. "awsvpc").
+	KindDir string
+	// Kind is the kind's resolved CatalogKind.
+	Kind catalogkind.CatalogKind
 	// Name is the deployed manifest's metadata.name.
 	Name string
 	// Manifest is the kind's typed api message AS AUTHORED -- value_from

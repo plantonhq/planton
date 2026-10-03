@@ -736,7 +736,7 @@ var _ = ginkgo.Describe("AwsFsxOntapFileSystemSpec validations", func() {
 			resource := &AwsFsxOntapFileSystem{
 				ApiVersion: "aws.planton.dev/v1alpha1",
 				Kind:       "AwsFsxOntapFileSystem",
-				Metadata: &shared.CloudResourceMetadata{
+				Metadata: &shared.CatalogObjectMetadata{
 					Name: "my-ontap-fs",
 					Id:   "awsfxo-test-123",
 					Org:  "test-org",
@@ -752,7 +752,7 @@ var _ = ginkgo.Describe("AwsFsxOntapFileSystemSpec validations", func() {
 			resource := &AwsFsxOntapFileSystem{
 				ApiVersion: "wrong/v1",
 				Kind:       "AwsFsxOntapFileSystem",
-				Metadata: &shared.CloudResourceMetadata{
+				Metadata: &shared.CatalogObjectMetadata{
 					Name: "my-ontap-fs",
 					Id:   "awsfxo-test-123",
 					Org:  "test-org",
@@ -768,7 +768,7 @@ var _ = ginkgo.Describe("AwsFsxOntapFileSystemSpec validations", func() {
 			resource := &AwsFsxOntapFileSystem{
 				ApiVersion: "aws.planton.dev/v1alpha1",
 				Kind:       "WrongKind",
-				Metadata: &shared.CloudResourceMetadata{
+				Metadata: &shared.CatalogObjectMetadata{
 					Name: "my-ontap-fs",
 					Id:   "awsfxo-test-123",
 					Org:  "test-org",

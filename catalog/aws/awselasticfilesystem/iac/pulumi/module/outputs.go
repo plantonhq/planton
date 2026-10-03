@@ -1,7 +1,7 @@
 package module
 
 // Output key constants exported by this Pulumi module. These mirror
-// AwsElasticFileSystemStackOutputs field names one-to-one.
+// AwsElasticFileSystemOutputs field names one-to-one.
 const (
 	OpFileSystemId                       = "file_system_id"
 	OpFileSystemArn                      = "file_system_arn"

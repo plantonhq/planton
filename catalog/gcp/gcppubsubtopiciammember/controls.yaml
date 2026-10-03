@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: gcppubsubtopiciammember
 spec:
@@ -35,7 +35,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: This component IS role-based access control on the topic -- the additive grant assigns exactly one role to one member, and managing the grant itself authorizes against pubsub.topics.getIamPolicy and pubsub.topics.setIamPolicy on the target topic; no unauthenticated management path exists.
+        reference: This kind IS role-based access control on the topic -- the additive grant assigns exactly one role to one member, and managing the grant itself authorizes against pubsub.topics.getIamPolicy and pubsub.topics.setIamPolicy on the target topic; no unauthenticated management path exists.
       notes: Topic-scoped grants are the least-privilege shape -- IAM also flows down onto the topic from its project, so a project-level publisher grant silently covers every topic; prefer this resource when a writer needs exactly one destination.
     - control_id: workload-identity
       status: not_applicable

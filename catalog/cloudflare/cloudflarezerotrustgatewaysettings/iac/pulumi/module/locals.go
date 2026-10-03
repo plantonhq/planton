@@ -12,10 +12,10 @@ type Locals struct {
 	CloudflareZeroTrustGatewaySettings *cloudflarezerotrustgatewaysettingsv1alpha1.CloudflareZeroTrustGatewaySettings
 }
 
-// initializeLocals copies stack-input fields into the Locals struct.
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflarezerotrustgatewaysettingsv1alpha1.CloudflareZeroTrustGatewaySettingsStackInput) *Locals {
+// initializeLocals copies iac-input fields into the Locals struct.
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflarezerotrustgatewaysettingsv1alpha1.CloudflareZeroTrustGatewaySettingsIacInput) *Locals {
 	locals := &Locals{}
-	locals.CloudflareZeroTrustGatewaySettings = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareZeroTrustGatewaySettings = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

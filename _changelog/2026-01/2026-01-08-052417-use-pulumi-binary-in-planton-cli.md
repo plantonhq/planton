@@ -34,7 +34,7 @@ flowchart TB
     A[planton apply] --> B{moduleDir provided?}
     B -->|Yes| C[Use provided directory]
     B -->|No| D{Release version available?}
-    D -->|Yes| E[Download pulumi-component.gz]
+    D -->|Yes| E[Download pulumi-kind.gz]
     D -->|No/dev| F[Fallback: clone repo]
     E --> G[Cache in ~/.planton/pulumi/binaries/]
     G --> H[Generate Pulumi.yaml with binary option]
@@ -45,7 +45,7 @@ flowchart TB
 
 ### Key Features
 
-1. **Automatic binary download**: Downloads component-specific binaries from GitHub releases
+1. **Automatic binary download**: Downloads kind-specific binaries from GitHub releases
 2. **Smart caching**: Binaries cached at `~/.planton/pulumi/binaries/{version}/`
 3. **Graceful fallback**: Falls back to staging/clone if binary unavailable
 4. **Module version support**: Works with `--module-version` for specific releases
@@ -127,7 +127,7 @@ sequenceDiagram
     alt Binary cached
         Cache-->>CLI: Return binary path
     else Not cached
-        CLI->>GitHub: Download pulumi-{component}.gz
+        CLI->>GitHub: Download pulumi-{kind}.gz
         GitHub-->>CLI: Gzipped binary
         CLI->>Cache: Extract and cache binary
     end
@@ -188,7 +188,7 @@ The implementation supports multiple version scenarios:
 
 ## Related Work
 
-- ADR: Per-Component Binary Releases for Pulumi Modules (`planton/docs/adr/2026-01/2026-01-07-150453-per-component-binary-releases-for-pulumi-modules.md`)
+- ADR: Per-Kind Binary Releases for Pulumi Modules (`planton/docs/adr/2026-01/2026-01-07-150453-per-kind-binary-releases-for-pulumi-modules.md`)
 - GitHub Actions workflow: `auto-release.pulumi-modules.yaml` builds and uploads binaries
 
 ---

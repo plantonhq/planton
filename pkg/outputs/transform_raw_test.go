@@ -7,11 +7,11 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 func TestTransformRaw_GenericFallback(t *testing.T) {
-	kind := cloudresourcekind.CloudResourceKind_Auth0ResourceServer
+	kind := catalogkind.CatalogKind_Auth0ResourceServer
 	raw := map[string]interface{}{
 		"id":   "rs-001",
 		"name": "My API",
@@ -33,7 +33,7 @@ func TestTransformRaw_GenericFallback(t *testing.T) {
 }
 
 func TestTransformRaw_NilOpts(t *testing.T) {
-	kind := cloudresourcekind.CloudResourceKind_Auth0ResourceServer
+	kind := catalogkind.CatalogKind_Auth0ResourceServer
 	raw := map[string]interface{}{"id": "test"}
 
 	msg, _, err := TransformRaw(kind, raw, nil)
@@ -46,7 +46,7 @@ func TestTransformRaw_NilOpts(t *testing.T) {
 }
 
 func TestTransformRaw_EmptyModuleDir(t *testing.T) {
-	kind := cloudresourcekind.CloudResourceKind_Auth0ResourceServer
+	kind := catalogkind.CatalogKind_Auth0ResourceServer
 	raw := map[string]interface{}{"id": "test"}
 
 	msg, _, err := TransformRaw(kind, raw, &TransformOptions{ModuleDir: ""})
@@ -59,7 +59,7 @@ func TestTransformRaw_EmptyModuleDir(t *testing.T) {
 }
 
 func TestTransformRaw_MappingOverride(t *testing.T) {
-	kind := cloudresourcekind.CloudResourceKind_Auth0ResourceServer
+	kind := catalogkind.CatalogKind_Auth0ResourceServer
 	raw := map[string]interface{}{
 		"custom_id":      "rs-mapped",
 		"custom_name":    "Mapped API",
@@ -93,7 +93,7 @@ func TestTransformRaw_MappingOverride(t *testing.T) {
 }
 
 func TestTransformRaw_ExecutableOverride(t *testing.T) {
-	kind := cloudresourcekind.CloudResourceKind_Auth0ResourceServer
+	kind := catalogkind.CatalogKind_Auth0ResourceServer
 	raw := map[string]interface{}{
 		"custom_id": "rs-exec",
 		"name":      "Exec API",
@@ -120,7 +120,7 @@ func TestTransformRaw_ExecutableOverride(t *testing.T) {
 }
 
 func TestTransformRaw_ExecutableTakesPrecedence(t *testing.T) {
-	kind := cloudresourcekind.CloudResourceKind_Auth0ResourceServer
+	kind := catalogkind.CatalogKind_Auth0ResourceServer
 	raw := map[string]interface{}{
 		"executable_was_used": "proof",
 	}
@@ -142,7 +142,7 @@ func TestTransformRaw_ExecutableTakesPrecedence(t *testing.T) {
 }
 
 func TestTransformRaw_EmptyOutputs(t *testing.T) {
-	kind := cloudresourcekind.CloudResourceKind_Auth0ResourceServer
+	kind := catalogkind.CatalogKind_Auth0ResourceServer
 	raw := map[string]interface{}{}
 
 	msg, flat, err := TransformRaw(kind, raw, nil)
@@ -158,7 +158,7 @@ func TestTransformRaw_EmptyOutputs(t *testing.T) {
 }
 
 func TestTransformRaw_BadExecutable(t *testing.T) {
-	kind := cloudresourcekind.CloudResourceKind_Auth0ResourceServer
+	kind := catalogkind.CatalogKind_Auth0ResourceServer
 	raw := map[string]interface{}{"key": "value"}
 
 	opts := &TransformOptions{
@@ -172,7 +172,7 @@ func TestTransformRaw_BadExecutable(t *testing.T) {
 }
 
 func TestTransformRaw_BadMapping(t *testing.T) {
-	kind := cloudresourcekind.CloudResourceKind_Auth0ResourceServer
+	kind := catalogkind.CatalogKind_Auth0ResourceServer
 	raw := map[string]interface{}{"key": "value"}
 
 	opts := &TransformOptions{

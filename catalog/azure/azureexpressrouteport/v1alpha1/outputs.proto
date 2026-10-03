@@ -4,11 +4,11 @@ package dev.planton.azure.azureexpressrouteport.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureExpressRoutePortStackOutputs** captures the outputs of
+// **AzureExpressRoutePortOutputs** captures the outputs of
 // provisioning an ExpressRoute Port. The per-link facility facts
 // (router, interface, patch panel, rack) are what you hand to the
 // colocation facility to order the physical cross-connects.
-message AzureExpressRoutePortStackOutputs {
+message AzureExpressRoutePortOutputs {
   // The Azure Resource Manager ID of the port -- what an ExpressRoute
   // Direct circuit references as express_route_port_id.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/expressRoutePorts/{name}

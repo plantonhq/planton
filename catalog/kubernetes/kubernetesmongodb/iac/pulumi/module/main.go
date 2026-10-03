@@ -23,16 +23,16 @@ import (
 // credential Secrets (the operator reads them at reconcile time), and for
 // the restore (it names the cluster; the operator gates it on the members
 // being up).
-func Resources(ctx *pulumi.Context, stackInput *kubernetesmongodbv1alpha1.KubernetesMongodbStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesmongodbv1alpha1.KubernetesMongodbIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
 
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

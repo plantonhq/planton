@@ -8,12 +8,12 @@ import (
 )
 
 // Resources orchestrates creation of the AWS MSK Serverless Cluster and exports outputs.
-func Resources(ctx *pulumi.Context, stackInput *awsmskserverlessclusterv1alpha1.AwsMskServerlessClusterStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsmskserverlessclusterv1alpha1.AwsMskServerlessClusterIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which resolves
+	// Build the AWS provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static keys, keyless web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsMskServerlessCluster.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsMskServerlessCluster.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

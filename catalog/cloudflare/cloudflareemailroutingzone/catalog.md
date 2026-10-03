@@ -1,10 +1,10 @@
 # Cloudflare Email Routing Zone
 
-Enables Cloudflare Email Routing on a DNS zone -- the anchor of the Email Routing family. Enabling provisions the records inbound mail needs (MX, SPF, DKIM) automatically and configures the single per-zone catch-all rule that decides what happens to mail no other routing rule matched: leave Cloudflare's default (drop), forward to verified destinations, or hand it to an Email Worker. Enabling replaces the zone's existing mail delivery path, so never enable it on a domain whose mail another system (Google Workspace, O365) must keep handling. Individual routing rules and destination addresses are separate Cloud Resources that build on top of an enabled zone.
+Enables Cloudflare Email Routing on a DNS zone -- the anchor of the Email Routing family. Enabling provisions the records inbound mail needs (MX, SPF, DKIM) automatically and configures the single per-zone catch-all rule that decides what happens to mail no other routing rule matched: leave Cloudflare's default (drop), forward to verified destinations, or hand it to an Email Worker. Enabling replaces the zone's existing mail delivery path, so never enable it on a domain whose mail another system (Google Workspace, O365) must keep handling. Individual routing rules and destination addresses are separate Infra Components that build on top of an enabled zone.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Email Routing enablement** -- turns Email Routing on for the zone; destroying it disables routing (a toggle, not a deletion)
 - **DNS records** -- the required MX, SPF, and DKIM records, created automatically on enable; with `lockDnsRecords` the module manages them explicitly so they cannot be edited out-of-band
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Email Routing edit access (and DNS edit access for the auto-provisioned records). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Email Routing edit access (and DNS edit access for the auto-provisioned records). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -58,7 +58,7 @@ spec:
 planton apply -f cloudflare-email-routing-zone.yaml
 ```
 
-This enables Email Routing on the `acme-com` zone and forwards all otherwise-unmatched mail to a catch-all mailbox. A Stack Job tracks the provisioning in real time.
+This enables Email Routing on the `acme-com` zone and forwards all otherwise-unmatched mail to a catch-all mailbox. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -100,7 +100,7 @@ These are the most important decisions when enabling Email Routing. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -108,9 +108,9 @@ These are the most important decisions when enabling Email Routing. Explore the 
 | **CloudflareEmailRoutingAddress** (per forwarding catch-all action) | `catchAll.actions[].forwardTo[]` | `status.outputs.email` |
 | **CloudflareWorker** (worker catch-all actions) | `catchAll.actions[].worker` | `status.outputs.script_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -128,7 +128,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Cloudflare Email Routing Rule**](/cloud-catalog/cloudflare-email-routing-rule) -- per-recipient rules that take precedence over the catch-all
-- [**Cloudflare Email Routing Address**](/cloud-catalog/cloudflare-email-routing-address) -- the verified mailboxes a forwarding catch-all delivers to
-- [**Cloudflare Worker**](/cloud-catalog/cloudflare-worker) -- the Email Worker a worker catch-all hands unmatched mail to
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) -- the zone Email Routing is enabled on
+- [**Cloudflare Email Routing Rule**](/infra-catalog/cloudflare-email-routing-rule) -- per-recipient rules that take precedence over the catch-all
+- [**Cloudflare Email Routing Address**](/infra-catalog/cloudflare-email-routing-address) -- the verified mailboxes a forwarding catch-all delivers to
+- [**Cloudflare Worker**](/infra-catalog/cloudflare-worker) -- the Email Worker a worker catch-all hands unmatched mail to
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) -- the zone Email Routing is enabled on

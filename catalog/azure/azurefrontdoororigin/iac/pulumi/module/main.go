@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurefrontdoororiginv1alpha1.AzureFrontDoorOriginStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurefrontdoororiginv1alpha1.AzureFrontDoorOriginIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -21,7 +21,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurefrontdoororiginv1alpha1.Azu
 	spec := locals.AzureFrontDoorOrigin.Spec
 
 	// Certificate name checking defaults ON (the spec's documented
-	// default; stack inputs never carry proto defaults) -- the provider
+	// default; IaC inputs never carry proto defaults) -- the provider
 	// requires the value explicitly, and Azure requires it to be true
 	// when Private Link is configured.
 	certificateNameCheckEnabled := true
@@ -93,7 +93,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurefrontdoororiginv1alpha1.Azu
 		return errors.Wrapf(err, "failed to create front door origin %s", spec.OriginName)
 	}
 
-	// Export stack outputs. origin_id is what AzureFrontDoorRoute's
+	// Export outputs. origin_id is what AzureFrontDoorRoute's
 	// origin_ids list references to sequence deployment.
 	ctx.Export(OpOriginId, createdOrigin.ID())
 	ctx.Export(OpOriginName, createdOrigin.Name)

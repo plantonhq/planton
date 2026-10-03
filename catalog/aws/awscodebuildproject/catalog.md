@@ -4,7 +4,7 @@ Deploys a CodeBuild project with configurable source providers, build environmen
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **CodeBuild Project** -- a build project configured with the specified source provider, build container image, compute type, environment variables, artifact output, and optional VPC networking, caching, and log destinations
 - **CodeBuild Webhook** -- created only when `webhook` is configured; registers a webhook with the source provider (GitHub, Bitbucket, GitLab, CodeCommit) to trigger builds on push or pull request events
@@ -14,15 +14,15 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **An IAM service role** with permissions for source access, log writing, artifact storage, and any additional AWS services invoked during the build. Provide the ARN directly or reference an AwsIamRole Cloud Resource via ValueFromRef.
-- **An S3 bucket** (optional) -- required when artifact type is S3 or when S3 caching or S3 log delivery is enabled. Provide the bucket name directly or reference an AwsS3Bucket Cloud Resource.
-- **A KMS key** (optional) -- for encrypting build artifacts with a customer-managed key instead of the AWS-managed S3 key. Provide the ARN directly or reference an AwsKmsKey Cloud Resource.
-- **VPC subnets and security groups** (optional) -- required when the build needs access to private resources (RDS, ElastiCache, internal APIs). Provide IDs directly or reference AwsVpc and AwsSecurityGroup Cloud Resources.
+- **An IAM service role** with permissions for source access, log writing, artifact storage, and any additional AWS services invoked during the build. Provide the ARN directly or reference an AwsIamRole Infra Component via ValueFromRef.
+- **An S3 bucket** (optional) -- required when artifact type is S3 or when S3 caching or S3 log delivery is enabled. Provide the bucket name directly or reference an AwsS3Bucket Infra Component.
+- **A KMS key** (optional) -- for encrypting build artifacts with a customer-managed key instead of the AWS-managed S3 key. Provide the ARN directly or reference an AwsKmsKey Infra Component.
+- **VPC subnets and security groups** (optional) -- required when the build needs access to private resources (RDS, ElastiCache, internal APIs). Provide IDs directly or reference AwsVpc and AwsSecurityGroup Infra Components.
 
 ## Deploy
 
@@ -60,7 +60,7 @@ spec:
 planton apply -f codebuild-project.yaml
 ```
 
-This creates a CI-only CodeBuild project pulling from GitHub with a small Linux build container and no artifacts. No webhook, VPC connectivity, or caching is configured. A Stack Job tracks the provisioning and streams progress in real time.
+This creates a CI-only CodeBuild project pulling from GitHub with a small Linux build container and no artifacts. No webhook, VPC connectivity, or caching is configured. An Infra Job tracks the provisioning and streams progress in real time.
 
 ### InfraChart
 
@@ -112,7 +112,7 @@ These are the most important decisions when configuring a CodeBuild project. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -129,9 +129,9 @@ These are the most important decisions when configuring a CodeBuild project. Exp
 | **AwsSecurityGroup** (optional) | `vpcConfig.securityGroupIds` | `status.outputs.security_group_id` |
 | **AwsSecurityGroup** (optional) | `environment.dockerServer.securityGroupIds` | `status.outputs.security_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -156,10 +156,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS CodePipeline**](/cloud-catalog/aws-code-pipeline) -- runs this project as a build stage, consuming the `project_name` output in its CodeBuild action configuration
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- provides the service role for source access, log writing, and artifact storage
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for build artifact encryption
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) -- provides storage for artifacts, build cache, and S3 log delivery
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) -- provides a custom log group for build output
-- [**AWS VPC**](/cloud-catalog/aws-vpc) -- provides VPC and subnets for builds needing private resource access
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- controls network access for VPC-connected builds
+- [**AWS CodePipeline**](/infra-catalog/aws-code-pipeline) -- runs this project as a build stage, consuming the `project_name` output in its CodeBuild action configuration
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- provides the service role for source access, log writing, and artifact storage
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for build artifact encryption
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) -- provides storage for artifacts, build cache, and S3 log delivery
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) -- provides a custom log group for build output
+- [**AWS VPC**](/infra-catalog/aws-vpc) -- provides VPC and subnets for builds needing private resource access
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- controls network access for VPC-connected builds

@@ -2,9 +2,9 @@
 # provision, update, and destroy this component with the official modules.
 # Every entry is `derived` (static analysis of the module sources, cited in
 # notes) until the live capture lane upgrades it to `proven`. Schema:
-# iac/componentpermissions/v1.
+# iac/catalogkindpermissions/v1.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: azurecosmosdbaccount
 spec:
@@ -22,7 +22,7 @@ spec:
           - Microsoft.DocumentDB/databaseAccounts/listKeys/action
           - Microsoft.DocumentDB/databaseAccounts/listConnectionStrings/action
         provenance: derived
-        notes: "Both modules export the account keys and ready-made connection strings as (sensitive) stack outputs -- the provider fetches them on every refresh. ListKeys returns all four keys (primary/secondary read-write AND read-only), and ListConnectionStrings returns the SQL and MongoDB connection-string families, so these two POST actions cover every credential output without the separate readonlykeys action. When the spec disables local authentication the fetched keys stop authenticating but the API calls still succeed."
+        notes: "Both modules export the account keys and ready-made connection strings as (sensitive) outputs -- the provider fetches them on every refresh. ListKeys returns all four keys (primary/secondary read-write AND read-only), and ListConnectionStrings returns the SQL and MongoDB connection-string families, so these two POST actions cover every credential output without the separate readonlykeys action. When the spec disables local authentication the fetched keys stop authenticating but the API calls still succeed."
       - purpose: JoinSubnetsViaServiceEndpoint
         actions:
           - Microsoft.Network/virtualNetworks/subnets/read

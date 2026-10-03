@@ -15,7 +15,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureapplicationgateway
+    e2e-catalog-kind: azureapplicationgateway
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AzurePublicIp,AzureWebApplicationFirewallPolicy"

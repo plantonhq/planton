@@ -9,7 +9,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpbigquerydataset
+    e2e-catalog-kind: gcpbigquerydataset
   annotations:
     planton.dev/e2e: "true"
   tags:

@@ -30,7 +30,7 @@ The platform section was the least-touched since the Phase 1 quality fixes at th
 
 ### platform/getting-started.md (Clean-Slate Rewrite)
 
-Restructured around the actual 8-task onboarding checklist from `getting-started-constants.ts`. Each step verified against source code: organization creation wizard route (`/organizations/new/setup`), `EnvironmentSpec` proto (no type field), Connections page layout, and Deployment Component Store route (`/platform/deployment-store`). Added CLI commands from verified Go source.
+Restructured around the actual 8-task onboarding checklist from `getting-started-constants.ts`. Each step verified against source code: organization creation wizard route (`/organizations/new/setup`), `EnvironmentSpec` proto (no type field), Connections page layout, and Catalog Kind Store route (`/platform/deployment-store`). Added CLI commands from verified Go source.
 
 ### platform/platform-tour.md (Clean-Slate Rewrite)
 

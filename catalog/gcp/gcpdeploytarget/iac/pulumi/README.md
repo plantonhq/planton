@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for a Cloud Deploy target from
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `target` |
-| `module/locals.go` | Stack input, attribution labels, the label merge |
+| `module/locals.go` | IaC input, attribution labels, the label merge |
 | `module/target.go` | API enablement, the target, one args helper per nested block, the outputs |
 | `module/outputs.go` | Output key constants (`name`, `target_id`, `uid`) |
 

@@ -111,7 +111,7 @@ Attribute mapping is **optional**. When omitted, AWS applies default mappings ba
 | `encryptedResponses` | `bool` | No | Require encrypted SAML assertions |
 | `requestSigningAlgorithm` | `string` | No | SAML request signing algorithm (e.g., `"rsa-sha256"`) |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -125,7 +125,7 @@ Attribute mapping is **optional**. When omitted, AWS applies default mappings ba
 - AWS credentials with permissions for `cognito-idp:*`
 - OAuth/OIDC/SAML credentials from the external IdP (client IDs, secrets, metadata URLs, etc.)
 
-## Related Components
+## Related Kinds
 
 - [AwsCognitoUserPool](../awscognitouserpool/README.md) — parent resource; must be created first
 - [AwsCognitoUserPoolClient](../awscognitouserpoolclient/README.md) — list this provider (by reference to its `provider_name` output) in `supportedIdentityProviders` to enable federated sign-in

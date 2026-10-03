@@ -36,8 +36,8 @@ type Locals struct {
 	RetentionDays int
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcplogbucketv1alpha1.GcpLogBucketStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcplogbucketv1alpha1.GcpLogBucketIacInput) *Locals {
+	target := iacInput.Target
 	scope := target.Spec.Scope
 
 	locals := &Locals{

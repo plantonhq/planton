@@ -4,12 +4,12 @@ Creates one Certificate Manager certificate — the modern certificate resource 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Certificate Manager API enablement** (`certificatemanager.googleapis.com`) on the target project (never disabled on destroy)
 - **Certificate Manager Certificate** -- a `google_certificate_manager_certificate` in the chosen project and location, either MANAGED (with the listed domains and validation channel) or SELF_MANAGED (with the uploaded PEM material)
 
-Domain validation resources are NOT bundled: DNS authorizations are first-class [GcpCertManagerDnsAuthorization](/cloud-catalog/gcp-cert-manager-dns-authorization) resources you compose, which is what makes issuing a certificate BEFORE traffic serves (zero-downtime migration) possible.
+Domain validation resources are NOT bundled: DNS authorizations are first-class [GcpCertManagerDnsAuthorization](/infra-catalog/gcp-cert-manager-dns-authorization) resources you compose, which is what makes issuing a certificate BEFORE traffic serves (zero-downtime migration) possible.
 
 ## Before You Deploy
 
@@ -20,7 +20,7 @@ Domain validation resources are NOT bundled: DNS authorizations are first-class 
 
 ### GCP Project
 
-- **For DNS-authorization validation** -- one [GcpCertManagerDnsAuthorization](/cloud-catalog/gcp-cert-manager-dns-authorization) per distinct domain, its exported CNAME served by a [GcpDnsRecord](/cloud-catalog/gcp-dns-record) in the domain's zone. Required for wildcard domains and for issuing before the load balancer serves.
+- **For DNS-authorization validation** -- one [GcpCertManagerDnsAuthorization](/infra-catalog/gcp-cert-manager-dns-authorization) per distinct domain, its exported CNAME served by a [GcpDnsRecord](/infra-catalog/gcp-dns-record) in the domain's zone. Required for wildcard domains and for issuing before the load balancer serves.
 - **For load-balancer validation** -- nothing up front: GCP validates through the serving load balancer once traffic reaches it (the certificate stays PROVISIONING until then; wildcards are not supported).
 
 ## Deploy
@@ -57,7 +57,7 @@ spec:
 planton apply -f cert.yaml
 ```
 
-This creates a Google-managed certificate for `orders.example.com` validated through the referenced DNS authorization — it can reach ACTIVE before any load balancer serves the domain. A Stack Job tracks the provisioning in real time.
+This creates a Google-managed certificate for `orders.example.com` validated through the referenced DNS authorization — it can reach ACTIVE before any load balancer serves the domain. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,7 +95,7 @@ These are the most important decisions when configuring a Certificate Manager ce
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -103,9 +103,9 @@ These are the most important decisions when configuring a Certificate Manager ce
 | **GcpCertManagerDnsAuthorization** | `managed.dnsAuthorizations[]` | `status.outputs.authorization_id` |
 | **GcpCertManagerIssuanceConfig** | `managed.issuanceConfig` | `status.outputs.issuance_config_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -129,7 +129,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Cert Manager DNS Authorization**](/cloud-catalog/gcp-cert-manager-dns-authorization) -- proves domain control before issuance; required for public wildcards
-- [**GCP Cert Manager Issuance Config**](/cloud-catalog/gcp-cert-manager-issuance-config) -- has your private CA pool issue and renew the certificate; its `issuance_config_id` output feeds `managed.issuanceConfig`
-- [**GCP DNS Record**](/cloud-catalog/gcp-dns-record) -- serves each authorization's validation CNAME in the zone
-- [**GCP DNS Zone**](/cloud-catalog/gcp-dns-zone) -- the zone those records live in
+- [**GCP Cert Manager DNS Authorization**](/infra-catalog/gcp-cert-manager-dns-authorization) -- proves domain control before issuance; required for public wildcards
+- [**GCP Cert Manager Issuance Config**](/infra-catalog/gcp-cert-manager-issuance-config) -- has your private CA pool issue and renew the certificate; its `issuance_config_id` output feeds `managed.issuanceConfig`
+- [**GCP DNS Record**](/infra-catalog/gcp-dns-record) -- serves each authorization's validation CNAME in the zone
+- [**GCP DNS Zone**](/infra-catalog/gcp-dns-zone) -- the zone those records live in

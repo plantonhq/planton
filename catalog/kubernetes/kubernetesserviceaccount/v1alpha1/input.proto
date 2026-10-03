@@ -6,12 +6,12 @@ import "catalog/kubernetes/kubernetesserviceaccount/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
 /**
- * **KubernetesServiceAccountStackInput** defines the input structure for deploying a
+ * **KubernetesServiceAccountIacInput** defines the input structure for deploying a
  * Kubernetes ServiceAccount. It carries the target ServiceAccount specification and the
  * Kubernetes cluster configuration the IaC modules (Pulumi and Terraform) need to reach
  * the cluster.
  */
-message KubernetesServiceAccountStackInput {
+message KubernetesServiceAccountIacInput {
   /**
    * The target ServiceAccount resource to be created.
    * Contains the complete specification including metadata, image-pull secrets,

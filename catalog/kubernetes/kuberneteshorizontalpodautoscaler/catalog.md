@@ -4,7 +4,7 @@ Deploys a Kubernetes HorizontalPodAutoscaler carrying the full autoscaling/v2 su
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes HorizontalPodAutoscaler** -- an autoscaling/v2 HPA in the specified namespace targeting the scale workload, with the replica bounds, metric list, and optional behavior tuning
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -60,7 +60,7 @@ spec:
 planton apply -f hpa.yaml
 ```
 
-This holds the `checkout` Deployment's average CPU at 60% of requests, between 2 and 10 replicas. A Stack Job tracks the provisioning in real time.
+This holds the `checkout` Deployment's average CPU at 60% of requests, between 2 and 10 replicas. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -100,7 +100,7 @@ These are the most important decisions when configuring a Kubernetes HorizontalP
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -109,9 +109,9 @@ These are the most important decisions when configuring a Kubernetes HorizontalP
 
 The namespace must be the target's own (omitted means the cluster's `default` namespace); other scale-target kinds are referenced by their exported name output explicitly.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -135,7 +135,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) -- the default scale target, referenced declaratively by its exported name.
-- [**Metrics Server**](/cloud-catalog/kubernetes-metrics-server) -- the prerequisite for CPU/memory metrics.
-- [**KEDA**](/cloud-catalog/kubernetes-keda) -- event-driven scale-to-zero semantics built on the external-metrics path this HPA consumes.
-- [**Kubernetes PodDisruptionBudget**](/cloud-catalog/kubernetes-pod-disruption-budget) -- bounds how fast maintenance may shrink what this autoscaler grew.
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- the default scale target, referenced declaratively by its exported name.
+- [**Metrics Server**](/infra-catalog/kubernetes-metrics-server) -- the prerequisite for CPU/memory metrics.
+- [**KEDA**](/infra-catalog/kubernetes-keda) -- event-driven scale-to-zero semantics built on the external-metrics path this HPA consumes.
+- [**Kubernetes PodDisruptionBudget**](/infra-catalog/kubernetes-pod-disruption-budget) -- bounds how fast maintenance may shrink what this autoscaler grew.

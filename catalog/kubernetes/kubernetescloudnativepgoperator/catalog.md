@@ -4,7 +4,7 @@ Installs CloudNativePG — the CNCF PostgreSQL operator — from the official He
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm Release** (`cnpg`) -- the CloudNativePG operator Deployment, its mutating/validating webhooks, and its RBAC (ClusterRoles when cluster-wide, namespace-scoped when fenced)
 - **CRDs** -- Cluster, ScheduledBackup, Backup, Pooler, Database, and companions — stamped `helm.sh/resource-policy: keep` unconditionally, so uninstalling the release never cascade-deletes the databases behind them
@@ -14,12 +14,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Kubernetes Cluster
 
 - For the operator PodMonitor: the Prometheus operator CRDs — the release fails to install without them.
-- For backups: nothing here. Object-store backups are the Barman Cloud plugin's job, installed into this operator's namespace by a separate resource ([CNPG Barman Cloud Plugin](/cloud-catalog/kubernetes-cnpg-barman-cloud-plugin)), which needs cert-manager.
+- For backups: nothing here. Object-store backups are the Barman Cloud plugin's job, installed into this operator's namespace by a separate resource ([CNPG Barman Cloud Plugin](/infra-catalog/kubernetes-cnpg-barman-cloud-plugin)), which needs cert-manager.
 
 ## Deploy
 
@@ -52,7 +52,7 @@ spec:
 planton apply -f cnpg-operator.yaml
 ```
 
-This creates the `cnpg-system` namespace, installs the operator release, and enables the operator's PodMonitor — the production control-plane posture. Declare databases with KubernetesPostgres resources afterwards, and a CNPG Barman Cloud Plugin beside the operator before any of them declares a backup. A Stack Job tracks the provisioning in real time.
+This creates the `cnpg-system` namespace, installs the operator release, and enables the operator's PodMonitor — the production control-plane posture. Declare databases with KubernetesPostgres resources afterwards, and a CNPG Barman Cloud Plugin beside the operator before any of them declares a backup. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -80,7 +80,7 @@ These are the most important decisions when configuring the operator. Explore th
 
 **CRDs survive uninstall, unconditionally** -- the chart stamps `helm.sh/resource-policy: keep` on every CRD, so removing the release never takes the databases with it. This kind deliberately offers no dial to weaken that posture.
 
-**Backups are a separate resource** -- CloudNativePG's built-in object-store support is deprecated upstream; the Barman Cloud plugin is what makes every KubernetesPostgres backup block function, and it is its own chart, pin, and dependency set. Declare a [CNPG Barman Cloud Plugin](/cloud-catalog/kubernetes-cnpg-barman-cloud-plugin) into this operator's namespace before the first database declares a backup; without it the operator parks that database in an unknown-plugin phase.
+**Backups are a separate resource** -- CloudNativePG's built-in object-store support is deprecated upstream; the Barman Cloud plugin is what makes every KubernetesPostgres backup block function, and it is its own chart, pin, and dependency set. Declare a [CNPG Barman Cloud Plugin](/infra-catalog/kubernetes-cnpg-barman-cloud-plugin) into this operator's namespace before the first database declares a backup; without it the operator parks that database in an unknown-plugin phase.
 
 **Standbys are not throughput** -- extra operator replicas are leader-elected warm standbys that shorten the operator's own failover; `maxConcurrentReconciles` is the throughput dial for control planes managing many databases.
 
@@ -92,15 +92,15 @@ These are the most important decisions when configuring the operator. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -117,6 +117,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**PostgreSQL**](/cloud-catalog/kubernetes-postgres) -- the databases this operator reconciles; each one composes against the CRDs installed here.
-- [**CNPG Barman Cloud Plugin**](/cloud-catalog/kubernetes-cnpg-barman-cloud-plugin) -- the object-store backup engine, installed into this operator's namespace; every KubernetesPostgres backup block depends on it.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the placement target (`cnpg-system` by convention), permanent while the CRDs are kept.
+- [**PostgreSQL**](/infra-catalog/kubernetes-postgres) -- the databases this operator reconciles; each one composes against the CRDs installed here.
+- [**CNPG Barman Cloud Plugin**](/infra-catalog/kubernetes-cnpg-barman-cloud-plugin) -- the object-store backup engine, installed into this operator's namespace; every KubernetesPostgres backup block depends on it.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the placement target (`cnpg-system` by convention), permanent while the CRDs are kept.

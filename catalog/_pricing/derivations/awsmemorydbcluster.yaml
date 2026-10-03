@@ -7,9 +7,9 @@
 # hybrid bill -- is an exclusion no manifest can predict. Primaries and
 # replicas are sibling rules on the same meter and price, merging by
 # summed quantity (a product cannot express shards x (1 + replicas)).
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsmemorydbcluster
 spec:

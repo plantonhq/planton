@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azuresearchservicev1alpha1.AzureSearchServiceStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuresearchservicev1alpha1.AzureSearchServiceIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -39,7 +39,7 @@ func Resources(ctx *pulumi.Context, stackInput *azuresearchservicev1alpha1.Azure
 	}
 
 	// Optional-with-default-1 in the spec; presence-guard with the
-	// proto default so manifest-driven stack inputs (nil optional)
+	// proto default so manifest-driven IaC inputs (nil optional)
 	// send the same value the Terraform module's optional(number, 1)
 	// carries -- the provider range-validates these, so sending 0
 	// would hard-fail the deploy.

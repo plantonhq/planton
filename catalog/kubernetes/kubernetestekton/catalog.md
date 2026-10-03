@@ -6,7 +6,7 @@ This component shapes the **engine**, never your pipelines: Tasks, Pipelines, an
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module renders the TektonConfig and the operator turns it into running components:
+When you deploy this Infra Component, the IaC module renders the TektonConfig and the operator turns it into running components:
 
 - **The TektonConfig** — always named `config` (the operator's singleton rule; your resource name keys the Planton record only), carrying the profile, target namespace, pipeline configuration, and pruner policy
 - **The target namespace** (`tekton-pipelines` unless overridden) — CREATED and OWNED by the operator, including deletion: teardown removes the namespace with the components, so it must never carry anything else
@@ -30,7 +30,7 @@ When you deploy this Cloud Resource, the IaC module renders the TektonConfig and
 
 ### Console
 
-Open the deployment store, find **Tekton**, and click **Deploy**. The creation wizard walks you through the singleton contract, the profile ladder, the immutable target namespace, placement, the pipeline surface (execution defaults, feature flags, resolvers, metrics, performance), the per-component steps (Triggers, Dashboard, Chains — shown only on profiles that install them), the pruner, and the additional-params escape surface. Start from the **CI standard preset** in the [Presets](#presets) tab.
+Open the deployment store, find **Tekton**, and click **Deploy**. The creation wizard walks you through the singleton contract, the profile ladder, the immutable target namespace, placement, the pipeline surface (execution defaults, feature flags, resolvers, metrics, performance), the per-kind steps (Triggers, Dashboard, Chains — shown only on profiles that install them), the pruner, and the additional-params escape surface. Start from the **CI standard preset** in the [Presets](#presets) tab.
 
 ### CLI
 
@@ -56,7 +56,7 @@ spec:
 planton apply -f tekton.yaml
 ```
 
-This is the CI-standard shape: profile `all` by absence (Pipelines + Triggers + Dashboard, plus Chains), the upstream default `tekton-pipelines` namespace, and the one piece of configuration no production cluster should skip — a pruner. A Stack Job tracks the provisioning in real time.
+This is the CI-standard shape: profile `all` by absence (Pipelines + Triggers + Dashboard, plus Chains), the upstream default `tekton-pipelines` namespace, and the one piece of configuration no production cluster should skip — a pruner. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -82,13 +82,13 @@ These are the most important decisions when configuring a Tekton installation. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component's spec is self-contained — no fields reference other resources' outputs. Its one dependency is environmental: a running Tekton Operator on the target cluster (see Before You Deploy).
+This kind's spec is self-contained — no fields reference other resources' outputs. Its one dependency is environmental: a running Tekton Operator on the target cluster (see Before You Deploy).
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -108,7 +108,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Tekton Operator**](/cloud-catalog/kubernetes-tekton-operator) — the hard prerequisite; deploy the operator FIRST, destroy this declaration FIRST.
-- [**Kubernetes Ingress**](/cloud-catalog/kubernetes-ingress) — exposes the dashboard over the exported `dashboard_service` handle, always behind an authenticating layer.
-- [**Kubernetes HTTPRoute**](/cloud-catalog/kubernetes-http-route) — the Gateway API alternative for dashboard exposure, same authenticating-layer caveat.
-- [**Kubernetes Manifest**](/cloud-catalog/kubernetes-manifest) — declares Tasks, Pipelines, EventListeners, and runs once the installation converges.
+- [**Tekton Operator**](/infra-catalog/kubernetes-tekton-operator) — the hard prerequisite; deploy the operator FIRST, destroy this declaration FIRST.
+- [**Kubernetes Ingress**](/infra-catalog/kubernetes-ingress) — exposes the dashboard over the exported `dashboard_service` handle, always behind an authenticating layer.
+- [**Kubernetes HTTPRoute**](/infra-catalog/kubernetes-http-route) — the Gateway API alternative for dashboard exposure, same authenticating-layer caveat.
+- [**Kubernetes Manifest**](/infra-catalog/kubernetes-manifest) — declares Tasks, Pipelines, EventListeners, and runs once the installation converges.

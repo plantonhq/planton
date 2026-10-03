@@ -4,7 +4,7 @@ Configures the Zero Trust organization: the account-wide Access login experience
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Organization Configuration** — one upsert of the account (or zone) organization singleton, sending only the fields the spec sets
 - **Key-Rotation Cadence** — created only when `keyRotationIntervalDays` is set; the Access service-key rotation configuration (account scope only), itself a singleton upsert with a no-op destroy
@@ -15,7 +15,7 @@ Neither surface has a delete at Cloudflare: destroy reverts nothing.
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Account → Access: Organizations, Identity Providers, and Groups → Edit. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Account → Access: Organizations, Identity Providers, and Groups → Edit. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Cloudflare Account
@@ -51,7 +51,7 @@ spec:
 planton apply -f organization.yaml
 ```
 
-This asserts the team domain (`acme.cloudflareaccess.com`), the login page's display name, and a 24-hour Access session on the organization the account already carries — every unset field keeps its live value. A Stack Job tracks the provisioning in real time.
+This asserts the team domain (`acme.cloudflareaccess.com`), the login page's display name, and a 24-hour Access session on the organization the account already carries — every unset field keeps its live value. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -90,15 +90,15 @@ These are the most important decisions when configuring the Zero Trust organizat
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** (zone-scoped organizations) | `zoneId` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -117,7 +117,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Zero Trust Access Identity Provider**](/cloud-catalog/cloudflare-zero-trust-access-identity-provider) — the sign-in methods behind the login page this resource styles
-- [**Cloudflare Zero Trust Access Application**](/cloud-catalog/cloudflare-zero-trust-access-application) — the doors this login guards
-- [**Cloudflare Zero Trust Access Policy**](/cloud-catalog/cloudflare-zero-trust-access-policy) — who gets in
-- [**Cloudflare Zero Trust Gateway Settings**](/cloud-catalog/cloudflare-zero-trust-gateway-settings) — the traffic-filtering half of Zero Trust
+- [**Cloudflare Zero Trust Access Identity Provider**](/infra-catalog/cloudflare-zero-trust-access-identity-provider) — the sign-in methods behind the login page this resource styles
+- [**Cloudflare Zero Trust Access Application**](/infra-catalog/cloudflare-zero-trust-access-application) — the doors this login guards
+- [**Cloudflare Zero Trust Access Policy**](/infra-catalog/cloudflare-zero-trust-access-policy) — who gets in
+- [**Cloudflare Zero Trust Gateway Settings**](/infra-catalog/cloudflare-zero-trust-gateway-settings) — the traffic-filtering half of Zero Trust

@@ -5,9 +5,9 @@
 # tier's single meter bills OPERATIONS (publishes across all domain topics,
 # delivery attempts, advanced filtering), and the count of domain topics
 # behind the endpoint never appears on the invoice.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azureeventgriddomain
 spec:

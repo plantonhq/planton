@@ -4,7 +4,7 @@ Sets a spending guardrail on a Cloud Billing account: a budgeted amount for a pe
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Billing Budget** -- a `billing.Budget` on the billing account with its amount (fixed or last period's spend), filter (projects, folders, services, subaccounts, labels, credit treatment, period), threshold rules, notification rule, and ownership scope
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module whose principal holds `roles/billing.costsManager` on the billing account (a project role does not reach the account). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module whose principal holds `roles/billing.costsManager` on the billing account (a project role does not reach the account). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Billing
@@ -67,7 +67,7 @@ spec:
 planton apply -f billing-budget.yaml
 ```
 
-This budgets USD 5,000 a month for one project, alerts at 90% of actual spend and at a forecasted 100%, and publishes every update to a Pub/Sub topic. A Stack Job tracks the provisioning in real time.
+This budgets USD 5,000 a month for one project, alerts at 90% of actual spend and at a forecasted 100%, and publishes every update to a Pub/Sub topic. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,7 +87,7 @@ These are the most important decisions when configuring a budget. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -96,9 +96,9 @@ These are the most important decisions when configuring a budget. Explore the fu
 | **GcpPubSubTopic** | `notifications.pubsubTopic` | `status.outputs.topic_id` |
 | **GcpMonitoringNotificationChannel** | `notifications.monitoringNotificationChannels[]` | `status.outputs.channel_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -116,6 +116,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project), [**GCP Folder**](/cloud-catalog/gcp-folder) -- the scope a budget filters on
-- [**GCP Pub/Sub Topic**](/cloud-catalog/gcp-pub-sub-topic) -- where automation receives budget notifications
-- [**GCP Monitoring Notification Channel**](/cloud-catalog/gcp-monitoring-notification-channel) -- where people receive threshold alerts
+- [**GCP Project**](/infra-catalog/gcp-project), [**GCP Folder**](/infra-catalog/gcp-folder) -- the scope a budget filters on
+- [**GCP Pub/Sub Topic**](/infra-catalog/gcp-pub-sub-topic) -- where automation receives budget notifications
+- [**GCP Monitoring Notification Channel**](/infra-catalog/gcp-monitoring-notification-channel) -- where people receive threshold alerts

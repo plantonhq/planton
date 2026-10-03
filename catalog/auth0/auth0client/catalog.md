@@ -4,7 +4,7 @@ Deploys an Auth0 Application (Client) -- the OAuth 2.0 client that users and ser
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Auth0 Client (Application)** -- an application registered in Auth0 with the specified type, OAuth settings, callback URLs, JWT configuration, and refresh token behavior
 - **Client Grants** -- created only when `apiGrants` is configured, one grant per entry authorizing this client to call the specified API with the listed scopes
@@ -13,13 +13,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Auth0 Provider Connection** -- an active connection in the Connect module with Auth0 domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Auth0 Provider Connection** -- an active connection in the Connect module with Auth0 domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Auth0 Account
 
-- **An Auth0 Resource Server** (only for `apiGrants`) -- each grant's audience must identify an existing API. Provide the audience directly or reference an Auth0ResourceServer Cloud Resource via ValueFromRef.
-- **An Auth0 Connection** (only for `enabledConnections`) -- restricting the client to specific identity providers requires the connections to exist. Provide connection names directly or reference Auth0Connection Cloud Resources via ValueFromRef.
+- **An Auth0 Resource Server** (only for `apiGrants`) -- each grant's audience must identify an existing API. Provide the audience directly or reference an Auth0ResourceServer Infra Component via ValueFromRef.
+- **An Auth0 Connection** (only for `enabledConnections`) -- restricting the client to specific identity providers requires the connections to exist. Provide connection names directly or reference Auth0Connection Infra Components via ValueFromRef.
 - **M2M token quota** (only for `non_interactive` clients) -- client-credentials tokens count against the tenant's monthly M2M token quota (1,000/month on the free plan); the application object itself is free.
 
 ## Deploy
@@ -57,7 +57,7 @@ spec:
 planton apply -f auth0-client.yaml
 ```
 
-This creates an OIDC-conformant Single Page Application in Auth0 -- a public client with no client secret, restricted to the registered callback and logout URLs. A Stack Job tracks the provisioning in real time.
+This creates an OIDC-conformant Single Page Application in Auth0 -- a public client with no client secret, restricted to the registered callback and logout URLs. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -98,16 +98,16 @@ These are the most important decisions when configuring an Auth0 Application. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **Auth0Connection** (optional) | `enabledConnections` | `status.outputs.name` |
 | **Auth0ResourceServer** (optional) | `apiGrants[].audience` | `status.outputs.identifier` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -126,5 +126,5 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Auth0 Connection (Identity Provider)**](/cloud-catalog/auth0-connection) -- provides identity provider connections that this client can use for authentication via `enabledConnections`
-- [**Auth0 Resource Server (API)**](/cloud-catalog/auth0-resource-server) -- defines APIs that this client can be authorized to access via `apiGrants`
+- [**Auth0 Connection (Identity Provider)**](/infra-catalog/auth0-connection) -- provides identity provider connections that this client can use for authentication via `enabledConnections`
+- [**Auth0 Resource Server (API)**](/infra-catalog/auth0-resource-server) -- defines APIs that this client can be authorized to access via `apiGrants`

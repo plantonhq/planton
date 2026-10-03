@@ -28,7 +28,7 @@ func minimalValidOperator() *KubernetesPlantonOperator {
 	return &KubernetesPlantonOperator{
 		ApiVersion: "kubernetes.planton.dev/v1alpha1",
 		Kind:       "KubernetesPlantonOperator",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "planton-operator",
 		},
 		Spec: &KubernetesPlantonOperatorSpec{

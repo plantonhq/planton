@@ -5,9 +5,9 @@ package dev.planton.stripe.stripeprice.v1alpha1;
 import "catalog/stripe/provider.proto";
 import "catalog/stripe/stripeprice/v1alpha1/api.proto";
 
-// StripePriceStackInput is the input to the StripePrice IaC module.
+// StripePriceIacInput is the input to the StripePrice IaC module.
 // It contains the target resource and the Stripe provider configuration.
-message StripePriceStackInput {
+message StripePriceIacInput {
   // target is the StripePrice resource to be deployed.
   StripePrice target = 1;
 

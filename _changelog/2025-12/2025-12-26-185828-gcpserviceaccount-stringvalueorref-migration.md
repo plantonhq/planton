@@ -6,17 +6,17 @@
 
 ## Summary
 
-Migrated the GcpServiceAccount component's `project_id` field from a plain `string` to `StringValueOrRef` type, enabling cross-resource references. Users can now reference a `GcpProject` resource dynamically instead of hardcoding the project ID.
+Migrated the GcpServiceAccount kind's `project_id` field from a plain `string` to `StringValueOrRef` type, enabling cross-resource references. Users can now reference a `GcpProject` resource dynamically instead of hardcoding the project ID.
 
 ## Problem Statement / Motivation
 
-The GcpServiceAccount component used a plain `string` type for the `project_id` field, requiring users to hardcode GCP project identifiers. This limited the component's composability with other Planton resources.
+The GcpServiceAccount kind used a plain `string` type for the `project_id` field, requiring users to hardcode GCP project identifiers. This limited the kind's composability with other Planton resources.
 
 ### Pain Points
 
 - **No cross-resource references**: Couldn't reference a `GcpProject` resource's output
 - **Tight coupling**: Manifests needed exact project IDs at authoring time
-- **Inconsistent with other GCP components**: GcpVpc, GcpGkeCluster already support `StringValueOrRef`
+- **Inconsistent with other GCP kinds**: GcpVpc, GcpGkeCluster already support `StringValueOrRef`
 - **Limited infrastructure composition**: Couldn't chain resources (GcpProject → GcpServiceAccount)
 
 ## Solution / What's New
@@ -139,14 +139,14 @@ spec:
 - Existing manifests need minor update: `projectId: "x"` → `projectId: { value: "x" }`
 
 ### Developers
-- Consistent pattern across all GCP components
+- Consistent pattern across all GCP kinds
 - Type-safe field access with `.GetValue()` method
 
 ## Related Work
 
 This change is part of the broader GCP ValueFrom migration effort. Related changelogs:
 - `2025-12-26-184912-gcpdnszone-valuefrom-migration.md`
-- `2025-12-26-184919-gcp-components-valuefrom-migration.md`
+- `2025-12-26-184919-gcp-kinds-valuefrom-migration.md`
 - `2025-12-26-185740-gcpcloudrun-stringvalueorref-migration.md`
 
 See `apis/gcp-value-from-anaylasis.md` for the complete migration plan.

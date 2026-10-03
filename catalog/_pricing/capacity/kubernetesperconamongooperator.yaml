@@ -7,9 +7,9 @@
 # footprint is the operator replicas alone. The MongoDB clusters the
 # operator reconciles reserve their own capacity on their
 # KubernetesMongodb resources -- never here.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesperconamongooperator
 spec:

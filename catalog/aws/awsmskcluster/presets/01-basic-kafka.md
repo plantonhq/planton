@@ -18,7 +18,7 @@ A minimal 3-broker MSK cluster suitable for development and testing workloads.
 
 ## Cost Estimate
 
-The cost drivers are the three kafka.t3.small brokers (billed hourly, the dominant line) plus their EBS storage. The verified figure for this preset lives in the component's generated estimate at `catalog/_pricing/estimates/awsmskcluster.yaml` — computed from the pinned price book, never hand-typed here.
+The cost drivers are the three kafka.t3.small brokers (billed hourly, the dominant line) plus their EBS storage. The verified figure for this preset lives in the kind's generated estimate at `catalog/_pricing/estimates/awsmskcluster.yaml` — computed from the pinned price book, never hand-typed here.
 
 ## Customization
 

@@ -5,9 +5,9 @@ package dev.planton.digitalocean.digitaloceanmonitoralert.v1alpha1;
 import "catalog/digitalocean/digitaloceanmonitoralert/v1alpha1/api.proto";
 import "catalog/digitalocean/provider.proto";
 
-//digital-ocean-monitor-alert stack-input
-message DigitalOceanMonitorAlertStackInput {
-  //target cloud-resource
+//digital-ocean-monitor-alert iac-input
+message DigitalOceanMonitorAlertIacInput {
+  //target infra-component
   DigitalOceanMonitorAlert target = 1;
   //provider-config
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;

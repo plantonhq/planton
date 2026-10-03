@@ -12,13 +12,13 @@ import (
 // (the aws_elasticache_user_group_association glue resource is deliberately
 // not used): the group is the single place an application's cache access is
 // granted or revoked, and this module never mutates the users it references.
-func Resources(ctx *pulumi.Context, stackInput *awselasticacheusergroupv1alpha1.AwsElasticacheUserGroupStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awselasticacheusergroupv1alpha1.AwsElasticacheUserGroupIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which
+	// Build the AWS provider from the IaC input via the shared builder, which
 	// resolves the right credential mechanism (static keys, keyless web identity,
 	// or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsElasticacheUserGroup.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsElasticacheUserGroup.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

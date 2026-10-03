@@ -1,14 +1,14 @@
 # Where each placeholder in this component's import-ID formats comes
 # from (the formats themselves live in aa_import/catalog.yaml).
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsebsvolume
 spec:
   values:
     - name: volume_id
       derivations:
-        - from_stack_output: volume_id
+        - from_output: volume_id
         - from_arn_part: resource_id
       where_to_find: >-
         EC2 console -> Volumes (the vol-... ID column), or

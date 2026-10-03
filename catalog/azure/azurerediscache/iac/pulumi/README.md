@@ -15,7 +15,7 @@ redis.Cache (the cache)
   `{family}{capacity}` and the family letter ("C" vs "P") is fully
   determined by the tier, so the module derives it and the spec carries
   only tier + capacity.
-- **The tier default materializes in the module** -- stack inputs never
+- **The tier default materializes in the module** -- IaC inputs never
   carry proto defaults, so an unspecified sku deploys STANDARD
   explicitly (matching the Terraform module's coalesce).
 - **`redis_configuration` is emitted only when the spec carries it** --
@@ -38,12 +38,12 @@ redis.Cache (the cache)
   -- both primary AND secondary faces, so clients can rotate with zero
   downtime; keyless (Entra-only) caches leave them empty.
 - **Identity tags match the Terraform module** key for key and value
-  for value: `resource_kind` is the lowercased CloudResourceKind enum
+  for value: `resource_kind` is the lowercased CatalogKind enum
   name, and `resource_id` is written only when `metadata.id` is set.
 
 ## Provider
 
 The Azure provider is built by the shared
-`pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)` builder, which
+`pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)` builder, which
 dispatches static client-secret, keyless web-identity (OIDC), and
 ambient credential chains. Never construct a provider inline.

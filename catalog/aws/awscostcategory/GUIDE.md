@@ -1,4 +1,4 @@
-# AwsCostCategory — Component Guide
+# AwsCostCategory — Kind Guide
 
 Authored operational judgment for the cost-category component: the
 design decisions behind the spec's shape, and what to know before

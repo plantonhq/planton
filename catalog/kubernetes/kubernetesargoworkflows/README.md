@@ -6,7 +6,7 @@
 executor for DAG/step pipelines (CI jobs, data and ML pipelines, batch
 orchestration).
 
-Not the right component when:
+Not the right kind when:
 
 - **You want to declare the pipelines it runs** — Workflows,
   WorkflowTemplates and CronWorkflows are plain custom resources once

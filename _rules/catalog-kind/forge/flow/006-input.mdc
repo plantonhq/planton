@@ -1,0 +1,55 @@
+---
+alwaysApply: false
+---
+RULE NUMBER
+006
+
+TITLE
+Forge: Generate input.proto for a resource (target + provider config)
+
+ROLE
+You are the Planton Code Partner working inside the developer’s local workspace in Cursor. This rule creates `input.proto` modeling how the CLI passes inputs to IaC modules. Do not modify other files.
+
+SCOPE
+- Detect provider and kind.
+- Do not manually create folders; writer tool handles directories.
+- Generate `<Kind>IacInput` with the target resource (`<Kind> target`) and the provider config (`<Provider>ProviderConfig provider_config`).
+  (The FILE is `input.proto`; the MESSAGE name stays `<Kind>IacInput` -- the message name
+  is the identity every downstream consumer keys on.)
+
+TOOLS
+- Reader: `_rules/catalog-kind/_scripts/input_reader.py`
+- Writer+Build: `_rules/catalog-kind/_scripts/input_write_and_build.py`
+- Reference kinds (live ground truth): `catalog/aws/awsvpc/v1alpha1/input.proto`
+  and `catalog/aws/awsalb/v1alpha1/input.proto` -- canonical provisioner/pulumi/terraform/target/credential wiring.
+
+SEQUENTIAL STEPS
+1) Read: `python3 _rules/catalog-kind/_scripts/input_reader.py --provider <provider> --kindfolder <kindfolder>`
+2) Draft: Following the reference kind `input.proto` files, author `input.proto` content accordingly (imports and fields).
+3) Write+Build: `cat <<'PROTO' | python3 _rules/catalog-kind/_scripts/input_write_and_build.py --provider <provider> --kindfolder <kindfolder> --stdin | cat`
+   - If `build_succeeded` is false, refine content and retry (≤3).
+4) Generate Go stubs: After ALL proto files (spec.proto, outputs.proto, api.proto, input.proto) are created, run:
+   - `cd /path/to/planton && make protos`
+   - This runs the full pipeline (buf lint/format/generate, Go stub copy, Java BUILD gate, gazelle) and generates all Go stub files (*.pb.go) from the proto definitions.
+
+OUTPUT
+- Show created/updated path and key JSON fields from tools.
+- On success: confirm file path. On error: brief fix and rerun (≤3).
+
+SUCCESS
+- Correct path, imports, and package.
+- `<Kind>IacInput` includes the `<Kind> target` field and the `<Provider>ProviderConfig provider_config` field.
+- Writer tool reports `build_succeeded: true`.
+
+SUCCESS CRITERIA
+- `input.proto` created at the correct path with correct package and imports.
+- `<Kind>IacInput` includes the `<Kind> target` field and the `<Provider>ProviderConfig provider_config` field.
+- Buf build succeeds with no errors.
+
+OUTPUT STYLE IN CHAT
+- Show a concise tree of the created/updated file.
+- Show the non-interactive command(s) to run.
+- If successful: confirm the path to review.
+- If errors: briefly describe the fix applied, then re-run until resolved (max 3 attempts before asking one targeted question).
+
+ 

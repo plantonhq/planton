@@ -1,5 +1,5 @@
 # StripeTaxRegistration Outputs
-# Maps to the StripeTaxRegistrationStackOutputs protobuf message.
+# Maps to the StripeTaxRegistrationOutputs protobuf message.
 
 output "id" {
   description = "The registration's Stripe id (taxreg_...); it changes when the registration is replaced"

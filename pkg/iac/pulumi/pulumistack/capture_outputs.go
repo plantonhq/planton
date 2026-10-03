@@ -7,14 +7,14 @@ import (
 	"os/exec"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/outputs"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // captureOutputs reads the just-updated stack's outputs and fills sink with
 // the raw map, the flattened map, the kind's secret outputs, and its typed
-// StackOutputs proto (honoring module-shipped transform overrides via the
+// Outputs proto (honoring module-shipped transform overrides via the
 // module directory). The read shows secrets, because downstream reference
 // resolution needs the real values; which outputs are secrets comes from the
 // kind's schema, never from what the engine happened to mask.
@@ -25,17 +25,17 @@ func captureOutputs(
 	extraEnv []string,
 	sink *outputs.CaptureResult,
 ) error {
-	shown, err := readStackOutputs(stackFqdn, moduleRepoPath, extraEnv)
+	shown, err := readOutputs(stackFqdn, moduleRepoPath, extraEnv)
 	if err != nil {
-		return errors.Wrap(err, "failed to read stack outputs with --show-secrets")
+		return errors.Wrap(err, "failed to read outputs with --show-secrets")
 	}
 
 	sink.Raw = shown
 	sink.Flat = outputs.Flatten(shown)
 
-	kind := crkreflect.KindFromString(kindName)
-	if kind == cloudresourcekind.CloudResourceKind_unspecified {
-		return errors.Errorf("cannot resolve cloud resource kind from %q for output transformation", kindName)
+	kind := catalogkindreflect.KindFromString(kindName)
+	if kind == catalogkind.CatalogKind_unspecified {
+		return errors.Errorf("cannot resolve catalog kind from %q for output transformation", kindName)
 	}
 	// A kind whose schema cannot be read leaves Secrets empty, and every
 	// output then renders masked.
@@ -53,9 +53,9 @@ func captureOutputs(
 	return nil
 }
 
-// readStackOutputs runs `pulumi stack output --json --show-secrets` and
+// readOutputs runs `pulumi stack output --json --show-secrets` and
 // decodes the plain name->value map.
-func readStackOutputs(stackFqdn, moduleRepoPath string, extraEnv []string) (map[string]interface{}, error) {
+func readOutputs(stackFqdn, moduleRepoPath string, extraEnv []string) (map[string]interface{}, error) {
 	args := []string{"stack", "output", "--stack", stackFqdn, "--json", "--non-interactive", "--show-secrets"}
 
 	cmd := exec.Command("pulumi", args...)
@@ -73,7 +73,7 @@ func readStackOutputs(stackFqdn, moduleRepoPath string, extraEnv []string) (map[
 	values := map[string]interface{}{}
 	if len(bytes.TrimSpace(stdout.Bytes())) > 0 {
 		if err := json.Unmarshal(stdout.Bytes(), &values); err != nil {
-			return nil, errors.Wrap(err, "stack output document is not a JSON object")
+			return nil, errors.Wrap(err, "output document is not a JSON object")
 		}
 	}
 	return values, nil

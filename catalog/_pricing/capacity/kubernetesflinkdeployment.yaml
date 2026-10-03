@@ -11,9 +11,9 @@
 # taskmanager.numberOfTaskSlots entry packs more slots per worker and
 # divides the actual count -- see the notes). Durable state lives on
 # object storage, never on per-instance volumes.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesflinkdeployment
 spec:
@@ -35,7 +35,7 @@ spec:
     - applies_when:
         - field_path: state.checkpoints_dir
           op: is_set
-      text: object storage for checkpoints, savepoints, and HA metadata grows with the job's state size and checkpoint cadence; on a composed KubernetesSeaweedFs that capacity rides the SeaweedFS component's own footprint
+      text: object storage for checkpoints, savepoints, and HA metadata grows with the job's state size and checkpoint cadence; on a composed KubernetesSeaweedFs that capacity rides the SeaweedFS kind's own footprint
     - applies_when:
         - field_path: job
           op: is_unset

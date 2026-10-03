@@ -16,7 +16,7 @@ message AwsS3Bucket {
   string kind = 2 [(buf.validate.field).string.const = 'AwsS3Bucket'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   AwsS3BucketSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,6 +27,6 @@ message AwsS3Bucket {
 
 //aws-s3-bucket status
 message AwsS3BucketStatus {
-  //stack-outputs
-  AwsS3BucketStackOutputs outputs = 1;
+  //outputs
+  AwsS3BucketOutputs outputs = 1;
 }

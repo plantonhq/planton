@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceandroplet.v1alpha1;
 
-// DigitalOceanDropletStackOutputs captures the resulting Droplet info after
+// DigitalOceanDropletOutputs captures the resulting Droplet info after
 // provisioning. Live state (status, locked) is deliberately not exported:
 // apply-time snapshots go stale, and verification reads the live API.
-message DigitalOceanDropletStackOutputs {
+message DigitalOceanDropletOutputs {
   // Retired output. image_id claimed the numeric image ID but neither
   // engine could deliver it (the provider echoes back the configured slug);
   // the number must never be reused with a different meaning.

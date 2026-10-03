@@ -62,7 +62,7 @@ planton pulumi up --manifest istio.yaml --module-dir <path-to-this-module>
 - `module/locals.go` — resolved names (revision, release/Service names, trust domain)
 - `module/namespace.go` — optional namespace creation
 - `module/vars.go` — chart identity, pinned default version, CRD bundle URL and exclusion list
-- `module/outputs.go` — stack output constants
+- `module/outputs.go` — output constants
 
 ## Outputs
 

@@ -5,9 +5,9 @@ package dev.planton.aws.awsbackupvault.v1alpha1;
 import "catalog/aws/awsbackupvault/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsBackupVaultStackInput is the input for the IaC modules that
+// AwsBackupVaultIacInput is the input for the IaC modules that
 // manage an AWS Backup vault.
-message AwsBackupVaultStackInput {
+message AwsBackupVaultIacInput {
   // target is the AwsBackupVault resource to deploy.
   AwsBackupVault target = 1;
   // provider_config contains the AWS provider credentials and configuration.

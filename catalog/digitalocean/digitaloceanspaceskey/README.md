@@ -2,7 +2,7 @@
 
 Built for 100% parity with the Terraform DigitalOcean provider's `digitalocean_spaces_key` resource at the pinned provider version.
 
-## What this component models
+## What this kind models
 
 An access-key pair for Spaces, DigitalOcean's S3-compatible object storage: the credential workloads actually sign requests with, optionally scoped to specific buckets through per-bucket grants.
 

@@ -10,7 +10,7 @@ Rebuilt `AwsWafWebAcl` to model the full WAFv2 statement language as a typed rec
 
 ## Problem Statement
 
-The original WAF web ACL component used a hybrid four-statement model plus a Struct escape hatch — adequate for demos but not 90/10 coverage. IP sets and regex pattern sets were documentation-only references. The Terraform variables generator hung on recursive proto descriptors. ALB and CloudFront used inconsistent WAF association field names.
+The original WAF web ACL kind used a hybrid four-statement model plus a Struct escape hatch — adequate for demos but not 90/10 coverage. IP sets and regex pattern sets were documentation-only references. The Terraform variables generator hung on recursive proto descriptors. ALB and CloudFront used inconsistent WAF association field names.
 
 ## Solution
 
@@ -18,7 +18,7 @@ The original WAF web ACL component used a hybrid four-statement model plus a Str
 
 - Recursive `AwsWafWebAclStatement` oneof covering managed groups (with ATP/ACFP/Bot Control configs), rate limiting (custom aggregation keys), set references, geo/byte/SQLi/XSS/size/regex/label/ASN matching, and AND/OR/NOT composition
 - Top-level CAPTCHA/challenge immunity, association config, data protection, logging
-- `application_integration_url` stack output
+- `application_integration_url` output
 - Terraform module builds `rule_json` via three-level statement unroll; Pulumi module mirrors in Go (`rules.go` + unit tests)
 
 ### New composable set kinds
@@ -45,7 +45,7 @@ A four-track review (spec vs the canonical provider source, TF↔Pulumi parity w
 - `go_test` Bazel targets added to both new kinds (spec tests were invisible to CI)
 - `deferral_reason` → `deferred_reason` in the three WAF profiles (the wrong key was silently discarded by the protojson loader)
 - `size_constraint.size` bound tightened to the provider's real int32 cap
-- `iac/pulumi/stack-input.yaml` added to both new kinds (sibling anatomy)
+- `iac/pulumi/iac-input.yaml` added to both new kinds (sibling anatomy)
 - Reciprocal PARITY-EXCEPTION note in the Pulumi `rules.go` for the TF depth-3 ceiling
 - `try()` guards on the TF rate-based custom-key text transformations
 - Spec-test additions: JA3/JA4/header-order/uri-fragment field-to-match arms, the documented one-level scope-down nesting boundary, regex-set description bound

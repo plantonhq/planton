@@ -6,7 +6,7 @@ package refcheck
 import (
 	"testing"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // Manifest-authored valueFrom fieldPaths must resolve the way the platform's
@@ -18,79 +18,79 @@ import (
 func TestResolveValueFromPath(t *testing.T) {
 	cases := []struct {
 		name      string
-		kind      cloudresourcekind.CloudResourceKind
+		kind      catalogkind.CatalogKind
 		fieldPath string
 		wantOk    bool
 	}{
 		{
 			name:      "plain string output resolves",
-			kind:      cloudresourcekind.CloudResourceKind_AzureLoadBalancer,
+			kind:      catalogkind.CatalogKind_AzureLoadBalancer,
 			fieldPath: "status.outputs.load_balancer_id",
 			wantOk:    true,
 		},
 		{
 			name:      "map output addressed by key resolves",
-			kind:      cloudresourcekind.CloudResourceKind_AzureLoadBalancer,
+			kind:      catalogkind.CatalogKind_AzureLoadBalancer,
 			fieldPath: "status.outputs.backend_pool_ids.web",
 			wantOk:    true,
 		},
 		{
 			name:      "camelCase map field with key resolves",
-			kind:      cloudresourcekind.CloudResourceKind_AzureLoadBalancer,
+			kind:      catalogkind.CatalogKind_AzureLoadBalancer,
 			fieldPath: "status.outputs.backendPoolIds.web",
 			wantOk:    true,
 		},
 		{
 			name:      "map output without a key is rejected",
-			kind:      cloudresourcekind.CloudResourceKind_AzureLoadBalancer,
+			kind:      catalogkind.CatalogKind_AzureLoadBalancer,
 			fieldPath: "status.outputs.backend_pool_ids",
 			wantOk:    false,
 		},
 		{
 			name:      "descending past a string map value is rejected",
-			kind:      cloudresourcekind.CloudResourceKind_AzureLoadBalancer,
+			kind:      catalogkind.CatalogKind_AzureLoadBalancer,
 			fieldPath: "status.outputs.backend_pool_ids.web.extra",
 			wantOk:    false,
 		},
 		{
 			name:      "unknown field is rejected",
-			kind:      cloudresourcekind.CloudResourceKind_AzureLoadBalancer,
+			kind:      catalogkind.CatalogKind_AzureLoadBalancer,
 			fieldPath: "status.outputs.no_such_output",
 			wantOk:    false,
 		},
 		{
 			name:      "one element of a string list output resolves",
-			kind:      cloudresourcekind.CloudResourceKind_CloudflareDnsZone,
+			kind:      catalogkind.CatalogKind_CloudflareDnsZone,
 			fieldPath: "status.outputs.nameservers.0",
 			wantOk:    true,
 		},
 		{
 			name:      "a later element of a string list output resolves",
-			kind:      cloudresourcekind.CloudResourceKind_CloudflareDnsZone,
+			kind:      catalogkind.CatalogKind_CloudflareDnsZone,
 			fieldPath: "status.outputs.nameservers.3",
 			wantOk:    true,
 		},
 		{
 			name:      "a string list output without an index is rejected",
-			kind:      cloudresourcekind.CloudResourceKind_CloudflareDnsZone,
+			kind:      catalogkind.CatalogKind_CloudflareDnsZone,
 			fieldPath: "status.outputs.nameservers",
 			wantOk:    false,
 		},
 		{
 			name:      "descending past a string list element is rejected",
-			kind:      cloudresourcekind.CloudResourceKind_CloudflareDnsZone,
+			kind:      catalogkind.CatalogKind_CloudflareDnsZone,
 			fieldPath: "status.outputs.nameservers.0.extra",
 			wantOk:    false,
 		},
 		{
 			name:      "indexing a plain string is rejected",
-			kind:      cloudresourcekind.CloudResourceKind_CloudflareDnsZone,
+			kind:      catalogkind.CatalogKind_CloudflareDnsZone,
 			fieldPath: "status.outputs.zone_id.0",
 			wantOk:    false,
 		},
 		{
 			name:      "non-string terminal is rejected",
-			kind:      cloudresourcekind.CloudResourceKind_AzureLoadBalancer,
+			kind:      catalogkind.CatalogKind_AzureLoadBalancer,
 			fieldPath: "status.outputs",
 			wantOk:    false,
 		},

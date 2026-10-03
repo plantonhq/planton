@@ -40,7 +40,7 @@ spec:
 | `traceConfiguration` | object | No | Tracing settings. Omitted, the configuration is valid but inert. |
 | `traceConfiguration.vendor` | string | No (default `AWSXRAY`) | The tracing vendor. `AWSXRAY` is the only supported value today. |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

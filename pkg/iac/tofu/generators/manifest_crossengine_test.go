@@ -32,7 +32,7 @@ func TestManifestProjection_BothEnginesSeeOneSpec(t *testing.T) {
 	manifest := &kubernetesprometheusrulev1alpha1.KubernetesPrometheusRule{
 		ApiVersion: "kubernetes.planton.dev/v1alpha1",
 		Kind:       "KubernetesPrometheusRule",
-		Metadata:   &shared.CloudResourceMetadata{Name: "api-slo"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "api-slo"},
 		Spec: &kubernetesprometheusrulev1alpha1.KubernetesPrometheusRuleSpec{
 			Namespace: &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: "monitoring"},
@@ -43,7 +43,7 @@ func TestManifestProjection_BothEnginesSeeOneSpec(t *testing.T) {
 				Name:        "api",
 				QueryOffset: &offset,
 				Limit:       &limit,
-				Labels:      map[string]string{"component": "api"},
+				Labels:      map[string]string{"kind": "api"},
 				Rules: []*kubernetesprometheusrulev1alpha1.KubernetesPrometheusRuleRule{{
 					Alert:         strPtr("ApiDown"),
 					Expr:          `sum(rate(errors_total{code=~"5.."}[5m])) > 0`,
@@ -61,7 +61,7 @@ func TestManifestProjection_BothEnginesSeeOneSpec(t *testing.T) {
 	assertBothEnginesSeeOneSpec(t, &kubernetesservicemonitorv1alpha1.KubernetesServiceMonitor{
 		ApiVersion: "kubernetes.planton.dev/v1alpha1",
 		Kind:       "KubernetesServiceMonitor",
-		Metadata:   &shared.CloudResourceMetadata{Name: "api"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "api"},
 		Spec: &kubernetesservicemonitorv1alpha1.KubernetesServiceMonitorSpec{
 			Namespace:   literalRef("monitoring"),
 			Labels:      map[string]string{"release": "hub"},
@@ -95,7 +95,7 @@ func TestManifestProjection_BothEnginesSeeOneSpec(t *testing.T) {
 	assertBothEnginesSeeOneSpec(t, &kubernetespodmonitorv1alpha1.KubernetesPodMonitor{
 		ApiVersion: "kubernetes.planton.dev/v1alpha1",
 		Kind:       "KubernetesPodMonitor",
-		Metadata:   &shared.CloudResourceMetadata{Name: "orders-db"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "orders-db"},
 		Spec: &kubernetespodmonitorv1alpha1.KubernetesPodMonitorSpec{
 			Namespace: literalRef("orders"),
 			Selector: &kubernetes.KubernetesPrometheusOperatorApiLabelSelector{

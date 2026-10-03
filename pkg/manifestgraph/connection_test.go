@@ -19,7 +19,7 @@ import (
 func clusterNode(name, env string, annotations map[string]string) *Node {
 	msg := &gcpgkeclusterv1alpha1.GcpGkeCluster{
 		Kind:     "GcpGkeCluster",
-		Metadata: &shared.CloudResourceMetadata{Name: name, Env: env, Annotations: annotations},
+		Metadata: &shared.CatalogObjectMetadata{Name: name, Env: env, Annotations: annotations},
 	}
 	return nodeOf(msg)
 }
@@ -46,7 +46,7 @@ func TestPublishedConnectionSlug_DefaultsToEnvDashName(t *testing.T) {
 func TestPublishedConnectionSlug_IsEmptyForAKindThatPublishesNothing(t *testing.T) {
 	node := nodeOf(&gcpvpcnetworkv1alpha1.GcpVpcNetwork{
 		Kind:     "GcpVpcNetwork",
-		Metadata: &shared.CloudResourceMetadata{Name: "vpc", Env: "prod", Annotations: map[string]string{AnnotationConnectionName: "x"}},
+		Metadata: &shared.CatalogObjectMetadata{Name: "vpc", Env: "prod", Annotations: map[string]string{AnnotationConnectionName: "x"}},
 	})
 	assert.Equal(t, "", PublishedConnectionSlug(node))
 }
@@ -54,7 +54,7 @@ func TestPublishedConnectionSlug_IsEmptyForAKindThatPublishesNothing(t *testing.
 func TestConsumedConnectionSlug_ReadsAKubernetesKindsAnnotationVerbatim(t *testing.T) {
 	node := nodeOf(&kubernetesnamespacev1alpha1.KubernetesNamespace{
 		Kind:     "KubernetesNamespace",
-		Metadata: &shared.CloudResourceMetadata{Name: "apps", Env: "prod", Annotations: map[string]string{AnnotationConnection: "prod-platform"}},
+		Metadata: &shared.CatalogObjectMetadata{Name: "apps", Env: "prod", Annotations: map[string]string{AnnotationConnection: "prod-platform"}},
 	})
 	assert.Equal(t, "prod-platform", ConsumedConnectionSlug(node))
 }
@@ -71,7 +71,7 @@ func TestBuildGraph_ClusterNeverPlacedInsideItself(t *testing.T) {
 	// and the consumer check refuses non-Kubernetes kinds — belt and braces.
 	msg := &gcpgkeclusterv1alpha1.GcpGkeCluster{
 		Kind: "GcpGkeCluster",
-		Metadata: &shared.CloudResourceMetadata{Name: "platform", Env: "prod", Annotations: map[string]string{
+		Metadata: &shared.CatalogObjectMetadata{Name: "platform", Env: "prod", Annotations: map[string]string{
 			AnnotationConnectionName: "prod-platform",
 			AnnotationConnection:     "prod-platform",
 		}},

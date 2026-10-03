@@ -2,7 +2,7 @@
 
 **Date**: October 2, 2026
 **Type**: Feature (with breaking changes on `v1alpha1` fields)
-**Components**: every GCP kind; 82 new GCP kinds; `shared/cloudresourcekind`; `pkg/providerparity`; `pkg/iac/tofu/generators`; `catalog/gcp/aa_e2e`; `e2e/gcp`
+**Components**: every GCP kind; 82 new GCP kinds; `shared/catalogkind`; `pkg/providerparity`; `pkg/iac/tofu/generators`; `catalog/gcp/aa_e2e`; `e2e/gcp`
 
 ## Summary
 

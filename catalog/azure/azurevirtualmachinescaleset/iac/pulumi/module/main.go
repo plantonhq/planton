@@ -16,12 +16,12 @@ type scaleSetOutputs struct {
 	principalId pulumi.StringOutput
 }
 
-func Resources(ctx *pulumi.Context, stackInput *azurevirtualmachinescalesetv1alpha1.AzureVirtualMachineScaleSetStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurevirtualmachinescalesetv1alpha1.AzureVirtualMachineScaleSetIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -44,7 +44,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurevirtualmachinescalesetv1alp
 		return err
 	}
 
-	// Export stack outputs. The scale set's ARM id is the seam a
+	// Export outputs. The scale set's ARM id is the seam a
 	// standalone VM's scale-set attachment consumes; the system-assigned
 	// principal is the AzureRoleAssignment seam (UNIFORM sets only --
 	// FLEXIBLE sets carry user-assigned identities whose principals live

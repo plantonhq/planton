@@ -1,6 +1,6 @@
 # DigitalOcean Database Firewall -- Operational Guide
 
-What experience with this component teaches that the field reference cannot.
+What experience with this kind teaches that the field reference cannot.
 
 ## Destroying the firewall OPENS the database
 

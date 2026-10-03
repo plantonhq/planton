@@ -65,7 +65,7 @@ Every solid `bg-white` on a CTA button or badge was changed to `bg-[#fff]` to by
 
 ### SecurityTrustBar
 
-Removed two entries from the `securityBadges` array. No structural changes to the component.
+Removed two entries from the `securityBadges` array. No structural changes to the kind.
 
 ## Benefits
 

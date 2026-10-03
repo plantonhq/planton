@@ -5,9 +5,9 @@ package dev.planton.azure.azurestorageaccount.v1alpha1;
 import "catalog/azure/azurestorageaccount/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-storage-account stack-input
-message AzureStorageAccountStackInput {
-  //target cloud-resource
+//azure-storage-account iac-input
+message AzureStorageAccountIacInput {
+  //target infra-component
   AzureStorageAccount target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

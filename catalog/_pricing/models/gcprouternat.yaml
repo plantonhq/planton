@@ -1,11 +1,11 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. Presets with no quantity lines have no committed always-on
-# spend and estimate to zero. Schema: finops/componentcostestimatemodel/v1.
+# spend and estimate to zero. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: gcprouternat
 spec:
@@ -30,7 +30,7 @@ spec:
           quantity_basis: 2 manually attached static addresses x 730 hours -- each address assigned to the gateway bills per IP-hour for the whole month regardless of traffic
       exclusions:
         - per-VM endpoint-hours and per-GiB data processing follow the workloads scoped by the subnetwork list
-        - the GcpAddress reservations themselves bill on their own components only while unattached; assigned to this gateway, their cost is the IP-usage line above
+        - the GcpAddress reservations themselves bill on their own kinds only while unattached; assigned to this gateway, their cost is the IP-usage line above
         - Cloud Logging volume under the ERRORS_ONLY filter is negligible until errors occur
       notes: The static egress addresses are the preset's committed spend -- the point of the preset is stable IPs third parties can allowlist, and stability bills by the hour.
     - preset: 03-private-nat

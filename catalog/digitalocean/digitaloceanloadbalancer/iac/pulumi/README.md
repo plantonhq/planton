@@ -1,22 +1,22 @@
 # DigitalOcean Load Balancer -- Pulumi Module
 
-Deploys a `digitalocean:index/loadBalancer:LoadBalancer` from a `DigitalOceanLoadBalancer` stack input: regional and global types, sizing, forwarding rules with TLS termination or passthrough, health checks, sticky sessions, backend targeting by Droplet IDs or tag, VPC placement, firewall, HTTPS redirect, PROXY protocol, keepalive, idle-timeout, TLS cipher policy, project placement, and the global balancer's domains, targets, CDN, and failover. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1` (the gaps below re-verified against that version's `LoadBalancerArgs`).
+Deploys a `digitalocean:index/loadBalancer:LoadBalancer` from a `DigitalOceanLoadBalancer` IaC input: regional and global types, sizing, forwarding rules with TLS termination or passthrough, health checks, sticky sessions, backend targeting by Droplet IDs or tag, VPC placement, firewall, HTTPS redirect, PROXY protocol, keepalive, idle-timeout, TLS cipher policy, project placement, and the global balancer's domains, targets, CDN, and failover. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1` (the gaps below re-verified against that version's `LoadBalancerArgs`).
 
 ## Module structure
 
-- `main.go` -- Pulumi program entry point reading the stack input
+- `main.go` -- Pulumi program entry point reading the IaC input
 - `module/main.go` -- `Resources()`: locals, provider, load balancer
-- `module/locals.go` -- stack-input references and the standard Planton label map
-- `module/load_balancer.go` -- the balancer resource and stack-output exports
+- `module/locals.go` -- iac-input references and the standard Planton label map
+- `module/load_balancer.go` -- the balancer resource and output exports
 - `module/outputs.go` -- output key constants (the kind's outputs.proto contract)
 
 ## Outputs
 
-Exactly the kind's stack-output contract, identical to the Terraform module: `load_balancer_id`, `ip`, `urn`, `ipv6`.
+Exactly the kind's output contract, identical to the Terraform module: `load_balancer_id`, `ip`, `urn`, `ipv6`.
 
 ## Behavior notes
 
-- The full spec surface is wired; there is no Pulumi SDK gap on this resource at the pin. `subnet_uuid` and the BYOIP `ip` are create-time inputs sent only when the manifest states them (the Terraform module's null coalescing); the assigned address is always the `ip` stack output.
+- The full spec surface is wired; there is no Pulumi SDK gap on this resource at the pin. `subnet_uuid` and the BYOIP `ip` are create-time inputs sent only when the manifest states them (the Terraform module's null coalescing); the assigned address is always the `ip` output.
 - Health-check `path` and interval/threshold leaves are sent only when set, so a TCP check never carries an empty path and an omitted interval never arrives as `0` (outside the provider's 3–300 range).
 - `droplet_ids` entries that are not numeric Droplet IDs fail the apply rather than being silently skipped.
 - Firewall leaves are `Allows` / `Denies` on the SDK (plural) against the provider's `allow` / `deny`.

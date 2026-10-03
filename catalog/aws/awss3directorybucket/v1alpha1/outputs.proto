@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awss3directorybucket.v1alpha1;
 
-// AwsS3DirectoryBucketStackOutputs captures the observable state of
+// AwsS3DirectoryBucketOutputs captures the observable state of
 // the directory bucket after apply.
-message AwsS3DirectoryBucketStackOutputs {
+message AwsS3DirectoryBucketOutputs {
   // The bucket's FULL name ("{base}--{zone_id}--x-s3") - derived by
   // the modules, what S3 Express clients address, and the provider's
   // import ID.

@@ -56,7 +56,7 @@ planton apply -f database.yaml
 | `charset` | `string` | engine default | MySQL: e.g. `utf8mb4`. PostgreSQL: must be `UTF8`. Ignored by SQL Server. |
 | `collation` | `string` | engine default | MySQL: e.g. `utf8mb4_0900_ai_ci`. PostgreSQL: an OS locale (`en_US.UTF8`). SQL Server: a SQL Server collation. |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -83,7 +83,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 
 Nothing. Every configurable argument of `google_sql_database` at the pinned provider is representable through this spec — including `deletionPolicy`, whose `ABANDON` mode is the documented answer for PostgreSQL databases that cannot be dropped while clients hold connections.
 
-## Related Components
+## Related Kinds
 
 - [GcpCloudSql](/docs/catalog/gcp/gcpcloudsql) — the instance this database lives on
 - [GcpCloudSqlUser](/docs/catalog/gcp/gcpcloudsqluser) — per-application users

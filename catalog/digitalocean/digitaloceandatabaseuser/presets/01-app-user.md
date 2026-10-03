@@ -1,6 +1,6 @@
 # Per-Service Application User
 
-This preset creates one dedicated database user for one application service, referencing the owning cluster by name. DigitalOcean generates the password server-side; read it from the `password` stack output (a secret) -- it never appears in the manifest.
+This preset creates one dedicated database user for one application service, referencing the owning cluster by name. DigitalOcean generates the password server-side; read it from the `password` output (a secret) -- it never appears in the manifest.
 
 ## When to Use
 
@@ -16,4 +16,4 @@ This preset creates one dedicated database user for one application service, ref
 
 ## What You Get
 
-A user visible in the cluster's Users & Databases tab, with `password` (and on Kafka, `access_cert`/`access_key`) exported as secret stack outputs for application wiring.
+A user visible in the cluster's Users & Databases tab, with `password` (and on Kafka, `access_cert`/`access_key`) exported as secret outputs for application wiring.

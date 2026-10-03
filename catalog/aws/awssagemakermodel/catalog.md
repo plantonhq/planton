@@ -4,7 +4,7 @@ Deploys an Amazon SageMaker model — the immutable serving definition (containe
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SageMaker Model** — named from `metadata.name`, carrying the container definition(s) with per-container artifact wiring (compressed `modelDataUrl`, or uncompressed `modelDataSource` with gated-model EULA acceptance), adapter channels, MultiModel serving mode, private-registry image configuration, and optional VPC attachment with full network isolation
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with SageMaker control-plane permissions (`sagemaker:CreateModel` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with SageMaker control-plane permissions (`sagemaker:CreateModel` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -55,7 +55,7 @@ spec:
 planton apply -f sagemaker-model.yaml
 ```
 
-This creates a single-container model serving a scikit-learn artifact on AWS's prebuilt framework image — deployable by any endpoint variant that references it. A Stack Job tracks the provisioning in real time.
+This creates a single-container model serving a scikit-learn artifact on AWS's prebuilt framework image — deployable by any endpoint variant that references it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -96,7 +96,7 @@ These are the most important decisions when configuring a model. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -104,9 +104,9 @@ These are the most important decisions when configuring a model. Explore the ful
 | **AwsSubnet** | `vpcConfig.subnetIds[]` | `status.outputs.subnet_id` |
 | **AwsSecurityGroup** | `vpcConfig.securityGroupIds[]` | `status.outputs.security_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -125,9 +125,9 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**AWS SageMaker Endpoint**](/cloud-catalog/aws-sagemaker-endpoint) — deploys the model behind real-time variants, wired via `model_name`
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the execution role SageMaker assumes, wired via `executionRoleArn`
-- [**AWS SageMaker Model Registry**](/cloud-catalog/aws-sagemaker-model-registry) — the source of versioned model packages deployed via `modelPackageArn`
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — where model artifacts live, referenced by URI
-- [**AWS ECR Repository**](/cloud-catalog/aws-ecr-repo) — where custom inference images live, referenced by registry path in `image`
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) and [**AWS Security Group**](/cloud-catalog/aws-security-group) — VPC attachment for private serving, wired via `vpcConfig`
+- [**AWS SageMaker Endpoint**](/infra-catalog/aws-sagemaker-endpoint) — deploys the model behind real-time variants, wired via `model_name`
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the execution role SageMaker assumes, wired via `executionRoleArn`
+- [**AWS SageMaker Model Registry**](/infra-catalog/aws-sagemaker-model-registry) — the source of versioned model packages deployed via `modelPackageArn`
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — where model artifacts live, referenced by URI
+- [**AWS ECR Repository**](/infra-catalog/aws-ecr-repo) — where custom inference images live, referenced by registry path in `image`
+- [**AWS Subnet**](/infra-catalog/aws-subnet) and [**AWS Security Group**](/infra-catalog/aws-security-group) — VPC attachment for private serving, wired via `vpcConfig`

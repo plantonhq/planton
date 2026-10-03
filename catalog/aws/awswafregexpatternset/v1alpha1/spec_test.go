@@ -19,7 +19,7 @@ func minimalPatternSet(spec *AwsWafRegexPatternSetSpec) *AwsWafRegexPatternSet {
 	return &AwsWafRegexPatternSet{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsWafRegexPatternSet",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-pattern-set"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-pattern-set"},
 		Spec:       spec,
 	}
 }

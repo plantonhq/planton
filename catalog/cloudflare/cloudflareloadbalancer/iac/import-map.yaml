@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflareloadbalancer
 spec:
@@ -8,18 +8,18 @@ spec:
   # "{zone_id}/{load_balancer_id}" -- the provider importer REJECTS a literal
   # "zones/" scope prefix with "invalid ID" (measured live; the prefix exists
   # only in the API path). Both values are discoverable from a prior deploy's
-  # stack outputs; neither is derivable from metadata.
+  # outputs; neither is derivable from metadata.
   values:
     - name: zone_id
       derivations:
-        - from_stack_output: zone_id
+        - from_output: zone_id
       where_to_find: >-
         Cloudflare dashboard -> the zone's Overview page (Zone ID in the
         right-hand API panel), or `GET /zones?name=<domain>` on the
         Cloudflare v4 API (the id field).
     - name: load_balancer_id
       derivations:
-        - from_stack_output: load_balancer_id
+        - from_output: load_balancer_id
       where_to_find: >-
         Cloudflare dashboard -> the zone -> Traffic -> Load Balancing (open
         the load balancer; the id is in the URL), or

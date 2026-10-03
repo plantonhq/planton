@@ -16,8 +16,8 @@ type Locals struct {
 	Service string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *gcpservicenetworkingconnectionv1alpha1.GcpServiceNetworkingConnectionStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(ctx *pulumi.Context, iacInput *gcpservicenetworkingconnectionv1alpha1.GcpServiceNetworkingConnectionIacInput) *Locals {
+	target := iacInput.Target
 
 	service := target.Spec.Service
 	if service == "" {

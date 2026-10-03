@@ -87,7 +87,7 @@ every fleet definition -- lets you:
   rotation into a reviewable, reversible change.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `launch_template_id`: template ID (what ASGs, EKS node groups, and Batch reference)
 - `launch_template_arn`: ARN, for IAM policies that scope ec2:RunInstances to approved templates

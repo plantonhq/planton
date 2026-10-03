@@ -5,7 +5,7 @@ import (
 	"github.com/plantonhq/planton/internal/cli/ui"
 
 	"github.com/plantonhq/planton/internal/cli/flag"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/tofu/generators"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -14,23 +14,23 @@ import (
 )
 
 var GenerateVariables = &cobra.Command{
-	Use:   "generate-variables <component>",
-	Short: "Generate Terraform variables for a specified component",
+	Use:   "generate-variables <kind>",
+	Short: "Generate Terraform variables for a specified kind",
 	Long: `The "generate-variables" command takes a specified planton 
-component type (e.g., "S3Bucket", "RedisKubernetes") and generates 
+kind (e.g., "S3Bucket", "RedisKubernetes") and generates 
 Terraform variable definitions (variables.tf) and a corresponding 
 terraform.tfvars file.
 
-This command instantiates an empty object of the specified component kind 
+This command instantiates an empty object of the specified kind 
 under the hood, and then converts that empty object into a Terraform-compatible 
 variables file. These variables can then be passed into Terraform modules, 
 streamlining infrastructure provisioning and ensuring a consistent, 
 declarative workflow.`,
 	Example: `
-  # Generate variables for an S3Bucket component
+  # Generate variables for an S3Bucket kind
   planton tofu generate-variables S3Bucket
 
-  # Generate variables for a RedisKubernetes component
+  # Generate variables for a RedisKubernetes kind
   planton tofu generate-variables RedisKubernetes
 `,
 	Args: cobra.ExactArgs(1), // "s3-bucket", "redis-kubernetes", etc.
@@ -47,15 +47,15 @@ func generateVariablesHandler(cmd *cobra.Command, args []string) {
 	outputFile, err := cmd.Flags().GetString(string(flag.OutputFile))
 	flag.HandleFlagErr(err, flag.OutputFile)
 
-	cloudResourceKind := crkreflect.KindFromString(kindName)
+	catalogKind := catalogkindreflect.KindFromString(kindName)
 
-	manifestObject := crkreflect.ToMessageMap[cloudResourceKind]
+	manifestObject := catalogkindreflect.ToMessageMap[catalogKind]
 
 	if manifestObject == nil {
 		ui.Failure(
-			fmt.Sprintf("no spec message is registered for kind %s", cloudResourceKind.String()),
+			fmt.Sprintf("no spec message is registered for kind %s", catalogKind.String()),
 			"the kind exists in the catalog enum but its proto package is not linked into this binary",
-			"run `make generate-cloud-resource-kind-map` and rebuild, then retry",
+			"run `make generate-catalog-kind-map` and rebuild, then retry",
 		)
 	}
 

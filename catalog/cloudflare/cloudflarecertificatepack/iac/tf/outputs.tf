@@ -5,13 +5,13 @@ output "certificate_pack_id" {
 
 # No status output: pack issuance is asynchronous (initializing ->
 # pending_validation -> active), and a point-in-time phase is never a stable
-# stack output -- it flips on the first refresh after the transition and
+# output -- it flips on the first refresh after the transition and
 # re-plans forever. Read issuance status from the Cloudflare API instead.
 
 # No primary_certificate output: the server populates it asynchronously
 # after the order (absent at create, "0" appears seconds later, then the
 # real certificate id as issuance progresses -- measured live 2026-08-29).
-# A transitioning value is never a stable stack output. Read the pack's
+# A transitioning value is never a stable output. Read the pack's
 # certificates from the Cloudflare API instead.
 
 output "zone_id" {

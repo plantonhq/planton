@@ -6,7 +6,7 @@ import (
 	"buf.build/go/protovalidate"
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 )
@@ -243,8 +243,8 @@ var _ = ginkgo.Describe("KubernetesNetworkPolicySpec validations", func() {
 						IpBlock: &KubernetesNetworkPolicyIpBlock{
 							Cidr: literalRange("0.0.0.0/0"),
 							Except: []*foreignkeyv1.StringValueOrRef{
-								rangeFrom(cloudresourcekind.CloudResourceKind_GcpSubnetwork, "gke-nodes", "status.outputs.ip_cidr_range"),
-								rangeFrom(cloudresourcekind.CloudResourceKind_GcpSubnetwork, "gke-nodes", "status.outputs.secondary_ranges.0.ip_cidr_range"),
+								rangeFrom(catalogkind.CatalogKind_GcpSubnetwork, "gke-nodes", "status.outputs.ip_cidr_range"),
+								rangeFrom(catalogkind.CatalogKind_GcpSubnetwork, "gke-nodes", "status.outputs.secondary_ranges.0.ip_cidr_range"),
 							},
 						},
 					}},
@@ -365,7 +365,7 @@ func literalRange(cidr string) *foreignkeyv1.StringValueOrRef {
 }
 
 // rangeFrom is an ip_block range read from another resource's output.
-func rangeFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func rangeFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 		ValueFrom: &foreignkeyv1.ValueFromRef{Kind: kind, Name: name, FieldPath: fieldPath},
 	}}

@@ -4,7 +4,7 @@ Deploys a type-safe Kubernetes Secret supporting Opaque, TLS, Docker registry, B
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Secret** -- a single Secret resource in the specified namespace with the correct `type` field set automatically based on the chosen variant (Opaque, `kubernetes.io/tls`, `kubernetes.io/dockerconfigjson`, `kubernetes.io/basic-auth`, `kubernetes.io/ssh-auth`, or `kubernetes.io/service-account-token`). UTF-8 values are written using Kubernetes `stringData` semantics; Opaque `binaryData` entries are written pre-encoded as base64.
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking
@@ -13,12 +13,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
 
-- The target namespace must already exist (the module does not create it). Use the Kubernetes Namespace component to manage namespaces declaratively.
+- The target namespace must already exist (the module does not create it). Use the Kubernetes Namespace kind to manage namespaces declaratively.
 
 ## Deploy
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f secret.yaml
 ```
 
-This creates an Opaque secret in the `backend-services` namespace with two key-value pairs. The secret type is set to `Opaque` automatically. Immutability and additional labels are not configured. A Stack Job tracks the provisioning in real time.
+This creates an Opaque secret in the `backend-services` namespace with two key-value pairs. The secret type is set to `Opaque` automatically. Immutability and additional labels are not configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -86,16 +86,16 @@ These are the most important decisions when configuring a Kubernetes Secret. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 | **KubernetesServiceAccount** | `serviceAccountToken.serviceAccountName` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -115,6 +115,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- reference the namespace so infra charts create it and this Secret in dependency order.
-- [**Kubernetes ServiceAccount**](/cloud-catalog/kubernetes-service-account) -- the `serviceAccountToken` variant references the identity its token belongs to; docker-registry Secrets are attached to ServiceAccounts as `imagePullSecrets`.
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) and the other workload kinds -- consume secrets as env vars, mounted files, or registry credentials.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference the namespace so infra charts create it and this Secret in dependency order.
+- [**Kubernetes ServiceAccount**](/infra-catalog/kubernetes-service-account) -- the `serviceAccountToken` variant references the identity its token belongs to; docker-registry Secrets are attached to ServiceAccounts as `imagePullSecrets`.
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) and the other workload kinds -- consume secrets as env vars, mounted files, or registry credentials.

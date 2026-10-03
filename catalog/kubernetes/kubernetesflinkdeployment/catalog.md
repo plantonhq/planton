@@ -4,7 +4,7 @@ Declares one Flink cluster -- the `FlinkDeployment` custom resource (`flinkdeplo
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **FlinkDeployment custom resource** -- the declaration itself, carrying the Flink version, image, job spec, sizing, state posture, and Flink configuration; the OPERATOR then reconciles it into:
@@ -21,7 +21,7 @@ The apply is deliberately NON-blocking: the CR applies and the operator reconcil
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -63,11 +63,11 @@ spec:
 planton apply -f orders-pipeline.yaml
 ```
 
-This declares an application cluster for one pipeline: a custom image with the job jar baked in (`local:///` paths point inside the image -- the production pattern), Flink 2.1, and four parallel subtasks. The operator picks up the declaration and reconciles the JobManager, TaskManagers, and job. A Stack Job tracks the provisioning in real time.
+This declares an application cluster for one pipeline: a custom image with the job jar baked in (`local:///` paths point inside the image -- the production pattern), Flink 2.1, and four parallel subtasks. The operator picks up the declaration and reconciles the JobManager, TaskManagers, and job. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the deployment to a namespace and an object store managed by other Cloud Resources:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the deployment to a namespace and an object store managed by other Infra Components:
 
 ```yaml
 spec:
@@ -112,7 +112,7 @@ These are the most important decisions when configuring the Flink Deployment. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -120,9 +120,9 @@ These are the most important decisions when configuring the Flink Deployment. Ex
 | **KubernetesSeaweedFs** | `state.s3.endpoint` | `status.outputs.s3_endpoint` |
 | **KubernetesFlinkOperator** (runtime prerequisite) | -- | its watch scope must cover this namespace; pods run as its `job_service_account` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -143,6 +143,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Flink Operator**](/cloud-catalog/kubernetes-flink-operator) -- the PREREQUISITE: reconciles this declaration; its watch scope must cover this namespace
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the namespace for the deployment
-- [**SeaweedFS**](/cloud-catalog/kubernetes-seaweed-fs) -- the composed S3-compatible object store for checkpoints, savepoints, and HA metadata; the `state.s3` foreign-key defaults point at it
+- [**Flink Operator**](/infra-catalog/kubernetes-flink-operator) -- the PREREQUISITE: reconciles this declaration; its watch scope must cover this namespace
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the namespace for the deployment
+- [**SeaweedFS**](/infra-catalog/kubernetes-seaweed-fs) -- the composed S3-compatible object store for checkpoints, savepoints, and HA metadata; the `state.s3` foreign-key defaults point at it

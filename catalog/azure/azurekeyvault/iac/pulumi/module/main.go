@@ -9,12 +9,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurekeyvaultv1alpha1.AzureKeyVaultStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurekeyvaultv1alpha1.AzureKeyVaultIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -41,7 +41,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurekeyvaultv1alpha1.AzureKeyVa
 
 	// RBAC is the spec's recommended default; access_policy entries below
 	// are only honored by Azure when this is false (ARM stores but ignores
-	// policies on an RBAC-mode vault). Presence-guarded: stack inputs built
+	// policies on an RBAC-mode vault). Presence-guarded: IaC inputs built
 	// from a manifest do NOT materialize proto defaults, so an unset field
 	// falls back to the spec default (true) explicitly.
 	if spec.RbacAuthorizationEnabled != nil {
@@ -148,7 +148,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurekeyvaultv1alpha1.AzureKeyVa
 		return errors.Wrapf(err, "failed to create key vault %s", spec.VaultName)
 	}
 
-	// Export stack outputs from the created resource.
+	// Export outputs from the created resource.
 	ctx.Export(OpKeyVaultId, createdVault.ID())
 	ctx.Export(OpKeyVaultName, createdVault.Name)
 	ctx.Export(OpVaultUri, createdVault.VaultUri)

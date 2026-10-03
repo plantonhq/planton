@@ -15,7 +15,7 @@ func manifestWithBackendUrlAnnotation(url string) *awsvpcv1alpha1.AwsVpc {
 		annotations[pulumiannotationkeys.BackendUrlAnnotationKey] = url
 	}
 	return &awsvpcv1alpha1.AwsVpc{
-		Metadata: &shared.CloudResourceMetadata{Annotations: annotations},
+		Metadata: &shared.CatalogObjectMetadata{Annotations: annotations},
 	}
 }
 

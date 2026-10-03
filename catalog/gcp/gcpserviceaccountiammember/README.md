@@ -2,7 +2,7 @@
 
 Deploys a single ADDITIVE IAM grant ON a service account (`google_service_account_iam_member`) — one role, to one member, on one service account resource. This is the least-privilege unit of service-account access control: the grant merges into the account's IAM policy without touching any other member's bindings, and removal subtracts only this exact pair.
 
-A service account is both an identity and a resource. This component covers the resource side — who may USE or MANAGE the account itself: workload identity federation impersonation (`roles/iam.workloadIdentityUser`), short-lived token minting (`roles/iam.serviceAccountTokenCreator`), and deploy-as/actAs (`roles/iam.serviceAccountUser`).
+A service account is both an identity and a resource. This kind covers the resource side — who may USE or MANAGE the account itself: workload identity federation impersonation (`roles/iam.workloadIdentityUser`), short-lived token minting (`roles/iam.serviceAccountTokenCreator`), and deploy-as/actAs (`roles/iam.serviceAccountUser`).
 
 ## What Gets Created
 
@@ -98,7 +98,7 @@ The same usage roles can be granted at project level (via GcpProjectIamMember), 
 
 For the GKE-specific impersonation pattern (Kubernetes ServiceAccount → GCP service account via Workload Identity), prefer GcpGkeWorkloadIdentityBinding: it derives the workload-identity principal from the cluster project, namespace, and KSA name so you never assemble the principal string by hand. Reach for this generic component for every non-GKE principal: GitHub Actions federation, cross-SA impersonation, users, and groups.
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -127,7 +127,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 - **Conditions are part of the grant's identity**: the same role granted with and without a condition are two independent grants that do not interfere.
 - **Only additive grants are modeled**: authoritative per-role bindings and whole-policy writes clobber every grant they do not list and are deliberately not modeled.
 
-## Related Components
+## Related Kinds
 
 - [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — the account being granted on (its `name` output) and the most common member (its `member` output)
 - [GcpWorkloadIdentityPoolProvider](/docs/catalog/gcp/gcpworkloadidentitypoolprovider) — issues the federated principals this grant authorizes for impersonation

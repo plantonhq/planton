@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.aws.awsalb.v1alpha1;
 
-// AwsAlbStackOutputs describes the outputs returned by Pulumi/Terraform after creating an ALB.
-message AwsAlbStackOutputs {
+// AwsAlbOutputs describes the outputs returned by Pulumi/Terraform after creating an ALB.
+message AwsAlbOutputs {
   // load_balancer_arn is the ARN of the created Application Load Balancer.
   string load_balancer_arn = 1;
 

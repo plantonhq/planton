@@ -27,7 +27,7 @@ message DigitalOceanVpcSpec {
   // Example: "10.10.0.0/16"
   //
   // When omitted, DigitalOcean auto-generates a non-conflicting range and reports it back
-  // through the `ip_range` stack output. The range is immutable: changing it after creation
+  // through the `ip_range` output. The range is immutable: changing it after creation
   // REPLACES the VPC.
   string ip_range_cidr = 3 [
     (buf.validate.field).ignore = IGNORE_IF_ZERO_VALUE,

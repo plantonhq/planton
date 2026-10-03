@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awss3objectset
 spec:

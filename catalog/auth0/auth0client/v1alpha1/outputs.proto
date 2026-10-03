@@ -4,13 +4,13 @@ package dev.planton.auth0.auth0client.v1alpha1;
 
 import "shared/options/options.proto";
 
-// Auth0ClientStackOutputs contains the outputs from an Auth0 Client deployment.
+// Auth0ClientOutputs contains the outputs from an Auth0 Client deployment.
 // These outputs provide essential identifiers and credentials for integrating
 // the application with your services and Auth0 features.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/client#attributes-reference
 // https://www.pulumi.com/registry/packages/auth0/api-docs/client/#outputs
-message Auth0ClientStackOutputs {
+message Auth0ClientOutputs {
   // id is the unique identifier of the Auth0 client.
   // This is used internally by Auth0 to identify the application.
   // Format: A unique string identifier.

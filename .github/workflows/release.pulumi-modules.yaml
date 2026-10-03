@@ -1,30 +1,30 @@
 # =============================================================================
 # Pulumi Modules Release (Reusable Workflow)
 # =============================================================================
-# Builds pre-compiled binaries for all Pulumi components across
+# Builds pre-compiled binaries for all Pulumi modules across
 # all providers and uploads them to Cloudflare R2 (downloads.planton.dev).
 #
 # Features:
-#   - Dynamic component discovery from directory structure
+#   - Dynamic kind discovery from directory structure
 #   - Matrix-based parallelization: provider × platform
 #   - Multi-platform builds: linux_amd64, linux_arm64, darwin_arm64, darwin_amd64, windows_amd64
 #     (linux_arm64 is every ARM runner the platform ships: Graviton, and kind
 #     on an Apple Silicon Mac, whose containers are Linux ARM)
-#   - Clear progress logging with component counts
-#   - No hardcoded component paths - auto-discovers from filesystem
+#   - Clear progress logging with kind counts
+#   - No hardcoded kind paths - auto-discovers from filesystem
 #
-# Upload path: s3://downloads-dot-planton-dot-dev-bucket/releases/{tag}/modules/pulumi/{component}/{platform}.gz
+# Upload path: s3://downloads-dot-planton-dot-dev-bucket/releases/{tag}/modules/pulumi/{kind}/{platform}.gz
 #              (windows artifacts carry the executable suffix: {platform}.exe.gz)
-# Public URL:  https://downloads.planton.dev/releases/{tag}/modules/pulumi/{component}/{platform}.gz
+# Public URL:  https://downloads.planton.dev/releases/{tag}/modules/pulumi/{kind}/{platform}.gz
 #
-# Each component also publishes its module SOURCE alongside the binaries:
-#   releases/{tag}/modules/pulumi/{component}/source.zip
+# Each kind also publishes its module SOURCE alongside the binaries:
+#   releases/{tag}/modules/pulumi/{kind}/source.zip
 # Source is platform-independent, so the zip uploads from exactly one matrix
 # leg (linux_amd64) instead of five redundant writes. Consumers: the CLI's
 # module-eject flow and source-rendering surfaces.
 #
-# Path pattern: catalog/{provider}/{component}/iac/pulumi (one live module set
-# per component -- the key carries no API version segment; the release tag
+# Path pattern: catalog/{provider}/{kind}/iac/pulumi (one live module set
+# per kind -- the key carries no API version segment; the release tag
 # versions the artifact)
 #
 # Called by: .github/workflows/release.yaml (after CLI release creates the release)
@@ -54,7 +54,7 @@ jobs:
   # ============================================================================
   # Pre-flight: reject missing/misplaced Pulumi entrypoints before the long matrix
   # ============================================================================
-  # The matrix build below runs `go build ./<...>/iac/pulumi` per component, which
+  # The matrix build below runs `go build ./<...>/iac/pulumi` per kind, which
   # requires a `package main` at the entrypoint root. Catch a broken entrypoint ONCE here
   # (seconds) instead of failing dozens of expensive matrix legs after long compiles.
   preflight:
@@ -68,7 +68,7 @@ jobs:
         run: bash ./hack/guards/ensure_pulumi_entrypoints.sh
 
   # ============================================================================
-  # Build all components for each provider × platform combination
+  # Build all kinds for each provider × platform combination
   # ============================================================================
   build:
     needs: preflight
@@ -108,7 +108,7 @@ jobs:
           go-version: ${{ env.GO_VERSION }}
           cache: true
 
-      - name: Build and upload all components
+      - name: Build and upload all kinds
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
@@ -121,64 +121,64 @@ jobs:
           PROVIDER_PATH="${CATALOG_ROOT}/${PROVIDER}"
           PLATFORM_LABEL="${GOOS}_${GOARCH}"
           
-          # Discover all components by listing directories
+          # Discover all kinds by listing directories
           if [ ! -d "$PROVIDER_PATH" ]; then
             echo "WARNING: Provider path not found: $PROVIDER_PATH"
             exit 0
           fi
           
-          # Get all components that have a pulumi module. Modules live at the
-          # component root (one live module set per component), so discovery
+          # Get all kinds that have a pulumi module. Modules live at the
+          # kind root (one live module set per kind), so discovery
           # is a single-level walk with no version segment.
-          COMPONENTS=()
-          for component_dir in "$PROVIDER_PATH"/*/; do
-            component=$(basename "$component_dir")
-            if [ -d "${component_dir}iac/pulumi" ]; then
-              COMPONENTS+=("${component}")
+          KINDS=()
+          for kind_path in "$PROVIDER_PATH"/*/; do
+            kind=$(basename "$kind_path")
+            if [ -d "${kind_path}iac/pulumi" ]; then
+              KINDS+=("${kind}")
             fi
           done
           
-          TOTAL=${#COMPONENTS[@]}
+          TOTAL=${#KINDS[@]}
           
           echo "========================================"
           echo "PROVIDER: ${PROVIDER}"
           echo "PLATFORM: ${PLATFORM_LABEL}"
-          echo "COMPONENTS: ${TOTAL}"
+          echo "KINDS: ${TOTAL}"
           echo "========================================"
           echo ""
-          echo "Components:"
-          printf '  - %s\n' "${COMPONENTS[@]}"
+          echo "Kinds:"
+          printf '  - %s\n' "${KINDS[@]}"
           echo ""
           echo "========================================"
           
           if [ $TOTAL -eq 0 ]; then
-            echo "WARNING: No components found for provider ${PROVIDER}"
+            echo "WARNING: No kinds found for provider ${PROVIDER}"
             exit 0
           fi
           
           COMPLETED=0
           FAILED=0
           
-          for component in "${COMPONENTS[@]}"; do
+          for kind in "${KINDS[@]}"; do
             COMPLETED=$((COMPLETED + 1))
             REMAINING=$((TOTAL - COMPLETED))
             
-            COMPONENT_PATH="${PROVIDER_PATH}/${component}/iac/pulumi"
+            KIND_PATH="${PROVIDER_PATH}/${kind}/iac/pulumi"
             
             # Handle Windows .exe extension
             if [ "$GOOS" = "windows" ]; then
-              BINARY_NAME="${component}.exe"
+              BINARY_NAME="${kind}.exe"
               ARTIFACT_NAME="${PLATFORM_LABEL}.exe.gz"
             else
-              BINARY_NAME="${component}"
+              BINARY_NAME="${kind}"
               ARTIFACT_NAME="${PLATFORM_LABEL}.gz"
             fi
             
-            R2_KEY="releases/${TAG}/modules/pulumi/${component}/${ARTIFACT_NAME}"
+            R2_KEY="releases/${TAG}/modules/pulumi/${kind}/${ARTIFACT_NAME}"
             
             echo ""
             echo "----------------------------------------"
-            echo "BUILDING: ${component} (${PLATFORM_LABEL})"
+            echo "BUILDING: ${kind} (${PLATFORM_LABEL})"
             echo "Progress: ${COMPLETED}/${TOTAL} (${REMAINING} remaining)"
             echo "----------------------------------------"
             
@@ -186,7 +186,7 @@ jobs:
             if CGO_ENABLED=0 GOOS="${GOOS}" GOARCH="${GOARCH}" go build \
               -ldflags="-s -w" \
               -o "${BINARY_NAME}" \
-              "./${COMPONENT_PATH}"; then
+              "./${KIND_PATH}"; then
               
               # Compress
               gzip -9 -c "${BINARY_NAME}" > "${ARTIFACT_NAME}"
@@ -205,21 +205,21 @@ jobs:
               # Clean up
               rm -f "${ARTIFACT_NAME}"
             else
-              echo "✗ ERROR: Failed to build ${component} for ${PLATFORM_LABEL}"
+              echo "✗ ERROR: Failed to build ${kind} for ${PLATFORM_LABEL}"
               FAILED=$((FAILED + 1))
             fi
             
-            # Publish the module source once per component (source is
+            # Publish the module source once per kind (source is
             # platform-independent; the linux_amd64 leg is the designated
             # writer). Apache-2.0 §4(d): LICENSE and NOTICE must accompany
             # every redistribution, and a source zip is a standalone
-            # redistribution of that component — both land at the zip root,
+            # redistribution of that kind — both land at the zip root,
             # mirroring the terraform module lane.
             if [ "${PLATFORM_LABEL}" = "linux_amd64" ]; then
-              SOURCE_ARTIFACT="${component}_source.zip"
-              SOURCE_R2_KEY="releases/${TAG}/modules/pulumi/${component}/source.zip"
+              SOURCE_ARTIFACT="${kind}_source.zip"
+              SOURCE_R2_KEY="releases/${TAG}/modules/pulumi/${kind}/source.zip"
               
-              if (cd "${COMPONENT_PATH}" && zip -q -r "${GITHUB_WORKSPACE}/${SOURCE_ARTIFACT}" .) \
+              if (cd "${KIND_PATH}" && zip -q -r "${GITHUB_WORKSPACE}/${SOURCE_ARTIFACT}" .) \
                 && zip -q -j "${SOURCE_ARTIFACT}" LICENSE NOTICE; then
                 
                 if aws s3 cp "${SOURCE_ARTIFACT}" "s3://${R2_BUCKET}/${SOURCE_R2_KEY}" \
@@ -232,7 +232,7 @@ jobs:
                 fi
                 rm -f "${SOURCE_ARTIFACT}"
               else
-                echo "✗ ERROR: Failed to zip source for ${component}"
+                echo "✗ ERROR: Failed to zip source for ${kind}"
                 FAILED=$((FAILED + 1))
               fi
             fi
@@ -273,12 +273,12 @@ jobs:
           echo "========================================"
           echo "JOB SUMMARY: ${PROVIDER} / ${PLATFORM_LABEL}"
           echo "========================================"
-          echo "Total components: ${TOTAL}"
+          echo "Total kinds: ${TOTAL}"
           echo "Successfully built: $((TOTAL - FAILED))"
           echo "Failed: ${FAILED}"
           echo "========================================"
           
           if [ $FAILED -gt 0 ]; then
-            echo "ERROR: ${FAILED} component(s) failed to build"
+            echo "ERROR: ${FAILED} kind(s) failed to build"
             exit 1
           fi

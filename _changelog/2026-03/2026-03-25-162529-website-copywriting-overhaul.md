@@ -10,12 +10,12 @@ Complete rewrite of all marketing pages on planton.ai to reflect the current pro
 
 ## Problem Statement / Motivation
 
-A friend navigated through every page on planton.ai via the sitemap and reported that all content was completely outdated. The website still described "Plantora" (a deprecated AI chatbot), "Self-Service DevOps" (a vague label that didn't map to any product module), and "Planton Copilot" (disabled in December 2025). Meanwhile, the actual product had grown to include InfraHub with Infra Charts and DAG pipelines, a complete Runner architecture for self-hosted execution, an Agent Fleet with marketplace and skills, a Security module with multi-backend secrets, and 150+ cloud resource types.
+A friend navigated through every page on planton.ai via the sitemap and reported that all content was completely outdated. The website still described "Plantora" (a deprecated AI chatbot), "Self-Service DevOps" (a vague label that didn't map to any product module), and "Planton Copilot" (disabled in December 2025). Meanwhile, the actual product had grown to include InfraHub with Infra Charts and DAG pipelines, a complete Runner architecture for self-hosted execution, an Agent Fleet with marketplace and skills, a Security module with multi-backend secrets, and 150+ catalog kinds.
 
 ### Pain Points
 
 - Feature pages used arbitrary marketing labels ("Self-Service DevOps", "Auditable Intelligence") instead of actual product module names
-- "Plantora" / "Planton Copilot" referenced on 20+ component files despite being deprecated since December 2025
+- "Plantora" / "Planton Copilot" referenced on 20+ kind files despite being deprecated since December 2025
 - No pages existed for Connect (integrations), Runner (self-hosted execution), Security (secrets/IAM/audit), or OpenMCF (open source)
 - Multiple CTA buttons had no `href` attribute
 - Solutions page copy mentioned "your startup's growth" on the Enterprises page
@@ -46,12 +46,12 @@ Solutions menu updated: "ChatOps" use case replaced with "Self-Hosted DevOps", "
 ### 7 Product Pages Created or Rewritten
 
 1. **Product Overview** (`/features`) — Hub page with 7 module cards, architecture diagram showing SaaS/Runner split, and trust bar
-2. **InfraHub** (`/features/infra-hub`) — Cloud Resources, Infra Charts, Infra Pipelines, Stack Jobs, Presets, Multi-Provisioner
+2. **InfraHub** (`/features/infra-hub`) — Infra Components, Infra Charts, Infra Pipelines, Infra Jobs, Presets, Multi-Provisioner
 3. **ServiceHub** (`/features/service-hub`) — Git-to-deploy, multi-env promotion, deploy anywhere, Kustomize config, ingress, pod access
 4. **Runner** (`/features/runner`) — Architecture, CloudOps, IaC execution, security model, deployment options, secure tunnel
 5. **Security** (`/features/security`) — Secrets management, multi-backend secrets, Runner trust model, identity & access, audit trails, connection security, zero-trust architecture
 6. **Agent Fleet** (`/agents`) — Marketplace, skills, sub-agents, MCP integration, testing, sessions & streaming
-7. **CLI** (`/cli`) — Manifest-driven, stack job operations, connection management, kubernetes access, environment config
+7. **CLI** (`/cli`) — Manifest-driven, infra job operations, connection management, kubernetes access, environment config
 8. **Open Source** (`/features/open-source`) — OpenMCF, portable manifests, Infra Charts, Forge workflow
 
 ### 11 Solutions Pages Rewritten
@@ -91,9 +91,9 @@ Systematic sweep to remove internal technology names from all marketing pages:
 
 ## Implementation Details
 
-### Component Architecture
+### Kind Architecture
 
-Each product page follows a consistent 3-component pattern:
+Each product page follows a consistent 3-kind pattern:
 
 ```
 src/components/product/<module>/
@@ -103,7 +103,7 @@ src/components/product/<module>/
   └── cta.tsx       (bottom call-to-action)
 ```
 
-Solutions pages use a single component per page (simpler structure).
+Solutions pages use a single kind per page (simpler structure).
 
 All pages use the v3 design system from `shared.tsx`: Section, SectionTitle, Card, FeatureCard, Badge, PrimaryButton, SecondaryButton.
 

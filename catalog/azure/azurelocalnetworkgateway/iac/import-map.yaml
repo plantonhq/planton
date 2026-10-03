@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurelocalnetworkgateway
 spec:
@@ -7,7 +7,7 @@ spec:
   values:
     - name: local_network_gateway_id
       derivations:
-        - from_stack_output: local_network_gateway_id
+        - from_output: local_network_gateway_id
       where_to_find: >-
         Portal -> Local network gateways -> the gateway -> Properties ->
         Resource ID, or `az network local-gateway show -g <rg> -n <name>

@@ -15,7 +15,7 @@ component, at 100% behavioral parity with the Terraform module.
 - The ARM sku is composed as `Dedicated_{capacity_units}` -- Dedicated
   is the only sku family Azure sells for clusters, so the tier name is a
   constant, not configuration. `capacity_units` is presence-guarded to 1
-  CU -- direct stack-input paths do not materialize proto defaults.
+  CU -- direct iac-input paths do not materialize proto defaults.
 - Azure forbids deleting a cluster for 4 hours after creation (the
   deletion moratorium); destroys of young clusters retry for hours by
   the service's own rule.

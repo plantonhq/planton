@@ -4,7 +4,7 @@ Deploys a fully managed NetApp ONTAP file system on Amazon FSx with multi-protoc
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **FSx ONTAP File System** -- an enterprise-grade file system with configurable deployment type (SINGLE_AZ_1, SINGLE_AZ_2, MULTI_AZ_1, MULTI_AZ_2), SSD primary storage (the only media ONTAP supports -- cost tiering happens per volume), throughput sized per HA pair or for the whole file system, and optional scale-out with up to 12 HA pairs on SINGLE_AZ_2
 - **Management Endpoint** -- provides SSH (ONTAP CLI) and REST API access for advanced administration including LIF management, SnapMirror configuration, and aggregate monitoring
@@ -17,14 +17,14 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **One or two subnets** in the target VPC. Single-AZ deployments require exactly one subnet. Multi-AZ deployments require two subnets in different Availability Zones, plus a `preferredSubnetId` designating the active file server's AZ. Provide subnet IDs directly or reference an AwsVpc Cloud Resource via ValueFromRef.
-- **A security group** that allows traffic for NFS (TCP 2049), SMB (TCP 445), iSCSI (TCP 3260), portmapper (TCP 111), mountd (TCP 635), NFS lock/status (TCP 4045-4046), and ONTAP REST API (TCP 443). Provide the ID directly or reference an AwsSecurityGroup Cloud Resource.
-- **A KMS key** (optional) -- for customer-managed encryption at rest instead of the default AWS-managed FSx key. Provide the ARN directly or reference an AwsKmsKey Cloud Resource.
+- **One or two subnets** in the target VPC. Single-AZ deployments require exactly one subnet. Multi-AZ deployments require two subnets in different Availability Zones, plus a `preferredSubnetId` designating the active file server's AZ. Provide subnet IDs directly or reference an AwsVpc Infra Component via ValueFromRef.
+- **A security group** that allows traffic for NFS (TCP 2049), SMB (TCP 445), iSCSI (TCP 3260), portmapper (TCP 111), mountd (TCP 635), NFS lock/status (TCP 4045-4046), and ONTAP REST API (TCP 443). Provide the ID directly or reference an AwsSecurityGroup Infra Component.
+- **A KMS key** (optional) -- for customer-managed encryption at rest instead of the default AWS-managed FSx key. Provide the ARN directly or reference an AwsKmsKey Infra Component.
 - **An endpoint IP address range** (multi-AZ only) -- a CIDR block within the VPC that does not overlap with existing subnets, used for floating IPs during failover.
 
 ## Deploy
@@ -59,7 +59,7 @@ spec:
 planton apply -f fsx-ontap.yaml
 ```
 
-This creates a single-AZ ONTAP file system with 1 TiB SSD storage, 384 MB/s throughput (the smallest tier AWS accepts on SINGLE_AZ_2), one HA pair, no backups, and automatic IOPS scaling. A Stack Job tracks the provisioning in real time.
+This creates a single-AZ ONTAP file system with 1 TiB SSD storage, 384 MB/s throughput (the smallest tier AWS accepts on SINGLE_AZ_2), one HA pair, no backups, and automatic IOPS scaling. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -100,7 +100,7 @@ These are the most important decisions when configuring an FSx ONTAP file system
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -112,9 +112,9 @@ These are the most important decisions when configuring an FSx ONTAP file system
 
 AwsVpc subnet outputs (e.g. `status.outputs.private_subnets.[*].id`) also satisfy the subnet fields when the whole network rides one AwsVpc resource.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -144,7 +144,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS VPC**](/cloud-catalog/aws-vpc) -- provides subnets for file system network interface placement
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- controls multi-protocol traffic (NFS, SMB, iSCSI, ONTAP API) access to the file system
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for encryption at rest
-- [**AWS FSx ONTAP Storage Virtual Machine**](/cloud-catalog/aws-fsx-ontap-storage-virtual-machine) -- the data-serving layer that attaches by `file_system_id`; clients mount through its endpoints
+- [**AWS VPC**](/infra-catalog/aws-vpc) -- provides subnets for file system network interface placement
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- controls multi-protocol traffic (NFS, SMB, iSCSI, ONTAP API) access to the file system
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for encryption at rest
+- [**AWS FSx ONTAP Storage Virtual Machine**](/infra-catalog/aws-fsx-ontap-storage-virtual-machine) -- the data-serving layer that attaches by `file_system_id`; clients mount through its endpoints

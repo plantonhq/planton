@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpworkflow.v1alpha1;
 
 // Outputs produced after provisioning a Cloud Workflows workflow.
-message GcpWorkflowStackOutputs {
+message GcpWorkflowOutputs {
   // The full workflow resource name
   // (projects/{project}/locations/{region}/workflows/{name}) — the value
   // Eventarc consumes: a GcpEventarcTrigger's destination.workflow and a

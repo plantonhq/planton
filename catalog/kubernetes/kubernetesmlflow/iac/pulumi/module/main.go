@@ -24,17 +24,17 @@ import (
 // it — upstream's server is open by default and its auth example ships
 // admin/password1234; neither ever ships from here. The exact same
 // resource set renders from the Terraform module — keep them in lockstep.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesmlflowv1alpha1.KubernetesMlflowStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesmlflowv1alpha1.KubernetesMlflowIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: stripeeventdestination
 spec:
@@ -7,7 +7,7 @@ spec:
   values:
     - name: event_destination_id
       derivations:
-        - from_stack_output: id
+        - from_output: id
       where_to_find: >-
         Stripe Dashboard -> Developers -> Event destinations (the destination's id on its detail
         page), or `GET /v2/core/event_destinations`.

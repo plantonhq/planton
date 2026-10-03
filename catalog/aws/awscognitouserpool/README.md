@@ -195,7 +195,7 @@ All trigger fields accept a Lambda ARN or a reference to an `AwsLambda` resource
 | `domain.certificateArn` | `StringValueOrRef` | ACM cert (us-east-1) -- required for custom domains; ref to `AwsCertManagerCert`. |
 | `domain.managedLoginVersion` | `int32` | 1 = classic hosted UI, 2 = managed login (AWS default for new domains). |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

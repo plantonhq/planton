@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceancertificate.v1alpha1;
 
-// DigitalOceanCertificateStackOutputs captures the relevant outputs after provisioning a
+// DigitalOceanCertificateOutputs captures the relevant outputs after provisioning a
 // DigitalOcean certificate.
-message DigitalOceanCertificateStackOutputs {
+message DigitalOceanCertificateOutputs {
   // certificate_id is the certificate's resource identifier, which at the current provider pin
   // is the certificate NAME, not a UUID: a Let's Encrypt certificate's UUID rotates on every
   // auto-renewal, so DigitalOcean addresses certificates by their stable name. Resources that

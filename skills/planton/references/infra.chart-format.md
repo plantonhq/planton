@@ -114,7 +114,7 @@ Design guidance:
   and diffs stay reviewable. Multiple manifests per file separated by `---`
   remain legal -- many existing charts use them; respect a chart's existing
   layout when editing, adopt the per-file layout when composing fresh.
-- Every manifest is a full Planton cloud resource:
+- Every manifest is a full Planton infra component:
 
 ```yaml
 apiVersion: aws.planton.dev/v1alpha1        # <provider>.planton.dev/v1

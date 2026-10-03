@@ -20,7 +20,7 @@ func passwordUser() *AwsMemorydbUser {
 	return &AwsMemorydbUser{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsMemorydbUser",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "orders-service",
 		},
 		Spec: &AwsMemorydbUserSpec{
@@ -40,7 +40,7 @@ func iamUser() *AwsMemorydbUser {
 	return &AwsMemorydbUser{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsMemorydbUser",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "analytics-service",
 		},
 		Spec: &AwsMemorydbUserSpec{

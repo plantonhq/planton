@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpalloydbuser.v1alpha1;
 
-// GcpAlloydbUserStackOutputs captures values returned after provisioning an
+// GcpAlloydbUserOutputs captures values returned after provisioning an
 // AlloyDB user.
-message GcpAlloydbUserStackOutputs {
+message GcpAlloydbUserOutputs {
   // Fully qualified user resource name.
   // Format: projects/{project}/locations/{location}/clusters/{cluster}/users/{user}
   string name = 1;

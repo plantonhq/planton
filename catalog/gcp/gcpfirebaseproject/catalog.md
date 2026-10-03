@@ -4,7 +4,7 @@ Enables Firebase on an existing Google Cloud project and configures the project-
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Firebase enablement** -- the `firebase_project` PROJECT SINGLETON (`projects.addFirebase`); an already-enabled project is adopted, not re-enabled
 - **API enablement** -- `firebase.googleapis.com` and `fcm.googleapis.com` in the target project (never disabled on destroy), plus the Storage and App Check APIs exactly when the spec composes their resources
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### GCP Project
 
@@ -50,7 +50,7 @@ spec:
 planton apply -f firebase.yaml
 ```
 
-This enables Firebase and Cloud Messaging on the project; the `project_number` output is the FCM sender id every client registers with. A Stack Job tracks the provisioning in real time.
+This enables Firebase and Cloud Messaging on the project; the `project_number` output is the FCM sender id every client registers with. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,15 +85,15 @@ These are the most important decisions when configuring a Firebase project. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -116,7 +116,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP API Key**](/cloud-catalog/gcp-api-key) -- the restricted key each app registration references
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the project Firebase is enabled on
-- [**GCP Project IAM Member**](/cloud-catalog/gcp-project-iam-member) -- grants `roles/firebasemessaging.admin` to the identity that sends push
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the keyless sender identity a control plane runs as
+- [**GCP API Key**](/infra-catalog/gcp-api-key) -- the restricted key each app registration references
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the project Firebase is enabled on
+- [**GCP Project IAM Member**](/infra-catalog/gcp-project-iam-member) -- grants `roles/firebasemessaging.admin` to the identity that sends push
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the keyless sender identity a control plane runs as

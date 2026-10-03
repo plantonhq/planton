@@ -34,7 +34,7 @@ func validInput(spec *AzureManagedDiskSpec) *AzureManagedDisk {
 	return &AzureManagedDisk{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureManagedDisk",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-managed-disk",
 		},
 		Spec: spec,

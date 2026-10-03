@@ -8,7 +8,7 @@ import (
 	"github.com/charmbracelet/lipgloss"
 
 	"github.com/plantonhq/planton/pkg/e2e/profile"
-	componentv1 "github.com/plantonhq/planton/qa/componente2eprofile/v1"
+	kindv1 "github.com/plantonhq/planton/qa/catalogkinde2eprofile/v1"
 )
 
 var (
@@ -287,10 +287,10 @@ func buildLines(result *profile.DiscoverResult, filter string) []styledLine {
 
 	// Column header
 	lines = append(lines, styledLine{
-		text: headerStyle.Render(fmt.Sprintf("  %-36s %-10s %-5s %s", "Component", "Status", "Prov", "Timeout")),
+		text: headerStyle.Render(fmt.Sprintf("  %-36s %-10s %-5s %s", "Kind", "Status", "Prov", "Timeout")),
 	})
 
-	for _, ce := range result.Components {
+	for _, ce := range result.Kinds {
 		spec := ce.Profile.Spec
 		if spec == nil {
 			continue
@@ -325,19 +325,19 @@ func buildLines(result *profile.DiscoverResult, filter string) []styledLine {
 	return lines
 }
 
-func formatStatus(s componentv1.ComponentE2EProfileSpec_Status) string {
+func formatStatus(s kindv1.CatalogKindE2EProfileSpec_Status) string {
 	switch s {
-	case componentv1.ComponentE2EProfileSpec_green:
+	case kindv1.CatalogKindE2EProfileSpec_green:
 		return greenStyle.Render("● GREEN ")
-	case componentv1.ComponentE2EProfileSpec_deferred:
+	case kindv1.CatalogKindE2EProfileSpec_deferred:
 		return yellowStyle.Render("○ DEFER ")
-	case componentv1.ComponentE2EProfileSpec_skip:
+	case kindv1.CatalogKindE2EProfileSpec_skip:
 		return grayStyle.Render("○ SKIP  ")
-	case componentv1.ComponentE2EProfileSpec_stub:
+	case kindv1.CatalogKindE2EProfileSpec_stub:
 		return dimStyle.Render("○ STUB  ")
-	case componentv1.ComponentE2EProfileSpec_real_cluster:
+	case kindv1.CatalogKindE2EProfileSpec_real_cluster:
 		return blueStyle.Render("◍ REALCL")
-	case componentv1.ComponentE2EProfileSpec_pending_proof:
+	case kindv1.CatalogKindE2EProfileSpec_pending_proof:
 		return yellowStyle.Render("◌ PENDNG")
 	default:
 		return dimStyle.Render("? ???   ")

@@ -11,7 +11,7 @@ planton tofu apply --manifest ../../e2e/manifest.yaml --auto-approve
 planton tofu destroy --manifest ../../e2e/manifest.yaml --auto-approve
 ```
 
-Credentials are passed via the stack input through the CLI, not in `spec`.
+Credentials are passed via the IaC input through the CLI, not in `spec`.
 
 ## Files
 - `variables.tf` (generated; do not edit)
@@ -24,7 +24,7 @@ Credentials are passed via the stack input through the CLI, not in `spec`.
 - `cluster_instances.tf` — per-name folded instances (pinned to the
   cluster's port; apply_immediately and skip_final_snapshot forwarded)
 - `custom_endpoints.tf` — per-name folded custom cluster endpoints
-- `outputs.tf` — outputs matching `AwsNeptuneClusterStackOutputs`
+- `outputs.tf` — outputs matching `AwsNeptuneClusterOutputs`
 
 ## Presets
 See `../../presets/` for ready-to-adapt manifests.

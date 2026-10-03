@@ -1,4 +1,4 @@
-# Stack outputs — exactly the DigitalOceanLoadBalancerStackOutputs
+# Outputs — exactly the DigitalOceanLoadBalancerOutputs
 # contract, identical across both provisioners.
 
 output "load_balancer_id" {

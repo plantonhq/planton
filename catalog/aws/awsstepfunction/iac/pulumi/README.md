@@ -14,13 +14,13 @@ module/
   state_machine.go  — Core resource: creates sfn.StateMachine with all config blocks
 ```
 
-## Stack Inputs
+## IaC Inputs
 
-The module reads `AwsStepFunctionStackInput` which contains:
+The module reads `AwsStepFunctionIacInput` which contains:
 - `target` — The fully-specified `AwsStepFunction` resource
 - `provider_config` — Optional AWS credentials/region override
 
-## Stack Outputs
+## Outputs
 
 | Key | Description |
 |-----|-------------|

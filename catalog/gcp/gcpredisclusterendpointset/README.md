@@ -4,7 +4,7 @@ Registers the Private Service Connect connections a consumer built by hand on a 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **User-created connections** -- a `redis_cluster_user_created_connections` registration on the cluster, replacing the cluster's whole user-created endpoint list with the manifest's
 
@@ -90,7 +90,7 @@ Each connection requires `forwardingRule` (`GcpGlobalForwardingRule` `self_link`
 - At least one endpoint, each with at least one connection; every connection carries all five identifying fields.
 - Google enforces at apply that each endpoint carries exactly one connection per service attachment the cluster publishes.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -119,7 +119,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpRedisCluster** -- the cluster, created without `pscConfigs`
 - **GcpGlobalForwardingRule** -- the consumer endpoint (regional, empty scheme, targeting an attachment)

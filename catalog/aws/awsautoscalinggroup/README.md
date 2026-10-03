@@ -82,7 +82,7 @@ referenced `AwsLbTargetGroup` nodes -- lets you:
   rollouts reviewable, bounded, and reversible.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `autoscaling_group_name`: group name (CloudWatch dimensions, ECS capacity providers, CLI)
 - `autoscaling_group_arn`: group ARN (IAM policies, EventBridge rules)

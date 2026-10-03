@@ -5,10 +5,10 @@ package dev.planton.azure.azurecognitivedeployment.v1alpha1;
 import "catalog/azure/azurecognitivedeployment/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureCognitiveDeploymentStackInput is the input to the IaC modules
+// AzureCognitiveDeploymentIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureCognitiveDeploymentStackInput {
+message AzureCognitiveDeploymentIacInput {
   // The model deployment resource to deploy.
   AzureCognitiveDeployment target = 1;
 

@@ -11,12 +11,12 @@ import (
 // Pulumi module. It creates the route table with its folded routing domain
 // (associations, propagations, static routes, prefix list references) and
 // exports the table's outputs.
-func Resources(ctx *pulumi.Context, stackInput *awstgwrtv1.AwsTransitGatewayRouteTableStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awstgwrtv1.AwsTransitGatewayRouteTableIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which resolves
+	// Build the AWS provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static keys, keyless web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.RouteTable.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.RouteTable.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

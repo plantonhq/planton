@@ -7,7 +7,7 @@ FlinkDeployment CR (`flinkdeployments.flink.apache.org/v1beta1`) that
 the Flink Kubernetes Operator reconciles into a JobManager, its
 TaskManagers, and (in application mode) the job they run.
 
-Not the right component when:
+Not the right kind when:
 
 - **The operator is missing** — a KubernetesFlinkOperator whose watch
   scope covers this namespace is the PREREQUISITE. Nothing reconciles
@@ -151,7 +151,7 @@ loudly past the budget.
 - **`spec.restart_nonce`**: change it to force a restart without any
   spec change (the declarative "kick")
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

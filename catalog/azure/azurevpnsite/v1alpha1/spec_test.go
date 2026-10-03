@@ -31,7 +31,7 @@ func validResource() *AzureVpnSite {
 	return &AzureVpnSite{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureVpnSite",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-vpn-site",
 		},
 		Spec: &AzureVpnSiteSpec{

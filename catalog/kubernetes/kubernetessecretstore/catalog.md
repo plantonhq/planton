@@ -4,7 +4,7 @@ Creates a NAMESPACED External Secrets Operator store — one backend connection 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SecretStore** -- the namespaced ESO custom resource, named after `metadata.name` (ExternalSecrets in the namespace reference it by that name; kind SecretStore is the upstream default)
 - **Credential Secret** (only for declared static credentials) -- materialized in the store's own namespace with a deterministic name; the credential never appears inside the store resource itself. Keyless postures materialize nothing.
@@ -53,7 +53,7 @@ spec:
 planton apply -f secret-store.yaml
 ```
 
-This creates a store in `team-a` that reads GCP Secret Manager keylessly through the team's own Workload-Identity-bound ServiceAccount. A Stack Job tracks the provisioning in real time.
+This creates a store in `team-a` that reads GCP Secret Manager keylessly through the team's own Workload-Identity-bound ServiceAccount. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -93,7 +93,7 @@ These are the most important decisions when configuring the store. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -103,9 +103,9 @@ These are the most important decisions when configuring the store. Explore the f
 | **AwsIamRole** | `config.awsSecretsManager.role` | `status.outputs.role_arn` |
 | **AzureKeyVault** | `config.azureKeyVault.vaultUrl` | `status.outputs.vault_uri` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -124,7 +124,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**External Secrets Operator**](/cloud-catalog/kubernetes-external-secrets-operator) -- must be on the cluster first.
-- [**External Secret**](/cloud-catalog/kubernetes-external-secret) -- declares each secret to sync through this store, in the same namespace.
-- [**Cluster Secret Store**](/cloud-catalog/kubernetes-cluster-secret-store) -- the cluster-wide twin, for platform backends every team shares.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the store's home, credential home, and access fence.
+- [**External Secrets Operator**](/infra-catalog/kubernetes-external-secrets-operator) -- must be on the cluster first.
+- [**External Secret**](/infra-catalog/kubernetes-external-secret) -- declares each secret to sync through this store, in the same namespace.
+- [**Cluster Secret Store**](/infra-catalog/kubernetes-cluster-secret-store) -- the cluster-wide twin, for platform backends every team shares.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the store's home, credential home, and access fence.

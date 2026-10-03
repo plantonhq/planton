@@ -26,7 +26,7 @@ func binarySecret(name string, binary map[string]string) *secretv1alpha1.Kuberne
 	return &secretv1alpha1.KubernetesSecret{
 		ApiVersion: "kubernetes.planton.dev/v1alpha1",
 		Kind:       "KubernetesSecret",
-		Metadata:   &shared.CloudResourceMetadata{Name: name},
+		Metadata:   &shared.CatalogObjectMetadata{Name: name},
 		Spec: &secretv1alpha1.KubernetesSecretSpec{
 			Name:      "runner-ca",
 			Namespace: literal("builds"),
@@ -41,7 +41,7 @@ func egressPolicy(cidr string) *netpolv1alpha1.KubernetesNetworkPolicy {
 	return &netpolv1alpha1.KubernetesNetworkPolicy{
 		ApiVersion: "kubernetes.planton.dev/v1alpha1",
 		Kind:       "KubernetesNetworkPolicy",
-		Metadata:   &shared.CloudResourceMetadata{Name: "build-egress"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "build-egress"},
 		Spec: &netpolv1alpha1.KubernetesNetworkPolicySpec{
 			Namespace: literal("builds"),
 			Name:      "build-egress",

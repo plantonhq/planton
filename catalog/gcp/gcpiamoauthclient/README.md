@@ -4,11 +4,11 @@ Creates a Workforce Identity Federation OAuth client — the registration that l
 
 ## Scope: Workforce OAuth Clients Only
 
-This component models **workforce** OAuth clients — the ONLY kind of OAuth client Google's APIs can create programmatically. Classic consent-screen OAuth clients (the ones behind end-user Google Sign-In) have NO programmatic path left: Google permanently shut down the IAP OAuth Admin API that once created them in March 2026. Consent-screen clients remain a documented console step; their ID and secret feed [GcpIdentityPlatformConfig](/docs/catalog/gcp/gcpidentityplatformconfig)'s `defaultSupportedIdps` or a [GcpSecretManagerSecret](/docs/catalog/gcp/gcpsecretmanagersecret). If you need Google Sign-In for consumers, create the client in the console and wire its values in — this kind will not create it for you.
+This kind models **workforce** OAuth clients — the ONLY kind of OAuth client Google's APIs can create programmatically. Classic consent-screen OAuth clients (the ones behind end-user Google Sign-In) have NO programmatic path left: Google permanently shut down the IAP OAuth Admin API that once created them in March 2026. Consent-screen clients remain a documented console step; their ID and secret feed [GcpIdentityPlatformConfig](/docs/catalog/gcp/gcpidentityplatformconfig)'s `defaultSupportedIdps` or a [GcpSecretManagerSecret](/docs/catalog/gcp/gcpsecretmanagersecret). If you need Google Sign-In for consumers, create the client in the console and wire its values in — this kind will not create it for you.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **OAuth Client** -- a `google_iam_oauth_client` (the Workforce Identity Federation OAuth registration) carrying the grant types, scopes, redirect URIs, and confidentiality model
 - **OAuth Client Credentials** -- one `google_iam_oauth_client_credential` per entry in `credentials`; the secret value is generated server-side by GCP, never supplied in the manifest
@@ -23,7 +23,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### GCP Project
 
-- **A GCP project** where the client is created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
+- **A GCP project** where the client is created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
 - **IAM**: the deploying principal's permissions are listed in [`iac/permissions.yaml`](iac/permissions.yaml).
 
 ## Deploy
@@ -82,7 +82,7 @@ planton apply -f client.yaml
 - **Client type is `CONFIDENTIAL_CLIENT` only**: GCP rejects `PUBLIC_CLIENT` creation at the API ("Client type is not supported"); the validation re-admits it if GCP ever ships support.
 - **Every credential needs a `credentialId`** — it is the credential's immutable resource ID.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -112,7 +112,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpIdentityPlatformConfig](/docs/catalog/gcp/gcpidentityplatformconfig) — consumes console-created consent-screen client IDs/secrets in `defaultSupportedIdps`
 - [GcpSecretManagerSecret](/docs/catalog/gcp/gcpsecretmanagersecret) — durable home for the `client_secret` output via ValueFromRef

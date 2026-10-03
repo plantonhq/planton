@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awshttpapigateway
 spec:
@@ -48,7 +48,7 @@ spec:
       field_path: routes.integration.credentials_arn
       evidence:
         type: spec_default
-        reference: AWS-service integrations assume the referenced role (credentials_arn) for each call -- short-lived credentials, no static keys. Lambda-proxy integrations instead rely on the function's own resource policy, declared through the AwsLambda component's invoke_permissions.
+        reference: AWS-service integrations assume the referenced role (credentials_arn) for each call -- short-lived credentials, no static keys. Lambda-proxy integrations instead rely on the function's own resource policy, declared through the AwsLambda kind's invoke_permissions.
     - control_id: no-legacy-auth
       status: enforced_by_default
       evidence:

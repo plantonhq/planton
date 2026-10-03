@@ -5,7 +5,7 @@ import (
 
 	azureloganalyticsworkspacev1alpha1 "github.com/plantonhq/planton/catalog/azure/azureloganalyticsworkspace/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -36,11 +36,11 @@ var identityTypeStrings = map[azureloganalyticsworkspacev1alpha1.AzureLogAnalyti
 	azureloganalyticsworkspacev1alpha1.AzureLogAnalyticsWorkspaceIdentityType_USER_ASSIGNED:   "UserAssigned",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureloganalyticsworkspacev1alpha1.AzureLogAnalyticsWorkspaceStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureloganalyticsworkspacev1alpha1.AzureLogAnalyticsWorkspaceIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureLogAnalyticsWorkspace = stackInput.Target
-	target := stackInput.Target
+	locals.AzureLogAnalyticsWorkspace = iacInput.Target
+	target := iacInput.Target
 
 	// The resource_group field is a StringValueOrRef. The platform middleware
 	// resolves valueFrom references before IaC modules run, so .GetValue()
@@ -52,7 +52,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureloganalyticsworkspac
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureLogAnalyticsWorkspace.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureLogAnalyticsWorkspace.String()),
 	}
 
 	if target.Metadata.Id != "" {

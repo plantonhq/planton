@@ -14,9 +14,9 @@ import (
 	"github.com/hashicorp/hcl/v2/ext/typeexpr"
 	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/tofu/generators"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/zclconf/go-cty/cty"
 )
 
@@ -30,7 +30,7 @@ const (
 // declares being read, the outputs contract (names, and exactly the secret
 // outputs declared sensitive), and — when the toolchain is
 // available — the engine's own validation.
-func verifyTofu(kind cloudresourcekind.CloudResourceKind, kindName, moduleDir string, in Input, result *Result) {
+func verifyTofu(kind catalogkind.CatalogKind, kindName, moduleDir string, in Input, result *Result) {
 	checkTofuVariables(kind, kindName, moduleDir, result)
 	checkSecretHomesTofu(declaredSecretHomes(kind), moduleDir, result)
 
@@ -59,7 +59,7 @@ type variableDecl struct {
 // the same generator the platform uses (never compared as text): a
 // customized module may diverge in everything except what breaks the value
 // handoff.
-func checkTofuVariables(kind cloudresourcekind.CloudResourceKind, kindName, moduleDir string, result *Result) {
+func checkTofuVariables(kind catalogkind.CatalogKind, kindName, moduleDir string, result *Result) {
 	variablesPath := filepath.Join(moduleDir, variablesFileName)
 	src, err := os.ReadFile(variablesPath)
 	if err != nil {
@@ -168,8 +168,8 @@ func compareObjectAttrs(varName string, expectedType, actualType cty.Type, resul
 // the platform's own generator and parses it back — the schema-derived
 // oracle for the input surface, guaranteed to track the generator's type
 // rules without duplicating them.
-func expectedVariableDecls(kind cloudresourcekind.CloudResourceKind) (map[string]*variableDecl, error) {
-	instance, err := crkreflect.NewInstance(kind)
+func expectedVariableDecls(kind catalogkind.CatalogKind) (map[string]*variableDecl, error) {
+	instance, err := catalogkindreflect.NewInstance(kind)
 	if err != nil {
 		return nil, err
 	}
@@ -219,16 +219,16 @@ func parseVariableDecls(filename string, src []byte) (map[string]*variableDecl, 
 }
 
 // checkTofuOutputNames compares outputs.tf's declared outputs with the
-// kind's stack-outputs schema by name — the join the generic transformer
+// kind's outputs schema by name — the join the generic transformer
 // performs after every deployment. Both directions are warnings: an unknown
 // output is silently dropped, and an unpopulated schema field stays empty on
 // the deployed resource.
-func checkTofuOutputNames(kind cloudresourcekind.CloudResourceKind, kindName, moduleDir string, result *Result) {
+func checkTofuOutputNames(kind catalogkind.CatalogKind, kindName, moduleDir string, result *Result) {
 	outputsPath := filepath.Join(moduleDir, outputsFileName)
 	src, err := os.ReadFile(outputsPath)
 	if err != nil {
 		result.addWarning(outputsFileName, fmt.Sprintf(
-			"the module declares no outputs — every %s stack-outputs field will stay empty on deployed resources", kindName))
+			"the module declares no outputs — every %s outputs field will stay empty on deployed resources", kindName))
 		return
 	}
 
@@ -238,7 +238,7 @@ func checkTofuOutputNames(kind cloudresourcekind.CloudResourceKind, kindName, mo
 		return
 	}
 
-	schemaFields, err := stackOutputsFieldNames(kind)
+	schemaFields, err := outputsFieldNames(kind)
 	if err != nil {
 		result.addNotice(fmt.Sprintf("outputs name check skipped: %v", err))
 		return
@@ -262,11 +262,11 @@ func checkTofuOutputNames(kind cloudresourcekind.CloudResourceKind, kindName, mo
 
 	if len(unknown) > 0 {
 		result.addWarning(outputsFileName, fmt.Sprintf(
-			"these outputs match no %s stack-outputs field and are dropped after deployment: %s", kindName, strings.Join(unknown, ", ")))
+			"these outputs match no %s outputs field and are dropped after deployment: %s", kindName, strings.Join(unknown, ", ")))
 	}
 	if len(unpopulated) > 0 {
 		result.addWarning(outputsFileName, fmt.Sprintf(
-			"no output populates these %s stack-outputs fields, so they stay empty on deployed resources: %s", kindName, strings.Join(unpopulated, ", ")))
+			"no output populates these %s outputs fields, so they stay empty on deployed resources: %s", kindName, strings.Join(unpopulated, ", ")))
 	}
 }
 
@@ -291,9 +291,9 @@ func parseOutputNames(filename string, src []byte) ([]string, error) {
 	return names, nil
 }
 
-// stackOutputsFieldNames returns the kind's top-level stack-outputs field names.
-func stackOutputsFieldNames(kind cloudresourcekind.CloudResourceKind) (map[string]struct{}, error) {
-	fields, err := stackOutputFields(kind)
+// outputsFieldNames returns the kind's top-level outputs field names.
+func outputsFieldNames(kind catalogkind.CatalogKind) (map[string]struct{}, error) {
+	fields, err := outputFields(kind)
 	if err != nil {
 		return nil, err
 	}

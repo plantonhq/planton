@@ -1,4 +1,4 @@
-# Stack outputs — identical names and derivations in the Pulumi module's
+# Outputs — identical names and derivations in the Pulumi module's
 # outputs.go / main.go exports.
 #
 # Two Service handles are conditional on topology because the chart only

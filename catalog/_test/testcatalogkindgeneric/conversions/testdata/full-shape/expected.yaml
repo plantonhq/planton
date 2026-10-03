@@ -1,0 +1,21 @@
+# The same document at v1alpha2: renamed, reshaped, defaulted -- and minus
+# the declared loss.
+apiVersion: _test.planton.dev/v1alpha2
+kind: TestCatalogKindGeneric
+metadata:
+  name: torture-corpus
+spec:
+  displayName: renamed-on-upgrade
+  int32Field: 7
+  boolField: true
+  nested:
+    nestedString: passes-through-untouched
+  requiredRef:
+    value: literal-required-value
+  labels:
+    purpose: corpus
+  steps:
+    - command: first
+    - command: second
+  replicas: 1
+  sensitiveString: $secret/not-a-real-secret

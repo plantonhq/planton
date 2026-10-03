@@ -201,14 +201,14 @@ spec:
 
 See `GUIDE.md` for the full composability rationale.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `telemetry_name` | Name of the created Telemetry resource (equals metadata.name). |
 | `namespace` | Namespace the Telemetry resource was created in. |
 
-## Related Components
+## Related Kinds
 
 - [Kubernetes Istio](../kubernetesistio)
 - [Kubernetes Istio Base CRDs](../kubernetesistiobasecrds)

@@ -9,9 +9,9 @@
 # disjoint conditions; autoscaling refuses -- capacity that floats
 # between bounds has no single committed number. A FREE_INSTANCE emits
 # no lines and totals an honest zero. Schema:
-# finops/componentcostderivation/v1.
+# finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: gcpspannerinstance
 spec:

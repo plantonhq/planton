@@ -4,7 +4,7 @@ Grants one role, to one identity, ON a service account — controlling who may U
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Service Account IAM Member Binding** -- a `serviceaccount.IAMMember` merging the (role, member) pair into the target service account's IAM policy, with an optional IAM Condition attached
 
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### GCP Project
 
-- **The target service account** must exist — reference a GcpServiceAccount Cloud Resource or provide its full resource name (`projects/<project>/serviceAccounts/<email>`). There is no separate project field: the account's project is embedded in the name.
+- **The target service account** must exist — reference a GcpServiceAccount Infra Component or provide its full resource name (`projects/<project>/serviceAccounts/<email>`). There is no separate project field: the account's project is embedded in the name.
 - **For federation grants**: a workload identity pool and provider whose `principalSet://` subject you are granting.
 
 ## Deploy
@@ -50,7 +50,7 @@ spec:
 planton apply -f gcp-service-account-iam-member.yaml
 ```
 
-This lets the GitHub repository impersonate the deploy account with no exported key anywhere. A Stack Job tracks the provisioning in real time.
+This lets the GitHub repository impersonate the deploy account with no exported key anywhere. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,7 +92,7 @@ These are the most important decisions when configuring a grant. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -100,9 +100,9 @@ These are the most important decisions when configuring a grant. Explore the ful
 | **GcpIamCustomRole** (optional) | `role` | `status.outputs.name` |
 | **GcpServiceAccount** (member) | `member` | `status.outputs.member` |
 
-### What This Component Provides
+### What This Kind Provides
 
-This component has no outputs that downstream Cloud Resources consume. `status.outputs` echoes the fully resolved grant tuple (`service_account_id`, `role`, `member`) plus the account policy `etag` at the moment the grant merged — audit visibility for values that usually arrive through references, not composition inputs. Downstream resources reference the service account itself, never the grant.
+This kind has no outputs that downstream Infra Components consume. `status.outputs` echoes the fully resolved grant tuple (`service_account_id`, `role`, `member`) plus the account policy `etag` at the moment the grant merged — audit visibility for values that usually arrive through references, not composition inputs. Downstream resources reference the service account itself, never the grant.
 
 ## Common Patterns
 
@@ -116,7 +116,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the target (its `name` output) and often the member (its `member` output)
-- [**GCP IAM Custom Role**](/cloud-catalog/gcp-iam-custom-role) -- its `name` output feeds the role field for custom usage bundles
-- [**GCP Project IAM Member**](/cloud-catalog/gcp-project-iam-member) -- the project-scoped sibling: grants on a project instead of on an account
-- [**GCP GKE Workload Identity Binding**](/cloud-catalog/gcp-gke-workload-identity-binding) -- the purpose-built alternative for GKE workload federation
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the target (its `name` output) and often the member (its `member` output)
+- [**GCP IAM Custom Role**](/infra-catalog/gcp-iam-custom-role) -- its `name` output feeds the role field for custom usage bundles
+- [**GCP Project IAM Member**](/infra-catalog/gcp-project-iam-member) -- the project-scoped sibling: grants on a project instead of on an account
+- [**GCP GKE Workload Identity Binding**](/infra-catalog/gcp-gke-workload-identity-binding) -- the purpose-built alternative for GKE workload federation

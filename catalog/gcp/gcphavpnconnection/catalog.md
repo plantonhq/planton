@@ -4,7 +4,7 @@ Connects a Google Cloud HA VPN gateway (`GcpHaVpnGateway`) to ONE peer -- an on-
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **External VPN gateway** (external peer only) -- the `compute_external_vpn_gateway` holding the device's public addresses
 - **VPN tunnels** -- one `compute_vpn_tunnel` per `tunnels[]` entry, from a gateway interface to a peer interface
@@ -16,7 +16,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with `roles/compute.networkAdmin` on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with `roles/compute.networkAdmin` on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### GCP HA VPN Gateway and the peer
 
@@ -78,7 +78,7 @@ spec:
 planton apply -f ha-vpn-connection.yaml
 ```
 
-This connects the hub gateway to a two-address HQ device with two tunnels and two BGP sessions -- the 99.99% shape. A Stack Job tracks the provisioning in real time.
+This connects the hub gateway to a two-address HQ device with two tunnels and two BGP sessions -- the 99.99% shape. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -134,7 +134,7 @@ These are the most important decisions when configuring a connection. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -146,9 +146,9 @@ These are the most important decisions when configuring a connection. Explore th
 | **GcpHaVpnConnection** | `sharedSecret` | `status.outputs.shared_secret` (the OTHER side's generated key) |
 | **GcpHaVpnConnection** | `md5AuthenticationKey` | `status.outputs.md5_authentication_key` (the OTHER side's generated key) |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -174,6 +174,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP HA VPN Gateway**](/cloud-catalog/gcp-ha-vpn-gateway) -- the gateway and router this connection rides
-- [**GCP VPC Peering**](/cloud-catalog/gcp-vpc-peering) -- shares the routes this connection learns with peered networks via custom routes
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- the network on the Google side
+- [**GCP HA VPN Gateway**](/infra-catalog/gcp-ha-vpn-gateway) -- the gateway and router this connection rides
+- [**GCP VPC Peering**](/infra-catalog/gcp-vpc-peering) -- shares the routes this connection learns with peered networks via custom routes
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- the network on the Google side

@@ -15,7 +15,7 @@ func validWidget() *CloudflareTurnstileWidget {
 	return &CloudflareTurnstileWidget{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareTurnstileWidget",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-widget"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-widget"},
 		Spec: &CloudflareTurnstileWidgetSpec{
 			AccountId: validAccountID,
 			Name:      "login-form",

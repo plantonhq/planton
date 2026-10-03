@@ -11,8 +11,8 @@ type Locals struct {
 	GcpFirestoreIndex *gcpfirestoreindexv1alpha1.GcpFirestoreIndex
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpfirestoreindexv1alpha1.GcpFirestoreIndexStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpfirestoreindexv1alpha1.GcpFirestoreIndexIacInput) *Locals {
 	return &Locals{
-		GcpFirestoreIndex: stackInput.Target,
+		GcpFirestoreIndex: iacInput.Target,
 	}
 }

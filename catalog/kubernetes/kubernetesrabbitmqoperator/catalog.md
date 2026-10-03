@@ -6,7 +6,7 @@ This component installs and configures the **engine**. RabbitMQ clusters themsel
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions the release manifest's documents:
+When you deploy this Infra Component, the IaC module provisions the release manifest's documents:
 
 - **The `rabbitmq-system` namespace** — the manifest's FIXED installation namespace, baked into its own cross-references (the webhook client configuration, the certificate DNS names, the CA-injection annotations, the cluster-role binding subjects); it is not configurable
 - **The RabbitmqCluster CRD** (`rabbitmqclusters.rabbitmq.com`) — one document of the applied manifest, so it installs AND deletes with this resource; see the lifecycle warning under Key Configuration
@@ -49,7 +49,7 @@ spec: {}
 planton apply -f rabbitmq-operator.yaml
 ```
 
-An empty spec is the production-standard posture: the release manifest's own defaults, with the operator watching ALL namespaces. From that point, RabbitMQ resources in any namespace reconcile into running clusters. A Stack Job tracks the provisioning in real time.
+An empty spec is the production-standard posture: the release manifest's own defaults, with the operator watching ALL namespaces. From that point, RabbitMQ resources in any namespace reconcile into running clusters. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -67,13 +67,13 @@ These are the most important decisions when configuring a RabbitMQ Cluster Opera
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component's spec is self-contained — no fields reference other resources' outputs. Its one dependency is environmental: a running cert-manager on the target cluster (see Before You Deploy).
+This kind's spec is self-contained — no fields reference other resources' outputs. Its one dependency is environmental: a running cert-manager on the target cluster (see Before You Deploy).
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -94,6 +94,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**RabbitMQ**](/cloud-catalog/kubernetes-rabbit-mq) — the RabbitMQ clusters this operator reconciles; deploy the operator FIRST, keep clusters inside the watched namespaces, and destroy every cluster before ever destroying the operator.
-- [**Cert Manager**](/cloud-catalog/kubernetes-cert-manager) — the hard prerequisite; the admission webhooks' serving certificate is a cert-manager Certificate with CA injection.
-- [**kube-prometheus-stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) — scrapes the operator's `metrics_endpoint` for reconcile health.
+- [**RabbitMQ**](/infra-catalog/kubernetes-rabbit-mq) — the RabbitMQ clusters this operator reconciles; deploy the operator FIRST, keep clusters inside the watched namespaces, and destroy every cluster before ever destroying the operator.
+- [**Cert Manager**](/infra-catalog/kubernetes-cert-manager) — the hard prerequisite; the admission webhooks' serving certificate is a cert-manager Certificate with CA injection.
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) — scrapes the operator's `metrics_endpoint` for reconcile health.

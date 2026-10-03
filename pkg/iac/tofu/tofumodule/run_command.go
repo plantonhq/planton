@@ -9,9 +9,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/internal/cli/workspace"
 	"github.com/plantonhq/planton/internal/manifest"
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/pkg/iac/stackinput"
-	"github.com/plantonhq/planton/pkg/iac/stackinput/stackinputproviderconfig"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/pkg/iac/iacinput"
+	"github.com/plantonhq/planton/pkg/iac/iacinput/iacinputproviderconfig"
 	"github.com/plantonhq/planton/pkg/iac/tofu/backendconfig"
 	"github.com/plantonhq/planton/pkg/iac/tofu/tfbackend"
 	"github.com/plantonhq/planton/pkg/iac/tofu/tfoverride"
@@ -35,7 +35,7 @@ func RunCommand(
 	moduleVersion string,
 	noCleanup bool,
 	kubeContext string,
-	providerConfig *stackinputproviderconfig.ProviderConfig,
+	providerConfig *iacinputproviderconfig.ProviderConfig,
 	backendConfig *backendconfig.TofuBackendConfig,
 	opts ...RunOption,
 ) error {
@@ -87,7 +87,7 @@ func RunCommand(
 		}
 	}
 
-	kindName, err := crkreflect.ExtractKindFromProto(manifestObject)
+	kindName, err := catalogkindreflect.ExtractKindFromProto(manifestObject)
 	if err != nil {
 		return errors.Wrapf(err, "failed to extract kind name from manifest proto")
 	}
@@ -109,9 +109,9 @@ func RunCommand(
 
 	modulePath := pathResult.ModulePath
 
-	stackInputYaml, err := stackinput.BuildStackInputYaml(manifestObject, providerConfig)
+	iacInputYaml, err := iacinput.BuildIacInputYaml(manifestObject, providerConfig)
 	if err != nil {
-		return errors.Wrap(err, "failed to build stack input yaml")
+		return errors.Wrap(err, "failed to build IaC input yaml")
 	}
 
 	// Write (or remove) the provider-override file carrying the provider-block
@@ -120,7 +120,7 @@ func RunCommand(
 	// two of the three GetModulePath modes return a non-disposable directory
 	// (the user's own checkout, the zip cache), where a leftover override would
 	// silently apply this run's provider settings to a later run.
-	wroteOverride, err := tfoverride.WriteProviderOverrideFile(modulePath, stackInputYaml)
+	wroteOverride, err := tfoverride.WriteProviderOverrideFile(modulePath, iacInputYaml)
 	if err != nil {
 		return errors.Wrap(err, "failed to write provider override file")
 	}
@@ -137,7 +137,7 @@ func RunCommand(
 		return errors.Wrap(err, "failed to get workspace directory")
 	}
 
-	providerConfigEnvVars, err := GetProviderConfigEnvVars(stackInputYaml, workspaceDir, kubeContext)
+	providerConfigEnvVars, err := GetProviderConfigEnvVars(iacInputYaml, workspaceDir, kubeContext)
 	if err != nil {
 		return errors.Wrap(err, "failed to get provider config env vars")
 	}
@@ -168,7 +168,7 @@ func RunCommand(
 			providerConfigEnvVars, cfg.captureSink); captureErr != nil {
 			// The apply already succeeded; a capture failure must not turn a
 			// deployed stack into a failed command. Report and move on.
-			log.Warnf("stack outputs could not be captured after apply: %v", captureErr)
+			log.Warnf("outputs could not be captured after apply: %v", captureErr)
 		}
 	}
 

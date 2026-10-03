@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: kubernetesclustersecretstore
 spec:
   billing_model: free
   free_tier: An External Secrets Operator ClusterSecretStore is a record in the Kubernetes API server -- one backend connection (AWS Secrets Manager, GCP Secret Manager, Azure Key Vault, Vault/OpenBao, ...) that ExternalSecrets in any namespace may sync from -- plus at most one credential Secret the module materializes. No provider bills for these objects, and they reserve no cluster capacity.
-  notes: "No field of this spec buys anything: config declares WHERE secrets live and how ESO authenticates; conditions fence which namespaces may use the connection. The real spend sits on either side of it -- the backend itself bills on its own account (AWS Secrets Manager meters per secret-month and per 10k API calls; GCP and Azure similarly meter storage versions and access operations, driven by the ExternalSecrets that sync through this store), and the operator doing the work is the KubernetesExternalSecretsOperator component with its own cluster-capacity profile."
+  notes: "No field of this spec buys anything: config declares WHERE secrets live and how ESO authenticates; conditions fence which namespaces may use the connection. The real spend sits on either side of it -- the backend itself bills on its own account (AWS Secrets Manager meters per secret-month and per 10k API calls; GCP and Azure similarly meter storage versions and access operations, driven by the ExternalSecrets that sync through this store), and the operator doing the work is the KubernetesExternalSecretsOperator kind with its own cluster-capacity profile."

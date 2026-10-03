@@ -1,4 +1,4 @@
-# AzurePostgresqlFlexibleServer Deployment Component
+# AzurePostgresqlFlexibleServer Catalog Kind
 
 **Date**: February 13, 2026
 **Type**: Feature
@@ -6,7 +6,7 @@
 
 ## Summary
 
-Forged the AzurePostgresqlFlexibleServer deployment component (R11 in the Azure resource expansion queue), providing a fully managed PostgreSQL Flexible Server with bundled databases, firewall rules, VNet integration, and zone-redundant high availability. Applied 11 corrections to the original T02 spec based on deep research of the Terraform provider source (API version 2025-08-01) and Pulumi SDK.
+Forged the AzurePostgresqlFlexibleServer catalog kind (R11 in the Azure resource expansion queue), providing a fully managed PostgreSQL Flexible Server with bundled databases, firewall rules, VNet integration, and zone-redundant high availability. Applied 11 corrections to the original T02 spec based on deep research of the Terraform provider source (API version 2025-08-01) and Pulumi SDK.
 
 ## Problem Statement / Motivation
 
@@ -20,16 +20,16 @@ The Azure resource expansion sub-project (20260212.05) requires 24 new Azure res
 
 ## Solution / What's New
 
-### Complete Deployment Component (31 files)
+### Complete Catalog Kind (31 files)
 
-A production-ready AzurePostgresqlFlexibleServer component following the forge workflow's 19-step process:
+A production-ready AzurePostgresqlFlexibleServer kind following the forge workflow's 19-step process:
 
-- **4 proto files** -- spec, api, stack_input, stack_outputs with comprehensive buf.validate rules
+- **4 proto files** -- spec, api, iac_input, outputs with comprehensive buf.validate rules
 - **37 validation tests** -- covering valid inputs (public, VNet, HA, databases, valueFrom references) and invalid inputs (missing fields, range violations, invalid versions, invalid HA modes)
 - **Pulumi IaC module** -- using `pulumi-azure` v6 classic provider (`postgresql` package)
 - **Terraform module** -- with feature parity using `azurerm_postgresql_flexible_server`
 - **Production-quality documentation** -- README, 6 YAML examples, comprehensive research docs
-- **Registered** as enum 430 in `cloud_resource_kind.proto`
+- **Registered** as enum 430 in `catalog_kind.proto`
 
 ### 11 Corrections from T02 Spec
 
@@ -81,7 +81,7 @@ flowchart TD
 
 **Database ID map**: Exported as `pulumi.StringMap` following KeyVault's `secret_id_map` pattern.
 
-### Stack Outputs
+### Outputs
 
 | Output | Type | Purpose |
 |--------|------|---------|

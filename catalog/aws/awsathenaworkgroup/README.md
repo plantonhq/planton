@@ -82,7 +82,7 @@ Use an Athena workgroup to:
 - **`identity_center`** — both values are fixed at creation; changing them
   replaces the workgroup.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

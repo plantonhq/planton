@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: gcpbigquerydataset
 spec:
@@ -30,7 +30,7 @@ spec:
       impact: Ages out old partitions in new partitioned tables automatically -- the per-partition version of the expiration brake, and each unmodified partition independently drops to the ~50%-cheaper long-term rate after 90 days.
     - field_path: kms_key_name
       sku_meter: Cloud KMS key usage
-      impact: CMEK itself adds no BigQuery charge; the key's version storage and per-operation charges bill on the GcpKmsKey component protecting the data.
+      impact: CMEK itself adds no BigQuery charge; the key's version storage and per-operation charges bill on the GcpKmsKey kind protecting the data.
   estimate_exclusions:
     - an empty dataset stores nothing -- storage bills per GiB-month as tables load, active rate for data modified in the last 90 days, roughly half that once a table or partition sits unmodified past 90 days (first 10 GiB each month free)
     - query compute bills to the project running the query, not to this container -- on-demand at $6.25/TiB scanned after the first free 1 TiB each month, or slot-based editions capacity

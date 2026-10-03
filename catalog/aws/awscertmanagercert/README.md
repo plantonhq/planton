@@ -13,7 +13,7 @@ Exactly one of `primary_domain_name` / `imported` drives the mode; validation ru
 ## DNS Validation: Managed or External
 
 - **Managed (Route53)** — set `route53_hosted_zone_id` (a literal zone ID or a reference to an `AwsRoute53Zone`). The module creates the validation CNAMEs in the zone and, unless `wait_for_validation` is `false`, waits for the certificate to reach `ISSUED`.
-- **External DNS** — leave `route53_hosted_zone_id` unset. The certificate is created in `PENDING_VALIDATION` and the exact records to create are exported as the `domain_validation_records` stack output. Once you create them, ACM issues — and keeps renewing — automatically.
+- **External DNS** — leave `route53_hosted_zone_id` unset. The certificate is created in `PENDING_VALIDATION` and the exact records to create are exported as the `domain_validation_records` output. Once you create them, ACM issues — and keeps renewing — automatically.
 
 ## Key Spec Fields
 
@@ -25,7 +25,7 @@ Exactly one of `primary_domain_name` / `imported` drives the mode; validation ru
 - **`validation_options`** — per-domain overrides of where the validation request is sent (e.g. EMAIL-validating a subdomain at its parent domain).
 - **`early_renewal_duration`** — for PRIVATE (ACM-PCA) certificates only: start ACM's managed renewal this long before expiry (`P90D` or `2160h`; durations under 60 days have no effect). The certificate ARN stays stable across renewals. Publicly validated certificates renew on ACM's own schedule, and imported certificates never renew.
 
-## Stack Outputs
+## Outputs
 
 - **`cert_arn`** — the join key every TLS consumer references (load-balancer listeners, CloudFront, Cognito, OpenSearch, Client VPN).
 - **`status`** — `PENDING_VALIDATION` until ownership is proven, then `ISSUED`.

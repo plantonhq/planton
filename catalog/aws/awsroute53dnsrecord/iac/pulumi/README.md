@@ -17,11 +17,11 @@ import (
 
 func main() {
     pulumi.Run(func(ctx *pulumi.Context) error {
-        stackInput := &awsroute53dnsrecordv1.AwsRoute53DnsRecordStackInput{
+        iacInput := &awsroute53dnsrecordv1.AwsRoute53DnsRecordIacInput{
             // Note: zone_id and alias_target fields use StringValueOrRef
             // The CLI resolves value_from references before passing to Pulumi
         }
-        return module.Resources(ctx, stackInput)
+        return module.Resources(ctx, iacInput)
     })
 }
 ```
@@ -34,7 +34,7 @@ planton pulumi up --manifest dns-record.yaml
 
 ## Inputs
 
-The module accepts `AwsRoute53DnsRecordStackInput` which contains:
+The module accepts `AwsRoute53DnsRecordIacInput` which contains:
 
 - `target`: The `AwsRoute53DnsRecord` resource definition
   - `spec.zone_id`: Route53 zone ID (StringValueOrRef - resolved before module)

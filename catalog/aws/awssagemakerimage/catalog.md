@@ -4,7 +4,7 @@ Deploys an Amazon SageMaker image — the named registry entry that makes your o
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SageMaker Image** — the registry entry named from `metadata.name`, carrying the ECR-pull role and the in-place Studio display metadata (`displayName`, `description`)
 - **SageMaker Image Versions** — one per `versions` entry, each registering an ECR image under an AWS-assigned sequential number, with movable aliases and compatibility metadata (`jobType`, `mlFramework`, `processor`, `programmingLang`, `vendorGuidance`)
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with SageMaker control-plane permissions (`sagemaker:CreateImage`, `sagemaker:CreateImageVersion`, and their siblings). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with SageMaker control-plane permissions (`sagemaker:CreateImage`, `sagemaker:CreateImageVersion`, and their siblings). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -60,7 +60,7 @@ spec:
 planton apply -f sagemaker-image.yaml
 ```
 
-This creates the registry entry and registers the ECR image as version 1, aliased `latest` and annotated as a CPU PyTorch notebook kernel. A Stack Job tracks the provisioning in real time.
+This creates the registry entry and registers the ECR image as version 1, aliased `latest` and annotated as a CPU PyTorch notebook kernel. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -97,15 +97,15 @@ These are the most important decisions when configuring a SageMaker image. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsIamRole** | `roleArn` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -124,6 +124,6 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the ECR-pull role SageMaker assumes, wired via `roleArn`
-- [**AWS ECR Repository**](/cloud-catalog/aws-ecr-repo) — where the version images live, referenced by registry path in `baseImage`
-- [**AWS SageMaker Domain**](/cloud-catalog/aws-sagemaker-domain) — the Studio domain the image attaches to for kernel selection
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the ECR-pull role SageMaker assumes, wired via `roleArn`
+- [**AWS ECR Repository**](/infra-catalog/aws-ecr-repo) — where the version images live, referenced by registry path in `baseImage`
+- [**AWS SageMaker Domain**](/infra-catalog/aws-sagemaker-domain) — the Studio domain the image attaches to for kernel selection

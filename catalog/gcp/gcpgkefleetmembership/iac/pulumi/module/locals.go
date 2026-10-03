@@ -6,7 +6,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpgkefleetmembershipv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkefleetmembership/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -20,15 +20,15 @@ type Locals struct {
 	GcpLabels         map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpgkefleetmembershipv1alpha1.GcpGkeFleetMembershipStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpgkefleetmembershipv1alpha1.GcpGkeFleetMembershipIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpGkeFleetMembership = stackInput.Target
+	locals.GcpGkeFleetMembership = iacInput.Target
 	metadata := locals.GcpGkeFleetMembership.Metadata
 
 	locals.AttributionLabels = map[string]string{
 		gcplabelkeys.Resource:     "true",
 		gcplabelkeys.ResourceName: metadata.Name,
-		gcplabelkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_GcpGkeFleetMembership.String()),
+		gcplabelkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_GcpGkeFleetMembership.String()),
 	}
 	if metadata.Org != "" {
 		locals.AttributionLabels[gcplabelkeys.Organization] = metadata.Org
@@ -44,7 +44,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpgkefleetmembershipv1alph
 	// conflicts -- identical merge order to the Terraform module.
 	locals.GcpLabels = mergeLabels(locals.GcpGkeFleetMembership.Spec.Labels, locals.AttributionLabels)
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }
 

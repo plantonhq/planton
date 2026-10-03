@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: stripepromotioncode
 spec:
@@ -8,6 +8,6 @@ spec:
   values:
     - name: promotion_code_id
       derivations:
-        - from_stack_output: id
+        - from_output: id
       where_to_find: >-
         Stripe Dashboard -> Product catalog -> Coupons -> the coupon -> Promotion codes (the code's id, promo_...), or `GET /v1/promotion_codes?code=<code>`.

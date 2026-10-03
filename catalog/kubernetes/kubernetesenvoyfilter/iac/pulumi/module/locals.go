@@ -15,8 +15,8 @@ type Locals struct {
 	Labels    map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *kubernetesenvoyfilterv1alpha1.KubernetesEnvoyFilterStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *kubernetesenvoyfilterv1alpha1.KubernetesEnvoyFilterIacInput) *Locals {
+	target := iacInput.Target
 	metadata := target.Metadata
 	spec := target.Spec
 

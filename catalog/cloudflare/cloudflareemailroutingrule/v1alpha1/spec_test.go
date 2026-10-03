@@ -34,7 +34,7 @@ func validRule() *CloudflareEmailRoutingRule {
 	return &CloudflareEmailRoutingRule{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareEmailRoutingRule",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-rule"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-rule"},
 		Spec: &CloudflareEmailRoutingRuleSpec{
 			ZoneId:   value("023e105f4ecef8ad9ca31a8372d0c353"),
 			Matchers: []*CloudflareEmailRoutingRuleMatcher{literalMatcher("support@example.com")},

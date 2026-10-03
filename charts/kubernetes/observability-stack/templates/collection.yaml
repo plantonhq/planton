@@ -25,7 +25,7 @@ metadata:
 {% endif %}
   relationships:
     # The operator's ServiceMonitor needs the stack's CRDs; nothing in its
-    # spec consumes a stack output, so the edge is explicit.
+    # spec consumes an output, so the edge is explicit.
     - kind: KubernetesKubePrometheusStack
       name: "{{ values.env }}-metrics"
       type: depends_on

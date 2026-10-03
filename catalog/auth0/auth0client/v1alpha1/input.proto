@@ -5,14 +5,14 @@ package dev.planton.auth0.auth0client.v1alpha1;
 import "catalog/auth0/auth0client/v1alpha1/api.proto";
 import "catalog/auth0/provider.proto";
 
-// Auth0ClientStackInput is the input message for the Auth0 Client IaC modules.
+// Auth0ClientIacInput is the input message for the Auth0 Client IaC modules.
 // This message aggregates all information needed to deploy an Auth0 Application:
 // - The target Auth0Client resource specification
 // - The Auth0 provider configuration (credentials for API access)
 //
 // The IaC modules (Pulumi and Terraform) receive this as their input and use it
 // to create/update the Auth0 application via the Auth0 Management API.
-message Auth0ClientStackInput {
+message Auth0ClientIacInput {
   // target is the Auth0Client resource to deploy.
   // Contains the complete specification of the desired application configuration.
   Auth0Client target = 1;

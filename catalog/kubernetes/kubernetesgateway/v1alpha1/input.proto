@@ -8,8 +8,8 @@ import "catalog/kubernetes/provider.proto";
 // Input for the KubernetesGateway IaC stack. The platform resolves all
 // StringValueOrRef references (namespace, gateway_class_name) to literal
 // strings before passing this to the IaC engine.
-message KubernetesGatewayStackInput {
-  // Target cloud-resource.
+message KubernetesGatewayIacInput {
+  // Target infra-component.
   KubernetesGateway target = 1;
   // Kubernetes provider configuration (cluster credentials).
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

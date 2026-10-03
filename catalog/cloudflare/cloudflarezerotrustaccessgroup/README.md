@@ -74,7 +74,7 @@ Logic: a user matches if they satisfy **any** `include` rule, are not caught by
 |---|---|
 | `group_id` | The Access group ID (reference it from a policy or another group) |
 
-## Related components
+## Related kinds
 
 - `CloudflareZeroTrustAccessPolicy` — references groups in its rules.
 - `CloudflareZeroTrustAccessApplication` — binds policies to a protected resource.

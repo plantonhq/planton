@@ -48,7 +48,7 @@ func Build(input BuildInput) (*Manifest, error) {
 
 	// Conversions and presets both live beside the kind
 	// (<provider>/<kind>/conversions/*, <provider>/<kind>/presets/*): the
-	// living component is version-agnostic, so bundle keys carry no version.
+	// living kind is version-agnostic, so bundle keys carry no version.
 	if err := collectFiles(entries, input.CatalogDir, "*/*/conversions/*", 4,
 		func(parts []string) string {
 			return "conversions/" + parts[0] + "/" + parts[1] + "/" + parts[3]
@@ -81,7 +81,7 @@ func Build(input BuildInput) (*Manifest, error) {
 	}
 
 	// Catalog entries are projected from the tree plus the compiled kind
-	// registry -- the projection itself refuses missing components, dead
+	// registry -- the projection itself refuses missing kinds, dead
 	// module directories, and an empty result.
 	entryFiles, err := projectEntries(input.CatalogDir, cargo)
 	if err != nil {

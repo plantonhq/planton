@@ -37,7 +37,7 @@ func validResource() *AzureRoleDefinition {
 	return &AzureRoleDefinition{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureRoleDefinition",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-role-definition",
 		},
 		Spec: &AzureRoleDefinitionSpec{

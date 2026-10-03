@@ -1,10 +1,10 @@
 # Auth0 Branding
 
-Sets how an existing Auth0 tenant's Universal Login looks: the logo, favicon, colors and font every login page shares, the page template the login box renders inside, and the no-code theme of the login box itself. One Cloud Resource per tenant.
+Sets how an existing Auth0 tenant's Universal Login looks: the logo, favicon, colors and font every login page shares, the page template the login box renders inside, and the no-code theme of the login box itself. One Infra Component per tenant.
 
 ## What Gets Created
 
-Nothing new: a tenant has one branding and one theme. When you deploy this Cloud Resource, the IaC module sets them on the tenant your Auth0 connection's credential belongs to:
+Nothing new: a tenant has one branding and one theme. When you deploy this Infra Component, the IaC module sets them on the tenant your Auth0 connection's credential belongs to:
 
 - **Branding** -- the logo, favicon, primary color, page background and font of every login, signup, reset and consent page, and the page template, when you set any of them
 - **Theme** -- the login box's borders, colors, fonts, page background and layout, when you declare one; every field you leave out takes Auth0's default
@@ -13,7 +13,7 @@ Nothing new: a tenant has one branding and one theme. When you deploy this Cloud
 
 ### Planton Setup
 
-- **Auth0 Provider Connection** -- an active connection in the Connect module with the tenant's domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Auth0 Provider Connection** -- an active connection in the Connect module with the tenant's domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Auth0 Custom Domain and Verification** -- only for a page template, which Auth0 accepts only on a tenant with a custom domain.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
@@ -50,7 +50,7 @@ spec:
 planton apply -f auth0-branding.yaml
 ```
 
-Every login page of the tenant shows your logo on your background, with your accent on its buttons and links. A Stack Job tracks the change in real time.
+Every login page of the tenant shows your logo on your background, with your accent on its buttons and links. An Infra Job tracks the change in real time.
 
 ## Key Configuration
 
@@ -62,15 +62,15 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 **The page template needs a custom domain** -- `universalLoginTemplate` is a Liquid HTML page containing `{%- auth0:head -%}` and `{%- auth0:widget -%}`. Auth0 refuses it on the canonical domain, so order it after an Auth0 Custom Domain Verification.
 
-**Destroy is partial** -- Auth0 has no delete for branding. Destroying this Cloud Resource removes the page template and deletes the theme, and keeps the last-applied logo, favicon, colors and font.
+**Destroy is partial** -- Auth0 has no delete for branding. Destroying this Infra Component removes the page template and deletes the theme, and keeps the last-applied logo, favicon, colors and font.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. The tenant is the one the Auth0 connection's credential belongs to; a page template needs the tenant's custom domain to be verified first (order it with `depends_on`).
+This kind has no foreign key dependencies. The tenant is the one the Auth0 connection's credential belongs to; a page template needs the tenant's custom domain to be verified first (order it with `depends_on`).
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -91,6 +91,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Auth0 Custom Domain**](/cloud-catalog/auth0-custom-domain) and [**Auth0 Custom Domain Verification**](/cloud-catalog/auth0-custom-domain-verification) -- the domain a page template needs.
-- [**Auth0 Tenant Settings**](/cloud-catalog/auth0-tenant-settings) -- the tenant's name in the login page's sentence, and its support contacts.
-- [**Auth0 Client (Application)**](/cloud-catalog/auth0-client) -- names the application the branded page signs people in to.
+- [**Auth0 Custom Domain**](/infra-catalog/auth0-custom-domain) and [**Auth0 Custom Domain Verification**](/infra-catalog/auth0-custom-domain-verification) -- the domain a page template needs.
+- [**Auth0 Tenant Settings**](/infra-catalog/auth0-tenant-settings) -- the tenant's name in the login page's sentence, and its support contacts.
+- [**Auth0 Client (Application)**](/infra-catalog/auth0-client) -- names the application the branded page signs people in to.

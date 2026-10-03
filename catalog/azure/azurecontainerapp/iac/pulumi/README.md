@@ -6,7 +6,7 @@ The Pulumi (Go) implementation of the `AzureContainerApp` component.
 
 ```
 pulumi/
-├── main.go          # Entrypoint (loads stack input, calls module)
+├── main.go          # Entrypoint (loads IaC input, calls module)
 ├── Pulumi.yaml      # Pulumi project configuration
 ├── Makefile         # Build/test targets
 └── module/

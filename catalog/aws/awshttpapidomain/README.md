@@ -147,7 +147,7 @@ spec:
 | `routingRules[].stage` | string | Yes | The target REST API stage (e.g. `prod`). |
 | `routingRules[].stripBasePath` | bool | No | Strip the matched base path before forwarding (`/orders/list` reaches the API as `/list`). |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

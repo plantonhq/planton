@@ -7,12 +7,12 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
-// TestStackOutputsConformance is the standing guard against the systemic IaC
+// TestOutputsConformance is the standing guard against the systemic IaC
 // output-drift class: an engine emits output names/shapes that do not flatten
-// onto the kind's StackOutputs proto, silently leaving those proto fields empty.
+// onto the kind's Outputs proto, silently leaving those proto fields empty.
 // (The original bug: the Postgres tofu module emitted a flat
 // "password_secret_name" output, which flattens to the key "password_secret_name"
 // -- with no dot -- and therefore never populated the proto's nested
@@ -23,22 +23,22 @@ import (
 // transformer (TransformRaw -> Flatten -> populateMessage). So a single
 // conformance bar per kind -- "this representative output set fully populates the
 // proto with nothing left unmapped" -- when satisfied by each engine's emitted
-// output set, guarantees the two engines produce the same typed StackOutputs.
+// output set, guarantees the two engines produce the same typed Outputs.
 //
 // To extend coverage: add a case with the raw output shape an engine emits (scalars
 // as strings; nested objects as map[string]interface{}, exactly how Terraform state
 // and the Pulumi automation API surface them) and the proto fields it must populate.
-func TestStackOutputsConformance(t *testing.T) {
+func TestOutputsConformance(t *testing.T) {
 	// A module dir with no transform override forces the generic reflection path,
 	// which is the convention every in-repo module relies on (0 of 364 use an override).
 	genericModuleDir := filepath.Join("testdata", "modules", "empty")
 
 	cases := []struct {
 		name string
-		kind cloudresourcekind.CloudResourceKind
+		kind catalogkind.CatalogKind
 		// rawOutputs mirrors the post-Flatten-input shape both engines emit.
 		rawOutputs map[string]interface{}
-		// mustPopulate lists StackOutputs proto fields that MUST be set.
+		// mustPopulate lists Outputs proto fields that MUST be set.
 		mustPopulate []string
 	}{
 		{
@@ -46,7 +46,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// write/read/headless Services, the endpoint, and the
 			// module-materialized auth Secret handle.
 			name: "KubernetesValkey",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesValkey,
+			kind: catalogkind.CatalogKind_KubernetesValkey,
 			rawOutputs: map[string]interface{}{
 				"namespace":            "team-alpha",
 				"service":              "session-cache",
@@ -71,7 +71,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// read Services, the endpoint, and the operator-managed
 			// system-users Secret's root key.
 			name: "KubernetesMysql",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesMysql,
+			kind: catalogkind.CatalogKind_KubernetesMysql,
 			rawOutputs: map[string]interface{}{
 				"namespace":            "team-alpha",
 				"cluster_name":         "orders-mysql",
@@ -95,7 +95,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// discovery Service, the endpoint with the driver's replicaSet
 			// parameter source, and the system-users Secret's admin key.
 			name: "KubernetesMongodb",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesMongodb,
+			kind: catalogkind.CatalogKind_KubernetesMongodb,
 			rawOutputs: map[string]interface{}{
 				"namespace":            "team-alpha",
 				"cluster_name":         "orders-mongo",
@@ -121,7 +121,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// policy, and CronJob; the restore Job's hashed name rides in as
 			// an output because no recipe can recompute it).
 			name: "KubernetesOpenBao",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesOpenBao,
+			kind: catalogkind.CatalogKind_KubernetesOpenBao,
 			rawOutputs: map[string]interface{}{
 				"namespace":                   "openbao",
 				"service":                     "vault",
@@ -148,7 +148,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// KubernetesPerconaMongoOperator: installation identity handles.
 			name: "KubernetesPerconaMongoOperator",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesPerconaMongoOperator,
+			kind: catalogkind.CatalogKind_KubernetesPerconaMongoOperator,
 			rawOutputs: map[string]interface{}{
 				"namespace":    "psmdb-operator-system",
 				"release_name": "psmdb-op",
@@ -158,7 +158,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// KubernetesPerconaMysqlOperator: installation identity handles.
 			name: "KubernetesPerconaMysqlOperator",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesPerconaMysqlOperator,
+			kind: catalogkind.CatalogKind_KubernetesPerconaMysqlOperator,
 			rawOutputs: map[string]interface{}{
 				"namespace":    "pxc-operator-system",
 				"release_name": "pxc-op",
@@ -168,7 +168,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// KubernetesStrimziKafkaOperator: installation identity handles.
 			name: "KubernetesStrimziKafkaOperator",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesStrimziKafkaOperator,
+			kind: catalogkind.CatalogKind_KubernetesStrimziKafkaOperator,
 			rawOutputs: map[string]interface{}{
 				"namespace":    "strimzi-system",
 				"release_name": "strimzi-op",
@@ -180,7 +180,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// binding name, the bootstrap Service, the in-cluster bootstrap
 			// address, and the cluster CA Secret handle.
 			name: "KubernetesKafka",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesKafka,
+			kind: catalogkind.CatalogKind_KubernetesKafka,
 			rawOutputs: map[string]interface{}{
 				"namespace":                   "team-alpha",
 				"cluster_name":                "orders-kafka",
@@ -197,7 +197,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesOpenSearchOperator: the install handles (release +
 			// controller Deployment).
 			name: "KubernetesOpenSearchOperator",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesOpenSearchOperator,
+			kind: catalogkind.CatalogKind_KubernetesOpenSearchOperator,
 			rawOutputs: map[string]interface{}{
 				"namespace":       "opensearch-operator-system",
 				"release_name":    "os-op",
@@ -211,7 +211,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// endpoint (TLS in every posture), the bootstrapped admin
 			// Secret, and the Dashboards handles when enabled.
 			name: "KubernetesOpenSearch",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesOpenSearch,
+			kind: catalogkind.CatalogKind_KubernetesOpenSearch,
 			rawOutputs: map[string]interface{}{
 				"namespace":                     "search",
 				"cluster_name":                  "product-search",
@@ -229,7 +229,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// KubernetesSolrOperator: the install handles.
 			name: "KubernetesSolrOperator",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesSolrOperator,
+			kind: catalogkind.CatalogKind_KubernetesSolrOperator,
 			rawOutputs: map[string]interface{}{
 				"namespace":       "solr-operator-system",
 				"release_name":    "solr-op",
@@ -242,7 +242,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// Service, the in-cluster endpoint, the bootstrapped basic-auth
 			// Secret, and the ZooKeeper connection string.
 			name: "KubernetesSolr",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesSolr,
+			kind: catalogkind.CatalogKind_KubernetesSolr,
 			rawOutputs: map[string]interface{}{
 				"namespace":                   "search",
 				"cluster_name":                "product-solr",
@@ -261,7 +261,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesNeo4j: the server handles — the main Service (= the
 			// resource name), bolt/http endpoints, and the auth Secret.
 			name: "KubernetesNeo4j",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesNeo4j,
+			kind: catalogkind.CatalogKind_KubernetesNeo4j,
 			rawOutputs: map[string]interface{}{
 				"namespace":            "graph",
 				"release_name":         "knowledge-graph",
@@ -280,7 +280,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesKafkaTopic: the topic handle (the KAFKA name, which
 			// may differ from the resource name via spec.topic_name).
 			name: "KubernetesKafkaTopic",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesKafkaTopic,
+			kind: catalogkind.CatalogKind_KubernetesKafkaTopic,
 			rawOutputs: map[string]interface{}{
 				"namespace":  "team-alpha",
 				"topic_name": "orders.v1_events",
@@ -291,7 +291,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesKafkaUser: the principal name and the
 			// operator-generated credentials Secret handle.
 			name: "KubernetesKafkaUser",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesKafkaUser,
+			kind: catalogkind.CatalogKind_KubernetesKafkaUser,
 			rawOutputs: map[string]interface{}{
 				"namespace":   "team-alpha",
 				"username":    "orders-service",
@@ -304,7 +304,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesKafkaConnector resources bind to) and the Connect
 			// REST API handles.
 			name: "KubernetesKafkaConnect",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesKafkaConnect,
+			kind: catalogkind.CatalogKind_KubernetesKafkaConnect,
 			rawOutputs: map[string]interface{}{
 				"namespace":             "team-alpha",
 				"connect_name":          "orders-pipes",
@@ -320,7 +320,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesKafkaConnector: the connector's name inside its
 			// Connect cluster.
 			name: "KubernetesKafkaConnector",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesKafkaConnector,
+			kind: catalogkind.CatalogKind_KubernetesKafkaConnector,
 			rawOutputs: map[string]interface{}{
 				"namespace":      "team-alpha",
 				"connector_name": "orders-cdc",
@@ -331,7 +331,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesKafkaMirrorMaker2: the deployment identity and the
 			// engine's read-only REST endpoint.
 			name: "KubernetesKafkaMirrorMaker2",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesKafkaMirrorMaker2,
+			kind: catalogkind.CatalogKind_KubernetesKafkaMirrorMaker2,
 			rawOutputs: map[string]interface{}{
 				"namespace":         "team-alpha",
 				"mirrormaker_name":  "msk-migration",
@@ -344,7 +344,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// schema.registry.url composition handle), the optional
 			// REST-proxy endpoint, and the schemas topic.
 			name: "KubernetesKarapace",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesKarapace,
+			kind: catalogkind.CatalogKind_KubernetesKarapace,
 			rawOutputs: map[string]interface{}{
 				"namespace":           "team-alpha",
 				"service_name":        "schemas",
@@ -361,7 +361,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesKafkaUi: the console Service handles exposure kinds
 			// attach to, plus the workstation port-forward convenience.
 			name: "KubernetesKafkaUi",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesKafkaUi,
+			kind: catalogkind.CatalogKind_KubernetesKafkaUi,
 			rawOutputs: map[string]interface{}{
 				"namespace":            "team-alpha",
 				"service_name":         "console",
@@ -380,7 +380,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// password_secret.name etc.), and the backup series a recovery
 			// names as its source.
 			name: "KubernetesPostgres",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesPostgres,
+			kind: catalogkind.CatalogKind_KubernetesPostgres,
 			rawOutputs: map[string]interface{}{
 				"namespace":             "team-alpha",
 				"cluster_name":          "orders-db",
@@ -410,7 +410,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// KubernetesCloudNativePgOperator: the install identity.
 			name: "KubernetesCloudNativePgOperator",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesCloudNativePgOperator,
+			kind: catalogkind.CatalogKind_KubernetesCloudNativePgOperator,
 			rawOutputs: map[string]interface{}{
 				"namespace":    "cnpg-system",
 				"release_name": "cnpg",
@@ -423,7 +423,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesCnpgBarmanCloudPlugin: the install identity plus the
 			// CNPG-I plugin name a Cluster's plugins list carries.
 			name: "KubernetesCnpgBarmanCloudPlugin",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesCnpgBarmanCloudPlugin,
+			kind: catalogkind.CatalogKind_KubernetesCnpgBarmanCloudPlugin,
 			rawOutputs: map[string]interface{}{
 				"namespace":    "cnpg-system",
 				"release_name": "plugin-barman-cloud",
@@ -437,7 +437,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesNamespace: flat scalar outputs from both engines describing
 			// the namespace and which governance objects were applied.
 			name: "KubernetesNamespace",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesNamespace,
+			kind: catalogkind.CatalogKind_KubernetesNamespace,
 			rawOutputs: map[string]interface{}{
 				"namespace":               "team-alpha",
 				"namespace_id":            "team-alpha",
@@ -452,9 +452,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesConfigMap: flat scalar outputs (name + namespace) from both
-			// engines must land on the StackOutputs proto.
+			// engines must land on the Outputs proto.
 			name: "KubernetesConfigMap",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesConfigMap,
+			kind: catalogkind.CatalogKind_KubernetesConfigMap,
 			rawOutputs: map[string]interface{}{
 				"configmap_name": "app-config",
 				"namespace":      "team-alpha",
@@ -463,9 +463,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesSecret: flat scalar outputs (name, namespace, type) from both
-			// engines must land on the StackOutputs proto.
+			// engines must land on the Outputs proto.
 			name: "KubernetesSecret",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesSecret,
+			kind: catalogkind.CatalogKind_KubernetesSecret,
 			rawOutputs: map[string]interface{}{
 				"secret_name":      "registry-cred",
 				"secret_namespace": "team-alpha",
@@ -476,9 +476,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// KubernetesServiceAccount: identity handles (name, namespace, the
 			// assembled RBAC subject, and the bound cloud identity) from both engines
-			// must land on the StackOutputs proto.
+			// must land on the Outputs proto.
 			name: "KubernetesServiceAccount",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesServiceAccount,
+			kind: catalogkind.CatalogKind_KubernetesServiceAccount,
 			rawOutputs: map[string]interface{}{
 				"service_account_name":     "dns-manager",
 				"namespace":                "team-alpha",
@@ -492,9 +492,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesRbac: created object names/kinds from both engines must land
-			// on the StackOutputs proto.
+			// on the Outputs proto.
 			name: "KubernetesRbac",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesRbac,
+			kind: catalogkind.CatalogKind_KubernetesRbac,
 			rawOutputs: map[string]interface{}{
 				"role_name":    "app-reader",
 				"role_kind":    "Role",
@@ -508,9 +508,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesDeployment: workload identity + Service handles from both
-			// engines must land on the StackOutputs proto.
+			// engines must land on the Outputs proto.
 			name: "KubernetesDeployment",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesDeployment,
+			kind: catalogkind.CatalogKind_KubernetesDeployment,
 			rawOutputs: map[string]interface{}{
 				"namespace":            "team-alpha",
 				"deployment_name":      "checkout",
@@ -526,9 +526,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesStatefulSet: identity handles plus the per-replica DNS
-			// template from both engines must land on the StackOutputs proto.
+			// template from both engines must land on the Outputs proto.
 			name: "KubernetesStatefulSet",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesStatefulSet,
+			kind: catalogkind.CatalogKind_KubernetesStatefulSet,
 			rawOutputs: map[string]interface{}{
 				"namespace":            "team-alpha",
 				"stateful_set_name":    "orders-db",
@@ -545,9 +545,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesDaemonSet: object identity + selector labels from both
-			// engines must land on the StackOutputs proto.
+			// engines must land on the Outputs proto.
 			name: "KubernetesDaemonSet",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesDaemonSet,
+			kind: catalogkind.CatalogKind_KubernetesDaemonSet,
 			rawOutputs: map[string]interface{}{
 				"namespace":       "kube-system",
 				"daemon_set_name": "log-collector",
@@ -557,9 +557,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesJob: object identity + selector labels from both engines
-			// must land on the StackOutputs proto.
+			// must land on the Outputs proto.
 			name: "KubernetesJob",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesJob,
+			kind: catalogkind.CatalogKind_KubernetesJob,
 			rawOutputs: map[string]interface{}{
 				"namespace":       "team-alpha",
 				"job_name":        "schema-migrate",
@@ -569,9 +569,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesCronJob: object identity + the effective schedule from both
-			// engines must land on the StackOutputs proto.
+			// engines must land on the Outputs proto.
 			name: "KubernetesCronJob",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesCronJob,
+			kind: catalogkind.CatalogKind_KubernetesCronJob,
 			rawOutputs: map[string]interface{}{
 				"namespace":     "team-alpha",
 				"cron_job_name": "nightly-backup",
@@ -581,10 +581,10 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesService: identity + address handles from both engines must
-			// land on the StackOutputs proto. LB handles are exercised with the
+			// land on the Outputs proto. LB handles are exercised with the
 			// hostname form (the ip form flattens through the same scalar path).
 			name: "KubernetesService",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesService,
+			kind: catalogkind.CatalogKind_KubernetesService,
 			rawOutputs: map[string]interface{}{
 				"service_name":           "checkout",
 				"namespace":              "team-alpha",
@@ -602,9 +602,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesIngress: identity + load-balancer address handles from both
-			// engines must land on the StackOutputs proto.
+			// engines must land on the Outputs proto.
 			name: "KubernetesIngress",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesIngress,
+			kind: catalogkind.CatalogKind_KubernetesIngress,
 			rawOutputs: map[string]interface{}{
 				"ingress_name":           "checkout-web",
 				"namespace":              "team-alpha",
@@ -618,9 +618,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesNetworkPolicy: object identity + the governed directions
-			// from both engines must land on the StackOutputs proto.
+			// from both engines must land on the Outputs proto.
 			name: "KubernetesNetworkPolicy",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesNetworkPolicy,
+			kind: catalogkind.CatalogKind_KubernetesNetworkPolicy,
 			rawOutputs: map[string]interface{}{
 				"network_policy_name": "default-deny-all",
 				"namespace":           "team-alpha",
@@ -632,9 +632,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesPersistentVolumeClaim: object identity + the requested
-			// size from both engines must land on the StackOutputs proto.
+			// size from both engines must land on the Outputs proto.
 			name: "KubernetesPersistentVolumeClaim",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesPersistentVolumeClaim,
+			kind: catalogkind.CatalogKind_KubernetesPersistentVolumeClaim,
 			rawOutputs: map[string]interface{}{
 				"pvc_name":        "shared-cache",
 				"namespace":       "team-alpha",
@@ -647,9 +647,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// KubernetesStorageClass: cluster-scoped identity + provisioner +
 			// the default-class flag (bool) from both engines must land on the
-			// StackOutputs proto.
+			// Outputs proto.
 			name: "KubernetesStorageClass",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesStorageClass,
+			kind: catalogkind.CatalogKind_KubernetesStorageClass,
 			rawOutputs: map[string]interface{}{
 				"storage_class_name": "fast-ssd",
 				"provisioner":        "ebs.csi.aws.com",
@@ -664,7 +664,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// LimitRange name is empty when no limit_defaults were configured,
 			// so only the always-present fields are required to populate.
 			name: "KubernetesResourceQuota",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesResourceQuota,
+			kind: catalogkind.CatalogKind_KubernetesResourceQuota,
 			rawOutputs: map[string]interface{}{
 				"resource_quota_name": "team-quota",
 				"namespace":           "team-alpha",
@@ -676,10 +676,10 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesPriorityClass: cluster-scoped identity + the priority
-			// integer (int32) from both engines must land on the StackOutputs
+			// integer (int32) from both engines must land on the Outputs
 			// proto.
 			name: "KubernetesPriorityClass",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesPriorityClass,
+			kind: catalogkind.CatalogKind_KubernetesPriorityClass,
 			rawOutputs: map[string]interface{}{
 				"priority_class_name": "critical",
 				"value":               1000000,
@@ -692,7 +692,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesPodDisruptionBudget: object identity — a budget has no
 			// runtime handles beyond it (the eviction API enforces by selector).
 			name: "KubernetesPodDisruptionBudget",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesPodDisruptionBudget,
+			kind: catalogkind.CatalogKind_KubernetesPodDisruptionBudget,
 			rawOutputs: map[string]interface{}{
 				"pod_disruption_budget_name": "checkout-pdb",
 				"namespace":                  "team-alpha",
@@ -704,9 +704,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// KubernetesHorizontalPodAutoscaler: object identity + the scale
 			// target handle + the replica bounds (int32s) from both engines
-			// must land on the StackOutputs proto.
+			// must land on the Outputs proto.
 			name: "KubernetesHorizontalPodAutoscaler",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesHorizontalPodAutoscaler,
+			kind: catalogkind.CatalogKind_KubernetesHorizontalPodAutoscaler,
 			rawOutputs: map[string]interface{}{
 				"horizontal_pod_autoscaler_name": "checkout-hpa",
 				"namespace":                      "team-alpha",
@@ -723,9 +723,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesCertManager: install identity + the two composition
 			// seams (controller ServiceAccount for cloud identity bindings,
 			// cluster-resource namespace where ClusterIssuer credentials
-			// live) from both engines must land on the StackOutputs proto.
+			// live) from both engines must land on the Outputs proto.
 			name: "KubernetesCertManager",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesCertManager,
+			kind: catalogkind.CatalogKind_KubernetesCertManager,
 			rawOutputs: map[string]interface{}{
 				"namespace":                  "cert-manager",
 				"release_name":               "cert-manager",
@@ -741,7 +741,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// ingress-shim annotations reference, plus the ACME account-key
 			// Secret location, from both engines must land on the proto.
 			name: "KubernetesClusterIssuer",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesClusterIssuer,
+			kind: catalogkind.CatalogKind_KubernetesClusterIssuer,
 			rawOutputs: map[string]interface{}{
 				"cluster_issuer_name":          "letsencrypt-production",
 				"secrets_namespace":            "cert-manager",
@@ -755,7 +755,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesIssuer: the namespace-scoped issuer handle
 			// same-namespace Certificates reference.
 			name: "KubernetesIssuer",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesIssuer,
+			kind: catalogkind.CatalogKind_KubernetesIssuer,
 			rawOutputs: map[string]interface{}{
 				"namespace":                    "team-a",
 				"issuer_name":                  "team-a-ca",
@@ -769,7 +769,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesCertificate: the TLS Secret handle every consumer
 			// (Ingress, Gateway, CA issuer) references.
 			name: "KubernetesCertificate",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesCertificate,
+			kind: catalogkind.CatalogKind_KubernetesCertificate,
 			rawOutputs: map[string]interface{}{
 				"namespace":        "team-a",
 				"certificate_name": "api-cert",
@@ -785,7 +785,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// (IRSA trust policy, GKE WI member, Azure federated credential)
 			// reference together with the namespace.
 			name: "KubernetesExternalDns",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesExternalDns,
+			kind: catalogkind.CatalogKind_KubernetesExternalDns,
 			rawOutputs: map[string]interface{}{
 				"namespace":            "external-dns",
 				"release_name":         "external-dns-cloudflare",
@@ -799,9 +799,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesExternalSecretsOperator: install identity + the two
 			// composition seams (controller ServiceAccount for ambient cloud
 			// identity, the namespace where ClusterSecretStore credentials
-			// live) from both engines must land on the StackOutputs proto.
+			// live) from both engines must land on the Outputs proto.
 			name: "KubernetesExternalSecretsOperator",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesExternalSecretsOperator,
+			kind: catalogkind.CatalogKind_KubernetesExternalSecretsOperator,
 			rawOutputs: map[string]interface{}{
 				"namespace":                  "external-secrets",
 				"release_name":               "external-secrets",
@@ -816,7 +816,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// reference (kind ClusterSecretStore) plus the credential-secret
 			// home namespace.
 			name: "KubernetesClusterSecretStore",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesClusterSecretStore,
+			kind: catalogkind.CatalogKind_KubernetesClusterSecretStore,
 			rawOutputs: map[string]interface{}{
 				"store_name":        "aws-prod",
 				"secrets_namespace": "external-secrets",
@@ -829,7 +829,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesSecretStore: the namespaced store handle
 			// same-namespace ExternalSecrets reference.
 			name: "KubernetesSecretStore",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesSecretStore,
+			kind: catalogkind.CatalogKind_KubernetesSecretStore,
 			rawOutputs: map[string]interface{}{
 				"store_name": "team-a-gcp",
 				"namespace":  "team-a",
@@ -842,7 +842,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesExternalSecret: the materialized Secret handle every
 			// workload consumer (env valueFrom, volume secretName) wires to.
 			name: "KubernetesExternalSecret",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesExternalSecret,
+			kind: catalogkind.CatalogKind_KubernetesExternalSecret,
 			rawOutputs: map[string]interface{}{
 				"external_secret_name": "app-db-credentials",
 				"namespace":            "team-a",
@@ -857,9 +857,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// handles (IngressClass name for KubernetesIngress routing,
 			// controller Service names for DNS/traffic wiring, LB address
 			// once the host cloud provisions it) from both engines must
-			// land on the StackOutputs proto.
+			// land on the Outputs proto.
 			name: "KubernetesIngressNginx",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesIngressNginx,
+			kind: catalogkind.CatalogKind_KubernetesIngressNginx,
 			rawOutputs: map[string]interface{}{
 				"namespace":               "ingress-nginx",
 				"release_name":            "ingress-nginx",
@@ -877,9 +877,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// KubernetesMetricsServer: install identity + the APIService /
 			// Service handles the metrics pipeline registers, from both
-			// engines must land on the StackOutputs proto.
+			// engines must land on the Outputs proto.
 			name: "KubernetesMetricsServer",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesMetricsServer,
+			kind: catalogkind.CatalogKind_KubernetesMetricsServer,
 			rawOutputs: map[string]interface{}{
 				"namespace":        "kube-system",
 				"release_name":     "metrics-server",
@@ -893,9 +893,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// KubernetesCilium: install identity + the fixed-name component
 			// handles (hubble relay/ui Services, the "cilium" GatewayClass)
-			// from both engines must land on the StackOutputs proto.
+			// from both engines must land on the Outputs proto.
 			name: "KubernetesCilium",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesCilium,
+			kind: catalogkind.CatalogKind_KubernetesCilium,
 			rawOutputs: map[string]interface{}{
 				"namespace":                 "kube-system",
 				"release_name":              "cilium",
@@ -912,9 +912,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// KubernetesKeda: install identity + the operator service-account
 			// handle keyless cloud bindings are written against, from both
-			// engines must land on the StackOutputs proto.
+			// engines must land on the Outputs proto.
 			name: "KubernetesKeda",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesKeda,
+			kind: catalogkind.CatalogKind_KubernetesKeda,
 			rawOutputs: map[string]interface{}{
 				"namespace":                     "keda",
 				"release_name":                  "keda",
@@ -926,9 +926,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesBackendTlsPolicy: the created CR's identity from both
-			// engines must land on the StackOutputs proto.
+			// engines must land on the Outputs proto.
 			name: "KubernetesBackendTlsPolicy",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesBackendTlsPolicy,
+			kind: catalogkind.CatalogKind_KubernetesBackendTlsPolicy,
 			rawOutputs: map[string]interface{}{
 				"policy_name": "payments-backend-tls",
 				"namespace":   "payments",
@@ -941,9 +941,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesKarpenter: install identity (two fixed-name releases)
 			// + the controller service-account handle IRSA trust policies are
 			// written against, from both engines must land on the
-			// StackOutputs proto.
+			// Outputs proto.
 			name: "KubernetesKarpenter",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesKarpenter,
+			kind: catalogkind.CatalogKind_KubernetesKarpenter,
 			rawOutputs: map[string]interface{}{
 				"namespace":            "kube-system",
 				"release_name":         "karpenter",
@@ -957,9 +957,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// KubernetesKarpenterNodePool: the created cluster-scoped CR's
 			// identity (the karpenter.sh/nodepool join key) from both engines
-			// must land on the StackOutputs proto.
+			// must land on the Outputs proto.
 			name: "KubernetesKarpenterNodePool",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesKarpenterNodePool,
+			kind: catalogkind.CatalogKind_KubernetesKarpenterNodePool,
 			rawOutputs: map[string]interface{}{
 				"node_pool_name": "gp-spot-pool",
 			},
@@ -970,9 +970,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// KubernetesKarpenterEc2NodeClass: the created cluster-scoped
 			// CR's identity (what NodePools reference via node_class_ref)
-			// from both engines must land on the StackOutputs proto.
+			// from both engines must land on the Outputs proto.
 			name: "KubernetesKarpenterEc2NodeClass",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesKarpenterEc2NodeClass,
+			kind: catalogkind.CatalogKind_KubernetesKarpenterEc2NodeClass,
 			rawOutputs: map[string]interface{}{
 				"node_class_name": "default-al2023",
 			},
@@ -983,9 +983,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// KubernetesClusterAutoscaler: install identity + the
 			// service-account handle keyless cloud bindings are written
-			// against, from both engines must land on the StackOutputs proto.
+			// against, from both engines must land on the Outputs proto.
 			name: "KubernetesClusterAutoscaler",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesClusterAutoscaler,
+			kind: catalogkind.CatalogKind_KubernetesClusterAutoscaler,
 			rawOutputs: map[string]interface{}{
 				"namespace":            "kube-system",
 				"release_name":         "cluster-autoscaler",
@@ -999,9 +999,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesVelero: install identity + the server
 			// service-account handle keyless bindings target + the default
 			// BackupStorageLocation name Backups/Schedules reference, from
-			// both engines must land on the StackOutputs proto.
+			// both engines must land on the Outputs proto.
 			name: "KubernetesVelero",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesVelero,
+			kind: catalogkind.CatalogKind_KubernetesVelero,
 			rawOutputs: map[string]interface{}{
 				"namespace":                    "velero",
 				"release_name":                 "velero",
@@ -1014,9 +1014,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesGatewayApiCrds: install identity (version, channel,
-			// manifest URL) from both engines must land on the StackOutputs proto.
+			// manifest URL) from both engines must land on the Outputs proto.
 			name: "KubernetesGatewayApiCrds",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesGatewayApiCrds,
+			kind: catalogkind.CatalogKind_KubernetesGatewayApiCrds,
 			rawOutputs: map[string]interface{}{
 				"installed_version":      "v1.6.1",
 				"installed_channel":      "standard",
@@ -1028,9 +1028,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesGatewayClass: class identity (cluster-scoped, no
-			// namespace) from both engines must land on the StackOutputs proto.
+			// namespace) from both engines must land on the Outputs proto.
 			name: "KubernetesGatewayClass",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesGatewayClass,
+			kind: catalogkind.CatalogKind_KubernetesGatewayClass,
 			rawOutputs: map[string]interface{}{
 				"gateway_class_name": "istio",
 				"controller_name":    "istio.io/gateway-controller",
@@ -1039,9 +1039,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesGateway: gateway identity + its class handle from both
-			// engines must land on the StackOutputs proto.
+			// engines must land on the Outputs proto.
 			name: "KubernetesGateway",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesGateway,
+			kind: catalogkind.CatalogKind_KubernetesGateway,
 			rawOutputs: map[string]interface{}{
 				"gateway_name":       "edge-gateway",
 				"namespace":          "gateway-system",
@@ -1051,9 +1051,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesListenerSet: listener-set identity + the parent Gateway
-			// handle from both engines must land on the StackOutputs proto.
+			// handle from both engines must land on the Outputs proto.
 			name: "KubernetesListenerSet",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesListenerSet,
+			kind: catalogkind.CatalogKind_KubernetesListenerSet,
 			rawOutputs: map[string]interface{}{
 				"listener_set_name": "team-alpha-listeners",
 				"namespace":         "team-alpha",
@@ -1063,9 +1063,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesHttpRoute: route identity from both engines must land
-			// on the StackOutputs proto (the route kinds share this shape).
+			// on the Outputs proto (the route kinds share this shape).
 			name: "KubernetesHttpRoute",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesHttpRoute,
+			kind: catalogkind.CatalogKind_KubernetesHttpRoute,
 			rawOutputs: map[string]interface{}{
 				"route_name": "app-route",
 				"namespace":  "team-alpha",
@@ -1077,7 +1077,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "KubernetesGrpcRoute",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesGrpcRoute,
+			kind: catalogkind.CatalogKind_KubernetesGrpcRoute,
 			rawOutputs: map[string]interface{}{
 				"route_name": "grpc-route",
 				"namespace":  "team-alpha",
@@ -1086,7 +1086,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "KubernetesTcpRoute",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesTcpRoute,
+			kind: catalogkind.CatalogKind_KubernetesTcpRoute,
 			rawOutputs: map[string]interface{}{
 				"route_name": "tcp-route",
 				"namespace":  "team-alpha",
@@ -1095,7 +1095,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "KubernetesUdpRoute",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesUdpRoute,
+			kind: catalogkind.CatalogKind_KubernetesUdpRoute,
 			rawOutputs: map[string]interface{}{
 				"route_name": "udp-route",
 				"namespace":  "team-alpha",
@@ -1104,7 +1104,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "KubernetesTlsRoute",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesTlsRoute,
+			kind: catalogkind.CatalogKind_KubernetesTlsRoute,
 			rawOutputs: map[string]interface{}{
 				"route_name": "tls-route",
 				"namespace":  "team-alpha",
@@ -1113,9 +1113,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesReferenceGrant: grant identity from both engines must
-			// land on the StackOutputs proto.
+			// land on the Outputs proto.
 			name: "KubernetesReferenceGrant",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesReferenceGrant,
+			kind: catalogkind.CatalogKind_KubernetesReferenceGrant,
 			rawOutputs: map[string]interface{}{
 				"reference_grant_name": "allow-frontend-routes",
 				"namespace":            "backend",
@@ -1127,9 +1127,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// compose against — the GatewayClass name (KubernetesGateway seam),
 			// the trust domain (AuthorizationPolicy principals), the istiod
 			// discovery Service, and the data plane mode — from both engines
-			// must land on the StackOutputs proto.
+			// must land on the Outputs proto.
 			name: "KubernetesIstio",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesIstio,
+			kind: catalogkind.CatalogKind_KubernetesIstio,
 			rawOutputs: map[string]interface{}{
 				"namespace":           "istio-system",
 				"istiod_service_name": "istiod",
@@ -1145,9 +1145,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesIstioBaseCrds: the installed-release record from both
-			// engines must land on the StackOutputs proto.
+			// engines must land on the Outputs proto.
 			name: "KubernetesIstioBaseCrds",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesIstioBaseCrds,
+			kind: catalogkind.CatalogKind_KubernetesIstioBaseCrds,
 			rawOutputs: map[string]interface{}{
 				"installed_release":      "1.30.3",
 				"installed_manifest_url": "https://raw.githubusercontent.com/istio/istio/1.30.3/manifests/charts/base/files/crd-all.gen.yaml",
@@ -1156,10 +1156,10 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// KubernetesDestinationRule: CR identity from both engines must
-			// land on the StackOutputs proto (the typed Istio CR kinds share
+			// land on the Outputs proto (the typed Istio CR kinds share
 			// this shape).
 			name: "KubernetesDestinationRule",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesDestinationRule,
+			kind: catalogkind.CatalogKind_KubernetesDestinationRule,
 			rawOutputs: map[string]interface{}{
 				"destination_rule_name": "reviews-circuit-breaker",
 				"namespace":             "team-alpha",
@@ -1168,7 +1168,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "KubernetesServiceEntry",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesServiceEntry,
+			kind: catalogkind.CatalogKind_KubernetesServiceEntry,
 			rawOutputs: map[string]interface{}{
 				"service_entry_name": "external-api",
 				"namespace":          "team-alpha",
@@ -1177,7 +1177,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "KubernetesPeerAuthentication",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesPeerAuthentication,
+			kind: catalogkind.CatalogKind_KubernetesPeerAuthentication,
 			rawOutputs: map[string]interface{}{
 				"peer_authentication_name": "namespace-strict-mtls",
 				"namespace":                "team-alpha",
@@ -1186,7 +1186,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "KubernetesRequestAuthentication",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesRequestAuthentication,
+			kind: catalogkind.CatalogKind_KubernetesRequestAuthentication,
 			rawOutputs: map[string]interface{}{
 				"request_authentication_name": "jwt-auth",
 				"namespace":                   "team-alpha",
@@ -1195,7 +1195,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "KubernetesAuthorizationPolicy",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesAuthorizationPolicy,
+			kind: catalogkind.CatalogKind_KubernetesAuthorizationPolicy,
 			rawOutputs: map[string]interface{}{
 				"authorization_policy_name": "require-jwt",
 				"namespace":                 "team-alpha",
@@ -1204,7 +1204,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "KubernetesPrometheusRule",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesPrometheusRule,
+			kind: catalogkind.CatalogKind_KubernetesPrometheusRule,
 			rawOutputs: map[string]interface{}{
 				"prometheus_rule_name": "api-slo",
 				"namespace":            "monitoring",
@@ -1213,7 +1213,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "KubernetesServiceMonitor",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesServiceMonitor,
+			kind: catalogkind.CatalogKind_KubernetesServiceMonitor,
 			rawOutputs: map[string]interface{}{
 				"service_monitor_name": "api",
 				"namespace":            "api",
@@ -1222,7 +1222,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "KubernetesPodMonitor",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesPodMonitor,
+			kind: catalogkind.CatalogKind_KubernetesPodMonitor,
 			rawOutputs: map[string]interface{}{
 				"pod_monitor_name": "orders-db",
 				"namespace":        "orders",
@@ -1231,7 +1231,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "KubernetesTelemetry",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesTelemetry,
+			kind: catalogkind.CatalogKind_KubernetesTelemetry,
 			rawOutputs: map[string]interface{}{
 				"telemetry_name": "mesh-default-tracing",
 				"namespace":      "istio-system",
@@ -1240,7 +1240,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "KubernetesEnvoyFilter",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesEnvoyFilter,
+			kind: catalogkind.CatalogKind_KubernetesEnvoyFilter,
 			rawOutputs: map[string]interface{}{
 				"envoy_filter_name": "grpc-web-cors",
 				"namespace":         "istio-system",
@@ -1250,9 +1250,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// KubernetesManifest: the anchor namespace + the applied-resource
 			// inventory (a repeated string derived from the input YAML) from
-			// both engines must land on the StackOutputs proto.
+			// both engines must land on the Outputs proto.
 			name: "KubernetesManifest",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesManifest,
+			kind: catalogkind.CatalogKind_KubernetesManifest,
 			rawOutputs: map[string]interface{}{
 				"namespace":         "team-alpha",
 				"applied_resources": []interface{}{"v1/ConfigMap/app-config", "apps/v1/Deployment/app"},
@@ -1264,9 +1264,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// KubernetesHelmRelease: release identity + Helm-recorded state
 			// (chart/app versions, status, revision int32) from both engines
-			// must land on the StackOutputs proto.
+			// must land on the Outputs proto.
 			name: "KubernetesHelmRelease",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesHelmRelease,
+			kind: catalogkind.CatalogKind_KubernetesHelmRelease,
 			rawOutputs: map[string]interface{}{
 				"namespace":    "podinfo",
 				"release_name": "podinfo",
@@ -1285,7 +1285,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// release, Deployment (= chart fullname), the chart-managed
 			// operator-credentials Secret, and the metrics-exporter endpoint.
 			name: "KubernetesAltinityOperator",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesAltinityOperator,
+			kind: catalogkind.CatalogKind_KubernetesAltinityOperator,
 			rawOutputs: map[string]interface{}{
 				"namespace":               "clickhouse-operator-system",
 				"release_name":            "altinity-op",
@@ -1304,7 +1304,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// protocol endpoints, the module-managed auth Secret, and the
 			// managed Keeper handles.
 			name: "KubernetesClickHouse",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesClickHouse,
+			kind: catalogkind.CatalogKind_KubernetesClickHouse,
 			rawOutputs: map[string]interface{}{
 				"namespace":            "analytics",
 				"chi_name":             "events-ch",
@@ -1329,7 +1329,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// credential Secret, and the port-forward recipe. Nested
 			// admin_password_secret{name,key} is the credential handle.
 			name: "KubernetesHarbor",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesHarbor,
+			kind: catalogkind.CatalogKind_KubernetesHarbor,
 			rawOutputs: map[string]interface{}{
 				"namespace":          "harbor",
 				"expose_service":     "registry",
@@ -1363,7 +1363,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// handle, and the module-composed connection/key Secret names
 			// downstream composition mounts.
 			name: "KubernetesAirflow",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesAirflow,
+			kind: catalogkind.CatalogKind_KubernetesAirflow,
 			rawOutputs: map[string]interface{}{
 				"namespace":           "airflow",
 				"api_server_service":  "pipelines-api-server",
@@ -1389,7 +1389,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// (fullnameOverride "" — hub, proxy-public) and the
 			// shared-password credential handle.
 			name: "KubernetesJupyterHub",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesJupyterHub,
+			kind: catalogkind.CatalogKind_KubernetesJupyterHub,
 			rawOutputs: map[string]interface{}{
 				"namespace":            "notebooks",
 				"proxy_public_service": "proxy-public",
@@ -1413,7 +1413,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// point MLFLOW_TRACKING_URI at, the admin credential handle and
 			// the composed backend-URI Secret name.
 			name: "KubernetesMlflow",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesMlflow,
+			kind: catalogkind.CatalogKind_KubernetesMlflow,
 			rawOutputs: map[string]interface{}{
 				"namespace":         "mlflow",
 				"service":           "experiments",
@@ -1437,7 +1437,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// admission and CRD conversion, and the cert-manager-issued
 			// serving-cert Secret.
 			name: "KubernetesOtelOperator",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesOtelOperator,
+			kind: catalogkind.CatalogKind_KubernetesOtelOperator,
 			rawOutputs: map[string]interface{}{
 				"namespace":                "otel-operator-system",
 				"release_name":             "otel-operator",
@@ -1455,7 +1455,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// monitoring siblings, and the OTLP ingest endpoints (the
 			// composition handles applications push telemetry to).
 			name: "KubernetesOtelCollector",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesOtelCollector,
+			kind: catalogkind.CatalogKind_KubernetesOtelCollector,
 			rawOutputs: map[string]interface{}{
 				"namespace":          "observability",
 				"collector_name":     "otel-gateway",
@@ -1476,7 +1476,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// S3/filer/master Service handles, both credential Secrets
 			// (chart-owned S3, module-generated admin), and the endpoints.
 			name: "KubernetesSeaweedFs",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesSeaweedFs,
+			kind: catalogkind.CatalogKind_KubernetesSeaweedFs,
 			rawOutputs: map[string]interface{}{
 				"namespace":                  "object-store",
 				"release_name":               "artifacts",
@@ -1500,7 +1500,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// main Service with REST and gRPC endpoints, and the chart-owned
 			// API-key Secret handles (read-write + read-only).
 			name: "KubernetesQdrant",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesQdrant,
+			kind: catalogkind.CatalogKind_KubernetesQdrant,
 			rawOutputs: map[string]interface{}{
 				"namespace":                     "vector-search",
 				"release_name":                  "embeddings",
@@ -1523,7 +1523,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// ConfigMap (the engine's skip-list, the first object to
 			// inspect when a resource is unexpectedly skipped or policed).
 			name: "KubernetesKyverno",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesKyverno,
+			kind: catalogkind.CatalogKind_KubernetesKyverno,
 			rawOutputs: map[string]interface{}{
 				"namespace":              "kyverno",
 				"release_name":           "kyverno",
@@ -1541,7 +1541,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// webhook Service and the cert Secret the embedded rotator
 			// maintains.
 			name: "KubernetesGatekeeper",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesGatekeeper,
+			kind: catalogkind.CatalogKind_KubernetesGatekeeper,
 			rawOutputs: map[string]interface{}{
 				"namespace":                "gatekeeper-system",
 				"release_name":             "gatekeeper",
@@ -1558,7 +1558,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// handles (namespace, Deployment, metrics endpoint, the CRD the
 			// manifest installs and deletes with the resource).
 			name: "KubernetesRabbitMqOperator",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesRabbitMqOperator,
+			kind: catalogkind.CatalogKind_KubernetesRabbitMqOperator,
 			rawOutputs: map[string]interface{}{
 				"namespace":        "rabbitmq-system",
 				"deployment_name":  "rabbitmq-cluster-operator",
@@ -1574,7 +1574,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// and headless Services, both client endpoints, and the
 			// operator-generated default-user Secret handle.
 			name: "KubernetesRabbitMq",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesRabbitMq,
+			kind: catalogkind.CatalogKind_KubernetesRabbitMq,
 			rawOutputs: map[string]interface{}{
 				"namespace":                "messaging",
 				"cluster_name":             "orders-mq",
@@ -1599,7 +1599,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// datasources compose against, and the bundled Grafana's admin-Secret
 			// handle.
 			name: "KubernetesKubePrometheusStack",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesKubePrometheusStack,
+			kind: catalogkind.CatalogKind_KubernetesKubePrometheusStack,
 			rawOutputs: map[string]interface{}{
 				"namespace":                       "observability",
 				"release_name":                    "monitoring",
@@ -1626,7 +1626,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// and the chart-generated admin Secret share the resource name — plus
 			// the endpoint and port-forward composition handles.
 			name: "KubernetesGrafana",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesGrafana,
+			kind: catalogkind.CatalogKind_KubernetesGrafana,
 			rawOutputs: map[string]interface{}{
 				"namespace":            "observability",
 				"release_name":         "dashboards",
@@ -1646,7 +1646,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// admin Secret handle (fixed name, created by Argo CD itself at
 			// first start) and the endpoint/port-forward composition handles.
 			name: "KubernetesArgocd",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesArgocd,
+			kind: catalogkind.CatalogKind_KubernetesArgocd,
 			rawOutputs: map[string]interface{}{
 				"namespace":                 "gitops",
 				"release_name":              "delivery",
@@ -1666,7 +1666,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// namespace, the registry Tekton's images are pulled from, and
 			// the per-build images every TaskRun pod pulls.
 			name: "KubernetesTektonOperator",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesTektonOperator,
+			kind: catalogkind.CatalogKind_KubernetesTektonOperator,
 			rawOutputs: map[string]interface{}{
 				"namespace":               "tekton-operator",
 				"image_registry":          "ghcr.io",
@@ -1685,7 +1685,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// namespace, profile, and the dashboard Service handles exposure
 			// kinds compose against (populated on profile `all`).
 			name: "KubernetesTekton",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesTekton,
+			kind: catalogkind.CatalogKind_KubernetesTekton,
 			rawOutputs: map[string]interface{}{
 				"namespace":               "tekton-pipelines",
 				"profile":                 "all",
@@ -1703,7 +1703,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// namespace and the fixed release name (one operator per
 			// cluster, self-enforced at startup).
 			name: "KubernetesPlantonOperator",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesPlantonOperator,
+			kind: catalogkind.CatalogKind_KubernetesPlantonOperator,
 			rawOutputs: map[string]interface{}{
 				"namespace":    "planton-operator",
 				"release_name": "planton-operator",
@@ -1717,7 +1717,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// setup-code Secret, and the two exact commands a person (or
 			// the desktop's connect-existing flow) runs.
 			name: "KubernetesPlantonPlatform",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesPlantonPlatform,
+			kind: catalogkind.CatalogKind_KubernetesPlantonPlatform,
 			rawOutputs: map[string]interface{}{
 				"namespace":            "planton",
 				"platform_name":        "planton",
@@ -1736,7 +1736,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// naming contract — the controller ServiceAccount equals the
 			// release name — the handle fenced scale sets reference.
 			name: "KubernetesGhaRunnerScaleSetController",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesGhaRunnerScaleSetController,
+			kind: catalogkind.CatalogKind_KubernetesGhaRunnerScaleSetController,
 			rawOutputs: map[string]interface{}{
 				"namespace":            "arc-system",
 				"release_name":         "arc",
@@ -1750,7 +1750,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesGhaRunnerScaleSet: the GitHub-visible fleet identity —
 			// the exact `runs-on:` value — plus the registration URL.
 			name: "KubernetesGhaRunnerScaleSet",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesGhaRunnerScaleSet,
+			kind: catalogkind.CatalogKind_KubernetesGhaRunnerScaleSet,
 			rawOutputs: map[string]interface{}{
 				"namespace":             "ci-runners",
 				"release_name":          "build-runners",
@@ -1768,7 +1768,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// ServiceAccount handle (the identity to annotate for
 			// IRSA/workload identity) and the endpoint/port-forward handles.
 			name: "KubernetesArgoWorkflows",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesArgoWorkflows,
+			kind: catalogkind.CatalogKind_KubernetesArgoWorkflows,
 			rawOutputs: map[string]interface{}{
 				"namespace":                "pipelines",
 				"release_name":             "runs",
@@ -1790,7 +1790,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// including the password Secret handle (nested name/key — the
 			// flat-vs-nested drift class this guard exists for).
 			name: "KubernetesSignoz",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesSignoz,
+			kind: catalogkind.CatalogKind_KubernetesSignoz,
 			rawOutputs: map[string]interface{}{
 				"namespace":              "observability",
 				"service":                "observe",
@@ -1815,9 +1815,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// AwsSubnet: flat scalar outputs from both engines (subnet id/arn, AZ,
-			// CIDR, route table id, region) must each land on the StackOutputs proto.
+			// CIDR, route table id, region) must each land on the Outputs proto.
 			name: "AwsSubnet",
-			kind: cloudresourcekind.CloudResourceKind_AwsSubnet,
+			kind: catalogkind.CatalogKind_AwsSubnet,
 			rawOutputs: map[string]interface{}{
 				"subnet_id":         "subnet-0abc123",
 				"subnet_arn":        "arn:aws:ec2:us-west-2:123456789012:subnet/subnet-0abc123",
@@ -1833,9 +1833,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// AwsInternetGateway: flat scalar outputs from both engines (gateway
-			// id/arn, attached vpc id, region) must each land on the StackOutputs proto.
+			// id/arn, attached vpc id, region) must each land on the Outputs proto.
 			name: "AwsInternetGateway",
-			kind: cloudresourcekind.CloudResourceKind_AwsInternetGateway,
+			kind: catalogkind.CatalogKind_AwsInternetGateway,
 			rawOutputs: map[string]interface{}{
 				"internet_gateway_id":  "igw-0abc123",
 				"internet_gateway_arn": "arn:aws:ec2:us-west-2:123456789012:internet-gateway/igw-0abc123",
@@ -1848,10 +1848,10 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// AwsEgressOnlyInternetGateway: flat scalar outputs from both engines
-			// (gateway id, attached vpc id, region) must each land on the StackOutputs
+			// (gateway id, attached vpc id, region) must each land on the Outputs
 			// proto. An egress-only gateway has no ARN, so none is emitted.
 			name: "AwsEgressOnlyInternetGateway",
-			kind: cloudresourcekind.CloudResourceKind_AwsEgressOnlyInternetGateway,
+			kind: catalogkind.CatalogKind_AwsEgressOnlyInternetGateway,
 			rawOutputs: map[string]interface{}{
 				"egress_only_internet_gateway_id": "eigw-0abc123",
 				"vpc_id":                          "vpc-0abc123",
@@ -1864,9 +1864,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpServiceAccount: flat scalar outputs from both engines (email, the
 			// ready-made IAM member string, stable unique id, fully-qualified name,
-			// and the optional key) must each land on the StackOutputs proto.
+			// and the optional key) must each land on the Outputs proto.
 			name: "GcpServiceAccount",
-			kind: cloudresourcekind.CloudResourceKind_GcpServiceAccount,
+			kind: catalogkind.CatalogKind_GcpServiceAccount,
 			rawOutputs: map[string]interface{}{
 				"email":      "my-sa@my-project.iam.gserviceaccount.com",
 				"member":     "serviceAccount:my-sa@my-project.iam.gserviceaccount.com",
@@ -1881,9 +1881,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpIamCustomRole: flat scalar outputs from both engines (the grantable
 			// fully-qualified role name, the bare role id, and the soft-delete flag)
-			// must each land on the StackOutputs proto.
+			// must each land on the Outputs proto.
 			name: "GcpIamCustomRole",
-			kind: cloudresourcekind.CloudResourceKind_GcpIamCustomRole,
+			kind: catalogkind.CatalogKind_GcpIamCustomRole,
 			rawOutputs: map[string]interface{}{
 				"name":    "projects/my-project/roles/logBucketWriter",
 				"role_id": "logBucketWriter",
@@ -1895,9 +1895,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// GcpProjectIamMember: the grant tuple echoed by both engines (project,
-			// role, member, policy etag) must each land on the StackOutputs proto.
+			// role, member, policy etag) must each land on the Outputs proto.
 			name: "GcpProjectIamMember",
-			kind: cloudresourcekind.CloudResourceKind_GcpProjectIamMember,
+			kind: catalogkind.CatalogKind_GcpProjectIamMember,
 			rawOutputs: map[string]interface{}{
 				"project_id": "my-project",
 				"role":       "projects/my-project/roles/logBucketWriter",
@@ -1911,9 +1911,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpServiceAccountIamMember: the grant tuple echoed by both engines
 			// (the account's fully-qualified name, role, member, policy etag)
-			// must each land on the StackOutputs proto.
+			// must each land on the Outputs proto.
 			name: "GcpServiceAccountIamMember",
-			kind: cloudresourcekind.CloudResourceKind_GcpServiceAccountIamMember,
+			kind: catalogkind.CatalogKind_GcpServiceAccountIamMember,
 			rawOutputs: map[string]interface{}{
 				"service_account_id": "projects/my-project/serviceAccounts/deployer@my-project.iam.gserviceaccount.com",
 				"role":               "roles/iam.workloadIdentityUser",
@@ -1927,9 +1927,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpKmsKeyIamMember: the grant tuple echoed by both engines (the
 			// key's fully-qualified path, role, member, policy etag) must each
-			// land on the StackOutputs proto.
+			// land on the Outputs proto.
 			name: "GcpKmsKeyIamMember",
-			kind: cloudresourcekind.CloudResourceKind_GcpKmsKeyIamMember,
+			kind: catalogkind.CatalogKind_GcpKmsKeyIamMember,
 			rawOutputs: map[string]interface{}{
 				"crypto_key_id": "projects/my-project/locations/us-central1/keyRings/app-ring/cryptoKeys/state-key",
 				"role":          "roles/cloudkms.cryptoKeyEncrypterDecrypter",
@@ -1944,9 +1944,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpWorkloadIdentityPool: flat scalar outputs from both engines (the
 			// full pool resource name principals embed, the bare pool id providers
 			// reference, and the lifecycle state) must each land on the
-			// StackOutputs proto.
+			// Outputs proto.
 			name: "GcpWorkloadIdentityPool",
-			kind: cloudresourcekind.CloudResourceKind_GcpWorkloadIdentityPool,
+			kind: catalogkind.CatalogKind_GcpWorkloadIdentityPool,
 			rawOutputs: map[string]interface{}{
 				"name":                      "projects/123456789/locations/global/workloadIdentityPools/github-actions",
 				"workload_identity_pool_id": "github-actions",
@@ -1960,9 +1960,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpWorkloadIdentityPoolProvider: flat scalar outputs from both
 			// engines (the full provider resource name — the token-exchange
 			// audience — the bare provider id, and the lifecycle state) must each
-			// land on the StackOutputs proto.
+			// land on the Outputs proto.
 			name: "GcpWorkloadIdentityPoolProvider",
-			kind: cloudresourcekind.CloudResourceKind_GcpWorkloadIdentityPoolProvider,
+			kind: catalogkind.CatalogKind_GcpWorkloadIdentityPoolProvider,
 			rawOutputs: map[string]interface{}{
 				"name":                               "projects/123456789/locations/global/workloadIdentityPools/github-actions/providers/github-oidc",
 				"workload_identity_pool_provider_id": "github-oidc",
@@ -1976,9 +1976,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpHealthCheck: flat scalar outputs from both engines (the self-link
 			// backend services reference, the cloud-side name, the computed probe
 			// type, and the scope-marking region — empty for global) must each
-			// land on the StackOutputs proto.
+			// land on the Outputs proto.
 			name: "GcpHealthCheck",
-			kind: cloudresourcekind.CloudResourceKind_GcpHealthCheck,
+			kind: catalogkind.CatalogKind_GcpHealthCheck,
 			rawOutputs: map[string]interface{}{
 				"self_link":         "https://www.googleapis.com/compute/v1/projects/my-project/global/healthChecks/web-probe",
 				"health_check_name": "web-probe",
@@ -1996,7 +1996,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// manager self link, the rotating template link, the group name,
 			// and the location.
 			name: "GcpComputeMig",
-			kind: cloudresourcekind.CloudResourceKind_GcpComputeMig,
+			kind: catalogkind.CatalogKind_GcpComputeMig,
 			rawOutputs: map[string]interface{}{
 				"instance_group":             "https://www.googleapis.com/compute/v1/projects/my-project/zones/us-central1-a/instanceGroups/web-tier",
 				"self_link":                  "https://www.googleapis.com/compute/v1/projects/my-project/zones/us-central1-a/instanceGroupManagers/web-tier",
@@ -2014,7 +2014,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// docker_repository, virtual/remote upstreams), the registry
 			// endpoint clients push to, and the location.
 			name: "GcpArtifactRegistryRepo",
-			kind: cloudresourcekind.CloudResourceKind_GcpArtifactRegistryRepo,
+			kind: catalogkind.CatalogKind_GcpArtifactRegistryRepo,
 			rawOutputs: map[string]interface{}{
 				"name":            "app-images",
 				"repository_path": "projects/prod-project/locations/us-central1/repositories/app-images",
@@ -2028,7 +2028,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the name alias, the gs:// URL, the API self link, the
 			// upper-cased location, and the numeric owning project.
 			name: "GcpGcsBucket",
-			kind: cloudresourcekind.CloudResourceKind_GcpGcsBucket,
+			kind: catalogkind.CatalogKind_GcpGcsBucket,
 			rawOutputs: map[string]interface{}{
 				"bucket_id":      "prod-data-lake",
 				"bucket_name":    "prod-data-lake",
@@ -2046,9 +2046,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// cloud-side name, numeric id, self link the disk/instance-group
 			// consumers reference, both IPs — external empty for private
 			// VMs — status, zone, machine type, CPU platform) must each land
-			// on the StackOutputs proto.
+			// on the Outputs proto.
 			name: "GcpComputeInstance",
-			kind: cloudresourcekind.CloudResourceKind_GcpComputeInstance,
+			kind: catalogkind.CatalogKind_GcpComputeInstance,
 			rawOutputs: map[string]interface{}{
 				"instance_name": "pg-primary",
 				"instance_id":   "4123456789012345678",
@@ -2069,9 +2069,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpComputeDisk: flat scalar outputs from both engines (the
 			// cloud-side name, numeric id, the self link attached_disks
 			// consume, the plain zone, size, and the normalized plain type
-			// name) must each land on the StackOutputs proto.
+			// name) must each land on the Outputs proto.
 			name: "GcpComputeDisk",
-			kind: cloudresourcekind.CloudResourceKind_GcpComputeDisk,
+			kind: catalogkind.CatalogKind_GcpComputeDisk,
 			rawOutputs: map[string]interface{}{
 				"name":      "pg-data",
 				"disk_id":   "7123456789012345678",
@@ -2090,7 +2090,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// mount addresses, the share name, timestamps, the GCP-resolved
 			// reserved range, and the concurrency ETag.
 			name: "GcpFilestoreInstance",
-			kind: cloudresourcekind.CloudResourceKind_GcpFilestoreInstance,
+			kind: catalogkind.CatalogKind_GcpFilestoreInstance,
 			rawOutputs: map[string]interface{}{
 				"instance_id":       "projects/prod-project/locations/us-central1-a/instances/shared-nfs",
 				"instance_name":     "shared-nfs",
@@ -2108,9 +2108,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpBackendBucket: flat scalar outputs from both engines (the
 			// self-link URL maps reference, the cloud-side name, and the origin
-			// bucket) must each land on the StackOutputs proto.
+			// bucket) must each land on the Outputs proto.
 			name: "GcpBackendBucket",
-			kind: cloudresourcekind.CloudResourceKind_GcpBackendBucket,
+			kind: catalogkind.CatalogKind_GcpBackendBucket,
 			rawOutputs: map[string]interface{}{
 				"self_link":           "https://www.googleapis.com/compute/v1/projects/my-project/global/backendBuckets/static-assets",
 				"backend_bucket_name": "static-assets",
@@ -2124,9 +2124,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpBackendService: flat scalar outputs from both engines (the
 			// self-link URL maps reference, the cloud-side name, the numeric id,
 			// and the concurrency fingerprint) must each land on the
-			// StackOutputs proto.
+			// Outputs proto.
 			name: "GcpBackendService",
-			kind: cloudresourcekind.CloudResourceKind_GcpBackendService,
+			kind: catalogkind.CatalogKind_GcpBackendService,
 			rawOutputs: map[string]interface{}{
 				"self_link":            "https://www.googleapis.com/compute/v1/projects/my-project/global/backendServices/web-backend",
 				"backend_service_name": "web-backend",
@@ -2140,9 +2140,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// GcpRegionNetworkEndpointGroup: flat scalar outputs from both engines
-			// (self-link, name, endpoint type, region) must land on StackOutputs.
+			// (self-link, name, endpoint type, region) must land on Outputs.
 			name: "GcpRegionNetworkEndpointGroup",
-			kind: cloudresourcekind.CloudResourceKind_GcpRegionNetworkEndpointGroup,
+			kind: catalogkind.CatalogKind_GcpRegionNetworkEndpointGroup,
 			rawOutputs: map[string]interface{}{
 				"self_link":                   "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/networkEndpointGroups/my-neg",
 				"network_endpoint_group_name": "my-neg",
@@ -2155,9 +2155,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// GcpUrlMap: flat scalar outputs from both engines (self-link, name,
-			// numeric id, fingerprint) must land on StackOutputs.
+			// numeric id, fingerprint) must land on Outputs.
 			name: "GcpUrlMap",
-			kind: cloudresourcekind.CloudResourceKind_GcpUrlMap,
+			kind: catalogkind.CatalogKind_GcpUrlMap,
 			rawOutputs: map[string]interface{}{
 				"self_link":    "https://www.googleapis.com/compute/v1/projects/my-project/global/urlMaps/my-map",
 				"url_map_name": "my-map",
@@ -2171,9 +2171,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// GcpManagedSslCertificate: flat scalar outputs from both engines
-			// (self-link, name, id, expire_time) must land on StackOutputs.
+			// (self-link, name, id, expire_time) must land on Outputs.
 			name: "GcpManagedSslCertificate",
-			kind: cloudresourcekind.CloudResourceKind_GcpManagedSslCertificate,
+			kind: catalogkind.CatalogKind_GcpManagedSslCertificate,
 			rawOutputs: map[string]interface{}{
 				"self_link":        "https://www.googleapis.com/compute/v1/projects/my-project/global/sslCertificates/my-cert",
 				"certificate_name": "my-cert",
@@ -2186,9 +2186,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// GcpTargetHttpProxy: flat scalar outputs from both engines
-			// (self-link, name, numeric id, fingerprint) must land on StackOutputs.
+			// (self-link, name, numeric id, fingerprint) must land on Outputs.
 			name: "GcpTargetHttpProxy",
-			kind: cloudresourcekind.CloudResourceKind_GcpTargetHttpProxy,
+			kind: catalogkind.CatalogKind_GcpTargetHttpProxy,
 			rawOutputs: map[string]interface{}{
 				"self_link":   "https://www.googleapis.com/compute/v1/projects/my-project/global/targetHttpProxies/my-proxy",
 				"proxy_name":  "my-proxy",
@@ -2202,9 +2202,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// GcpTargetHttpsProxy: flat scalar outputs from both engines
-			// (self-link, name, numeric id, fingerprint) must land on StackOutputs.
+			// (self-link, name, numeric id, fingerprint) must land on Outputs.
 			name: "GcpTargetHttpsProxy",
-			kind: cloudresourcekind.CloudResourceKind_GcpTargetHttpsProxy,
+			kind: catalogkind.CatalogKind_GcpTargetHttpsProxy,
 			rawOutputs: map[string]interface{}{
 				"self_link":   "https://www.googleapis.com/compute/v1/projects/my-project/global/targetHttpsProxies/my-proxy",
 				"proxy_name":  "my-proxy",
@@ -2219,9 +2219,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpGlobalForwardingRule: flat scalar outputs from both engines (the
 			// VIP, self-link, name, numeric id, and the PSC connection fields)
-			// must land on StackOutputs.
+			// must land on Outputs.
 			name: "GcpGlobalForwardingRule",
-			kind: cloudresourcekind.CloudResourceKind_GcpGlobalForwardingRule,
+			kind: catalogkind.CatalogKind_GcpGlobalForwardingRule,
 			rawOutputs: map[string]interface{}{
 				"ip_address":            "34.120.1.2",
 				"self_link":             "https://www.googleapis.com/compute/v1/projects/my-project/global/forwardingRules/my-frontend",
@@ -2241,9 +2241,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpSslPolicy: flat scalar outputs plus the repeated enabled_features
 			// cipher list both engines emit (per-index keys) must land on
-			// StackOutputs.
+			// Outputs.
 			name: "GcpSslPolicy",
-			kind: cloudresourcekind.CloudResourceKind_GcpSslPolicy,
+			kind: catalogkind.CatalogKind_GcpSslPolicy,
 			rawOutputs: map[string]interface{}{
 				"self_link":          "https://www.googleapis.com/compute/v1/projects/my-project/global/sslPolicies/my-policy",
 				"ssl_policy_name":    "my-policy",
@@ -2258,9 +2258,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpMonitoringNotificationChannel: the server-assigned channel
 			// resource name (the alert-policy composition handle) and the
-			// verification state both engines emit must land on StackOutputs.
+			// verification state both engines emit must land on Outputs.
 			name: "GcpMonitoringNotificationChannel",
-			kind: cloudresourcekind.CloudResourceKind_GcpMonitoringNotificationChannel,
+			kind: catalogkind.CatalogKind_GcpMonitoringNotificationChannel,
 			rawOutputs: map[string]interface{}{
 				"channel_name":        "projects/my-project/notificationChannels/1234567890",
 				"verification_status": "VERIFICATION_STATUS_UNSPECIFIED",
@@ -2273,7 +2273,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpMonitoringAlertPolicy: the policy resource name is the single
 			// output both engines emit.
 			name: "GcpMonitoringAlertPolicy",
-			kind: cloudresourcekind.CloudResourceKind_GcpMonitoringAlertPolicy,
+			kind: catalogkind.CatalogKind_GcpMonitoringAlertPolicy,
 			rawOutputs: map[string]interface{}{
 				"policy_name": "projects/my-project/alertPolicies/1234567890",
 			},
@@ -2284,9 +2284,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpMonitoringUptimeCheck: the full resource name plus the bare
 			// check id (the value alert policies filter on) must land on
-			// StackOutputs.
+			// Outputs.
 			name: "GcpMonitoringUptimeCheck",
-			kind: cloudresourcekind.CloudResourceKind_GcpMonitoringUptimeCheck,
+			kind: catalogkind.CatalogKind_GcpMonitoringUptimeCheck,
 			rawOutputs: map[string]interface{}{
 				"uptime_check_name": "projects/my-project/uptimeCheckConfigs/my-check-id",
 				"uptime_check_id":   "my-check-id",
@@ -2298,9 +2298,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpLoggingSink: the sink name and the writer identity (the
 			// grant-me-on-the-destination handle) both engines emit must land
-			// on StackOutputs.
+			// on Outputs.
 			name: "GcpLoggingSink",
-			kind: cloudresourcekind.CloudResourceKind_GcpLoggingSink,
+			kind: catalogkind.CatalogKind_GcpLoggingSink,
 			rawOutputs: map[string]interface{}{
 				"sink_name":       "error-archive",
 				"writer_identity": "serviceAccount:service-1234@gcp-sa-logging.iam.gserviceaccount.com",
@@ -2312,9 +2312,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpSecretManagerSecret: the full secret name, the short id, and
 			// the seeded version handle both engines emit must land on
-			// StackOutputs.
+			// Outputs.
 			name: "GcpSecretManagerSecret",
-			kind: cloudresourcekind.CloudResourceKind_GcpSecretManagerSecret,
+			kind: catalogkind.CatalogKind_GcpSecretManagerSecret,
 			rawOutputs: map[string]interface{}{
 				"secret_name":         "projects/my-project/secrets/db-password",
 				"secret_id":           "db-password",
@@ -2327,11 +2327,11 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpIdentityPlatformConfig: the config's resource name plus the
 			// client-SDK bootstrap pair (API key, Firebase subdomain) both
-			// engines emit must land on StackOutputs. The api_key is a live
+			// engines emit must land on Outputs. The api_key is a live
 			// credential and rides like any other scalar here (the
 			// GcpServiceAccount key grain).
 			name: "GcpIdentityPlatformConfig",
-			kind: cloudresourcekind.CloudResourceKind_GcpIdentityPlatformConfig,
+			kind: catalogkind.CatalogKind_GcpIdentityPlatformConfig,
 			rawOutputs: map[string]interface{}{
 				"config_name":        "projects/my-project/config",
 				"api_key":            "AIzaSyExampleKey123",
@@ -2344,9 +2344,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpIdentityPlatformTenant: the server-generated tenant ID (the
 			// value client SDKs scope sign-in with) and the full resource
-			// name both engines emit must land on StackOutputs.
+			// name both engines emit must land on Outputs.
 			name: "GcpIdentityPlatformTenant",
-			kind: cloudresourcekind.CloudResourceKind_GcpIdentityPlatformTenant,
+			kind: catalogkind.CatalogKind_GcpIdentityPlatformTenant,
 			rawOutputs: map[string]interface{}{
 				"tenant_id":   "acme-corp-x7k2p",
 				"tenant_name": "projects/my-project/tenants/acme-corp-x7k2p",
@@ -2358,11 +2358,11 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpIamOauthClient: the system-generated client ID, the full
 			// resource name, the lifecycle state, and the first credential's
-			// secret both engines emit must land on StackOutputs. The secret
+			// secret both engines emit must land on Outputs. The secret
 			// rides like any other scalar here (the GcpServiceAccount key
 			// grain).
 			name: "GcpIamOauthClient",
-			kind: cloudresourcekind.CloudResourceKind_GcpIamOauthClient,
+			kind: catalogkind.CatalogKind_GcpIamOauthClient,
 			rawOutputs: map[string]interface{}{
 				"client_id":     "example-client-id",
 				"client_name":   "projects/my-project/locations/global/oauthClients/example-client-id",
@@ -2375,9 +2375,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// GcpIamDenyPolicy: the policy identifier (URL-encoded parent +
-			// name) and the etag both engines emit must land on StackOutputs.
+			// name) and the etag both engines emit must land on Outputs.
 			name: "GcpIamDenyPolicy",
-			kind: cloudresourcekind.CloudResourceKind_GcpIamDenyPolicy,
+			kind: catalogkind.CatalogKind_GcpIamDenyPolicy,
 			rawOutputs: map[string]interface{}{
 				"policy_name": "cloudresourcemanager.googleapis.com%2Fprojects%2Fmy-project/guard-secrets",
 				"etag":        "BwXhCq4YlSo=",
@@ -2394,7 +2394,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// which the flattener decomposes onto the repeated proto message
 			// by dot-indexed keys.
 			name: "GcpCloudRunDomainMapping",
-			kind: cloudresourcekind.CloudResourceKind_GcpCloudRunDomainMapping,
+			kind: catalogkind.CatalogKind_GcpCloudRunDomainMapping,
 			rawOutputs: map[string]interface{}{
 				"domain":            "app.example.com",
 				"region":            "us-central1",
@@ -2413,9 +2413,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// GcpMonitoringDashboard: the server-assigned dashboard resource
-			// name both engines emit must land on StackOutputs.
+			// name both engines emit must land on Outputs.
 			name: "GcpMonitoringDashboard",
-			kind: cloudresourcekind.CloudResourceKind_GcpMonitoringDashboard,
+			kind: catalogkind.CatalogKind_GcpMonitoringDashboard,
 			rawOutputs: map[string]interface{}{
 				"dashboard_name": "projects/my-project/dashboards/12345678-abcd-4321-9876-fedcba098765",
 			},
@@ -2427,9 +2427,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpMonitoringSlo: the SLO's resource name (the burn-rate alert
 			// handle) plus the measured service's name — both derived from
 			// the SLO's server-assigned name in both engines — must land on
-			// StackOutputs.
+			// Outputs.
 			name: "GcpMonitoringSlo",
-			kind: cloudresourcekind.CloudResourceKind_GcpMonitoringSlo,
+			kind: catalogkind.CatalogKind_GcpMonitoringSlo,
 			rawOutputs: map[string]interface{}{
 				"slo_name":     "projects/my-project/services/checkout/serviceLevelObjectives/availability-slo",
 				"service_name": "projects/my-project/services/checkout",
@@ -2444,7 +2444,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// when the link is not armed — both engines emit the empty
 			// string then).
 			name: "GcpLogBucket",
-			kind: cloudresourcekind.CloudResourceKind_GcpLogBucket,
+			kind: catalogkind.CatalogKind_GcpLogBucket,
 			rawOutputs: map[string]interface{}{
 				"bucket_name":       "projects/my-project/locations/global/buckets/audit-logs",
 				"linked_dataset_id": "audit_logs",
@@ -2455,9 +2455,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// GcpLogMetric: the metric name (addressed from Monitoring as
-			// logging.googleapis.com/user/{name}) must land on StackOutputs.
+			// logging.googleapis.com/user/{name}) must land on Outputs.
 			name: "GcpLogMetric",
-			kind: cloudresourcekind.CloudResourceKind_GcpLogMetric,
+			kind: catalogkind.CatalogKind_GcpLogMetric,
 			rawOutputs: map[string]interface{}{
 				"metric_name": "checkout/error-count",
 			},
@@ -2468,9 +2468,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpWorkflow: the full resource name (what Eventarc
 			// destinations consume), the short name, the deployed revision,
-			// and the state must land on StackOutputs.
+			// and the state must land on Outputs.
 			name: "GcpWorkflow",
-			kind: cloudresourcekind.CloudResourceKind_GcpWorkflow,
+			kind: catalogkind.CatalogKind_GcpWorkflow,
 			rawOutputs: map[string]interface{}{
 				"workflow_id":   "projects/my-project/locations/us-central1/workflows/order-orchestrator",
 				"workflow_name": "order-orchestrator",
@@ -2485,9 +2485,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpEventarcTrigger: the trigger name and the partner-channel
 			// activation token (empty for non-partner triggers — both
 			// engines emit the empty string then) must land on
-			// StackOutputs.
+			// Outputs.
 			name: "GcpEventarcTrigger",
-			kind: cloudresourcekind.CloudResourceKind_GcpEventarcTrigger,
+			kind: catalogkind.CatalogKind_GcpEventarcTrigger,
 			rawOutputs: map[string]interface{}{
 				"trigger_name":                     "order-events",
 				"trigger_id":                       "projects/my-project/locations/us-central1/triggers/order-events",
@@ -2500,9 +2500,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpEventarcMessageBus: the full bus resource name (the
 			// cross-bus / external-publisher handle) must land on
-			// StackOutputs.
+			// Outputs.
 			name: "GcpEventarcMessageBus",
-			kind: cloudresourcekind.CloudResourceKind_GcpEventarcMessageBus,
+			kind: catalogkind.CatalogKind_GcpEventarcMessageBus,
 			rawOutputs: map[string]interface{}{
 				"message_bus_name": "projects/my-project/locations/us-central1/messageBuses/central-bus",
 			},
@@ -2514,9 +2514,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpCertificateMap: the full resource name, the
 			// //certificatemanager.googleapis.com/ URI (what a
 			// GcpTargetHttpsProxy's certificate_map consumes), and the
-			// short name must land on StackOutputs.
+			// short name must land on Outputs.
 			name: "GcpCertificateMap",
-			kind: cloudresourcekind.CloudResourceKind_GcpCertificateMap,
+			kind: catalogkind.CatalogKind_GcpCertificateMap,
 			rawOutputs: map[string]interface{}{
 				"map_id":   "projects/my-project/locations/global/certificateMaps/prod-map",
 				"map_uri":  "//certificatemanager.googleapis.com/projects/my-project/locations/global/certificateMaps/prod-map",
@@ -2529,9 +2529,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpSslCertificate: flat scalar outputs from both engines
 			// (self-link, name, id, expiry, scope region) must land on
-			// StackOutputs. The private key is write-only and never an output.
+			// Outputs. The private key is write-only and never an output.
 			name: "GcpSslCertificate",
-			kind: cloudresourcekind.CloudResourceKind_GcpSslCertificate,
+			kind: catalogkind.CatalogKind_GcpSslCertificate,
 			rawOutputs: map[string]interface{}{
 				"self_link":        "https://www.googleapis.com/compute/v1/projects/my-project/global/sslCertificates/my-cert",
 				"certificate_name": "my-cert",
@@ -2546,7 +2546,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpGlobalAddress: name output added for service networking composition.
 			name: "GcpGlobalAddress",
-			kind: cloudresourcekind.CloudResourceKind_GcpGlobalAddress,
+			kind: catalogkind.CatalogKind_GcpGlobalAddress,
 			rawOutputs: map[string]interface{}{
 				"address":            "10.100.0.0",
 				"self_link":          "https://www.googleapis.com/compute/v1/projects/my-project/global/addresses/vpc-peering-range",
@@ -2560,7 +2560,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpServiceNetworkingConnection: peering + network outputs from both engines.
 			name: "GcpServiceNetworkingConnection",
-			kind: cloudresourcekind.CloudResourceKind_GcpServiceNetworkingConnection,
+			kind: catalogkind.CatalogKind_GcpServiceNetworkingConnection,
 			rawOutputs: map[string]interface{}{
 				"peering": "servicenetworking-googleapis-com",
 				"network": "projects/my-project/global/networks/app-vpc",
@@ -2570,7 +2570,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpAddress: regional reservation outputs including plain spec region.
 			name: "GcpAddress",
-			kind: cloudresourcekind.CloudResourceKind_GcpAddress,
+			kind: catalogkind.CatalogKind_GcpAddress,
 			rawOutputs: map[string]interface{}{
 				"address":   "203.0.113.10",
 				"self_link": "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/addresses/nat-ip",
@@ -2584,7 +2584,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// service-account identity and the PSC-only fields (empty on
 			// non-PSC instances).
 			name: "GcpCloudSql",
-			kind: cloudresourcekind.CloudResourceKind_GcpCloudSql,
+			kind: catalogkind.CatalogKind_GcpCloudSql,
 			rawOutputs: map[string]interface{}{
 				"instance_name":               "orders-db",
 				"connection_name":             "my-project:us-central1:orders-db",
@@ -2602,7 +2602,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpCloudSqlDatabase: database name + self link.
 			name: "GcpCloudSqlDatabase",
-			kind: cloudresourcekind.CloudResourceKind_GcpCloudSqlDatabase,
+			kind: catalogkind.CatalogKind_GcpCloudSqlDatabase,
 			rawOutputs: map[string]interface{}{
 				"database_name": "orders",
 				"self_link":     "https://sqladmin.googleapis.com/sql/v1beta4/projects/my-project/instances/orders-db/databases/orders",
@@ -2613,7 +2613,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpCloudSqlUser: the stored user name (IAM users on MySQL come
 			// back truncated before the @).
 			name: "GcpCloudSqlUser",
-			kind: cloudresourcekind.CloudResourceKind_GcpCloudSqlUser,
+			kind: catalogkind.CatalogKind_GcpCloudSqlUser,
 			rawOutputs: map[string]interface{}{
 				"user_name":     "orders-app",
 				"instance_name": "orders-db",
@@ -2625,7 +2625,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// repeated CA-cert PEMs (populated when TLS is on), the import/export
 			// IAM identity, and the effective reserved range.
 			name: "GcpRedisInstance",
-			kind: cloudresourcekind.CloudResourceKind_GcpRedisInstance,
+			kind: catalogkind.CatalogKind_GcpRedisInstance,
 			rawOutputs: map[string]interface{}{
 				"host":                        "10.118.0.4",
 				"port":                        "6379",
@@ -2651,7 +2651,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// Workload Identity pool, the fully qualified cluster ID, and the
 			// name/location handles node pools compose against.
 			name: "GcpGkeCluster",
-			kind: cloudresourcekind.CloudResourceKind_GcpGkeCluster,
+			kind: catalogkind.CatalogKind_GcpGkeCluster,
 			rawOutputs: map[string]interface{}{
 				"endpoint":               "34.72.10.11",
 				"cluster_ca_certificate": "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0t",
@@ -2675,7 +2675,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// qualified pool ID downstream services (e.g. Dataproc on GKE)
 			// reference.
 			name: "GcpGkeNodePool",
-			kind: cloudresourcekind.CloudResourceKind_GcpGkeNodePool,
+			kind: catalogkind.CatalogKind_GcpGkeNodePool,
 			rawOutputs: map[string]interface{}{
 				"node_pool_name": "general-pool",
 				"instance_group_urls": []interface{}{
@@ -2699,7 +2699,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// NEGs reference, the latest ready revision, and the identifiers
 			// API callers use.
 			name: "GcpCloudRun",
-			kind: cloudresourcekind.CloudResourceKind_GcpCloudRun,
+			kind: catalogkind.CatalogKind_GcpCloudRun,
 			rawOutputs: map[string]interface{}{
 				"url":          "https://my-api-abc123-uc.a.run.app",
 				"service_name": "my-api",
@@ -2718,7 +2718,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpRouterNat: NAT name, router self link, and the manual NAT IP
 			// self links (empty for auto-allocation).
 			name: "GcpRouterNat",
-			kind: cloudresourcekind.CloudResourceKind_GcpRouterNat,
+			kind: catalogkind.CatalogKind_GcpRouterNat,
 			rawOutputs: map[string]interface{}{
 				"name":             "prod-nat",
 				"router_self_link": "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/routers/prod-router",
@@ -2729,7 +2729,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpVpcNetwork: deep-rebuilt outputs — PSA fields removed, gateway + ULA added.
 			name: "GcpVpcNetwork",
-			kind: cloudresourcekind.CloudResourceKind_GcpVpcNetwork,
+			kind: catalogkind.CatalogKind_GcpVpcNetwork,
 			rawOutputs: map[string]interface{}{
 				"network_self_link":   "https://www.googleapis.com/compute/v1/projects/my-project/global/networks/app-vpc",
 				"network_name":        "app-vpc",
@@ -2747,7 +2747,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// create timestamp, and the numeric endpoint_name both engines
 			// derive identically from the resource identity.
 			name: "GcpVertexAiEndpoint",
-			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiEndpoint,
+			kind: catalogkind.CatalogKind_GcpVertexAiEndpoint,
 			rawOutputs: map[string]interface{}{
 				"endpoint_id":            "projects/prod-project/locations/us-central1/endpoints/1853927074",
 				"display_name":           "inference-api",
@@ -2765,7 +2765,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// index's composition key), the GCP-assigned numeric ID, the
 			// metadata schema URI, and both lifecycle timestamps.
 			name: "GcpVertexAiIndex",
-			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiIndex,
+			kind: catalogkind.CatalogKind_GcpVertexAiIndex,
 			rawOutputs: map[string]interface{}{
 				"index_id":            "projects/prod-project/locations/us-central1/indexes/5022997925215600640",
 				"index_name":          "5022997925215600640",
@@ -2783,7 +2783,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// deployed index's other composition key), the GCP-assigned numeric
 			// ID, the public query domain, and both lifecycle timestamps.
 			name: "GcpVertexAiIndexEndpoint",
-			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiIndexEndpoint,
+			kind: catalogkind.CatalogKind_GcpVertexAiIndexEndpoint,
 			rawOutputs: map[string]interface{}{
 				"index_endpoint_id":           "projects/prod-project/locations/us-central1/indexEndpoints/7997049335000858624",
 				"index_endpoint_name":         "7997049335000858624",
@@ -2802,7 +2802,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the sync/create timestamps, and the private-endpoint addresses
 			// both engines export as empty strings on public endpoints.
 			name: "GcpVertexAiDeployedIndex",
-			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiDeployedIndex,
+			kind: catalogkind.CatalogKind_GcpVertexAiDeployedIndex,
 			rawOutputs: map[string]interface{}{
 				"name":               "products_v1",
 				"deployed_index_id":  "products_v1",
@@ -2822,7 +2822,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// name, the JupyterLab proxy URI, lifecycle state, creator, and the
 			// health/update timestamps the deep rebuild added.
 			name: "GcpVertexAiNotebook",
-			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiNotebook,
+			kind: catalogkind.CatalogKind_GcpVertexAiNotebook,
 			rawOutputs: map[string]interface{}{
 				"instance_id":   "projects/prod-project/locations/us-central1-a/instances/data-exploration",
 				"instance_name": "data-exploration",
@@ -2840,10 +2840,10 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// GcpSubnetwork: scalar outputs plus the per-index secondary-range
-			// exports both engines emit must land on the StackOutputs proto,
+			// exports both engines emit must land on the Outputs proto,
 			// including the repeated secondary_ranges message.
 			name: "GcpSubnetwork",
-			kind: cloudresourcekind.CloudResourceKind_GcpSubnetwork,
+			kind: catalogkind.CatalogKind_GcpSubnetwork,
 			rawOutputs: map[string]interface{}{
 				"subnetwork_self_link":             "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/subnetworks/app-subnet",
 				"subnetwork_name":                  "app-subnet",
@@ -2868,7 +2868,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// instance and user kinds parent by), the short name, and the bundled
 			// primary instance's connection endpoint.
 			name: "GcpAlloydbCluster",
-			kind: cloudresourcekind.CloudResourceKind_GcpAlloydbCluster,
+			kind: catalogkind.CatalogKind_GcpAlloydbCluster,
 			rawOutputs: map[string]interface{}{
 				"cluster_id":            "projects/my-project/locations/us-central1/clusters/orders-alloydb",
 				"cluster_name":          "orders-alloydb",
@@ -2886,7 +2886,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpAlloydbInstance: the fully qualified instance path, its private
 			// connection endpoint, and lifecycle state.
 			name: "GcpAlloydbInstance",
-			kind: cloudresourcekind.CloudResourceKind_GcpAlloydbInstance,
+			kind: catalogkind.CatalogKind_GcpAlloydbInstance,
 			rawOutputs: map[string]interface{}{
 				"instance_name": "projects/my-project/locations/us-central1/clusters/orders-alloydb/instances/read-pool",
 				"ip_address":    "10.30.0.7",
@@ -2898,7 +2898,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpAlloydbUser: the fully qualified user path plus the id and
 			// cluster handles.
 			name: "GcpAlloydbUser",
-			kind: cloudresourcekind.CloudResourceKind_GcpAlloydbUser,
+			kind: catalogkind.CatalogKind_GcpAlloydbUser,
 			rawOutputs: map[string]interface{}{
 				"name":       "projects/my-project/locations/us-central1/clusters/orders-alloydb/users/orders-app",
 				"user_id":    "orders-app",
@@ -2910,7 +2910,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpDnsZone: the numeric zone id, the zone-name handle GcpDnsRecord
 			// composes against, and the delegated nameserver set.
 			name: "GcpDnsZone",
-			kind: cloudresourcekind.CloudResourceKind_GcpDnsZone,
+			kind: catalogkind.CatalogKind_GcpDnsZone,
 			rawOutputs: map[string]interface{}{
 				"zone_id":   "1234567890123456789",
 				"zone_name": "example-com",
@@ -2925,7 +2925,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpDnsRecord: FQDN, type, zone handle, project, and TTL echoed by
 			// both engines after creating a record set.
 			name: "GcpDnsRecord",
-			kind: cloudresourcekind.CloudResourceKind_GcpDnsRecord,
+			kind: catalogkind.CatalogKind_GcpDnsRecord,
 			rawOutputs: map[string]interface{}{
 				"fqdn":         "www.example.com.",
 				"record_type":  "A",
@@ -2939,7 +2939,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpGkeWorkloadIdentityBinding: the IAM member string and bound GSA
 			// email echoed by both engines after the grant is applied.
 			name: "GcpGkeWorkloadIdentityBinding",
-			kind: cloudresourcekind.CloudResourceKind_GcpGkeWorkloadIdentityBinding,
+			kind: catalogkind.CatalogKind_GcpGkeWorkloadIdentityBinding,
 			rawOutputs: map[string]interface{}{
 				"member":                "serviceAccount:my-project.svc.id.goog[cert-manager/cert-manager]",
 				"service_account_email": "my-sa@my-project.iam.gserviceaccount.com",
@@ -2951,7 +2951,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// self-link is the frozen composition key for backend attachments;
 			// region and the edge-service link tell a regional policy apart.
 			name: "GcpCloudArmorPolicy",
-			kind: cloudresourcekind.CloudResourceKind_GcpCloudArmorPolicy,
+			kind: catalogkind.CatalogKind_GcpCloudArmorPolicy,
 			rawOutputs: map[string]interface{}{
 				"policy_id":        "projects/my-project/regions/us-central1/securityPolicies/nlb-shield",
 				"policy_name":      "nlb-shield",
@@ -2966,7 +2966,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpCertManagerDnsAuthorization: authorization id/name/domain and
 			// the validation record tuple GcpDnsRecord composes via valueFrom.
 			name: "GcpCertManagerDnsAuthorization",
-			kind: cloudresourcekind.CloudResourceKind_GcpCertManagerDnsAuthorization,
+			kind: catalogkind.CatalogKind_GcpCertManagerDnsAuthorization,
 			rawOutputs: map[string]interface{}{
 				"authorization_id":   "projects/my-project/locations/global/dnsAuthorizations/example-auth",
 				"authorization_name": "example-auth",
@@ -2984,7 +2984,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpCertManagerCert: certificate id/name/SANs/location/managed state
 			// — certificate_name is the frozen key for GcpTargetHttpsProxy.
 			name: "GcpCertManagerCert",
-			kind: cloudresourcekind.CloudResourceKind_GcpCertManagerCert,
+			kind: catalogkind.CatalogKind_GcpCertManagerCert,
 			rawOutputs: map[string]interface{}{
 				"certificate_id":   "projects/my-project/locations/global/certificates/example-cert",
 				"certificate_name": "example-cert",
@@ -2998,7 +2998,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpProject: display name, immutable project id, and numeric
 			// project number — project_id is the frozen Layer-0 composition key.
 			name: "GcpProject",
-			kind: cloudresourcekind.CloudResourceKind_GcpProject,
+			kind: catalogkind.CatalogKind_GcpProject,
 			rawOutputs: map[string]interface{}{
 				"name":           "My Production Project",
 				"project_id":     "my-prod-project",
@@ -3011,7 +3011,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// region, the server-assigned uid, and the latest execution (empty
 			// until first run).
 			name: "GcpCloudRunJob",
-			kind: cloudresourcekind.CloudResourceKind_GcpCloudRunJob,
+			kind: catalogkind.CatalogKind_GcpCloudRunJob,
 			rawOutputs: map[string]interface{}{
 				"job_name":                 "nightly-etl",
 				"location":                 "us-central1",
@@ -3025,7 +3025,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// handle), the short name downstream databases and backup schedules
 			// reference, the lifecycle state, and the geographic config.
 			name: "GcpSpannerInstance",
-			kind: cloudresourcekind.CloudResourceKind_GcpSpannerInstance,
+			kind: catalogkind.CatalogKind_GcpSpannerInstance,
 			rawOutputs: map[string]interface{}{
 				"instance_id":   "projects/prod-project/instances/orders-spanner",
 				"instance_name": "orders-spanner",
@@ -3039,7 +3039,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// handle), the short name backup schedules reference, and the
 			// lifecycle state.
 			name: "GcpSpannerDatabase",
-			kind: cloudresourcekind.CloudResourceKind_GcpSpannerDatabase,
+			kind: catalogkind.CatalogKind_GcpSpannerDatabase,
 			rawOutputs: map[string]interface{}{
 				"database_id":   "projects/prod-project/instances/orders-spanner/databases/orders",
 				"database_name": "orders",
@@ -3051,7 +3051,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpSpannerBackupSchedule: the fully qualified schedule path (the
 			// API handle) and the short name within the database.
 			name: "GcpSpannerBackupSchedule",
-			kind: cloudresourcekind.CloudResourceKind_GcpSpannerBackupSchedule,
+			kind: catalogkind.CatalogKind_GcpSpannerBackupSchedule,
 			rawOutputs: map[string]interface{}{
 				"schedule_id":   "projects/prod-project/instances/orders-spanner/databases/orders/backupSchedules/daily-backups",
 				"schedule_name": "daily-backups",
@@ -3062,7 +3062,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpBigQueryDataset: the short dataset id SQL queries reference,
 			// the self link, resolved project, creation time, location, and etag.
 			name: "GcpBigQueryDataset",
-			kind: cloudresourcekind.CloudResourceKind_GcpBigQueryDataset,
+			kind: catalogkind.CatalogKind_GcpBigQueryDataset,
 			rawOutputs: map[string]interface{}{
 				"dataset_id":    "analytics_prod",
 				"self_link":     "https://bigquery.googleapis.com/bigquery/v2/projects/prod-project/datasets/analytics_prod",
@@ -3078,7 +3078,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// parent dataset, table type, location, creation time, and the
 			// pre-assembled dotted handle Pub/Sub BigQuery delivery consumes.
 			name: "GcpBigQueryTable",
-			kind: cloudresourcekind.CloudResourceKind_GcpBigQueryTable,
+			kind: catalogkind.CatalogKind_GcpBigQueryTable,
 			rawOutputs: map[string]interface{}{
 				"table_id":       "events_raw",
 				"self_link":      "https://bigquery.googleapis.com/bigquery/v2/projects/prod-project/datasets/analytics_prod/tables/events_raw",
@@ -3095,7 +3095,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpPubSubSchema: the fully qualified schema path a topic's
 			// schema_settings.schema reference consumes, and the short name.
 			name: "GcpPubSubSchema",
-			kind: cloudresourcekind.CloudResourceKind_GcpPubSubSchema,
+			kind: catalogkind.CatalogKind_GcpPubSubSchema,
 			rawOutputs: map[string]interface{}{
 				"schema_id":   "projects/prod-project/schemas/order-events",
 				"schema_name": "order-events",
@@ -3106,7 +3106,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpPubSubTopic: the fully qualified topic path subscriptions
 			// and event triggers consume, and the short name.
 			name: "GcpPubSubTopic",
-			kind: cloudresourcekind.CloudResourceKind_GcpPubSubTopic,
+			kind: catalogkind.CatalogKind_GcpPubSubTopic,
 			rawOutputs: map[string]interface{}{
 				"topic_id":   "projects/prod-project/topics/order-events",
 				"topic_name": "order-events",
@@ -3117,7 +3117,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpPubSubSubscription: the fully qualified subscription path
 			// consumers and monitoring reference, and the short name.
 			name: "GcpPubSubSubscription",
-			kind: cloudresourcekind.CloudResourceKind_GcpPubSubSubscription,
+			kind: catalogkind.CatalogKind_GcpPubSubSubscription,
 			rawOutputs: map[string]interface{}{
 				"subscription_id":   "projects/prod-project/subscriptions/order-events-worker",
 				"subscription_name": "order-events-worker",
@@ -3129,7 +3129,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// producers enqueue against, the short name, and the
 			// GCP-computed effective burst size.
 			name: "GcpCloudTasksQueue",
-			kind: cloudresourcekind.CloudResourceKind_GcpCloudTasksQueue,
+			kind: catalogkind.CatalogKind_GcpCloudTasksQueue,
 			rawOutputs: map[string]interface{}{
 				"queue_id":       "projects/prod-project/locations/us-central1/queues/order-processing",
 				"queue_name":     "order-processing",
@@ -3141,7 +3141,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpCloudSchedulerJob: the fully qualified job path, the short
 			// name, and the reconciled state (ENABLED unless created paused).
 			name: "GcpCloudSchedulerJob",
-			kind: cloudresourcekind.CloudResourceKind_GcpCloudSchedulerJob,
+			kind: catalogkind.CatalogKind_GcpCloudSchedulerJob,
 			rawOutputs: map[string]interface{}{
 				"job_id":   "projects/prod-project/locations/us-central1/jobs/daily-report-trigger",
 				"job_name": "daily-report-trigger",
@@ -3154,7 +3154,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// key_ring_id reference consumes, the short name for bare-name
 			// consumers, and the location they pair it with.
 			name: "GcpKmsKeyRing",
-			kind: cloudresourcekind.CloudResourceKind_GcpKmsKeyRing,
+			kind: catalogkind.CatalogKind_GcpKmsKeyRing,
 			rawOutputs: map[string]interface{}{
 				"key_ring_id":   "projects/prod-project/locations/us-central1/keyRings/prod-encryption",
 				"key_ring_name": "prod-encryption",
@@ -3167,7 +3167,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// takes, the short name for bare-name consumers, and the primary
 			// version handle + state (populated for ENCRYPT_DECRYPT keys).
 			name: "GcpKmsKey",
-			kind: cloudresourcekind.CloudResourceKind_GcpKmsKey,
+			kind: catalogkind.CatalogKind_GcpKmsKey,
 			rawOutputs: map[string]interface{}{
 				"key_id":               "projects/prod-project/locations/us-central1/keyRings/prod-encryption/cryptoKeys/cmek-data-key",
 				"key_name":             "cmek-data-key",
@@ -3182,7 +3182,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// qualified path serverless workloads attach to, the reconciled
 			// state, and the plain region name.
 			name: "GcpServerlessVpcConnector",
-			kind: cloudresourcekind.CloudResourceKind_GcpServerlessVpcConnector,
+			kind: catalogkind.CatalogKind_GcpServerlessVpcConnector,
 			rawOutputs: map[string]interface{}{
 				"name":      "svc-egress",
 				"self_link": "projects/prod-project/locations/us-central1/connectors/svc-egress",
@@ -3198,7 +3198,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// environment, and update time (eventarc trigger empty for HTTP
 			// functions).
 			name: "GcpCloudFunction",
-			kind: cloudresourcekind.CloudResourceKind_GcpCloudFunction,
+			kind: catalogkind.CatalogKind_GcpCloudFunction,
 			rawOutputs: map[string]interface{}{
 				"function_id":           "projects/prod-project/locations/us-central1/functions/hello-api",
 				"function_url":          "https://us-central1-prod-project.cloudfunctions.net/hello-api",
@@ -3221,7 +3221,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// short name, the connectivity mechanism the automation reports,
 			// and the change-detection etag.
 			name: "GcpServiceConnectionPolicy",
-			kind: cloudresourcekind.CloudResourceKind_GcpServiceConnectionPolicy,
+			kind: catalogkind.CatalogKind_GcpServiceConnectionPolicy,
 			rawOutputs: map[string]interface{}{
 				"policy_id":      "projects/prod-project/locations/us-central1/serviceConnectionPolicies/memorystore-policy",
 				"name":           "memorystore-policy",
@@ -3236,7 +3236,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// implies (float), the full resource path DR secondaries
 			// reference, and the backup collection automated backups land in.
 			name: "GcpMemorystoreInstance",
-			kind: cloudresourcekind.CloudResourceKind_GcpMemorystoreInstance,
+			kind: catalogkind.CatalogKind_GcpMemorystoreInstance,
 			rawOutputs: map[string]interface{}{
 				"discovery_address": "10.9.0.5",
 				"discovery_port":    6379,
@@ -3254,7 +3254,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpBigtableInstance: the fully qualified instance path and the
 			// short name client libraries connect with.
 			name: "GcpBigtableInstance",
-			kind: cloudresourcekind.CloudResourceKind_GcpBigtableInstance,
+			kind: catalogkind.CatalogKind_GcpBigtableInstance,
 			rawOutputs: map[string]interface{}{
 				"instance_id":   "projects/prod-project/instances/prod-bigtable",
 				"instance_name": "prod-bigtable",
@@ -3265,7 +3265,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpBigtableTable: the fully qualified table path, the short
 			// name clients open, and the parent instance.
 			name: "GcpBigtableTable",
-			kind: cloudresourcekind.CloudResourceKind_GcpBigtableTable,
+			kind: catalogkind.CatalogKind_GcpBigtableTable,
 			rawOutputs: map[string]interface{}{
 				"table_id":      "projects/prod-project/instances/prod-bigtable/tables/events",
 				"table_name":    "events",
@@ -3278,7 +3278,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// name clients connect with, the server-generated uid, and the
 			// PITR/version-retention posture timestamps.
 			name: "GcpFirestoreDatabase",
-			kind: cloudresourcekind.CloudResourceKind_GcpFirestoreDatabase,
+			kind: catalogkind.CatalogKind_GcpFirestoreDatabase,
 			rawOutputs: map[string]interface{}{
 				"database_id":              "projects/prod-project/databases/orders-db",
 				"database_name":            "orders-db",
@@ -3300,7 +3300,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the parent database name the verifier reassembles the resource
 			// path from.
 			name: "GcpFirestoreBackupSchedule",
-			kind: cloudresourcekind.CloudResourceKind_GcpFirestoreBackupSchedule,
+			kind: catalogkind.CatalogKind_GcpFirestoreBackupSchedule,
 			rawOutputs: map[string]interface{}{
 				"schedule_id": "8d68546e-3c88-4244-8722-0a4b0a4b0a4b",
 				"database":    "orders-db",
@@ -3311,7 +3311,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpFirestoreIndex: the server-defined index resource path and
 			// the collection group it serves.
 			name: "GcpFirestoreIndex",
-			kind: cloudresourcekind.CloudResourceKind_GcpFirestoreIndex,
+			kind: catalogkind.CatalogKind_GcpFirestoreIndex,
 			rawOutputs: map[string]interface{}{
 				"index_id":   "projects/prod-project/databases/orders-db/collectionGroups/orders/indexes/CICAgJjF6JEK",
 				"collection": "orders",
@@ -3323,7 +3323,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// composition handle downstream spark-history-server references
 			// consume), the short name, and the staging bucket in use.
 			name: "GcpDataprocCluster",
-			kind: cloudresourcekind.CloudResourceKind_GcpDataprocCluster,
+			kind: catalogkind.CatalogKind_GcpDataprocCluster,
 			rawOutputs: map[string]interface{}{
 				"cluster_id":     "projects/prod-project/regions/us-central1/clusters/etl-cluster",
 				"cluster_name":   "etl-cluster",
@@ -3336,7 +3336,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// (what a cluster's autoscaling_policy_uri reference resolves to)
 			// plus the plain id and region.
 			name: "GcpDataprocAutoscalingPolicy",
-			kind: cloudresourcekind.CloudResourceKind_GcpDataprocAutoscalingPolicy,
+			kind: catalogkind.CatalogKind_GcpDataprocAutoscalingPolicy,
 			rawOutputs: map[string]interface{}{
 				"name":      "projects/prod-project/locations/us-central1/autoscalingPolicies/batch-scaling",
 				"policy_id": "batch-scaling",
@@ -3349,7 +3349,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// path, the short name, and the assembled-stack handles (Airflow
 			// UI, DAG bucket prefix, underlying GKE cluster).
 			name: "GcpCloudComposerEnvironment",
-			kind: cloudresourcekind.CloudResourceKind_GcpCloudComposerEnvironment,
+			kind: catalogkind.CatalogKind_GcpCloudComposerEnvironment,
 			rawOutputs: map[string]interface{}{
 				"environment_id":   "projects/prod-project/locations/us-central1/environments/data-pipelines",
 				"environment_name": "data-pipelines",
@@ -3367,7 +3367,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// path and the Kubernetes Secret name DAGs reference. The secret
 			// data is deliberately never an output.
 			name: "GcpCloudComposerUserWorkloadsSecret",
-			kind: cloudresourcekind.CloudResourceKind_GcpCloudComposerUserWorkloadsSecret,
+			kind: catalogkind.CatalogKind_GcpCloudComposerUserWorkloadsSecret,
 			rawOutputs: map[string]interface{}{
 				"name":        "projects/prod-project/locations/us-central1/environments/data-pipelines/userWorkloadsSecrets/airflow-connections",
 				"secret_name": "airflow-connections",
@@ -3378,7 +3378,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpCloudComposerUserWorkloadsConfigMap: the fully qualified
 			// config-map path and the Kubernetes ConfigMap name DAGs reference.
 			name: "GcpCloudComposerUserWorkloadsConfigMap",
-			kind: cloudresourcekind.CloudResourceKind_GcpCloudComposerUserWorkloadsConfigMap,
+			kind: catalogkind.CatalogKind_GcpCloudComposerUserWorkloadsConfigMap,
 			rawOutputs: map[string]interface{}{
 				"name":            "projects/prod-project/locations/us-central1/environments/data-pipelines/userWorkloadsConfigMaps/dag-configuration",
 				"config_map_name": "dag-configuration",
@@ -3388,9 +3388,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// AwsNatGateway: flat scalar outputs from both engines (gateway id,
 			// public/private ip, ENI id, subnet id, region) must each land on the
-			// StackOutputs proto. A NAT gateway has no ARN, so none is emitted.
+			// Outputs proto. A NAT gateway has no ARN, so none is emitted.
 			name: "AwsNatGateway",
-			kind: cloudresourcekind.CloudResourceKind_AwsNatGateway,
+			kind: catalogkind.CatalogKind_AwsNatGateway,
 			rawOutputs: map[string]interface{}{
 				"nat_gateway_id":       "nat-0abc123",
 				"public_ip":            "52.10.20.30",
@@ -3407,9 +3407,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// AwsVpc: flat scalar outputs from both engines (vpc id/arn, primary and
 			// IPv6 CIDR, owner, the route-table/default-resource ids, region) must
-			// each land on the thin StackOutputs proto.
+			// each land on the thin Outputs proto.
 			name: "AwsVpc",
-			kind: cloudresourcekind.CloudResourceKind_AwsVpc,
+			kind: catalogkind.CatalogKind_AwsVpc,
 			rawOutputs: map[string]interface{}{
 				"vpc_id":                    "vpc-0abc123",
 				"vpc_arn":                   "arn:aws:ec2:us-west-2:123456789012:vpc/vpc-0abc123",
@@ -3430,10 +3430,10 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// AwsIamPolicy: flat scalar outputs from both engines (policy arn/id/name)
-			// must each land on the StackOutputs proto -- policy_arn is what role/user
+			// must each land on the Outputs proto -- policy_arn is what role/user
 			// attachments and permissions boundaries reference.
 			name: "AwsIamPolicy",
-			kind: cloudresourcekind.CloudResourceKind_AwsIamPolicy,
+			kind: catalogkind.CatalogKind_AwsIamPolicy,
 			rawOutputs: map[string]interface{}{
 				"policy_arn":  "arn:aws:iam::123456789012:policy/s3-read-only",
 				"policy_id":   "ANPAEXAMPLEID12345678",
@@ -3444,10 +3444,10 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// AwsIamInstanceProfile: flat scalar outputs from both engines (profile
 			// arn/name/id and the carried role's name) must each land on the
-			// StackOutputs proto -- instance_profile_arn is what EC2-shaped resources
+			// Outputs proto -- instance_profile_arn is what EC2-shaped resources
 			// reference.
 			name: "AwsIamInstanceProfile",
-			kind: cloudresourcekind.CloudResourceKind_AwsIamInstanceProfile,
+			kind: catalogkind.CatalogKind_AwsIamInstanceProfile,
 			rawOutputs: map[string]interface{}{
 				"instance_profile_arn":  "arn:aws:iam::123456789012:instance-profile/web-server",
 				"instance_profile_name": "web-server",
@@ -3461,12 +3461,12 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// AwsIamRole: flat scalar outputs from both engines (role arn/name/id)
-			// must each land on the StackOutputs proto. Guards the removal of the
+			// must each land on the Outputs proto. Guards the removal of the
 			// role's former instance-profile outputs: EC2 delivery now composes
 			// through AwsIamInstanceProfile, so the role emits only role-shaped
 			// outputs.
 			name: "AwsIamRole",
-			kind: cloudresourcekind.CloudResourceKind_AwsIamRole,
+			kind: catalogkind.CatalogKind_AwsIamRole,
 			rawOutputs: map[string]interface{}{
 				"role_arn":  "arn:aws:iam::123456789012:role/lambda-exec",
 				"role_name": "lambda-exec",
@@ -3477,10 +3477,10 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// AwsIamUser: flat scalar outputs from both engines (user arn/name/id,
 			// access key id + base64 secret, console url) must each land on the
-			// StackOutputs proto. The secret is base64-encoded by BOTH engines so the
+			// Outputs proto. The secret is base64-encoded by BOTH engines so the
 			// emitted values are byte-identical.
 			name: "AwsIamUser",
-			kind: cloudresourcekind.CloudResourceKind_AwsIamUser,
+			kind: catalogkind.CatalogKind_AwsIamUser,
 			rawOutputs: map[string]interface{}{
 				"user_arn":          "arn:aws:iam::123456789012:user/ci-deploy",
 				"user_name":         "ci-deploy",
@@ -3496,12 +3496,12 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// AwsAlb: flat scalar outputs from both engines (arn/name/dns
-			// name/hosted zone id/arn suffix) must each land on the StackOutputs
+			// name/hosted zone id/arn suffix) must each land on the Outputs
 			// proto -- load_balancer_arn is what listeners attach through, the DNS
 			// pair is what Route53 alias records consume, and arn_suffix is the
 			// CloudWatch LoadBalancer dimension request-count autoscaling scopes on.
 			name: "AwsAlb",
-			kind: cloudresourcekind.CloudResourceKind_AwsAlb,
+			kind: catalogkind.CatalogKind_AwsAlb,
 			rawOutputs: map[string]interface{}{
 				"load_balancer_arn":            "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/app/demo/50dc6c495c0c9188",
 				"load_balancer_name":           "demo",
@@ -3521,7 +3521,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// group outputs because those are first-class kinds with their own
 			// outputs.
 			name: "AwsNlb",
-			kind: cloudresourcekind.CloudResourceKind_AwsNlb,
+			kind: catalogkind.CatalogKind_AwsNlb,
 			rawOutputs: map[string]interface{}{
 				"load_balancer_arn":            "arn:aws:elasticloadbalancing:us-west-2:123456789012:loadbalancer/net/demo/50dc6c495c0c9188",
 				"load_balancer_name":           "demo",
@@ -3536,10 +3536,10 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// AwsLbTargetGroup: flat scalar outputs from both engines (arn, the
 			// possibly-truncated name, and the CloudWatch arn_suffix) must each land
-			// on the StackOutputs proto -- target_group_arn is what listener forward
+			// on the Outputs proto -- target_group_arn is what listener forward
 			// actions, ECS services, and ASG attachments reference.
 			name: "AwsLbTargetGroup",
-			kind: cloudresourcekind.CloudResourceKind_AwsLbTargetGroup,
+			kind: catalogkind.CatalogKind_AwsLbTargetGroup,
 			rawOutputs: map[string]interface{}{
 				"target_group_arn":  "arn:aws:elasticloadbalancing:us-west-2:123456789012:targetgroup/api/943f017f100becff",
 				"target_group_name": "api",
@@ -3551,7 +3551,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AwsLbListener: a single flat output -- listener_arn is what listener
 			// rules attach through.
 			name: "AwsLbListener",
-			kind: cloudresourcekind.CloudResourceKind_AwsLbListener,
+			kind: catalogkind.CatalogKind_AwsLbListener,
 			rawOutputs: map[string]interface{}{
 				"listener_arn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener/app/demo/50dc6c495c0c9188/f2f7dc8efc522ab2",
 			},
@@ -3563,7 +3563,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// and the Pulumi module's strconv conversion) so the shapes stay
 			// byte-identical -- this case guards that contract.
 			name: "AwsLbListenerRule",
-			kind: cloudresourcekind.CloudResourceKind_AwsLbListenerRule,
+			kind: catalogkind.CatalogKind_AwsLbListenerRule,
 			rawOutputs: map[string]interface{}{
 				"rule_arn": "arn:aws:elasticloadbalancing:us-west-2:123456789012:listener-rule/app/demo/50dc6c495c0c9188/f2f7dc8efc522ab2/9683b2d02a6cabee",
 				"priority": "10",
@@ -3576,7 +3576,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// service); revision is an int64 proto field fed from numeric engine
 			// outputs, guarding the numeric-to-int64 flattening.
 			name: "AwsEcsTaskDefinition",
-			kind: cloudresourcekind.CloudResourceKind_AwsEcsTaskDefinition,
+			kind: catalogkind.CatalogKind_AwsEcsTaskDefinition,
 			rawOutputs: map[string]interface{}{
 				"task_definition_arn":  "arn:aws:ecs:us-west-2:123456789012:task-definition/api:7",
 				"arn_without_revision": "arn:aws:ecs:us-west-2:123456789012:task-definition/api",
@@ -3595,7 +3595,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the cluster and service names (the E2E verifier's key), and the
 			// cluster/task-definition ARNs are republished resolved references.
 			name: "AwsEcsService",
-			kind: cloudresourcekind.CloudResourceKind_AwsEcsService,
+			kind: catalogkind.CatalogKind_AwsEcsService,
 			rawOutputs: map[string]interface{}{
 				"service_arn":         "arn:aws:ecs:us-west-2:123456789012:service/prod/api",
 				"service_name":        "api",
@@ -3614,7 +3614,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the runner's operation audit trail, and the name the runner
 			// registers itself under.
 			name: "AwsPlantonRunner",
-			kind: cloudresourcekind.CloudResourceKind_AwsPlantonRunner,
+			kind: catalogkind.CatalogKind_AwsPlantonRunner,
 			rawOutputs: map[string]interface{}{
 				"service_arn":         "arn:aws:ecs:us-west-2:123456789012:service/vpc-runner/vpc-runner",
 				"service_name":        "vpc-runner",
@@ -3640,7 +3640,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// region/project_id), the runtime service account, the token
 			// secret, and the name the runner registers itself under.
 			name: "GcpPlantonRunner",
-			kind: cloudresourcekind.CloudResourceKind_GcpPlantonRunner,
+			kind: catalogkind.CatalogKind_GcpPlantonRunner,
 			rawOutputs: map[string]interface{}{
 				"service_name":          "projects/my-project/locations/us-central1/services/vpc-runner",
 				"service_short_name":    "vpc-runner",
@@ -3659,9 +3659,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpApiKey: flat scalar outputs from both engines -- the key's full
 			// resource name (the E2E verifier keys on it), the uid a Firebase
 			// app registration references, and the sensitive key string --
-			// must each land on the StackOutputs proto.
+			// must each land on the Outputs proto.
 			name: "GcpApiKey",
-			kind: cloudresourcekind.CloudResourceKind_GcpApiKey,
+			kind: catalogkind.CatalogKind_GcpApiKey,
 			rawOutputs: map[string]interface{}{
 				"name":       "projects/my-project/locations/global/keys/firebase-android-key",
 				"uid":        "9f3a2c1e-4b5d-4e6f-8a7b-0c1d2e3f4a5b",
@@ -3673,9 +3673,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpFolder: flat scalar outputs from both engines -- the numeric
 			// folder id every child references (the E2E verifier keys on it),
 			// the folders/{id} resource name, the lifecycle state, and the
-			// creation time -- must each land on the StackOutputs proto.
+			// creation time -- must each land on the Outputs proto.
 			name: "GcpFolder",
-			kind: cloudresourcekind.CloudResourceKind_GcpFolder,
+			kind: catalogkind.CatalogKind_GcpFolder,
 			rawOutputs: map[string]interface{}{
 				"folder_id":       "987654321098",
 				"name":            "folders/987654321098",
@@ -3687,9 +3687,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpOrgPolicy: flat scalar outputs from both engines -- the
 			// policy's full name (the E2E verifier keys on it) and its etag --
-			// must each land on the StackOutputs proto.
+			// must each land on the Outputs proto.
 			name: "GcpOrgPolicy",
-			kind: cloudresourcekind.CloudResourceKind_GcpOrgPolicy,
+			kind: catalogkind.CatalogKind_GcpOrgPolicy,
 			rawOutputs: map[string]interface{}{
 				"name": "projects/123456789012/policies/compute.disableSerialPortAccess",
 				"etag": "BwXeTbBV0Mg=",
@@ -3700,9 +3700,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpOrgPolicyCustomConstraint: flat scalar outputs from both
 			// engines -- the constraint's full resource name (the E2E verifier
 			// keys on it), the custom.{name} handle a policy references, and
-			// the update time -- must each land on the StackOutputs proto.
+			// the update time -- must each land on the Outputs proto.
 			name: "GcpOrgPolicyCustomConstraint",
-			kind: cloudresourcekind.CloudResourceKind_GcpOrgPolicyCustomConstraint,
+			kind: catalogkind.CatalogKind_GcpOrgPolicyCustomConstraint,
 			rawOutputs: map[string]interface{}{
 				"name":        "organizations/123456789012/customConstraints/custom.disableGkeAutoUpgrade",
 				"constraint":  "custom.disableGkeAutoUpgrade",
@@ -3714,9 +3714,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpTagKey: flat scalar outputs from both engines -- the
 			// tagKeys/{id} name (the E2E verifier keys on it), the namespaced
 			// name, the bare numeric id, and the creation time -- must each
-			// land on the StackOutputs proto.
+			// land on the Outputs proto.
 			name: "GcpTagKey",
-			kind: cloudresourcekind.CloudResourceKind_GcpTagKey,
+			kind: catalogkind.CatalogKind_GcpTagKey,
 			rawOutputs: map[string]interface{}{
 				"name":            "tagKeys/281475647562788",
 				"namespaced_name": "123456789012/environment",
@@ -3729,9 +3729,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpTagValue: flat scalar outputs from both engines -- the
 			// tagValues/{id} name (the E2E verifier keys on it), the namespaced
 			// name, the bare numeric id, and the creation time -- must each
-			// land on the StackOutputs proto.
+			// land on the Outputs proto.
 			name: "GcpTagValue",
-			kind: cloudresourcekind.CloudResourceKind_GcpTagValue,
+			kind: catalogkind.CatalogKind_GcpTagValue,
 			rawOutputs: map[string]interface{}{
 				"name":            "tagValues/281476102962987",
 				"namespaced_name": "123456789012/environment/prod",
@@ -3744,9 +3744,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpTagBinding: flat scalar outputs from both engines -- the
 			// binding's name (the E2E verifier keys on it), the full resource
 			// name it is bound to, and the bound value -- must each land on the
-			// StackOutputs proto.
+			// Outputs proto.
 			name: "GcpTagBinding",
-			kind: cloudresourcekind.CloudResourceKind_GcpTagBinding,
+			kind: catalogkind.CatalogKind_GcpTagBinding,
 			rawOutputs: map[string]interface{}{
 				"name":      "tagBindings/%2F%2Fcloudresourcemanager.googleapis.com%2Fprojects%2F123456789012/tagValues/281476102962987",
 				"parent":    "//cloudresourcemanager.googleapis.com/projects/123456789012",
@@ -3756,10 +3756,10 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// GcpSharedVpcHost: the one resolved output -- the host project id
-			// (the E2E verifier keys on it) -- must land on the StackOutputs
+			// (the E2E verifier keys on it) -- must land on the Outputs
 			// proto even when the spec named no project.
 			name: "GcpSharedVpcHost",
-			kind: cloudresourcekind.CloudResourceKind_GcpSharedVpcHost,
+			kind: catalogkind.CatalogKind_GcpSharedVpcHost,
 			rawOutputs: map[string]interface{}{
 				"host_project_id": "acme-network-host",
 			},
@@ -3769,7 +3769,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpSharedVpcServiceProject: the attachment's two ends, flat
 			// scalars from both engines.
 			name: "GcpSharedVpcServiceProject",
-			kind: cloudresourcekind.CloudResourceKind_GcpSharedVpcServiceProject,
+			kind: catalogkind.CatalogKind_GcpSharedVpcServiceProject,
 			rawOutputs: map[string]interface{}{
 				"service_project_id": "acme-payments-prod",
 				"host_project_id":    "acme-network-host",
@@ -3782,7 +3782,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// flat scalars from both engines, empty state on the routes-config
 			// form.
 			name: "GcpVpcPeering",
-			kind: cloudresourcekind.CloudResourceKind_GcpVpcPeering,
+			kind: catalogkind.CatalogKind_GcpVpcPeering,
 			rawOutputs: map[string]interface{}{
 				"peering_name":  "hub-to-spoke",
 				"network":       "https://www.googleapis.com/compute/v1/projects/my-project/global/networks/hub",
@@ -3797,7 +3797,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// interface addresses, and the router's ASN -- the one numeric
 			// output, which arrives as a JSON number from both engines.
 			name: "GcpHaVpnGateway",
-			kind: cloudresourcekind.CloudResourceKind_GcpHaVpnGateway,
+			kind: catalogkind.CatalogKind_GcpHaVpnGateway,
 			rawOutputs: map[string]interface{}{
 				"gateway_self_link":      "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/vpnGateways/hub-vpn",
 				"gateway_name":           "hub-vpn",
@@ -3820,7 +3820,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// (empty for a Google-to-Google connection) and the resolved gateway
 			// trio -- the E2E verifier keys on the first tunnel name.
 			name: "GcpHaVpnConnection",
-			kind: cloudresourcekind.CloudResourceKind_GcpHaVpnConnection,
+			kind: catalogkind.CatalogKind_GcpHaVpnConnection,
 			rawOutputs: map[string]interface{}{
 				"tunnel_self_links": []interface{}{
 					"https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/vpnTunnels/hq-tunnel-0",
@@ -3848,7 +3848,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// declaration-order association names -- the E2E verifier keys on
 			// policy_id.
 			name: "GcpHierarchicalFirewallPolicy",
-			kind: cloudresourcekind.CloudResourceKind_GcpHierarchicalFirewallPolicy,
+			kind: catalogkind.CatalogKind_GcpHierarchicalFirewallPolicy,
 			rawOutputs: map[string]interface{}{
 				"policy_id":         "1234567890123456789",
 				"short_name":        "org-baseline",
@@ -3867,7 +3867,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// for the global family), the rule tuple count as a JSON number,
 			// and the association names.
 			name: "GcpNetworkFirewallPolicy",
-			kind: cloudresourcekind.CloudResourceKind_GcpNetworkFirewallPolicy,
+			kind: catalogkind.CatalogKind_GcpNetworkFirewallPolicy,
 			rawOutputs: map[string]interface{}{
 				"policy_name":       "baseline",
 				"policy_id":         "9876543210987654321",
@@ -3885,7 +3885,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// targets (the verifier's key is the name), the region, the
 			// fingerprint, and the connected-endpoint count as a string.
 			name: "GcpPscServiceAttachment",
-			kind: cloudresourcekind.CloudResourceKind_GcpPscServiceAttachment,
+			kind: catalogkind.CatalogKind_GcpPscServiceAttachment,
 			rawOutputs: map[string]interface{}{
 				"self_link":                 "https://www.googleapis.com/compute/v1/projects/my-project/regions/us-central1/serviceAttachments/orders-db-psc",
 				"attachment_name":           "orders-db-psc",
@@ -3901,7 +3901,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// name (the verifier's key), the numeric id, the zone (empty for
 			// a global group), and the declared size.
 			name: "GcpNetworkEndpointGroup",
-			kind: cloudresourcekind.CloudResourceKind_GcpNetworkEndpointGroup,
+			kind: catalogkind.CatalogKind_GcpNetworkEndpointGroup,
 			rawOutputs: map[string]interface{}{
 				"self_link": "https://www.googleapis.com/compute/v1/projects/my-project/zones/us-central1-a/networkEndpointGroups/web-neg",
 				"neg_name":  "web-neg",
@@ -3915,7 +3915,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpBillingBudget: the budget's resource name (the verifier's key),
 			// the server-assigned id, and the owning billing account.
 			name: "GcpBillingBudget",
-			kind: cloudresourcekind.CloudResourceKind_GcpBillingBudget,
+			kind: catalogkind.CatalogKind_GcpBillingBudget,
 			rawOutputs: map[string]interface{}{
 				"name":            "billingAccounts/012345-6789AB-CDEF01/budgets/9f8e7d6c-0000-1111-2222-333344445555",
 				"budget_id":       "9f8e7d6c-0000-1111-2222-333344445555",
@@ -3928,7 +3928,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// key), its email (the IAM identity), and the managed membership
 			// count as a string.
 			name: "GcpCloudIdentityGroup",
-			kind: cloudresourcekind.CloudResourceKind_GcpCloudIdentityGroup,
+			kind: catalogkind.CatalogKind_GcpCloudIdentityGroup,
 			rawOutputs: map[string]interface{}{
 				"name":             "groups/01abc2de3f4g5h6",
 				"group_email":      "platform-admins@example.com",
@@ -3943,7 +3943,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// attachment handles a consumer forwarding rule targets (reader
 			// empty without replicas), and the sizes as strings.
 			name: "GcpRedisCluster",
-			kind: cloudresourcekind.CloudResourceKind_GcpRedisCluster,
+			kind: catalogkind.CatalogKind_GcpRedisCluster,
 			rawOutputs: map[string]interface{}{
 				"name":                         "projects/my-project/locations/us-central1/clusters/orders-cache",
 				"uid":                          "0123456789abcdef",
@@ -3964,7 +3964,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpRedisClusterEndpointSet: the bare cluster name the set is
 			// keyed by (the verifier's key) and the two declared counts.
 			name: "GcpRedisClusterEndpointSet",
-			kind: cloudresourcekind.CloudResourceKind_GcpRedisClusterEndpointSet,
+			kind: catalogkind.CatalogKind_GcpRedisClusterEndpointSet,
 			rawOutputs: map[string]interface{}{
 				"cluster_name":     "orders-cache",
 				"endpoint_count":   "1",
@@ -3978,7 +3978,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// key), the bare name, the identity fields, and the two revision
 			// pointers a rollout is read from.
 			name: "GcpCloudRunWorkerPool",
-			kind: cloudresourcekind.CloudResourceKind_GcpCloudRunWorkerPool,
+			kind: catalogkind.CatalogKind_GcpCloudRunWorkerPool,
 			rawOutputs: map[string]interface{}{
 				"name":                    "projects/my-project/locations/us-central1/workerPools/orders-worker",
 				"worker_pool_name":        "orders-worker",
@@ -3996,7 +3996,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpVertexAiRagEngineConfig: the singleton's full resource name
 			// (the verifier's key) and the location it governs.
 			name: "GcpVertexAiRagEngineConfig",
-			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiRagEngineConfig,
+			kind: catalogkind.CatalogKind_GcpVertexAiRagEngineConfig,
 			rawOutputs: map[string]interface{}{
 				"name":     "projects/my-project/locations/us-central1/ragEngineConfig",
 				"location": "us-central1",
@@ -4009,7 +4009,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// in manifest order (a list output, as the DNS zone's nameservers
 			// are), and the declared index count.
 			name: "GcpVectorSearchCollection",
-			kind: cloudresourcekind.CloudResourceKind_GcpVectorSearchCollection,
+			kind: catalogkind.CatalogKind_GcpVectorSearchCollection,
 			rawOutputs: map[string]interface{}{
 				"name":          "projects/my-project/locations/us-central1/collections/product-docs",
 				"collection_id": "product-docs",
@@ -4027,7 +4027,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// declared schema's name, and the folded target sites' and sitemaps'
 			// names in manifest order (list outputs).
 			name: "GcpVertexAiSearchDataStore",
-			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiSearchDataStore,
+			kind: catalogkind.CatalogKind_GcpVertexAiSearchDataStore,
 			rawOutputs: map[string]interface{}{
 				"name":              "projects/my-project/locations/global/collections/default_collection/dataStores/product-docs",
 				"data_store_id":     "product-docs",
@@ -4048,7 +4048,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// Dialogflow agent, and the folded controls' and assistants' names
 			// in manifest order (list outputs).
 			name: "GcpVertexAiSearchEngine",
-			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiSearchEngine,
+			kind: catalogkind.CatalogKind_GcpVertexAiSearchEngine,
 			rawOutputs: map[string]interface{}{
 				"name":                "projects/my-project/locations/global/collections/default_collection/engines/product-search",
 				"engine_id":           "product-search",
@@ -4072,7 +4072,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// manifest order (a list output), the static egress addresses, and
 			// the private connectivity tenant project.
 			name: "GcpVertexAiSearchDataConnector",
-			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiSearchDataConnector,
+			kind: catalogkind.CatalogKind_GcpVertexAiSearchDataConnector,
 			rawOutputs: map[string]interface{}{
 				"name":          "projects/my-project/locations/global/collections/jira-federated/dataConnector",
 				"collection_id": "jira-federated",
@@ -4092,7 +4092,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// key), its id and location, and the registered features' names
 			// in manifest order (a list output).
 			name: "GcpVertexAiFeatureGroup",
-			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiFeatureGroup,
+			kind: catalogkind.CatalogKind_GcpVertexAiFeatureGroup,
 			rawOutputs: map[string]interface{}{
 				"name":             "projects/my-project/locations/us-central1/featureGroups/customer_features",
 				"feature_group_id": "customer_features",
@@ -4109,7 +4109,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// domain and PSC attachment (empty on a Bigtable store), and the
 			// feature views' names in manifest order (a list output).
 			name: "GcpVertexAiFeatureOnlineStore",
-			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiFeatureOnlineStore,
+			kind: catalogkind.CatalogKind_GcpVertexAiFeatureOnlineStore,
 			rawOutputs: map[string]interface{}{
 				"name":                        "projects/my-project/locations/us-central1/featureOnlineStores/serving_store",
 				"feature_online_store_id":     "serving_store",
@@ -4126,7 +4126,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpVertexAiDataset: the dataset's full name (the verifier's
 			// key), the numeric id Google assigned, and the location.
 			name: "GcpVertexAiDataset",
-			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiDataset,
+			kind: catalogkind.CatalogKind_GcpVertexAiDataset,
 			rawOutputs: map[string]interface{}{
 				"name":       "projects/123456789012/locations/us-central1/datasets/1234567890123456789",
 				"dataset_id": "1234567890123456789",
@@ -4140,7 +4140,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// location, blob storage prefix, and the declared experiments'
 			// and runs' names in manifest order (list outputs).
 			name: "GcpVertexAiTensorboard",
-			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiTensorboard,
+			kind: catalogkind.CatalogKind_GcpVertexAiTensorboard,
 			rawOutputs: map[string]interface{}{
 				"name":                     "projects/123456789012/locations/us-central1/tensorboards/1234567890123456789",
 				"tensorboard_id":           "1234567890123456789",
@@ -4160,7 +4160,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// verifier's key), the id a training job's persistent_resource_id
 			// takes, the location, and the state.
 			name: "GcpVertexAiPersistentResource",
-			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiPersistentResource,
+			kind: catalogkind.CatalogKind_GcpVertexAiPersistentResource,
 			rawOutputs: map[string]interface{}{
 				"name":                   "projects/my-project/locations/us-central1/persistentResources/training-pool",
 				"persistent_resource_id": "training-pool",
@@ -4174,7 +4174,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// key and what sanitize calls and search assistants take), its id,
 			// and its location.
 			name: "GcpModelArmorTemplate",
-			kind: cloudresourcekind.CloudResourceKind_GcpModelArmorTemplate,
+			kind: catalogkind.CatalogKind_GcpModelArmorTemplate,
 			rawOutputs: map[string]interface{}{
 				"name":        "projects/my-project/locations/us-central1/templates/prompt-guard",
 				"template_id": "prompt-guard",
@@ -4186,7 +4186,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpModelArmorFloorSetting: the floor's full name (the
 			// verifier's key) and the parent it governs.
 			name: "GcpModelArmorFloorSetting",
-			kind: cloudresourcekind.CloudResourceKind_GcpModelArmorFloorSetting,
+			kind: catalogkind.CatalogKind_GcpModelArmorFloorSetting,
 			rawOutputs: map[string]interface{}{
 				"name":   "projects/my-project/locations/global/floorSetting",
 				"parent": "projects/my-project",
@@ -4198,7 +4198,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// verifier's key), the id Google assigned, its location, and the
 			// endpoint documents are posted to.
 			name: "GcpDocumentAiProcessor",
-			kind: cloudresourcekind.CloudResourceKind_GcpDocumentAiProcessor,
+			kind: catalogkind.CatalogKind_GcpDocumentAiProcessor,
 			rawOutputs: map[string]interface{}{
 				"name":             "projects/my-project/locations/us/processors/a1b2c3d4e5f6a7b8",
 				"processor_id":     "a1b2c3d4e5f6a7b8",
@@ -4212,7 +4212,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// verifier's key and what runtimes and schedules take), its id,
 			// and its region.
 			name: "GcpColabRuntimeTemplate",
-			kind: cloudresourcekind.CloudResourceKind_GcpColabRuntimeTemplate,
+			kind: catalogkind.CatalogKind_GcpColabRuntimeTemplate,
 			rawOutputs: map[string]interface{}{
 				"name":                "projects/my-project/locations/us-central1/notebookRuntimeTemplates/standard-cpu",
 				"runtime_template_id": "standard-cpu",
@@ -4224,7 +4224,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpColabRuntime: the runtime's full name (the verifier's key),
 			// its id, and its region.
 			name: "GcpColabRuntime",
-			kind: cloudresourcekind.CloudResourceKind_GcpColabRuntime,
+			kind: catalogkind.CatalogKind_GcpColabRuntime,
 			rawOutputs: map[string]interface{}{
 				"name":       "projects/my-project/locations/us-central1/notebookRuntimes/alice-notebooks",
 				"runtime_id": "alice-notebooks",
@@ -4236,7 +4236,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpColabSchedule: the schedule's full name (the verifier's key),
 			// the id Google assigned, and its region.
 			name: "GcpColabSchedule",
-			kind: cloudresourcekind.CloudResourceKind_GcpColabSchedule,
+			kind: catalogkind.CatalogKind_GcpColabSchedule,
 			rawOutputs: map[string]interface{}{
 				"name":        "projects/my-project/locations/us-central1/schedules/1234567890",
 				"schedule_id": "1234567890",
@@ -4248,7 +4248,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpTpuVm: the TPU's full name (the verifier's key), its id, and
 			// its zone.
 			name: "GcpTpuVm",
-			kind: cloudresourcekind.CloudResourceKind_GcpTpuVm,
+			kind: catalogkind.CatalogKind_GcpTpuVm,
 			rawOutputs: map[string]interface{}{
 				"name":    "projects/my-project/locations/us-central1-f/nodes/train-v2",
 				"node_id": "train-v2",
@@ -4260,7 +4260,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpTpuQueuedResource: the request's full name (the verifier's
 			// key), its id, and its zone.
 			name: "GcpTpuQueuedResource",
-			kind: cloudresourcekind.CloudResourceKind_GcpTpuQueuedResource,
+			kind: catalogkind.CatalogKind_GcpTpuQueuedResource,
 			rawOutputs: map[string]interface{}{
 				"name":               "projects/my-project/locations/us-central1-f/queuedResources/train-request",
 				"queued_resource_id": "train-request",
@@ -4273,7 +4273,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// and what a chat engine links), its id, location, start flow, and
 			// the declared children's names in manifest order (list outputs).
 			name: "GcpDialogflowCxAgent",
-			kind: cloudresourcekind.CloudResourceKind_GcpDialogflowCxAgent,
+			kind: catalogkind.CatalogKind_GcpDialogflowCxAgent,
 			rawOutputs: map[string]interface{}{
 				"name":       "projects/my-project/locations/global/agents/1b2c3d4e-0000-4000-8000-000000000001",
 				"agent_id":   "1b2c3d4e-0000-4000-8000-000000000001",
@@ -4305,7 +4305,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// verifier's key and what an agent's security_settings takes), id,
 			// and location.
 			name: "GcpDialogflowCxSecuritySettings",
-			kind: cloudresourcekind.CloudResourceKind_GcpDialogflowCxSecuritySettings,
+			kind: catalogkind.CatalogKind_GcpDialogflowCxSecuritySettings,
 			rawOutputs: map[string]interface{}{
 				"name":                 "projects/my-project/locations/global/securitySettings/1234567890123456789",
 				"security_settings_id": "1234567890123456789",
@@ -4317,7 +4317,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpManagedKafkaCluster: the cluster's full name (what topics,
 			// ACLs, and Connect clusters reference), id, and region.
 			name: "GcpManagedKafkaCluster",
-			kind: cloudresourcekind.CloudResourceKind_GcpManagedKafkaCluster,
+			kind: catalogkind.CatalogKind_GcpManagedKafkaCluster,
 			rawOutputs: map[string]interface{}{
 				"name":       "projects/my-project/locations/us-central1/clusters/events",
 				"cluster_id": "events",
@@ -4329,7 +4329,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpManagedKafkaTopic: the topic's full name and the Kafka topic
 			// name clients use.
 			name: "GcpManagedKafkaTopic",
-			kind: cloudresourcekind.CloudResourceKind_GcpManagedKafkaTopic,
+			kind: catalogkind.CatalogKind_GcpManagedKafkaTopic,
 			rawOutputs: map[string]interface{}{
 				"name":     "projects/my-project/locations/us-central1/clusters/events/topics/orders",
 				"topic_id": "orders",
@@ -4340,7 +4340,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpManagedKafkaAcl: the ACL's full name and the resource pattern
 			// Google derived from its id.
 			name: "GcpManagedKafkaAcl",
-			kind: cloudresourcekind.CloudResourceKind_GcpManagedKafkaAcl,
+			kind: catalogkind.CatalogKind_GcpManagedKafkaAcl,
 			rawOutputs: map[string]interface{}{
 				"name":          "projects/my-project/locations/us-central1/clusters/events/acls/topic/orders",
 				"resource_type": "TOPIC",
@@ -4353,7 +4353,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpManagedKafkaConnectCluster: the Connect cluster's full name
 			// (what connectors reference), id, and region.
 			name: "GcpManagedKafkaConnectCluster",
-			kind: cloudresourcekind.CloudResourceKind_GcpManagedKafkaConnectCluster,
+			kind: catalogkind.CatalogKind_GcpManagedKafkaConnectCluster,
 			rawOutputs: map[string]interface{}{
 				"name":               "projects/my-project/locations/us-central1/connectClusters/events-connect",
 				"connect_cluster_id": "events-connect",
@@ -4364,7 +4364,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpManagedKafkaConnector: the connector's full name and id.
 			name: "GcpManagedKafkaConnector",
-			kind: cloudresourcekind.CloudResourceKind_GcpManagedKafkaConnector,
+			kind: catalogkind.CatalogKind_GcpManagedKafkaConnector,
 			rawOutputs: map[string]interface{}{
 				"name":         "projects/my-project/locations/us-central1/connectClusters/events-connect/connectors/orders-to-pubsub",
 				"connector_id": "orders-to-pubsub",
@@ -4373,11 +4373,11 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// GcpBigQueryConnection: the connection's name, id, and location
-			// plus the cloud_resource arm's service account (the principal a
+			// plus the infra_component arm's service account (the principal a
 			// user grants bucket access to); the other arms' identities are
 			// empty when their arm is not declared.
 			name: "GcpBigQueryConnection",
-			kind: cloudresourcekind.CloudResourceKind_GcpBigQueryConnection,
+			kind: catalogkind.CatalogKind_GcpBigQueryConnection,
 			rawOutputs: map[string]interface{}{
 				"name":                              "projects/my-project/locations/us/connections/lake",
 				"connection_id":                     "lake",
@@ -4399,7 +4399,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpBigQueryReservation: the reservation's name, short name,
 			// location, and its assignments' names in declared order.
 			name: "GcpBigQueryReservation",
-			kind: cloudresourcekind.CloudResourceKind_GcpBigQueryReservation,
+			kind: catalogkind.CatalogKind_GcpBigQueryReservation,
 			rawOutputs: map[string]interface{}{
 				"name":             "projects/bq-admin/locations/US/reservations/analytics",
 				"reservation_name": "analytics",
@@ -4414,7 +4414,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpBigQueryCapacityCommitment: the commitment's name, state, and
 			// term.
 			name: "GcpBigQueryCapacityCommitment",
-			kind: cloudresourcekind.CloudResourceKind_GcpBigQueryCapacityCommitment,
+			kind: catalogkind.CatalogKind_GcpBigQueryCapacityCommitment,
 			rawOutputs: map[string]interface{}{
 				"name":                  "projects/bq-admin/locations/US/capacityCommitments/annual-100",
 				"state":                 "ACTIVE",
@@ -4427,7 +4427,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpBigQueryReservationGroup: the group's full name (what a
 			// reservation's reservation_group takes), short name, and location.
 			name: "GcpBigQueryReservationGroup",
-			kind: cloudresourcekind.CloudResourceKind_GcpBigQueryReservationGroup,
+			kind: catalogkind.CatalogKind_GcpBigQueryReservationGroup,
 			rawOutputs: map[string]interface{}{
 				"name":                   "projects/bq-admin/locations/US/reservationGroups/tier-1",
 				"reservation_group_name": "tier-1",
@@ -4439,7 +4439,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpDatastreamPrivateConnection: the full name (what a
 			// connection profile's private_connection takes) and the id.
 			name: "GcpDatastreamPrivateConnection",
-			kind: cloudresourcekind.CloudResourceKind_GcpDatastreamPrivateConnection,
+			kind: catalogkind.CatalogKind_GcpDatastreamPrivateConnection,
 			rawOutputs: map[string]interface{}{
 				"name":                  "projects/p/locations/us-central1/privateConnections/data-vpc",
 				"private_connection_id": "data-vpc",
@@ -4450,7 +4450,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpDatastreamConnectionProfile: the full name (what a stream's
 			// source and destination profiles take) and the id.
 			name: "GcpDatastreamConnectionProfile",
-			kind: cloudresourcekind.CloudResourceKind_GcpDatastreamConnectionProfile,
+			kind: catalogkind.CatalogKind_GcpDatastreamConnectionProfile,
 			rawOutputs: map[string]interface{}{
 				"name":                  "projects/p/locations/us-central1/connectionProfiles/orders-postgres",
 				"connection_profile_id": "orders-postgres",
@@ -4460,7 +4460,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpDatastreamStream: the stream's full name and id.
 			name: "GcpDatastreamStream",
-			kind: cloudresourcekind.CloudResourceKind_GcpDatastreamStream,
+			kind: catalogkind.CatalogKind_GcpDatastreamStream,
 			rawOutputs: map[string]interface{}{
 				"name":      "projects/p/locations/us-central1/streams/orders-cdc",
 				"stream_id": "orders-cdc",
@@ -4471,7 +4471,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpPrivateCaPool: the full name (what authorities, certificates,
 			// and TLS consumers reference), the id, and the region.
 			name: "GcpPrivateCaPool",
-			kind: cloudresourcekind.CloudResourceKind_GcpPrivateCaPool,
+			kind: catalogkind.CatalogKind_GcpPrivateCaPool,
 			rawOutputs: map[string]interface{}{
 				"name":       "projects/p/locations/us-central1/caPools/internal-tls",
 				"ca_pool_id": "internal-tls",
@@ -4484,7 +4484,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// subordinates and certificates reference), the id, the state, the
 			// CA certificate and its chain, and the published URLs.
 			name: "GcpPrivateCaCertificateAuthority",
-			kind: cloudresourcekind.CloudResourceKind_GcpPrivateCaCertificateAuthority,
+			kind: catalogkind.CatalogKind_GcpPrivateCaCertificateAuthority,
 			rawOutputs: map[string]interface{}{
 				"name":                      "projects/p/locations/us-central1/caPools/root-pool/certificateAuthorities/root-ca",
 				"certificate_authority_id":  "root-ca",
@@ -4500,7 +4500,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpPrivateCaCertificateTemplate: the full name (what
 			// certificates reference) and the id.
 			name: "GcpPrivateCaCertificateTemplate",
-			kind: cloudresourcekind.CloudResourceKind_GcpPrivateCaCertificateTemplate,
+			kind: catalogkind.CatalogKind_GcpPrivateCaCertificateTemplate,
 			rawOutputs: map[string]interface{}{
 				"name":        "projects/p/locations/us-central1/certificateTemplates/tls-server",
 				"template_id": "tls-server",
@@ -4511,7 +4511,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpPrivateCaCertificate: the full name, the id, the signed
 			// certificate and its chain, and the signing authority.
 			name: "GcpPrivateCaCertificate",
-			kind: cloudresourcekind.CloudResourceKind_GcpPrivateCaCertificate,
+			kind: catalogkind.CatalogKind_GcpPrivateCaCertificate,
 			rawOutputs: map[string]interface{}{
 				"name":                         "projects/p/locations/us-central1/caPools/internal-tls/certificates/api-server",
 				"certificate_id":               "api-server",
@@ -4525,7 +4525,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpKmsAutokeyConfig: the configuration's name and the scope it
 			// governs.
 			name: "GcpKmsAutokeyConfig",
-			kind: cloudresourcekind.CloudResourceKind_GcpKmsAutokeyConfig,
+			kind: catalogkind.CatalogKind_GcpKmsAutokeyConfig,
 			rawOutputs: map[string]interface{}{
 				"name":   "folders/123456789012/autokeyConfig",
 				"parent": "folders/123456789012",
@@ -4536,7 +4536,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpKmsKeyHandle: the handle and the key Autokey assigned (what
 			// the protected resource references).
 			name: "GcpKmsKeyHandle",
-			kind: cloudresourcekind.CloudResourceKind_GcpKmsKeyHandle,
+			kind: catalogkind.CatalogKind_GcpKmsKeyHandle,
 			rawOutputs: map[string]interface{}{
 				"name":    "projects/orders-prod/locations/us-central1/keyHandles/orders-bucket-key",
 				"kms_key": "projects/orders-prod/locations/us-central1/keyRings/autokey/cryptoKeys/123-storage-bucket-0a1b2c",
@@ -4547,7 +4547,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpSccNotificationConfig: the config and the publisher it
 			// needs on its topic.
 			name: "GcpSccNotificationConfig",
-			kind: cloudresourcekind.CloudResourceKind_GcpSccNotificationConfig,
+			kind: catalogkind.CatalogKind_GcpSccNotificationConfig,
 			rawOutputs: map[string]interface{}{
 				"name":                   "projects/sec/locations/global/notificationConfigs/high-findings",
 				"service_account":        "service-project-123@gcp-sa-scc-notification.iam.gserviceaccount.com",
@@ -4558,7 +4558,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpSccMuteConfig: the rule's name.
 			name: "GcpSccMuteConfig",
-			kind: cloudresourcekind.CloudResourceKind_GcpSccMuteConfig,
+			kind: catalogkind.CatalogKind_GcpSccMuteConfig,
 			rawOutputs: map[string]interface{}{
 				"name": "folders/456/locations/global/muteConfigs/sandbox-public-buckets",
 			},
@@ -4568,7 +4568,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpSccBigQueryExport: the export and the writer it needs on
 			// its dataset.
 			name: "GcpSccBigQueryExport",
-			kind: cloudresourcekind.CloudResourceKind_GcpSccBigQueryExport,
+			kind: catalogkind.CatalogKind_GcpSccBigQueryExport,
 			rawOutputs: map[string]interface{}{
 				"name":      "organizations/123/locations/global/bigQueryExports/findings-history",
 				"principal": "service-org-123@gcp-sa-scc-notification.iam.gserviceaccount.com",
@@ -4578,7 +4578,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpBinaryAuthorizationPolicy: the policy's name and project.
 			name: "GcpBinaryAuthorizationPolicy",
-			kind: cloudresourcekind.CloudResourceKind_GcpBinaryAuthorizationPolicy,
+			kind: catalogkind.CatalogKind_GcpBinaryAuthorizationPolicy,
 			rawOutputs: map[string]interface{}{
 				"name":       "projects/prod/policy",
 				"project_id": "prod",
@@ -4589,7 +4589,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpBinaryAuthorizationAttestor: the full name (what policies
 			// require), the id, the note, and the reading identity.
 			name: "GcpBinaryAuthorizationAttestor",
-			kind: cloudresourcekind.CloudResourceKind_GcpBinaryAuthorizationAttestor,
+			kind: catalogkind.CatalogKind_GcpBinaryAuthorizationAttestor,
 			rawOutputs: map[string]interface{}{
 				"attestor_id":                      "projects/sec/attestors/built-by-ci",
 				"attestor_name":                    "built-by-ci",
@@ -4602,7 +4602,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpGkeFleet: the host project every fleet child references,
 			// the fleet's name, and its uid.
 			name: "GcpGkeFleet",
-			kind: cloudresourcekind.CloudResourceKind_GcpGkeFleet,
+			kind: catalogkind.CatalogKind_GcpGkeFleet,
 			rawOutputs: map[string]interface{}{
 				"project_id": "platform-host",
 				"name":       "projects/platform-host/locations/global/fleets/default",
@@ -4613,7 +4613,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpGkeFleetFeature: the feature's full name.
 			name: "GcpGkeFleetFeature",
-			kind: cloudresourcekind.CloudResourceKind_GcpGkeFleetFeature,
+			kind: catalogkind.CatalogKind_GcpGkeFleetFeature,
 			rawOutputs: map[string]interface{}{
 				"name": "projects/platform-host/locations/global/features/configmanagement",
 			},
@@ -4622,7 +4622,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpGkeFleetScope: the scope's name, ID, and uid.
 			name: "GcpGkeFleetScope",
-			kind: cloudresourcekind.CloudResourceKind_GcpGkeFleetScope,
+			kind: catalogkind.CatalogKind_GcpGkeFleetScope,
 			rawOutputs: map[string]interface{}{
 				"name":     "projects/platform-host/locations/global/scopes/orders",
 				"scope_id": "orders",
@@ -4634,7 +4634,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpGkeFleetMembership: the membership name scopes and
 			// per-cluster feature settings reference.
 			name: "GcpGkeFleetMembership",
-			kind: cloudresourcekind.CloudResourceKind_GcpGkeFleetMembership,
+			kind: catalogkind.CatalogKind_GcpGkeFleetMembership,
 			rawOutputs: map[string]interface{}{
 				"name":          "projects/platform-host/locations/global/memberships/orders-uc1",
 				"membership_id": "orders-uc1",
@@ -4646,7 +4646,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpComputeImage: the self link consumers boot from, the
 			// family, and the size.
 			name: "GcpComputeImage",
-			kind: cloudresourcekind.CloudResourceKind_GcpComputeImage,
+			kind: catalogkind.CatalogKind_GcpComputeImage,
 			rawOutputs: map[string]interface{}{
 				"name":         "web-base-20261001",
 				"self_link":    "https://www.googleapis.com/compute/v1/projects/images-prod/global/images/web-base-20261001",
@@ -4660,7 +4660,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpCloudBuildWorkerPool: the pool name triggers and Cloud
 			// Deploy targets run their builds on.
 			name: "GcpCloudBuildWorkerPool",
-			kind: cloudresourcekind.CloudResourceKind_GcpCloudBuildWorkerPool,
+			kind: catalogkind.CatalogKind_GcpCloudBuildWorkerPool,
 			rawOutputs: map[string]interface{}{
 				"name":           "projects/acme-ci/locations/us-central1/workerPools/private-builds",
 				"worker_pool_id": "private-builds",
@@ -4673,7 +4673,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpCloudBuildConnection: the connection name repositories
 			// link through, and how far its installation has come.
 			name: "GcpCloudBuildConnection",
-			kind: cloudresourcekind.CloudResourceKind_GcpCloudBuildConnection,
+			kind: catalogkind.CatalogKind_GcpCloudBuildConnection,
 			rawOutputs: map[string]interface{}{
 				"name":                    "projects/acme-ci/locations/us-central1/connections/acme-github",
 				"connection_id":           "acme-github",
@@ -4686,7 +4686,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpCloudBuildRepository: the repository name triggers and
 			// custom target types build from.
 			name: "GcpCloudBuildRepository",
-			kind: cloudresourcekind.CloudResourceKind_GcpCloudBuildRepository,
+			kind: catalogkind.CatalogKind_GcpCloudBuildRepository,
 			rawOutputs: map[string]interface{}{
 				"name":          "projects/acme-ci/locations/us-central1/connections/acme-github/repositories/orders",
 				"repository_id": "orders",
@@ -4699,7 +4699,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// trigger's name, and its full resource ID (global triggers
 			// carry no locations segment).
 			name: "GcpCloudBuildTrigger",
-			kind: cloudresourcekind.CloudResourceKind_GcpCloudBuildTrigger,
+			kind: catalogkind.CatalogKind_GcpCloudBuildTrigger,
 			rawOutputs: map[string]interface{}{
 				"id":         "projects/acme-ci/locations/us-central1/triggers/0f1e2d3c-4b5a-6978-8a9b-0c1d2e3f4a5b",
 				"trigger_id": "0f1e2d3c-4b5a-6978-8a9b-0c1d2e3f4a5b",
@@ -4711,7 +4711,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpDeployTarget: the bare target ID pipeline stages and
 			// policies select by, and the full name.
 			name: "GcpDeployTarget",
-			kind: cloudresourcekind.CloudResourceKind_GcpDeployTarget,
+			kind: catalogkind.CatalogKind_GcpDeployTarget,
 			rawOutputs: map[string]interface{}{
 				"name":      "projects/acme-delivery/locations/us-central1/targets/prod",
 				"target_id": "prod",
@@ -4723,7 +4723,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpDeliveryPipeline: the pipeline ID deploy policies select
 			// by, and the full name.
 			name: "GcpDeliveryPipeline",
-			kind: cloudresourcekind.CloudResourceKind_GcpDeliveryPipeline,
+			kind: catalogkind.CatalogKind_GcpDeliveryPipeline,
 			rawOutputs: map[string]interface{}{
 				"name":                 "projects/acme-delivery/locations/us-central1/deliveryPipelines/orders",
 				"delivery_pipeline_id": "orders",
@@ -4734,7 +4734,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// GcpDeployPolicy: the policy's full name, ID, and uid.
 			name: "GcpDeployPolicy",
-			kind: cloudresourcekind.CloudResourceKind_GcpDeployPolicy,
+			kind: catalogkind.CatalogKind_GcpDeployPolicy,
 			rawOutputs: map[string]interface{}{
 				"name":             "projects/acme-delivery/locations/us-central1/deployPolicies/weekend-freeze",
 				"deploy_policy_id": "weekend-freeze",
@@ -4746,7 +4746,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpDeployCustomTargetType: the full name custom targets
 			// reference.
 			name: "GcpDeployCustomTargetType",
-			kind: cloudresourcekind.CloudResourceKind_GcpDeployCustomTargetType,
+			kind: catalogkind.CatalogKind_GcpDeployCustomTargetType,
 			rawOutputs: map[string]interface{}{
 				"name":                  "projects/acme-delivery/locations/us-central1/customTargetTypes/vertex-endpoint",
 				"custom_target_type_id": "vertex-endpoint",
@@ -4758,7 +4758,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpPubSubTopicIamMember: the resolved grant (the topic's full
 			// name, role, member) and the policy etag.
 			name: "GcpPubSubTopicIamMember",
-			kind: cloudresourcekind.CloudResourceKind_GcpPubSubTopicIamMember,
+			kind: catalogkind.CatalogKind_GcpPubSubTopicIamMember,
 			rawOutputs: map[string]interface{}{
 				"topic":  "projects/acme-logging/topics/audit-logs",
 				"role":   "roles/pubsub.publisher",
@@ -4771,7 +4771,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpGcsBucketIamMember: the resolved grant (the bucket name,
 			// role, member) and the policy etag.
 			name: "GcpGcsBucketIamMember",
-			kind: cloudresourcekind.CloudResourceKind_GcpGcsBucketIamMember,
+			kind: catalogkind.CatalogKind_GcpGcsBucketIamMember,
 			rawOutputs: map[string]interface{}{
 				"bucket": "acme-audit-logs",
 				"role":   "roles/storage.objectCreator",
@@ -4784,7 +4784,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpCertManagerTrustConfig: the full name TLS policies take, the
 			// bare name, and the location.
 			name: "GcpCertManagerTrustConfig",
-			kind: cloudresourcekind.CloudResourceKind_GcpCertManagerTrustConfig,
+			kind: catalogkind.CatalogKind_GcpCertManagerTrustConfig,
 			rawOutputs: map[string]interface{}{
 				"trust_config_id":   "projects/acme-edge/locations/global/trustConfigs/partner-mtls",
 				"trust_config_name": "partner-mtls",
@@ -4796,7 +4796,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpCertManagerIssuanceConfig: the full name a certificate's
 			// managed.issuance_config takes, the bare name, and the location.
 			name: "GcpCertManagerIssuanceConfig",
-			kind: cloudresourcekind.CloudResourceKind_GcpCertManagerIssuanceConfig,
+			kind: catalogkind.CatalogKind_GcpCertManagerIssuanceConfig,
 			rawOutputs: map[string]interface{}{
 				"issuance_config_id":   "projects/acme-edge/locations/global/certificateIssuanceConfigs/internal-tls",
 				"issuance_config_name": "internal-tls",
@@ -4810,7 +4810,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// endpoint_id), the deployed model's id and display name, and the
 			// location.
 			name: "GcpVertexAiModelGardenDeployment",
-			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiModelGardenDeployment,
+			kind: catalogkind.CatalogKind_GcpVertexAiModelGardenDeployment,
 			rawOutputs: map[string]interface{}{
 				"endpoint_id":                 "projects/my-project/locations/us-central1/endpoints/1234567890123456789",
 				"endpoint_name":               "1234567890123456789",
@@ -4825,7 +4825,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// verifier's key), its numeric id, location, and the two
 			// timestamps.
 			name: "GcpVertexAiAgentEngine",
-			kind: cloudresourcekind.CloudResourceKind_GcpVertexAiAgentEngine,
+			kind: catalogkind.CatalogKind_GcpVertexAiAgentEngine,
 			rawOutputs: map[string]interface{}{
 				"name":                "projects/my-project/locations/us-central1/reasoningEngines/1234567890123456789",
 				"reasoning_engine_id": "1234567890123456789",
@@ -4840,9 +4840,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// project (the E2E verifier keys on project_id), its number (the
 			// FCM sender id), display name, and the three Admin SDK config
 			// values (empty until the project has an RTDB / default bucket /
-			// finalized location) -- must each land on the StackOutputs proto.
+			// finalized location) -- must each land on the Outputs proto.
 			name: "GcpFirebaseProject",
-			kind: cloudresourcekind.CloudResourceKind_GcpFirebaseProject,
+			kind: catalogkind.CatalogKind_GcpFirebaseProject,
 			rawOutputs: map[string]interface{}{
 				"project_id":     "my-project",
 				"project_number": "123456789012",
@@ -4861,9 +4861,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the app id, the resource name (the E2E verifier keys on name),
 			// the associated API key's UID, and the google-services.json
 			// filename and base64 contents from the deferred config lookup --
-			// must each land on the StackOutputs proto.
+			// must each land on the Outputs proto.
 			name: "GcpFirebaseAndroidApp",
-			kind: cloudresourcekind.CloudResourceKind_GcpFirebaseAndroidApp,
+			kind: catalogkind.CatalogKind_GcpFirebaseAndroidApp,
 			rawOutputs: map[string]interface{}{
 				"app_id":               "1:123456789012:android:0123456789abcdef",
 				"name":                 "projects/my-project/androidApps/1:123456789012:android:0123456789abcdef",
@@ -4877,7 +4877,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// GcpFirebaseAppleApp: the same five-output shape as the Android
 			// registration, with the iosApps resource path and the plist.
 			name: "GcpFirebaseAppleApp",
-			kind: cloudresourcekind.CloudResourceKind_GcpFirebaseAppleApp,
+			kind: catalogkind.CatalogKind_GcpFirebaseAppleApp,
 			rawOutputs: map[string]interface{}{
 				"app_id":               "1:123456789012:ios:0123456789abcdef",
 				"name":                 "projects/my-project/iosApps/1:123456789012:ios:0123456789abcdef",
@@ -4892,9 +4892,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// app_urls (a list from both engines) and the seven firebaseConfig
 			// values from the deferred config lookup (the conditionally
 			// present ones empty on a bare project) -- must each land on the
-			// StackOutputs proto.
+			// Outputs proto.
 			name: "GcpFirebaseWebApp",
-			kind: cloudresourcekind.CloudResourceKind_GcpFirebaseWebApp,
+			kind: catalogkind.CatalogKind_GcpFirebaseWebApp,
 			rawOutputs: map[string]interface{}{
 				"app_id":     "1:123456789012:web:0123456789abcdef",
 				"name":       "projects/my-project/webApps/1:123456789012:web:0123456789abcdef",
@@ -4922,7 +4922,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// token secret name, the registration name, and the resource
 			// group.
 			name: "AzurePlantonRunner",
-			kind: cloudresourcekind.CloudResourceKind_AzurePlantonRunner,
+			kind: catalogkind.CatalogKind_AzurePlantonRunner,
 			rawOutputs: map[string]interface{}{
 				"container_app_id":    "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/my-rg/providers/Microsoft.App/containerApps/vnet-runner",
 				"container_app_name":  "vnet-runner",
@@ -4940,7 +4940,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// handles (namespace + release name), the module-created token
 			// Secret, and the name the runner registers itself under.
 			name: "KubernetesPlantonRunner",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesPlantonRunner,
+			kind: catalogkind.CatalogKind_KubernetesPlantonRunner,
 			rawOutputs: map[string]interface{}{
 				"namespace":         "planton-runner",
 				"release_name":      "cluster-runner",
@@ -4957,7 +4957,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// numeric engine outputs (Terraform's number, Pulumi's IntOutput) --
 			// this case guards that numeric outputs flatten onto int64 fields.
 			name: "AwsLaunchTemplate",
-			kind: cloudresourcekind.CloudResourceKind_AwsLaunchTemplate,
+			kind: catalogkind.CatalogKind_AwsLaunchTemplate,
 			rawOutputs: map[string]interface{}{
 				"launch_template_id":  "lt-0123456789abcdef0",
 				"launch_template_arn": "arn:aws:ec2:us-west-2:123456789012:launch-template/lt-0123456789abcdef0",
@@ -4971,7 +4971,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudWatch dimension and ECS capacity-provider handle; the ARN scopes
 			// IAM policies and EventBridge rules.
 			name: "AwsAutoScalingGroup",
-			kind: cloudresourcekind.CloudResourceKind_AwsAutoScalingGroup,
+			kind: catalogkind.CatalogKind_AwsAutoScalingGroup,
 			rawOutputs: map[string]interface{}{
 				"autoscaling_group_name": "web",
 				"autoscaling_group_arn":  "arn:aws:autoscaling:us-west-2:123456789012:autoScalingGroup:uuid:autoScalingGroupName/web",
@@ -4983,7 +4983,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// (it encodes cluster and add-on names); addon_version reports the
 			// resolved AWS default when the spec pinned nothing.
 			name: "AwsEksAddon",
-			kind: cloudresourcekind.CloudResourceKind_AwsEksAddon,
+			kind: catalogkind.CatalogKind_AwsEksAddon,
 			rawOutputs: map[string]interface{}{
 				"addon_arn":     "arn:aws:eks:us-west-2:123456789012:addon/platform/vpc-cni/9ac7ab21-1a2b",
 				"addon_name":    "vpc-cni",
@@ -4996,7 +4996,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// verifier (it encodes cluster and profile names); status is ACTIVE
 			// after a successful create.
 			name: "AwsEksFargateProfile",
-			kind: cloudresourcekind.CloudResourceKind_AwsEksFargateProfile,
+			kind: catalogkind.CatalogKind_AwsEksFargateProfile,
 			rawOutputs: map[string]interface{}{
 				"fargate_profile_arn":  "arn:aws:eks:us-west-2:123456789012:fargateprofile/platform/serverless/9ac7ab21-1a2b",
 				"fargate_profile_name": "serverless",
@@ -5009,7 +5009,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// verifier (it encodes the cluster and the principal identity), and the
 			// resolved principal ARN is what downstream references consume.
 			name: "AwsEksAccessEntry",
-			kind: cloudresourcekind.CloudResourceKind_AwsEksAccessEntry,
+			kind: catalogkind.CatalogKind_AwsEksAccessEntry,
 			rawOutputs: map[string]interface{}{
 				"access_entry_arn": "arn:aws:eks:us-west-2:123456789012:access-entry/platform/role/123456789012/TeamViewerRole/9ac7ab21-1a2b",
 				"principal_arn":    "arn:aws:iam::123456789012:role/TeamViewerRole",
@@ -5023,7 +5023,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// network_interface_ids guards list outputs flattening onto a repeated
 			// string field.
 			name: "AwsVpcEndpoint",
-			kind: cloudresourcekind.CloudResourceKind_AwsVpcEndpoint,
+			kind: catalogkind.CatalogKind_AwsVpcEndpoint,
 			rawOutputs: map[string]interface{}{
 				"vpc_endpoint_id":       "vpce-0123456789abcdef0",
 				"arn":                   "arn:aws:ec2:us-west-2:123456789012:vpc-endpoint/vpce-0123456789abcdef0",
@@ -5045,7 +5045,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// handle; and instance_endpoints guards list outputs flattening onto a
 			// repeated string field (the folded per-name cluster instances).
 			name: "AwsRdsCluster",
-			kind: cloudresourcekind.CloudResourceKind_AwsRdsCluster,
+			kind: catalogkind.CatalogKind_AwsRdsCluster,
 			rawOutputs: map[string]interface{}{
 				"cluster_identifier":              "orders-db",
 				"arn":                             "arn:aws:rds:us-west-2:123456789012:cluster:orders-db",
@@ -5073,7 +5073,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// attributes downstream references consume differently); resource_id is
 			// the durable handle for IAM auth policies and point-in-time restores.
 			name: "AwsRdsInstance",
-			kind: cloudresourcekind.CloudResourceKind_AwsRdsInstance,
+			kind: catalogkind.CatalogKind_AwsRdsInstance,
 			rawOutputs: map[string]interface{}{
 				"instance_identifier":    "billing-db",
 				"arn":                    "arn:aws:rds:us-west-2:123456789012:db:billing-db",
@@ -5094,7 +5094,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "AwsElasticacheUser",
-			kind: cloudresourcekind.CloudResourceKind_AwsElasticacheUser,
+			kind: catalogkind.CatalogKind_AwsElasticacheUser,
 			rawOutputs: map[string]interface{}{
 				"user_id":   "app-cache-user",
 				"arn":       "arn:aws:elasticache:us-west-2:123456789012:user:app-cache-user",
@@ -5104,7 +5104,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "AwsElasticacheUserGroup",
-			kind: cloudresourcekind.CloudResourceKind_AwsElasticacheUserGroup,
+			kind: catalogkind.CatalogKind_AwsElasticacheUserGroup,
 			rawOutputs: map[string]interface{}{
 				"user_group_id": "app-cache-group",
 				"arn":           "arn:aws:elasticache:us-west-2:123456789012:usergroup:app-cache-group",
@@ -5113,7 +5113,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "AwsRedisElasticache",
-			kind: cloudresourcekind.CloudResourceKind_AwsRedisElasticache,
+			kind: catalogkind.CatalogKind_AwsRedisElasticache,
 			rawOutputs: map[string]interface{}{
 				"replication_group_id":           "orders-cache",
 				"primary_endpoint_address":       "orders-cache.abc123.usw2.cache.amazonaws.com",
@@ -5132,7 +5132,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "AwsMemcachedElasticache",
-			kind: cloudresourcekind.CloudResourceKind_AwsMemcachedElasticache,
+			kind: catalogkind.CatalogKind_AwsMemcachedElasticache,
 			rawOutputs: map[string]interface{}{
 				"cluster_id":             "session-cache",
 				"cluster_address":        "session-cache.abc123.cfg.usw2.cache.amazonaws.com",
@@ -5149,7 +5149,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "AwsServerlessElasticache",
-			kind: cloudresourcekind.CloudResourceKind_AwsServerlessElasticache,
+			kind: catalogkind.CatalogKind_AwsServerlessElasticache,
 			rawOutputs: map[string]interface{}{
 				"arn":                     "arn:aws:elasticache:us-west-2:123456789012:serverlesscache:orders-srvless",
 				"endpoint_address":        "orders-srvless-abc123.serverless.usw2.cache.amazonaws.com",
@@ -5171,7 +5171,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// handle; and instance_endpoints guards list outputs flattening onto a
 			// repeated string field (the folded per-name cluster instances).
 			name: "AwsDocumentDb",
-			kind: cloudresourcekind.CloudResourceKind_AwsDocumentDb,
+			kind: catalogkind.CatalogKind_AwsDocumentDb,
 			rawOutputs: map[string]interface{}{
 				"cluster_identifier":              "catalog-docdb",
 				"arn":                             "arn:aws:rds:us-west-2:123456789012:cluster:catalog-docdb",
@@ -5200,7 +5200,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// a repeated string field. This case also guards the Terraform module's
 			// first-ever outputs.tf (its absence was a live cross-engine parity bug).
 			name: "AwsNeptuneCluster",
-			kind: cloudresourcekind.CloudResourceKind_AwsNeptuneCluster,
+			kind: catalogkind.CatalogKind_AwsNeptuneCluster,
 			rawOutputs: map[string]interface{}{
 				"cluster_identifier":                   "knowledge-graph",
 				"arn":                                  "arn:aws:rds:us-west-2:123456789012:cluster:knowledge-graph",
@@ -5227,7 +5227,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// cluster_namespace_arn is the data-sharing/Data-API handle; and
 			// master_password_secret_arn carries the AWS-managed credential handle.
 			name: "AwsRedshiftCluster",
-			kind: cloudresourcekind.CloudResourceKind_AwsRedshiftCluster,
+			kind: catalogkind.CatalogKind_AwsRedshiftCluster,
 			rawOutputs: map[string]interface{}{
 				"cluster_identifier":         "analytics-warehouse",
 				"cluster_arn":                "arn:aws:redshift:us-west-2:123456789012:cluster:analytics-warehouse",
@@ -5250,10 +5250,10 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// AwsRedshiftServerlessNamespace: namespace_name is the join key
 			// workgroups attach with (downstream references resolve against
-			// stack outputs, never metadata); admin_password_secret_arn
+			// outputs, never metadata); admin_password_secret_arn
 			// carries the AWS-managed credential handle.
 			name: "AwsRedshiftServerlessNamespace",
-			kind: cloudresourcekind.CloudResourceKind_AwsRedshiftServerlessNamespace,
+			kind: catalogkind.CatalogKind_AwsRedshiftServerlessNamespace,
 			rawOutputs: map[string]interface{}{
 				"namespace_name":            "analytics-data",
 				"namespace_id":              "abc12345-6789-0abc-def1-234567890abc",
@@ -5271,7 +5271,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// verifier and the credentials API; endpoint_address + port are
 			// the connection handles downstream references consume.
 			name: "AwsRedshiftServerlessWorkgroup",
-			kind: cloudresourcekind.CloudResourceKind_AwsRedshiftServerlessWorkgroup,
+			kind: catalogkind.CatalogKind_AwsRedshiftServerlessWorkgroup,
 			rawOutputs: map[string]interface{}{
 				"workgroup_name":   "analytics-compute",
 				"workgroup_id":     "def67890-1234-5abc-def6-789012345def",
@@ -5289,7 +5289,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// and application config consume; stream_arn is what Lambda
 			// event-source mappings attach to when streams are enabled.
 			name: "AwsDynamodb",
-			kind: cloudresourcekind.CloudResourceKind_AwsDynamodb,
+			kind: catalogkind.CatalogKind_AwsDynamodb,
 			rawOutputs: map[string]interface{}{
 				"table_name":   "orders",
 				"table_arn":    "arn:aws:dynamodb:us-west-2:123456789012:table/orders",
@@ -5310,7 +5310,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// configuration_arn surfaces the module-managed configuration
 			// folded from server_properties.
 			name: "AwsMskCluster",
-			kind: cloudresourcekind.CloudResourceKind_AwsMskCluster,
+			kind: catalogkind.CatalogKind_AwsMskCluster,
 			rawOutputs: map[string]interface{}{
 				"cluster_arn":                                   "arn:aws:kafka:us-west-2:123456789012:cluster/orders-streaming/abc12345-6789-0abc-def1-234567890abc-2",
 				"cluster_name":                                  "orders-streaming",
@@ -5349,7 +5349,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// bootstrap_brokers_sasl_iam is the only connection string
 			// serverless MSK exposes (SASL/IAM is its sole auth scheme).
 			name: "AwsMskServerlessCluster",
-			kind: cloudresourcekind.CloudResourceKind_AwsMskServerlessCluster,
+			kind: catalogkind.CatalogKind_AwsMskServerlessCluster,
 			rawOutputs: map[string]interface{}{
 				"cluster_arn":                "arn:aws:kafka:us-west-2:123456789012:cluster/events-kafka/abc12345-6789-0abc-def1-234567890abc-s1",
 				"cluster_name":               "events-kafka",
@@ -5367,7 +5367,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// IAM policy conditions expect; owner_id enables cross-account
 			// rule references (<owner_id>/<group_id>).
 			name: "AwsSecurityGroup",
-			kind: cloudresourcekind.CloudResourceKind_AwsSecurityGroup,
+			kind: catalogkind.CatalogKind_AwsSecurityGroup,
 			rawOutputs: map[string]interface{}{
 				"security_group_id":  "sg-0123456789abcdef0",
 				"security_group_arn": "arn:aws:ec2:us-west-2:123456789012:security-group/sg-0123456789abcdef0",
@@ -5382,7 +5382,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the join key for event-source mappings and IAM policies; invoke_arn
 			// is what API Gateway integrations consume.
 			name: "AwsLambda",
-			kind: cloudresourcekind.CloudResourceKind_AwsLambda,
+			kind: catalogkind.CatalogKind_AwsLambda,
 			rawOutputs: map[string]interface{}{
 				"function_arn":   "arn:aws:lambda:us-west-2:123456789012:function:planton-oss-e2e-lambda-smoke",
 				"function_name":  "planton-oss-e2e-lambda-smoke",
@@ -5402,7 +5402,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// encryption-at-rest fields reference; alias_names carries the human-
 			// friendly addresses SDK callers may use instead of the key ID.
 			name: "AwsKmsKey",
-			kind: cloudresourcekind.CloudResourceKind_AwsKmsKey,
+			kind: catalogkind.CatalogKind_AwsKmsKey,
 			rawOutputs: map[string]interface{}{
 				"key_id":      "12345678-1234-1234-1234-123456789012",
 				"key_arn":     "arn:aws:kms:us-west-2:123456789012:key/12345678-1234-1234-1234-123456789012",
@@ -5417,7 +5417,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// IAM/cross-service join key (DLQ targets, SNS subscriptions,
 			// Lambda event source mappings); queue_name keys the E2E verifier.
 			name: "AwsSqsQueue",
-			kind: cloudresourcekind.CloudResourceKind_AwsSqsQueue,
+			kind: catalogkind.CatalogKind_AwsSqsQueue,
 			rawOutputs: map[string]interface{}{
 				"queue_url":  "https://sqs.us-west-2.amazonaws.com/123456789012/planton-oss-e2e-sqs-smoke",
 				"queue_arn":  "arn:aws:sqs:us-west-2:123456789012:planton-oss-e2e-sqs-smoke",
@@ -5432,7 +5432,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// topic_name keys the E2E verifier; owner and beginning_archive_time
 			// surface FIFO archive metadata when enabled.
 			name: "AwsSnsTopic",
-			kind: cloudresourcekind.CloudResourceKind_AwsSnsTopic,
+			kind: catalogkind.CatalogKind_AwsSnsTopic,
 			rawOutputs: map[string]interface{}{
 				"topic_arn":              "arn:aws:sns:us-west-2:123456789012:planton-oss-e2e-sns-smoke",
 				"topic_name":             "planton-oss-e2e-sns-smoke",
@@ -5449,7 +5449,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// pending_confirmation and confirmation_was_authenticated surface
 			// the HTTP/email handshake lifecycle.
 			name: "AwsSnsSubscription",
-			kind: cloudresourcekind.CloudResourceKind_AwsSnsSubscription,
+			kind: catalogkind.CatalogKind_AwsSnsSubscription,
 			rawOutputs: map[string]interface{}{
 				"subscription_arn":               "arn:aws:sns:us-west-2:123456789012:planton-oss-e2e-sns-smoke:01234567-89ab-cdef-0123-456789abcdef",
 				"owner_id":                       "123456789012",
@@ -5466,7 +5466,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// event_bus_name references; bus_arn is the IAM/cross-account
 			// join key.
 			name: "AwsEventBridgeBus",
-			kind: cloudresourcekind.CloudResourceKind_AwsEventBridgeBus,
+			kind: catalogkind.CatalogKind_AwsEventBridgeBus,
 			rawOutputs: map[string]interface{}{
 				"bus_name": "planton-oss-e2e-eventbridge-bus-smoke",
 				"bus_arn":  "arn:aws:events:us-west-2:123456789012:event-bus/planton-oss-e2e-eventbridge-bus-smoke",
@@ -5479,7 +5479,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AwsEventBridgeRule: rule_arn is the IAM/monitoring join key;
 			// rule_name keys the E2E verifier and EventBridge API calls.
 			name: "AwsEventBridgeRule",
-			kind: cloudresourcekind.CloudResourceKind_AwsEventBridgeRule,
+			kind: catalogkind.CatalogKind_AwsEventBridgeRule,
 			rawOutputs: map[string]interface{}{
 				"rule_arn":  "arn:aws:events:us-west-2:123456789012:rule/planton-oss-e2e-eventbridge-bus-smoke/planton-oss-e2e-rule-smoke",
 				"rule_name": "planton-oss-e2e-rule-smoke",
@@ -5493,7 +5493,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// mapping_arn and function_arn are the join keys downstream
 			// automation consumes; state surfaces the last observed lifecycle.
 			name: "AwsLambdaEventSourceMapping",
-			kind: cloudresourcekind.CloudResourceKind_AwsLambdaEventSourceMapping,
+			kind: catalogkind.CatalogKind_AwsLambdaEventSourceMapping,
 			rawOutputs: map[string]interface{}{
 				"uuid":         "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
 				"mapping_arn":  "arn:aws:lambda:us-west-2:123456789012:event-source-mapping:a1b2c3d4-e5f6-7890-abcd-ef1234567890",
@@ -5510,7 +5510,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// two *_vpc_endpoint_service outputs are what CUSTOMER endpoint
 			// management composes AwsVpcEndpoint nodes against.
 			name: "AwsMwaaEnvironment",
-			kind: cloudresourcekind.CloudResourceKind_AwsMwaaEnvironment,
+			kind: catalogkind.CatalogKind_AwsMwaaEnvironment,
 			rawOutputs: map[string]interface{}{
 				"environment_arn":                "arn:aws:airflow:us-west-2:123456789012:environment/prod-airflow",
 				"environment_name":               "prod-airflow",
@@ -5536,7 +5536,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// downstream references consume; the *_v2 trio carries the
 			// dual-stack endpoint surface added this session.
 			name: "AwsOpenSearchDomain",
-			kind: cloudresourcekind.CloudResourceKind_AwsOpenSearchDomain,
+			kind: catalogkind.CatalogKind_AwsOpenSearchDomain,
 			rawOutputs: map[string]interface{}{
 				"domain_id":                         "123456789012/search-logs",
 				"domain_name":                       "search-logs",
@@ -5559,7 +5559,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// (public values empty for private-only instances -- both
 			// engines emit them regardless).
 			name: "AwsEc2Instance",
-			kind: cloudresourcekind.CloudResourceKind_AwsEc2Instance,
+			kind: catalogkind.CatalogKind_AwsEc2Instance,
 			rawOutputs: map[string]interface{}{
 				"instance_id":                  "i-0123456789abcdef0",
 				"arn":                          "arn:aws:ec2:us-west-2:123456789012:instance/i-0123456789abcdef0",
@@ -5583,7 +5583,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// capacity_provider_arns the folded providers' identities --
 			// both list outputs, guarding list flattening.
 			name: "AwsEcsCluster",
-			kind: cloudresourcekind.CloudResourceKind_AwsEcsCluster,
+			kind: catalogkind.CatalogKind_AwsEcsCluster,
 			rawOutputs: map[string]interface{}{
 				"cluster_name":            "prod-apps",
 				"cluster_arn":             "arn:aws:ecs:us-west-2:123456789012:cluster/prod-apps",
@@ -5602,7 +5602,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// empty strings when hosting is off so the output contract stays
 			// shape-stable across both engines.
 			name: "AwsS3Bucket",
-			kind: cloudresourcekind.CloudResourceKind_AwsS3Bucket,
+			kind: catalogkind.CatalogKind_AwsS3Bucket,
 			rawOutputs: map[string]interface{}{
 				"bucket_id":                   "planton-oss-e2e-awss3bucket-smoke",
 				"bucket_arn":                  "arn:aws:s3:::planton-oss-e2e-awss3bucket-smoke",
@@ -5627,7 +5627,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// verifier's HeadObject loop; object_arns composes into IAM policy
 			// Resource lists.
 			name: "AwsS3ObjectSet",
-			kind: cloudresourcekind.CloudResourceKind_AwsS3ObjectSet,
+			kind: catalogkind.CatalogKind_AwsS3ObjectSet,
 			rawOutputs: map[string]interface{}{
 				"bucket_id": "planton-oss-e2e-awss3bucket-prereq",
 				"object_arns": map[string]interface{}{
@@ -5649,7 +5649,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// event source mappings, DynamoDB streaming destinations, and
 			// Firehose sources reference; stream_name keys the E2E verifier.
 			name: "AwsKinesisStream",
-			kind: cloudresourcekind.CloudResourceKind_AwsKinesisStream,
+			kind: catalogkind.CatalogKind_AwsKinesisStream,
 			rawOutputs: map[string]interface{}{
 				"stream_arn":  "arn:aws:kinesis:us-west-2:123456789012:stream/planton-oss-e2e-kinesis-smoke",
 				"stream_name": "planton-oss-e2e-kinesis-smoke",
@@ -5663,7 +5663,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// identity SubscribeToShard callers use; consumer_name keys the
 			// E2E verifier; stream_arn echoes the parent join key.
 			name: "AwsKinesisStreamConsumer",
-			kind: cloudresourcekind.CloudResourceKind_AwsKinesisStreamConsumer,
+			kind: catalogkind.CatalogKind_AwsKinesisStreamConsumer,
 			rawOutputs: map[string]interface{}{
 				"consumer_arn":       "arn:aws:kinesis:us-west-2:123456789012:stream/planton-oss-e2e-kinesis-smoke/consumer/planton-oss-e2e-consumer-smoke:1751700000",
 				"consumer_name":      "planton-oss-e2e-consumer-smoke",
@@ -5680,7 +5680,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// MSK broker-log delivery reference; destination_id + version_id
 			// are the UpdateDestination coordinates AWS assigns at creation.
 			name: "AwsKinesisFirehose",
-			kind: cloudresourcekind.CloudResourceKind_AwsKinesisFirehose,
+			kind: catalogkind.CatalogKind_AwsKinesisFirehose,
 			rawOutputs: map[string]interface{}{
 				"delivery_stream_arn":  "arn:aws:firehose:us-west-2:123456789012:deliverystream/planton-oss-e2e-firehose-smoke",
 				"delivery_stream_name": "planton-oss-e2e-firehose-smoke",
@@ -5696,7 +5696,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// repository_arn scopes IAM policies; repository_name keys the
 			// E2E verifier; registry_id is the owning account.
 			name: "AwsEcrRepo",
-			kind: cloudresourcekind.CloudResourceKind_AwsEcrRepo,
+			kind: catalogkind.CatalogKind_AwsEcrRepo,
 			rawOutputs: map[string]interface{}{
 				"repository_name": "planton-oss-e2e/full-surface",
 				"repository_url":  "123456789012.dkr.ecr.us-west-2.amazonaws.com/planton-oss-e2e/full-surface",
@@ -5713,7 +5713,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// registration) and keys the E2E verifier; nameservers carry the
 			// registrar delegation values.
 			name: "AwsRoute53Zone",
-			kind: cloudresourcekind.CloudResourceKind_AwsRoute53Zone,
+			kind: catalogkind.CatalogKind_AwsRoute53Zone,
 			rawOutputs: map[string]interface{}{
 				"zone_id":             "Z1D633PJN98FT9",
 				"zone_name":           "example.com",
@@ -5730,7 +5730,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the E2E verifier (a record has no standalone describe API);
 			// is_alias and set_identifier echo the record's shape.
 			name: "AwsRoute53DnsRecord",
-			kind: cloudresourcekind.CloudResourceKind_AwsRoute53DnsRecord,
+			kind: catalogkind.CatalogKind_AwsRoute53DnsRecord,
 			rawOutputs: map[string]interface{}{
 				"fqdn":           "canary.example.com",
 				"record_type":    "A",
@@ -5747,7 +5747,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// reference (health_check_id) and calculated parents aggregate;
 			// it also keys the E2E verifier.
 			name: "AwsRoute53HealthCheck",
-			kind: cloudresourcekind.CloudResourceKind_AwsRoute53HealthCheck,
+			kind: catalogkind.CatalogKind_AwsRoute53HealthCheck,
 			rawOutputs: map[string]interface{}{
 				"health_check_id":  "abcdef11-2222-3333-4444-555555fedcba",
 				"health_check_arn": "arn:aws:route53:::healthcheck/abcdef11-2222-3333-4444-555555fedcba",
@@ -5763,7 +5763,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// application_integration_url carries the CAPTCHA/Challenge JS
 			// integration endpoint.
 			name: "AwsWafWebAcl",
-			kind: cloudresourcekind.CloudResourceKind_AwsWafWebAcl,
+			kind: catalogkind.CatalogKind_AwsWafWebAcl,
 			rawOutputs: map[string]interface{}{
 				"web_acl_arn":                 "arn:aws:wafv2:us-west-2:123456789012:regional/webacl/edge-acl/11111111-2222-3333-4444-555555555555",
 				"web_acl_id":                  "11111111-2222-3333-4444-555555555555",
@@ -5780,7 +5780,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// statements point at; id + name address the set through the
 			// WAFv2 API (and key the E2E verifier).
 			name: "AwsWafIpSet",
-			kind: cloudresourcekind.CloudResourceKind_AwsWafIpSet,
+			kind: catalogkind.CatalogKind_AwsWafIpSet,
 			rawOutputs: map[string]interface{}{
 				"ip_set_arn":  "arn:aws:wafv2:us-west-2:123456789012:regional/ipset/office-allowlist/66666666-7777-8888-9999-000000000000",
 				"ip_set_id":   "66666666-7777-8888-9999-000000000000",
@@ -5796,7 +5796,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// address the set through the WAFv2 API (and key the E2E
 			// verifier).
 			name: "AwsWafRegexPatternSet",
-			kind: cloudresourcekind.CloudResourceKind_AwsWafRegexPatternSet,
+			kind: catalogkind.CatalogKind_AwsWafRegexPatternSet,
 			rawOutputs: map[string]interface{}{
 				"regex_pattern_set_arn":  "arn:aws:wafv2:us-west-2:123456789012:regional/regexpatternset/blocked-paths/aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
 				"regex_pattern_set_id":   "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
@@ -5812,7 +5812,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// keys the E2E verifier and ecs_cluster_arn exposes the ECS
 			// cluster Batch runs tasks on.
 			name: "AwsBatchComputeEnvironment",
-			kind: cloudresourcekind.CloudResourceKind_AwsBatchComputeEnvironment,
+			kind: catalogkind.CatalogKind_AwsBatchComputeEnvironment,
 			rawOutputs: map[string]interface{}{
 				"compute_environment_arn":  "arn:aws:batch:us-west-2:123456789012:compute-environment/etl-fargate",
 				"compute_environment_name": "etl-fargate",
@@ -5828,7 +5828,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the target EventBridge Batch targets point at; the name keys
 			// the E2E verifier and name-addressed SubmitJob calls.
 			name: "AwsBatchJobQueue",
-			kind: cloudresourcekind.CloudResourceKind_AwsBatchJobQueue,
+			kind: catalogkind.CatalogKind_AwsBatchJobQueue,
 			rawOutputs: map[string]interface{}{
 				"job_queue_arn":  "arn:aws:batch:us-west-2:123456789012:job-queue/etl-queue",
 				"job_queue_name": "etl-queue",
@@ -5841,7 +5841,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AwsBatchSchedulingPolicy: scheduling_policy_arn is what job
 			// queues reference through their scheduling_policy field.
 			name: "AwsBatchSchedulingPolicy",
-			kind: cloudresourcekind.CloudResourceKind_AwsBatchSchedulingPolicy,
+			kind: catalogkind.CatalogKind_AwsBatchSchedulingPolicy,
 			rawOutputs: map[string]interface{}{
 				"scheduling_policy_arn":  "arn:aws:batch:us-west-2:123456789012:scheduling-policy/fair-share",
 				"scheduling_policy_name": "fair-share",
@@ -5856,7 +5856,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// rolls the rule); arn_without_revision serves latest-ACTIVE
 			// consumers and revision is int64-typed.
 			name: "AwsBatchJobDefinition",
-			kind: cloudresourcekind.CloudResourceKind_AwsBatchJobDefinition,
+			kind: catalogkind.CatalogKind_AwsBatchJobDefinition,
 			rawOutputs: map[string]interface{}{
 				"job_definition_arn":   "arn:aws:batch:us-west-2:123456789012:job-definition/etl:7",
 				"arn_without_revision": "arn:aws:batch:us-west-2:123456789012:job-definition/etl",
@@ -5874,7 +5874,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// key for name-addressed consumers (ECS awslogs, ElastiCache) and
 			// the E2E verifier.
 			name: "AwsCloudwatchLogGroup",
-			kind: cloudresourcekind.CloudResourceKind_AwsCloudwatchLogGroup,
+			kind: catalogkind.CatalogKind_AwsCloudwatchLogGroup,
 			rawOutputs: map[string]interface{}{
 				"log_group_arn":  "arn:aws:logs:us-west-2:123456789012:log-group:app-logs",
 				"log_group_name": "app-logs",
@@ -5889,7 +5889,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the join key composite alarm rules and actions suppressors use,
 			// and keys the E2E verifier.
 			name: "AwsCloudwatchAlarm",
-			kind: cloudresourcekind.CloudResourceKind_AwsCloudwatchAlarm,
+			kind: catalogkind.CatalogKind_AwsCloudwatchAlarm,
 			rawOutputs: map[string]interface{}{
 				"alarm_arn":  "arn:aws:cloudwatch:us-west-2:123456789012:alarm:cpu-high",
 				"alarm_name": "cpu-high",
@@ -5903,7 +5903,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// alarms reference this one inside their own rule expressions;
 			// it also keys the E2E verifier.
 			name: "AwsCloudwatchCompositeAlarm",
-			kind: cloudresourcekind.CloudResourceKind_AwsCloudwatchCompositeAlarm,
+			kind: catalogkind.CatalogKind_AwsCloudwatchCompositeAlarm,
 			rawOutputs: map[string]interface{}{
 				"alarm_arn":  "arn:aws:cloudwatch:us-west-2:123456789012:alarm:shared-cause",
 				"alarm_name": "shared-cause",
@@ -5919,7 +5919,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// snapshot when spec.publish is set. The name keys the E2E
 			// verifier.
 			name: "AwsStepFunction",
-			kind: cloudresourcekind.CloudResourceKind_AwsStepFunction,
+			kind: catalogkind.CatalogKind_AwsStepFunction,
 			rawOutputs: map[string]interface{}{
 				"state_machine_arn":         "arn:aws:states:us-west-2:123456789012:stateMachine:orders",
 				"state_machine_name":        "orders",
@@ -5938,7 +5938,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// reference; execution_arn feeds Lambda resource policies;
 			// stage_name composes into domain mappings.
 			name: "AwsHttpApiGateway",
-			kind: cloudresourcekind.CloudResourceKind_AwsHttpApiGateway,
+			kind: catalogkind.CatalogKind_AwsHttpApiGateway,
 			rawOutputs: map[string]interface{}{
 				"api_id":           "a1b2c3d4",
 				"api_endpoint":     "https://a1b2c3d4.execute-api.us-west-2.amazonaws.com",
@@ -5956,7 +5956,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AwsHttpApiVpcLink: vpc_link_id is what private integrations set
 			// as connection_id; it also keys the E2E verifier.
 			name: "AwsHttpApiVpcLink",
-			kind: cloudresourcekind.CloudResourceKind_AwsHttpApiVpcLink,
+			kind: catalogkind.CatalogKind_AwsHttpApiVpcLink,
 			rawOutputs: map[string]interface{}{
 				"vpc_link_id":  "abc123",
 				"vpc_link_arn": "arn:aws:apigateway:us-west-2::/vpclinks/abc123",
@@ -5968,7 +5968,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// DNS composition surface (a Route 53 alias record targets them);
 			// domain_name is the domain's join key and keys the E2E verifier.
 			name: "AwsHttpApiDomain",
-			kind: cloudresourcekind.CloudResourceKind_AwsHttpApiDomain,
+			kind: catalogkind.CatalogKind_AwsHttpApiDomain,
 			rawOutputs: map[string]interface{}{
 				"domain_name":        "api.example.com",
 				"domain_name_arn":    "arn:aws:apigateway:us-west-2::/domainnames/api.example.com",
@@ -5985,7 +5985,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// is the RAW domain string ALB authenticate-cognito actions take;
 			// the CloudFront trio composes a custom domain's DNS alias record.
 			name: "AwsCognitoUserPool",
-			kind: cloudresourcekind.CloudResourceKind_AwsCognitoUserPool,
+			kind: catalogkind.CatalogKind_AwsCognitoUserPool,
 			rawOutputs: map[string]interface{}{
 				"user_pool_id":                "us-west-2_Ab1Cd2EfG",
 				"user_pool_arn":               "arn:aws:cognito-idp:us-west-2:123456789012:userpool/us-west-2_Ab1Cd2EfG",
@@ -6008,7 +6008,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// integration identifier (IdPs have no ARN) -- app clients list it
 			// in supported_identity_providers.
 			name: "AwsCognitoIdentityProvider",
-			kind: cloudresourcekind.CloudResourceKind_AwsCognitoIdentityProvider,
+			kind: catalogkind.CatalogKind_AwsCognitoIdentityProvider,
 			rawOutputs: map[string]interface{}{
 				"provider_name": "Google",
 				"provider_type": "Google",
@@ -6022,7 +6022,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// actions take as user_pool_client_id; the secret only exists for
 			// confidential clients.
 			name: "AwsCognitoUserPoolClient",
-			kind: cloudresourcekind.CloudResourceKind_AwsCognitoUserPoolClient,
+			kind: catalogkind.CatalogKind_AwsCognitoUserPoolClient,
 			rawOutputs: map[string]interface{}{
 				"client_id":     "1a2b3c4d5e6f7g8h9i0j",
 				"client_secret": "shhh-not-a-real-secret",
@@ -6035,7 +6035,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// strings app clients list in allowed_oauth_scopes; the identifier
 			// keys the E2E verifier within its pool.
 			name: "AwsCognitoResourceServer",
-			kind: cloudresourcekind.CloudResourceKind_AwsCognitoResourceServer,
+			kind: catalogkind.CatalogKind_AwsCognitoResourceServer,
 			rawOutputs: map[string]interface{}{
 				"resource_server_identifier": "https://api.example.com",
 				"scope_identifiers":          []interface{}{"https://api.example.com/read", "https://api.example.com/orders:write"},
@@ -6050,7 +6050,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// (empty string when replication is not configured — the shape must
 			// stay stable across the arms).
 			name: "AwsElasticFileSystem",
-			kind: cloudresourcekind.CloudResourceKind_AwsElasticFileSystem,
+			kind: catalogkind.CatalogKind_AwsElasticFileSystem,
 			rawOutputs: map[string]interface{}{
 				"file_system_id":  "fs-0123456789abcdef0",
 				"file_system_arn": "arn:aws:elasticfilesystem:us-west-2:123456789012:file-system/fs-0123456789abcdef0",
@@ -6081,7 +6081,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// file system it enters, so consumers can wire everything from
 			// this one node.
 			name: "AwsEfsAccessPoint",
-			kind: cloudresourcekind.CloudResourceKind_AwsEfsAccessPoint,
+			kind: catalogkind.CatalogKind_AwsEfsAccessPoint,
 			rawOutputs: map[string]interface{}{
 				"access_point_id":  "fsap-0123456789abcdef0",
 				"access_point_arn": "arn:aws:elasticfilesystem:us-west-2:123456789012:access-point/fsap-0123456789abcdef0",
@@ -6096,7 +6096,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// (and what SendEmail calls name); the ARN scopes IAM sending
 			// policies. The name also keys the E2E verifier.
 			name: "AwsSesConfigurationSet",
-			kind: cloudresourcekind.CloudResourceKind_AwsSesConfigurationSet,
+			kind: catalogkind.CatalogKind_AwsSesConfigurationSet,
 			rawOutputs: map[string]interface{}{
 				"configuration_set_arn":  "arn:aws:ses:us-west-2:123456789012:configuration-set/transactional-set",
 				"configuration_set_name": "transactional-set",
@@ -6109,7 +6109,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// output downstream Route53 CNAME records are built from -- it
 			// must land on the proto's repeated field, not silently drop.
 			name: "AwsSesEmailIdentity",
-			kind: cloudresourcekind.CloudResourceKind_AwsSesEmailIdentity,
+			kind: catalogkind.CatalogKind_AwsSesEmailIdentity,
 			rawOutputs: map[string]interface{}{
 				"identity_arn":        "arn:aws:ses:us-west-2:123456789012:identity/example.com",
 				"email_identity":      "example.com",
@@ -6130,7 +6130,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the two-level repeated-message shape (per-domain DNS target +
 			// certificate-validation records) Route53 compositions consume.
 			name: "AwsAppRunnerService",
-			kind: cloudresourcekind.CloudResourceKind_AwsAppRunnerService,
+			kind: catalogkind.CatalogKind_AwsAppRunnerService,
 			rawOutputs: map[string]interface{}{
 				"service_arn":    "arn:aws:apprunner:us-west-2:123456789012:service/my-api/abc123",
 				"service_id":     "abc123",
@@ -6162,7 +6162,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// is what services reference (and what rolls them when a new
 			// revision registers); it also keys the E2E verifier.
 			name: "AwsAppRunnerAutoScalingConfiguration",
-			kind: cloudresourcekind.CloudResourceKind_AwsAppRunnerAutoScalingConfiguration,
+			kind: catalogkind.CatalogKind_AwsAppRunnerAutoScalingConfiguration,
 			rawOutputs: map[string]interface{}{
 				"configuration_arn":      "arn:aws:apprunner:us-west-2:123456789012:autoscalingconfiguration/my-asc/3/abc123",
 				"configuration_revision": 3,
@@ -6174,7 +6174,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AwsAppRunnerVpcConnector: the ARN is the egress join key App
 			// Runner services reference; it also keys the E2E verifier.
 			name: "AwsAppRunnerVpcConnector",
-			kind: cloudresourcekind.CloudResourceKind_AwsAppRunnerVpcConnector,
+			kind: catalogkind.CatalogKind_AwsAppRunnerVpcConnector,
 			rawOutputs: map[string]interface{}{
 				"vpc_connector_arn":      "arn:aws:apprunner:us-west-2:123456789012:vpcconnector/my-vc/1/abc123",
 				"vpc_connector_revision": 1,
@@ -6187,7 +6187,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// ARN is what services reference to enable tracing; it also keys
 			// the E2E verifier.
 			name: "AwsAppRunnerObservabilityConfiguration",
-			kind: cloudresourcekind.CloudResourceKind_AwsAppRunnerObservabilityConfiguration,
+			kind: catalogkind.CatalogKind_AwsAppRunnerObservabilityConfiguration,
 			rawOutputs: map[string]interface{}{
 				"configuration_arn":      "arn:aws:apprunner:us-west-2:123456789012:observabilityconfiguration/my-oc/2/abc123",
 				"configuration_revision": 2,
@@ -6200,7 +6200,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// route tables, and subnet routes reference; the default route
 			// table pair lets tooling address the built-in tables.
 			name: "AwsTransitGateway",
-			kind: cloudresourcekind.CloudResourceKind_AwsTransitGateway,
+			kind: catalogkind.CatalogKind_AwsTransitGateway,
 			rawOutputs: map[string]interface{}{
 				"transit_gateway_id":                 "tgw-0123456789abcdef0",
 				"transit_gateway_arn":                "arn:aws:ec2:us-west-2:123456789012:transit-gateway/tgw-0123456789abcdef0",
@@ -6214,7 +6214,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AwsTransitGatewayVpcAttachment: the attachment ID is the join
 			// key route tables associate, propagate, and route against.
 			name: "AwsTransitGatewayVpcAttachment",
-			kind: cloudresourcekind.CloudResourceKind_AwsTransitGatewayVpcAttachment,
+			kind: catalogkind.CatalogKind_AwsTransitGatewayVpcAttachment,
 			rawOutputs: map[string]interface{}{
 				"attachment_id":  "tgw-attach-0123456789abcdef0",
 				"attachment_arn": "arn:aws:ec2:us-west-2:123456789012:transit-gateway-attachment/tgw-attach-0123456789abcdef0",
@@ -6226,7 +6226,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AwsTransitGatewayRouteTable: the table ID keys the E2E verifier
 			// and any route-management tooling.
 			name: "AwsTransitGatewayRouteTable",
-			kind: cloudresourcekind.CloudResourceKind_AwsTransitGatewayRouteTable,
+			kind: catalogkind.CatalogKind_AwsTransitGatewayRouteTable,
 			rawOutputs: map[string]interface{}{
 				"route_table_id":  "tgw-rtb-0123456789abcdef0",
 				"route_table_arn": "arn:aws:ec2:us-west-2:123456789012:transit-gateway-route-table/tgw-rtb-0123456789abcdef0",
@@ -6238,7 +6238,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// StartQueryExecution call; effective_engine_version reflects what AWS
 			// resolved for an AUTO engine selection.
 			name: "AwsAthenaWorkgroup",
-			kind: cloudresourcekind.CloudResourceKind_AwsAthenaWorkgroup,
+			kind: catalogkind.CatalogKind_AwsAthenaWorkgroup,
 			rawOutputs: map[string]interface{}{
 				"workgroup_arn":            "arn:aws:athena:us-west-2:123456789012:workgroup/analytics",
 				"workgroup_name":           "analytics",
@@ -6251,7 +6251,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the join key Athena queries, Glue crawlers, and Redshift Spectrum
 			// external schemas reference.
 			name: "AwsGlueCatalogDatabase",
-			kind: cloudresourcekind.CloudResourceKind_AwsGlueCatalogDatabase,
+			kind: catalogkind.CatalogKind_AwsGlueCatalogDatabase,
 			rawOutputs: map[string]interface{}{
 				"database_name": "sales_lake",
 				"database_arn":  "arn:aws:glue:us-west-2:123456789012:database/sales_lake",
@@ -6265,7 +6265,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// provider-minted secret) is exported empty when no webhook exists,
 			// so the output SHAPE is engine- and configuration-invariant.
 			name: "AwsCodeBuildProject",
-			kind: cloudresourcekind.CloudResourceKind_AwsCodeBuildProject,
+			kind: catalogkind.CatalogKind_AwsCodeBuildProject,
 			rawOutputs: map[string]interface{}{
 				"project_arn":          "arn:aws:codebuild:us-west-2:123456789012:project/api-ci",
 				"project_name":         "api-ci",
@@ -6286,7 +6286,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// operations; pipeline_arn is what IAM policies and EventBridge
 			// targets reference.
 			name: "AwsCodePipeline",
-			kind: cloudresourcekind.CloudResourceKind_AwsCodePipeline,
+			kind: catalogkind.CatalogKind_AwsCodePipeline,
 			rawOutputs: map[string]interface{}{
 				"pipeline_arn":  "arn:aws:codepipeline:us-west-2:123456789012:release-pipeline",
 				"pipeline_name": "release-pipeline",
@@ -6300,7 +6300,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// bring-your-own, or empty when a default applies) so the output
 			// shape is engine- and configuration-invariant.
 			name: "AwsMemorydbCluster",
-			kind: cloudresourcekind.CloudResourceKind_AwsMemorydbCluster,
+			kind: catalogkind.CatalogKind_AwsMemorydbCluster,
 			rawOutputs: map[string]interface{}{
 				"cluster_endpoint_address": "clustercfg.sessions.abc123.memorydb.us-west-2.amazonaws.com",
 				"cluster_endpoint_port":    6379,
@@ -6319,7 +6319,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AwsMemorydbUser: user_name is the join key ACL membership lists
 			// reference; user_arn is what IAM memorydb:Connect policies need.
 			name: "AwsMemorydbUser",
-			kind: cloudresourcekind.CloudResourceKind_AwsMemorydbUser,
+			kind: catalogkind.CatalogKind_AwsMemorydbUser,
 			rawOutputs: map[string]interface{}{
 				"user_name":              "orders-service",
 				"user_arn":               "arn:aws:memorydb:us-west-2:123456789012:user/orders-service",
@@ -6331,7 +6331,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AwsMemorydbAcl: acl_name is the join key the cluster's acl_name
 			// reference resolves against.
 			name: "AwsMemorydbAcl",
-			kind: cloudresourcekind.CloudResourceKind_AwsMemorydbAcl,
+			kind: catalogkind.CatalogKind_AwsMemorydbAcl,
 			rawOutputs: map[string]interface{}{
 				"acl_name":               "payments-env-acl",
 				"acl_arn":                "arn:aws:memorydb:us-west-2:123456789012:acl/payments-env-acl",
@@ -6346,7 +6346,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// attachment ID is exported empty for VPC-attached endpoints so
 			// the output shape is configuration-invariant.
 			name: "AwsClientVpn",
-			kind: cloudresourcekind.CloudResourceKind_AwsClientVpn,
+			kind: catalogkind.CatalogKind_AwsClientVpn,
 			rawOutputs: map[string]interface{}{
 				"client_vpn_endpoint_id":               "cvpn-endpoint-0123456789abcdef0",
 				"client_vpn_endpoint_arn":              "arn:aws:ec2:us-west-2:123456789012:client-vpn-endpoint/cvpn-endpoint-0123456789abcdef0",
@@ -6372,7 +6372,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// for IPV4 accelerators so the output shape is
 			// configuration-invariant.
 			name: "AwsGlobalAccelerator",
-			kind: cloudresourcekind.CloudResourceKind_AwsGlobalAccelerator,
+			kind: catalogkind.CatalogKind_AwsGlobalAccelerator,
 			rawOutputs: map[string]interface{}{
 				"accelerator_arn":                 "arn:aws:globalaccelerator::123456789012:accelerator/1234abcd-abcd-1234-abcd-1234abcdefgh",
 				"accelerator_dns_name":            "a1234567890abcdef.awsglobalaccelerator.com",
@@ -6393,7 +6393,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// repeated network_interface_ids guard the ENI list export both
 			// engines emit.
 			name: "AwsFsxLustreFileSystem",
-			kind: cloudresourcekind.CloudResourceKind_AwsFsxLustreFileSystem,
+			kind: catalogkind.CatalogKind_AwsFsxLustreFileSystem,
 			rawOutputs: map[string]interface{}{
 				"file_system_id":           "fs-0123456789abcdef0",
 				"file_system_arn":          "arn:aws:fsx:us-west-2:123456789012:file-system/fs-0123456789abcdef0",
@@ -6415,7 +6415,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// endpoint_ip_address carries the (floating, for MULTI_AZ) NFS
 			// endpoint.
 			name: "AwsFsxOpenzfsFileSystem",
-			kind: cloudresourcekind.CloudResourceKind_AwsFsxOpenzfsFileSystem,
+			kind: catalogkind.CatalogKind_AwsFsxOpenzfsFileSystem,
 			rawOutputs: map[string]interface{}{
 				"file_system_id":        "fs-0123456789abcdef0",
 				"file_system_arn":       "arn:aws:fsx:us-west-2:123456789012:file-system/fs-0123456789abcdef0",
@@ -6436,7 +6436,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// preferred_file_server_ip + remote_administration_endpoint carry
 			// the SMB/PowerShell endpoints.
 			name: "AwsFsxWindowsFileSystem",
-			kind: cloudresourcekind.CloudResourceKind_AwsFsxWindowsFileSystem,
+			kind: catalogkind.CatalogKind_AwsFsxWindowsFileSystem,
 			rawOutputs: map[string]interface{}{
 				"file_system_id":                 "fs-0123456789abcdef0",
 				"file_system_arn":                "arn:aws:fsx:us-west-2:123456789012:file-system/fs-0123456789abcdef0",
@@ -6457,7 +6457,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// verifier and FSx data repository tasks; file_system_id is
 			// echoed for composition.
 			name: "AwsFsxDataRepositoryAssociation",
-			kind: cloudresourcekind.CloudResourceKind_AwsFsxDataRepositoryAssociation,
+			kind: catalogkind.CatalogKind_AwsFsxDataRepositoryAssociation,
 			rawOutputs: map[string]interface{}{
 				"association_id":  "dra-0123456789abcdef0",
 				"association_arn": "arn:aws:fsx:us-west-2:123456789012:association/fs-0123456789abcdef0/dra-0123456789abcdef0",
@@ -6475,7 +6475,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// SVM endpoints); the repeated lists guard the multi-value
 			// exports both engines emit.
 			name: "AwsFsxOntapFileSystem",
-			kind: cloudresourcekind.CloudResourceKind_AwsFsxOntapFileSystem,
+			kind: catalogkind.CatalogKind_AwsFsxOntapFileSystem,
 			rawOutputs: map[string]interface{}{
 				"file_system_id":            "fs-0123456789abcdef0",
 				"file_system_arn":           "arn:aws:fsx:us-west-2:123456789012:file-system/fs-0123456789abcdef0",
@@ -6500,7 +6500,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// is exported empty when no Active Directory is configured so the
 			// output shape stays configuration-invariant.
 			name: "AwsFsxOntapStorageVirtualMachine",
-			kind: cloudresourcekind.CloudResourceKind_AwsFsxOntapStorageVirtualMachine,
+			kind: catalogkind.CatalogKind_AwsFsxOntapStorageVirtualMachine,
 			rawOutputs: map[string]interface{}{
 				"svm_id":                  "svm-0123456789abcdef0",
 				"arn":                     "arn:aws:fsx:us-west-2:123456789012:storage-virtual-machine/fs-0123456789abcdef0/svm-0123456789abcdef0",
@@ -6527,7 +6527,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// composition; flexcache_endpoint_type and ontap_volume_type are
 			// AWS-computed classifications.
 			name: "AwsFsxOntapVolume",
-			kind: cloudresourcekind.CloudResourceKind_AwsFsxOntapVolume,
+			kind: catalogkind.CatalogKind_AwsFsxOntapVolume,
 			rawOutputs: map[string]interface{}{
 				"volume_id":               "fsvol-0123456789abcdef0",
 				"arn":                     "arn:aws:fsx:us-west-2:123456789012:volume/fs-0123456789abcdef0/fsvol-0123456789abcdef0",
@@ -6547,7 +6547,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// are empty strings under IAM auth so the output SHAPE is
 			// auth-mode-invariant.
 			name: "AwsSagemakerDomain",
-			kind: cloudresourcekind.CloudResourceKind_AwsSagemakerDomain,
+			kind: catalogkind.CatalogKind_AwsSagemakerDomain,
 			rawOutputs: map[string]interface{}{
 				"domain_id":                             "d-0123456789ab",
 				"domain_arn":                            "arn:aws:sagemaker:us-west-2:123456789012:domain/d-0123456789ab",
@@ -6566,9 +6566,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// CloudflareR2Bucket: both engines emit the same outputs -- bucket name,
 			// path-style S3 URL, the list of custom-domain URLs, and the managed
-			// r2.dev public URL -- each of which must land on the StackOutputs proto.
+			// r2.dev public URL -- each of which must land on the Outputs proto.
 			name: "CloudflareR2Bucket",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareR2Bucket,
+			kind: catalogkind.CatalogKind_CloudflareR2Bucket,
 			rawOutputs: map[string]interface{}{
 				"bucket_name":        "media-assets",
 				"bucket_url":         "https://00000000000000000000000000000000.r2.cloudflarestorage.com/media-assets",
@@ -6581,7 +6581,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareD1Database: both engines emit the database id and name as
 			// flat scalars (a Worker reaches D1 through its binding; no DSN exists).
 			name: "CloudflareD1Database",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareD1Database,
+			kind: catalogkind.CatalogKind_CloudflareD1Database,
 			rawOutputs: map[string]interface{}{
 				"database_id":   "9a1b2c3d-4e5f-6a7b-8c9d-0e1f2a3b4c5d",
 				"database_name": "app-prod-db",
@@ -6593,7 +6593,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareKvNamespace: both engines emit the namespace id and the
 			// url-encoding support flag.
 			name: "CloudflareKvNamespace",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareKvNamespace,
+			kind: catalogkind.CatalogKind_CloudflareKvNamespace,
 			rawOutputs: map[string]interface{}{
 				"namespace_id":          "0f1e2d3c4b5a69788796a5b4c3d2e1f0",
 				"supports_url_encoding": true,
@@ -6604,7 +6604,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareWorkersKvPair: both engines emit the entry key and the
 			// namespace it was written to.
 			name: "CloudflareWorkersKvPair",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareWorkersKvPair,
+			kind: catalogkind.CatalogKind_CloudflareWorkersKvPair,
 			rawOutputs: map[string]interface{}{
 				"key_name":     "feature.new-dashboard",
 				"namespace_id": "0f1e2d3c4b5a69788796a5b4c3d2e1f0",
@@ -6614,7 +6614,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// CloudflareHyperdriveConfig: both engines emit the config id and name.
 			name: "CloudflareHyperdriveConfig",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareHyperdriveConfig,
+			kind: catalogkind.CatalogKind_CloudflareHyperdriveConfig,
 			rawOutputs: map[string]interface{}{
 				"hyperdrive_id": "a1b2c3d4e5f60718293a4b5c6d7e8f90",
 				"name":          "app-prod-pg",
@@ -6625,7 +6625,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareQueue: both engines emit the queue id and name (referenced by
 			// consumers, worker producer bindings, and R2 event notifications).
 			name: "CloudflareQueue",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareQueue,
+			kind: catalogkind.CatalogKind_CloudflareQueue,
 			rawOutputs: map[string]interface{}{
 				"queue_id":    "a1b2c3d4e5f60718293a4b5c6d7e8f90",
 				"queue_name":  "orders-queue",
@@ -6638,7 +6638,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflarePagesProject: both engines emit the project name, its
 			// pages.dev subdomain, attached custom domains, and creation time.
 			name: "CloudflarePagesProject",
-			kind: cloudresourcekind.CloudResourceKind_CloudflarePagesProject,
+			kind: catalogkind.CatalogKind_CloudflarePagesProject,
 			rawOutputs: map[string]interface{}{
 				"project_name": "marketing-site",
 				"subdomain":    "marketing-site.pages.dev",
@@ -6649,9 +6649,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// CloudflareDnsRecord: both engines emit the record id, name, type and
-			// proxied flag as flat scalars onto the StackOutputs proto.
+			// proxied flag as flat scalars onto the Outputs proto.
 			name: "CloudflareDnsRecord",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareDnsRecord,
+			kind: catalogkind.CatalogKind_CloudflareDnsRecord,
 			rawOutputs: map[string]interface{}{
 				"record_id":   "372e67954025e0ba6aaa6d586b9e0b59",
 				"record_name": "www",
@@ -6662,9 +6662,9 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// CloudflareDnsZone: both engines emit the zone id (scalar) and the
-			// assigned nameservers (repeated string) onto the StackOutputs proto.
+			// assigned nameservers (repeated string) onto the Outputs proto.
 			name: "CloudflareDnsZone",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareDnsZone,
+			kind: catalogkind.CatalogKind_CloudflareDnsZone,
 			rawOutputs: map[string]interface{}{
 				"zone_id":                 "023e105f4ecef8ad9ca31a8372d0c353",
 				"nameservers":             []interface{}{"ns1.cloudflare.com", "ns2.cloudflare.com"},
@@ -6685,7 +6685,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareRuleset: both engines emit ruleset id, version, and the
 			// zone_id/phase pass-throughs as flat scalars onto the proto.
 			name: "CloudflareRuleset",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareRuleset,
+			kind: catalogkind.CatalogKind_CloudflareRuleset,
 			rawOutputs: map[string]interface{}{
 				"ruleset_id": "2f2feab2026849078ba485f918791bdc",
 				"version":    "3",
@@ -6698,7 +6698,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareLoadBalancer: both engines emit the load balancer id,
 			// hostname, and cname target as flat scalars onto the proto.
 			name: "CloudflareLoadBalancer",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareLoadBalancer,
+			kind: catalogkind.CatalogKind_CloudflareLoadBalancer,
 			rawOutputs: map[string]interface{}{
 				"load_balancer_id":              "699d98642c564d2e855e9661899b7252",
 				"load_balancer_dns_record_name": "lb.example.com",
@@ -6710,7 +6710,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareLoadBalancerPool: both engines emit the pool id and name
 			// (account-scoped pool referenced by load balancers).
 			name: "CloudflareLoadBalancerPool",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareLoadBalancerPool,
+			kind: catalogkind.CatalogKind_CloudflareLoadBalancerPool,
 			rawOutputs: map[string]interface{}{
 				"pool_id":   "17b5962d775c646f3f9725cbc7a53df4",
 				"pool_name": "web-pool",
@@ -6721,7 +6721,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareLoadBalancerMonitor: both engines emit the monitor id and
 			// its protocol (account-scoped health check referenced by pools).
 			name: "CloudflareLoadBalancerMonitor",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareLoadBalancerMonitor,
+			kind: catalogkind.CatalogKind_CloudflareLoadBalancerMonitor,
 			rawOutputs: map[string]interface{}{
 				"monitor_id":   "f1aba936b94213e5b8dca0c0dbf1f9cc",
 				"monitor_type": "https",
@@ -6733,7 +6733,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the custom-domain hostnames / route patterns (repeated strings), and
 			// the keyed maps import needs for custom domains and routes.
 			name: "CloudflareWorker",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareWorker,
+			kind: catalogkind.CatalogKind_CloudflareWorker,
 			rawOutputs: map[string]interface{}{
 				"script_id":               "my-worker",
 				"script_name":             "my-worker",
@@ -6749,7 +6749,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareZeroTrustAccessApplication: both engines emit the
 			// application id, audience tag, protected domain, and SaaS material.
 			name: "CloudflareZeroTrustAccessApplication",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessApplication,
+			kind: catalogkind.CatalogKind_CloudflareZeroTrustAccessApplication,
 			rawOutputs: map[string]interface{}{
 				"application_id":     "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
 				"aud":                "8a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b",
@@ -6768,7 +6768,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// CloudflareZeroTrustAccessPolicy: both engines emit the policy id.
 			name: "CloudflareZeroTrustAccessPolicy",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessPolicy,
+			kind: catalogkind.CatalogKind_CloudflareZeroTrustAccessPolicy,
 			rawOutputs: map[string]interface{}{
 				"policy_id": "699d98642c564d2e855e9661899b7252",
 			},
@@ -6777,7 +6777,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// CloudflareZeroTrustAccessGroup: both engines emit the group id.
 			name: "CloudflareZeroTrustAccessGroup",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessGroup,
+			kind: catalogkind.CatalogKind_CloudflareZeroTrustAccessGroup,
 			rawOutputs: map[string]interface{}{
 				"group_id": "aa9d98642c564d2e855e9661899b7252",
 			},
@@ -6788,7 +6788,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// tunnel id, CNAME target, the (sensitive) connector token, status, the
 			// account tag, and the creation timestamp.
 			name: "CloudflareZeroTrustTunnel",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustTunnel,
+			kind: catalogkind.CatalogKind_CloudflareZeroTrustTunnel,
 			rawOutputs: map[string]interface{}{
 				"tunnel_id":     "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415",
 				"tunnel_cname":  "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415.cfargotunnel.com",
@@ -6806,7 +6806,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareZeroTrustTunnelVirtualNetwork: both engines emit the virtual
 			// network id and name.
 			name: "CloudflareZeroTrustTunnelVirtualNetwork",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustTunnelVirtualNetwork,
+			kind: catalogkind.CatalogKind_CloudflareZeroTrustTunnelVirtualNetwork,
 			rawOutputs: map[string]interface{}{
 				"virtual_network_id":   "aaaa1111-bbbb-2222-cccc-333344445555",
 				"virtual_network_name": "prod-vnet",
@@ -6817,7 +6817,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareZeroTrustTunnelRoute: both engines emit the route id and the
 			// advertised CIDR.
 			name: "CloudflareZeroTrustTunnelRoute",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustTunnelRoute,
+			kind: catalogkind.CatalogKind_CloudflareZeroTrustTunnelRoute,
 			rawOutputs: map[string]interface{}{
 				"route_id": "b8f2e1c0-1111-2222-3333-444455556666",
 				"network":  "10.0.0.0/24",
@@ -6827,7 +6827,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// CloudflareList: both engines emit the list id, name, and kind.
 			name: "CloudflareList",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareList,
+			kind: catalogkind.CatalogKind_CloudflareList,
 			rawOutputs: map[string]interface{}{
 				"list_id": "2c0fc9fa937b11eaa1b71c4d701ab86e",
 				"name":    "office_allowlist",
@@ -6838,7 +6838,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// CloudflareListItem: both engines emit the item id and parent list id.
 			name: "CloudflareListItem",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareListItem,
+			kind: catalogkind.CatalogKind_CloudflareListItem,
 			rawOutputs: map[string]interface{}{
 				"item_id": "70c4e0c9b0e34f1a9b6f2d3c4a5b6c7d",
 				"list_id": "2c0fc9fa937b11eaa1b71c4d701ab86e",
@@ -6849,7 +6849,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareTurnstileWidget: both engines emit the site key, the
 			// (sensitive) secret, and timestamps.
 			name: "CloudflareTurnstileWidget",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareTurnstileWidget,
+			kind: catalogkind.CatalogKind_CloudflareTurnstileWidget,
 			rawOutputs: map[string]interface{}{
 				"sitekey":     "0x4AAAAAAA_examplesitekey",
 				"secret":      "0x4AAAAAAA_examplesecretkey",
@@ -6862,7 +6862,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareEmailRoutingZone: both engines emit the zone id, enabled
 			// flag, status, and name.
 			name: "CloudflareEmailRoutingZone",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareEmailRoutingZone,
+			kind: catalogkind.CatalogKind_CloudflareEmailRoutingZone,
 			rawOutputs: map[string]interface{}{
 				"zone_id": "023e105f4ecef8ad9ca31a8372d0c353",
 				"enabled": "true",
@@ -6874,7 +6874,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// CloudflareEmailRoutingRule: both engines emit the rule id and zone id.
 			name: "CloudflareEmailRoutingRule",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareEmailRoutingRule,
+			kind: catalogkind.CatalogKind_CloudflareEmailRoutingRule,
 			rawOutputs: map[string]interface{}{
 				"rule_id": "a1b2c3d4e5f60718293a4b5c6d7e8f90",
 				"zone_id": "023e105f4ecef8ad9ca31a8372d0c353",
@@ -6885,7 +6885,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareEmailRoutingAddress: both engines emit the address id,
 			// email, and timestamps.
 			name: "CloudflareEmailRoutingAddress",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareEmailRoutingAddress,
+			kind: catalogkind.CatalogKind_CloudflareEmailRoutingAddress,
 			rawOutputs: map[string]interface{}{
 				"address_id": "b8f2e1c0a1b2c3d4e5f60718293a4b5c",
 				"email":      "ops@example.com",
@@ -6897,7 +6897,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareOriginCaCertificate: both engines emit the certificate id,
 			// the certificate PEM, the (sensitive) generated private key, and expiry.
 			name: "CloudflareOriginCaCertificate",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareOriginCaCertificate,
+			kind: catalogkind.CatalogKind_CloudflareOriginCaCertificate,
 			rawOutputs: map[string]interface{}{
 				"certificate_id": "b8f2e1c0a1b2c3d4e5f60718293a4b5c",
 				"certificate":    "-----BEGIN CERTIFICATE-----\nMIIB\n-----END CERTIFICATE-----",
@@ -6911,9 +6911,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// zone the pack was ordered in (a pack's API identity is
 			// zone_id + certificate_pack_id). The pack's issuance status and
 			// primary certificate id are server-driven async values that move
-			// without a config change, so they are not stack outputs.
+			// without a config change, so they are not outputs.
 			name: "CloudflareCertificatePack",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareCertificatePack,
+			kind: catalogkind.CatalogKind_CloudflareCertificatePack,
 			rawOutputs: map[string]interface{}{
 				"certificate_pack_id": "3822ff90e3534420ac41fc7e4a1f4b07",
 				"zone_id":             "023e105f4ecef8ad9ca31a8372d0c353",
@@ -6926,9 +6926,9 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the zone the hostname was onboarded onto (API identity is
 			// zone_id + custom_hostname_id). Validation status and the
 			// server-appended verification errors are async values that move
-			// without a config change, so they are not stack outputs.
+			// without a config change, so they are not outputs.
 			name: "CloudflareCustomHostname",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareCustomHostname,
+			kind: catalogkind.CatalogKind_CloudflareCustomHostname,
 			rawOutputs: map[string]interface{}{
 				"custom_hostname_id":               "0d89c70f8d4f4b1aa1b5d2e3f4a5b6c7",
 				"ownership_verification_name":      "_cf-custom-hostname.support.acme.com",
@@ -6949,7 +6949,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// values that move without a config change, so they are not stack
 			// outputs.
 			name: "CloudflareCustomHostnameFallbackOrigin",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareCustomHostnameFallbackOrigin,
+			kind: catalogkind.CatalogKind_CloudflareCustomHostnameFallbackOrigin,
 			rawOutputs: map[string]interface{}{
 				"created_at": "2026-06-25T00:00:00Z",
 				"updated_at": "2026-06-25T00:00:00Z",
@@ -6961,7 +6961,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareZoneSettings: a zone singleton with no resource id of its
 			// own -- both engines emit the zone id (the settings' API identity).
 			name: "CloudflareZoneSettings",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZoneSettings,
+			kind: catalogkind.CatalogKind_CloudflareZoneSettings,
 			rawOutputs: map[string]interface{}{
 				"zone_id": "023e105f4ecef8ad9ca31a8372d0c353",
 			},
@@ -6971,7 +6971,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareCacheSettings: a zone singleton with no resource id of
 			// its own -- both engines emit the zone id.
 			name: "CloudflareCacheSettings",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareCacheSettings,
+			kind: catalogkind.CatalogKind_CloudflareCacheSettings,
 			rawOutputs: map[string]interface{}{
 				"zone_id": "023e105f4ecef8ad9ca31a8372d0c353",
 			},
@@ -6981,7 +6981,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareZoneTlsSettings: a zone singleton with no resource id of
 			// its own -- both engines emit the zone id.
 			name: "CloudflareZoneTlsSettings",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZoneTlsSettings,
+			kind: catalogkind.CatalogKind_CloudflareZoneTlsSettings,
 			rawOutputs: map[string]interface{}{
 				"zone_id": "023e105f4ecef8ad9ca31a8372d0c353",
 			},
@@ -6992,7 +6992,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// provider id plus the SCIM material (base URL and the create-only
 			// bearer secret, present when SCIM is enabled).
 			name: "CloudflareZeroTrustAccessIdentityProvider",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessIdentityProvider,
+			kind: catalogkind.CatalogKind_CloudflareZeroTrustAccessIdentityProvider,
 			rawOutputs: map[string]interface{}{
 				"identity_provider_id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
 				"scim_base_url":        "https://scim.cloudflareaccess.com/v2/orgs/example",
@@ -7004,7 +7004,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareZeroTrustAccessServiceToken: both engines emit the token
 			// id, the client id, the create-only client secret, and the expiry.
 			name: "CloudflareZeroTrustAccessServiceToken",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessServiceToken,
+			kind: catalogkind.CatalogKind_CloudflareZeroTrustAccessServiceToken,
 			rawOutputs: map[string]interface{}{
 				"service_token_id": "699d98642c564d2e855e9661899b7252",
 				"client_id":        "88bf3b6d86161464f6509f7219099e57.access",
@@ -7017,7 +7017,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareZeroTrustGatewayPolicy: both engines emit the policy id
 			// and the (possibly Cloudflare-assigned) precedence.
 			name: "CloudflareZeroTrustGatewayPolicy",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustGatewayPolicy,
+			kind: catalogkind.CatalogKind_CloudflareZeroTrustGatewayPolicy,
 			rawOutputs: map[string]interface{}{
 				"policy_id":  "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
 				"precedence": "1000",
@@ -7027,7 +7027,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// CloudflareZeroTrustList: both engines emit the list id.
 			name: "CloudflareZeroTrustList",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustList,
+			kind: catalogkind.CatalogKind_CloudflareZeroTrustList,
 			rawOutputs: map[string]interface{}{
 				"list_id": "aa9d98642c564d2e855e9661899b7252",
 			},
@@ -7035,7 +7035,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareIpAccessRule",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareIpAccessRule,
+			kind: catalogkind.CatalogKind_CloudflareIpAccessRule,
 			rawOutputs: map[string]interface{}{
 				"rule_id":    "2661fcac0be5a0bb64583f83b6709d4d",
 				"zone_id":    "0da42c8d2132a9ddaf714f9e7c920711",
@@ -7045,7 +7045,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareBotManagement",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareBotManagement,
+			kind: catalogkind.CatalogKind_CloudflareBotManagement,
 			rawOutputs: map[string]interface{}{
 				"zone_id": "0da42c8d2132a9ddaf714f9e7c920711",
 			},
@@ -7053,7 +7053,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareSnippet",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareSnippet,
+			kind: catalogkind.CatalogKind_CloudflareSnippet,
 			rawOutputs: map[string]interface{}{
 				"snippet_name": "redirect_legacy_urls",
 				"zone_id":      "0da42c8d2132a9ddaf714f9e7c920711",
@@ -7062,7 +7062,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareSnippetRules",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareSnippetRules,
+			kind: catalogkind.CatalogKind_CloudflareSnippetRules,
 			rawOutputs: map[string]interface{}{
 				"zone_id": "0da42c8d2132a9ddaf714f9e7c920711",
 			},
@@ -7070,7 +7070,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareHealthcheck",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareHealthcheck,
+			kind: catalogkind.CatalogKind_CloudflareHealthcheck,
 			rawOutputs: map[string]interface{}{
 				"healthcheck_id": "f174e90a-fafe-4643-bbbc-4a0ed4fc8415",
 				"zone_id":        "0da42c8d2132a9ddaf714f9e7c920711",
@@ -7079,7 +7079,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareWaitingRoom",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareWaitingRoom,
+			kind: catalogkind.CatalogKind_CloudflareWaitingRoom,
 			rawOutputs: map[string]interface{}{
 				"waiting_room_id": "4ae2018d-4a8e-4a1d-88e3-2a3a56d67057",
 				"zone_id":         "0da42c8d2132a9ddaf714f9e7c920711",
@@ -7088,7 +7088,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareWaitingRoomEvent",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareWaitingRoomEvent,
+			kind: catalogkind.CatalogKind_CloudflareWaitingRoomEvent,
 			rawOutputs: map[string]interface{}{
 				"event_id":        "25756c26-6616-4ea9-bbb5-f06974fdaa39",
 				"waiting_room_id": "4ae2018d-4a8e-4a1d-88e3-2a3a56d67057",
@@ -7098,7 +7098,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareCustomSslCertificate",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareCustomSslCertificate,
+			kind: catalogkind.CatalogKind_CloudflareCustomSslCertificate,
 			rawOutputs: map[string]interface{}{
 				"certificate_id": "7e7b8deba8538af625850b7b2530034c",
 				"zone_id":        "0da42c8d2132a9ddaf714f9e7c920711",
@@ -7112,7 +7112,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareMtlsCertificate",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareMtlsCertificate,
+			kind: catalogkind.CatalogKind_CloudflareMtlsCertificate,
 			rawOutputs: map[string]interface{}{
 				"certificate_id": "2458ce5a-0c35-4c7f-82c7-8e9487d3ff60",
 				"expires_on":     "2027-01-01T00:00:00Z",
@@ -7122,7 +7122,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareAuthenticatedOriginPulls",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareAuthenticatedOriginPulls,
+			kind: catalogkind.CatalogKind_CloudflareAuthenticatedOriginPulls,
 			rawOutputs: map[string]interface{}{
 				"zone_id": "0da42c8d2132a9ddaf714f9e7c920711",
 			},
@@ -7130,7 +7130,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareAuthenticatedOriginPullsCertificate",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareAuthenticatedOriginPullsCertificate,
+			kind: catalogkind.CatalogKind_CloudflareAuthenticatedOriginPullsCertificate,
 			rawOutputs: map[string]interface{}{
 				"certificate_id": "9e13e848-3aa1-4a4e-b222-e5e79e15fc1a",
 				"zone_id":        "0da42c8d2132a9ddaf714f9e7c920711",
@@ -7144,7 +7144,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareWorkflow",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareWorkflow,
+			kind: catalogkind.CatalogKind_CloudflareWorkflow,
 			rawOutputs: map[string]interface{}{
 				"workflow_name": "order-fulfillment",
 				"version_id":    "b71b0b3f-13a8-4a90-9c56-8f2b6e6f3c5e",
@@ -7153,7 +7153,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareSecretsStore",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareSecretsStore,
+			kind: catalogkind.CatalogKind_CloudflareSecretsStore,
 			rawOutputs: map[string]interface{}{
 				"store_id": "7b0a3d5c1e9f42c68d1a2b3c4d5e6f70",
 			},
@@ -7161,7 +7161,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareSecretsStoreSecret",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareSecretsStoreSecret,
+			kind: catalogkind.CatalogKind_CloudflareSecretsStoreSecret,
 			rawOutputs: map[string]interface{}{
 				"secret_id": "3a5c1e9f42c68d1a2b3c4d5e6f707b0a",
 				"store_id":  "7b0a3d5c1e9f42c68d1a2b3c4d5e6f70",
@@ -7171,10 +7171,10 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// CloudflareAiGateway: the gateway slug plus the keyed map of
 			// managed dynamic-route ids (route name -> id) must both land on
-			// the StackOutputs proto -- the per-route import identity derives
+			// the Outputs proto -- the per-route import identity derives
 			// from the map.
 			name: "CloudflareAiGateway",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareAiGateway,
+			kind: catalogkind.CatalogKind_CloudflareAiGateway,
 			rawOutputs: map[string]interface{}{
 				"gateway_id":        "prod-llm-gateway",
 				"dynamic_route_ids": map[string]interface{}{"cheap-first": "route-1"},
@@ -7186,7 +7186,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// account id is the identity the harness and import recipes key
 			// on; auth_domain is the semantic output consumers reference.
 			name: "CloudflareZeroTrustOrganization",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustOrganization,
+			kind: catalogkind.CatalogKind_CloudflareZeroTrustOrganization,
 			rawOutputs: map[string]interface{}{
 				"auth_domain": "acme",
 				"account_id":  "0da42c8d2132a9ddaf714f9e7c920711",
@@ -7195,7 +7195,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareZeroTrustAccessInfrastructureTarget",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustAccessInfrastructureTarget,
+			kind: catalogkind.CatalogKind_CloudflareZeroTrustAccessInfrastructureTarget,
 			rawOutputs: map[string]interface{}{
 				"target_id": "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415",
 			},
@@ -7203,7 +7203,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareZeroTrustMcpPortal",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustMcpPortal,
+			kind: catalogkind.CatalogKind_CloudflareZeroTrustMcpPortal,
 			rawOutputs: map[string]interface{}{
 				"portal_id": "eng-tools",
 				"hostname":  "mcp.example.com",
@@ -7212,7 +7212,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareZeroTrustMcpServer",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustMcpServer,
+			kind: catalogkind.CatalogKind_CloudflareZeroTrustMcpServer,
 			rawOutputs: map[string]interface{}{
 				"server_id": "docs-search",
 			},
@@ -7223,7 +7223,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the account id is the only identity (the fold has no resource
 			// id of its own).
 			name: "CloudflareZeroTrustGatewaySettings",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustGatewaySettings,
+			kind: catalogkind.CatalogKind_CloudflareZeroTrustGatewaySettings,
 			rawOutputs: map[string]interface{}{
 				"account_id": "0da42c8d2132a9ddaf714f9e7c920711",
 			},
@@ -7231,7 +7231,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareZeroTrustDnsLocation",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustDnsLocation,
+			kind: catalogkind.CatalogKind_CloudflareZeroTrustDnsLocation,
 			rawOutputs: map[string]interface{}{
 				"location_id":   "5f9c1e2a3b4d5e6f708192a3b4c5d6e7",
 				"doh_subdomain": "q7x2p9r4m1",
@@ -7245,7 +7245,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// recipes key on; the Gateway-side id and policy id are the
 			// semantic outputs consumers reference.
 			name: "CloudflareZeroTrustDeviceDefaultProfile",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustDeviceDefaultProfile,
+			kind: catalogkind.CatalogKind_CloudflareZeroTrustDeviceDefaultProfile,
 			rawOutputs: map[string]interface{}{
 				"account_id":        "0da42c8d2132a9ddaf714f9e7c920711",
 				"gateway_unique_id": "e9f42c68d1a2b3c4d5e6f707b0a3d5c1",
@@ -7255,7 +7255,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareZeroTrustDeviceCustomProfile",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustDeviceCustomProfile,
+			kind: catalogkind.CatalogKind_CloudflareZeroTrustDeviceCustomProfile,
 			rawOutputs: map[string]interface{}{
 				"policy_id":         "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415",
 				"gateway_unique_id": "e9f42c68d1a2b3c4d5e6f707b0a3d5c1",
@@ -7264,7 +7264,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareZeroTrustDevicePostureRule",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareZeroTrustDevicePostureRule,
+			kind: catalogkind.CatalogKind_CloudflareZeroTrustDevicePostureRule,
 			rawOutputs: map[string]interface{}{
 				"rule_id": "f70ff985-a4ef-4643-bbbc-4a0ed4fc8415",
 			},
@@ -7276,7 +7276,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// populated only when the issuing arm ran (empty here -- the
 			// common shape).
 			name: "CloudflareLogpushJob",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareLogpushJob,
+			kind: catalogkind.CatalogKind_CloudflareLogpushJob,
 			rawOutputs: map[string]interface{}{
 				"job_id":                       "146678",
 				"account_id":                   "",
@@ -7289,7 +7289,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "CloudflareNotificationPolicy",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareNotificationPolicy,
+			kind: catalogkind.CatalogKind_CloudflareNotificationPolicy,
 			rawOutputs: map[string]interface{}{
 				"policy_id": "0da2b59e-f118-42de-95bd-14fdd8ff4d7a",
 			},
@@ -7299,7 +7299,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CloudflareNotificationWebhook: the destination UUID policies
 			// reference, plus the type Cloudflare inferred from the URL.
 			name: "CloudflareNotificationWebhook",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareNotificationWebhook,
+			kind: catalogkind.CatalogKind_CloudflareNotificationWebhook,
 			rawOutputs: map[string]interface{}{
 				"webhook_id": "9430334d-cf60-4147-8b76-8d6cbea1b099",
 				"type":       "generic",
@@ -7312,7 +7312,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// marked in both engines), and the ruleset id is the parent the
 			// folded rules live under.
 			name: "CloudflareWebAnalyticsSite",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareWebAnalyticsSite,
+			kind: catalogkind.CatalogKind_CloudflareWebAnalyticsSite,
 			rawOutputs: map[string]interface{}{
 				"site_tag":   "0b7b0f1a08a54c6db26a6f1b193a2c85",
 				"site_token": "e64a2265d1a04f1cbb073b7d3a4a6b8d",
@@ -7326,7 +7326,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// create-only secret value (returned by Cloudflare exactly once;
 			// secret-marked in both engines).
 			name: "CloudflareAccountApiToken",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareAccountApiToken,
+			kind: catalogkind.CatalogKind_CloudflareAccountApiToken,
 			rawOutputs: map[string]interface{}{
 				"token_id": "ed17574386854bf78a67040be0a770b0",
 				"value":    "8M7wS6hCpXVc-DoRnPPY_UCWPgy8aea4Wy6kCe5T",
@@ -7335,12 +7335,12 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// AzureResourceGroup: flat scalar outputs from both engines (ARM id,
-			// name, region) must each land on the StackOutputs proto --
+			// name, region) must each land on the Outputs proto --
 			// resource_group_name is the FK target every other Azure kind
 			// references, and resource_group_id is the default scope for role
 			// assignments.
 			name: "AzureResourceGroup",
-			kind: cloudresourcekind.CloudResourceKind_AzureResourceGroup,
+			kind: catalogkind.CatalogKind_AzureResourceGroup,
 			rawOutputs: map[string]interface{}{
 				"resource_group_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/platform-rg",
 				"resource_group_name": "platform-rg",
@@ -7351,11 +7351,11 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// AzureRoleAssignment: flat scalar outputs from both engines (the
 			// fully-scoped assignment id, GUID name, scope, resolved role
-			// definition id, principal id/type) must each land on the StackOutputs
+			// definition id, principal id/type) must each land on the Outputs
 			// proto -- role_assignment_id is what the authorization API and the
 			// E2E verifier key on.
 			name: "AzureRoleAssignment",
-			kind: cloudresourcekind.CloudResourceKind_AzureRoleAssignment,
+			kind: catalogkind.CatalogKind_AzureRoleAssignment,
 			rawOutputs: map[string]interface{}{
 				"role_assignment_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/platform-rg/providers/Microsoft.Authorization/roleAssignments/a67e1183-4b2d-4b6e-93f1-2b2b8d2e1c11",
 				"name":               "a67e1183-4b2d-4b6e-93f1-2b2b8d2e1c11",
@@ -7372,12 +7372,12 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// AzureRoleDefinition: scalar outputs plus a repeated string
 			// (assignable_scopes) from both engines must land on the
-			// StackOutputs proto -- role_definition_id carries the fully-scoped
+			// Outputs proto -- role_definition_id carries the fully-scoped
 			// ARM id (what an AzureRoleAssignment binds and what the E2E
 			// verifier keys on), not the bare GUID (that is
 			// role_definition_guid).
 			name: "AzureRoleDefinition",
-			kind: cloudresourcekind.CloudResourceKind_AzureRoleDefinition,
+			kind: catalogkind.CatalogKind_AzureRoleDefinition,
 			rawOutputs: map[string]interface{}{
 				"role_definition_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/platform-rg/providers/Microsoft.Authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c",
 				"role_definition_guid": "b24988ac-6180-42a0-ab88-20f7382dd24c",
@@ -7392,12 +7392,12 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// AzureUserAssignedIdentity: the identity's three identifiers plus
-			// its ARM id must land on the StackOutputs proto -- principal_id is
+			// its ARM id must land on the Outputs proto -- principal_id is
 			// what role assignments grant to, client_id is what workloads
 			// present to authenticate, identity_id is what consuming resources
 			// and federated credentials attach to.
 			name: "AzureUserAssignedIdentity",
-			kind: cloudresourcekind.CloudResourceKind_AzureUserAssignedIdentity,
+			kind: catalogkind.CatalogKind_AzureUserAssignedIdentity,
 			rawOutputs: map[string]interface{}{
 				"identity_id":  "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/platform-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/payments-api",
 				"principal_id": "11111111-1111-1111-1111-111111111111",
@@ -7416,7 +7416,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the Terraform module exports the sole element, matching the
 			// Pulumi provider's flattened attribute.
 			name: "AzureFederatedIdentityCredential",
-			kind: cloudresourcekind.CloudResourceKind_AzureFederatedIdentityCredential,
+			kind: catalogkind.CatalogKind_AzureFederatedIdentityCredential,
 			rawOutputs: map[string]interface{}{
 				"federated_identity_credential_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/platform-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/ci-deployer/federatedIdentityCredentials/github-main-branch",
 				"name":                             "github-main-branch",
@@ -7432,12 +7432,12 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			// AzureVirtualNetwork: scalar identifiers plus a repeated string
-			// (address_spaces) from both engines must land on the StackOutputs
+			// (address_spaces) from both engines must land on the Outputs
 			// proto -- virtual_network_id is the join key subnets, peerings,
 			// and DNS links attach through, and address_spaces reflects the
 			// ACTUAL ranges (IPAM-provisioned when pools delegate allocation).
 			name: "AzureVirtualNetwork",
-			kind: cloudresourcekind.CloudResourceKind_AzureVirtualNetwork,
+			kind: catalogkind.CatalogKind_AzureVirtualNetwork,
 			rawOutputs: map[string]interface{}{
 				"virtual_network_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/network-rg/providers/Microsoft.Network/virtualNetworks/prod-vnet",
 				"virtual_network_name": "prod-vnet",
@@ -7454,7 +7454,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// join key subnets use to attach the table's routing policy) and
 			// its name.
 			name: "AzureRouteTable",
-			kind: cloudresourcekind.CloudResourceKind_AzureRouteTable,
+			kind: catalogkind.CatalogKind_AzureRouteTable,
 			rawOutputs: map[string]interface{}{
 				"route_table_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/network-rg/providers/Microsoft.Network/routeTables/egress-via-firewall",
 				"route_table_name": "egress-via-firewall",
@@ -7469,7 +7469,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// and its resource group (echoed for tooling that joins on
 			// name+RG rather than parsing ARM ids).
 			name: "AzurePrivateDnsZone",
-			kind: cloudresourcekind.CloudResourceKind_AzurePrivateDnsZone,
+			kind: catalogkind.CatalogKind_AzurePrivateDnsZone,
 			rawOutputs: map[string]interface{}{
 				"zone_id":             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/network-rg/providers/Microsoft.Network/privateDnsZones/privatelink.postgres.database.azure.com",
 				"zone_name":           "privatelink.postgres.database.azure.com",
@@ -7484,7 +7484,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// link's ARM id (a child of the zone:
 			// {zone-id}/virtualNetworkLinks/{name}) and its name.
 			name: "AzurePrivateDnsZoneVirtualNetworkLink",
-			kind: cloudresourcekind.CloudResourceKind_AzurePrivateDnsZoneVirtualNetworkLink,
+			kind: catalogkind.CatalogKind_AzurePrivateDnsZoneVirtualNetworkLink,
 			rawOutputs: map[string]interface{}{
 				"link_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/network-rg/providers/Microsoft.Network/privateDnsZones/privatelink.postgres.database.azure.com/virtualNetworkLinks/hub-vnet",
 				"link_name": "hub-vnet",
@@ -7500,7 +7500,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the parent coordinates derived from the referenced network's
 			// ARM id.
 			name: "AzureSubnet",
-			kind: cloudresourcekind.CloudResourceKind_AzureSubnet,
+			kind: catalogkind.CatalogKind_AzureSubnet,
 			rawOutputs: map[string]interface{}{
 				"subnet_id":            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/network-rg/providers/Microsoft.Network/virtualNetworks/prod-vnet/subnets/app",
 				"subnet_name":          "app",
@@ -7517,7 +7517,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureNetworkSecurityGroup: both engines export the group's ARM
 			// id (the join key subnets attach through) and its name.
 			name: "AzureNetworkSecurityGroup",
-			kind: cloudresourcekind.CloudResourceKind_AzureNetworkSecurityGroup,
+			kind: catalogkind.CatalogKind_AzureNetworkSecurityGroup,
 			rawOutputs: map[string]interface{}{
 				"network_security_group_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/network-rg/providers/Microsoft.Network/networkSecurityGroups/web-tier",
 				"network_security_group_name": "web-tier",
@@ -7531,7 +7531,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// load balancers attach), the allocated address itself, and the
 			// Azure-managed FQDN when a DNS label is set.
 			name: "AzurePublicIp",
-			kind: cloudresourcekind.CloudResourceKind_AzurePublicIp,
+			kind: catalogkind.CatalogKind_AzurePublicIp,
 			rawOutputs: map[string]interface{}{
 				"public_ip_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/network-rg/providers/Microsoft.Network/publicIPAddresses/prod-frontend",
 				"ip_address":     "20.42.1.1",
@@ -7547,7 +7547,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// IPs and NAT gateway associations) and the ACTUAL reserved CIDR
 			// -- known only after creation, the value partners allowlist.
 			name: "AzurePublicIpPrefix",
-			kind: cloudresourcekind.CloudResourceKind_AzurePublicIpPrefix,
+			kind: catalogkind.CatalogKind_AzurePublicIpPrefix,
 			rawOutputs: map[string]interface{}{
 				"public_ip_prefix_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/network-rg/providers/Microsoft.Network/publicIPPrefixes/prod-egress",
 				"ip_prefix":             "20.42.0.16/28",
@@ -7563,7 +7563,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// profiles, and NSG rules reference it to declare membership or
 			// target the group.
 			name: "AzureApplicationSecurityGroup",
-			kind: cloudresourcekind.CloudResourceKind_AzureApplicationSecurityGroup,
+			kind: catalogkind.CatalogKind_AzureApplicationSecurityGroup,
 			rawOutputs: map[string]interface{}{
 				"application_security_group_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/network-rg/providers/Microsoft.Network/applicationSecurityGroups/web-tier",
 				"application_security_group_name": "web-tier",
@@ -7577,7 +7577,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// (the address the service FQDN resolves to inside the VNet),
 			// and the auto-created NIC's id.
 			name: "AzurePrivateEndpoint",
-			kind: cloudresourcekind.CloudResourceKind_AzurePrivateEndpoint,
+			kind: catalogkind.CatalogKind_AzurePrivateEndpoint,
 			rawOutputs: map[string]interface{}{
 				"private_endpoint_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/network-rg/providers/Microsoft.Network/privateEndpoints/pg-pe",
 				"private_endpoint_name": "pg-pe",
@@ -7593,7 +7593,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// VMs, and scale sets) plus the system-assigned identity's
 			// principal/tenant (the grant target for Key Vault crypto access).
 			name: "AzureDiskEncryptionSet",
-			kind: cloudresourcekind.CloudResourceKind_AzureDiskEncryptionSet,
+			kind: catalogkind.CatalogKind_AzureDiskEncryptionSet,
 			rawOutputs: map[string]interface{}{
 				"disk_encryption_set_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/platform-rg/providers/Microsoft.Compute/diskEncryptionSets/prod-des",
 				"disk_encryption_set_name": "prod-des",
@@ -7609,7 +7609,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// DNS-composed listener endpoints -- the read-write listener is
 			// the failover-following connection target downstream apps use.
 			name: "AzureMssqlFailoverGroup",
-			kind: cloudresourcekind.CloudResourceKind_AzureMssqlFailoverGroup,
+			kind: catalogkind.CatalogKind_AzureMssqlFailoverGroup,
 			rawOutputs: map[string]interface{}{
 				"failover_group_id":            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Sql/servers/primary/failoverGroups/prod-sql-fog",
 				"failover_group_name":          "prod-sql-fog",
@@ -7623,7 +7623,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		{
 			// AzureMonitorActivityLogAlert: the alert's ARM id and name.
 			name: "AzureMonitorActivityLogAlert",
-			kind: cloudresourcekind.CloudResourceKind_AzureMonitorActivityLogAlert,
+			kind: catalogkind.CatalogKind_AzureMonitorActivityLogAlert,
 			rawOutputs: map[string]interface{}{
 				"activity_log_alert_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Insights/activityLogAlerts/vm-delete-alert",
 				"activity_log_alert_name": "vm-delete-alert",
@@ -7637,7 +7637,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// (referenced by a metric alert's web-test criteria), its name,
 			// and the synthetic monitor id.
 			name: "AzureApplicationInsightsStandardWebTest",
-			kind: cloudresourcekind.CloudResourceKind_AzureApplicationInsightsStandardWebTest,
+			kind: catalogkind.CatalogKind_AzureApplicationInsightsStandardWebTest,
 			rawOutputs: map[string]interface{}{
 				"web_test_id":          "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg/providers/Microsoft.Insights/webTests/homepage-health",
 				"web_test_name":        "homepage-health",
@@ -7654,7 +7654,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// NAT-rule association completes, probe_ids is what a scale
 			// set's rolling-upgrade health probe references.
 			name: "AzureLoadBalancer",
-			kind: cloudresourcekind.CloudResourceKind_AzureLoadBalancer,
+			kind: catalogkind.CatalogKind_AzureLoadBalancer,
 			rawOutputs: map[string]interface{}{
 				"load_balancer_id":     "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Network/loadBalancers/app-lb",
 				"load_balancer_name":   "app-lb",
@@ -7684,7 +7684,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureNatGateway: the gateway's ARM id (the join key subnets
 			// attach through), its name, and the ARM-assigned GUID.
 			name: "AzureNatGateway",
-			kind: cloudresourcekind.CloudResourceKind_AzureNatGateway,
+			kind: catalogkind.CatalogKind_AzureNatGateway,
 			rawOutputs: map[string]interface{}{
 				"nat_gateway_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/network-rg/providers/Microsoft.Network/natGateways/prod-egress",
 				"nat_gateway_name": "prod-egress",
@@ -7700,7 +7700,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// its name, and the local coordinates derived from the referenced
 			// network's ARM id.
 			name: "AzureVirtualNetworkPeering",
-			kind: cloudresourcekind.CloudResourceKind_AzureVirtualNetworkPeering,
+			kind: catalogkind.CatalogKind_AzureVirtualNetworkPeering,
 			rawOutputs: map[string]interface{}{
 				"peering_id":           "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/hub-rg/providers/Microsoft.Network/virtualNetworks/hub-vnet/virtualNetworkPeerings/hub-to-spoke1",
 				"peering_name":         "hub-to-spoke1",
@@ -7717,7 +7717,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureAksNodePool consumes; oidc_issuer_url is the trust anchor
 			// AzureFederatedIdentityCredential binds to.
 			name: "AzureAksCluster",
-			kind: cloudresourcekind.CloudResourceKind_AzureAksCluster,
+			kind: catalogkind.CatalogKind_AzureAksCluster,
 			rawOutputs: map[string]interface{}{
 				"cluster_id":                    "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aks-rg/providers/Microsoft.ContainerService/managedClusters/prod-aks",
 				"cluster_name":                  "prod-aks",
@@ -7744,7 +7744,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// verification key; node_image_version reflects the OS patch
 			// level actually rolled out.
 			name: "AzureAksNodePool",
-			kind: cloudresourcekind.CloudResourceKind_AzureAksNodePool,
+			kind: catalogkind.CatalogKind_AzureAksNodePool,
 			rawOutputs: map[string]interface{}{
 				"node_pool_id":       "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/aks-rg/providers/Microsoft.ContainerService/managedClusters/prod-aks/agentPools/general",
 				"node_pool_name":     "general",
@@ -7761,7 +7761,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// credentials and data-endpoint hostnames are feature-gated
 			// outputs (empty/absent when their features are off).
 			name: "AzureContainerRegistry",
-			kind: cloudresourcekind.CloudResourceKind_AzureContainerRegistry,
+			kind: catalogkind.CatalogKind_AzureContainerRegistry,
 			rawOutputs: map[string]interface{}{
 				"container_registry_id":                 "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/platform-rg/providers/Microsoft.ContainerRegistry/registries/prodimages",
 				"container_registry_name":               "prodimages",
@@ -7784,7 +7784,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// private address is what backends and DNS records key on; the
 			// MAC populates only once attached to a running VM.
 			name: "AzureNetworkInterface",
-			kind: cloudresourcekind.CloudResourceKind_AzureNetworkInterface,
+			kind: catalogkind.CatalogKind_AzureNetworkInterface,
 			rawOutputs: map[string]interface{}{
 				"network_interface_id":        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Network/networkInterfaces/app-nic",
 				"network_interface_name":      "app-nic",
@@ -7805,7 +7805,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// actual size matters for COPY/FROM_IMAGE disks that inherited
 			// the source's size.
 			name: "AzureManagedDisk",
-			kind: cloudresourcekind.CloudResourceKind_AzureManagedDisk,
+			kind: catalogkind.CatalogKind_AzureManagedDisk,
 			rawOutputs: map[string]interface{}{
 				"disk_id":      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Compute/disks/orders-db-data",
 				"disk_name":    "orders-db-data",
@@ -7821,7 +7821,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// autoscale/monitoring scope to; the system-assigned principal
 			// is the AzureRoleAssignment seam (UNIFORM sets).
 			name: "AzureVirtualMachineScaleSet",
-			kind: cloudresourcekind.CloudResourceKind_AzureVirtualMachineScaleSet,
+			kind: catalogkind.CatalogKind_AzureVirtualMachineScaleSet,
 			rawOutputs: map[string]interface{}{
 				"scale_set_id":                          "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Compute/virtualMachineScaleSets/web-fleet",
 				"scale_set_name":                        "web-fleet",
@@ -7838,7 +7838,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// to; the identity principal is the AzureRoleAssignment seam;
 			// the IP conveniences aggregate from the referenced NICs.
 			name: "AzureVirtualMachine",
-			kind: cloudresourcekind.CloudResourceKind_AzureVirtualMachine,
+			kind: catalogkind.CatalogKind_AzureVirtualMachine,
 			rawOutputs: map[string]interface{}{
 				"vm_id":                                 "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Compute/virtualMachines/app-vm",
 				"vm_name":                               "app-vm",
@@ -7860,7 +7860,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// assignments reference; vault_uri is the data-plane endpoint
 			// applications call.
 			name: "AzureKeyVault",
-			kind: cloudresourcekind.CloudResourceKind_AzureKeyVault,
+			kind: catalogkind.CatalogKind_AzureKeyVault,
 			rawOutputs: map[string]interface{}{
 				"key_vault_id":        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/security-rg/providers/Microsoft.KeyVault/vaults/platform-kv",
 				"key_vault_name":      "platform-kv",
@@ -7879,7 +7879,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// pins a version (the AKS KMS grain); the ARM proxy ids serve
 			// control-plane integrations.
 			name: "AzureKeyVaultKey",
-			kind: cloudresourcekind.CloudResourceKind_AzureKeyVaultKey,
+			kind: catalogkind.CatalogKind_AzureKeyVaultKey,
 			rawOutputs: map[string]interface{}{
 				"key_id":                  "https://platform-kv.vault.azure.net/keys/storage-cmk/abc123def456",
 				"versionless_id":          "https://platform-kv.vault.azure.net/keys/storage-cmk",
@@ -7903,7 +7903,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// frontend_ip_configuration_ids chains frontends; a private
 			// frontend's address is what internal DNS records point at.
 			name: "AzureApplicationGateway",
-			kind: cloudresourcekind.CloudResourceKind_AzureApplicationGateway,
+			kind: catalogkind.CatalogKind_AzureApplicationGateway,
 			rawOutputs: map[string]interface{}{
 				"application_gateway_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Network/applicationGateways/web-gateway",
 				"application_gateway_name": "web-gateway",
@@ -7927,7 +7927,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// Application Gateways attach the policy through -- gateway-wide,
 			// per listener, and per URL path rule.
 			name: "AzureWebApplicationFirewallPolicy",
-			kind: cloudresourcekind.CloudResourceKind_AzureWebApplicationFirewallPolicy,
+			kind: catalogkind.CatalogKind_AzureWebApplicationFirewallPolicy,
 			rawOutputs: map[string]interface{}{
 				"policy_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/network-rg/providers/Microsoft.Network/applicationGatewayWebApplicationFirewallPolicies/org-waf-baseline",
 				"policy_name": "org-waf-baseline",
@@ -7943,7 +7943,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// (source_server_id) reference; database_ids is the name-keyed
 			// map seam for per-database references.
 			name: "AzurePostgresqlFlexibleServer",
-			kind: cloudresourcekind.CloudResourceKind_AzurePostgresqlFlexibleServer,
+			kind: catalogkind.CatalogKind_AzurePostgresqlFlexibleServer,
 			rawOutputs: map[string]interface{}{
 				"server_id":           "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/data-rg/providers/Microsoft.DBforPostgreSQL/flexibleServers/orders-pg",
 				"server_name":         "orders-pg",
@@ -7966,7 +7966,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// (source_server_id) reference; database_ids is the name-keyed
 			// map seam; replica_capacity sizes replica topologies.
 			name: "AzureMysqlFlexibleServer",
-			kind: cloudresourcekind.CloudResourceKind_AzureMysqlFlexibleServer,
+			kind: catalogkind.CatalogKind_AzureMysqlFlexibleServer,
 			rawOutputs: map[string]interface{}{
 				"server_id":           "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/data-rg/providers/Microsoft.DBforMySQL/flexibleServers/orders-mysql",
 				"server_name":         "orders-mysql",
@@ -7988,7 +7988,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzurePrivateEndpoint's connection target); fqdn +
 			// administrator_login build connection strings.
 			name: "AzureMssqlServer",
-			kind: cloudresourcekind.CloudResourceKind_AzureMssqlServer,
+			kind: catalogkind.CatalogKind_AzureMssqlServer,
 			rawOutputs: map[string]interface{}{
 				"server_id":             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/data-rg/providers/Microsoft.Sql/servers/orders-sql",
 				"server_name":           "orders-sql",
@@ -8006,7 +8006,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// copy/secondary/restore databases reference
 			// (creation_source_database_id).
 			name: "AzureMssqlDatabase",
-			kind: cloudresourcekind.CloudResourceKind_AzureMssqlDatabase,
+			kind: catalogkind.CatalogKind_AzureMssqlDatabase,
 			rawOutputs: map[string]interface{}{
 				"database_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/data-rg/providers/Microsoft.Sql/servers/orders-sql/databases/orders",
 				"database_name": "orders",
@@ -8019,7 +8019,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureMssqlElasticPool: elastic_pool_id is the seam pooled
 			// databases attach through (AzureMssqlDatabase.elastic_pool_id).
 			name: "AzureMssqlElasticPool",
-			kind: cloudresourcekind.CloudResourceKind_AzureMssqlElasticPool,
+			kind: catalogkind.CatalogKind_AzureMssqlElasticPool,
 			rawOutputs: map[string]interface{}{
 				"elastic_pool_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/data-rg/providers/Microsoft.Sql/servers/orders-sql/elasticPools/tenant-pool",
 				"elastic_pool_name": "tenant-pool",
@@ -8036,7 +8036,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the endpoints are what applications and CDN origins connect
 			// to.
 			name: "AzureStorageAccount",
-			kind: cloudresourcekind.CloudResourceKind_AzureStorageAccount,
+			kind: catalogkind.CatalogKind_AzureStorageAccount,
 			rawOutputs: map[string]interface{}{
 				"storage_account_id":               "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Storage/storageAccounts/plantonappstorage",
 				"storage_account_name":             "plantonappstorage",
@@ -8080,7 +8080,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// account/container name pair is what SDK clients and function
 			// bindings consume.
 			name: "AzureStorageContainer",
-			kind: cloudresourcekind.CloudResourceKind_AzureStorageContainer,
+			kind: catalogkind.CatalogKind_AzureStorageContainer,
 			rawOutputs: map[string]interface{}{
 				"container_id":         "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Storage/storageAccounts/plantonappstorage/blobServices/default/containers/uploads",
 				"container_name":       "uploads",
@@ -8096,7 +8096,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// role assignments scope to; the account/share name pair is
 			// what mount commands and CSI volume definitions consume.
 			name: "AzureStorageShare",
-			kind: cloudresourcekind.CloudResourceKind_AzureStorageShare,
+			kind: catalogkind.CatalogKind_AzureStorageShare,
 			rawOutputs: map[string]interface{}{
 				"share_id":             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Storage/storageAccounts/plantonappstorage/fileServices/default/shares/team-files",
 				"rbac_scope_id":        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Storage/storageAccounts/plantonappstorage/fileServices/default/fileshares/team-files",
@@ -8113,7 +8113,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// name pair is what SDK clients and Functions queue triggers
 			// consume.
 			name: "AzureStorageQueue",
-			kind: cloudresourcekind.CloudResourceKind_AzureStorageQueue,
+			kind: catalogkind.CatalogKind_AzureStorageQueue,
 			rawOutputs: map[string]interface{}{
 				"queue_id":             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Storage/storageAccounts/plantonappstorage/queueServices/default/queues/work-items",
 				"queue_name":           "work-items",
@@ -8129,7 +8129,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// touches outputs); the account/table name pair is what SDK
 			// clients and Functions table bindings consume.
 			name: "AzureStorageTable",
-			kind: cloudresourcekind.CloudResourceKind_AzureStorageTable,
+			kind: catalogkind.CatalogKind_AzureStorageTable,
 			rawOutputs: map[string]interface{}{
 				"table_id":             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Storage/storageAccounts/plantonappstorage/tableServices/default/tables/AppEntities",
 				"table_name":           "AppEntities",
@@ -8144,7 +8144,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// seam containers (default_encryption_scope) and ADLS
 			// filesystems reference for sub-account key isolation.
 			name: "AzureStorageEncryptionScope",
-			kind: cloudresourcekind.CloudResourceKind_AzureStorageEncryptionScope,
+			kind: catalogkind.CatalogKind_AzureStorageEncryptionScope,
 			rawOutputs: map[string]interface{}{
 				"encryption_scope_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Storage/storageAccounts/plantonappstorage/encryptionScopes/tenant42scope",
 				"encryption_scope_name": "tenant42scope",
@@ -8159,7 +8159,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// container-proxy ID data-plane role assignments scope to
 			// (ADLS filesystems surface in ARM as blob containers).
 			name: "AzureStorageDataLakeGen2Filesystem",
-			kind: cloudresourcekind.CloudResourceKind_AzureStorageDataLakeGen2Filesystem,
+			kind: catalogkind.CatalogKind_AzureStorageDataLakeGen2Filesystem,
 			rawOutputs: map[string]interface{}{
 				"filesystem_id":        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/lake-rg/providers/Microsoft.Storage/storageAccounts/plantonlake/blobServices/default/containers/raw-zone",
 				"filesystem_name":      "raw-zone",
@@ -8174,7 +8174,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// clients connect with; sid and password are the
 			// secret-bearing credential outputs.
 			name: "AzureStorageLocalUser",
-			kind: cloudresourcekind.CloudResourceKind_AzureStorageLocalUser,
+			kind: catalogkind.CatalogKind_AzureStorageLocalUser,
 			rawOutputs: map[string]interface{}{
 				"local_user_id":        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/exchange-rg/providers/Microsoft.Storage/storageAccounts/plantonsftp/localUsers/partner01",
 				"user_name":            "partner01",
@@ -8192,7 +8192,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// materialized on BOTH accounts under one GUID -- two ARM IDs
 			// plus the shared policy_id monitoring keys on.
 			name: "AzureStorageObjectReplication",
-			kind: cloudresourcekind.CloudResourceKind_AzureStorageObjectReplication,
+			kind: catalogkind.CatalogKind_AzureStorageObjectReplication,
 			rawOutputs: map[string]interface{}{
 				"source_object_replication_id":      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dr-rg/providers/Microsoft.Storage/storageAccounts/plantonorsrc/objectReplicationPolicies/6a2f5b7e-1c3d-4e5f-8a9b-0c1d2e3f4a5b",
 				"destination_object_replication_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dr-rg/providers/Microsoft.Storage/storageAccounts/plantonordst/objectReplicationPolicies/6a2f5b7e-1c3d-4e5f-8a9b-0c1d2e3f4a5b",
@@ -8208,7 +8208,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// (Application Gateway) consume so renewals propagate; the
 			// thumbprint serves fingerprint-pinning integrations.
 			name: "AzureKeyVaultCertificate",
-			kind: cloudresourcekind.CloudResourceKind_AzureKeyVaultCertificate,
+			kind: catalogkind.CatalogKind_AzureKeyVaultCertificate,
 			rawOutputs: map[string]interface{}{
 				"certificate_id":                  "https://platform-kv.vault.azure.net/certificates/internal-tls/fed321cba654",
 				"versionless_id":                  "https://platform-kv.vault.azure.net/certificates/internal-tls",
@@ -8233,7 +8233,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// is the linked-server location seam; both key faces stay live
 			// so clients rotate with zero downtime.
 			name: "AzureRedisCache",
-			kind: cloudresourcekind.CloudResourceKind_AzureRedisCache,
+			kind: catalogkind.CatalogKind_AzureRedisCache,
 			rawOutputs: map[string]interface{}{
 				"redis_cache_id":              "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Cache/redis/app-cache",
 				"redis_cache_name":            "app-cache",
@@ -8261,7 +8261,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// primary across failovers -- the stable endpoint applications
 			// point at instead of either cache's own hostname.
 			name: "AzureRedisLinkedServer",
-			kind: cloudresourcekind.CloudResourceKind_AzureRedisLinkedServer,
+			kind: catalogkind.CatalogKind_AzureRedisLinkedServer,
 			rawOutputs: map[string]interface{}{
 				"linked_server_id":                 "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-east/providers/Microsoft.Cache/redis/app-cache-east/linkedServers/app-cache-west",
 				"linked_server_name":               "app-cache-west",
@@ -8276,7 +8276,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureRedisCacheAccessPolicy: access_policy_name is the seam
 			// assignments reference to grant the policy to an identity.
 			name: "AzureRedisCacheAccessPolicy",
-			kind: cloudresourcekind.CloudResourceKind_AzureRedisCacheAccessPolicy,
+			kind: catalogkind.CatalogKind_AzureRedisCacheAccessPolicy,
 			rawOutputs: map[string]interface{}{
 				"access_policy_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Cache/redis/app-cache/accessPolicies/app-read-only",
 				"access_policy_name": "app-read-only",
@@ -8292,7 +8292,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// populate only while access-keys authentication is enabled
 			// (keyless is the default).
 			name: "AzureManagedRedis",
-			kind: cloudresourcekind.CloudResourceKind_AzureManagedRedis,
+			kind: catalogkind.CatalogKind_AzureManagedRedis,
 			rawOutputs: map[string]interface{}{
 				"managed_redis_id":      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Cache/redisEnterprise/app-cache",
 				"managed_redis_name":    "app-cache",
@@ -8317,7 +8317,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// app kinds reference; kind and reserved are Azure-computed
 			// attributes read back after creation.
 			name: "AzureServicePlan",
-			kind: cloudresourcekind.CloudResourceKind_AzureServicePlan,
+			kind: catalogkind.CatalogKind_AzureServicePlan,
 			rawOutputs: map[string]interface{}{
 				"service_plan_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Web/serverFarms/app-plan",
 				"service_plan_name": "app-plan",
@@ -8337,7 +8337,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// engines; the site credential populates while basic-auth
 			// publishing is enabled.
 			name: "AzureLinuxWebApp",
-			kind: cloudresourcekind.CloudResourceKind_AzureLinuxWebApp,
+			kind: catalogkind.CatalogKind_AzureLinuxWebApp,
 			rawOutputs: map[string]interface{}{
 				"web_app_id":                     "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Web/sites/app-web",
 				"default_hostname":               "app-web.azurewebsites.net",
@@ -8364,7 +8364,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// engines; the site credential populates while basic-auth
 			// publishing is enabled.
 			name: "AzureFunctionApp",
-			kind: cloudresourcekind.CloudResourceKind_AzureFunctionApp,
+			kind: catalogkind.CatalogKind_AzureFunctionApp,
 			rawOutputs: map[string]interface{}{
 				"function_app_id":                "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Web/sites/app-fn",
 				"default_hostname":               "app-fn.azurewebsites.net",
@@ -8391,7 +8391,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// object of its own -- its resource ID is the managing
 			// cluster's ARM ID.
 			name: "AzureManagedRedisGeoReplication",
-			kind: cloudresourcekind.CloudResourceKind_AzureManagedRedisGeoReplication,
+			kind: catalogkind.CatalogKind_AzureManagedRedisGeoReplication,
 			rawOutputs: map[string]interface{}{
 				"geo_replication_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-east/providers/Microsoft.Cache/redisEnterprise/app-cache-east",
 			},
@@ -8404,7 +8404,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// assignment after the granted object ID, so the name equals
 			// the principal's GUID.
 			name: "AzureManagedRedisAccessPolicyAssignment",
-			kind: cloudresourcekind.CloudResourceKind_AzureManagedRedisAccessPolicyAssignment,
+			kind: catalogkind.CatalogKind_AzureManagedRedisAccessPolicyAssignment,
 			rawOutputs: map[string]interface{}{
 				"access_policy_assignment_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Cache/redisEnterprise/app-cache/databases/default/accessPolicyAssignments/11111111-2222-3333-4444-555555555555",
 				"access_policy_assignment_name": "11111111-2222-3333-4444-555555555555",
@@ -8418,7 +8418,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// keyless cache story -- id and name identify the grant for
 			// audits and teardown.
 			name: "AzureRedisCacheAccessPolicyAssignment",
-			kind: cloudresourcekind.CloudResourceKind_AzureRedisCacheAccessPolicyAssignment,
+			kind: catalogkind.CatalogKind_AzureRedisCacheAccessPolicyAssignment,
 			rawOutputs: map[string]interface{}{
 				"access_policy_assignment_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Cache/redis/app-cache/accessPolicyAssignments/app-identity-data-reader",
 				"access_policy_assignment_name": "app-identity-data-reader",
@@ -8433,7 +8433,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// ready-made connection strings are the credential surface; the
 			// per-region endpoint lists are repeated string outputs.
 			name: "AzureCosmosdbAccount",
-			kind: cloudresourcekind.CloudResourceKind_AzureCosmosdbAccount,
+			kind: catalogkind.CatalogKind_AzureCosmosdbAccount,
 			rawOutputs: map[string]interface{}{
 				"cosmosdb_account_id":                          "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.DocumentDB/databaseAccounts/app-cosmos",
 				"cosmosdb_account_name":                        "app-cosmos",
@@ -8472,7 +8472,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// reference; the account/database name pair is what SDK calls
 			// consume inside the account's connection.
 			name: "AzureCosmosdbSqlDatabase",
-			kind: cloudresourcekind.CloudResourceKind_AzureCosmosdbSqlDatabase,
+			kind: catalogkind.CatalogKind_AzureCosmosdbSqlDatabase,
 			rawOutputs: map[string]interface{}{
 				"sql_database_id":       "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.DocumentDB/databaseAccounts/app-cosmos/sqlDatabases/app-data",
 				"sql_database_name":     "app-data",
@@ -8488,7 +8488,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// scope; the name triple addresses the container inside the
 			// account's connection.
 			name: "AzureCosmosdbSqlContainer",
-			kind: cloudresourcekind.CloudResourceKind_AzureCosmosdbSqlContainer,
+			kind: catalogkind.CatalogKind_AzureCosmosdbSqlContainer,
 			rawOutputs: map[string]interface{}{
 				"sql_container_id":      "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.DocumentDB/databaseAccounts/app-cosmos/sqlDatabases/app-data/containers/orders",
 				"sql_container_name":    "orders",
@@ -8505,7 +8505,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// collections (AzureCosmosdbMongoCollection.mongo_database_id)
 			// reference.
 			name: "AzureCosmosdbMongoDatabase",
-			kind: cloudresourcekind.CloudResourceKind_AzureCosmosdbMongoDatabase,
+			kind: catalogkind.CatalogKind_AzureCosmosdbMongoDatabase,
 			rawOutputs: map[string]interface{}{
 				"mongo_database_id":     "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.DocumentDB/databaseAccounts/app-cosmos-mongo/mongodbDatabases/app-data",
 				"mongo_database_name":   "app-data",
@@ -8519,7 +8519,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureCosmosdbMongoCollection: the name triple addresses the
 			// collection inside the account's Mongo connection string.
 			name: "AzureCosmosdbMongoCollection",
-			kind: cloudresourcekind.CloudResourceKind_AzureCosmosdbMongoCollection,
+			kind: catalogkind.CatalogKind_AzureCosmosdbMongoCollection,
 			rawOutputs: map[string]interface{}{
 				"mongo_collection_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.DocumentDB/databaseAccounts/app-cosmos-mongo/mongodbDatabases/app-data/collections/events",
 				"mongo_collection_name": "events",
@@ -8536,7 +8536,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// fully-scoped ARM id an AzureCosmosdbSqlRoleAssignment's
 			// role_definition_id field consumes with zero translation.
 			name: "AzureCosmosdbSqlRoleDefinition",
-			kind: cloudresourcekind.CloudResourceKind_AzureCosmosdbSqlRoleDefinition,
+			kind: catalogkind.CatalogKind_AzureCosmosdbSqlRoleDefinition,
 			rawOutputs: map[string]interface{}{
 				"role_definition_id":    "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.DocumentDB/databaseAccounts/app-cosmos/sqlRoleDefinitions/9b7f3f6a-2f0e-4b9a-8f0d-2f6a8f0d2f6a",
 				"role_definition_guid":  "9b7f3f6a-2f0e-4b9a-8f0d-2f6a8f0d2f6a",
@@ -8552,7 +8552,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureCosmosdbSqlRoleAssignment: the grant record's ARM
 			// identity, exported for audit trails and cross-references.
 			name: "AzureCosmosdbSqlRoleAssignment",
-			kind: cloudresourcekind.CloudResourceKind_AzureCosmosdbSqlRoleAssignment,
+			kind: catalogkind.CatalogKind_AzureCosmosdbSqlRoleAssignment,
 			rawOutputs: map[string]interface{}{
 				"role_assignment_id":    "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.DocumentDB/databaseAccounts/app-cosmos/sqlRoleAssignments/7c1de3f8-5a4b-4c2d-9e8f-1a2b3c4d5e6f",
 				"role_assignment_guid":  "7c1de3f8-5a4b-4c2d-9e8f-1a2b3c4d5e6f",
@@ -8569,7 +8569,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// identity_principal_id is the Key Vault grant target for
 			// bring-your-own TLS certificates.
 			name: "AzureFrontDoorProfile",
-			kind: cloudresourcekind.CloudResourceKind_AzureFrontDoorProfile,
+			kind: catalogkind.CatalogKind_AzureFrontDoorProfile,
 			rawOutputs: map[string]interface{}{
 				"profile_id":            "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Cdn/profiles/app-fd",
 				"profile_name":          "app-fd",
@@ -8585,7 +8585,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// seam; host_name is the generated *.azurefd.net hostname DNS
 			// records CNAME onto.
 			name: "AzureFrontDoorEndpoint",
-			kind: cloudresourcekind.CloudResourceKind_AzureFrontDoorEndpoint,
+			kind: catalogkind.CatalogKind_AzureFrontDoorEndpoint,
 			rawOutputs: map[string]interface{}{
 				"endpoint_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Cdn/profiles/app-fd/afdEndpoints/web",
 				"endpoint_name": "web",
@@ -8599,7 +8599,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureFrontDoorOriginGroup: origin_group_id is what origins
 			// reference as parent and routes reference as destination.
 			name: "AzureFrontDoorOriginGroup",
-			kind: cloudresourcekind.CloudResourceKind_AzureFrontDoorOriginGroup,
+			kind: catalogkind.CatalogKind_AzureFrontDoorOriginGroup,
 			rawOutputs: map[string]interface{}{
 				"origin_group_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Cdn/profiles/app-fd/originGroups/api-backends",
 				"origin_group_name": "api-backends",
@@ -8612,7 +8612,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureFrontDoorOrigin: origin_id is what routes list in
 			// origin_ids to sequence deployment after the backends exist.
 			name: "AzureFrontDoorOrigin",
-			kind: cloudresourcekind.CloudResourceKind_AzureFrontDoorOrigin,
+			kind: catalogkind.CatalogKind_AzureFrontDoorOrigin,
 			rawOutputs: map[string]interface{}{
 				"origin_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Cdn/profiles/app-fd/originGroups/api-backends/origins/primary",
 				"origin_name": "primary",
@@ -8626,7 +8626,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// Door graph; no hostname output on purpose (it lives on the
 			// endpoint).
 			name: "AzureFrontDoorRoute",
-			kind: cloudresourcekind.CloudResourceKind_AzureFrontDoorRoute,
+			kind: catalogkind.CatalogKind_AzureFrontDoorRoute,
 			rawOutputs: map[string]interface{}{
 				"route_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Cdn/profiles/app-fd/afdEndpoints/web/routes/default",
 				"route_name": "default",
@@ -8640,7 +8640,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// in rule_set_ids to attach the delivery policy; the folded
 			// rules export no ids on purpose (nothing references a rule).
 			name: "AzureFrontDoorRuleSet",
-			kind: cloudresourcekind.CloudResourceKind_AzureFrontDoorRuleSet,
+			kind: catalogkind.CatalogKind_AzureFrontDoorRuleSet,
 			rawOutputs: map[string]interface{}{
 				"rule_set_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Cdn/profiles/app-fd/ruleSets/deliverypolicy",
 				"rule_set_name": "deliverypolicy",
@@ -8654,7 +8654,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// attach seam; validation_token is the DNS TXT challenge the
 			// operator publishes at _dnsauth.<host_name>.
 			name: "AzureFrontDoorCustomDomain",
-			kind: cloudresourcekind.CloudResourceKind_AzureFrontDoorCustomDomain,
+			kind: catalogkind.CatalogKind_AzureFrontDoorCustomDomain,
 			rawOutputs: map[string]interface{}{
 				"custom_domain_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Cdn/profiles/app-fd/customDomains/www-example-com",
 				"host_name":        "www.example.com",
@@ -8670,7 +8670,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// tls.secret_id seam; the SANs are read back from the wrapped
 			// Key Vault certificate.
 			name: "AzureFrontDoorSecret",
-			kind: cloudresourcekind.CloudResourceKind_AzureFrontDoorSecret,
+			kind: catalogkind.CatalogKind_AzureFrontDoorSecret,
 			rawOutputs: map[string]interface{}{
 				"secret_id":                 "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Cdn/profiles/app-fd/secrets/wildcard-example-com",
 				"secret_name":               "wildcard-example-com",
@@ -8685,7 +8685,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// security policy references in firewall_policy_id to attach
 			// the WAF to a profile's domains.
 			name: "AzureFrontDoorFirewallPolicy",
-			kind: cloudresourcekind.CloudResourceKind_AzureFrontDoorFirewallPolicy,
+			kind: catalogkind.CatalogKind_AzureFrontDoorFirewallPolicy,
 			rawOutputs: map[string]interface{}{
 				"firewall_policy_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Network/frontDoorWebApplicationFirewallPolicies/edgewaf",
 				"firewall_policy_name": "edgewaf",
@@ -8699,7 +8699,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// nothing composes on it; the id serves operational
 			// addressing.
 			name: "AzureFrontDoorSecurityPolicy",
-			kind: cloudresourcekind.CloudResourceKind_AzureFrontDoorSecurityPolicy,
+			kind: catalogkind.CatalogKind_AzureFrontDoorSecurityPolicy,
 			rawOutputs: map[string]interface{}{
 				"security_policy_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.Cdn/profiles/app-fd/securityPolicies/edge-waf-attach",
 				"security_policy_name": "edge-waf-attach",
@@ -8714,7 +8714,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// platform-reserved values only populate for VNet-injected
 			// environments but the output shape stays constant.
 			name: "AzureContainerAppEnvironment",
-			kind: cloudresourcekind.CloudResourceKind_AzureContainerAppEnvironment,
+			kind: catalogkind.CatalogKind_AzureContainerAppEnvironment,
 			rawOutputs: map[string]interface{}{
 				"environment_id":                   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.App/managedEnvironments/app-env",
 				"environment_name":                 "app-env",
@@ -8739,7 +8739,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// custom_domain_verification_id is provider-Sensitive (the TF
 			// output carries sensitive = true).
 			name: "AzureContainerApp",
-			kind: cloudresourcekind.CloudResourceKind_AzureContainerApp,
+			kind: catalogkind.CatalogKind_AzureContainerApp,
 			rawOutputs: map[string]interface{}{
 				"container_app_id":              "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.App/containerApps/app-web",
 				"container_app_name":            "app-web",
@@ -8762,7 +8762,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// manual executions; event_stream_endpoint feeds execution
 			// monitoring.
 			name: "AzureContainerAppJob",
-			kind: cloudresourcekind.CloudResourceKind_AzureContainerAppJob,
+			kind: catalogkind.CatalogKind_AzureContainerAppJob,
 			rawOutputs: map[string]interface{}{
 				"job_id":                "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.App/jobs/nightly-report",
 				"job_name":              "nightly-report",
@@ -8779,7 +8779,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureContainerAppEnvironmentStorage: storage_name is the
 			// seam app and job volumes reference in storage_name.
 			name: "AzureContainerAppEnvironmentStorage",
-			kind: cloudresourcekind.CloudResourceKind_AzureContainerAppEnvironmentStorage,
+			kind: catalogkind.CatalogKind_AzureContainerAppEnvironmentStorage,
 			rawOutputs: map[string]interface{}{
 				"storage_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.App/managedEnvironments/app-env/storages/app-data",
 				"storage_name": "app-data",
@@ -8792,7 +8792,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureContainerAppEnvironmentDaprComponent: component_name is
 			// what application code passes to the Dapr API.
 			name: "AzureContainerAppEnvironmentDaprComponent",
-			kind: cloudresourcekind.CloudResourceKind_AzureContainerAppEnvironmentDaprComponent,
+			kind: catalogkind.CatalogKind_AzureContainerAppEnvironmentDaprComponent,
 			rawOutputs: map[string]interface{}{
 				"dapr_component_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.App/managedEnvironments/app-env/daprComponents/statestore",
 				"component_name":    "statestore",
@@ -8806,7 +8806,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// binding seam AzureContainerAppCustomDomain consumes; the
 			// certificate facts feed expiry monitoring.
 			name: "AzureContainerAppEnvironmentCertificate",
-			kind: cloudresourcekind.CloudResourceKind_AzureContainerAppEnvironmentCertificate,
+			kind: catalogkind.CatalogKind_AzureContainerAppEnvironmentCertificate,
 			rawOutputs: map[string]interface{}{
 				"certificate_id":  "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.App/managedEnvironments/app-env/certificates/app.example.com",
 				"subject_name":    "CN=app.example.com",
@@ -8825,7 +8825,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// certificate_id identifies the Azure-issued certificate;
 			// validation_token is informational once issuance completes.
 			name: "AzureContainerAppEnvironmentManagedCertificate",
-			kind: cloudresourcekind.CloudResourceKind_AzureContainerAppEnvironmentManagedCertificate,
+			kind: catalogkind.CatalogKind_AzureContainerAppEnvironmentManagedCertificate,
 			rawOutputs: map[string]interface{}{
 				"certificate_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.App/managedEnvironments/app-env/managedCertificates/app-example-com",
 				"validation_token": "0123456789abcdef0123456789abcdef",
@@ -8842,7 +8842,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// bring-your-own bindings and until Azure attaches the managed
 			// certificate, so it is not asserted.
 			name: "AzureContainerAppCustomDomain",
-			kind: cloudresourcekind.CloudResourceKind_AzureContainerAppCustomDomain,
+			kind: catalogkind.CatalogKind_AzureContainerAppCustomDomain,
 			rawOutputs: map[string]interface{}{
 				"custom_domain_id":       "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.App/containerApps/web-app/customDomainName/app.example.com",
 				"managed_certificate_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/app-rg/providers/Microsoft.App/managedEnvironments/app-env/managedCertificates/app-example-com",
@@ -8858,7 +8858,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// domains, AKS web-app routing); nameservers is the registrar
 			// delegation handoff.
 			name: "AzureDnsZone",
-			kind: cloudresourcekind.CloudResourceKind_AzureDnsZone,
+			kind: catalogkind.CatalogKind_AzureDnsZone,
 			rawOutputs: map[string]interface{}{
 				"zone_id":                   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dns-rg/providers/Microsoft.Network/dnsZones/example.com",
 				"zone_name":                 "example.com",
@@ -8875,7 +8875,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureDnsRecord: record_id embeds the record type as its own
 			// ARM path segment; fqdn is DNS's own trailing-dot spelling.
 			name: "AzureDnsRecord",
-			kind: cloudresourcekind.CloudResourceKind_AzureDnsRecord,
+			kind: catalogkind.CatalogKind_AzureDnsRecord,
 			rawOutputs: map[string]interface{}{
 				"record_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/dns-rg/providers/Microsoft.Network/dnsZones/example.com/MX/@",
 				"fqdn":      "example.com.",
@@ -8890,7 +8890,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// reference; workspace_customer_id is the agent-facing GUID the
 			// provider confusingly calls workspace_id.
 			name: "AzureLogAnalyticsWorkspace",
-			kind: cloudresourcekind.CloudResourceKind_AzureLogAnalyticsWorkspace,
+			kind: catalogkind.CatalogKind_AzureLogAnalyticsWorkspace,
 			rawOutputs: map[string]interface{}{
 				"workspace_id":          "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/obs-rg/providers/Microsoft.OperationalInsights/workspaces/platform-law",
 				"workspace_name":        "platform-law",
@@ -8910,7 +8910,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureApplicationInsights: connection_string is the seam the
 			// app-hosting kinds reference.
 			name: "AzureApplicationInsights",
-			kind: cloudresourcekind.CloudResourceKind_AzureApplicationInsights,
+			kind: catalogkind.CatalogKind_AzureApplicationInsights,
 			rawOutputs: map[string]interface{}{
 				"application_insights_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/obs-rg/providers/Microsoft.Insights/components/platform-appinsights",
 				"application_insights_name": "platform-appinsights",
@@ -8928,7 +8928,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// extension-resource id (the provider's own state id is a
 			// "{target}|{name}" composite no API consumes).
 			name: "AzureMonitorDiagnosticSetting",
-			kind: cloudresourcekind.CloudResourceKind_AzureMonitorDiagnosticSetting,
+			kind: catalogkind.CatalogKind_AzureMonitorDiagnosticSetting,
 			rawOutputs: map[string]interface{}{
 				"diagnostic_setting_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/obs-rg/providers/Microsoft.KeyVault/vaults/app-vault/providers/Microsoft.Insights/diagnosticSettings/route-to-law",
 				"diagnostic_setting_name": "route-to-law",
@@ -8942,7 +8942,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureMonitorActionGroup: action_group_id is the seam alert
 			// rules reference.
 			name: "AzureMonitorActionGroup",
-			kind: cloudresourcekind.CloudResourceKind_AzureMonitorActionGroup,
+			kind: catalogkind.CatalogKind_AzureMonitorActionGroup,
 			rawOutputs: map[string]interface{}{
 				"action_group_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/obs-rg/providers/Microsoft.Insights/actionGroups/platform-oncall",
 				"action_group_name": "platform-oncall",
@@ -8953,7 +8953,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "AzureMonitorMetricAlert",
-			kind: cloudresourcekind.CloudResourceKind_AzureMonitorMetricAlert,
+			kind: catalogkind.CatalogKind_AzureMonitorMetricAlert,
 			rawOutputs: map[string]interface{}{
 				"metric_alert_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/obs-rg/providers/Microsoft.Insights/metricAlerts/storage-availability",
 				"metric_alert_name": "storage-availability",
@@ -8964,7 +8964,7 @@ func TestStackOutputsConformance(t *testing.T) {
 		},
 		{
 			name: "AzureMonitorScheduledQueryAlert",
-			kind: cloudresourcekind.CloudResourceKind_AzureMonitorScheduledQueryAlert,
+			kind: catalogkind.CatalogKind_AzureMonitorScheduledQueryAlert,
 			rawOutputs: map[string]interface{}{
 				"scheduled_query_alert_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/obs-rg/providers/Microsoft.Insights/scheduledQueryRules/error-spike",
 				"scheduled_query_alert_name": "error-spike",
@@ -8981,7 +8981,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// rule, geo-DR pairing); the root SAS rule's four credential
 			// faces are the quick-start connection surface.
 			name: "AzureServiceBusNamespace",
-			kind: cloudresourcekind.CloudResourceKind_AzureServiceBusNamespace,
+			kind: catalogkind.CatalogKind_AzureServiceBusNamespace,
 			rawOutputs: map[string]interface{}{
 				"namespace_id":                        "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msg-rg/providers/Microsoft.ServiceBus/namespaces/orders-bus",
 				"namespace_name":                      "orders-bus",
@@ -9005,7 +9005,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// namespace/queue name pair is what SDK clients and function
 			// bindings consume.
 			name: "AzureServiceBusQueue",
-			kind: cloudresourcekind.CloudResourceKind_AzureServiceBusQueue,
+			kind: catalogkind.CatalogKind_AzureServiceBusQueue,
 			rawOutputs: map[string]interface{}{
 				"queue_id":       "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msg-rg/providers/Microsoft.ServiceBus/namespaces/orders-bus/queues/orders",
 				"queue_name":     "orders",
@@ -9019,7 +9019,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureServiceBusTopic: topic_id is the parent seam subscriptions
 			// and topic-scoped SAS rules reference.
 			name: "AzureServiceBusTopic",
-			kind: cloudresourcekind.CloudResourceKind_AzureServiceBusTopic,
+			kind: catalogkind.CatalogKind_AzureServiceBusTopic,
 			rawOutputs: map[string]interface{}{
 				"topic_id":       "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msg-rg/providers/Microsoft.ServiceBus/namespaces/orders-bus/topics/events",
 				"topic_name":     "events",
@@ -9033,7 +9033,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureServiceBusSubscription: consumers receive by the
 			// namespace/topic/subscription triple.
 			name: "AzureServiceBusSubscription",
-			kind: cloudresourcekind.CloudResourceKind_AzureServiceBusSubscription,
+			kind: catalogkind.CatalogKind_AzureServiceBusSubscription,
 			rawOutputs: map[string]interface{}{
 				"subscription_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msg-rg/providers/Microsoft.ServiceBus/namespaces/orders-bus/topics/events/subscriptions/audit",
 				"subscription_name": "audit",
@@ -9051,7 +9051,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the six key/connection-string faces are the least-privilege
 			// credential surface applications hold.
 			name: "AzureServiceBusAuthorizationRule",
-			kind: cloudresourcekind.CloudResourceKind_AzureServiceBusAuthorizationRule,
+			kind: catalogkind.CatalogKind_AzureServiceBusAuthorizationRule,
 			rawOutputs: map[string]interface{}{
 				"authorization_rule_id":             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msg-rg/providers/Microsoft.ServiceBus/namespaces/orders-bus/queues/orders/authorizationRules/orders-sender",
 				"rule_name":                         "orders-sender",
@@ -9073,7 +9073,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// strings are what DR-aware clients hold -- they survive a
 			// failover without reconfiguration.
 			name: "AzureServiceBusDisasterRecoveryConfig",
-			kind: cloudresourcekind.CloudResourceKind_AzureServiceBusDisasterRecoveryConfig,
+			kind: catalogkind.CatalogKind_AzureServiceBusDisasterRecoveryConfig,
 			rawOutputs: map[string]interface{}{
 				"disaster_recovery_config_id":       "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/msg-rg/providers/Microsoft.ServiceBus/namespaces/orders-bus-eastus/disasterRecoveryConfigs/orders-bus-alias",
 				"alias_name":                        "orders-bus-alias",
@@ -9096,7 +9096,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// credential faces (incl. the geo-DR alias pair) are the
 			// quick-start connection surface.
 			name: "AzureEventHubNamespace",
-			kind: cloudresourcekind.CloudResourceKind_AzureEventHubNamespace,
+			kind: catalogkind.CatalogKind_AzureEventHubNamespace,
 			rawOutputs: map[string]interface{}{
 				"namespace_id":                              "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/stream-rg/providers/Microsoft.EventHub/namespaces/telemetry-hubs",
 				"namespace_name":                            "telemetry-hubs",
@@ -9120,7 +9120,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// and hub-scoped SAS rules reference; partition_ids is the
 			// repeated output partition-aware consumers enumerate.
 			name: "AzureEventHub",
-			kind: cloudresourcekind.CloudResourceKind_AzureEventHub,
+			kind: catalogkind.CatalogKind_AzureEventHub,
 			rawOutputs: map[string]interface{}{
 				"event_hub_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/stream-rg/providers/Microsoft.EventHub/namespaces/telemetry-hubs/eventhubs/telemetry",
 				"event_hub_name": "telemetry",
@@ -9134,7 +9134,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureEventHubConsumerGroup: the group name is what consumer
 			// applications pass to their SDK client alongside the hub name.
 			name: "AzureEventHubConsumerGroup",
-			kind: cloudresourcekind.CloudResourceKind_AzureEventHubConsumerGroup,
+			kind: catalogkind.CatalogKind_AzureEventHubConsumerGroup,
 			rawOutputs: map[string]interface{}{
 				"consumer_group_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/stream-rg/providers/Microsoft.EventHub/namespaces/telemetry-hubs/eventhubs/telemetry/consumergroups/analytics",
 				"consumer_group_name": "analytics",
@@ -9148,7 +9148,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// regardless of scope; the alias pair is only populated when a
 			// geo-DR pairing exists.
 			name: "AzureEventHubAuthorizationRule",
-			kind: cloudresourcekind.CloudResourceKind_AzureEventHubAuthorizationRule,
+			kind: catalogkind.CatalogKind_AzureEventHubAuthorizationRule,
 			rawOutputs: map[string]interface{}{
 				"authorization_rule_id":             "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/stream-rg/providers/Microsoft.EventHub/namespaces/telemetry-hubs/eventhubs/telemetry/authorizationRules/producer-send",
 				"rule_name":                         "producer-send",
@@ -9171,7 +9171,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// (Azure's own surface) -- this kind exports the pairing
 			// identity only.
 			name: "AzureEventHubDisasterRecoveryConfig",
-			kind: cloudresourcekind.CloudResourceKind_AzureEventHubDisasterRecoveryConfig,
+			kind: catalogkind.CatalogKind_AzureEventHubDisasterRecoveryConfig,
 			rawOutputs: map[string]interface{}{
 				"disaster_recovery_config_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/stream-rg/providers/Microsoft.EventHub/namespaces/telemetry-hubs/disasterRecoveryConfigs/telemetry-alias",
 				"alias_name":                  "telemetry-alias",
@@ -9184,7 +9184,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureEventHubSchemaGroup: the group name is what
 			// schema-registry serializers address at runtime.
 			name: "AzureEventHubSchemaGroup",
-			kind: cloudresourcekind.CloudResourceKind_AzureEventHubSchemaGroup,
+			kind: catalogkind.CatalogKind_AzureEventHubSchemaGroup,
 			rawOutputs: map[string]interface{}{
 				"schema_group_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/stream-rg/providers/Microsoft.EventHub/namespaces/telemetry-hubs/schemagroups/telemetry-schemas",
 				"schema_group_name": "telemetry-schemas",
@@ -9197,7 +9197,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureEventHubCluster: cluster_id is the seam a namespace's
 			// dedicated_cluster_id references for single-tenant placement.
 			name: "AzureEventHubCluster",
-			kind: cloudresourcekind.CloudResourceKind_AzureEventHubCluster,
+			kind: catalogkind.CatalogKind_AzureEventHubCluster,
 			rawOutputs: map[string]interface{}{
 				"cluster_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/stream-rg/providers/Microsoft.EventHub/clusters/streaming-dedicated",
 				"cluster_name": "streaming-dedicated",
@@ -9211,7 +9211,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// a property of the namespace (no ARM object of its own), so its
 			// identity output is the namespace's ARM id.
 			name: "AzureEventHubNamespaceCustomerManagedKey",
-			kind: cloudresourcekind.CloudResourceKind_AzureEventHubNamespaceCustomerManagedKey,
+			kind: catalogkind.CatalogKind_AzureEventHubNamespaceCustomerManagedKey,
 			rawOutputs: map[string]interface{}{
 				"customer_managed_key_id": "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/stream-rg/providers/Microsoft.EventHub/namespaces/telemetry-hubs",
 			},
@@ -9225,7 +9225,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// it, child policies inherit from it) plus the system identity's
 			// principal for Key Vault grants.
 			name: "AzureFirewallPolicy",
-			kind: cloudresourcekind.CloudResourceKind_AzureFirewallPolicy,
+			kind: catalogkind.CatalogKind_AzureFirewallPolicy,
 			rawOutputs: map[string]interface{}{
 				"firewall_policy_id":    "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/network-rg/providers/Microsoft.Network/firewallPolicies/egress-baseline",
 				"firewall_policy_name":  "egress-baseline",
@@ -9239,7 +9239,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AzureFirewallPolicyRuleCollectionGroup: the group's ARM id
 			// (nested under its parent policy) and name.
 			name: "AzureFirewallPolicyRuleCollectionGroup",
-			kind: cloudresourcekind.CloudResourceKind_AzureFirewallPolicyRuleCollectionGroup,
+			kind: catalogkind.CatalogKind_AzureFirewallPolicyRuleCollectionGroup,
 			rawOutputs: map[string]interface{}{
 				"rule_collection_group_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/network-rg/providers/Microsoft.Network/firewallPolicies/egress-baseline/ruleCollectionGroups/platform-baseline",
 				"rule_collection_group_name": "platform-baseline",
@@ -9254,7 +9254,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// via a VIRTUAL_APPLIANCE next hop. Hub-deployment outputs stay
 			// empty on a VNet firewall.
 			name: "AzureFirewall",
-			kind: cloudresourcekind.CloudResourceKind_AzureFirewall,
+			kind: catalogkind.CatalogKind_AzureFirewall,
 			rawOutputs: map[string]interface{}{
 				"firewall_id":                     "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/network-rg/providers/Microsoft.Network/azureFirewalls/hub-egress-fw",
 				"firewall_name":                   "hub-egress-fw",
@@ -9272,7 +9272,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// firewall policy rules and IDPS bypasses reference it to
 			// target the address set.
 			name: "AzureIpGroup",
-			kind: cloudresourcekind.CloudResourceKind_AzureIpGroup,
+			kind: catalogkind.CatalogKind_AzureIpGroup,
 			rawOutputs: map[string]interface{}{
 				"ip_group_id":   "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/network-rg/providers/Microsoft.Network/ipGroups/branch-offices",
 				"ip_group_name": "branch-offices",
@@ -9289,7 +9289,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// CNAMEs; status is what the E2E verifier keys on (a no-zone cert
 			// rests in PENDING_VALIDATION).
 			name: "AwsCertManagerCert",
-			kind: cloudresourcekind.CloudResourceKind_AwsCertManagerCert,
+			kind: catalogkind.CatalogKind_AwsCertManagerCert,
 			rawOutputs: map[string]interface{}{
 				"cert_arn": "arn:aws:acm:us-east-1:123456789012:certificate/12345678-1234-1234-1234-123456789012",
 				"status":   "PENDING_VALIDATION",
@@ -9315,7 +9315,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// Route53 alias records compose against; distribution_arn is the
 			// WAF-association join key.
 			name: "AwsCloudFront",
-			kind: cloudresourcekind.CloudResourceKind_AwsCloudFront,
+			kind: catalogkind.CatalogKind_AwsCloudFront,
 			rawOutputs: map[string]interface{}{
 				"distribution_id":  "E2ABCDEF123456",
 				"distribution_arn": "arn:aws:cloudfront::123456789012:distribution/E2ABCDEF123456",
@@ -9334,7 +9334,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// reference and the watch fence (a repeated string, exercising
 			// the list flattening path).
 			name: "KubernetesSparkOperator",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesSparkOperator,
+			kind: catalogkind.CatalogKind_KubernetesSparkOperator,
 			rawOutputs: map[string]interface{}{
 				"namespace":                "spark-operator",
 				"release_name":             "spark-operator",
@@ -9350,7 +9350,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// KubernetesKubeRayOperator: the release identity plus the
 			// watch fence.
 			name: "KubernetesKubeRayOperator",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesKubeRayOperator,
+			kind: catalogkind.CatalogKind_KubernetesKubeRayOperator,
 			rawOutputs: map[string]interface{}{
 				"namespace":          "ray-system",
 				"release_name":       "kuberay-operator",
@@ -9367,7 +9367,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// emit "auth_token_secret.name"/".key", never a flat
 			// "auth_token_secret_name").
 			name: "KubernetesRayCluster",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesRayCluster,
+			kind: catalogkind.CatalogKind_KubernetesRayCluster,
 			rawOutputs: map[string]interface{}{
 				"namespace":          "ml-platform",
 				"head_service":       "ml-ray-head-svc",
@@ -9391,7 +9391,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// identity contract, the watch fence, and the chart-fixed
 			// webhook Service handle.
 			name: "KubernetesFlinkOperator",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesFlinkOperator,
+			kind: catalogkind.CatalogKind_KubernetesFlinkOperator,
 			rawOutputs: map[string]interface{}{
 				"namespace":           "flink-system",
 				"release_name":        "flink-operator",
@@ -9409,7 +9409,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// (`<name>-rest`) every exposure and job submission composes
 			// against.
 			name: "KubernetesFlinkDeployment",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesFlinkDeployment,
+			kind: catalogkind.CatalogKind_KubernetesFlinkDeployment,
 			rawOutputs: map[string]interface{}{
 				"namespace":            "stream-processing",
 				"rest_service":         "orders-pipeline-rest",
@@ -9426,7 +9426,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// worker-connect endpoints) and the module-generated web-UI
 			// login credential handle.
 			name: "KubernetesLocust",
-			kind: cloudresourcekind.CloudResourceKind_KubernetesLocust,
+			kind: catalogkind.CatalogKind_KubernetesLocust,
 			rawOutputs: map[string]interface{}{
 				"namespace":            "load-test",
 				"master_service":       "load-test",
@@ -9452,7 +9452,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// in EVERY arm (empty for a shell secret) so the output shape is
 			// engine- and configuration-invariant.
 			name: "AwsSecretsManagerSecret",
-			kind: cloudresourcekind.CloudResourceKind_AwsSecretsManagerSecret,
+			kind: catalogkind.CatalogKind_AwsSecretsManagerSecret,
 			rawOutputs: map[string]interface{}{
 				"secret_arn":  "arn:aws:secretsmanager:us-west-2:123456789012:secret:prod/payments/db-AbCdEf",
 				"secret_name": "prod/payments/db",
@@ -9469,7 +9469,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// and Dashboards users connect to; kms_key_arn echoes the
 			// effective key (AWS-owned or customer-managed).
 			name: "AwsOpenSearchServerlessCollection",
-			kind: cloudresourcekind.CloudResourceKind_AwsOpenSearchServerlessCollection,
+			kind: catalogkind.CatalogKind_AwsOpenSearchServerlessCollection,
 			rawOutputs: map[string]interface{}{
 				"collection_id":       "a1b2c3d4e5f6g7",
 				"collection_arn":      "arn:aws:aoss:us-west-2:123456789012:collection/a1b2c3d4e5f6g7",
@@ -9489,7 +9489,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// name-keyed published-version map -- AWS assigns the numbers);
 			// draft_version is the literal DRAFT.
 			name: "AwsBedrockGuardrail",
-			kind: cloudresourcekind.CloudResourceKind_AwsBedrockGuardrail,
+			kind: catalogkind.CatalogKind_AwsBedrockGuardrail,
 			rawOutputs: map[string]interface{}{
 				"guardrail_id":  "gr1a2b3c4d5e",
 				"guardrail_arn": "arn:aws:bedrock:us-west-2:123456789012:guardrail/gr1a2b3c4d5e",
@@ -9508,7 +9508,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// throughput references; job_status reports the async training
 			// outcome.
 			name: "AwsBedrockCustomModel",
-			kind: cloudresourcekind.CloudResourceKind_AwsBedrockCustomModel,
+			kind: catalogkind.CatalogKind_AwsBedrockCustomModel,
 			rawOutputs: map[string]interface{}{
 				"custom_model_arn":  "arn:aws:bedrock:us-east-1:123456789012:custom-model/amazon.titan-text-lite-v1/abc123def456",
 				"custom_model_name": "support-titan-ft",
@@ -9523,7 +9523,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AwsBedrockInferenceProfile: inference_profile_id keys the E2E
 			// verifier; the ARN is the modelId applications invoke through.
 			name: "AwsBedrockInferenceProfile",
-			kind: cloudresourcekind.CloudResourceKind_AwsBedrockInferenceProfile,
+			kind: catalogkind.CatalogKind_AwsBedrockInferenceProfile,
 			rawOutputs: map[string]interface{}{
 				"inference_profile_arn": "arn:aws:bedrock:us-west-2:123456789012:application-inference-profile/checkout-nova",
 				"inference_profile_id":  "checkout-nova",
@@ -9539,7 +9539,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the E2E verifier and is the modelId applications invoke
 			// through.
 			name: "AwsBedrockProvisionedThroughput",
-			kind: cloudresourcekind.CloudResourceKind_AwsBedrockProvisionedThroughput,
+			kind: catalogkind.CatalogKind_AwsBedrockProvisionedThroughput,
 			rawOutputs: map[string]interface{}{
 				"provisioned_model_arn":  "arn:aws:bedrock:us-east-1:123456789012:provisioned-model/1y5n57gh5y2e",
 				"provisioned_model_name": "support-model-capacity",
@@ -9552,7 +9552,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AwsBedrockModelAccess: model_id keys the E2E verifier and is
 			// the chart-ordering join key for model-consuming components.
 			name: "AwsBedrockModelAccess",
-			kind: cloudresourcekind.CloudResourceKind_AwsBedrockModelAccess,
+			kind: catalogkind.CatalogKind_AwsBedrockModelAccess,
 			rawOutputs: map[string]interface{}{
 				"model_id": "mistral.mistral-7b-instruct-v0:2",
 			},
@@ -9566,7 +9566,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// value supervisors, prompts, and flows consume) feed the
 			// keyed-by-address import derivations.
 			name: "AwsBedrockAgent",
-			kind: cloudresourcekind.CloudResourceKind_AwsBedrockAgent,
+			kind: catalogkind.CatalogKind_AwsBedrockAgent,
 			rawOutputs: map[string]interface{}{
 				"agent_id":      "GGRRAED6JP",
 				"agent_arn":     "arn:aws:bedrock:us-west-2:123456789012:agent/GGRRAED6JP",
@@ -9599,7 +9599,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// name-keyed data_source_ids map feeds the keyed-by-address
 			// import derivations.
 			name: "AwsBedrockKnowledgeBase",
-			kind: cloudresourcekind.CloudResourceKind_AwsBedrockKnowledgeBase,
+			kind: catalogkind.CatalogKind_AwsBedrockKnowledgeBase,
 			rawOutputs: map[string]interface{}{
 				"knowledge_base_id":  "EMDPPAYPZI",
 				"knowledge_base_arn": "arn:aws:bedrock:us-west-2:123456789012:knowledge-base/EMDPPAYPZI",
@@ -9615,7 +9615,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// AwsBedrockFlow: flow_id keys the E2E verifier; flow_arn is
 			// the invocation key; draft_version is the literal DRAFT.
 			name: "AwsBedrockFlow",
-			kind: cloudresourcekind.CloudResourceKind_AwsBedrockFlow,
+			kind: catalogkind.CatalogKind_AwsBedrockFlow,
 			rawOutputs: map[string]interface{}{
 				"flow_id":       "FLOWID1234",
 				"flow_arn":      "arn:aws:bedrock:us-west-2:123456789012:flow/FLOWID1234",
@@ -9630,7 +9630,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// prompt_arn is what a flow's prompt node consumes;
 			// draft_version is the literal DRAFT.
 			name: "AwsBedrockPrompt",
-			kind: cloudresourcekind.CloudResourceKind_AwsBedrockPrompt,
+			kind: catalogkind.CatalogKind_AwsBedrockPrompt,
 			rawOutputs: map[string]interface{}{
 				"prompt_id":     "1A2BC3DEFG",
 				"prompt_arn":    "arn:aws:bedrock:us-west-2:123456789012:prompt/1A2BC3DEFG",
@@ -9647,7 +9647,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// endpoint_arns map feeds the keyed-by-address import
 			// derivations (an endpoint's AWS identity IS its name).
 			name: "AwsBedrockAgentCoreRuntime",
-			kind: cloudresourcekind.CloudResourceKind_AwsBedrockAgentCoreRuntime,
+			kind: catalogkind.CatalogKind_AwsBedrockAgentCoreRuntime,
 			rawOutputs: map[string]interface{}{
 				"agent_runtime_id":      "support_agent-Ab1Cd2Ef3G",
 				"agent_runtime_arn":     "arn:aws:bedrock-agentcore:us-west-2:123456789012:runtime/support_agent-Ab1Cd2Ef3G",
@@ -9669,7 +9669,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// the name-keyed target_ids map feeds the keyed-by-address
 			// import derivations.
 			name: "AwsBedrockAgentCoreGateway",
-			kind: cloudresourcekind.CloudResourceKind_AwsBedrockAgentCoreGateway,
+			kind: catalogkind.CatalogKind_AwsBedrockAgentCoreGateway,
 			rawOutputs: map[string]interface{}{
 				"gateway_id":            "support-tools-abc123de45",
 				"gateway_arn":           "arn:aws:bedrock-agentcore:us-west-2:123456789012:gateway/support-tools-abc123de45",
@@ -9690,7 +9690,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// name-keyed strategy_ids map feeds the keyed-by-address
 			// import derivations.
 			name: "AwsBedrockAgentCoreMemory",
-			kind: cloudresourcekind.CloudResourceKind_AwsBedrockAgentCoreMemory,
+			kind: catalogkind.CatalogKind_AwsBedrockAgentCoreMemory,
 			rawOutputs: map[string]interface{}{
 				"memory_id":  "support_memory-Ab1Cd2Ef3G",
 				"memory_arn": "arn:aws:bedrock-agentcore:us-west-2:123456789012:memory/support_memory-Ab1Cd2Ef3G",
@@ -9708,7 +9708,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// gateway target credentials consume, and policy_engine_arn
 			// is what a gateway's policy-engine attachment consumes.
 			name: "AwsBedrockAgentCoreIdentity",
-			kind: cloudresourcekind.CloudResourceKind_AwsBedrockAgentCoreIdentity,
+			kind: catalogkind.CatalogKind_AwsBedrockAgentCoreIdentity,
 			rawOutputs: map[string]interface{}{
 				"workload_identity_arns": map[string]interface{}{
 					"support-agent": "arn:aws:bedrock-agentcore:us-west-2:123456789012:workload-identity-directory/default/workload-identity/support-agent",
@@ -9744,7 +9744,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// browser/code-interpreter tools consume, and the id maps
 			// feed the keyed-by-address import derivations.
 			name: "AwsBedrockAgentCoreTools",
-			kind: cloudresourcekind.CloudResourceKind_AwsBedrockAgentCoreTools,
+			kind: catalogkind.CatalogKind_AwsBedrockAgentCoreTools,
 			rawOutputs: map[string]interface{}{
 				"browser_ids": map[string]interface{}{
 					"research-browser": "research-browser-Ab1Cd2Ef3G",
@@ -9777,7 +9777,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// its own host), the owning account, and the normalized
 			// jurisdiction beside the name and the path-style URL.
 			name: "CloudflareR2Bucket",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareR2Bucket,
+			kind: catalogkind.CatalogKind_CloudflareR2Bucket,
 			rawOutputs: map[string]interface{}{
 				"bucket_name":        "acme-pg-archive",
 				"bucket_url":         "https://4793d734c0b8e484dfc37ec392b5fa8a.eu.r2.cloudflarestorage.com/acme-pg-archive",
@@ -9798,7 +9798,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// R2's S3 API authenticates (id as the access key id, SHA-256 of
 			// the value as the secret access key).
 			name: "CloudflareAccountApiToken",
-			kind: cloudresourcekind.CloudResourceKind_CloudflareAccountApiToken,
+			kind: catalogkind.CatalogKind_CloudflareAccountApiToken,
 			rawOutputs: map[string]interface{}{
 				"token_id":             "f267e341f3dd4697bd3b9f71dd96247f",
 				"value":                "v1.0-abc",
@@ -9816,7 +9816,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// password is never echoed, so username-less and password-less
 			// shapes populate fewer fields by design.
 			name: "Auth0User",
-			kind: cloudresourcekind.CloudResourceKind_Auth0User,
+			kind: catalogkind.CatalogKind_Auth0User,
 			rawOutputs: map[string]interface{}{
 				"user_id":         "auth0|66f1c2d3e4a5b6c7d8e9f0a1",
 				"email":           "platform-root@example.com",
@@ -9837,7 +9837,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// record that proves control of it -- the three dns_record_* fields a
 			// DNS record kind composes, picked by one rule in both engines.
 			name: "Auth0CustomDomain",
-			kind: cloudresourcekind.CloudResourceKind_Auth0CustomDomain,
+			kind: catalogkind.CatalogKind_Auth0CustomDomain,
 			rawOutputs: map[string]interface{}{
 				"id":                 "cd_0123456789abcdef",
 				"domain":             "id.example.com",
@@ -9857,7 +9857,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// id, and the self-managed proxy's key (empty, and still mapped, for
 			// an Auth0-managed domain).
 			name: "Auth0CustomDomainVerification",
-			kind: cloudresourcekind.CloudResourceKind_Auth0CustomDomainVerification,
+			kind: catalogkind.CatalogKind_Auth0CustomDomainVerification,
 			rawOutputs: map[string]interface{}{
 				"custom_domain_id":   "cd_0123456789abcdef",
 				"domain":             "id.example.com",
@@ -9886,7 +9886,7 @@ func TestStackOutputsConformance(t *testing.T) {
 			// Core invariant: every emitted output lands on a proto field. A
 			// regression to a flat/mismatched output name surfaces here.
 			if len(result.DryRun.UnmappedOutputs) != 0 {
-				t.Errorf("%s: outputs did not map onto the StackOutputs proto: %v",
+				t.Errorf("%s: outputs did not map onto the Outputs proto: %v",
 					tc.kind.String(), result.DryRun.UnmappedOutputs)
 			}
 
@@ -9904,14 +9904,14 @@ func TestStackOutputsConformance(t *testing.T) {
 	}
 }
 
-// TestStackOutputsConformance_DetectsFlatSecretDrift proves the guard actually
+// TestOutputsConformance_DetectsFlatSecretDrift proves the guard actually
 // catches the historical drift: the pre-fix Postgres tofu module emitted flat
 // "password_secret_name"/"password_secret_key" outputs, which do NOT flatten onto
 // the proto's password_secret{name,key} field. The guard must flag both the
 // unmapped output and the unpopulated proto field.
-func TestStackOutputsConformance_DetectsFlatSecretDrift(t *testing.T) {
+func TestOutputsConformance_DetectsFlatSecretDrift(t *testing.T) {
 	genericModuleDir := filepath.Join("testdata", "modules", "empty")
-	kind := cloudresourcekind.CloudResourceKind_KubernetesPostgres
+	kind := catalogkind.CatalogKind_KubernetesPostgres
 
 	flatDriftOutputs := map[string]interface{}{
 		"namespace":            "gosilver-prod",

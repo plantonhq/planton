@@ -33,10 +33,10 @@ var (
 	hubIdPattern       = regexp.MustCompile(`/resourceGroups/([^/]+)/providers/Microsoft\.EventHub/namespaces/([^/]+)/eventhubs/([^/]+)$`)
 )
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureeventhubauthorizationrulev1alpha1.AzureEventHubAuthorizationRuleStackInput) (*Locals, error) {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureeventhubauthorizationrulev1alpha1.AzureEventHubAuthorizationRuleIacInput) (*Locals, error) {
 	locals := &Locals{}
-	locals.AzureEventHubAuthorizationRule = stackInput.Target
-	spec := stackInput.Target.Spec
+	locals.AzureEventHubAuthorizationRule = iacInput.Target
+	spec := iacInput.Target.Spec
 
 	// Authorization rules carry no Azure tags: ARM does not support tags
 	// on Event Hubs entities, so the platform's identity tags live on the
@@ -67,7 +67,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureeventhubauthorizatio
 
 	default:
 		// Unreachable behind the spec's exactly-one-scope CEL; guards a
-		// stack input that bypassed validation.
+		// IaC input that bypassed validation.
 		return nil, errors.New("exactly one of namespace_id or event_hub_id must be set")
 	}
 

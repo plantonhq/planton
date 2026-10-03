@@ -27,7 +27,7 @@ func minimalValidProfile() *AwsEksFargateProfile {
 	return &AwsEksFargateProfile{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsEksFargateProfile",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "serverless",
 		},
 		Spec: &AwsEksFargateProfileSpec{

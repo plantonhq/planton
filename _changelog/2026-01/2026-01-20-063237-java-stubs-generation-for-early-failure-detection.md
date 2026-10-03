@@ -14,7 +14,7 @@ Protocol Buffer enum values and field names become identifiers in generated code
 
 ### The Incident
 
-The `AzureVirtualMachine` deployment component defined a `PublicIpAllocation` enum with these values:
+The `AzureVirtualMachine` catalog kind defined a `PublicIpAllocation` enum with these values:
 
 ```protobuf
 enum PublicIpAllocation {
@@ -174,7 +174,7 @@ if *spec.Network.PublicIpAllocation == azurevirtualmachinev1.AzureVirtualMachine
 
 ## Related Work
 
-- **Azure Virtual Machine Component**: The deployment component that triggered this enhancement
+- **Azure Virtual Machine Kind**: The catalog kind that triggered this enhancement
 - **Planton Monorepo Java Generation**: The downstream consumer that would have failed
 
 ---

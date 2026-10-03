@@ -158,7 +158,7 @@ func (setEventRenderer) NodeStarting(position, total int, node setdeploy.NodePla
 
 func (setEventRenderer) NodeSucceeded(node setdeploy.NodePlan, captured *outputs.CaptureResult) {
 	cliprint.PrintSuccess(fmt.Sprintf("%s deployed", node.Identity))
-	ui.StackOutputsSummary(captured)
+	ui.OutputsSummary(captured)
 }
 
 func (setEventRenderer) NodeWarning(node setdeploy.NodePlan, message string) {

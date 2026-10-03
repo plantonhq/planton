@@ -18,17 +18,17 @@ message AzureVpnGateway {
   string kind = 2 [(buf.validate.field).string.const = 'AzureVpnGateway'];
 
   // Standard Planton metadata (name, org, env, labels, tags).
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // VPN gateway specification.
   AzureVpnGatewaySpec spec = 4 [(buf.validate.field).required = true];
 
-  // Deployment status containing stack outputs. Populated after deployment.
+  // Deployment status containing outputs. Populated after deployment.
   AzureVpnGatewayStatus status = 5;
 }
 
 // AzureVpnGatewayStatus holds the deployment outputs.
 message AzureVpnGatewayStatus {
-  // Stack outputs from the IaC deployment.
-  AzureVpnGatewayStackOutputs outputs = 1;
+  // Outputs from the IaC deployment.
+  AzureVpnGatewayOutputs outputs = 1;
 }

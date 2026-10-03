@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpcomputemigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcomputemig/v1alpha1"
@@ -43,18 +43,18 @@ type Locals struct {
 	IsRegional bool
 
 	// Location is the group's zone or region — exported as the location
-	// stack output for scope-compatibility checks downstream.
+	// output for scope-compatibility checks downstream.
 	Location string
 }
 
-// initializeLocals fills the Locals struct from the incoming stack input.
-func initializeLocals(stackInput *gcpcomputemigv1alpha1.GcpComputeMigStackInput) *Locals {
+// initializeLocals fills the Locals struct from the incoming IaC input.
+func initializeLocals(iacInput *gcpcomputemigv1alpha1.GcpComputeMigIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.GcpComputeMig = stackInput.Target
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpComputeMig = iacInput.Target
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 
-	target := stackInput.Target
+	target := iacInput.Target
 
 	locals.MigName = target.Spec.MigName
 	if locals.MigName == "" {
@@ -98,7 +98,7 @@ func initializeLocals(stackInput *gcpcomputemigv1alpha1.GcpComputeMigStackInput)
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = strconv.FormatBool(true)
 	locals.GcpLabels[gcplabelkeys.ResourceName] = locals.MigName
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpComputeMig.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpComputeMig.String())
 
 	if target.Metadata.Id != "" {
 		locals.GcpLabels[gcplabelkeys.ResourceId] = target.Metadata.Id

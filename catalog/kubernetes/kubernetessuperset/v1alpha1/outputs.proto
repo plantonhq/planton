@@ -5,11 +5,11 @@ package dev.planton.kubernetes.kubernetessuperset.v1alpha1;
 import "catalog/kubernetes/kubernetes.proto";
 
 /**
- * **KubernetesSupersetStackOutputs** — the composition handles a
+ * **KubernetesSupersetOutputs** — the composition handles a
  * deployed Superset exports. Exposure kinds route to the service;
  * operators sign in with the exported admin credential.
  */
-message KubernetesSupersetStackOutputs {
+message KubernetesSupersetOutputs {
   // Namespace Superset runs in.
   string namespace = 1;
 

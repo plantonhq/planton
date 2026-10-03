@@ -37,15 +37,15 @@ type Locals struct {
 	AzureAdOptions *auth0connectionv1alpha1.Auth0AzureAdOptions
 }
 
-// initializeLocals creates and populates the Locals struct from stack input
-func initializeLocals(ctx *pulumi.Context, stackInput *auth0connectionv1alpha1.Auth0ConnectionStackInput) *Locals {
+// initializeLocals creates and populates the Locals struct from IaC input
+func initializeLocals(ctx *pulumi.Context, iacInput *auth0connectionv1alpha1.Auth0ConnectionIacInput) *Locals {
 	locals := &Locals{}
 
 	// Store the target resource
-	locals.Auth0Connection = stackInput.Target
+	locals.Auth0Connection = iacInput.Target
 
-	spec := stackInput.Target.Spec
-	metadata := stackInput.Target.Metadata
+	spec := iacInput.Target.Spec
+	metadata := iacInput.Target.Metadata
 
 	// Core configuration
 	locals.ConnectionName = metadata.Name

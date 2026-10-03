@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbudget.v1alpha1;
 
-// AwsBudgetStackOutputs captures the observable state of the budget
+// AwsBudgetOutputs captures the observable state of the budget
 // after apply.
-message AwsBudgetStackOutputs {
+message AwsBudgetOutputs {
   // The budget's name (with the account ID, the provider's import ID:
   // "account_id:budget_name").
   string budget_name = 1;

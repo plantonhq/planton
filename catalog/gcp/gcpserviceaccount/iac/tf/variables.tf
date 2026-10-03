@@ -1,5 +1,5 @@
 variable "metadata" {
-  description = "Cloud resource metadata"
+  description = "Catalog object metadata"
   type = object({
     name        = string
     id          = optional(string, "")
@@ -52,7 +52,7 @@ variable "spec" {
     # federation wherever the workload supports it). When present, a key is
     # created with the configured algorithm and formats, and the private key
     # (unless public_key_data supplies your own public key) is exported in
-    # stack outputs as `key_base64` — treat that output as a live credential.
+    # outputs as `key_base64` — treat that output as a live credential.
     user_managed_key = optional(object({
       # Algorithm used to generate the key:
       #   ""                  -- GCP default ("KEY_ALG_RSA_2048")
@@ -79,7 +79,7 @@ variable "spec" {
 
       # Your own public key (base64-encoded X.509 PEM) — the UPLOAD flow: the
       # matching private key never leaves your custody and GCP returns no
-      # private key material (the key_base64 stack output stays empty).
+      # private key material (the key_base64 output stays empty).
       # The strongest key posture when a user-managed key is unavoidable.
       public_key_data = optional(string, "")
 

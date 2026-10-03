@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 //
 // No identity-tag map here: the upstream token-vault-CMK resource
 // carries no tags argument (a settings singleton, not a taggable
@@ -19,7 +19,7 @@ type Locals struct {
 	TokenVaultId string
 }
 
-func initializeLocals(_ *pulumi.Context, in *awsbedrockagentcoretokenvaultv1alpha1.AwsBedrockAgentCoreTokenVaultStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, in *awsbedrockagentcoretokenvaultv1alpha1.AwsBedrockAgentCoreTokenVaultIacInput) *Locals {
 	locals := &Locals{}
 	locals.Target = in.Target
 	locals.Spec = in.Target.Spec

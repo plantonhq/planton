@@ -5,7 +5,7 @@ import (
 
 	azuredataprotectionbackupvaultv1alpha1 "github.com/plantonhq/planton/catalog/azure/azuredataprotectionbackupvault/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -31,11 +31,11 @@ var identityTypeWire = map[azuredataprotectionbackupvaultv1alpha1.AzureDataProte
 	azuredataprotectionbackupvaultv1alpha1.AzureDataProtectionBackupVaultIdentityType_SYSTEM_AND_USER_ASSIGNED: "SystemAssigned, UserAssigned",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuredataprotectionbackupvaultv1alpha1.AzureDataProtectionBackupVaultStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuredataprotectionbackupvaultv1alpha1.AzureDataProtectionBackupVaultIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureDataProtectionBackupVault = stackInput.Target
-	target := stackInput.Target
+	locals.AzureDataProtectionBackupVault = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -46,7 +46,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azuredataprotectionbackup
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureDataProtectionBackupVault.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureDataProtectionBackupVault.String()),
 	}
 
 	if target.Metadata.Id != "" {

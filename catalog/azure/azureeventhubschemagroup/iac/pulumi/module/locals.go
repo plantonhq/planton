@@ -25,11 +25,11 @@ var schemaTypeStrings = map[azureeventhubschemagroupv1alpha1.AzureEventHubSchema
 	azureeventhubschemagroupv1alpha1.AzureEventHubSchemaType_JSON: "Json",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureeventhubschemagroupv1alpha1.AzureEventHubSchemaGroupStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureeventhubschemagroupv1alpha1.AzureEventHubSchemaGroupIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureEventHubSchemaGroup = stackInput.Target
-	locals.NamespaceId = stackInput.Target.Spec.NamespaceId.GetValue()
+	locals.AzureEventHubSchemaGroup = iacInput.Target
+	locals.NamespaceId = iacInput.Target.Spec.NamespaceId.GetValue()
 
 	// Schema groups carry no Azure tags: ARM does not support tags on
 	// Event Hubs entities, so the platform's identity tags live on the

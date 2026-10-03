@@ -2,7 +2,7 @@
 
 Pulumi Go module for `GcpAlloydbInstance`. Enables `alloydb.googleapis.com`, then creates `alloydb.Instance` with the released-provider surface: machine config, read pools, query insights, client connection config, connection pooling, public IP arms, and PSC.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

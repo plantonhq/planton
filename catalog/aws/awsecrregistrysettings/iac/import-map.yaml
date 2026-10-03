@@ -1,7 +1,7 @@
 # Where each placeholder in this component's import-ID formats comes
 # from (the formats themselves live in aa_import/catalog.yaml).
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsecrregistrysettings
 spec:
@@ -11,7 +11,7 @@ spec:
   values:
     - name: registry_id
       derivations:
-        - from_stack_output: registry_id
+        - from_output: registry_id
       where_to_find: >-
         The account's 12-digit id - `aws ecr describe-registry`
         (registryId) or `aws sts get-caller-identity` (Account).

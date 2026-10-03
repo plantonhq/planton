@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpspannerdatabase.v1alpha1;
 
-// GcpSpannerDatabaseStackOutputs captures observable values produced after
+// GcpSpannerDatabaseOutputs captures observable values produced after
 // provisioning a Cloud Spanner database.
-message GcpSpannerDatabaseStackOutputs {
+message GcpSpannerDatabaseOutputs {
   // Fully qualified database ID.
   // Format: projects/{project}/instances/{instance}/databases/{database}
   // This is the canonical identifier used for IAM bindings, API calls,

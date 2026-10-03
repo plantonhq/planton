@@ -32,12 +32,12 @@ var certificateBindingTypeWireValues = map[string]string{
 //     The module ignores drift on the certificate fields in that flow ONLY
 //     -- applying the ignore unconditionally would swallow a legitimate
 //     certificate change on a bring-your-own binding.
-func Resources(ctx *pulumi.Context, stackInput *azurecontainerappcustomdomainv1alpha1.AzureContainerAppCustomDomainStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurecontainerappcustomdomainv1alpha1.AzureContainerAppCustomDomainIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}

@@ -51,11 +51,11 @@ Below is a consolidated, high-level set of action items drawn from all the discu
 ### C. Technical & App-Related Tasks
 
 1. **Feature Validation & QA**  
-   - Validate that all Chat-based resource deployments (e.g., AWS S3, DynamoDB, GCP storage) produce correct stack jobs and show real-time progress as expected.  
+   - Validate that all Chat-based resource deployments (e.g., AWS S3, DynamoDB, GCP storage) produce correct infra jobs and show real-time progress as expected.  
    - Check that resource-level chat and collaboration features are stable enough for recorded demos (fix any minor issues you see).
 
-2. **Coordinate Stack Job Summaries**  
-   - Work with Suresh to finalize how stack job summaries appear in the UI for “Auditable Intelligence” demos.  
+2. **Coordinate Infra Job Summaries**  
+   - Work with Suresh to finalize how infra job summaries appear in the UI for “Auditable Intelligence” demos.  
    - Ensure the version diff (unified diff, preview) is working for each scenario you want to demo.
 
 3. **Data Model / Resource Naming**  
@@ -74,7 +74,7 @@ Below is a consolidated, high-level set of action items drawn from all the discu
 1. **Implement or Refine Missing RPCs / API Calls**  
    - For the “Service Hub,” “Self-Service DevOps,” or “IAC Workflows,” implement (or fix) any needed RPCs for actions like:  
      - Creating new pulumi modules in the registry via Chat.  
-     - Accessing environment-level or org-level stack job configs.  
+     - Accessing environment-level or org-level infra job configs.  
      - Searching or discovering existing services.  
    - Coordinate with Swarup on which demo flows need these RPCs stable.
 
@@ -92,15 +92,15 @@ Below is a consolidated, high-level set of action items drawn from all the discu
 
 1. **Pre-Demo Dry Runs**  
    - Work with Swarup to do trial runs of each intended video scenario:
-     - *Provisioning cloud resources via chat.*  
+     - *Provisioning infra components via chat.*  
      - *Changing config or environment variables.*  
-     - *Viewing version history and stack job logs.*  
+     - *Viewing version history and infra job logs.*  
      - *Collaborative chat scenario.*  
    - Confirm that each step is bug-free, or fix minor issues to avoid disruptions during final recordings.
 
 2. **UI/UX Input**  
-   - Provide quick feedback to the UX Designer if certain new front-end features or data displays need changes (e.g., in stack job details or resource-level views).  
-   - Validate the console layout for each newly exposed function (e.g., environment-level credential config, custom stack job runners, etc.).
+   - Provide quick feedback to the UX Designer if certain new front-end features or data displays need changes (e.g., in infra job details or resource-level views).  
+   - Validate the console layout for each newly exposed function (e.g., environment-level credential config, custom infra job runners, etc.).
 
 ### C. Infrastructure & Security
 
@@ -124,7 +124,7 @@ Below is a consolidated, high-level set of action items drawn from all the discu
    - Maintain a consistent structure across pages (e.g., hero at top, problem statement/video, bullet features, CTA).
 
 2. **Add Placeholders for Videos**  
-   - Where Swarup plans to embed “problem statement” videos or “demo” videos, create a placeholder or a consistent “video thumbnail + text” component in Figma.  
+   - Where Swarup plans to embed “problem statement” videos or “demo” videos, create a placeholder or a consistent “video thumbnail + text” kind in Figma.  
    - Ensure the page design gracefully handles text + video combos, possibly with short “See Demo” buttons or embedded playing fields.
 
 3. **Screenshots & GIF Placement**  

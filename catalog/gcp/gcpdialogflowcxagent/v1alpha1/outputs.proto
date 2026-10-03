@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpdialogflowcxagent.v1alpha1;
 
-// GcpDialogflowCxAgentStackOutputs captures the identity Google assigned
+// GcpDialogflowCxAgentOutputs captures the identity Google assigned
 // the agent and the names of everything declared in it -- the names
 // console-authored flows, pages, and playbooks refer to.
-message GcpDialogflowCxAgentStackOutputs {
+message GcpDialogflowCxAgentOutputs {
   // Full resource name -- what a GcpVertexAiSearchEngine's
   // dialogflow_agent_to_link takes:
   // projects/{project}/locations/{location}/agents/{agent_id}.

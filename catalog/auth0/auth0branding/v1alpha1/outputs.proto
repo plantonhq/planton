@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.auth0.auth0branding.v1alpha1;
 
-// Auth0BrandingStackOutputs contains the branding as applied.
+// Auth0BrandingOutputs contains the branding as applied.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/branding_theme#attributes-reference
-message Auth0BrandingStackOutputs {
+message Auth0BrandingOutputs {
   // theme_id is the id of the theme the branding applied; empty when the spec
   // declares no theme.
   string theme_id = 1;

@@ -32,7 +32,7 @@ Issuance time belongs to the issuer — an ACME order can take minutes, an unrea
 - **`spec.issuer_ref`**: `cluster_issuer` / `issuer` / `external`
 - At least one requested name (any SAN type, common name, or literal subject)
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

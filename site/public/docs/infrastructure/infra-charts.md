@@ -1,7 +1,7 @@
 ---
 title: "Infra Charts"
 sidebar_title: "Charts"
-description: "Reusable infrastructure templates that bundle multiple Cloud Resources into parameterized, dependency-aware packages you deploy with one command."
+description: "Reusable infrastructure templates that bundle multiple Infra Components into parameterized, dependency-aware packages you deploy with one command."
 icon: infrastructure
 order: 35
 tags:
@@ -14,9 +14,9 @@ tags:
 
 Deploying a production-ready environment on AWS typically involves ten or more interdependent resources: a VPC with subnets across multiple availability zones, NAT gateways, security groups, an Application Load Balancer with SSL termination, Route 53 DNS records, an ACM certificate, an ECS cluster with Fargate capacity, an ECR repository, and IAM roles. Getting the dependencies wrong — deploying the ALB before the VPC exists — produces cryptic errors or partial failures. Repeating this process for every new environment is time-consuming, error-prone, and inconsistent across teams.
 
-Infra Charts solve this by packaging related Cloud Resources into a single, parameterized template. You provide a handful of values — domain name, region, availability zones — and the chart handles everything else: resource definitions, dependency ordering, and configuration wiring. What would take hours of manual work becomes a single command.
+Infra Charts solve this by packaging related Infra Components into a single, parameterized template. You provide a handful of values — domain name, region, availability zones — and the chart handles everything else: resource definitions, dependency ordering, and configuration wiring. What would take hours of manual work becomes a single command.
 
-An Infra Chart is a blueprint, not a deployment. Creating or selecting a chart does not provision infrastructure. When you are ready to deploy, you create an [Infra Project](/docs/infrastructure/infra-projects) — a configured instance of the chart with your specific values — which triggers an [Infra Pipeline](/docs/infrastructure/infra-pipelines) that orchestrates the deployment of all resources in the correct order.
+An Infra Chart is a blueprint, not a deployment. Creating or selecting a chart does not provision infrastructure. When you are ready to deploy, you create an [Infra Stack](/docs/infrastructure/infra-stacks) — a configured instance of the chart with your specific values — which triggers an [Infra Pipeline](/docs/infrastructure/infra-pipelines) that orchestrates the deployment of all resources in the correct order.
 
 ## Why Infra Charts Exist
 
@@ -42,7 +42,7 @@ Every Infra Chart is a directory with three components, following a structure si
 aws/ecs-environment/
 ├── Chart.yaml        # Metadata (name, description, links)
 ├── values.yaml       # Parameters with defaults
-└── templates/        # Cloud Resource definitions with placeholders
+└── templates/        # Infra Component definitions with placeholders
     ├── network.yaml
     ├── ecs-cluster.yaml
     └── iam-role.yaml
@@ -50,9 +50,9 @@ aws/ecs-environment/
 
 **Chart.yaml** identifies the chart and provides metadata for discovery — name, description, icon, and links to documentation. Charts are scoped to a level of ownership: platform-level charts are available globally, organization-level charts are available to all environments in that organization.
 
-**values.yaml** declares the configurable inputs. Each parameter has a name, type, description, and optional default value. Parameters appear as form fields in the web console when creating an Infra Project from the chart.
+**values.yaml** declares the configurable inputs. Each parameter has a name, type, description, and optional default value. Parameters appear as form fields in the web console when creating an Infra Stack from the chart.
 
-**templates/** contains one or more YAML files defining Cloud Resource manifests. Templates use Jinjava syntax for variable substitution and conditionals, and declare dependencies between resources so the platform knows what order to deploy them in.
+**templates/** contains one or more YAML files defining catalog object manifests. Templates use Jinjava syntax for variable substitution and conditionals, and declare dependencies between resources so the platform knows what order to deploy them in.
 
 ## Templating with Jinjava
 
@@ -146,19 +146,19 @@ Common customizations include enforcing tagging policies, requiring HTTPS in pro
   Alt: Infra Chart list showing platform-provided and custom charts with descriptions
 -->
 
-## Charts vs. Direct Cloud Resources
+## Charts vs. Direct Infra Components
 
-Planton supports both deploying individual Cloud Resources and deploying bundled charts. Choose based on the situation:
+Planton supports both deploying individual Infra Components and deploying bundled charts. Choose based on the situation:
 
 | Scenario | Recommended Approach |
 |----------|---------------------|
 | Complete environment (dev, staging, production) | Infra Chart — coordinated deployment with dependency handling |
-| Single resource (one S3 bucket, one DNS record) | Direct Cloud Resource — no orchestration overhead |
+| Single resource (one S3 bucket, one DNS record) | Direct Infra Component — no orchestration overhead |
 | Standardized patterns across teams | Infra Chart — encode best practices in templates |
-| Quick experiments | Direct Cloud Resource — fast iteration, easy to delete |
+| Quick experiments | Direct Infra Component — fast iteration, easy to delete |
 | Complex multi-resource dependencies | Infra Chart — automatic DAG-based ordering |
 
-You can start with a chart for initial deployment, then manage individual Cloud Resources afterward for incremental changes.
+You can start with a chart for initial deployment, then manage individual Infra Components afterward for incremental changes.
 
 ## Using the CLI
 
@@ -171,7 +171,7 @@ planton explain infra-chart
 # Drill into one field with a dotted path of the exact YAML keys
 planton explain aws-vpc.spec.instanceTenancy
 
-# List every kind the CLI can explain (platform APIs + cloud resource kinds)
+# List every kind the CLI can explain (platform APIs + catalog kinds)
 planton explain --list
 
 # Build a chart from a local directory (renders and validates, reports issues)
@@ -200,11 +200,11 @@ planton chart list
 # See exactly what an install would apply, and create nothing
 planton chart install my-project ./my-chart -f values-prod.yaml --dry-run
 
-# Create an Infra Project from a chart (deploys immediately)
+# Create an Infra Stack from a chart (deploys immediately)
 planton chart install my-project ./my-chart -f values-prod.yaml
 ```
 
-The `chart install` command is the primary entry point for deploying a chart. It creates an Infra Project with the provided parameter values and automatically triggers an Infra Pipeline.
+The `chart install` command is the primary entry point for deploying a chart. It creates an Infra Stack with the provided parameter values and automatically triggers an Infra Pipeline.
 
 ### How parameter values resolve
 
@@ -225,8 +225,8 @@ A name the chart does not declare is refused with the list of the chart's parame
 
 ## Related Documentation
 
-- [Cloud Resources](/docs/infrastructure/cloud-resources) — The individual resources that charts compose
-- [Cloud Resource Kinds](/docs/infrastructure/cloud-resource-kinds) — The catalog of resource types available in charts
-- [Infra Projects](/docs/infrastructure/infra-projects) — Running instances of Infra Charts
+- [Infra Components](/docs/infrastructure/infra-components) — The individual resources that charts compose
+- [Catalog Kinds](/docs/infrastructure/catalog-kinds) — The catalog of resource types available in charts
+- [Infra Stacks](/docs/infrastructure/infra-stacks) — Running instances of Infra Charts
 - [Infra Pipelines](/docs/infrastructure/infra-pipelines) — How chart deployments are orchestrated
 - [Open Source](/docs/infrastructure/open-source) — The open-source foundation that provides resource APIs and cross-resource dependencies

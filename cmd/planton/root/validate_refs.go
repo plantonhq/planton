@@ -15,7 +15,7 @@ import (
 var ValidateRefs = &cobra.Command{
 	Use:   "validate-refs",
 	Short: "Validate that every foreign-key reference resolves to a real field on the referenced kind",
-	Long: `Walk every production cloud-resource kind and check each field annotated with
+	Long: `Walk every production catalog kind and check each field annotated with
 (dev.planton.shared.foreignkey.v1.default_kind_field_path): the path must resolve
 against the referenced kind's resolved target -- its status.outputs message for
 "status.outputs.*" paths, or its spec for "spec.*" paths.

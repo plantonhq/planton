@@ -16,7 +16,7 @@ message KubernetesOtelCollector {
   string kind = 2 [(buf.validate.field).string.const = 'KubernetesOtelCollector'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   KubernetesOtelCollectorSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,6 +27,6 @@ message KubernetesOtelCollector {
 
 //otel-collector-kubernetes status.
 message KubernetesOtelCollectorStatus {
-  //stack-outputs
-  KubernetesOtelCollectorStackOutputs outputs = 1;
+  //outputs
+  KubernetesOtelCollectorOutputs outputs = 1;
 }

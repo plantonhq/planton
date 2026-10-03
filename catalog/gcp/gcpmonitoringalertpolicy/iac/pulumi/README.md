@@ -26,7 +26,7 @@ iac/pulumi/
     ├── main.go                # Module coordinator
     ├── alert_policy.go        # Policy creation + condition/strategy expansion
     ├── locals.go              # Resolved resource + derived values
-    └── outputs.go             # Stack output constants
+    └── outputs.go             # Output constants
 ```
 
 ## Quick Start
@@ -36,7 +36,7 @@ cd iac/pulumi
 pulumi stack init dev
 ```
 
-Provide a `stack-input.yaml`:
+Provide a `iac-input.yaml`:
 
 ```yaml
 target:
@@ -68,7 +68,7 @@ pulumi up
 
 ## Inputs
 
-The module consumes `GcpMonitoringAlertPolicyStackInput`:
+The module consumes `GcpMonitoringAlertPolicyIacInput`:
 
 | Field | Required | Description |
 |-------|----------|-------------|

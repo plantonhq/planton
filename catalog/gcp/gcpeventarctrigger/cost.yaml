@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: gcpeventarctrigger
 spec:
@@ -28,7 +28,7 @@ spec:
       impact: Unset keeps Eventarc's default retries -- every redelivery of a failing event moves transport bytes again; setting 1 (the only accepted value) disables retries, trading redelivery cost and pressure for at-most-once delivery.
     - field_path: google_channel_crypto_key
       sku_meter: Cloud KMS key operations
-      impact: CMEK on the project/location's shared Google channel routes its encrypt/decrypt operations through the named key -- key-version storage and per-operation charges bill on the GcpKmsKey component's project.
+      impact: CMEK on the project/location's shared Google channel routes its encrypt/decrypt operations through the named key -- key-version storage and per-operation charges bill on the GcpKmsKey kind's project.
   estimate_exclusions:
     - an idle trigger bills nothing -- Eventarc Standard's meter counts published events, and Google-source and Pub/Sub-source events publish at $0 per million anyway (first 50,000 chargeable events per month free)
     - the Pub/Sub transport layer bills at standard Pub/Sub rates as events flow -- Google's pricing examples show it as the dominant real cost

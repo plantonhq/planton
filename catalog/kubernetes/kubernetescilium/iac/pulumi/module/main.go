@@ -17,17 +17,17 @@ import (
 // The release name is FIXED ("cilium"): Cilium is the node dataplane — the
 // agent DaemonSet, operator, and generated CNI configuration are cluster
 // singletons, so one dataplane per cluster is an upstream constraint.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesciliumv1alpha1.KubernetesCiliumStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesciliumv1alpha1.KubernetesCiliumIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

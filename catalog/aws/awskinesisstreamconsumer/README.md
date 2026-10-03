@@ -37,7 +37,7 @@ Use an AwsKinesisStreamConsumer when you need:
 
 The consumer name is derived from `metadata.name` and cannot be changed after creation (ForceNew).
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

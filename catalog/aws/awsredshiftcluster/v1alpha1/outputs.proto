@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsredshiftcluster.v1alpha1;
 
-// AwsRedshiftClusterStackOutputs captures the observable identifiers and
+// AwsRedshiftClusterOutputs captures the observable identifiers and
 // connection endpoints of the Redshift cluster after deployment.
-message AwsRedshiftClusterStackOutputs {
+message AwsRedshiftClusterOutputs {
   // The cluster identifier (e.g. "analytics-warehouse").
   string cluster_identifier = 1;
 

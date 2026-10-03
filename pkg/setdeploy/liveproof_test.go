@@ -38,7 +38,7 @@ func TestLiveProof_TwoNodeSetDeploysThroughTofu(t *testing.T) {
 	if err != nil {
 		t.Fatalf("resolving repo root: %v", err)
 	}
-	moduleDir := filepath.Join(repoRoot, "catalog", "_test", "testcloudresourcegeneric", "iac", "tf")
+	moduleDir := filepath.Join(repoRoot, "catalog", "_test", "testcatalogkindgeneric", "iac", "tf")
 	if _, err := os.Stat(filepath.Join(moduleDir, "main.tf")); err != nil {
 		t.Fatalf("the _test kind's tofu module is missing at %s: %v", moduleDir, err)
 	}
@@ -70,7 +70,7 @@ func TestLiveProof_TwoNodeSetDeploysThroughTofu(t *testing.T) {
 	}
 
 	// The producer's REAL captured outputs fed the consumer: its id output is
-	// deterministic ("tcrg-" + name), so the capture path is provable.
+	// deterministic ("tckg-" + name), so the capture path is provable.
 	producerID := plan.Set.Nodes[plan.Order[0]].Identity
 	captured := result.Outputs[producerID]
 	if captured == nil || captured.Flat["id"] != "tcrg-producer" {
@@ -94,7 +94,7 @@ func TestLiveProof_TwoNodeSetDeploysThroughTofu(t *testing.T) {
 	// The workspaces are stable and identity-keyed — local state lives where
 	// the report said it does.
 	home, _ := os.UserHomeDir()
-	stateFile := filepath.Join(home, ".planton", "setdeploy", "dev", "testcloudresourcegeneric", "producer", "terraform.tfstate")
+	stateFile := filepath.Join(home, ".planton", "setdeploy", "dev", "testcatalogkindgeneric", "producer", "terraform.tfstate")
 	if _, err := os.Stat(stateFile); err != nil {
 		t.Fatalf("the producer's local state must persist in its identity-keyed workspace: %v", err)
 	}

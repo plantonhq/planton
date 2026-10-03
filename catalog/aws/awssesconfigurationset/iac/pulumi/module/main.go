@@ -8,10 +8,10 @@ import (
 )
 
 // Resources creates the SES configuration set, its event destinations, and exports outputs.
-func Resources(ctx *pulumi.Context, stackInput *awssesconfigurationsetv1alpha1.AwsSesConfigurationSetStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awssesconfigurationsetv1alpha1.AwsSesConfigurationSetIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsSesConfigurationSet.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsSesConfigurationSet.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

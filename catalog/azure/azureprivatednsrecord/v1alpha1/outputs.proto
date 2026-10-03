@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azureprivatednsrecord.v1alpha1;
 
-// **AzurePrivateDnsRecordStackOutputs** captures the outputs from
+// **AzurePrivateDnsRecordOutputs** captures the outputs from
 // provisioning an Azure Private DNS record set.
-message AzurePrivateDnsRecordStackOutputs {
+message AzurePrivateDnsRecordOutputs {
   // The Azure Resource Manager ID of the record set.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/privateDnsZones/{zone}/{TYPE}/{name}
   // where {TYPE} is the record type (A, AAAA, CNAME, MX, PTR, SRV, TXT).

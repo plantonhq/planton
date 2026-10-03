@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1;
 
-// AwsFsxOntapStorageVirtualMachineStackOutputs captures observable identifiers
+// AwsFsxOntapStorageVirtualMachineOutputs captures observable identifiers
 // and endpoints from a provisioned FSx for ONTAP Storage Virtual Machine. These
 // outputs are used by downstream resources to wire dependencies via
 // StringValueOrRef.
@@ -14,7 +14,7 @@ package dev.planton.aws.awsfsxontapstoragevirtualmachine.v1alpha1;
 // - SMB clients: needs `smb_dns_name` for UNC paths (requires AD)
 // - iSCSI initiators: needs `iscsi_dns_name` for target discovery
 // - SVM administration: needs `management_dns_name` for ONTAP CLI access
-message AwsFsxOntapStorageVirtualMachineStackOutputs {
+message AwsFsxOntapStorageVirtualMachineOutputs {
   // The ID of the SVM (e.g., "svm-0123456789abcdef0"). Primary identifier
   // used by ONTAP volumes and other AWS services referencing this SVM.
   string svm_id = 1;

@@ -5,7 +5,7 @@ import (
 
 	azuretrafficmanagerprofilev1alpha1 "github.com/plantonhq/planton/catalog/azure/azuretrafficmanagerprofile/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -23,11 +23,11 @@ type Locals struct {
 	AzureTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuretrafficmanagerprofilev1alpha1.AzureTrafficManagerProfileStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuretrafficmanagerprofilev1alpha1.AzureTrafficManagerProfileIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureTrafficManagerProfile = stackInput.Target
-	target := stackInput.Target
+	locals.AzureTrafficManagerProfile = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -38,7 +38,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azuretrafficmanagerprofil
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureTrafficManagerProfile.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureTrafficManagerProfile.String()),
 	}
 
 	if target.Metadata.Id != "" {

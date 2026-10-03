@@ -12,13 +12,13 @@ import (
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/internal/cli/cliprint"
 	"github.com/plantonhq/planton/internal/manifest"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/failure"
+	"github.com/plantonhq/planton/pkg/iac/iacinput"
+	"github.com/plantonhq/planton/pkg/iac/iacinput/iacinputproviderconfig"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/backendconfig"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule"
-	pulumimodulestackinput "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/stackinput"
-	"github.com/plantonhq/planton/pkg/iac/stackinput"
-	"github.com/plantonhq/planton/pkg/iac/stackinput/stackinputproviderconfig"
+	pulumimoduleiacinput "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/iacinput"
 	"github.com/plantonhq/planton/pkg/kubernetes/execcredential"
 	"github.com/plantonhq/planton/pkg/kubernetes/kubeconfig"
 	"github.com/plantonhq/planton/shared/iac/pulumi"
@@ -28,7 +28,7 @@ import (
 
 func Run(moduleDir, stackFqdn, targetManifestPath string, pulumiOperation pulumi.PulumiOperationType,
 	isUpdatePreview bool, isAutoApprove bool, valueOverrides map[string]string, showDiff bool, moduleVersion string, noCleanup bool,
-	kubeContext string, stackInputFilePath string, providerConfig *stackinputproviderconfig.ProviderConfig,
+	kubeContext string, iacInputFilePath string, providerConfig *iacinputproviderconfig.ProviderConfig,
 	opts ...RunOption) error {
 	var cfg runConfig
 	for _, opt := range opts {
@@ -69,7 +69,7 @@ func Run(moduleDir, stackFqdn, targetManifestPath string, pulumiOperation pulumi
 		fmt.Printf("Backend URL (%s): %s\n", backendUrlSource, cyan(backendUrl))
 	}
 
-	kindName, err := crkreflect.ExtractKindFromProto(manifestObject)
+	kindName, err := catalogkindreflect.ExtractKindFromProto(manifestObject)
 	if err != nil {
 		return errors.Wrapf(err, "failed to extract kind name from manifest proto")
 	}
@@ -95,24 +95,24 @@ func Run(moduleDir, stackFqdn, targetManifestPath string, pulumiOperation pulumi
 		return errors.Wrapf(err, "failed to extract project name from %s stack fqdn", finalStackFqdn)
 	}
 
-	// Determine stack input file path:
-	// - If user provided --stack-input flag, use that file directly
-	// - Otherwise, build stack input from manifest and write to temp file
-	var finalStackInputFilePath string
-	if stackInputFilePath != "" {
-		// User provided a pre-built stack input file
-		finalStackInputFilePath = stackInputFilePath
+	// Determine IaC input file path:
+	// - If user provided --iac-input flag, use that file directly
+	// - Otherwise, build IaC input from manifest and write to temp file
+	var finalIacInputFilePath string
+	if iacInputFilePath != "" {
+		// User provided a pre-built IaC input file
+		finalIacInputFilePath = iacInputFilePath
 	} else {
-		// Build stack input from manifest
-		stackInputYamlContent, err := stackinput.BuildStackInputYaml(manifestObject, providerConfig)
+		// Build IaC input from manifest
+		iacInputYamlContent, err := iacinput.BuildIacInputYaml(manifestObject, providerConfig)
 		if err != nil {
-			return errors.Wrap(err, "failed to build stack input yaml")
+			return errors.Wrap(err, "failed to build IaC input yaml")
 		}
 
-		// Write stack input to file (avoids env var size limits for large manifests)
-		finalStackInputFilePath = filepath.Join(pulumiModuleRepoPath, "stack-input.yaml")
-		if err := os.WriteFile(finalStackInputFilePath, []byte(stackInputYamlContent), 0600); err != nil {
-			return errors.Wrap(err, "failed to write stack input file")
+		// Write IaC input to file (avoids env var size limits for large manifests)
+		finalIacInputFilePath = filepath.Join(pulumiModuleRepoPath, "iac-input.yaml")
+		if err := os.WriteFile(finalIacInputFilePath, []byte(iacInputYamlContent), 0600); err != nil {
+			return errors.Wrap(err, "failed to write IaC input file")
 		}
 	}
 
@@ -159,12 +159,12 @@ func Run(moduleDir, stackFqdn, targetManifestPath string, pulumiOperation pulumi
 
 	// extraEnv is shared between the operation itself and the post-update
 	// output reads, so capture sees exactly the backend the update used.
-	extraEnv := []string{pulumimodulestackinput.FilePathEnvVar + "=" + finalStackInputFilePath}
+	extraEnv := []string{pulumimoduleiacinput.FilePathEnvVar + "=" + finalIacInputFilePath}
 	if op == "destroy" {
 		// The program runs during destroy only for its delete hooks; it must
 		// know that, so steps that can fail for reasons unrelated to what is
 		// being deleted stand aside (see OperationEnvVar).
-		extraEnv = append(extraEnv, pulumimodulestackinput.OperationEnvVar+"="+pulumimodulestackinput.OperationDestroy)
+		extraEnv = append(extraEnv, pulumimoduleiacinput.OperationEnvVar+"="+pulumimoduleiacinput.OperationDestroy)
 	}
 	if backendUrl != "" {
 		extraEnv = append(extraEnv, "PULUMI_BACKEND_URL="+backendUrl)
@@ -234,7 +234,7 @@ func Run(moduleDir, stackFqdn, targetManifestPath string, pulumiOperation pulumi
 			extraEnv, cfg.captureSink); captureErr != nil {
 			// The update already succeeded; a capture failure must not turn a
 			// deployed stack into a failed command. Report and move on.
-			log.Warnf("stack outputs could not be captured after update: %v", captureErr)
+			log.Warnf("outputs could not be captured after update: %v", captureErr)
 		}
 	}
 

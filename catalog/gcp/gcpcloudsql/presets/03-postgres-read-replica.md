@@ -32,6 +32,6 @@ This preset attaches a read replica to an existing PostgreSQL primary. A replica
 
 - **01-postgres-production-private** — the primary this replica pairs with
 
-## Related Components
+## Related Kinds
 
 - [GcpCloudSqlUser](/docs/catalog/gcp/gcpcloudsqluser) — users are instance-scoped; replicas inherit users from the primary

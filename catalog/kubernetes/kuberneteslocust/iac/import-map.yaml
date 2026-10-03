@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kuberneteslocust
 spec:
@@ -25,14 +25,14 @@ spec:
         the resource's name.
     - name: release_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `helm list -A` (NAMESPACE column).
     # ── the optional anchor namespace ──────────────────────────────────
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Only imported when create_namespace is true; the installation
@@ -49,7 +49,7 @@ spec:
     - name: config_map_namespace
       tofu_resource_name: locustfile
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
@@ -64,7 +64,7 @@ spec:
     - name: config_map_namespace
       tofu_resource_name: lib
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
@@ -80,7 +80,7 @@ spec:
     - name: config_map_namespace
       tofu_resource_name: web_auth_code
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
@@ -97,7 +97,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: auth
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.

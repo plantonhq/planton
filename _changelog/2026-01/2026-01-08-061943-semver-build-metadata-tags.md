@@ -6,7 +6,7 @@
 
 ## Summary
 
-Migrated all auto-release tag formats from invalid or inconsistent patterns to valid semver build metadata format (`+`). This fixes GoReleaser failures for CLI releases and unifies the tagging convention across all component types.
+Migrated all auto-release tag formats from invalid or inconsistent patterns to valid semver build metadata format (`+`). This fixes GoReleaser failures for CLI releases and unifies the tagging convention across all kind types.
 
 ## Problem Statement / Motivation
 
@@ -22,9 +22,9 @@ The tag `v0.3.2.20260107.1` has 5 dot-separated segments, but semver only allows
 
 ### Inconsistent Patterns
 
-Before this change, each component type used a different tagging convention:
+Before this change, each kind used a different tagging convention:
 
-| Component | Before | Valid Semver? |
+| Kind | Before | Valid Semver? |
 |-----------|--------|---------------|
 | CLI | `v0.3.2.20260107.1` | No (5 segments) |
 | App | `v0.3.2-app-20260107.1` | Yes (pre-release) |
@@ -41,7 +41,7 @@ While the `-` pre-release format was technically valid, it was semantically inco
 Adopted the semver build metadata format (`+`) for all auto-release tags:
 
 ```
-v{MAJOR}.{MINOR}.{PATCH}+{component}.{YYYYMMDD}.{N}
+v{MAJOR}.{MINOR}.{PATCH}+{kind}.{YYYYMMDD}.{N}
 ```
 
 Build metadata is the correct semantic for auto-releases because:
@@ -51,7 +51,7 @@ Build metadata is the correct semantic for auto-releases because:
 
 ### New Tag Formats
 
-| Component | Before | After |
+| Kind | Before | After |
 |-----------|--------|-------|
 | CLI | `v0.3.2.20260107.1` | `v0.3.2+cli.20260107.1` |
 | App | `v0.3.2-app-20260107.1` | `v0.3.2+app.20260107.1` |
@@ -65,7 +65,7 @@ Build metadata is the correct semantic for auto-releases because:
 
 | File | Changes |
 |------|---------|
-| `.github/workflows/auto-release.yaml` | Updated tag generation for all 5 components |
+| `.github/workflows/auto-release.yaml` | Updated tag generation for all 5 kinds |
 | `.github/workflows/auto-release.cli.yaml` | Updated header comments |
 | `.github/workflows/auto-release.app.yaml` | Updated header comments and examples |
 | `.github/workflows/auto-release.website.yaml` | Updated header comments and examples |
@@ -86,10 +86,10 @@ CLI_PREFIX="${LATEST_SEMVER}+cli.${TODAY}"
 **Pulumi** (in `auto-release.yaml` and `auto-release.pulumi-modules.yaml`):
 ```bash
 # Before
-TAG_PREFIX="${LATEST_SEMVER}-pulumi-${COMPONENT}-${TODAY}"
+TAG_PREFIX="${LATEST_SEMVER}-pulumi-${KIND}-${TODAY}"
 
 # After
-TAG_PREFIX="${LATEST_SEMVER}+pulumi.${COMPONENT}.${TODAY}"
+TAG_PREFIX="${LATEST_SEMVER}+pulumi.${KIND}.${TODAY}"
 ```
 
 ## Benefits
@@ -108,7 +108,7 @@ TAG_PREFIX="${LATEST_SEMVER}+pulumi.${COMPONENT}.${TODAY}"
 
 ### Consistent Format
 
-- Same pattern (`v{semver}+{type}.{details}.{date}.{seq}`) across all components
+- Same pattern (`v{semver}+{type}.{details}.{date}.{seq}`) across all kinds
 - Tags = Release names (exact match, no transformation)
 - Easy filtering: `git tag -l 'v0.3.2+*'` shows all auto-releases for v0.3.2
 

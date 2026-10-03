@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1;
 
-// GcpFirebaseAndroidAppStackOutputs captures the app registration's
+// GcpFirebaseAndroidAppOutputs captures the app registration's
 // identity and the configuration file the Android build consumes.
 //
 // None of these values is a secret. The app id and the API key are CLIENT
@@ -10,7 +10,7 @@ package dev.planton.gcp.gcpfirebaseandroidapp.v1alpha1;
 // google-services.json is the file that carries them into the build. Access
 // to the project's backends is governed by IAM, Firebase Security Rules,
 // and App Check -- never by keeping these values hidden.
-message GcpFirebaseAndroidAppStackOutputs {
+message GcpFirebaseAndroidAppOutputs {
   // The Firebase-assigned app id (mobilesdk_app_id in
   // google-services.json), e.g. 1:123456789012:android:0123456789abcdef.
   // Globally unique and immutable.

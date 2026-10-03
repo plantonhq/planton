@@ -11,7 +11,7 @@ Use `GcpVertexAiDeployedIndex` when you need:
 - Predictable IP-space placement on a peered VPC (deployment groups + reserved ranges)
 - JWT authentication on private query endpoints
 
-## What This Component Creates
+## What This Kind Creates
 
 This component deploys one index onto one index endpoint. The index and the endpoint are separate resources -- both must exist first (the spec references them by their fully qualified resource paths).
 

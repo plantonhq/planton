@@ -9,9 +9,9 @@
 # count, so they ride as exclusions. The estimate generator replays the
 # catalog presets through these rules; a server-side estimator
 # evaluates the same rules against live manifests.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: azurevirtualnetworkgateway
 spec:
@@ -47,13 +47,13 @@ spec:
           op: is_set
       text: point-to-site connections beyond the included 128 bill per connection-hour and follow client behavior
     - text: egress data transfer bills at standard rates and follows traffic (same-region VNet-to-VNet traffic through the gateway is free in both directions)
-    - text: the referenced public IPs and the GatewaySubnet's virtual network are first-class components billing on their own lines
+    - text: the referenced public IPs and the GatewaySubnet's virtual network are first-class kinds billing on their own lines
   notes:
     - applies_when:
         - field_path: active_active
           op: equals
           value: "true"
-      text: Active-active adds no gateway spend -- Microsoft bills one SKU rate however many instances are live; only the second public IP adds a line, on its own component.
+      text: Active-active adds no gateway spend -- Microsoft bills one SKU rate however many instances are live; only the second public IP adds a line, on its own kind.
     - applies_when:
         - field_path: nat_rules
           op: is_set

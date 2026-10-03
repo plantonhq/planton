@@ -11,9 +11,9 @@ baseline every workload builds on), `secure-static-website` (a private S3
 origin behind CloudFront with Origin Access Control, ACM TLS, Route 53, and
 an optional managed-rules WAF), and `aurora-postgres` (production Aurora
 PostgreSQL with Serverless v2 capacity and a managed master password). Each
-was composed first-principles from the current component specs, validates
+was composed first-principles from the current kind specs, validates
 offline across every toggle variant, and ships with richly-commented
-templates and component-docs-grade READMEs. The chart forge rule gained a
+templates and kind-docs-grade READMEs. The chart forge rule gained a
 renderer-mechanics section codifying the template patterns these charts
 established.
 
@@ -148,7 +148,7 @@ rediscovering them.
 
 - The chart catalog clean-slate and the two state-backend specials
   (`2026-07-10-105115-aws-infra-chart-catalog-clean-slate-and-state-backend-specials.md`).
-- The AWS component rebuilds these charts compose (VPC/subnet/NAT/endpoint,
+- The AWS kind rebuilds these charts compose (VPC/subnet/NAT/endpoint,
   S3/CloudFront/ACM/Route 53/WAF, RDS cluster and security group
   changelogs throughout 2026-07).
 

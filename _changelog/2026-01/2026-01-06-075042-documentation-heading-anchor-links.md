@@ -20,7 +20,7 @@ Users couldn't easily share links to specific documentation sections. There was 
 
 ## Solution
 
-Created a reusable `HeadingWithAnchor` component that wraps all markdown headings with anchor link functionality.
+Created a reusable `HeadingWithAnchor` kind that wraps all markdown headings with anchor link functionality.
 
 ### Behavior
 
@@ -33,13 +33,13 @@ Created a reusable `HeadingWithAnchor` component that wraps all markdown heading
 
 ## Implementation Details
 
-### New Component
+### New Kind
 
 **File**: `src/components/docs/HeadingWithAnchor.tsx`
 
 ```tsx
 // Key features:
-- LinkIcon and CheckIcon SVG components
+- LinkIcon and CheckIcon SVG kinds
 - useState for copied state with auto-reset timer
 - scroll-mt-24 for fixed header offset (96px)
 - Group hover pattern for icon visibility
@@ -49,7 +49,7 @@ Created a reusable `HeadingWithAnchor` component that wraps all markdown heading
 
 **File**: `src/lib/MDXRenderer.tsx`
 
-Replaced inline heading components with `HeadingWithAnchor`:
+Replaced inline heading kinds with `HeadingWithAnchor`:
 
 ```tsx
 h2: ({ children }) => (
@@ -103,8 +103,8 @@ if (item.startsWith('.') || item.startsWith('_')) {
 
 | File | Change |
 |------|--------|
-| `src/components/docs/HeadingWithAnchor.tsx` | Created - anchor link component |
-| `src/components/docs/index.ts` | Created - component exports |
+| `src/components/docs/HeadingWithAnchor.tsx` | Created - anchor link kind |
+| `src/components/docs/index.ts` | Created - kind exports |
 | `src/lib/MDXRenderer.tsx` | Modified - use HeadingWithAnchor for h1-h6 |
 | `src/app/(root)/docs/utils/fileSystem.ts` | Modified - exclude `_` prefixed dirs |
 | `public/docs/_rules/general-planton-ai-docs-guidelines.mdc` | Created - doc guidelines |

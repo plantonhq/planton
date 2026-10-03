@@ -5,9 +5,9 @@ package dev.planton.aws.awsbedrockknowledgebase.v1alpha1;
 import "catalog/aws/awsbedrockknowledgebase/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsBedrockKnowledgeBaseStackInput is the input for the IaC modules that
+// AwsBedrockKnowledgeBaseIacInput is the input for the IaC modules that
 // deploy the Bedrock knowledge base.
-message AwsBedrockKnowledgeBaseStackInput {
+message AwsBedrockKnowledgeBaseIacInput {
   // target is the AwsBedrockKnowledgeBase resource to deploy.
   AwsBedrockKnowledgeBase target = 1;
   // provider_config contains the AWS provider credentials and configuration.

@@ -1,4 +1,4 @@
-# AwsSsmMaintenanceWindow — Component Guide
+# AwsSsmMaintenanceWindow — Kind Guide
 
 Authored operational judgment for the maintenance window component:
 the design decisions behind the spec's shape, and what to know before

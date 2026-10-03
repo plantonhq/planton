@@ -2,7 +2,7 @@ package manifestprojection
 
 import (
 	"github.com/plantonhq/planton/pkg/refannotations"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/plantonhq/planton/shared/options"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -36,7 +36,7 @@ func EnvelopeOf(spec protoreflect.MessageDescriptor) Envelope {
 	fields := spec.Fields()
 	for i := 0; i < fields.Len(); i++ {
 		fd := fields.Get(i)
-		if refannotations.Of(fd).DefaultKind == cloudresourcekind.CloudResourceKind_KubernetesNamespace {
+		if refannotations.Of(fd).DefaultKind == catalogkind.CatalogKind_KubernetesNamespace {
 			e.NamespaceKey = fd.JSONName()
 			continue
 		}

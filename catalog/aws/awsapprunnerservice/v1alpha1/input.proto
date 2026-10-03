@@ -5,9 +5,9 @@ package dev.planton.aws.awsapprunnerservice.v1alpha1;
 import "catalog/aws/awsapprunnerservice/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// aws-app-runner-service stack-input
-message AwsAppRunnerServiceStackInput {
-  // target cloud-resource
+// aws-app-runner-service iac-input
+message AwsAppRunnerServiceIacInput {
+  // target infra-component
   AwsAppRunnerService target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

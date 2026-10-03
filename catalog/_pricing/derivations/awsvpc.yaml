@@ -3,9 +3,9 @@
 # derivation derives the honest zero, with configuration-scoped
 # exclusions naming where the network's real spend lives. The estimate
 # generator replays the catalog presets through these rules to emit
-# ../estimates/awsvpc.yaml. Schema: finops/componentcostderivation/v1.
+# ../estimates/awsvpc.yaml. Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsvpc
 spec:
@@ -35,7 +35,7 @@ spec:
         - field_path: encryption_control
           op: is_set
       text: VPC Encryption Control in enforce mode is free
-    - text: the network's real spend lives in separate components deployed into it -- NAT gateways, VPC endpoints, public IPv4 addresses, load balancers
+    - text: the network's real spend lives in separate kinds deployed into it -- NAT gateways, VPC endpoints, public IPv4 addresses, load balancers
   notes:
     - applies_when:
         - field_path: ipv4_ipam_pool_id

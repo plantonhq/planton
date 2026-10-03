@@ -16,7 +16,7 @@ message AwsMwaaEnvironment {
   string kind = 2 [(buf.validate.field).string.const = 'AwsMwaaEnvironment'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   AwsMwaaEnvironmentSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,6 +27,6 @@ message AwsMwaaEnvironment {
 
 // aws-mwaa-environment status
 message AwsMwaaEnvironmentStatus {
-  //stack-outputs
-  AwsMwaaEnvironmentStackOutputs outputs = 1;
+  //outputs
+  AwsMwaaEnvironmentOutputs outputs = 1;
 }

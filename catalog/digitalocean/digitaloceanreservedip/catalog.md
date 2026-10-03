@@ -4,7 +4,7 @@ Reserves a static public IP address (IPv4 or IPv6) in a DigitalOcean region and 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Reserved IP** -- the static address in your chosen region (IPv4 by default; IPv6 when `ipVersion: ipv6`)
 - **Droplet assignment** -- created only when `droplet` is set. On IPv4 the assignment rides the reservation itself and updates in place; on IPv6 it is a separate assignment resource (the v6 API cannot assign inline), re-pointed by replacing just the assignment -- the address itself never changes either way
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 - **A droplet (optional)** -- a DigitalOceanDroplet in the SAME region as the reservation, if assigning at create time.
 
@@ -48,7 +48,7 @@ spec:
 planton apply -f do-reserved-ip.yaml
 ```
 
-This reserves an IPv4 address in `nyc3` and assigns it to the droplet -- the assigned state, which is the free one. A Stack Job tracks the provisioning in real time.
+This reserves an IPv4 address in `nyc3` and assigns it to the droplet -- the assigned state, which is the free one. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -82,15 +82,15 @@ These are the most important decisions when configuring a reserved IP. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **DigitalOceanDroplet** (optional) | `droplet` | `status.outputs.droplet_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -109,7 +109,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Droplet**](/cloud-catalog/digital-ocean-droplet) -- the assignment target; re-pointing between droplets is the failover move
-- [**DigitalOcean DNS Zone**](/cloud-catalog/digital-ocean-dns-zone) -- zone records pointing at `reserved_ip_address` survive droplet replacements
-- [**DigitalOcean DNS Record**](/cloud-catalog/digital-ocean-dns-record) -- a standalone A record consuming `reserved_ip_address` via ValueFromRef
-- [**DigitalOcean Project**](/cloud-catalog/digital-ocean-project) -- project membership lists carry the reservation's `urn`
+- [**DigitalOcean Droplet**](/infra-catalog/digital-ocean-droplet) -- the assignment target; re-pointing between droplets is the failover move
+- [**DigitalOcean DNS Zone**](/infra-catalog/digital-ocean-dns-zone) -- zone records pointing at `reserved_ip_address` survive droplet replacements
+- [**DigitalOcean DNS Record**](/infra-catalog/digital-ocean-dns-record) -- a standalone A record consuming `reserved_ip_address` via ValueFromRef
+- [**DigitalOcean Project**](/infra-catalog/digital-ocean-project) -- project membership lists carry the reservation's `urn`

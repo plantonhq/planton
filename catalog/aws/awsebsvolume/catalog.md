@@ -4,7 +4,7 @@ Deploys one EBS volume as its own resource — sized, typed, and encrypted as de
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **EBS Volume** — exactly one of two provider resources per the configured arm: a fresh volume in `availabilityZone` (optionally restored from `snapshotId`), or a volume copy (`copyFrom`) that lands in the source volume's zone with the source's encryption posture; both expose the same downstream surface
 - **Volume Attachments** — one per `attachments[]` entry, keyed by device name and instance, with the declared detach behavior
@@ -14,13 +14,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, including EC2 permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, including EC2 permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
 - **An instance in the SAME availability zone** (only for attachments) — EBS never attaches across zones; the instance's placement decides the volume's `availabilityZone`.
-- **The source snapshot** (only for restores) — in the same region; reference an AwsEbsSnapshot Cloud Resource or pass a literal `snap-...` id.
+- **The source snapshot** (only for restores) — in the same region; reference an AwsEbsSnapshot Infra Component or pass a literal `snap-...` id.
 - **A KMS key** (only for `aws:kms`-style customer-key encryption) — unset with `encrypted: true` uses the AWS-managed `aws/ebs` key.
 
 ## Deploy
@@ -58,7 +58,7 @@ spec:
 planton apply -f ebs-volume.yaml
 ```
 
-This creates an encrypted 200 GiB gp3 volume with provisioned IOPS and throughput, attached to the referenced instance at `/dev/sdf` — the attachment presents the disk; the filesystem is yours. A Stack Job tracks the provisioning in real time.
+This creates an encrypted 200 GiB gp3 volume with provisioned IOPS and throughput, attached to the referenced instance at `/dev/sdf` — the attachment presents the disk; the filesystem is yours. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,7 +102,7 @@ These are the most important decisions when configuring an EBS volume. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -111,9 +111,9 @@ These are the most important decisions when configuring an EBS volume. Explore t
 | **AwsEbsVolume** (copy arm) | `copyFrom.sourceVolumeId` | `status.outputs.volume_id` |
 | **AwsEc2Instance** (per attachment) | `attachments[].instanceId` | `status.outputs.instance_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -133,7 +133,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS EC2 Instance**](/cloud-catalog/aws-ec2-instance) — the compute the volume attaches to, wired via `attachments[].instanceId`
-- [**AWS EBS Snapshot**](/cloud-catalog/aws-ebs-snapshot) — the restore source (`snapshotId`) and the backup consumer of `volume_id`
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — the customer-managed key for at-rest encryption, wired via `kmsKeyId`
-- [**AWS Data Lifecycle Manager Policy**](/cloud-catalog/aws-dlm-lifecycle-policy) — tag-driven recurring backups of this volume, no per-volume wiring
+- [**AWS EC2 Instance**](/infra-catalog/aws-ec2-instance) — the compute the volume attaches to, wired via `attachments[].instanceId`
+- [**AWS EBS Snapshot**](/infra-catalog/aws-ebs-snapshot) — the restore source (`snapshotId`) and the backup consumer of `volume_id`
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — the customer-managed key for at-rest encryption, wired via `kmsKeyId`
+- [**AWS Data Lifecycle Manager Policy**](/infra-catalog/aws-dlm-lifecycle-policy) — tag-driven recurring backups of this volume, no per-volume wiring

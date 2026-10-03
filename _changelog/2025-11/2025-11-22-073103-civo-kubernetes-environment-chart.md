@@ -54,7 +54,7 @@ civo/civo-kubernetes-environment/
 - **Separate add-on files**: Each Kubernetes add-on in its own template file for clarity and maintainability (following planton-gcp-environment pattern)
 - **Conditional rendering**: All optional resources use Jinja2 `{% if %}` blocks for fine-grained control
 - **Dependency wiring**: Resources reference each other via `valueFrom` for automatic dependency resolution
-- **Correct kind names**: All Kubernetes add-ons use the exact kind names from `cloud_resource_kind.proto` (e.g., `KubernetesCertManager`, not `CertManagerKubernetes`)
+- **Correct kind names**: All Kubernetes add-ons use the exact kind names from `catalog_kind.proto` (e.g., `KubernetesCertManager`, not `CertManagerKubernetes`)
 
 ## Implementation Details
 
@@ -165,7 +165,7 @@ spec:
 
 Optional DNS zone for domain management. Only created when `create_dns_zone: true`.
 
-### Kubernetes Add-ons (9 Toggleable Components)
+### Kubernetes Add-ons (9 Toggleable Kinds)
 
 Each add-on follows this pattern:
 
@@ -350,7 +350,7 @@ All add-ons default to `true` for complete environment provisioning:
 - **Single source of truth**: One values.yaml for entire environment
 - **Conditional resources**: Fine-grained control per environment (dev vs prod)
 - **Clear dependencies**: Automatic ordering via `valueFrom` references
-- **Modular add-ons**: Enable/disable components independently
+- **Modular add-ons**: Enable/disable kinds independently
 
 ### Multi-Cloud Consistency
 
@@ -437,7 +437,7 @@ planton chart build civo/civo-kubernetes-environment
 # Publish chart to Planton
 planton chart publish civo/civo-kubernetes-environment
 
-# Create an InfraProject from the chart
+# Create an InfraStack from the chart
 planton project create --from-chart civo-kubernetes-environment \
   --name my-civo-project \
   --org my-org \
@@ -495,7 +495,7 @@ params:
 - **Separate add-on files**: Adopted from `planton-gcp-environment` internal chart structure
 - **Conditional rendering**: Consistent with all environment charts (boolean flags)
 - **Resource dependencies**: Standard `valueFrom` pattern used across all InfraCharts
-- **Kind names**: Aligned with `cloud_resource_kind.proto` in Planton
+- **Kind names**: Aligned with `catalog_kind.proto` in Planton
 
 ## Provider-Specific Notes
 
@@ -527,7 +527,7 @@ The default firewall rules are permissive for development convenience:
 **Core resources**: 4 (VPC, Firewall, Cluster, optional DNS)  
 **Kubernetes add-ons**: 9 (all optional)  
 **Total templates**: 13 files  
-**Maximum resources deployed**: 13 (all components enabled)  
+**Maximum resources deployed**: 13 (all kinds enabled)  
 **Minimum resources deployed**: 3 (VPC, Firewall, Cluster only)
 
 ## Code Metrics

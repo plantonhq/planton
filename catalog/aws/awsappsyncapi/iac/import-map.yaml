@@ -1,7 +1,7 @@
 # Where each placeholder in this component's import-ID formats comes
 # from (the formats themselves live in aa_import/catalog.yaml).
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsappsyncapi
 spec:
@@ -13,7 +13,7 @@ spec:
   values:
     - name: api_id
       derivations:
-        - from_stack_output: api_id
+        - from_output: api_id
       where_to_find: >-
         AppSync console -> APIs (the API ID column), or
         `aws appsync list-graphql-apis` / `aws appsync list-apis`
@@ -39,7 +39,7 @@ spec:
         resolvers entry's field.
     - name: function_id
       derivations:
-        - from_stack_output_keyed_by_address: function_ids
+        - from_output_keyed_by_address: function_ids
       where_to_find: >-
         `aws appsync list-functions --api-id <id>` (functionId) - the
         cloud-generated id of the function whose name is the address
@@ -52,13 +52,13 @@ spec:
         the spec types entry's name.
     - name: type_format
       derivations:
-        - from_stack_output_keyed_by_address: type_formats
+        - from_output_keyed_by_address: type_formats
       where_to_find: >-
         The spec types entry's format (SDL or JSON) - echoed by the
         type_formats output keyed by type name.
     - name: api_key_id
       derivations:
-        - from_stack_output_keyed_by_address: api_key_ids
+        - from_output_keyed_by_address: api_key_ids
       where_to_find: >-
         `aws appsync list-api-keys --api-id <id>` (id, the "da2-..."
         key id, not the secret) - keyed by the spec api_keys entry's
@@ -77,7 +77,7 @@ spec:
         list-domain-names` shows domainName).
     - name: source_api_association_id
       derivations:
-        - from_stack_output_keyed_by_address: source_api_association_ids
+        - from_output_keyed_by_address: source_api_association_ids
       where_to_find: >-
         `aws appsync list-source-api-associations --api-id <merged-id>`
         (associationId) - keyed by the spec source_apis entry's name.
@@ -90,7 +90,7 @@ spec:
         web_acl_arn output.
     - name: api_arn
       derivations:
-        - from_stack_output: api_arn
+        - from_output: api_arn
       where_to_find: >-
         The API's ARN (`aws appsync get-graphql-api --api-id <id>`
         shows arn).

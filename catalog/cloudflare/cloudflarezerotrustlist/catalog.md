@@ -4,7 +4,7 @@ Deploys a reusable Cloudflare Zero Trust list: a named set of values — domains
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Zero Trust List** — a `cloudflare_zero_trust_list` on the account, with its items as a set (order is not significant and is not preserved)
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module with a Cloudflare API token carrying Account → Zero Trust → Edit. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module with a Cloudflare API token carrying Account → Zero Trust → Edit. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -51,7 +51,7 @@ spec:
 planton apply -f zt-list.yaml
 ```
 
-This creates a DOMAIN list that any number of Gateway DNS policies can reference by its `list_id`. A Stack Job tracks the provisioning in real time.
+This creates a DOMAIN list that any number of Gateway DNS policies can reference by its `list_id`. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -69,13 +69,13 @@ These are the most important decisions when configuring a Zero Trust list. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. It is a leaf resource other Zero Trust kinds reference by ID.
+This kind has no foreign key dependencies. It is a leaf resource other Zero Trust kinds reference by ID.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -93,6 +93,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Zero Trust Gateway Policy**](/cloud-catalog/cloudflare-zero-trust-gateway-policy) — matches this list from `traffic` or `identity` expressions.
-- [**Cloudflare Zero Trust Device Posture Rule**](/cloud-catalog/cloudflare-zero-trust-device-posture-rule) — serial-number and unique-client-ID checks read a list of device identifiers via `input.id`.
-- [**Cloudflare List**](/cloud-catalog/cloudflare-list) — the older Ruleset-family list; a different object with different consumers. Do not mix the two.
+- [**Cloudflare Zero Trust Gateway Policy**](/infra-catalog/cloudflare-zero-trust-gateway-policy) — matches this list from `traffic` or `identity` expressions.
+- [**Cloudflare Zero Trust Device Posture Rule**](/infra-catalog/cloudflare-zero-trust-device-posture-rule) — serial-number and unique-client-ID checks read a list of device identifiers via `input.id`.
+- [**Cloudflare List**](/infra-catalog/cloudflare-list) — the older Ruleset-family list; a different object with different consumers. Do not mix the two.

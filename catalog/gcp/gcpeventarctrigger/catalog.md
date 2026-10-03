@@ -4,7 +4,7 @@ Creates an Eventarc trigger — the routing rule "when THIS event happens, call 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Eventarc trigger** -- an `eventarc.Trigger` with the configured criteria, destination, identity, and transport
 - **Partner channel** (when `partnerChannel` is set) -- an `eventarc.Channel` the trigger is wired to, with its one-time activation token exported
@@ -57,7 +57,7 @@ spec:
 planton apply -f trigger.yaml
 ```
 
-This creates a trigger that delivers every Pub/Sub message published to its Eventarc-minted transport topic to the `order-processor` Cloud Run service in the same region. A Stack Job tracks the provisioning in real time.
+This creates a trigger that delivers every Pub/Sub message published to its Eventarc-minted transport topic to the `order-processor` Cloud Run service in the same region. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -103,7 +103,7 @@ These are the most important decisions when configuring a trigger. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -115,9 +115,9 @@ These are the most important decisions when configuring a trigger. Explore the f
 | **GcpServiceAccount** (optional) | `serviceAccount` | `status.outputs.email` |
 | **GcpKmsKey** (optional) | `partnerChannel.cryptoKey`, `googleChannelCryptoKey` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -135,9 +135,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Cloud Run**](/cloud-catalog/gcp-cloud-run) -- the most common destination
-- [**GCP Workflow**](/cloud-catalog/gcp-workflow) -- orchestrated event handling
-- [**GCP GKE Cluster**](/cloud-catalog/gcp-gke-cluster) -- GKE service destinations
-- [**GCP Pub/Sub Topic**](/cloud-catalog/gcp-pub-sub-topic) -- bring-your-own transport
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the trigger's identity
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- channel CMEK
+- [**GCP Cloud Run**](/infra-catalog/gcp-cloud-run) -- the most common destination
+- [**GCP Workflow**](/infra-catalog/gcp-workflow) -- orchestrated event handling
+- [**GCP GKE Cluster**](/infra-catalog/gcp-gke-cluster) -- GKE service destinations
+- [**GCP Pub/Sub Topic**](/infra-catalog/gcp-pub-sub-topic) -- bring-your-own transport
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the trigger's identity
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- channel CMEK

@@ -12,7 +12,7 @@ Setting `ssl.certificate_authority` on any non-Enterprise plan is rejected with 
 
 ## Ownership proof is the customer's job
 
-Onboarding a hostname does not make it live. Cloudflare returns TXT (and sometimes HTTP) ownership-verification records; the customer must create them on *their* DNS (or serve the HTTP body) before the hostname activates. The stack outputs those records so a chart or a ticket can hand them over. Until then the hostname sits in `pending` / `pending_validation`.
+Onboarding a hostname does not make it live. Cloudflare returns TXT (and sometimes HTTP) ownership-verification records; the customer must create them on *their* DNS (or serve the HTTP body) before the hostname activates. The outputs those records so a chart or a ticket can hand them over. Until then the hostname sits in `pending` / `pending_validation`.
 
 ## SSL is a nested lifecycle
 

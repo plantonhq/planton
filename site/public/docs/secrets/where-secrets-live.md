@@ -76,7 +76,7 @@ $secret/@prod/auth0-client-outputs-checkout/client_secret
 - **Another resource reads it with `valueFrom`**, exactly as it reads any output. The reference travels, and the runner resolves it at deploy, so the value reaches the workload and nowhere else. Because the value is a secret, a `valueFrom` of a secret output belongs in a sensitive field (a workload's `env.secrets`, for example); written into a plain field it is refused, naming the field.
 - **Deleting the resource deletes its secret.** While another resource still reads it, the delete is refused with the reader named; destroy or re-point the reader first, or delete with the force flag.
 
-Which outputs are secrets is declared in each component's schema: the reference pages mark them `(sensitive)` in the Outputs table.
+Which outputs are secrets is declared in each kind's schema: the reference pages mark them `(sensitive)` in the Outputs table.
 
 ## What Planton's Own Database Holds
 

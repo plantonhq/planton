@@ -5,9 +5,9 @@ package dev.planton.stripe.striperadarvaluelist.v1alpha1;
 import "catalog/stripe/provider.proto";
 import "catalog/stripe/striperadarvaluelist/v1alpha1/api.proto";
 
-// StripeRadarValueListStackInput is the input to the StripeRadarValueList IaC module.
+// StripeRadarValueListIacInput is the input to the StripeRadarValueList IaC module.
 // It contains the target resource and the Stripe provider configuration.
-message StripeRadarValueListStackInput {
+message StripeRadarValueListIacInput {
   // target is the StripeRadarValueList resource to be deployed.
   StripeRadarValueList target = 1;
 

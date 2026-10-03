@@ -9,10 +9,10 @@
 - [What is Planton?](#what-is-planton)
 - [Core Architecture](#core-architecture)
   - [The Three Pillars](#the-three-pillars)
-  - [The Component Concept](#the-component-concept)
+  - [The Kind Concept](#the-kind-concept)
 - [Repository Structure](#repository-structure)
 - [Technology Stack](#technology-stack)
-- [Component Lifecycle](#component-lifecycle)
+- [Kind Lifecycle](#kind-lifecycle)
 - [API Design Philosophy](#api-design-philosophy)
 - [IaC Module Design](#iac-module-design)
 - [CLI Architecture](#cli-architecture)
@@ -62,7 +62,7 @@ Cloud providers are fundamentally different. AWS RDS has `instance_class` and `s
 
 ### The Three Pillars
 
-Planton is built on three foundational components that work together seamlessly:
+Planton is built on three foundational kinds that work together seamlessly:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -79,7 +79,7 @@ Planton is built on three foundational components that work together seamlessly:
         │               │               │
         ▼               ▼               ▼
 ┌────────────────────────────────────────────────┐
-│        Components (700+)            │
+│        Kinds (700+)            │
 │  KubernetesPostgres | AwsRdsInstance | etc.   │
 └────────────────────────────────────────────────┘
 ```
@@ -89,11 +89,11 @@ Planton is built on three foundational components that work together seamlessly:
 **Technology:** Protocol Buffers  
 **Inspiration:** Kubernetes Resource Model
 
-Every component follows the same structure:
+Every kind follows the same structure:
 
 ```yaml
 apiVersion: <provider>.planton.dev/<version>
-kind: <ComponentType>
+kind: <KindName>
 metadata:
   name: <resource-name>
   org: <organization>
@@ -129,7 +129,7 @@ The `planton validate` command checks these rules **before** calling any cloud A
 **Technology:** Pulumi and Terraform/OpenTofu  
 **Approach:** Provider-specific, deliberately simple
 
-Every component has **both** a Pulumi module and a Terraform module, and you choose which IaC engine to use -- unless its kind declares fewer engines (`kind_meta.provisioners`), because its provider publishes no Pulumi provider or its kinds are proven on OpenTofu alone. Such a component ships only the modules its engines run, and the CLI and the platform refuse any other engine before anything runs.
+Every kind has **both** a Pulumi module and a Terraform module, and you choose which IaC engine to use -- unless its kind declares fewer engines (`kind_meta.provisioners`), because its provider publishes no Pulumi provider or its kinds are proven on OpenTofu alone. Such a kind ships only the modules its engines run, and the CLI and the platform refuse any other engine before anything runs.
 
 **Why Both Pulumi and Terraform?**
 
@@ -165,7 +165,7 @@ brew install plantonhq/tap/planton
 
 1. **Reads your manifest** (local file or GitHub raw URL)
 2. **Validates inputs** using proto-validate rules (catches errors early)
-3. **Maps `kind` to IaC module** (knows which module deploys which component)
+3. **Maps `kind` to IaC module** (knows which module deploys which kind)
 4. **Clones/pulls the module** from GitHub (with smart caching)
 5. **Sets up the environment** (exports manifest for the module to consume)
 6. **Delegates to IaC engine** (Pulumi or Terraform/OpenTofu)
@@ -192,19 +192,19 @@ planton pulumi update \
 
 ---
 
-### The Component Concept
+### The Kind Concept
 
-A **component** is a complete, production-ready package for deploying a specific type of infrastructure or application. Think of it as a "recipe" that includes everything needed to deploy that resource.
+A **kind** is a complete, production-ready package for deploying a specific type of infrastructure or application. Think of it as a "recipe" that includes everything needed to deploy that resource.
 
-#### What's in a Component?
+#### What's in a Kind?
 
-The authoritative, gate-enforced component anatomy — the versioned contract under the version directory, the living module set, docs, presets, e2e profile, and the verified fact-sheets (`cost.yaml`, `controls.yaml`, `iac/permissions.yaml`) — is defined once, in [component.md](component.md) (see "Folder Structure" and "Verified Fact-Sheets" in its Ideal State Checklist). This overview deliberately does not duplicate that tree: the anatomy is machine-enforced by CI, and `component.md` is its single written home.
+The authoritative, gate-enforced kind anatomy — the versioned contract under the version directory, the living module set, docs, presets, e2e profile, and the verified fact-sheets (`cost.yaml`, `controls.yaml`, `iac/permissions.yaml`) — is defined once, in [kind.md](kind.md) (see "Folder Structure" and "Verified Fact-Sheets" in its Ideal State Checklist). This overview deliberately does not duplicate that tree: the anatomy is machine-enforced by CI, and `kind.md` is its single written home.
 
-In one sentence: a component is the versioned Protobuf contract, both IaC engines, layered documentation, ready-to-deploy presets, an e2e profile, and machine-checked cost/controls/permissions data — everything a surface needs to deploy it and to answer what it costs, what it enforces, and what its runner needs.
+In one sentence: a kind is the versioned Protobuf contract, both IaC engines, layered documentation, ready-to-deploy presets, an e2e profile, and machine-checked cost/controls/permissions data — everything a surface needs to deploy it and to answer what it costs, what it enforces, and what its runner needs.
 
-#### Categories of Components
+#### Categories of Kinds
 
-**1. Kubernetes Components**
+**1. Kubernetes Kinds**
 
 Deploy applications and addons to any Kubernetes cluster:
 - `KubernetesPostgres` - PostgreSQL with operator (CloudNativePG)
@@ -233,17 +233,17 @@ Provision and manage third-party SaaS platforms:
 
 ```
 planton/
-├── catalog/                     # The multi-cloud component catalog
-│   ├── <provider>/<kind>/       # One folder per component (aws, gcp, azure,
+├── catalog/                     # The multi-cloud catalog
+│   ├── <provider>/<kind>/       # One folder per kind (aws, gcp, azure,
 │   │                            #   kubernetes, digitalocean, cloudflare,
 │   │                            #   auth0, openfga)
 │   ├── _compliance/             # Central control catalog + framework crosswalks
 │   ├── _pricing/                # Price books, derivations, generated estimates
-│   ├── _patterns/               # Multi-component architecture patterns
+│   ├── _patterns/               # Multi-kind architecture patterns
 │   └── _docs/                   # Catalog-wide guides and conventions
 ├── shared/                      # Shared types and enums
-│   └── cloudresourcekind/       # Registry of all components (cloud_resource_kind.proto)
-├── charts/                      # Ready-made infra charts composed from components
+│   └── catalogkind/       # Registry of all kinds (catalog_kind.proto)
+├── charts/                      # Ready-made infra charts composed from kinds
 ├── cmd/planton/                 # The open-source CLI and IaC engine (Go)
 ├── pkg/                         # Go libraries (generators, gates, engines)
 ├── operator/                    # The Planton Kubernetes operator (own Go module; self-hosted installs)
@@ -252,8 +252,8 @@ planton/
 ├── site/                        # planton.ai website, docs, and blog
 ├── architecture/                # Architecture documentation
 │   ├── README.md                # This file
-│   └── component.md             # Component ideal state (the anatomy's one home)
-├── _rules/                      # AI workflow rules (component forge/audit/update, docs, protos)
+│   └── kind.md             # Kind ideal state (the anatomy's one home)
+├── _rules/                      # AI workflow rules (kind forge/audit/update, docs, protos)
 ├── buf.yaml                     # Buf configuration
 ├── Makefile                     # Build automation
 └── README.md                    # Project README
@@ -263,23 +263,23 @@ planton/
 
 #### `/catalog`
 
-The component catalog, organized by provider. Each component's root carries its IaC modules (`iac/pulumi`, `iac/tf`), documentation (`README.md`, `catalog.md`, `GUIDE.md`), presets, e2e profile, and verified fact-sheets (`cost.yaml`, `controls.yaml`, `iac/permissions.yaml`); the version directory carries only the versioned contract (api.proto, spec.proto, outputs.proto, spec_test.go, generated reference.md). The catalog root's central trees hold what spans components: `_compliance/` (the control catalog and the HIPAA/SOC 2/FedRAMP/CIS crosswalks) and `_pricing/` (pinned price books, derivation rules, and generated estimates).
+The kind catalog, organized by provider. Each kind's root carries its IaC modules (`iac/pulumi`, `iac/tf`), documentation (`README.md`, `catalog.md`, `GUIDE.md`), presets, e2e profile, and verified fact-sheets (`cost.yaml`, `controls.yaml`, `iac/permissions.yaml`); the version directory carries only the versioned contract (api.proto, spec.proto, outputs.proto, spec_test.go, generated reference.md). The catalog root's central trees hold what spans kinds: `_compliance/` (the control catalog and the HIPAA/SOC 2/FedRAMP/CIS crosswalks) and `_pricing/` (pinned price books, derivation rules, and generated estimates).
 
 #### `/architecture`
 
 High-level architecture documentation:
 - **README.md** (this file): Complete architecture overview
-- **component.md**: Ideal state definition for components
+- **kind.md**: Ideal state definition for kinds
 
-#### `/_rules/component`
+#### `/_rules/catalog-kind`
 
-AI workflow rules for managing components:
-- **forge**: Create new components from scratch (step-by-step flow)
-- **audit**: Assess component completeness
-- **update**: Enhance existing components
+AI workflow rules for managing kinds:
+- **forge**: Create new kinds from scratch (step-by-step flow)
+- **audit**: Assess kind completeness
+- **update**: Enhance existing kinds
 - **complete**: Automated workflow (audit + fill gaps + verify)
 - **fix**: Targeted fixes with cascading updates
-- **delete**: Safe component removal
+- **delete**: Safe kind removal
 
 #### `/cmd/planton`
 
@@ -366,18 +366,18 @@ make install       # Install CLI locally
 
 ---
 
-## Component Lifecycle
+## Kind Lifecycle
 
-Planton provides a sophisticated lifecycle management system for components. This system ensures that all components are consistently high-quality, well-documented, and production-ready.
+Planton provides a sophisticated lifecycle management system for kinds. This system ensures that all kinds are consistently high-quality, well-documented, and production-ready.
 
 ### The Six Operations
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│               Component Lifecycle                │
+│               Kind Lifecycle                │
 └─────────────────────────────────────────────────────────────┘
          │
-         ├─► 🔨 FORGE      Create new component (95-100% complete)
+         ├─► 🔨 FORGE      Create new kind (95-100% complete)
          │
          ├─► 🔍 AUDIT      Assess completeness (9 categories, weighted scoring)
          │
@@ -390,9 +390,9 @@ Planton provides a sophisticated lifecycle management system for components. Thi
          └─► 🗑️  DELETE     Safe removal (dry-run, backup, confirmation)
 ```
 
-### 1. Forge: Create New Components
+### 1. Forge: Create New Kinds
 
-**Purpose:** Bootstrap complete, production-ready components from scratch.
+**Purpose:** Bootstrap complete, production-ready kinds from scratch.
 
 **What It Creates:**
 - ✅ Proto API definitions (4 files with validations)
@@ -400,13 +400,13 @@ Planton provides a sophisticated lifecycle management system for components. Thi
 - ✅ IaC modules (both Pulumi and Terraform)
 - ✅ Documentation (user-facing, research, technical)
 - ✅ Supporting files (test manifests, debug scripts)
-- ✅ Registry entry (cloud_resource_kind.proto)
+- ✅ Registry entry (catalog_kind.proto)
 
 **Result:** 95-100% completion score
 
 **Workflow:** 21-step automated process organized in 7 phases:
 1. **Proto API** (6 rules): spec.proto, validations, tests, outputs, api, input
-2. **Registration** (2 rules): cloud_resource_kind enum, proto stubs
+2. **Registration** (2 rules): catalog_kind enum, proto stubs
 3. **Documentation** (2 rules): user-facing docs, research docs
 4. **Test Infrastructure** (1 rule): hack manifest
 5. **Pulumi** (5 rules): module, entrypoint, e2e, docs, overview
@@ -415,15 +415,15 @@ Planton provides a sophisticated lifecycle management system for components. Thi
 
 **Example:**
 ```bash
-@forge-planton-component CloudflareD1Database --provider cloudflare
+@forge-catalog-kind CloudflareD1Database --provider cloudflare
 ```
 
-### 2. Audit: Assess Component Completeness
+### 2. Audit: Assess Kind Completeness
 
-**Purpose:** Evaluate components against the ideal state and generate actionable completion reports.
+**Purpose:** Evaluate kinds against the ideal state and generate actionable completion reports.
 
 **What It Checks:** 9 categories with weighted scoring:
-1. Cloud Resource Registry (4.44%)
+1. Catalog Kind Registry (4.44%)
 2. Folder Structure (4.44%)
 3. Protobuf API Definitions (17.76%)
 4. IaC Modules - Pulumi (13.32%)
@@ -447,17 +447,17 @@ Planton provides a sophisticated lifecycle management system for components. Thi
 - Critical gaps (blocking issues)
 - Prioritized recommendations
 - Reports are delivered in the session that runs the audit -- never saved
-  into the component (the component file set is closed; the anatomy
+  into the kind (the kind file set is closed; the anatomy
   conformance gate enforces it)
 
 **Example:**
 ```bash
-@audit-planton-component CloudflareD1Database
+@audit-catalog-kind CloudflareD1Database
 ```
 
-### 3. Update: Enhance Existing Components
+### 3. Update: Enhance Existing Kinds
 
-**Purpose:** Improve existing components by filling gaps, adding features, refreshing docs, or fixing issues.
+**Purpose:** Improve existing kinds by filling gaps, adding features, refreshing docs, or fixing issues.
 
 **Six Update Scenarios:**
 1. **Fill Gaps** - Audit-driven completion (missing files, incomplete docs)
@@ -476,7 +476,7 @@ Planton provides a sophisticated lifecycle management system for components. Thi
 
 **Example:**
 ```bash
-@update-planton-component CloudflareD1Database --scenario fill-gaps
+@update-catalog-kind CloudflareD1Database --scenario fill-gaps
 ```
 
 ### 4. Complete: Auto-Improve Workflow
@@ -503,12 +503,12 @@ Planton provides a sophisticated lifecycle management system for components. Thi
 
 **Example:**
 ```bash
-@complete-planton-component CloudflareD1Database
+@complete-catalog-kind CloudflareD1Database
 ```
 
 ### 5. Fix: Targeted Fixes with Cascading Updates
 
-**Purpose:** Make targeted fixes to components and automatically propagate changes to all related artifacts.
+**Purpose:** Make targeted fixes to kinds and automatically propagate changes to all related artifacts.
 
 **Core Philosophy:** Source code is the ultimate source of truth. Documentation describes code, code doesn't describe documentation.
 
@@ -517,7 +517,7 @@ Planton provides a sophisticated lifecycle management system for components. Thi
 2. **Fix Source Code** - Make changes to proto, IaC, tests
 3. **Propagate to Docs** - Update all documentation to match
 4. **Validate Consistency** - Run 5 consistency checks
-5. **Execute Tests** - Component tests, build, full suite
+5. **Execute Tests** - Kind tests, build, full suite
 6. **Report** - Show what was fixed and propagated
 
 **Five Consistency Checks:**
@@ -529,47 +529,47 @@ Planton provides a sophisticated lifecycle management system for components. Thi
 
 **Example:**
 ```bash
-@fix-planton-component GcpCertManagerCert \
+@fix-catalog-kind GcpCertManagerCert \
   --explain "primaryDomainName validation should allow wildcards like *.example.com"
 ```
 
-### 6. Delete: Safe Component Removal
+### 6. Delete: Safe Kind Removal
 
-**Purpose:** Completely remove components with safety features to prevent accidents.
+**Purpose:** Completely remove kinds with safety features to prevent accidents.
 
 **Safety Features:**
 - 🔍 Dry-run mode (preview deletion)
 - 💾 Automatic backup (timestamped)
 - 🔎 Reference check (warns if referenced)
-- ✋ Confirmation required (must type component name)
+- ✋ Confirmation required (must type kind name)
 - 📋 Detailed report (shows what was deleted)
 
 **What Gets Deleted:**
-- Component folder (all files)
-- Registry entry (cloud_resource_kind.proto enum)
+- Kind folder (all files)
+- Registry entry (catalog_kind.proto enum)
 - Generated proto stubs (regenerated after)
 
 **Example:**
 ```bash
 # Preview
-@delete-planton-component ObsoleteComponent --dry-run
+@delete-catalog-kind ObsoleteKind --dry-run
 
 # Delete with backup
-@delete-planton-component ObsoleteComponent --backup
+@delete-catalog-kind ObsoleteKind --backup
 ```
 
 ### Ideal State Definition
 
-All lifecycle operations reference a single source of truth: **`architecture/component.md`**
+All lifecycle operations reference a single source of truth: **`architecture/catalog-kind.md`**
 
 This document defines:
 - Complete checklist of required artifacts
 - Quality standards for each category
 - Scoring weights and rationale
 - Provider parity standard (100% of the provider's configurable surface at the pinned version)
-- Examples of complete components
+- Examples of complete kinds
 
-**Key Insight:** The ideal state is **intentionally pragmatic**—it focuses effort on the highest-leverage work. Not every component needs every possible artifact, but every production component should reach 95%+ completion, modeling the full configurable surface of its mapped provider resources at the pinned provider version.
+**Key Insight:** The ideal state is **intentionally pragmatic**—it focuses effort on the highest-leverage work. Not every kind needs every possible artifact, but every production kind should reach 95%+ completion, modeling the full configurable surface of its mapped provider resources at the pinned provider version.
 
 ---
 
@@ -581,7 +581,7 @@ Planton adopts the Kubernetes Resource Model as its API structure:
 
 ```yaml
 apiVersion: <provider>.planton.dev/<version>
-kind: <ComponentType>
+kind: <KindName>
 metadata:
   name: <resource-name>
   org: <organization>
@@ -648,7 +648,7 @@ planton validate-manifest config.yaml
 
 **Coverage is the provider's full configurable surface, never a trimmed subset.**
 
-Every component models 100% of the configurable arguments of the provider resources it maps to, at the pinned provider version. Partial coverage is not a design choice: where something is not covered, that is an explicitly recorded decision with a reason (deprecated or superseded surface only), never a silent omission.
+Every kind models 100% of the configurable arguments of the provider resources it maps to, at the pinned provider version. Partial coverage is not a design choice: where something is not covered, that is an explicitly recorded decision with a reason (deprecated or superseded surface only), never a silent omission.
 
 **Example: PostgreSQL on Kubernetes**
 
@@ -675,7 +675,7 @@ Every component models 100% of the configurable arguments of the provider resour
 
 **Example: Postgres Deployment**
 
-Three different components:
+Three different kinds:
 - `PostgresKubernetes` - Deploy to any K8s cluster (uses CloudNativePG operator)
 - `AwsRdsInstance` - Deploy to AWS RDS (managed service)
 - `GcpCloudSql` - Deploy to GCP Cloud SQL (managed service)
@@ -703,7 +703,7 @@ This preserves cloud-specific power while providing experience consistency.
 
 ### Dual IaC Engine Support
 
-Every component has **both** Pulumi and Terraform implementations with **feature parity**.
+Every kind has **both** Pulumi and Terraform implementations with **feature parity**.
 
 **Why both?**
 
@@ -726,7 +726,7 @@ iac/pulumi/
 ├── main.go              # Entry point, parses manifest
 ├── locals.go            # Local transformations
 ├── resources.go         # Resource definitions
-├── outputs.go           # Stack outputs
+├── outputs.go           # Outputs
 ├── go.mod               # Go dependencies
 ├── Pulumi.yaml          # Pulumi project config
 └── docs/
@@ -736,7 +736,7 @@ iac/pulumi/
 **Key Files:**
 - **main.go**: Parses manifest from environment variable, calls resource creation
 - **locals.go**: Transforms manifest into Pulumi-friendly structures
-- **resources.go**: Creates cloud resources using Pulumi SDKs
+- **resources.go**: Creates infra components using Pulumi SDKs
 - **outputs.go**: Exports outputs (connection strings, IDs, etc.)
 
 #### Terraform Module (HCL)
@@ -786,21 +786,21 @@ Even in Pulumi (Go), use familiar names:
 
 This reduces cognitive friction for engineers familiar with Terraform.
 
-#### 3. Typed Stack Input, Not Ad-Hoc Parsing
+#### 3. Typed IaC Input, Not Ad-Hoc Parsing
 
-The CLI hands each module a **stack input** — a typed document carrying the
+The CLI hands each module a **IaC input** — a typed document carrying the
 manifest (`target`) plus provisioner and provider configuration — and the
 module loads it through generated types, never by hand-parsing YAML.
 
 **Pulumi (Go):** the module calls the SDK loader, which reads the
-`planton:stack-input` Pulumi config key or, when unset, the
-`STACK_INPUT_YAML` (inline content) / `STACK_INPUT_YAML_FILE` (file path)
+`planton:iac-input` Pulumi config key or, when unset, the
+`IAC_INPUT_YAML` (inline content) / `IAC_INPUT_YAML_FILE` (file path)
 environment variables — and validates the spec before any resource is
 created:
 
 ```go
-stackInput := &postgreskubernetesv1.PostgresKubernetesStackInput{}
-if err := stackinput.LoadStackInput(ctx, stackInput); err != nil {
+iacInput := &postgreskubernetesv1.PostgresKubernetesIacInput{}
+if err := iacinput.LoadIacInput(ctx, iacInput); err != nil {
     return err
 }
 ```
@@ -888,7 +888,7 @@ planton
                          ▼
 ┌─────────────────────────────────────────────────────────────┐
 │ 3. Map kind → Module (kind registry)                        │
-│    - Provider, component, and declared version all derive   │
+│    - Provider, kind, and declared version all derive   │
 │      from the kind's registry metadata — no lookup tables   │
 └────────────────────────┬────────────────────────────────────┘
                          │
@@ -905,7 +905,7 @@ planton
 ┌─────────────────────────────────────────────────────────────┐
 │ 5. Build Inputs                                             │
 │    - Tofu/Terraform: generate .tfvars from the manifest     │
-│    - Pulumi: write the stack input, point the module at it  │
+│    - Pulumi: write the IaC input, point the module at it  │
 └────────────────────────┬────────────────────────────────────┘
                          │
                          ▼
@@ -927,7 +927,7 @@ planton
 ### Module Resolution
 
 There is no hand-maintained kind→module table. The kind registry (proto
-metadata compiled into the CLI) declares each kind's provider, component
+metadata compiled into the CLI) declares each kind's provider, kind
 name, and served API version, and every module path or artifact URL derives
 from those three facts.
 
@@ -942,7 +942,7 @@ from those three facts.
    choice was made; running the CLI from inside a module just works.
 3. **Released artifact download (fast path)** — terraform module zips and
    pre-built pulumi binaries from `downloads.planton.dev`, keyed by release
-   tag, component, and the kind's declared version. Released CLIs use this
+   tag, kind, and the kind's declared version. Released CLIs use this
    path; dev builds skip it.
 4. **Staging clone (fallback)** — a git checkout of the modules repository
    under `~/.planton/staging/`, used when no released artifact is available.
@@ -1011,7 +1011,7 @@ func validateManifest(manifestYaml string) error {
 
 ## Development Workflows
 
-### Adding a New Component
+### Adding a New Kind
 
 **High-Level Process:**
 
@@ -1029,9 +1029,9 @@ Research → Forge → Audit → (Complete) → Deploy & Test → Commit
 
 2. **Forge Phase**
    ```bash
-   @forge-planton-component CloudflareD1Database --provider cloudflare
+   @forge-catalog-kind CloudflareD1Database --provider cloudflare
    ```
-   - Creates complete component (95-100% complete)
+   - Creates complete kind (95-100% complete)
    - Proto definitions with validations
    - Both Pulumi and Terraform modules
    - Documentation and examples
@@ -1039,7 +1039,7 @@ Research → Forge → Audit → (Complete) → Deploy & Test → Commit
 
 3. **Audit Phase**
    ```bash
-   @audit-planton-component CloudflareD1Database
+   @audit-catalog-kind CloudflareD1Database
    ```
    - Verify forge created everything
    - Check completion score (should be 95-100%)
@@ -1047,7 +1047,7 @@ Research → Forge → Audit → (Complete) → Deploy & Test → Commit
 
 4. **Complete Phase (if needed)**
    ```bash
-   @complete-planton-component CloudflareD1Database
+   @complete-catalog-kind CloudflareD1Database
    ```
    - Fill any remaining gaps
    - Re-audit to verify 100%
@@ -1057,7 +1057,7 @@ Research → Forge → Audit → (Complete) → Deploy & Test → Commit
    cd catalog/cloudflare/cloudflared1database/iac/pulumi
    planton pulumi update --manifest ../../e2e/manifest.yaml --module-dir .
    ```
-   - Test Pulumi module locally (the CLI builds the stack input and drives the module)
+   - Test Pulumi module locally (the CLI builds the IaC input and drives the module)
    - Repeat for the Terraform module with `planton tofu apply --manifest ../../e2e/manifest.yaml --module-dir ../tf`
 
 6. **Validation**
@@ -1070,11 +1070,11 @@ Research → Forge → Audit → (Complete) → Deploy & Test → Commit
 7. **Commit**
    ```bash
    git add -A
-   git commit -m "feat(cloudflare): add CloudflareD1Database component"
+   git commit -m "feat(cloudflare): add CloudflareD1Database kind"
    git push origin main
    ```
 
-### Updating an Existing Component
+### Updating an Existing Kind
 
 **Scenario 1: Adding a Field to spec.proto**
 
@@ -1088,7 +1088,7 @@ vim catalog/cloudflare/cloudflared1database/v1alpha1/spec.proto
 # }
 
 # 3. Propagate changes
-@update-planton-component CloudflareD1Database --scenario proto-changed
+@update-catalog-kind CloudflareD1Database --scenario proto-changed
 
 # This will:
 # - Regenerate proto stubs
@@ -1098,13 +1098,13 @@ vim catalog/cloudflare/cloudflared1database/v1alpha1/spec.proto
 # - Add test for new validation rule
 
 # 4. Verify
-@audit-planton-component CloudflareD1Database
+@audit-catalog-kind CloudflareD1Database
 ```
 
 **Scenario 2: Fixing a Bug**
 
 ```bash
-@fix-planton-component GcpCertManagerCert \
+@fix-catalog-kind GcpCertManagerCert \
   --explain "primaryDomainName validation should allow wildcards like *.example.com"
 
 # This will:
@@ -1118,7 +1118,7 @@ vim catalog/cloudflare/cloudflared1database/v1alpha1/spec.proto
 **Scenario 3: Refreshing Outdated Docs**
 
 ```bash
-@update-planton-component PostgresKubernetes --scenario refresh-docs
+@update-catalog-kind PostgresKubernetes --scenario refresh-docs
 
 # This will:
 # - Read current source code (proto, IaC)
@@ -1132,8 +1132,8 @@ vim catalog/cloudflare/cloudflared1database/v1alpha1/spec.proto
 **Pre-Commit Checklist:**
 
 ```bash
-# 1. Audit modified components
-@audit-planton-component <ComponentName>
+# 1. Audit modified kinds
+@audit-catalog-kind <KindName>
 
 # 2. Ensure score ≥ 95%
 # If score dropped, investigate and fix
@@ -1145,34 +1145,34 @@ make test
 
 # 4. If all pass, commit
 git add -A
-git commit -m "feat: enhance <ComponentName>"
+git commit -m "feat: enhance <KindName>"
 ```
 
 ### Batch Improvement Workflow
 
-**Improving multiple components to production-ready state:**
+**Improving multiple kinds to production-ready state:**
 
 ```bash
-# List of components to improve
-components=(
+# List of kinds to improve
+kinds=(
   "CloudflareD1Database"
   "Auth0Client"
   "PostgresKubernetes"
 )
 
-for component in "${components[@]}"; do
-  echo "Processing $component..."
+for kind in "${kinds[@]}"; do
+  echo "Processing $kind..."
   
   # Auto-improve to 95%
-  @complete-planton-component "$component"
+  @complete-catalog-kind "$kind"
   
   # Verify
-  @audit-planton-component "$component"
+  @audit-catalog-kind "$kind"
 done
 
 # Commit all improvements
 git add -A
-git commit -m "chore: improve component completeness to 95%+"
+git commit -m "chore: improve kind completeness to 95%+"
 git push origin main
 ```
 
@@ -1216,7 +1216,7 @@ repository from the moment it lands.
 
 When a custom module's raw outputs use different names than the official
 one, ship an output transformation alongside it — a declarative
-`output_transform.yaml` mapping raw output names to the component's outputs
+`output_transform.yaml` mapping raw output names to the kind's outputs
 schema, or a `transform-outputs` executable for logic a mapping cannot
 express. The CLI discovers either automatically in the module directory, and
 `planton module verify` checks it as part of the full contract check
@@ -1333,9 +1333,9 @@ jobs:
 
 **Approach:**
 1. Write a Pulumi module in any language Pulumi supports
-2. Read the stack input the CLI hands every pulumi module — the
-   `planton:stack-input` Pulumi config key, or the `STACK_INPUT_YAML` /
-   `STACK_INPUT_YAML_FILE` environment variables when the config key is
+2. Read the IaC input the CLI hands every pulumi module — the
+   `planton:iac-input` Pulumi config key, or the `IAC_INPUT_YAML` /
+   `IAC_INPUT_YAML_FILE` environment variables when the config key is
    unset; the manifest is its `target` field
 3. Deploy with `--module-dir` pointed at your module
 
@@ -1349,15 +1349,15 @@ import yaml
 import pulumi
 import pulumi_kubernetes as k8s
 
-# Load the stack input; the manifest is its `target` field
+# Load the IaC input; the manifest is its `target` field
 config = pulumi.Config("planton")
-stack_input_yaml = config.get("stack-input") or os.getenv("STACK_INPUT_YAML")
-if not stack_input_yaml:
-    with open(os.environ["STACK_INPUT_YAML_FILE"]) as f:
-        stack_input_yaml = f.read()
+iac_input_yaml = config.get("iac-input") or os.getenv("IAC_INPUT_YAML")
+if not iac_input_yaml:
+    with open(os.environ["IAC_INPUT_YAML_FILE"]) as f:
+        iac_input_yaml = f.read()
 
-stack_input = yaml.safe_load(stack_input_yaml)
-target = stack_input["target"]
+iac_input = yaml.safe_load(iac_input_yaml)
+target = iac_input["target"]
 
 # Deploy using Pulumi (Python style)
 namespace = k8s.core.v1.Namespace(
@@ -1386,10 +1386,10 @@ postgres = k8s.helm.v3.Release(
 )
 ```
 
-The manifest inside the stack input is already validated by the CLI before
+The manifest inside the IaC input is already validated by the CLI before
 the module runs. For Terraform-preferring teams the same pattern needs no
 code at all: the CLI generates `.tfvars` from the manifest, so any HCL module
-whose variables match the component's generated `variables.tf` works with
+whose variables match the kind's generated `variables.tf` works with
 `--module-dir`.
 
 ---
@@ -1398,11 +1398,11 @@ whose variables match the component's generated `variables.tf` works with
 
 ### Ways to Contribute
 
-**1. Add New Components**
+**1. Add New Kinds**
 
-Use the Forge workflow to create new cloud resources:
+Use the Forge workflow to create new catalog kinds:
 ```bash
-@forge-planton-component <ComponentName> --provider <provider>
+@forge-catalog-kind <KindName> --provider <provider>
 ```
 
 Submit PRs with:
@@ -1411,11 +1411,11 @@ Submit PRs with:
 - Documentation and examples
 - Test manifests
 
-**2. Improve Existing Components**
+**2. Improve Existing Kinds**
 
-Use the Complete workflow to bring components to 100%:
+Use the Complete workflow to bring kinds to 100%:
 ```bash
-@complete-planton-component <ComponentName>
+@complete-catalog-kind <KindName>
 ```
 
 Submit PRs with:
@@ -1428,7 +1428,7 @@ Submit PRs with:
 
 Use the Fix workflow for targeted improvements:
 ```bash
-@fix-planton-component <ComponentName> --explain "<fix description>"
+@fix-catalog-kind <KindName> --explain "<fix description>"
 ```
 
 Submit PRs with:
@@ -1447,7 +1447,7 @@ Submit PRs with:
 ### Contribution Guidelines
 
 **Pull Requests:**
-- One component per PR (keeps reviews focused)
+- One kind per PR (keeps reviews focused)
 - Run audit before submitting (ensure ≥95% completion)
 - Include test results (`make build && make test`)
 - Update documentation
@@ -1455,10 +1455,10 @@ Submit PRs with:
 **Commit Messages:**
 Follow Conventional Commits:
 ```
-feat(aws): add AwsLambdaFunction component
+feat(aws): add AwsLambdaFunction kind
 fix(gcp): correct validation rule for GcpStorageBucket
 docs(kubernetes): update PostgresKubernetes examples
-chore: improve component completeness to 95%+
+chore: improve kind completeness to 95%+
 ```
 
 **Code Quality:**
@@ -1540,13 +1540,13 @@ planton pulumi destroy --manifest test.yaml --stack test
 
 **Documentation:**
 - Architecture overview (this file)
-- Component ideal state (`architecture/component.md`)
-- Lifecycle operation READMEs (`_rules/component/*/README.md`)
+- Kind ideal state (`architecture/catalog-kind.md`)
+- Lifecycle operation READMEs (`_rules/catalog-kind/*/README.md`)
 
 **Examples:**
-- Browse complete components (`catalog/`)
-- Run audit on gold-standard components
-- Compare incomplete vs complete components
+- Browse complete kinds (`catalog/`)
+- Run audit on gold-standard kinds
+- Compare incomplete vs complete kinds
 
 **Community:**
 - GitHub Discussions for questions and ideas
@@ -1566,7 +1566,7 @@ Planton is a multi-cloud deployment framework that provides **consistency withou
 - ✅ Provider-specific power (no artificial abstraction)
 - ✅ Dual IaC support (Pulumi and Terraform)
 - ✅ Language-neutral APIs (Protocol Buffers)
-- ✅ 700+ components (AWS, GCP, Azure, K8s, DigitalOcean, Cloudflare, Auth0, OpenFGA)
+- ✅ 700+ catalog kinds (AWS, GCP, Azure, K8s, DigitalOcean, Cloudflare, Auth0, OpenFGA)
 
 **Architecture:**
 1. **APIs** - Proto definitions with validations (buf.build)
@@ -1574,9 +1574,9 @@ Planton is a multi-cloud deployment framework that provides **consistency withou
 3. **CLI** - Go binary (Homebrew distribution)
 
 **Lifecycle Management:**
-1. **Forge** - Create components (95-100% complete)
+1. **Forge** - Create kinds (95-100% complete)
 2. **Audit** - Assess completeness (9 categories)
-3. **Update** - Enhance components (6 scenarios)
+3. **Update** - Enhance kinds (6 scenarios)
 4. **Complete** - Auto-improve workflow
 5. **Fix** - Targeted fixes with propagation
 6. **Delete** - Safe removal with backups
@@ -1601,12 +1601,12 @@ planton version
 ```
 
 **Next Steps:**
-- Browse components in `catalog/`
-- Read lifecycle management guides in `_rules/component/`
-- Try deploying a component locally
-- Contribute new components or improvements
+- Browse kinds in `catalog/`
+- Read lifecycle management guides in `_rules/catalog-kind/`
+- Try deploying a kind locally
+- Contribute new kinds or improvements
 
 ---
 
-**Ready to contribute?** Start with the Forge workflow to create a new component, or use Complete to improve an existing one to 100% quality!
+**Ready to contribute?** Start with the Forge workflow to create a new kind, or use Complete to improve an existing one to 100% quality!
 

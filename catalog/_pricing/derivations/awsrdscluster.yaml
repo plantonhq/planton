@@ -9,9 +9,9 @@
 # selecting the rate family through sibling rules. A Serverless v2
 # cluster with min_capacity 0 pauses to zero -- its serverless instances
 # are filtered out of the provisioned rules and no committed compute
-# remains, the honest zero. Schema: finops/componentcostderivation/v1.
+# remains, the honest zero. Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsrdscluster
 spec:

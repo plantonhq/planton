@@ -25,7 +25,7 @@ func validCacheSettings(spec *CloudflareCacheSettingsSpec) *CloudflareCacheSetti
 	return &CloudflareCacheSettings{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareCacheSettings",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-cache-settings",
 		},
 		Spec: spec,

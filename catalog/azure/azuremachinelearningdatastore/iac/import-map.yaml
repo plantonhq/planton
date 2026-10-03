@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuremachinelearningdatastore
 spec:
@@ -10,7 +10,7 @@ spec:
   values:
     - name: datastore_id
       derivations:
-        - from_stack_output: datastore_id
+        - from_output: datastore_id
       where_to_find: >-
         Compose {workspace-id}/dataStores/{datastore-name}, or `az ml
         datastore show -g <rg> --workspace-name <ws> -n <name>

@@ -4,7 +4,7 @@ Deploys a local user on an Azure Storage Account -- the credential identity the 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Storage Local User** -- a local user on the referenced storage account (by ARM ID -- the control-plane path), with SSH key and/or Azure-minted password authentication, an optional home directory, and per-resource permission scopes
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -66,7 +66,7 @@ spec:
 planton apply -f local-user.yaml
 ```
 
-This creates a key-authenticated partner scoped to one container -- the partner connects as `{account}.partneracme` on port 22 and lands in its own inbound directory. A Stack Job tracks the provisioning in real time.
+This creates a key-authenticated partner scoped to one container -- the partner connects as `{account}.partneracme` on port 22 and lands in its own inbound directory. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -108,7 +108,7 @@ These are the most important decisions when configuring a local user. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -116,9 +116,9 @@ These are the most important decisions when configuring a local user. Explore th
 | **AzureStorageContainer** | per-scope `resourceName` (service: BLOB) | `status.outputs.container_name` |
 | **AzureStorageShare** | per-scope `resourceName` (service: FILE) | `status.outputs.share_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -139,6 +139,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- the SFTP-enabled (HNS) parent account
-- [**Azure Storage Container**](/cloud-catalog/azure-storage-container) -- the per-partner containers permission scopes grant into
-- [**Azure Storage Share**](/cloud-catalog/azure-storage-share) -- file shares reachable through FILE-service scopes
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- the SFTP-enabled (HNS) parent account
+- [**Azure Storage Container**](/infra-catalog/azure-storage-container) -- the per-partner containers permission scopes grant into
+- [**Azure Storage Share**](/infra-catalog/azure-storage-share) -- file shares reachable through FILE-service scopes

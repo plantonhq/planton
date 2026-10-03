@@ -58,7 +58,7 @@ database (ARM's contract).
 - `storage_account_type` -- where backups replicate (geo / geo-zone /
   zone / local)
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

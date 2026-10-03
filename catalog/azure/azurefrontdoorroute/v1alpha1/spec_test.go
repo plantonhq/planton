@@ -33,7 +33,7 @@ func minimalSpec() *AzureFrontDoorRoute {
 	return &AzureFrontDoorRoute{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureFrontDoorRoute",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-front-door-route",
 		},
 		Spec: &AzureFrontDoorRouteSpec{

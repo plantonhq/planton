@@ -7,7 +7,7 @@ spec:
   name: grafana
   type: saas
   # Federate into a SaaS app over OIDC. Cloudflare issues the client_id/secret
-  # (exported as stack outputs) for you to paste into the SaaS provider.
+  # (exported as outputs) for you to paste into the SaaS provider.
   saasApp:
     authType: oidc
     redirectUris:

@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -20,7 +20,7 @@ func coupon(spec *StripeCouponSpec) *StripeCoupon {
 	return &StripeCoupon{
 		ApiVersion: "stripe.planton.dev/v1alpha1",
 		Kind:       "StripeCoupon",
-		Metadata:   &shared.CloudResourceMetadata{Name: "launch-25"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "launch-25"},
 		Spec:       spec,
 	}
 }
@@ -30,7 +30,7 @@ func float64Ptr(v float64) *float64 { return &v }
 
 func productRef() *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
-		ValueFrom: &foreignkeyv1.ValueFromRef{Kind: cloudresourcekind.CloudResourceKind_StripeProduct, Name: "pro-plan"},
+		ValueFrom: &foreignkeyv1.ValueFromRef{Kind: catalogkind.CatalogKind_StripeProduct, Name: "pro-plan"},
 	}}
 }
 

@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: gcpcloudcomposeruserworkloadssecret
 spec:
@@ -14,7 +14,7 @@ spec:
       evidence:
         type: provider_default
         reference: The Secret's material lives in the Composer environment's managed GKE control-plane storage, which Google encrypts at rest by default -- there is no unencrypted storage tier for credential material to land on.
-      notes: The spec adds handling discipline on top of storage encryption -- the data field is sensitive-annotated (held as secrets in IaC state, redacted in plans, never placed in stack outputs) and CEL-validated as base64 so raw credentials cannot be pasted in by accident.
+      notes: The spec adds handling discipline on top of storage encryption -- the data field is sensitive-annotated (held as secrets in IaC state, redacted in plans, never placed in outputs) and CEL-validated as base64 so raw credentials cannot be pasted in by accident.
     - control_id: enc-at-rest-cmk
       status: not_applicable
       notes: No customer-managed-key choice exists on a user-workloads Secret; the CMEK decision covering the environment's data is made on the GcpCloudComposerEnvironment itself.

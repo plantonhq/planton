@@ -5,9 +5,9 @@ package dev.planton.cloudflare.cloudflarequeue.v1alpha1;
 import "catalog/cloudflare/cloudflarequeue/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-//cloudflare-queue stack-input
-message CloudflareQueueStackInput {
-  //target cloud-resource
+//cloudflare-queue iac-input
+message CloudflareQueueIacInput {
+  //target infra-component
   CloudflareQueue target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

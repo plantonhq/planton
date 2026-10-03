@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha1;
 
-// **AzureContainerAppEnvironmentManagedCertificateStackOutputs** captures
+// **AzureContainerAppEnvironmentManagedCertificateOutputs** captures
 // the outputs of provisioning an Azure-managed certificate on a Container
 // App Environment.
-message AzureContainerAppEnvironmentManagedCertificateStackOutputs {
+message AzureContainerAppEnvironmentManagedCertificateOutputs {
   // The Azure Resource Manager ID of the managed certificate.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.App/managedEnvironments/{env}/managedCertificates/{name}
   string certificate_id = 1;

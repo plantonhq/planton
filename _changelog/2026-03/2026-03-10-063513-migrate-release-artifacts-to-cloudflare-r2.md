@@ -12,7 +12,7 @@ Migrated all non-CLI release artifacts (Pulumi binaries, Terraform module zips, 
 
 Planton's release pipeline attaches pre-built Pulumi binaries, Terraform module zips, and content distribution zips to each GitHub Release. With 17 providers and growing, a single semver release produces:
 
-- **362 Pulumi components x 4 platforms = 1,448 binaries**
+- **362 Pulumi kinds x 4 platforms = 1,448 binaries**
 - **358 Terraform module zips**
 - **4 content distribution zips**
 - **Total: 1,810 artifacts per release**
@@ -35,8 +35,8 @@ All non-CLI artifacts are now uploaded to Cloudflare R2 at `downloads.planton.de
 downloads.planton.dev/
   releases/{tag}/
     modules/
-      pulumi/{component}_{platform}.gz
-      terraform/{component}.zip
+      pulumi/{kind}_{platform}.gz
+      terraform/{kind}.zip
     content/
       presets.zip
       iac-source.zip

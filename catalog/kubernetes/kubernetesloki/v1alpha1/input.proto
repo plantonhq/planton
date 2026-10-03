@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesloki.v1alpha1;
 import "catalog/kubernetes/kubernetesloki/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//loki-kubernetes stack-input
-message KubernetesLokiStackInput {
-  //target cloud-resource
+//loki-kubernetes iac-input
+message KubernetesLokiIacInput {
+  //target infra-component
   KubernetesLoki target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

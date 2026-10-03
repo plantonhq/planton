@@ -42,7 +42,7 @@ var _ = ginkgo.Describe("GcpVertexAiModelGardenDeploymentSpec", func() {
 		return &GcpVertexAiModelGardenDeployment{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpVertexAiModelGardenDeployment",
-			Metadata:   &shared.CloudResourceMetadata{Name: "qwen-small"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "qwen-small"},
 			Spec: &GcpVertexAiModelGardenDeploymentSpec{
 				Location:           "us-central1",
 				HuggingFaceModelId: "Qwen/Qwen3-0.6B",

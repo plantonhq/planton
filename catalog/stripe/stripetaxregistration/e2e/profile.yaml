@@ -1,5 +1,5 @@
 apiVersion: qa.planton.dev/v1
-kind: ComponentE2EProfile
+kind: CatalogKindE2EProfile
 metadata:
   name: stripetaxregistration
 spec:

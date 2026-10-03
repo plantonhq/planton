@@ -4,8 +4,8 @@ package dev.planton.gcp.gcpapikey.v1alpha1;
 
 import "shared/options/options.proto";
 
-// GcpApiKeyStackOutputs captures the key's identity after provisioning.
-message GcpApiKeyStackOutputs {
+// GcpApiKeyOutputs captures the key's identity after provisioning.
+message GcpApiKeyOutputs {
   // The key's full resource name:
   // projects/{project}/locations/global/keys/{key_id}. What the API Keys
   // API and IAM conditions address the key by.

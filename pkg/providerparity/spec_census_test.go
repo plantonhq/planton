@@ -8,12 +8,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // TestCollectSpecPaths_HermeticFixture proves the descriptor walk against the
-// permanent testcloudresourcegeneric fixture at its REGISTERED version
+// permanent testcatalogkindgeneric fixture at its REGISTERED version
 // (v1alpha2 -- the registry serves a kind's declared version, so the walk
 // must be asserted against the compiled contract, not a .proto read by eye):
 // scalars and optional scalars are leaves, a nested message contributes its
@@ -21,7 +21,7 @@ import (
 // (steps -> steps.command), a StringValueOrRef is ONE leaf (the author
 // configures one value slot), and a map field is one leaf.
 func TestCollectSpecPaths_HermeticFixture(t *testing.T) {
-	msg, err := crkreflect.NewInstance(cloudresourcekind.CloudResourceKind_TestCloudResourceGeneric)
+	msg, err := catalogkindreflect.NewInstance(catalogkind.CatalogKind_TestCatalogKindGeneric)
 	if err != nil {
 		t.Fatalf("new instance: %v", err)
 	}
@@ -64,7 +64,7 @@ func TestCollectSpecPaths_HermeticFixture(t *testing.T) {
 // word no engine forwards (so the reverse check reads it as excluded by the
 // schema). Its unmarked siblings appear in the first output only.
 func TestCollectSpecCensus_ManifestOnlyLeafIsRecorded(t *testing.T) {
-	msg, err := crkreflect.NewInstance(cloudresourcekind.CloudResourceKind_TestCloudResourceKubernetes)
+	msg, err := catalogkindreflect.NewInstance(catalogkind.CatalogKind_TestCatalogKindKubernetes)
 	if err != nil {
 		t.Fatalf("new instance: %v", err)
 	}
@@ -98,7 +98,7 @@ func TestCollectSpecCensus_ManifestOnlyLeafIsRecorded(t *testing.T) {
 // the walk never descends into it. The previous behavior dropped such
 // fields silently, hiding them from the census and the reverse-drift check.
 func TestCollectSpecPaths_RecursiveReentryIsOneLeaf(t *testing.T) {
-	msg, err := crkreflect.NewInstance(cloudresourcekind.CloudResourceKind_AwsWafWebAcl)
+	msg, err := catalogkindreflect.NewInstance(catalogkind.CatalogKind_AwsWafWebAcl)
 	if err != nil {
 		t.Fatalf("new instance: %v", err)
 	}
@@ -138,7 +138,7 @@ func TestCollectSpecPaths_RecursiveReentryIsOneLeaf(t *testing.T) {
 // internals (fields.bool_value and siblings are protobuf plumbing, not
 // configurable surface).
 func TestCollectSpecPaths_StructIsOneLeaf(t *testing.T) {
-	msg, err := crkreflect.NewInstance(cloudresourcekind.CloudResourceKind_AwsEventBridgeRule)
+	msg, err := catalogkindreflect.NewInstance(catalogkind.CatalogKind_AwsEventBridgeRule)
 	if err != nil {
 		t.Fatalf("new instance: %v", err)
 	}
@@ -165,9 +165,9 @@ func TestCollectSpecPaths_StructIsOneLeaf(t *testing.T) {
 
 // TestSpecCensusGcp is the live-catalog smoke test: every implemented GCP
 // kind is censused and none has an empty spec surface (a kind an author
-// cannot configure at all would be a registry error, not a real component).
+// cannot configure at all would be a registry error, not a real kind).
 func TestSpecCensusGcp(t *testing.T) {
-	census := SpecCensus(cloudresourcekind.CloudResourceProvider_gcp)
+	census := SpecCensus(catalogkind.CatalogProvider_gcp)
 	if len(census) == 0 {
 		t.Fatal("GCP spec census is empty -- the registry walk is broken")
 	}

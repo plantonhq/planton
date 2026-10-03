@@ -17,7 +17,7 @@ Terraform/OpenTofu module that manages how an existing Auth0 tenant's Universal 
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `logo_url`, `favicon_url`, `colors`, `font_url`, `universal_login_template`, `theme` -- each optional, at least one set |
 
 ## Outputs

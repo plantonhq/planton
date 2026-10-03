@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflareipaccessrule.v1alpha1;
 
-// CloudflareIpAccessRuleStackOutputs captures the observable outputs after
+// CloudflareIpAccessRuleOutputs captures the observable outputs after
 // creating an IP Access rule.
-message CloudflareIpAccessRuleStackOutputs {
+message CloudflareIpAccessRuleOutputs {
   // The ID of the created rule.
   string rule_id = 1;
 

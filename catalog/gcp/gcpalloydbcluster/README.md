@@ -1,6 +1,6 @@
 # GcpAlloydbCluster
 
-Planton component for provisioning Google Cloud AlloyDB clusters with a bundled primary instance.
+Catalog kind for provisioning Google Cloud AlloyDB clusters with a bundled primary instance.
 
 ## Overview
 

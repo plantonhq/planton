@@ -11,10 +11,10 @@ import (
 // Subnets, security groups, and KMS keys attach by reference; this module
 // provisions only the serverless cache resource and exports connection
 // endpoints.
-func Resources(ctx *pulumi.Context, stackInput *awsserverlesselasticachev1alpha1.AwsServerlessElasticacheStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsserverlesselasticachev1alpha1.AwsServerlessElasticacheIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

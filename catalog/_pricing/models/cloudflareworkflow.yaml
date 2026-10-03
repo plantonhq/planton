@@ -1,16 +1,16 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. The single preset is genuinely zero-committed: registering a
-# workflow costs nothing per the component's own cost profile -- the bill
+# workflow costs nothing per the kind's own cost profile -- the bill
 # comes from INSTANCE RUNS consuming Workers requests, CPU time, and storage
 # under the account's Workers plan, and no manifest can know how many runs
 # happen or how much work each step does -- stated in exclusions, never
 # padded into fabricated dollars. Schema:
-# finops/componentcostestimatemodel/v1.
+# finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: cloudflareworkflow
 spec:
@@ -20,6 +20,6 @@ spec:
       currency: USD
       hours_per_month: 730
       exclusions:
-        - the "Workers requests and CPU time" meter (instance runs -- requests plus CPU milliseconds) bills per instance the nightly cron trigger creates, metered on the account's Workers plan; free-tier limits apply, and production-scale usage rides Workers Paid ($5/mo) limits per the component's cost profile
+        - the "Workers requests and CPU time" meter (instance runs -- requests plus CPU milliseconds) bills per instance the nightly cron trigger creates, metered on the account's Workers plan; free-tier limits apply, and production-scale usage rides Workers Paid ($5/mo) limits per the kind's cost profile
         - the "Workers CPU time and storage" meter (steps executed per instance, bounded here at 512) depends on what each step actually does, not on this manifest
       notes: "Zero committed cost -- registering the workflow starts no meter; spend begins only when instances run, and instance volume and per-instance compute are traffic- and code-driven."

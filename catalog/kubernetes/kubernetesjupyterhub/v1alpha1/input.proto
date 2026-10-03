@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesjupyterhub.v1alpha1;
 import "catalog/kubernetes/kubernetesjupyterhub/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//jupyterhub-kubernetes stack-input
-message KubernetesJupyterHubStackInput {
-  //target cloud-resource
+//jupyterhub-kubernetes iac-input
+message KubernetesJupyterHubIacInput {
+  //target infra-component
   KubernetesJupyterHub target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

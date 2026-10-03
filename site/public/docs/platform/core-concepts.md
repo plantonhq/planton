@@ -1,6 +1,6 @@
 ---
 title: "Core Concepts"
-description: "Key concepts that power the Planton platform — Cloud Resources, Infra Charts, Stack Jobs, Services, and Pipelines."
+description: "Key concepts that power the Planton platform — Infra Components, Infra Charts, Infra Jobs, Services, and Pipelines."
 icon: concepts
 order: 50
 tags:
@@ -15,47 +15,47 @@ This page introduces the key concepts used across the Planton platform. Understa
 
 ## Infrastructure Concepts
 
-### Cloud Resources
+### Infra Components
 
-A Cloud Resource is a deployed infrastructure instance — a VPC, a database, a Kubernetes cluster, or any other cloud component managed through Planton. Cloud Resources are the fundamental unit of infrastructure in the platform.
+An Infra Component is a deployed infrastructure instance — a VPC, a database, a Kubernetes cluster, or any other catalog kind managed through Planton. Infra Components are the fundamental unit of infrastructure in the platform.
 
-Each Cloud Resource:
+Each Infra Component:
 
 - Belongs to an environment (dev, staging, prod)
-- Has a specific Cloud Resource Kind (e.g., AWS VPC, GCP GKE Cluster)
-- Is deployed and managed through Stack Jobs
+- Has a specific Catalog Kind (e.g., AWS VPC, GCP GKE Cluster)
+- Is deployed and managed through Infra Jobs
 - Tracks its own lifecycle, configuration, and deployment history
 
-<!-- SCREENSHOT: Cloud Resource detail view
-  Page: /orgs/{org}/cloud-resources/{id}
-  Action: Show a deployed Cloud Resource with its status and configuration
+<!-- SCREENSHOT: Infra Component detail view
+  Page: /orgs/{org}/infra-components/{id}
+  Action: Show a deployed Infra Component with its status and configuration
   Focus: The resource detail panel showing status, kind, and environment
-  Alt: Cloud Resource detail view showing a deployed AWS VPC with status and configuration
+  Alt: Infra Component detail view showing a deployed AWS VPC with status and configuration
 -->
 
-### Deployment Components
+### Catalog Kinds
 
-A Deployment Component is a catalog entry — a template that defines how to provision a specific type of Cloud Resource. The Deployment Component catalog is the starting point for deploying infrastructure.
+A Catalog Kind is a catalog entry — a template that defines how to provision a specific type of Infra Component. The Infra Catalog is the starting point for deploying infrastructure.
 
-When you deploy a Deployment Component, it creates a Cloud Resource instance with your specific configuration.
+When you deploy a Catalog Kind, it creates an Infra Component instance with your specific configuration.
 
-Examples of Deployment Components:
+Examples of Catalog Kinds:
 
 - AWS VPC (networking)
 - AWS RDS (managed database)
 - GCP GKE Cluster (Kubernetes)
 - AWS S3 Bucket (storage)
 
-<!-- SCREENSHOT: Deployment Component catalog
-  Page: /infra-hub/deployment-components
-  Action: Show the catalog with multiple components and provider filters
-  Focus: The component grid
-  Alt: Deployment Component catalog showing infrastructure templates filterable by cloud provider
+<!-- SCREENSHOT: Infra Catalog
+  Page: /infra-hub/catalog-kinds
+  Action: Show the catalog with multiple kinds and provider filters
+  Focus: The kind grid
+  Alt: Infra Catalog showing infrastructure templates filterable by cloud provider
 -->
 
 ### Infra Charts
 
-An Infra Chart is a composed collection of Deployment Components that work together. Instead of deploying resources individually, an Infra Chart deploys an entire set of related resources in the correct dependency order.
+An Infra Chart is a composed collection of Catalog Kinds that work together. Instead of deploying resources individually, an Infra Chart deploys an entire set of related resources in the correct dependency order.
 
 Example: An AWS ECS Environment Infra Chart might include a VPC, ECS Cluster, ALB, Route53 Zone, Security Groups, IAM Roles, and ECR Repositories — all deployed as a coordinated unit.
 
@@ -68,25 +68,25 @@ Key characteristics:
 
 [Learn more about Infra Charts](/docs/infrastructure/infra-charts)
 
-### Infra Projects
+### Infra Stacks
 
-An Infra Project is a running instance of an Infra Chart with your specific configuration. If an Infra Chart is the template, an Infra Project is the deployed instance.
+An Infra Stack is a running instance of an Infra Chart with your specific configuration. If an Infra Chart is the template, an Infra Stack is the deployed instance.
 
 The lifecycle:
 
 1. Choose an Infra Chart (template)
 2. Provide configuration values
-3. An Infra Project is created (instance)
-4. Cloud Resources are deployed in dependency order
+3. An Infra Stack is created (instance)
+4. Infra Components are deployed in dependency order
 5. Progress is tracked in real-time via DAG visualization
 
-[Learn more about Infra Projects](/docs/infrastructure/infra-projects)
+[Learn more about Infra Stacks](/docs/infrastructure/infra-stacks)
 
-### Stack Jobs
+### Infra Jobs
 
-A Stack Job is the atomic execution unit that provisions infrastructure using Pulumi, Terraform, or OpenTofu. Every infrastructure change — deploying a Cloud Resource, updating an Infra Project, or running a refresh — triggers one or more Stack Jobs.
+An Infra Job is the atomic execution unit that provisions infrastructure using Pulumi, Terraform, or OpenTofu. Every infrastructure change — deploying an Infra Component, updating an Infra Stack, or running a refresh — triggers one or more Infra Jobs.
 
-Each Stack Job follows this sequence:
+Each Infra Job follows this sequence:
 
 ```
 Init → Refresh → Plan → Apply
@@ -100,7 +100,7 @@ Key characteristics:
 - Handle credentials securely via the Runner
 - Manage IaC state files automatically
 
-[Learn more about Stack Jobs](/docs/infrastructure/stack-jobs)
+[Learn more about Infra Jobs](/docs/infrastructure/infra-jobs)
 
 ## Application Concepts
 
@@ -183,7 +183,7 @@ Organization  Environment
 <!-- SCREENSHOT: Context selector in console header
   Page: /dashboard (header area)
   Action: Show the context selector with organization and environment displayed
-  Focus: The context selector component in the top-left of the header
+  Focus: The context selector kind in the top-left of the header
   Alt: Console header showing the context selector with current organization and environment
 -->
 
@@ -205,10 +205,10 @@ graph TD
     A[Organization] --> B[Environments]
     B --> C[Connections]
 
-    D[Deployment Components] --> E[Cloud Resources]
-    F[Infra Charts] --> G[Infra Projects]
+    D[Catalog Kinds] --> E[Infra Components]
+    F[Infra Charts] --> G[Infra Stacks]
     G --> E
-    E --> H[Stack Jobs]
+    E --> H[Infra Jobs]
 
     I[Git Repository] --> J[Service]
     J --> K[Pipeline]
@@ -220,22 +220,22 @@ graph TD
 
 ### Infrastructure Side
 
-- **Deployment Components** are templates; deploying one creates a **Cloud Resource**
-- **Infra Charts** create **Infra Projects** that orchestrate multiple **Cloud Resources**
-- **Cloud Resources** are provisioned by **Stack Jobs**
-- **Stack Jobs** use **Connections** for cloud provider credentials
+- **Catalog Kinds** are templates; deploying one creates a **Infra Component**
+- **Infra Charts** create **Infra Stacks** that orchestrate multiple **Infra Components**
+- **Infra Components** are provisioned by **Infra Jobs**
+- **Infra Jobs** use **Connections** for cloud provider credentials
 
 ### Application Side
 
 - **Services** are linked to Git repositories
 - **Pipelines** build and deploy **Services**
-- **Services** deploy to infrastructure provisioned through **Cloud Resources**
+- **Services** deploy to infrastructure provisioned through **Infra Components**
 - **Pipelines** use **Connections** for Git and registry access
 
 ### Platform Side
 
 - **Organizations** contain **Environments**
-- **Environments** contain deployed **Cloud Resources** and **Services**
+- **Environments** contain deployed **Infra Components** and **Services**
 - **Teams** group users for permissions
 - **Context** determines your current scope
 
@@ -243,11 +243,11 @@ graph TD
 
 | Concept | What It Is |
 |---------|------------|
-| Cloud Resource | A deployed infrastructure instance (VPC, database, cluster) |
-| Deployment Component | A catalog template for provisioning a specific Cloud Resource type |
-| Infra Chart | A composed collection of Deployment Components deployed together |
-| Infra Project | A deployed instance of an Infra Chart with specific configuration |
-| Stack Job | The atomic IaC execution unit (Pulumi/Terraform/OpenTofu) |
+| Infra Component | A deployed infrastructure instance (VPC, database, cluster) |
+| Catalog Kind | A catalog template for provisioning a specific catalog kind |
+| Infra Chart | A composed collection of Catalog Kinds deployed together |
+| Infra Stack | A deployed instance of an Infra Chart with specific configuration |
+| Infra Job | The atomic IaC execution unit (Pulumi/Terraform/OpenTofu) |
 | Service | Configuration bridge between a Git repo and a deployment target |
 | Pipeline | Automated CI/CD workflow triggered by Git commits |
 | Connection | Secure integration with an external service (cloud, Git, registry) |

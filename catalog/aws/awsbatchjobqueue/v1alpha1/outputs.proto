@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbatchjobqueue.v1alpha1;
 
-// AwsBatchJobQueueStackOutputs captures the observable identifiers of the
+// AwsBatchJobQueueOutputs captures the observable identifiers of the
 // AWS Batch job queue.
-message AwsBatchJobQueueStackOutputs {
+message AwsBatchJobQueueOutputs {
   // The Amazon Resource Name (ARN) of the job queue -- the handle jobs are
   // submitted against (SubmitJob) and the target EventBridge Batch targets
   // point at.

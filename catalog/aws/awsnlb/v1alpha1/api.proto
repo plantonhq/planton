@@ -19,7 +19,7 @@ message AwsNlb {
 
   // metadata captures identifying information (name, org, version, etc.)
   // and must pass standard validations for resource naming.
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec holds the core configuration defining how the NLB is provisioned.
   AwsNlbSpec spec = 4 [(buf.validate.field).required = true];
@@ -31,5 +31,5 @@ message AwsNlb {
 // AwsNlbStatus describes the status fields for an NLB resource.
 message AwsNlbStatus {
   // outputs captures the outputs returned by Pulumi/Terraform after provisioning.
-  AwsNlbStackOutputs outputs = 1;
+  AwsNlbOutputs outputs = 1;
 }

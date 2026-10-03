@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurefrontdoorsecuritypolicy
+    e2e-catalog-kind: azurefrontdoorsecuritypolicy
   annotations:
     planton.dev/e2e: "true"
   tags:

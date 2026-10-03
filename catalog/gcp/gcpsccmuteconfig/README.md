@@ -4,7 +4,7 @@ A Security Command Center mute rule for a project, a folder, or the whole organi
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `securitycenter.googleapis.com` on a project rule's project (never disabled on destroy)
 - **Mute config** -- one `scc_v2_{project,folder,organization}_mute_config`, chosen by the scope
@@ -68,7 +68,7 @@ planton apply -f scc-mute-config.yaml
 - `location` is `global` or a residency location; `deletionPolicy` takes only Google's values.
 - `muteConfigId` follows Google's ID rule; `type` is `DYNAMIC` or `STATIC`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -94,7 +94,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpSccNotificationConfig** -- streams findings, optionally skipping muted ones
 - **GcpSccBigQueryExport** -- exports findings, optionally skipping muted ones

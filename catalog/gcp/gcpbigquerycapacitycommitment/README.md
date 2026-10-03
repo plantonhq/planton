@@ -4,7 +4,7 @@ A BigQuery capacity commitment -- slots bought for a fixed term at a discount in
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `bigqueryreservation.googleapis.com` on the admin project (never disabled on destroy)
 - **Capacity commitment** -- a `bigquery_capacity_commitment`
@@ -68,7 +68,7 @@ planton apply -f bigquery-capacity-commitment.yaml
 - `capacityCommitmentId` is lowercase letters, digits, and dashes, 1-64 characters, not starting or ending with a dash.
 - `edition` takes only Google's three editions.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -97,7 +97,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpBigQueryReservation** -- the reservations that draw on the committed slots
 

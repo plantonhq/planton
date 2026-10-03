@@ -44,7 +44,7 @@ func validResource() *AzureAksCluster {
 	return &AzureAksCluster{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureAksCluster",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-cluster",
 		},
 		Spec: &AzureAksClusterSpec{

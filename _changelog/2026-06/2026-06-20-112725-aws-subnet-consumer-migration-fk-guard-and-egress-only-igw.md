@@ -1,7 +1,7 @@
 # AWS Subnet Consumer Migration + Foreign-Key Resolution Guard + AwsEgressOnlyInternetGateway
 
 **Date**: June 20, 2026
-**Type**: Breaking Change (consumer FK annotations) + New Component + New Tooling
+**Type**: Breaking Change (consumer FK annotations) + New Kind + New Tooling
 **Components**: API Definitions, AWS Provider, Kubernetes Provider, Resource Management, CLI, E2E Framework
 
 ## Summary
@@ -10,14 +10,14 @@ Two coordinated changes. First, every AWS consumer that referenced the now-remov
 thin-`AwsVpc` subnet outputs is migrated onto the standalone `AwsSubnet` — and a new
 permanent, registry-wide guard (`planton validate-refs --check`, analyzer
 `pkg/refcheck`) makes such drift impossible to ship silently. Second, the
-`AwsEgressOnlyInternetGateway` component is forged end to end — the IPv6
+`AwsEgressOnlyInternetGateway` kind is forged end to end — the IPv6
 outbound-only counterpart of a NAT gateway — completing the AWS networking primitive
 set.
 
 ## Problem Statement / Motivation
 
 When `AwsVpc` became thin, its bundled `private_subnets`/`public_subnets` stack
-outputs were removed, but ~31 components still pointed their `subnet_ids` foreign
+outputs were removed, but ~31 kinds still pointed their `subnet_ids` foreign
 keys at `AwsVpc.status.outputs.private_subnets.[*].id`. They compiled green while
 referencing a deleted output — a composition that silently fails to resolve at deploy
 time. Nothing validated that a foreign-key `default_kind_field_path` points at an
@@ -31,7 +31,7 @@ recurrence) was to first build that validator.
 - `pkg/refcheck` walks every production kind's `spec` descriptor (recursing nested and
   repeated fields) and resolves each `(foreignkey.v1.default_kind_field_path)` against
   the referenced kind, dispatching on the path root: `status.outputs.` → the kind's
-  `StackOutputs`, `spec.` → its spec, `metadata.` → its metadata. Index segments
+  `Outputs`, `spec.` → its spec, `metadata.` → its metadata. Index segments
   (`[*]`, `[0]`) are skipped; a finding is emitted for any unresolved path.
 - `planton validate-refs [--check]` exposes it as a CLI gate, mirroring
   `secret-coverage --check`; `pkg/refcheck/analyze_test.go` enforces zero findings in
@@ -41,9 +41,9 @@ recurrence) was to first build that validator.
 
 ### Consumer migration
 
-- 34 `subnet_ids`/`subnet_id` fields across 31 components repointed from
+- 34 `subnet_ids`/`subnet_id` fields across 31 kinds repointed from
   `AwsVpc / private_subnets.[*|0].id` to `AwsSubnet / status.outputs.subnet_id` (the
-  established `AwsNatGateway.subnet_id` pattern), including the three FSx components'
+  established `AwsNatGateway.subnet_id` pattern), including the three FSx kinds'
   `preferred_subnet_id`. Separate `vpc_id → AwsVpc` annotations are untouched.
 - 11 guard-surfaced pre-existing dangling refs fixed to the correct outputs:
   `AwsS3Bucket` → `bucket_id` (not `bucket_name`; `awscodebuildproject` ×3,
@@ -56,7 +56,7 @@ recurrence) was to first build that validator.
   `AwsSubnet` shape, expanding multi-subnet examples into distinct per-subnet refs and
   normalizing the inconsistent `field:`→`fieldPath:` key and malformed spellings.
 
-### AwsEgressOnlyInternetGateway (new component, `= 287`)
+### AwsEgressOnlyInternetGateway (new kind, `= 287`)
 
 ```mermaid
 flowchart LR
@@ -89,14 +89,14 @@ flowchart LR
 
 ## Verification
 
-- `make protos` + `make generate-cloud-resource-kind-map` + gazelle — pass
+- `make protos` + `make generate-catalog-kind-map` + gazelle — pass
 - `go run . validate-refs --check` → all resolve (0 findings); `go test ./pkg/refcheck/...` — pass
 - `go test ./pkg/outputs/...` (incl. new egress-only conformance case) — pass
 - `go test -v ./apis/.../awsegressonlyinternetgateway/v1/` — pass
 - `go vet -tags=e2e ./e2e/aws/... ./apis/.../aa_e2e/...`; `go run . secret-coverage --check`;
   `go run . validate-outputs --kind AwsEgressOnlyInternetGateway`; `tofu validate` — pass
-- `go build` of the new component + Pulumi entrypoint, and a sample of migrated
-  components — pass
+- `go build` of the new kind + Pulumi entrypoint, and a sample of migrated
+  kinds — pass
 - `bazel build` of all touched targets incl. nogo lint — pass
 - **Live E2E (keyless SSO, account 859666865785) GREEN on both engines** for
   `AwsEgressOnlyInternetGateway` — VPC prereq → egress-only gateway →
@@ -114,7 +114,7 @@ forge gate alongside `secret-coverage` and `validate-outputs`.
 ## Related Work
 
 - `2026-06-20-102917-thin-awsvpc-decomposition.md`
-- `2026-06-20-091451-aws-nat-gateway-component-and-deep-composition-e2e.md`
+- `2026-06-20-091451-aws-nat-gateway-kind-and-deep-composition-e2e.md`
 
 ---
 

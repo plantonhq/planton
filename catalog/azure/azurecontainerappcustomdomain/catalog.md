@@ -4,7 +4,7 @@ Binds a custom domain to a Container App -- your own hostname (`app.example.com`
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Custom Domain Binding** -- on the referenced Container App's ingress, after Azure validates domain ownership against your published DNS records. In the managed flow the deployment deliberately ignores Azure's out-of-band certificate attachment so it never reads as drift; in the bring-your-own flow the referenced certificate serves TLS immediately
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -51,7 +51,7 @@ spec:
 planton apply -f custom-domain.yaml
 ```
 
-This creates the certificate-less managed-flow binding: Azure validates ownership against the published DNS records during the create, and the managed certificate you deploy for the same hostname attaches out of band. A Stack Job tracks the provisioning in real time.
+This creates the certificate-less managed-flow binding: Azure validates ownership against the published DNS records during the create, and the managed certificate you deploy for the same hostname attaches out of band. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,16 +87,16 @@ These are the most important decisions when configuring a binding. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureContainerApp** | `containerAppId` | `status.outputs.container_app_id` |
 | **AzureContainerAppEnvironmentCertificate** | `containerAppEnvironmentCertificateId` (bring-your-own) | `status.outputs.certificate_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -115,8 +115,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Container App**](/cloud-catalog/azure-container-app) -- the app whose ingress the domain binds to; carries the verification-ID and FQDN outputs the DNS records need
-- [**Azure Container App Environment Certificate**](/cloud-catalog/azure-container-app-environment-certificate) -- the bring-your-own certificate the binding serves
-- [**Azure Container App Environment Managed Certificate**](/cloud-catalog/azure-container-app-environment-managed-certificate) -- the free certificate Azure attaches to this binding out of band
-- [**Azure DNS Record**](/cloud-catalog/azure-dns-record) -- publishes the ownership TXT and routing records when the zone is on Azure DNS
-- [**Azure Container App Environment**](/cloud-catalog/azure-container-app-environment) -- its custom DNS suffix is the wildcard mechanism per-app bindings deliberately exclude
+- [**Azure Container App**](/infra-catalog/azure-container-app) -- the app whose ingress the domain binds to; carries the verification-ID and FQDN outputs the DNS records need
+- [**Azure Container App Environment Certificate**](/infra-catalog/azure-container-app-environment-certificate) -- the bring-your-own certificate the binding serves
+- [**Azure Container App Environment Managed Certificate**](/infra-catalog/azure-container-app-environment-managed-certificate) -- the free certificate Azure attaches to this binding out of band
+- [**Azure DNS Record**](/infra-catalog/azure-dns-record) -- publishes the ownership TXT and routing records when the zone is on Azure DNS
+- [**Azure Container App Environment**](/infra-catalog/azure-container-app-environment) -- its custom DNS suffix is the wildcard mechanism per-app bindings deliberately exclude

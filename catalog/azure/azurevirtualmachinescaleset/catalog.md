@@ -4,7 +4,7 @@ Deploys an Azure Virtual Machine Scale Set — the fleet primitive: instances st
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Linux or Windows Virtual Machine Scale Set** -- exactly one OS profile (the spec enforces it), realized as the FLEXIBLE orchestrated resource or the UNIFORM Linux/Windows resource per the orchestration mode
 - **Per-Instance NICs** -- stamped from the declared NIC templates: subnets, NSGs, load-balancer/application-gateway pool membership (member-side wiring through name-keyed map outputs), optional per-instance public IPs
@@ -15,19 +15,19 @@ When you deploy this Cloud Resource, the IaC module provisions:
 - **VM Extensions** -- installed onto every instance; the application health extension is the load-bearing one (rolling upgrades, repair, and platform patching all key on it)
 - **Azure Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically, merged with the user tags, and flowed to every instance
 
-The subnets, load balancer, user-assigned identities, and disk encryption sets are NOT created here — they are first-class Cloud Resources this fleet references.
+The subnets, load balancer, user-assigned identities, and disk encryption sets are NOT created here — they are first-class Infra Components this fleet references.
 
 ## Before You Deploy
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the scale set will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
-- **A subnet in the same region** for the instances' NICs. Reference an AzureSubnet Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the scale set will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
+- **A subnet in the same region** for the instances' NICs. Reference an AzureSubnet Infra Component via ValueFromRef.
 - **An SSH public key** (Linux) or an **admin password** (Windows). Passwords, cloud-init custom data, and unattend content are secret material — store them as org secrets and reference them; the platform rejects plaintext.
 - **For rolling upgrades, repair, or platform patching**: the application health extension (declared in `extensions`), or — on UNIFORM sets — a load-balancer health probe.
 
@@ -87,7 +87,7 @@ spec:
 planton apply -f scale-set.yaml
 ```
 
-This creates a FLEXIBLE (the unspecified default — Azure's recommendation) three-instance Ubuntu fleet on ephemeral OS disks, zone-spread with the fault-domain contract satisfied (1 — zones are the resilience unit), SSH-key-only authentication. A Stack Job tracks the provisioning in real time.
+This creates a FLEXIBLE (the unspecified default — Azure's recommendation) three-instance Ubuntu fleet on ephemeral OS disks, zone-spread with the fault-domain contract satisfied (1 — zones are the resilience unit), SSH-key-only authentication. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -147,7 +147,7 @@ These are the most important decisions when configuring a Virtual Machine Scale 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -162,16 +162,16 @@ These are the most important decisions when configuring a Virtual Machine Scale 
 | **AzureDiskEncryptionSet** (optional) | `osDisk.diskEncryptionSetId`, `osDisk.secureVmDiskEncryptionSetId`, `dataDisks[].diskEncryptionSetId` | `status.outputs.disk_encryption_set_id` |
 | **AzureKeyVault** (optional) | `secrets[].keyVaultId`, `extensions[].protectedSettingsFromKeyVault.sourceVaultId` | `status.outputs.key_vault_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
 | `scale_set_id` | Azure Resource Manager ID of the scale set | AzureVirtualMachine `availability.virtualMachineScaleSetId` (attaching a standalone VM to a FLEXIBLE set), autoscale settings, monitoring scopes |
 | `system_assigned_identity_principal_id` | Principal ID of the system-assigned identity — empty unless a UNIFORM set carries one | AzureRoleAssignment grants |
 
-The set also surfaces `scale_set_name` and `unique_id` (the globally unique ARM-assigned identifier) for reference; no downstream Cloud Resource consumes them.
+The set also surfaces `scale_set_name` and `unique_id` (the globally unique ARM-assigned identifier) for reference; no downstream Infra Component consumes them.
 
 ## Common Patterns
 
@@ -185,11 +185,11 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the fleet is created
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- provides the instances' network placement
-- [**Azure Load Balancer**](/cloud-catalog/azure-load-balancer) -- provides the pools instances join, per-instance NAT, and (UNIFORM) the health probe
-- [**Azure Application Gateway**](/cloud-catalog/azure-application-gateway) -- provides L7 pools instances join
-- [**Azure Virtual Machine**](/cloud-catalog/azure-virtual-machine) -- a standalone VM can ATTACH to a FLEXIBLE set by referencing this fleet's `scale_set_id`
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- provides the fleet's keyless workload identity
-- [**Azure Disk Encryption Set**](/cloud-catalog/azure-disk-encryption-set) -- provides customer-managed keys for the OS and data disk templates
-- [**Azure Key Vault**](/cloud-catalog/azure-key-vault) -- provides certificates installed at provisioning and extension protected settings
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the fleet is created
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- provides the instances' network placement
+- [**Azure Load Balancer**](/infra-catalog/azure-load-balancer) -- provides the pools instances join, per-instance NAT, and (UNIFORM) the health probe
+- [**Azure Application Gateway**](/infra-catalog/azure-application-gateway) -- provides L7 pools instances join
+- [**Azure Virtual Machine**](/infra-catalog/azure-virtual-machine) -- a standalone VM can ATTACH to a FLEXIBLE set by referencing this fleet's `scale_set_id`
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- provides the fleet's keyless workload identity
+- [**Azure Disk Encryption Set**](/infra-catalog/azure-disk-encryption-set) -- provides customer-managed keys for the OS and data disk templates
+- [**Azure Key Vault**](/infra-catalog/azure-key-vault) -- provides certificates installed at provisioning and extension protected settings

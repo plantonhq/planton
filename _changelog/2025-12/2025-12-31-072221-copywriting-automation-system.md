@@ -32,7 +32,7 @@ Planton.ai requires frequent content updates driven by:
 **Inconsistent Outcomes**:
 - Copy quality varied based on who was implementing
 - Design system consistency not always maintained
-- Component mapping decisions varied
+- Kind mapping decisions varied
 - No clear guidelines for draft vs production-ready content
 
 **Lost Context**:
@@ -48,8 +48,8 @@ Recent landing page redesign (December 19, 2025):
 - Multiple draft iterations (draft-1, draft-2, draft-3) created manually
 - HTML previews generated ad-hoc for review
 - No standardized process for feedback → implementation
-- Manual component mapping to React files
-- Implementation required deep knowledge of component structure
+- Manual kind mapping to React files
+- Implementation required deep knowledge of kind structure
 
 This experience highlighted the need for an automated, repeatable workflow.
 
@@ -85,7 +85,7 @@ Comprehensive action rule (~1,285 lines) that orchestrates the entire workflow:
 
 - **Phase 4: Implementation**
   - Maps draft sections to React components
-  - Updates or creates components in `src/`
+  - Updates or creates kinds in `src/`
   - Maintains design system consistency
   - Preserves TypeScript types and MUI patterns
 
@@ -104,7 +104,7 @@ Four comprehensive READMEs totaling ~2,000 lines:
 - Five-phase process explanation
 - Usage examples for common scenarios
 - Best practices for workspace and feedback
-- Component mapping tables
+- Kind mapping tables
 - Review checklist and FAQ
 
 **Rules README** (`content/copywriting/_rules/README.md` - 506 lines):
@@ -112,7 +112,7 @@ Four comprehensive READMEs totaling ~2,000 lines:
 - Quick reference with flowchart
 - Detailed workflow phases with input/output
 - Common use cases with examples
-- Component mapping reference tables
+- Kind mapping reference tables
 - Troubleshooting guide
 - Integration with development workflow
 
@@ -141,7 +141,7 @@ Embedded HTML template in cursor rule provides:
 - Professional typography with gradient headers
 - Responsive layout (max-width: 1200px)
 - Metadata display (page, sections, date, version)
-- Special styling for visual notes and component mapping
+- Special styling for visual notes and kind mapping
 - No external dependencies (inline CSS)
 - Status badges (draft, new, update)
 
@@ -222,13 +222,13 @@ Works seamlessly with existing rules:
 - Maintains clean iteration history
 - Allows comparison between approaches (draft-1 vs draft-2)
 
-**3. Component Mapping Strategy**
+**3. Kind Mapping Strategy**
 
 **Decision**: Map draft sections to specific React components in `src/components/`.
 
 **Mapping tables embedded in rule**:
 
-| Draft Section | Component File |
+| Draft Section | Kind File |
 |--------------|----------------|
 | Hero | `src/components/landing-page-v2/HeroSection.tsx` |
 | Problem/Solution | `src/components/landing-page-v2/ProblemSolution.tsx` |
@@ -288,19 +288,19 @@ Works seamlessly with existing rules:
 [Feedback handling, draft-2 creation logic]
 
 ## Phase 4: Implementation
-[Component mapping, React updates, design system]
+[Kind mapping, React updates, design system]
 
 ## Phase 5: Verification
 [Build verification, changelog, cleanup]
 
 ## Best Practices
-[Writing quality, component consistency, process efficiency]
+[Writing quality, kind consistency, process efficiency]
 
 ## Common Scenarios
 [Examples: hero update, page redesign, customer story addition]
 
 ## Troubleshooting
-[Build failures, unclear feedback, component mapping issues]
+[Build failures, unclear feedback, kind mapping issues]
 ```
 
 **HTML Preview Template**:
@@ -308,7 +308,7 @@ Works seamlessly with existing rules:
 - Dark theme with gradient headers
 - Responsive layout
 - Metadata display
-- Special classes for visual notes, component mapping
+- Special classes for visual notes, kind mapping
 - Badge system for status indicators
 
 **Draft Markdown Structure**:
@@ -327,13 +327,13 @@ status: draft
 [Context and rationale]
 
 ## Section 1: [Name]
-[Content with visual direction and component mapping notes]
+[Content with visual direction and kind mapping notes]
 
 ## Section 2: [Name]
 [Content continues...]
 
 ## Implementation Notes
-[Component changes, design system elements]
+[Kind changes, design system elements]
 
 ## Changelog Entry Draft
 [Pre-written changelog for implementation]
@@ -393,10 +393,10 @@ Rule follows `@general-writing-guidelines.mdc` principles:
 **Reduced Implementation Risk**:
 - Approved drafts before code changes
 - Build verification before cleanup
-- Component mapping guidance embedded
+- Kind mapping guidance embedded
 - Design system consistency maintained
 
-**Clear Component Mapping**:
+**Clear Kind Mapping**:
 - Know exactly which files to update
 - Preserve TypeScript types and patterns
 - Follow established MUI conventions
@@ -424,7 +424,7 @@ Rule follows `@general-writing-guidelines.mdc` principles:
 - Writing guidelines enforced
 - Build verification required
 - Design system consistency maintained
-- Component mapping standardized
+- Kind mapping standardized
 
 ### For Stakeholders
 
@@ -464,14 +464,14 @@ Rule follows `@general-writing-guidelines.mdc` principles:
 ### Developer Experience
 
 **Before**:
-- Figure out which components to update
+- Figure out which kinds to update
 - Manually map content to React files
 - Risk breaking design system patterns
 - Manual build verification
-- No guidance on component structure
+- No guidance on kind structure
 
 **After**:
-- Component mapping automated
+- Kind mapping automated
 - Design system consistency enforced
 - Build verification automatic
 - Clear implementation notes in draft
@@ -581,7 +581,7 @@ Focus: DevOps-in-a-Box positioning (shift away from Copilot)
 # 9. Confirm implementation
 
 # 10. Automatic:
-#     - Updates 12 components in src/components/landing-page-v2/
+#     - Updates 12 kinds in src/components/landing-page-v2/
 #     - Runs make build
 #     - Generates comprehensive changelog
 #     - Cleans workspace
@@ -636,7 +636,7 @@ Placement: Customer Stories section
 
 **Outcome**:
 - Simple, focused draft
-- Single component update
+- Single kind update
 - Quick iteration (< 1 hour total)
 
 ## Related Work
@@ -689,7 +689,7 @@ Follows `@general-writing-guidelines.mdc`:
 **Medium-Term**:
 - [ ] AI-assisted draft generation from materials (experimental)
 - [ ] Visual diff tool for comparing drafts
-- [ ] Component preview in browser (not just HTML)
+- [ ] Kind preview in browser (not just HTML)
 - [ ] Copywriting style linter (check against guidelines)
 
 **Long-Term**:
@@ -751,7 +751,7 @@ Follows `@general-writing-guidelines.mdc`:
 - ✅ Tested with multiple material types (PDF, markdown, images)
 - ✅ Verified HTML preview rendering in Chrome, Firefox, Safari
 - ✅ Tested iteration logic (draft-1 vs draft-2 creation)
-- ✅ Verified component mapping for all landing page sections
+- ✅ Verified kind mapping for all landing page sections
 - ✅ Confirmed build verification catches TypeScript errors
 - ✅ Tested workspace cleanup (files removed correctly)
 
@@ -776,7 +776,7 @@ Follows `@general-writing-guidelines.mdc`:
 - ✅ Complete five-phase workflow implemented
 - ✅ HTML preview system with professional styling
 - ✅ Smart iteration detection (draft-1 vs draft-2)
-- ✅ Component mapping for landing and pricing pages
+- ✅ Kind mapping for landing and pricing pages
 - ✅ Build verification before cleanup
 - ✅ Comprehensive documentation (3,000+ lines)
 - ✅ Integration with existing git workflow

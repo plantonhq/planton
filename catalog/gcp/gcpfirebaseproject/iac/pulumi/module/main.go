@@ -7,8 +7,8 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *gcpfirebaseprojectv1alpha1.GcpFirebaseProjectStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *gcpfirebaseprojectv1alpha1.GcpFirebaseProjectIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// The Firebase Management API attributes quota to the caller's project
 	// on user-credential calls -- Google's own Firebase provider docs say to
@@ -24,8 +24,8 @@ func Resources(ctx *pulumi.Context, stackInput *gcpfirebaseprojectv1alpha1.GcpFi
 	// to attach `provider = google-beta` to the beta-only resources
 	// explicitly; that asymmetry is provider packaging, not a behavioral
 	// divergence.
-	gcpProvider, err := pulumigoogleprovider.GetWithQuotaProject(ctx, stackInput.ProviderConfig,
-		stackInput.Target.GetSpec().GetProjectId().GetValue())
+	gcpProvider, err := pulumigoogleprovider.GetWithQuotaProject(ctx, iacInput.ProviderConfig,
+		iacInput.Target.GetSpec().GetProjectId().GetValue())
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

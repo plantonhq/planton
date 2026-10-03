@@ -169,14 +169,14 @@ spec:
 	}
 }
 
-// A component whose profile records `status: deferred` is skipped by the
+// A kind whose profile records `status: deferred` is skipped by the
 // CATALOG walk: its deferral is the record that its lanes cannot run, so an
 // unresolvable chain is not a finding. Any other status keeps the check
 // armed -- the same broken chain must fail the moment the deferral lifts.
 func TestFixtureIntegrity_DeferredProfileSkipsCatalogCheck(t *testing.T) {
 	profileYAML := func(status string) string {
 		return `apiVersion: qa.planton.dev/v1
-kind: ComponentE2EProfile
+kind: CatalogKindE2EProfile
 metadata:
   name: gcpsubnetwork
 spec:

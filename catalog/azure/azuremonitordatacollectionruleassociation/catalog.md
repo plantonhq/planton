@@ -4,7 +4,7 @@ Attaches one machine (VM, VM scale set, or Arc-enabled server) to an Azure Monit
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Data collection rule association** -- an extension resource scoped under the target machine's ARM ID (`{target_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/{name}`), binding the machine to a data collection rule or, in the endpoint form, to a Data Collection Endpoint for configuration access
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **A target machine** -- reference an Azure Virtual Machine's `vm_id` output via valueFrom, or pass the literal ARM ID of a VM, scale set, or Arc-enabled server.
 - **A data collection rule** -- reference an Azure Monitor Data Collection Rule's `data_collection_rule_id` output, or provide a Data Collection Endpoint ARM ID for the endpoint form.
 
@@ -52,11 +52,11 @@ spec:
 planton apply -f dcr-association.yaml
 ```
 
-This attaches the `web-vm` virtual machine to the `linux-baseline` data collection rule under the association name `linux-baseline-assoc`. A Stack Job tracks the provisioning in real time.
+This attaches the `web-vm` virtual machine to the `linux-baseline` data collection rule under the association name `linux-baseline-assoc`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When the machine and the rule are Cloud Resources in the same chart, wire both by reference instead of pasting ARM IDs:
+When the machine and the rule are Infra Components in the same chart, wire both by reference instead of pasting ARM IDs:
 
 ```yaml
 spec:
@@ -91,7 +91,7 @@ These are the most important decisions when configuring an Azure Monitor Data Co
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |---|---|---|
@@ -100,7 +100,7 @@ These are the most important decisions when configuring an Azure Monitor Data Co
 
 `dataCollectionEndpointId` takes a literal Data Collection Endpoint ARM ID -- the endpoint is not yet a catalog kind.
 
-### What This Component Provides
+### What This Kind Provides
 
 `status.outputs` carries the association's ARM ID (`data_collection_rule_association_id`) and its name on the target (`data_collection_rule_association_name`). Nothing downstream consumes an association by reference -- it is a leaf resource that binds two other resources together -- so these outputs exist for identification and import rather than composition.
 
@@ -114,5 +114,5 @@ These are the most important decisions when configuring an Azure Monitor Data Co
 
 ## Works With
 
-- [**Azure Virtual Machine**](/cloud-catalog/azure-virtual-machine) -- the most common target; reference its `vm_id` output as `targetResourceId`.
-- [**Azure Monitor Data Collection Rule**](/cloud-catalog/azure-monitor-data-collection-rule) -- the collection policy this association attaches; reference its `data_collection_rule_id` output.
+- [**Azure Virtual Machine**](/infra-catalog/azure-virtual-machine) -- the most common target; reference its `vm_id` output as `targetResourceId`.
+- [**Azure Monitor Data Collection Rule**](/infra-catalog/azure-monitor-data-collection-rule) -- the collection policy this association attaches; reference its `data_collection_rule_id` output.

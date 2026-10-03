@@ -24,7 +24,7 @@ func zone(name string, spec *CloudflareDnsZoneSpec) *CloudflareDnsZone {
 	return &CloudflareDnsZone{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareDnsZone",
-		Metadata:   &shared.CloudResourceMetadata{Name: name},
+		Metadata:   &shared.CatalogObjectMetadata{Name: name},
 		Spec:       spec,
 	}
 }

@@ -10,14 +10,14 @@ import (
 // Resources is the main entry point for the Pulumi module.
 // It orchestrates the creation of a Kubernetes PriorityClass with its
 // priority value, default flag, and preemption policy.
-func Resources(ctx *pulumi.Context, stackInput *kubernetespriorityclassv1alpha1.KubernetesPriorityClassStackInput) error {
+func Resources(ctx *pulumi.Context, iacInput *kubernetespriorityclassv1alpha1.KubernetesPriorityClassIacInput) error {
 	// Initialize locals with derived values
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// Create Kubernetes provider from credentials
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
 		ctx,
-		stackInput.ProviderConfig,
+		iacInput.ProviderConfig,
 		"kubernetes",
 	)
 	if err != nil {

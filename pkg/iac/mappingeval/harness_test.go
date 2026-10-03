@@ -251,9 +251,9 @@ metadata:
   name: forward-ref
 spec:
   members:
-    - component: awssubnet
+    - kind_dir: awssubnet
       manifest_path: catalog/aws/awssubnet/v1alpha1/e2e/scenarios/routed.yaml
-    - component: awsvpc
+    - kind_dir: awsvpc
       manifest_path: catalog/aws/awsvpc/v1alpha1/e2e/prerequisite.yaml
   scan_scope:
     region: us-west-2
@@ -299,7 +299,7 @@ func loadSuite(t *testing.T, root string) *mappingeval.LoadedSuite {
 // fixture identifiers would record.
 func buildGroundTruth(t *testing.T, root string) *mappingeval.GroundTruth {
 	t.Helper()
-	claimsByComponent := map[string][]mappingeval.AccountResourceRef{
+	claimsByKind := map[string][]mappingeval.AccountResourceRef{
 		"awsvpc":             {{TypeName: "AWS::EC2::VPC", Identifier: fixtureVpcID}},
 		"awsinternetgateway": {{TypeName: "AWS::EC2::InternetGateway", Identifier: fixtureIgwID}},
 		"awssubnet": {
@@ -313,16 +313,16 @@ func buildGroundTruth(t *testing.T, root string) *mappingeval.GroundTruth {
 	}
 	gt := &mappingeval.GroundTruth{}
 	for _, member := range loadSuite(t, root).Members {
-		claims, known := claimsByComponent[member.Component]
+		claims, known := claimsByKind[member.KindDir]
 		if !known {
-			t.Fatalf("suite member %s has no fixture claims -- update the test fixture alongside the suite", member.Component)
+			t.Fatalf("suite member %s has no fixture claims -- update the test fixture alongside the suite", member.KindDir)
 		}
 		gt.Instances = append(gt.Instances, mappingeval.GroundTruthInstance{
-			Component: member.Component,
-			Kind:      member.Kind,
-			Name:      member.Name,
-			Manifest:  member.Manifest,
-			Claims:    claims,
+			KindDir:  member.KindDir,
+			Kind:     member.Kind,
+			Name:     member.Name,
+			Manifest: member.Manifest,
+			Claims:   claims,
 		})
 	}
 	return gt
@@ -354,8 +354,8 @@ func scoreBaseline(t *testing.T, root string, gt *mappingeval.GroundTruth, mutat
 	if err != nil {
 		t.Fatalf("proposal violates the contract: %v", err)
 	}
-	components := []string{"awsvpc", "awsinternetgateway", "awssubnet", "awss3bucket", "awssqsqueue", "awssnstopic"}
-	opts, err := mappingeval.ScoreOptionsFromCatalog(root, "aws", components)
+	kindDirs := []string{"awsvpc", "awsinternetgateway", "awssubnet", "awss3bucket", "awssqsqueue", "awssnstopic"}
+	opts, err := mappingeval.ScoreOptionsFromCatalog(root, "aws", kindDirs)
 	if err != nil {
 		t.Fatalf("score options: %v", err)
 	}

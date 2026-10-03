@@ -6,7 +6,7 @@ package refcheck
 import (
 	"testing"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // TestForeignKeyReferencesAllResolve enforces the registry-wide invariant: every
@@ -30,15 +30,15 @@ func TestForeignKeyReferencesAllResolve(t *testing.T) {
 func TestOwnNameReason(t *testing.T) {
 	cases := []struct {
 		name    string
-		kind    cloudresourcekind.CloudResourceKind
+		kind    catalogkind.CatalogKind
 		refPath string
 		wantBad bool
 	}{
-		{"metadata.name into a kind with spec.name is refused", cloudresourcekind.CloudResourceKind_KubernetesSecret, "metadata.name", true},
-		{"metadata.name into a ServiceAccount is refused", cloudresourcekind.CloudResourceKind_KubernetesServiceAccount, "metadata.name", true},
-		{"the published name output is sound", cloudresourcekind.CloudResourceKind_KubernetesSecret, "status.outputs.secret_name", false},
-		{"spec.name itself is sound", cloudresourcekind.CloudResourceKind_KubernetesSecret, "spec.name", false},
-		{"metadata.name into a kind without spec.name is sound", cloudresourcekind.CloudResourceKind_KubernetesClusterIssuer, "metadata.name", false},
+		{"metadata.name into a kind with spec.name is refused", catalogkind.CatalogKind_KubernetesSecret, "metadata.name", true},
+		{"metadata.name into a ServiceAccount is refused", catalogkind.CatalogKind_KubernetesServiceAccount, "metadata.name", true},
+		{"the published name output is sound", catalogkind.CatalogKind_KubernetesSecret, "status.outputs.secret_name", false},
+		{"spec.name itself is sound", catalogkind.CatalogKind_KubernetesSecret, "spec.name", false},
+		{"metadata.name into a kind without spec.name is sound", catalogkind.CatalogKind_KubernetesClusterIssuer, "metadata.name", false},
 	}
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {

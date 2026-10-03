@@ -10,13 +10,13 @@ import (
 // Resources is the module entry point—kept small to mirror a Terraform module's main.tf.
 func Resources(
 	ctx *pulumi.Context,
-	stackInput *cloudflareloadbalancerpoolv1alpha1.CloudflareLoadBalancerPoolStackInput,
+	iacInput *cloudflareloadbalancerpoolv1alpha1.CloudflareLoadBalancerPoolIacInput,
 ) error {
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	cloudflareProvider, err := pulumicloudflareprovider.Get(
 		ctx,
-		stackInput.ProviderConfig,
+		iacInput.ProviderConfig,
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup cloudflare provider")

@@ -17,10 +17,10 @@ planton pulumi up --manifest dns-record.yaml
 
 ### Standalone Usage
 
-1. Set the stack input as an environment variable:
+1. Set the IaC input as an environment variable:
 
 ```bash
-export PLANTON_CLOUD_RESOURCE_MANIFEST=$(cat <<EOF
+export PLANTON_CATALOG_OBJECT_MANIFEST=$(cat <<EOF
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpDnsRecord
 metadata:
@@ -53,7 +53,7 @@ pulumi up
 
 ## Inputs
 
-The module reads its configuration from the `GcpDnsRecordStackInput` proto message:
+The module reads its configuration from the `GcpDnsRecordIacInput` proto message:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|

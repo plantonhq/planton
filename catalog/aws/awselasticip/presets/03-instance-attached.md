@@ -38,4 +38,4 @@ offers), referencing the instance component, so the chart graph reads
   attaching it to a running instance no longer makes it free; only
   BYOIP-pool addresses are exempt
 
-The verified figure for this preset lives in the component's generated estimate at `catalog/_pricing/estimates/awselasticip.yaml` — computed from the pinned price book, never hand-typed here.
+The verified figure for this preset lives in the kind's generated estimate at `catalog/_pricing/estimates/awselasticip.yaml` — computed from the pinned price book, never hand-typed here.

@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpsubnetwork.v1alpha1;
 
 // Outputs produced after provisioning a GCP subnetwork.
-message GcpSubnetworkStackOutputs {
+message GcpSubnetworkOutputs {
   // Self-link URI of the subnetwork — the value GKE clusters, compute
   // instances, and other subnet consumers reference.
   string subnetwork_self_link = 1;
@@ -16,7 +16,7 @@ message GcpSubnetworkStackOutputs {
 
   // Secondary (alias) ranges on this subnet, with their names and CIDRs.
   // GKE clusters select their pod/service ranges by range_name.
-  repeated GcpSubnetworkSecondaryRangeStackOutput secondary_ranges = 4;
+  repeated GcpSubnetworkSecondaryRangeOutput secondary_ranges = 4;
 
   // Name of the subnetwork as it exists in GCP. Referenced by consumers
   // that address subnets by name (e.g. Cloud Run Direct VPC egress).
@@ -38,7 +38,7 @@ message GcpSubnetworkStackOutputs {
 }
 
 // One secondary range as provisioned.
-message GcpSubnetworkSecondaryRangeStackOutput {
+message GcpSubnetworkSecondaryRangeOutput {
   // Name of the secondary range (unique within the subnet).
   string range_name = 1;
 

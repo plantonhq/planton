@@ -1,7 +1,7 @@
 # Import recipes cover the AWS staples, every one proven by a live round-trip
 
 **Date:** 2026-07-10
-**Scope:** `apis/dev/planton/provider/aws/` (catalog + 8 new component maps + ECR e2e fixture), `apis/dev/planton/iac/` (recipe vocabulary), `pkg/iac/importmap` (auto-discovery + optional segments), `e2e/framework/runner` (round-trip tolerance classes + account-level ARN parts), `_rules/deployment-component/` (forge/update carry the recipe step)
+**Scope:** `apis/dev/planton/provider/aws/` (catalog + 8 new kind maps + ECR e2e fixture), `apis/dev/planton/iac/` (recipe vocabulary), `pkg/iac/importmap` (auto-discovery + optional segments), `e2e/framework/runner` (round-trip tolerance classes + account-level ARN parts), `_rules/catalog-kind/` (forge/update carry the recipe step)
 
 ## Summary
 
@@ -11,7 +11,7 @@ only S3 had run the live proof), **every mapped kind now has a green
 round-trip lane**: deploy a real fixture, set its state aside, re-import
 every resource blind through the recipes, and require the follow-up plan to
 propose no real change. Enrollment discipline is restructured so recipe
-coverage can scale without silent rot, and the component forge/update
+coverage can scale without silent rot, and the kind forge/update
 workflows now carry the recipe step by default.
 
 ## New recipes (all live-proven 2026-07-10; ledger in `pkg/iac/importmap/README.md`)
@@ -20,7 +20,7 @@ workflows now carry the recipe step by default.
   `{subnet_id}/{route_table_id}` association composite. A new `routed`
   scenario deploys all three so the composite is proven, not assumed.
 - **awsinternetgateway**, **awsnatgateway** — AWS-assigned gateway ids from
-  stack outputs.
+  outputs.
 - **awsiamrole** — the role by name (`metadata.name` basis), inline policies
   by `{role_name}:{inline_policy_name}` and managed attachments by
   `{role_name}/{managed_policy_arn}` — both second segments ride the
@@ -67,14 +67,14 @@ workflows now carry the recipe step by default.
 ## Enrollment discipline: the file IS the signal
 
 `TestImportMapConformance` now auto-discovers every
-`{component}/v1/iac/import-map.yaml` (`DiscoverComponentImportMaps`) instead
+`{kind}/v1/iac/import-map.yaml` (`DiscoverCatalogKindImportMaps`) instead
 of a hand-maintained allowlist — previously a brand-new map got ZERO offline
 validation until someone remembered to enroll it, while the platform's
 catalog bundler shipped it to users regardless. File presence is now the
 single enrollment signal for the offline guard, the live round-trip gate,
 and the catalog bundler alike. "Live-proven" is a README ledger plus the
 no-unproven-merges rule; the round-trip lane itself is the only honest
-enforcement. Drift errors now tell the next component author exactly which
+enforcement. Drift errors now tell the next kind author exactly which
 file to fix.
 
 ## Round-trip harness
@@ -89,9 +89,9 @@ file to fix.
 
 ## Workflow rules
 
-`forge-planton-component.mdc` gains Phase 6c (import recipes: catalog
-entries + component map + the live round-trip as a merge gate) and the
-success-criteria line; `update-planton-component.mdc`'s final validation
+`forge-catalog-kind.mdc` gains Phase 6c (import recipes: catalog
+entries + kind map + the live round-trip as a merge gate) and the
+success-criteria line; `update-catalog-kind.mdc`'s final validation
 covers the module-resource-set-changed case with the conformance guard as
 its tripwire.
 

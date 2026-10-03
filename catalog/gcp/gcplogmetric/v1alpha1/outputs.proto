@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcplogmetric.v1alpha1;
 
 // Outputs produced after provisioning a Cloud Logging log-based metric.
-message GcpLogMetricStackOutputs {
+message GcpLogMetricOutputs {
   // The metric name. Address it from Cloud Monitoring (dashboards, alert
   // policy filters) as metric.type =
   // "logging.googleapis.com/user/{metric_name}".

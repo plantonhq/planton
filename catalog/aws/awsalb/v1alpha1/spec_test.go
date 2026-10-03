@@ -27,7 +27,7 @@ func minimalValidAlb() *AwsAlb {
 	return &AwsAlb{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsAlb",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "demo-alb",
 		},
 		Spec: &AwsAlbSpec{

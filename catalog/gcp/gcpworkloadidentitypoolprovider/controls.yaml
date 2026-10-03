@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: gcpworkloadidentitypoolprovider
 spec:
@@ -41,7 +41,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: This component IS the issuer half of keyless federation -- it turns a pool into a working keyless-auth path by trusting exactly one external issuer (aws, oidc, saml, or x509, an exclusive oneof both the spec and the API enforce), exchanging that issuer's credentials for short-lived Google credentials with no service-account key anywhere.
+        reference: This kind IS the issuer half of keyless federation -- it turns a pool into a working keyless-auth path by trusting exactly one external issuer (aws, oidc, saml, or x509, an exclusive oneof both the spec and the API enforce), exchanging that issuer's credentials for short-lived Google credentials with no service-account key anywhere.
       notes: disabled is the emergency kill switch -- a disabled provider rejects NEW token exchanges, while already-issued Google credentials remain valid until they expire (minutes to an hour), so a compromise response should pair disabling with revoking active sessions on the bound service accounts.
     - control_id: no-legacy-auth
       status: not_applicable

@@ -47,7 +47,7 @@ iac/pulumi/
     ├── main.go       # Module initialization and coordination
     ├── vpc.go        # VPC resource creation logic
     ├── locals.go     # Local values and labels
-    └── outputs.go    # Stack outputs
+    └── outputs.go    # Outputs
 ```
 
 ## Quick Start
@@ -70,7 +70,7 @@ pulumi config set gcp:region us-west1  # Optional, for provider config
 
 ### 3. Create Input File
 
-Create a `stack-input.yaml` file with your VPC specification:
+Create a `iac-input.yaml` file with your VPC specification:
 
 ```yaml
 target:
@@ -138,11 +138,11 @@ make update-deps
 
 ### Initialization Flow
 
-1. **`main.go`**: Entry point that reads `stack-input.yaml` and calls the module
+1. **`main.go`**: Entry point that reads `iac-input.yaml` and calls the module
 2. **`module/main.go`**: Initializes locals and orchestrates resource creation
 3. **`module/locals.go`**: Computes labels, project ID, and routing mode from input
 4. **`module/vpc.go`**: Creates the VPC network resource with proper dependencies
-5. **`module/outputs.go`**: Exports stack outputs
+5. **`module/outputs.go`**: Exports outputs
 
 ### Key Components
 
@@ -179,8 +179,8 @@ import (
     "github.com/plantonhq/planton/catalog/gcp/gcpvpcnetwork/iac/pulumi/module"
 )
 
-func deployVpc(ctx *pulumi.Context, stackInput *gcpvpcnetworkv1.GcpVpcNetworkStackInput) error {
-    return module.Resources(ctx, stackInput)
+func deployVpc(ctx *pulumi.Context, iacInput *gcpvpcnetworkv1.GcpVpcNetworkIacInput) error {
+    return module.Resources(ctx, iacInput)
 }
 ```
 

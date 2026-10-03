@@ -9,30 +9,30 @@ import (
 	awsvpcv1 "github.com/plantonhq/planton/catalog/aws/awsvpc/v1alpha1"
 	digitaloceanprovider "github.com/plantonhq/planton/catalog/digitalocean"
 	dovpcv1 "github.com/plantonhq/planton/catalog/digitalocean/digitaloceanvpc/v1alpha1"
-	"github.com/plantonhq/planton/pkg/iac/stackinput"
-	"github.com/plantonhq/planton/pkg/iac/stackinput/stackinputproviderconfig"
+	"github.com/plantonhq/planton/pkg/iac/iacinput"
+	"github.com/plantonhq/planton/pkg/iac/iacinput/iacinputproviderconfig"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/protobuf/proto"
 )
 
-// awsStackInputYaml builds a stack input through the production path
-// (BuildStackInputYaml + BuildFromProto) so the test exercises the same
+// awsIacInputYaml builds an IaC input through the production path
+// (BuildIacInputYaml + BuildFromProto) so the test exercises the same
 // protojson/YAML round-trip a live run takes.
-func awsStackInputYaml(t *testing.T, cfg *awsprovider.AwsProviderConfig) string {
+func awsIacInputYaml(t *testing.T, cfg *awsprovider.AwsProviderConfig) string {
 	t.Helper()
 	manifest := &awsvpcv1.AwsVpc{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsVpc",
-		Metadata:   &shared.CloudResourceMetadata{Name: "override-test-vpc"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "override-test-vpc"},
 	}
-	providerConfig, cleanup, err := stackinputproviderconfig.BuildFromProto(
-		cfg, cloudresourcekind.CloudResourceProvider_aws)
+	providerConfig, cleanup, err := iacinputproviderconfig.BuildFromProto(
+		cfg, catalogkind.CatalogProvider_aws)
 	require.NoError(t, err)
 	t.Cleanup(cleanup)
-	yaml, err := stackinput.BuildStackInputYaml(manifest, providerConfig)
+	yaml, err := iacinput.BuildIacInputYaml(manifest, providerConfig)
 	require.NoError(t, err)
 	return yaml
 }
@@ -69,7 +69,7 @@ func fullProviderBlockConfig() *awsprovider.AwsProviderConfig {
 func TestWriteProviderOverrideFile_FullSurface(t *testing.T) {
 	moduleDir := t.TempDir()
 
-	wrote, err := WriteProviderOverrideFile(moduleDir, awsStackInputYaml(t, fullProviderBlockConfig()))
+	wrote, err := WriteProviderOverrideFile(moduleDir, awsIacInputYaml(t, fullProviderBlockConfig()))
 	require.NoError(t, err)
 	assert.True(t, wrote)
 
@@ -105,7 +105,7 @@ func TestWriteProviderOverrideFile_FullSurface(t *testing.T) {
 
 func TestWriteProviderOverrideFile_Deterministic(t *testing.T) {
 	moduleDir := t.TempDir()
-	yaml := awsStackInputYaml(t, fullProviderBlockConfig())
+	yaml := awsIacInputYaml(t, fullProviderBlockConfig())
 
 	_, err := WriteProviderOverrideFile(moduleDir, yaml)
 	require.NoError(t, err)
@@ -133,7 +133,7 @@ func TestWriteProviderOverrideFile_NoArgs_RemovesStaleFile(t *testing.T) {
 		SecretAccessKey: "wJalrXUtnFEMIK7MDENGbPxRfiCYEXAMPLEKEY00",
 		Region:          "us-east-1",
 	}
-	wrote, err := WriteProviderOverrideFile(moduleDir, awsStackInputYaml(t, cfg))
+	wrote, err := WriteProviderOverrideFile(moduleDir, awsIacInputYaml(t, cfg))
 	require.NoError(t, err)
 	assert.False(t, wrote)
 	_, statErr := os.Stat(stalePath)
@@ -145,9 +145,9 @@ func TestWriteProviderOverrideFile_NoProviderConfig_NoWrite(t *testing.T) {
 	manifest := &awsvpcv1.AwsVpc{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsVpc",
-		Metadata:   &shared.CloudResourceMetadata{Name: "ambient-vpc"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "ambient-vpc"},
 	}
-	yaml, err := stackinput.BuildStackInputYaml(manifest, nil)
+	yaml, err := iacinput.BuildIacInputYaml(manifest, nil)
 	require.NoError(t, err)
 
 	wrote, err := WriteProviderOverrideFile(moduleDir, yaml)
@@ -162,14 +162,14 @@ func TestWriteProviderOverrideFile_NonAwsProvider_NoOp(t *testing.T) {
 	manifest := &dovpcv1.DigitalOceanVpc{
 		ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 		Kind:       "DigitalOceanVpc",
-		Metadata:   &shared.CloudResourceMetadata{Name: "do-vpc"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "do-vpc"},
 	}
-	providerConfig, cleanup, err := stackinputproviderconfig.BuildFromProto(
+	providerConfig, cleanup, err := iacinputproviderconfig.BuildFromProto(
 		&digitaloceanprovider.DigitalOceanProviderConfig{ApiToken: "dop_v1_token"},
-		cloudresourcekind.CloudResourceProvider_digital_ocean)
+		catalogkind.CatalogProvider_digital_ocean)
 	require.NoError(t, err)
 	t.Cleanup(cleanup)
-	yaml, err := stackinput.BuildStackInputYaml(manifest, providerConfig)
+	yaml, err := iacinput.BuildIacInputYaml(manifest, providerConfig)
 	require.NoError(t, err)
 
 	wrote, err := WriteProviderOverrideFile(moduleDir, yaml)

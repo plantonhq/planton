@@ -9,16 +9,16 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azuremachinelearningworkspacev1alpha1.AzureMachineLearningWorkspaceStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuremachinelearningworkspacev1alpha1.AzureMachineLearningWorkspaceIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient
 	// chain). The machine_learning features flag makes destroy purge the soft-delete ghost
 	// that would otherwise keep holding the workspace NAME (the provider default leaves it);
 	// a soft-delete recovery window is not part of this module's contract -- mirrors the
 	// Terraform module's provider features block.
-	azureProvider, err := pulumiazureprovider.GetWithFeatures(ctx, stackInput.ProviderConfig,
+	azureProvider, err := pulumiazureprovider.GetWithFeatures(ctx, iacInput.ProviderConfig,
 		azure.ProviderFeaturesArgs{
 			MachineLearning: azure.ProviderFeaturesMachineLearningArgs{
 				PurgeSoftDeletedWorkspaceOnDestroy: pulumi.Bool(true),

@@ -6,7 +6,7 @@ package dev.planton.gcp.gcpgcsbucketiammember.v1alpha1;
 // has no server-generated identity beyond its inputs; the outputs echo the
 // resolved grant so audits see exactly what was applied without re-resolving
 // references.
-message GcpGcsBucketIamMemberStackOutputs {
+message GcpGcsBucketIamMemberOutputs {
   // The bucket whose IAM policy received the grant, after reference
   // resolution.
   string bucket = 1;

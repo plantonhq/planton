@@ -4,7 +4,7 @@ Deploys a custom Azure RBAC role: a named, reusable bundle of permissions that p
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Custom Role Definition** -- one tenant-visible RBAC role at the chosen scope (management group, subscription, or resource group), with its permission blocks and assignable scopes
 
@@ -14,7 +14,7 @@ A definition grants nothing by itself -- permissions only take effect when an **
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -56,7 +56,7 @@ spec:
 planton apply -f role.yaml
 ```
 
-This creates a subscription-scoped custom role that can start, stop, restart, and deallocate existing VMs but never create or delete them; assignable scopes are omitted, so Azure defaults them to the definition's own scope. A Stack Job tracks the provisioning in real time.
+This creates a subscription-scoped custom role that can start, stop, restart, and deallocate existing VMs but never create or delete them; assignable scopes are omitted, so Azure defaults them to the definition's own scope. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -108,15 +108,15 @@ These are the most important decisions when configuring a custom role. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `scope`, `assignableScopes` | `status.outputs.resource_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -124,7 +124,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `role_definition_guid` | The definition's GUID resource name | Identifying the definition in authorization-API automation, since assignments track roles by GUID |
 | `assignable_scopes` | The scopes Azure recorded -- carries the provider-defaulted own scope when the spec omitted the field | Knowing where grants of this role may exist without re-reading the spec |
 
-The `role_name` and `scope` outputs echo the definition's coordinates as deployed for portal cross-reference and audit tooling; they are not typically wired into other Cloud Resources.
+The `role_name` and `scope` outputs echo the definition's coordinates as deployed for portal cross-reference and audit tooling; they are not typically wired into other Infra Components.
 
 ## Common Patterns
 
@@ -138,6 +138,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- binds this role to a principal at a scope, consuming `role_definition_id`
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- a common definition scope and assignable-scope boundary
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- the principal most grants of custom roles target
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- binds this role to a principal at a scope, consuming `role_definition_id`
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- a common definition scope and assignable-scope boundary
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- the principal most grants of custom roles target

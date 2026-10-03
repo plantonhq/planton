@@ -4,7 +4,7 @@ Creates a Google Group in Cloud Identity or Google Workspace and manages its mem
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Group** -- the `cloud_identity_group` under `customerId` with the email `groupEmail`, its display name and description, the discussion-forum label every Google Group carries (plus the security label when `security` is true), and its initial configuration
 - **Memberships** -- one `cloud_identity_group_membership` per entry in `memberships`, keyed by the member's email, with its roles and optional expiry
@@ -78,7 +78,7 @@ planton apply -f cloud-identity-group.yaml
 - Listed roles must include **`MEMBER`** and be unique; **`expireTime`** applies only to `MEMBER`.
 - Each member email appears once.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -108,7 +108,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — the service accounts a group can hold as members
 - [GcpProjectIamMember](/docs/catalog/gcp/gcpprojectiammember) — binds a role to `group:{groupEmail}`

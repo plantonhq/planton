@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsorganizationaccount.v1alpha1;
 
-// AwsOrganizationAccountStackOutputs captures the observable state of
+// AwsOrganizationAccountOutputs captures the observable state of
 // the member account after apply.
-message AwsOrganizationAccountStackOutputs {
+message AwsOrganizationAccountOutputs {
   // The member account's 12-digit AWS account ID (also the provider's
   // import ID; the folded contact and region settings import as
   // composites of it).

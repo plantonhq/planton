@@ -15,7 +15,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpbillingbudget
+    e2e-catalog-kind: gcpbillingbudget
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_BILLING_ACCOUNT_ID

@@ -21,7 +21,7 @@ func ruleManifest() *kubernetesprometheusrulev1alpha1.KubernetesPrometheusRule {
 	return &kubernetesprometheusrulev1alpha1.KubernetesPrometheusRule{
 		ApiVersion: "kubernetes.planton.dev/v1alpha1",
 		Kind:       "KubernetesPrometheusRule",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "api-slo",
 			Id:   "k8sprule-123",
 			Org:  "acme",
@@ -103,7 +103,7 @@ func TestRender_RoutesTheEnvelopeAndKeepsUpstreamKeys(t *testing.T) {
 
 func TestRender_OmitsUnsetIdentityAndAnnotations(t *testing.T) {
 	m := ruleManifest()
-	m.Metadata = &shared.CloudResourceMetadata{Name: "bare"}
+	m.Metadata = &shared.CatalogObjectMetadata{Name: "bare"}
 	m.Spec.Labels = nil
 	m.Spec.Annotations = nil
 	obj, err := Render(m)

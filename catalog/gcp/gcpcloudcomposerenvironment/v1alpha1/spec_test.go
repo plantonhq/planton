@@ -36,7 +36,7 @@ var _ = ginkgo.Describe("GcpCloudComposerEnvironmentSpec", func() {
 		return &GcpCloudComposerEnvironment{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpCloudComposerEnvironment",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-composer-env",
 			},
 			Spec: &GcpCloudComposerEnvironmentSpec{

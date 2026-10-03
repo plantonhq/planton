@@ -4,7 +4,7 @@ Deploys a Container Apps Managed Environment that serves as the hosting boundary
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Container App Environment** -- a managed execution boundary in the specified Azure region and resource group, providing shared networking, Dapr infrastructure, and logging for all Container Apps running inside it
 - **VNet Integration** -- created only when `infrastructureSubnetId` is provided; injects the environment into a customer-managed VNet for private connectivity to databases, storage, and other VNet resources
@@ -17,14 +17,14 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the environment will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
-- **A VNet Subnet** (optional, for VNet-injected environments) with a /21 or larger address space (minimum 2048 IPs). Provide the subnet resource ID directly or reference an AzureSubnet Cloud Resource via ValueFromRef.
-- **A Log Analytics Workspace** (optional) for centralized log collection. Provide the workspace ID directly or reference an AzureLogAnalyticsWorkspace Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the environment will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
+- **A VNet Subnet** (optional, for VNet-injected environments) with a /21 or larger address space (minimum 2048 IPs). Provide the subnet resource ID directly or reference an AzureSubnet Infra Component via ValueFromRef.
+- **A Log Analytics Workspace** (optional) for centralized log collection. Provide the workspace ID directly or reference an AzureLogAnalyticsWorkspace Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -54,7 +54,7 @@ spec:
 planton apply -f container-app-env.yaml
 ```
 
-This creates a Consumption-plan environment with Azure-managed networking, external access (apps can receive public internet traffic), and streaming-only logs -- no VNet injection, no workload profiles, no Log Analytics. A Stack Job tracks the provisioning in real time.
+This creates a Consumption-plan environment with Azure-managed networking, external access (apps can receive public internet traffic), and streaming-only logs -- no VNet injection, no workload profiles, no Log Analytics. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -101,7 +101,7 @@ These are the most important decisions when configuring a Container App Environm
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -109,9 +109,9 @@ These are the most important decisions when configuring a Container App Environm
 | **AzureSubnet** (optional) | `infrastructureSubnetId` | `status.outputs.subnet_id` |
 | **AzureLogAnalyticsWorkspace** (optional) | `logAnalyticsWorkspaceId` | `status.outputs.workspace_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -135,6 +135,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the environment is created
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- provides the VNet subnet for VNet-injected environments
-- [**Azure Log Analytics Workspace**](/cloud-catalog/azure-log-analytics-workspace) -- provides centralized log collection for container app logs
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the environment is created
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- provides the VNet subnet for VNet-injected environments
+- [**Azure Log Analytics Workspace**](/infra-catalog/azure-log-analytics-workspace) -- provides centralized log collection for container app logs

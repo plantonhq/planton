@@ -29,7 +29,7 @@ func validResource() *AzureLocalNetworkGateway {
 	return &AzureLocalNetworkGateway{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureLocalNetworkGateway",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-lngw",
 		},
 		Spec: &AzureLocalNetworkGatewaySpec{

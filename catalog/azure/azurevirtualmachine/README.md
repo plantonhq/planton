@@ -65,7 +65,7 @@ Optional referenced kinds: `AzureManagedDisk` (data disks or an existing
 OS disk), `AzureUserAssignedIdentity` (user-assigned identity),
 `AzureKeyVault` (certificate installation).
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

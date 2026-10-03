@@ -12,7 +12,7 @@ This component is the catalog's sole intentional passthrough — for charts no f
 
 ```
 iac/pulumi/
-├── main.go             # Entrypoint: loads stack input, calls the module
+├── main.go             # Entrypoint: loads IaC input, calls the module
 ├── Pulumi.yaml         # Pulumi project configuration
 └── module/
     ├── main.go         # Orchestration: provider, namespace, helm.v3.Release, outputs
@@ -24,7 +24,7 @@ iac/pulumi/
 
 ## How It Works
 
-1. **Provider**: A Kubernetes provider is built from the credential in the stack input
+1. **Provider**: A Kubernetes provider is built from the credential in the IaC input
 2. **Namespace**: When `create_namespace` is true, the namespace is created as an explicit, module-owned resource stamped with the standard Planton governance labels — never via Helm's own create-namespace flag, which would create it unlabeled. The release depends on it explicitly
 3. **Identity resolution**: `locals.go` resolves the release name (`spec.release_name`, else `metadata.name`) and Helm's own defaults for the optional knobs (`timeout_seconds` 300, `max_history` 10) so both engines send identical values whether or not the spec set the fields
 4. **Values merge** (`values.go`): the layers merge module-side with the documented precedence — `values_yaml` is parsed as YAML, then `set` entries apply with Helm's own `strvals` `--set` parser (coercion: `"true"` → bool, digits → number, `"null"` deletes), then `set_string` and `set_sensitive` apply with the `--set-string` parser (literal strings). Entries apply in sorted-key order, matching Terraform's lexical map iteration, so even same-path collisions resolve identically on both engines. The Release receives one final merged map

@@ -24,7 +24,7 @@ The Percona Server for MongoDB Operator provides these capabilities through Kube
 
 ### 1. PerconaServerMongodbOperator API Resource
 
-New Kubernetes cloud resource kind for deploying the Percona operator:
+New Kubernetes catalog kind for deploying the Percona operator:
 
 ```yaml
 apiVersion: kubernetes.planton.dev/v1
@@ -52,9 +52,9 @@ spec:
 - Namespace isolation
 - Helm chart-based installation
 
-### 2. CloudResourceKind Registration
+### 2. CatalogKind Registration
 
-Added `PerconaServerMongodbOperator` to the cloud resource kind enum:
+Added `PerconaServerMongodbOperator` to the catalog kind enum:
 
 ```protobuf
 PerconaServerMongodbOperator = 834 [(kind_meta) = {
@@ -104,7 +104,7 @@ The Percona Server for MongoDB Operator manages:
 - `main.go` - Main Pulumi program
 - `namespace.go` - Namespace creation
 - `operator.go` - Helm release for operator
-- `outputs.go` - Stack outputs
+- `outputs.go` - Outputs
 - `vars.go` - Input variables
 
 **Helm Chart**:
@@ -212,7 +212,7 @@ spec:
 
 ## Architecture
 
-### Component Interaction
+### Kind Interaction
 
 ```
 ┌─────────────────────────────────────────┐

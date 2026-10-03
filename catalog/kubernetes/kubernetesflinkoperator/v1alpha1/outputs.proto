@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesflinkoperator.v1alpha1;
 
-//flink-operator-kubernetes stack outputs
-message KubernetesFlinkOperatorStackOutputs {
+//flink-operator-kubernetes outputs
+message KubernetesFlinkOperatorOutputs {
   //namespace the operator runs in.
   string namespace = 1;
 

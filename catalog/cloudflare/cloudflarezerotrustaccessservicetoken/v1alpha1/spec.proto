@@ -13,7 +13,7 @@ import "shared/options/options.proto";
 //
 // THE SECRET IS RETURNED ONLY AT CREATION AND AT ROTATION -- Cloudflare never
 // returns it again on reads, and an imported token cannot recover it. Capture
-// the `client_secret` stack output into a secret store at deploy time; a lost
+// the `client_secret` output into a secret store at deploy time; a lost
 // secret means rotating the token.
 //
 // Rotation is first-class: increment client_secret_version to mint a new secret,
@@ -69,7 +69,7 @@ message CloudflareZeroTrustAccessServiceTokenSpec {
 
   // Version number of the current client secret. Incrementing it triggers a
   // ROTATION: Cloudflare mints a new secret (returned once in the
-  // client_secret stack output) and keeps accepting the previous secret until
+  // client_secret output) and keeps accepting the previous secret until
   // previous_client_secret_expires_at. Leave unset until the first rotation
   // (Cloudflare treats the initial secret as version 1). Creating a token
   // with a higher version directly also works (measured live 2026-08-26);
@@ -77,7 +77,7 @@ message CloudflareZeroTrustAccessServiceTokenSpec {
   // current one, so re-asserting an equal version is a no-op.
   optional int32 client_secret_version = 5 [
     (buf.validate.field).int32.gte = 1,
-    (dev.planton.shared.options.sensitive_exempt_reason) = "a rotation counter, not credential material -- the secret itself is the client_secret stack output"
+    (dev.planton.shared.options.sensitive_exempt_reason) = "a rotation counter, not credential material -- the secret itself is the client_secret output"
   ];
 
   // When the PREVIOUS client secret stops being accepted after a rotation, as an

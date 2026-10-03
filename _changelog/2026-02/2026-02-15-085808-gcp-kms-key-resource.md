@@ -23,7 +23,7 @@ Planton's GCP provider lacked the ability to provision KMS cryptographic keys --
 
 ### GcpKmsKey Resource
 
-A complete deployment component with:
+A complete catalog kind with:
 
 - **Proto API** -- 4 proto files with 7 spec fields, GcpKmsKeyVersionTemplate sub-message, CEL validations for purpose, protection_level, and duration format strings
 - **Pulumi module** -- 4 Go files creating `kms.CryptoKey` with framework label management and conditional field setting

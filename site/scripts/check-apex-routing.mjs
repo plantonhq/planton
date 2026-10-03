@@ -16,7 +16,7 @@
  * planton-platform checkout:
  *
  *   1. the router's website list -- `site_roots` and `site_files` in its params
- *      file (infrastructure/desktop/Infra.foundation.InfraProject.foundation-apex-router.yaml),
+ *      file (infrastructure/desktop/Infra.foundation.InfraStack.foundation-apex-router.yaml),
  *      the one place the website's paths are declared;
  *   2. the reserved handles -- PlatformReservedHandles.java's RESERVED_HANDLES.
  *
@@ -40,7 +40,7 @@ const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 const repoRoot = path.resolve(siteRoot, '..');
 const platformDir = process.env.PLANTON_PLATFORM_DIR ?? path.resolve(repoRoot, '..', 'planton-platform');
 
-const ROUTER_PARAMS = 'infrastructure/desktop/Infra.foundation.InfraProject.foundation-apex-router.yaml';
+const ROUTER_PARAMS = 'infrastructure/desktop/Infra.foundation.InfraStack.foundation-apex-router.yaml';
 const HANDLES = 'product/libs/java/domain/reserved-handles/src/main/java/ai/planton/reservedhandles/PlatformReservedHandles.java';
 
 /** Root files the export ships that the router must hand to the site exactly. */

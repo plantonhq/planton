@@ -8,7 +8,7 @@ declared in R2's own terms: the bucket, its account and jurisdiction, and a
 Cloudflare API token, all by reference to the catalog's Cloudflare kinds. The
 module does the S3 translation R2 needs (the jurisdiction's endpoint, region
 `auto`, the token as an S3 key pair); nothing S3-shaped is typed. This is the
-production half of the DR resource set in the component guide; the restore
+production half of the DR resource set in the kind guide; the restore
 half is a second `KubernetesPostgres` with a `bootstrap.recovery` block
 pointing at this archive and referencing this cluster's `-app` Secret.
 

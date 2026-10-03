@@ -4,7 +4,7 @@ Deploys a node agent on any Kubernetes cluster as an apps/v1 DaemonSet: exactly 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **Kubernetes DaemonSet** -- the core workload resource that schedules one pod per matching node, with the configured container image, resources, environment, probes, volume mounts, and security contexts
@@ -17,7 +17,7 @@ There is no replica count — node membership IS the replica count — and no Se
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -68,11 +68,11 @@ spec:
 planton apply -f daemonset.yaml
 ```
 
-This creates a DaemonSet running on every node including control-plane nodes, exposing node metrics on each node's own IP at port 9100. A Stack Job tracks the provisioning in real time.
+This creates a DaemonSet running on every node including control-plane nodes, exposing node metrics on each node's own IP at port 9100. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the DaemonSet to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the DaemonSet to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -104,7 +104,7 @@ These are the most important decisions when configuring a Kubernetes DaemonSet. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -112,9 +112,9 @@ These are the most important decisions when configuring a Kubernetes DaemonSet. 
 | **KubernetesServiceAccount** | `pod.serviceAccount` | `status.outputs.service_account_name` |
 | **KubernetesSecret** | `pod.imagePullSecrets` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -134,7 +134,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the target namespace for the DaemonSet
-- [**Kubernetes ServiceAccount**](/cloud-catalog/kubernetes-service-account) -- the identity agents run as when they read the Kubernetes API
-- [**Kubernetes RBAC**](/cloud-catalog/kubernetes-rbac) -- grants the agent identity its API permissions (composed, never bundled)
-- [**Kubernetes Secret**](/cloud-catalog/kubernetes-secret) -- image pull secrets and referenced credential material
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the target namespace for the DaemonSet
+- [**Kubernetes ServiceAccount**](/infra-catalog/kubernetes-service-account) -- the identity agents run as when they read the Kubernetes API
+- [**Kubernetes RBAC**](/infra-catalog/kubernetes-rbac) -- grants the agent identity its API permissions (composed, never bundled)
+- [**Kubernetes Secret**](/infra-catalog/kubernetes-secret) -- image pull secrets and referenced credential material

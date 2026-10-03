@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -20,7 +20,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: value}}
 }
 
-func reference(kind cloudresourcekind.CloudResourceKind, name string) *foreignkeyv1.StringValueOrRef {
+func reference(kind catalogkind.CatalogKind, name string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{Kind: kind, Name: name}}}
 }
 
@@ -37,7 +37,7 @@ func analysis() *GcpDeliveryPipelineAnalysis {
 	return &GcpDeliveryPipelineAnalysis{
 		Duration: "600s",
 		GoogleCloud: &GcpDeliveryPipelineGoogleCloudAnalysis{AlertPolicyChecks: []*GcpDeliveryPipelineAlertPolicyCheck{
-			{Id: "errors", AlertPolicies: []*foreignkeyv1.StringValueOrRef{reference(cloudresourcekind.CloudResourceKind_GcpMonitoringAlertPolicy, "web-errors")}},
+			{Id: "errors", AlertPolicies: []*foreignkeyv1.StringValueOrRef{reference(catalogkind.CatalogKind_GcpMonitoringAlertPolicy, "web-errors")}},
 		}},
 		CustomChecks: []*GcpDeliveryPipelineCustomCheck{{Id: "latency", Frequency: "60s", Task: smokeTask()}},
 	}
@@ -56,7 +56,7 @@ var _ = ginkgo.Describe("GcpDeliveryPipelineSpec", func() {
 		return &GcpDeliveryPipeline{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpDeliveryPipeline",
-			Metadata:   &shared.CloudResourceMetadata{Name: "web"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "web"},
 			Spec:       &GcpDeliveryPipelineSpec{Location: "us-central1"},
 		}
 	}
@@ -64,14 +64,14 @@ var _ = ginkgo.Describe("GcpDeliveryPipelineSpec", func() {
 	full := func() *GcpDeliveryPipeline {
 		msg := minimal()
 		s := msg.Spec
-		s.ProjectId = reference(cloudresourcekind.CloudResourceKind_GcpProject, "apps")
+		s.ProjectId = reference(catalogkind.CatalogKind_GcpProject, "apps")
 		s.DeliveryPipelineId = "web"
 		s.Description = "web app promotion"
 		s.Labels = map[string]string{"team": "web"}
 		s.Annotations = map[string]string{"owner": "web"}
 		s.SerialPipeline = &GcpDeliveryPipelineSerialPipeline{Stages: []*GcpDeliveryPipelineStage{
 			{
-				TargetId: reference(cloudresourcekind.CloudResourceKind_GcpDeployTarget, "web-dev"),
+				TargetId: reference(catalogkind.CatalogKind_GcpDeployTarget, "web-dev"),
 				Profiles: []string{"dev"},
 				DeployParameters: []*GcpDeliveryPipelineDeployParameters{
 					{Values: map[string]string{"replicas": "1"}, MatchTargetLabels: map[string]string{"tier": "dev"}},
@@ -101,7 +101,7 @@ var _ = ginkgo.Describe("GcpDeliveryPipelineSpec", func() {
 				}},
 			},
 			{
-				TargetId: reference(cloudresourcekind.CloudResourceKind_GcpDeployTarget, "web-prod"),
+				TargetId: reference(catalogkind.CatalogKind_GcpDeployTarget, "web-prod"),
 				Strategy: &GcpDeliveryPipelineStrategy{Canary: &GcpDeliveryPipelineCanary{
 					CustomCanaryDeployment: &GcpDeliveryPipelineCustomCanaryDeployment{PhaseConfigs: []*GcpDeliveryPipelinePhaseConfig{
 						{PhaseId: "canary-10", Percentage: 10, Profiles: []string{"canary"}, Verify: true, Analysis: analysis()},
@@ -121,9 +121,9 @@ var _ = ginkgo.Describe("GcpDeliveryPipelineSpec", func() {
 			AutomationId:   "promote-and-repair",
 			Description:    "promote dev to staging, repair failures",
 			Labels:         map[string]string{"team": "web"},
-			ServiceAccount: reference(cloudresourcekind.CloudResourceKind_GcpServiceAccount, "web-deployer"),
+			ServiceAccount: reference(catalogkind.CatalogKind_GcpServiceAccount, "web-deployer"),
 			Selector: &GcpDeliveryPipelineAutomationSelector{Targets: []*GcpDeliveryPipelineAutomationTarget{
-				{Id: reference(cloudresourcekind.CloudResourceKind_GcpDeployTarget, "web-dev")},
+				{Id: reference(catalogkind.CatalogKind_GcpDeployTarget, "web-dev")},
 				{Id: literal("*"), Labels: map[string]string{"tier": "prod"}},
 			}},
 			Rules: []*GcpDeliveryPipelineAutomationRule{
@@ -134,7 +134,7 @@ var _ = ginkgo.Describe("GcpDeliveryPipelineSpec", func() {
 					{Rollback: &GcpDeliveryPipelineRollback{}},
 				}}},
 				{TimedPromoteReleaseRule: &GcpDeliveryPipelineTimedPromoteReleaseRule{Id: "weekly", Schedule: "0 9 * * 1", TimeZone: "America/New_York",
-					DestinationTargetId: reference(cloudresourcekind.CloudResourceKind_GcpDeployTarget, "web-prod")}},
+					DestinationTargetId: reference(catalogkind.CatalogKind_GcpDeployTarget, "web-prod")}},
 			},
 		}}
 		s.DeletionPolicy = "PREVENT"

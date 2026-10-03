@@ -28,7 +28,7 @@ func validSite(spec *CloudflareWebAnalyticsSiteSpec) *CloudflareWebAnalyticsSite
 	return &CloudflareWebAnalyticsSite{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareWebAnalyticsSite",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-web-analytics-site",
 		},
 		Spec: spec,

@@ -12,10 +12,10 @@ type Locals struct {
 	CloudflareLogpushJob     *cloudflarelogpushjobv1alpha1.CloudflareLogpushJob
 }
 
-// initializeLocals copies stack-input fields into the Locals struct.
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflarelogpushjobv1alpha1.CloudflareLogpushJobStackInput) *Locals {
+// initializeLocals copies iac-input fields into the Locals struct.
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflarelogpushjobv1alpha1.CloudflareLogpushJobIacInput) *Locals {
 	locals := &Locals{}
-	locals.CloudflareLogpushJob = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareLogpushJob = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

@@ -108,7 +108,7 @@ composers at the `AwsVpc` outputs for main-table attachment.
   already enables DNS support + hostnames).
 - **Registry**: enum 242 with `prerequisites: [AwsVpc, AwsSubnet]` driving
   composed E2E resolution; kind map + gazelle regenerated.
-- **Deferred with recorded reasons** (component docs): the PrivateLink
+- **Deferred with recorded reasons** (kind docs): the PrivateLink
   provider side (`aws_vpc_endpoint_service` + its four satellites) is a
   separate product surface; the standalone policy and association resources
   are folded into the spec.

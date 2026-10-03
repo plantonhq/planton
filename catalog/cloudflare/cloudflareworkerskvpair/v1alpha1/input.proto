@@ -5,9 +5,9 @@ package dev.planton.cloudflare.cloudflareworkerskvpair.v1alpha1;
 import "catalog/cloudflare/cloudflareworkerskvpair/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-//cloudflare-workers-kv-pair stack-input
-message CloudflareWorkersKvPairStackInput {
-  //target cloud-resource
+//cloudflare-workers-kv-pair iac-input
+message CloudflareWorkersKvPairIacInput {
+  //target infra-component
   CloudflareWorkersKvPair target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

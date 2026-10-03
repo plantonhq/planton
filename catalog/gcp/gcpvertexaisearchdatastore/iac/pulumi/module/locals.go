@@ -22,9 +22,9 @@ type Locals struct {
 
 // initializeLocals derives the two defaulted names. Discovery Engine
 // resources carry no labels, so there is no attribution label set.
-func initializeLocals(_ *pulumi.Context, stackInput *gcpvertexaisearchdatastorev1alpha1.GcpVertexAiSearchDataStoreStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpvertexaisearchdatastorev1alpha1.GcpVertexAiSearchDataStoreIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpVertexAiSearchDataStore = stackInput.Target
+	locals.GcpVertexAiSearchDataStore = iacInput.Target
 
 	locals.DataStoreId = locals.GcpVertexAiSearchDataStore.Spec.DataStoreId
 	if locals.DataStoreId == "" {
@@ -35,6 +35,6 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpvertexaisearchdatastorev
 		locals.DisplayName = locals.GcpVertexAiSearchDataStore.Metadata.Name
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

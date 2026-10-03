@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: digitaloceandatabasekafkatopic
+    e2e-catalog-kind: digitaloceandatabasekafkatopic
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/digitalocean/digitaloceandatabasekafkatopic/e2e/fixtures/kafka-cluster.yaml"

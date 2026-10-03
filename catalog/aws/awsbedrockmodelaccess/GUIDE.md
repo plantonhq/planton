@@ -1,4 +1,4 @@
-# AwsBedrockModelAccess — Component Guide
+# AwsBedrockModelAccess — Kind Guide
 
 Authored operational judgment for the Bedrock model access component.
 

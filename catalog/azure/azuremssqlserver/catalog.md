@@ -4,7 +4,7 @@ Deploys an Azure SQL Database logical server — the administrative boundary the
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SQL Logical Server** -- an administrative endpoint in the specified Azure region and resource group with a globally-unique DNS name (`{serverName}.database.windows.net`), the chosen authentication posture, TLS floor, and connection policy
 - **Microsoft Entra Administrator** -- created when `azureadAdministrator` is set; a directory principal (user, group, or managed identity) granted the server's administrator role, optionally with Entra-only authentication
@@ -17,12 +17,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the SQL Server will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the SQL Server will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 - **A globally unique server name** -- `serverName` becomes the server hostname (`{serverName}.database.windows.net`). 1-63 lowercase letters, digits, and hyphens, starting and ending with a letter or digit.
 - **Network access planning** -- decide between public access (firewall/VNet rules) or private-only access (AzurePrivateEndpoint with `publicNetworkAccessEnabled: false`). Unlike PostgreSQL/MySQL Flexible Servers, Azure SQL does not support VNet delegation.
 
@@ -61,7 +61,7 @@ spec:
 planton apply -f mssql-server.yaml
 ```
 
-This creates a SQL logical server with SQL authentication, public access gated by the Azure-services firewall sentinel, and Azure's defaults everywhere else (engine 12.0, TLS 1.2, Default connection policy). Databases attach afterwards as AzureMssqlDatabase resources referencing this server. A Stack Job tracks the provisioning in real time.
+This creates a SQL logical server with SQL authentication, public access gated by the Azure-services firewall sentinel, and Azure's defaults everywhere else (engine 12.0, TLS 1.2, Default connection policy). Databases attach afterwards as AzureMssqlDatabase resources referencing this server. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,7 +94,7 @@ These are the most important decisions when configuring a SQL server. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -104,9 +104,9 @@ These are the most important decisions when configuring a SQL server. Explore th
 | **AzureKeyVaultKey** | `transparentDataEncryptionKeyVaultKeyId` | `status.outputs.key_id` |
 | **AzureSubnet** | `virtualNetworkRules[].subnetId` | `status.outputs.subnet_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -127,10 +127,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the SQL Server is created
-- [**Azure MSSQL Database**](/cloud-catalog/azure-mssql-database) -- databases attach to this server via its `server_id` output
-- [**Azure MSSQL Elastic Pool**](/cloud-catalog/azure-mssql-elastic-pool) -- shared-capacity pools attach via `server_id` (same region as the server)
-- [**Azure MSSQL Failover Group**](/cloud-catalog/azure-mssql-failover-group) -- pairs this server with a partner for cross-region DR
-- [**Azure Private Endpoint**](/cloud-catalog/azure-private-endpoint) -- private connectivity when public access is off
-- [**Azure Key Vault Key**](/cloud-catalog/azure-key-vault-key) -- the customer-managed TDE key
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- the identity that unwraps the TDE key and the Entra administrator principal
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the SQL Server is created
+- [**Azure MSSQL Database**](/infra-catalog/azure-mssql-database) -- databases attach to this server via its `server_id` output
+- [**Azure MSSQL Elastic Pool**](/infra-catalog/azure-mssql-elastic-pool) -- shared-capacity pools attach via `server_id` (same region as the server)
+- [**Azure MSSQL Failover Group**](/infra-catalog/azure-mssql-failover-group) -- pairs this server with a partner for cross-region DR
+- [**Azure Private Endpoint**](/infra-catalog/azure-private-endpoint) -- private connectivity when public access is off
+- [**Azure Key Vault Key**](/infra-catalog/azure-key-vault-key) -- the customer-managed TDE key
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- the identity that unwraps the TDE key and the Entra administrator principal

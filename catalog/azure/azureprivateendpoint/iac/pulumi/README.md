@@ -10,7 +10,7 @@ This Pulumi module creates an Azure Private Endpoint with an optional Private DN
 ## Architecture
 
 ```
-Stack Input
+IaC Input
     ├── Target (AzurePrivateEndpoint)
     │   ├── Metadata (name, org, env)
     │   └── Spec
@@ -39,7 +39,7 @@ Resources Created
         ├── Name: "{metadata.name}-dns-zone-group"
         └── PrivateDnsZoneId: spec.private_dns_zone_id
 
-Stack Outputs
+Outputs
     ├── private_endpoint_id: Azure resource ID of the private endpoint
     ├── private_ip_address: Private IP address allocated to the endpoint
     └── network_interface_id: Azure resource ID of the network interface

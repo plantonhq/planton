@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kuberneteskafkamirrormaker2
 spec:
@@ -21,13 +21,13 @@ spec:
       tofu_resource_name: mirrormaker2
       derivations:
         - from_metadata_name: true
-        - from_stack_output: mirrormaker_name
+        - from_output: mirrormaker_name
       where_to_find: >-
         The KafkaMirrorMaker2 CR's metadata.name (equals the Planton
         resource name) — `kubectl get kafkamirrormaker2 -A` (NAME column).
     - name: namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         The deployment's namespace — `kubectl get kafkamirrormaker2 -A`
@@ -43,14 +43,14 @@ spec:
         `kubectl get configmap -n <namespace>`.
     - name: config_map_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the deployment.
     # ── the optional anchor namespace ────────────────────────────────────
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Only imported when create_namespace is true; the deployment's

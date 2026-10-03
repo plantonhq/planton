@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -26,7 +26,7 @@ func minimalPairing() *AzureServiceBusDisasterRecoveryConfig {
 	return &AzureServiceBusDisasterRecoveryConfig{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureServiceBusDisasterRecoveryConfig",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-geo-dr",
 		},
 		Spec: &AzureServiceBusDisasterRecoveryConfigSpec{
@@ -51,7 +51,7 @@ var _ = ginkgo.Describe("AzureServiceBusDisasterRecoveryConfigSpec Validation Te
 				input.Spec.PrimaryNamespaceId = &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &foreignkeyv1.ValueFromRef{
-							Kind:      cloudresourcekind.CloudResourceKind_AzureServiceBusNamespace,
+							Kind:      catalogkind.CatalogKind_AzureServiceBusNamespace,
 							Name:      "primary-bus",
 							FieldPath: "status.outputs.namespace_id",
 						},
@@ -60,7 +60,7 @@ var _ = ginkgo.Describe("AzureServiceBusDisasterRecoveryConfigSpec Validation Te
 				input.Spec.PartnerNamespaceId = &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &foreignkeyv1.ValueFromRef{
-							Kind:      cloudresourcekind.CloudResourceKind_AzureServiceBusNamespace,
+							Kind:      catalogkind.CatalogKind_AzureServiceBusNamespace,
 							Name:      "partner-bus",
 							FieldPath: "status.outputs.namespace_id",
 						},
@@ -74,7 +74,7 @@ var _ = ginkgo.Describe("AzureServiceBusDisasterRecoveryConfigSpec Validation Te
 				input.Spec.AliasAuthorizationRuleId = &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &foreignkeyv1.ValueFromRef{
-							Kind:      cloudresourcekind.CloudResourceKind_AzureServiceBusAuthorizationRule,
+							Kind:      catalogkind.CatalogKind_AzureServiceBusAuthorizationRule,
 							Name:      "dr-clients",
 							FieldPath: "status.outputs.authorization_rule_id",
 						},

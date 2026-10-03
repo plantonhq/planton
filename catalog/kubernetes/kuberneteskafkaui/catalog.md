@@ -4,7 +4,7 @@ Deploys kafbat UI — the Apache-2.0 web console for Kafka — from the served `
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm Release** (`<metadata.name>`) — the kafbat UI chart with the Service pinned to the resource name (`fullnameOverride`), so outputs stay deterministic and several consoles can coexist in one cluster
 - **Console Service** — ClusterIP by default; compose KubernetesIngress or Gateway routes against the exported `service_name` / `endpoint` handles for shared access
@@ -55,7 +55,7 @@ spec:
 planton apply -f kafka-console.yaml
 ```
 
-This creates an observe-only console for one cluster; reach it through the exported port-forward command until you compose exposure, and add `login_form` before anything shared can reach the Service. A Stack Job tracks the provisioning in real time.
+This creates an observe-only console for one cluster; reach it through the exported port-forward command until you compose exposure, and add `login_form` before anything shared can reach the Service. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -120,7 +120,7 @@ These are the most important decisions when configuring the console. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -131,9 +131,9 @@ These are the most important decisions when configuring the console. Explore the
 | **KubernetesKarapace** | `clusters[].schemaRegistry.url` | `status.outputs.endpoint` |
 | **KubernetesKafkaConnect** | `clusters[].kafkaConnect[].address` | `status.outputs.rest_api_endpoint` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values downstream Cloud Resources can consume:
+After provisioning, `status.outputs` contains values downstream Infra Components can consume:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -154,9 +154,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Apache Kafka**](/cloud-catalog/kubernetes-kafka) — bootstrap endpoint and cluster CA for each wired cluster
-- [**Kafka User**](/cloud-catalog/kubernetes-kafka-user) — SASL credential Secrets for secured listeners
-- [**Karapace Schema Registry**](/cloud-catalog/kubernetes-karapace) — schema registry endpoint for schema-aware browsing
-- [**Kafka Connect**](/cloud-catalog/kubernetes-kafka-connect) — REST endpoints for connector monitoring
-- [**Kubernetes Ingress**](/cloud-catalog/kubernetes-ingress) — shared exposure composed against the exported Service handles
-- [**Kubernetes HTTPRoute**](/cloud-catalog/kubernetes-http-route) — the Gateway API alternative for the same exposure seam
+- [**Apache Kafka**](/infra-catalog/kubernetes-kafka) — bootstrap endpoint and cluster CA for each wired cluster
+- [**Kafka User**](/infra-catalog/kubernetes-kafka-user) — SASL credential Secrets for secured listeners
+- [**Karapace Schema Registry**](/infra-catalog/kubernetes-karapace) — schema registry endpoint for schema-aware browsing
+- [**Kafka Connect**](/infra-catalog/kubernetes-kafka-connect) — REST endpoints for connector monitoring
+- [**Kubernetes Ingress**](/infra-catalog/kubernetes-ingress) — shared exposure composed against the exported Service handles
+- [**Kubernetes HTTPRoute**](/infra-catalog/kubernetes-http-route) — the Gateway API alternative for the same exposure seam

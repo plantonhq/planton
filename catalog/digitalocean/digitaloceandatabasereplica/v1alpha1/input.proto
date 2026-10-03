@@ -5,9 +5,9 @@ package dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1;
 import "catalog/digitalocean/digitaloceandatabasereplica/v1alpha1/api.proto";
 import "catalog/digitalocean/provider.proto";
 
-//digital-ocean-database-replica stack-input
-message DigitalOceanDatabaseReplicaStackInput {
-  //target cloud-resource
+//digital-ocean-database-replica iac-input
+message DigitalOceanDatabaseReplicaIacInput {
+  //target infra-component
   DigitalOceanDatabaseReplica target = 1;
   //provider-config
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;

@@ -7,9 +7,9 @@
 # pod carrying the app container's declared resources. The derivation
 # grammar cannot traverse the repeated sidecars list, so declared sidecar
 # reservations are named in the exclusions instead of silently ignored.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesdeployment
 spec:

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azureprivatednsresolver.v1alpha1;
 
-// **AzurePrivateDnsResolverStackOutputs** captures the outputs of
+// **AzurePrivateDnsResolverOutputs** captures the outputs of
 // provisioning a DNS Private Resolver and its endpoints.
-message AzurePrivateDnsResolverStackOutputs {
+message AzurePrivateDnsResolverOutputs {
   // The resolver's ARM resource ID
   // (.../providers/Microsoft.Network/dnsResolvers/{name}).
   string dns_resolver_id = 1;

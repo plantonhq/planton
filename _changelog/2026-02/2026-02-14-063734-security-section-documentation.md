@@ -28,7 +28,7 @@ The Planton documentation covered individual security features across scattered 
 
 **`security/authentication-and-authorization.md`** — How authentication and authorization actually work. Explains OAuth + PKCE for interactive login, API key scoping and hashed storage, OpenFGA-based relationship access control, five standard roles, hierarchical permission inheritance (organization → environment → resource), team-based access propagation, resource sharing model, and context switching. Includes full CLI reference for IAM commands.
 
-**`security/audit-trails.md`** — First documentation of the audit system. Covers what gets captured (full YAML snapshots, unified diffs, who/when, event types, Stack Job linkage), immutability guarantees, infrastructure manifest diffs for Cloud Resources, web console UX (versions list, detail view, side-by-side diff), and practical uses (debugging, compliance, rollback investigation).
+**`security/audit-trails.md`** — First documentation of the audit system. Covers what gets captured (full YAML snapshots, unified diffs, who/when, event types, Infra Job linkage), immutability guarantees, infrastructure manifest diffs for Infra Components, web console UX (versions list, detail view, side-by-side diff), and practical uses (debugging, compliance, rollback investigation).
 
 ### 6 Cross-Reference Updates
 
@@ -55,13 +55,13 @@ Three craft decisions shaped the final scope:
 
 All content verified against:
 
-- **19 OpenFGA model files** in `backend/services/iam/src/main/resources/fga/model/` — organization, environment, cloud_resource, service, credential_resource, team, identity_account, and more
+- **19 OpenFGA model files** in `backend/services/iam/src/main/resources/fga/model/` — organization, environment, infra_component, service, credential_resource, team, identity_account, and more
 - **IAM role SQL seed** (`V6__insert_roles_initial_data.sql`) — verified role names: owner, admin, iam_admin, viewer, member
-- **Audit protobuf APIs** (`apis/ai/planton/audit/apiresourceversion/v1/`) — ApiResourceVersion, CloudObjectVersion, query RPCs
+- **Audit protobuf APIs** (`apis/ai/planton/audit/apiresourceversion/v1/`) — ApiResourceVersion, CatalogObjectVersion, query RPCs
 - **Audit service architecture** (`backend/services/audit/docs/architecture.md`) — event-driven via NATS, MongoDB storage, append-only
 - **11 CLI command files** — authentication (login, who, list, use), authorization (iampolicy add/get/remove, iamrole list), API keys (new, list)
-- **Web console audit pages** — version list, detail, diff components with side-by-side/line-by-line toggle
-- **Web console IAM components** — grant permission, edit permission, API key management
+- **Web console audit pages** — version list, detail, diff kinds with side-by-side/line-by-line toggle
+- **Web console IAM kinds** — grant permission, edit permission, API key management
 - **7 ADRs** — envelope encryption, CMEK providers, secret backend abstraction, provider connection auth modes, CLI authentication redesign, runner deployment, permission denied handling
 - **Runner IP preservation guidelines** applied throughout — no named technologies, no internal endpoints, security guarantees stated as outcomes
 
@@ -70,7 +70,7 @@ All content verified against:
 The Security index page describes Runner's security properties at a conceptual level:
 - No mention of Konnectivity, Temporal, or Go
 - No internal endpoints, ports, or channel IDs
-- No component names (Tunnel Agent, gRPC Server)
+- No kind names (Tunnel Agent, gRPC Server)
 - mTLS described as an outcome ("both sides verify identity"), not a mechanism
 
 ## Benefits

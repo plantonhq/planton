@@ -10,9 +10,9 @@ import (
 	"strings"
 
 	"github.com/charmbracelet/lipgloss"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/outputs"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 var (
@@ -56,16 +56,16 @@ func sep(style lipgloss.Style) string {
 }
 
 // RenderUnknownKind displays a contextual error when the user provides an
-// unrecognized CloudResourceKind, with a "did you mean?" suggestion and
+// unrecognized CatalogKind, with a "did you mean?" suggestion and
 // example valid kinds.
 func RenderUnknownKind(kindName string) {
 	fmt.Fprintln(os.Stderr)
 	fmt.Fprintf(os.Stderr, "%s  %s\n",
 		errorIcon.Render(iconError),
-		errorTitle.Render("Unknown Cloud Resource Kind"))
+		errorTitle.Render("Unknown Catalog Kind"))
 
 	fmt.Fprintln(os.Stderr)
-	fmt.Fprintf(os.Stderr, "   %s is not a recognized CloudResourceKind.\n",
+	fmt.Fprintf(os.Stderr, "   %s is not a recognized CatalogKind.\n",
 		errorTitle.Render(fmt.Sprintf("%q", kindName)))
 
 	if suggestion := suggestSimilarKind(kindName); suggestion != "" {
@@ -356,7 +356,7 @@ func renderFailureTip(kindName, moduleDir string, result *outputs.ValidationResu
 	case outputs.OverrideMapping:
 		fmt.Fprintf(os.Stderr, "   %s %s\n",
 			infoIcon.Render(iconTip),
-			hintStyle.Render("Check the StackOutputs proto for "+kindName+" to see valid field names."))
+			hintStyle.Render("Check the Outputs proto for "+kindName+" to see valid field names."))
 		fmt.Fprintf(os.Stderr, "   %s\n",
 			hintStyle.Render("   Mapping targets (right side) must match proto field names exactly."))
 	case outputs.OverrideExecutable:
@@ -377,15 +377,15 @@ func renderFailureTip(kindName, moduleDir string, result *outputs.ValidationResu
 	fmt.Fprintln(os.Stderr)
 }
 
-// suggestSimilarKind finds the closest CloudResourceKind name using
+// suggestSimilarKind finds the closest CatalogKind name using
 // levenshtein distance against all registered kinds.
 func suggestSimilarKind(input string) string {
 	inputLower := strings.ToLower(input)
 	bestDist := len(input)
 	bestMatch := ""
 
-	for _, kind := range crkreflect.KindsList() {
-		if kind == cloudresourcekind.CloudResourceKind_unspecified {
+	for _, kind := range catalogkindreflect.KindsList() {
+		if kind == catalogkind.CatalogKind_unspecified {
 			continue
 		}
 		name := kind.String()
@@ -442,10 +442,10 @@ func levenshteinDistance(a, b string) int {
 	return matrix[len(a)][len(b)]
 }
 
-// RenderAvailableProtoFields prints the available StackOutputs field names
+// RenderAvailableProtoFields prints the available Outputs field names
 // for a kind, useful when a mapping target is invalid.
-func RenderAvailableProtoFields(kindName string, kind cloudresourcekind.CloudResourceKind) {
-	fields := collectStackOutputsFieldNames(kind)
+func RenderAvailableProtoFields(kindName string, kind catalogkind.CatalogKind) {
+	fields := collectOutputsFieldNames(kind)
 	if len(fields) == 0 {
 		return
 	}
@@ -456,8 +456,8 @@ func RenderAvailableProtoFields(kindName string, kind cloudresourcekind.CloudRes
 		hintStyle.Render(strings.Join(fields, ", ")))
 }
 
-func collectStackOutputsFieldNames(kind cloudresourcekind.CloudResourceKind) []string {
-	instance, err := crkreflect.NewInstance(kind)
+func collectOutputsFieldNames(kind catalogkind.CatalogKind) []string {
+	instance, err := catalogkindreflect.NewInstance(kind)
 	if err != nil {
 		return nil
 	}

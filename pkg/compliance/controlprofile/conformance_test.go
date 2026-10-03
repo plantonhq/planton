@@ -10,9 +10,9 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 
-	controlprofilev1 "github.com/plantonhq/planton/compliance/componentcontrolprofile/v1"
+	controlprofilev1 "github.com/plantonhq/planton/compliance/catalogkindcontrolprofile/v1"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/compliance/controlcatalog"
-	"github.com/plantonhq/planton/pkg/crkreflect"
 	"github.com/plantonhq/planton/pkg/specpath"
 )
 
@@ -20,7 +20,7 @@ import (
 // contract, offline:
 //
 //  1. The profile parses strictly against its proto schema and names its
-//     component (metadata.name equals the component directory).
+//     kind (metadata.name equals the kind directory).
 //  2. Every referenced control id exists in the central catalog, and every
 //     catalog control appears EXACTLY ONCE -- completeness is the product
 //     claim ("every control was examined"), so an omitted control fails the
@@ -51,22 +51,22 @@ func TestControlProfileConformance(t *testing.T) {
 		t.Skip("no control profiles authored yet")
 	}
 
-	for provider, components := range discovered {
-		for _, component := range components {
-			component := component
-			t.Run(provider+"/"+component, func(t *testing.T) {
-				profile, err := Load(root, provider, component)
+	for provider, kindDirs := range discovered {
+		for _, kindDir := range kindDirs {
+			kindDir := kindDir
+			t.Run(provider+"/"+kindDir, func(t *testing.T) {
+				profile, err := Load(root, provider, kindDir)
 				if err != nil {
 					t.Fatalf("control profile: %v", err)
 				}
-				if profile.GetKind() != "ComponentControlProfile" {
-					t.Fatalf("kind is %q, want ComponentControlProfile", profile.GetKind())
+				if profile.GetKind() != "CatalogKindControlProfile" {
+					t.Fatalf("kind is %q, want CatalogKindControlProfile", profile.GetKind())
 				}
-				if profile.GetMetadata().GetName() != component {
-					t.Errorf("metadata.name is %q, want %q", profile.GetMetadata().GetName(), component)
+				if profile.GetMetadata().GetName() != kindDir {
+					t.Errorf("metadata.name is %q, want %q", profile.GetMetadata().GetName(), kindDir)
 				}
 
-				specDescriptor := kindSpecDescriptor(t, component)
+				specDescriptor := kindSpecDescriptor(t, kindDir)
 				seen := map[string]bool{}
 				for _, posture := range profile.GetSpec().GetControls() {
 					id := posture.GetControlId()
@@ -116,14 +116,14 @@ func TestControlProfileConformance(t *testing.T) {
 	}
 }
 
-// kindSpecDescriptor resolves a component directory name to its kind's spec
+// kindSpecDescriptor resolves a kind directory name to its kind's spec
 // message descriptor via the kind registry.
-func kindSpecDescriptor(t *testing.T, component string) protoreflect.MessageDescriptor {
+func kindSpecDescriptor(t *testing.T, kindDir string) protoreflect.MessageDescriptor {
 	t.Helper()
-	kind := crkreflect.KindFromString(component)
-	apiMessage, err := crkreflect.NewInstance(kind)
+	kind := catalogkindreflect.KindFromString(kindDir)
+	apiMessage, err := catalogkindreflect.NewInstance(kind)
 	if err != nil {
-		t.Fatalf("NewInstance(%s): %v", component, err)
+		t.Fatalf("NewInstance(%s): %v", kindDir, err)
 	}
 	return specDescriptor(t, apiMessage)
 }

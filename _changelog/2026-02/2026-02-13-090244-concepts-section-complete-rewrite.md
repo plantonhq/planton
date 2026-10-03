@@ -10,7 +10,7 @@ Rewrote the entire concepts section of the Planton documentation site from scrat
 
 ## Problem Statement / Motivation
 
-The existing concepts section consisted of 2 pages -- a minimal index and an architecture overview -- that covered the framework's surface without depth. Developers evaluating Planton had no documentation explaining how deployment components work, what the KRM manifest model is, how validation catches errors, why dual IaC engines exist, how modules are resolved, or where state is stored.
+The existing concepts section consisted of 2 pages -- a minimal index and an architecture overview -- that covered the framework's surface without depth. Developers evaluating Planton had no documentation explaining how catalog kinds work, what the KRM manifest model is, how validation catches errors, why dual IaC engines exist, how modules are resolved, or where state is stored.
 
 ### Pain Points
 
@@ -18,7 +18,7 @@ The existing concepts section consisted of 2 pages -- a minimal index and an arc
 - New users had no conceptual foundation before attempting their first deployment
 - Power users had no reference material for module versioning, state backend configuration, or validation rules
 - The architecture page mixed explanations with diagrams, covering too many topics at surface level
-- No documentation of the 198 component taxonomy across 14 providers
+- No documentation of the 198 kind taxonomy across 14 providers
 
 ## Solution / What's New
 
@@ -28,9 +28,9 @@ The existing concepts section consisted of 2 pages -- a minimal index and an arc
 |------|----------|-------|
 | `index.md` | What is Planton and why does it exist? | ~120 |
 | `architecture.md` | How do the pieces fit together? | ~175 |
-| `deployment-components.md` | What is a deployment component? | ~210 |
+| `catalog-kinds.md` | What is a catalog kind? | ~210 |
 | `manifests.md` | How do I declare what I want? | ~230 |
-| `cloud-resource-kinds.md` | What can I deploy, and where? | ~115 |
+| `catalog-kinds.md` | What can I deploy, and where? | ~115 |
 | `validation.md` | How does Planton catch my mistakes? | ~150 |
 | `dual-iac-engines.md` | How does deployment actually happen? | ~140 |
 | `module-system.md` | How are IaC modules resolved and managed? | ~120 |
@@ -40,8 +40,8 @@ The existing concepts section consisted of 2 pages -- a minimal index and an arc
 
 - **Fresh start**: Every page designed from scratch -- no incremental improvement on existing content
 - **Source code verified**: Every claim traced to protobuf definitions, CLI source, IaC modules, or engine packages
-- **Real examples**: YAML manifests from `examples/`, protobuf excerpts from actual component definitions
-- **Provider-specific**: Documented the actual provider counts (198 kinds, 14 providers) by counting the `CloudResourceKind` enum
+- **Real examples**: YAML manifests from `examples/`, protobuf excerpts from actual kind definitions
+- **Provider-specific**: Documented the actual provider counts (198 kinds, 14 providers) by counting the `CatalogKind` enum
 
 ## Implementation Details
 
@@ -49,11 +49,11 @@ The existing concepts section consisted of 2 pages -- a minimal index and an arc
 
 Each page was verified against specific source files:
 
-- **deployment-components.md**: `apis/dev/planton/provider/kubernetes/kubernetespostgres/v1/` (all 4 proto files + both IaC directories), `apis/dev/planton/provider/aws/awss3bucket/v1/` for cross-provider pattern verification
+- **catalog-kinds.md**: `apis/dev/planton/provider/kubernetes/kubernetespostgres/v1/` (all 4 proto files + both IaC directories), `apis/dev/planton/provider/aws/awss3bucket/v1/` for cross-provider pattern verification
 - **manifests.md**: `apis/dev/planton/shared/metadata.proto`, `internal/cli/iacflags/manifest_source_flags.go`, `internal/cli/iacflags/execution_flags.go`, `examples/*.yaml`
-- **cloud-resource-kinds.md**: `cloud_resource_kind.proto` (full 1,101-line enum counted per provider), `cloud_resource_provider.proto`
+- **catalog-kinds.md**: `catalog_kind.proto` (full 1,101-line enum counted per provider), `catalog_provider.proto`
 - **validation.md**: `internal/manifest/manifest_validator.go`, `apis/dev/planton/shared/foreignkey/v1/foreign_key.proto`, spec.proto validation annotations
-- **dual-iac-engines.md**: `iac/pulumi/main.go`, `iac/tf/variables.tf` + `provider.tf`, `stack_input.proto`
+- **dual-iac-engines.md**: `iac/pulumi/main.go`, `iac/tf/variables.tf` + `provider.tf`, `iac_input.proto`
 - **module-system.md**: `pkg/iac/pulumi/pulumimodule/module_directory.go`, `pkg/iac/tofu/tofumodule/module_directory.go`, `internal/cli/staging/staging.go`, `cmd/planton/root/checkout.go` + `pull.go` + `modules_version.go`
 - **state-management.md**: `pkg/iac/pulumi/backendconfig/backend_config.go`, `pkg/iac/tofu/backendconfig/backend_config.go` + `validate.go`, `pkg/iac/tofu/tfbackend/tf_backend.go`
 
@@ -61,14 +61,14 @@ Each page was verified against specific source files:
 
 The architecture page was refactored from a prose-heavy overview into a diagram-focused page with 3 ASCII architecture diagrams:
 1. **Deployment flow**: manifest -> validation -> module resolution -> IaC engine -> cloud provider -> deployed resources
-2. **Component anatomy**: the directory structure with annotations explaining each file's role
+2. **Kind anatomy**: the directory structure with annotations explaining each file's role
 3. **Three-layer architecture**: API layer, execution layer, infrastructure layer
 
-### Key Discovery: Updated Component Count
+### Key Discovery: Updated Kind Count
 
-During source verification, discovered the actual component count is **198** (not 178 as previously documented):
-- Scaleway: 19 components (recently added provider)
-- Azure: 12 components (AzureResourceGroup and AzureLogAnalyticsWorkspace added)
+During source verification, discovered the actual kind count is **198** (not 178 as previously documented):
+- Scaleway: 19 kinds (recently added provider)
+- Azure: 12 kinds (AzureResourceGroup and AzureLogAnalyticsWorkspace added)
 - All other provider counts confirmed accurate
 
 ## Benefits
@@ -77,7 +77,7 @@ During source verification, discovered the actual component count is **198** (no
 - The concepts section scales from "what is this?" to "how does state management work?" in a deliberate learning sequence
 - Every page links to related pages, creating a navigable knowledge graph
 - Real YAML examples and protobuf excerpts reduce the gap between docs and source code
-- Updated component counts (198 kinds, 14 providers) reflect the current state of the framework
+- Updated kind counts (198 kinds, 14 providers) reflect the current state of the framework
 
 ## Impact
 

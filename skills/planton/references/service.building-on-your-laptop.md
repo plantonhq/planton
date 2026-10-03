@@ -32,7 +32,7 @@ planton local build-cluster keep-warm on|off
 planton local build-cluster remove        # the cluster and its files go; the next consent sets it up again
 planton service watch <service>           # the watch: status, repository, connection, "Checked N s ago · next in M s", the last gap (Not Checked), branches, PRs, tags, Actions, the GitHub request budget
 planton service watch <service> --history # what the watch recorded, newest first: each gap and its cause, each push handed on, each pause and recovery
-planton daemon status                     # every local component, and "build cluster: <phase>"
+planton daemon status                     # every local kind, and "build cluster: <phase>"
 planton follow <run>                      # the run live: the wake as its own beat, the build, the deploy, the GitHub line, the platform line
 planton service urls <service>            # the environment card's truth: URL and rollout verdict, or why there is no address
 ```

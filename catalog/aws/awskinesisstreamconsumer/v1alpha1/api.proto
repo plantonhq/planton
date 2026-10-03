@@ -19,7 +19,7 @@ message AwsKinesisStreamConsumer {
 
   // metadata captures identifying information (name, org, env, id, labels,
   // relationships).
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec holds the desired configuration for the enhanced fan-out consumer.
   AwsKinesisStreamConsumerSpec spec = 4 [(buf.validate.field).required = true];
@@ -31,6 +31,6 @@ message AwsKinesisStreamConsumer {
 // AwsKinesisStreamConsumerStatus captures lifecycle, audit, job linkage, and
 // observable outputs.
 message AwsKinesisStreamConsumerStatus {
-  // stack-outputs
-  AwsKinesisStreamConsumerStackOutputs outputs = 1;
+  // outputs
+  AwsKinesisStreamConsumerOutputs outputs = 1;
 }

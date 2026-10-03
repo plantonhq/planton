@@ -5,9 +5,9 @@ package dev.planton.stripe.stripepaymentmethoddomain.v1alpha1;
 import "catalog/stripe/provider.proto";
 import "catalog/stripe/stripepaymentmethoddomain/v1alpha1/api.proto";
 
-// StripePaymentMethodDomainStackInput is the input to the StripePaymentMethodDomain IaC module.
+// StripePaymentMethodDomainIacInput is the input to the StripePaymentMethodDomain IaC module.
 // It contains the target resource and the Stripe provider configuration.
-message StripePaymentMethodDomainStackInput {
+message StripePaymentMethodDomainIacInput {
   // target is the StripePaymentMethodDomain resource to be deployed.
   StripePaymentMethodDomain target = 1;
 

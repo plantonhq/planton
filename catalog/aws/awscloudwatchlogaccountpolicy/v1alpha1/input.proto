@@ -5,9 +5,9 @@ package dev.planton.aws.awscloudwatchlogaccountpolicy.v1alpha1;
 import "catalog/aws/awscloudwatchlogaccountpolicy/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsCloudwatchLogAccountPolicyStackInput is the input for the IaC
+// AwsCloudwatchLogAccountPolicyIacInput is the input for the IaC
 // modules that manage a CloudWatch Logs account policy.
-message AwsCloudwatchLogAccountPolicyStackInput {
+message AwsCloudwatchLogAccountPolicyIacInput {
   // target is the AwsCloudwatchLogAccountPolicy resource to deploy.
   AwsCloudwatchLogAccountPolicy target = 1;
   // provider_config contains the AWS provider credentials and configuration.

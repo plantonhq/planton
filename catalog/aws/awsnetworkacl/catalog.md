@@ -4,7 +4,7 @@ Deploys a network ACL — the stateless subnet-level firewall — with its inbou
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Network ACL** — in the referenced VPC. The VPC binding is the only replace-forcing field; rules and associations all update in place
 - **Inbound and Outbound Rules** — the in-line `ingress` and `egress` entries: rule number, allow/deny, protocol by name or number, an IPv4 or IPv6 CIDR, port range, and ICMP type/code. AWS's own catch-all deny rules (32767 for IPv4, 32768 for IPv6) always exist below them and are not manageable
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with EC2 VPC permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with EC2 VPC permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -85,7 +85,7 @@ spec:
 planton apply -f network-acl.yaml
 ```
 
-This creates a web-tier ACL on both public subnets: HTTPS and ephemeral-port replies allowed in both directions, everything else falling through to AWS's catch-all deny. A Stack Job tracks the provisioning in real time.
+This creates a web-tier ACL on both public subnets: HTTPS and ephemeral-port replies allowed in both directions, everything else falling through to AWS's catch-all deny. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -133,16 +133,16 @@ These are the most important decisions when configuring a network ACL. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsVpc** | `vpcId` | `status.outputs.vpc_id` |
 | **AwsSubnet** | `subnetIds` | `status.outputs.subnet_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -161,6 +161,6 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**AWS VPC**](/cloud-catalog/aws-vpc) — the VPC the ACL belongs to, wired via `vpcId`
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) — the subnets the ACL filters, wired via `subnetIds`
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) — the stateful, instance-level allow-list this subnet-level screen complements
+- [**AWS VPC**](/infra-catalog/aws-vpc) — the VPC the ACL belongs to, wired via `vpcId`
+- [**AWS Subnet**](/infra-catalog/aws-subnet) — the subnets the ACL filters, wired via `subnetIds`
+- [**AWS Security Group**](/infra-catalog/aws-security-group) — the stateful, instance-level allow-list this subnet-level screen complements

@@ -31,7 +31,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurepointtositevpngateway
+    e2e-catalog-kind: azurepointtositevpngateway
   annotations:
     planton.dev/e2e: "true"
   tags:

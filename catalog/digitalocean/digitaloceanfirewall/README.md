@@ -2,7 +2,7 @@
 
 A DigitalOcean Cloud Firewall described once in a Planton manifest: a named, stateful, default-deny rule set applied to Droplets directly by reference or dynamically by tag, with rule sources and destinations that can name other Planton resources — Droplets, load balancers, Kubernetes clusters — instead of hand-copied IDs.
 
-## What this component models
+## What this kind models
 
 The spec maps one-to-one onto DigitalOcean's `digitalocean_firewall`:
 

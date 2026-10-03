@@ -36,7 +36,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuremachinelearningbatchdeployment
+    e2e-catalog-kind: azuremachinelearningbatchdeployment
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-setup-script: "catalog/azure/azuremachinelearningbatchdeployment/e2e/scenarios/minimal.setup.sh"

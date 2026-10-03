@@ -8,9 +8,9 @@ set -euo pipefail
 # The CLI's URL builders (pkg/downloads) and the release lanes
 # (release.terraform-modules.yaml, release.pulumi-modules.yaml) each own half
 # of one contract: the R2 key shape
-#   modules/terraform/{component}/module.zip
-#   modules/pulumi/{component}/{platform}.gz (.exe.gz on windows)
-#   modules/pulumi/{component}/source.zip
+#   modules/terraform/{kind}/module.zip
+#   modules/pulumi/{kind}/{platform}.gz (.exe.gz on windows)
+#   modules/pulumi/{kind}/source.zip
 # When the two halves drift, nothing fails loudly — every released CLI
 # silently degrades each module fetch into a full git clone. Unit tests in
 # pkg/downloads pin the CLI half and a post-upload probe in the release lanes
@@ -38,11 +38,11 @@ if [ -z "$tag" ]; then
   fi
 fi
 
-# Representative components, one per major provider family. The version
-# segment is read from the component's directory in the working tree — the
+# Representative kinds, one per major provider family. The version
+# segment is read from the kind's directory in the working tree — the
 # same source the release lanes discover from — so the probe follows a kind
 # through version graduations without edits here.
-probe_components=(
+probe_kinds=(
   "aws/awss3bucket"
   "gcp/gcpgcsbucket"
 )
@@ -63,33 +63,33 @@ probe() {
 
 echo "Probing release artifact URLs at tag: $tag"
 
-for entry in "${probe_components[@]}"; do
+for entry in "${probe_kinds[@]}"; do
   provider="${entry%%/*}"
-  component="${entry##*/}"
-  component_dir="catalog/${provider}/${component}"
+  kind="${entry##*/}"
+  kind_path="catalog/${provider}/${kind}"
 
-  if [ ! -d "$component_dir" ]; then
-    echo "ERROR: component directory not found: $component_dir (update probe_components)" >&2
+  if [ ! -d "$kind_path" ]; then
+    echo "ERROR: kind directory not found: $kind_path (update probe_kinds)" >&2
     exit 1
   fi
-  if [ ! -d "$component_dir/iac" ]; then
-    echo "ERROR: no iac/ module set under $component_dir (modules live at the component root)" >&2
+  if [ ! -d "$kind_path/iac" ]; then
+    echo "ERROR: no iac/ module set under $kind_path (modules live at the kind root)" >&2
     exit 1
   fi
 
-  # Keys are versionless (one live module set per component); the release tag
+  # Keys are versionless (one live module set per kind); the release tag
   # segment versions the artifact. These shapes are pinned by pkg/downloads'
   # tests and uploaded by the release lanes -- three homes, one contract.
   echo ""
-  echo "${component}:"
-  probe "${base_url}/${tag}/modules/terraform/${component}/module.zip"
-  probe "${base_url}/${tag}/modules/pulumi/${component}/darwin_arm64.gz"
-  probe "${base_url}/${tag}/modules/pulumi/${component}/linux_amd64.gz"
-  probe "${base_url}/${tag}/modules/pulumi/${component}/linux_arm64.gz"
-  probe "${base_url}/${tag}/modules/pulumi/${component}/windows_amd64.exe.gz"
+  echo "${kind}:"
+  probe "${base_url}/${tag}/modules/terraform/${kind}/module.zip"
+  probe "${base_url}/${tag}/modules/pulumi/${kind}/darwin_arm64.gz"
+  probe "${base_url}/${tag}/modules/pulumi/${kind}/linux_amd64.gz"
+  probe "${base_url}/${tag}/modules/pulumi/${kind}/linux_arm64.gz"
+  probe "${base_url}/${tag}/modules/pulumi/${kind}/windows_amd64.exe.gz"
   # A 404 here at an old tag is expected: source.zip ships only with releases
   # cut after the pulumi source lane joined the workflow. Probe a newer tag.
-  probe "${base_url}/${tag}/modules/pulumi/${component}/source.zip"
+  probe "${base_url}/${tag}/modules/pulumi/${kind}/source.zip"
 done
 
 echo ""

@@ -8,7 +8,7 @@ Creates a Data Protection Resource Guard -- the approval gate behind Multi-User 
 
 - `dataprotection.ResourceGuard` -- the guard
 
-## Stack Outputs
+## Outputs
 
 - `resource_guard_id` -- the guard's full ARM ID; what backup vaults reference to enable Multi-User Authorization
 - `resource_guard_name` -- the guard's name

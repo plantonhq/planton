@@ -123,7 +123,7 @@ You can authorize a credential for all environments at once (organization-wide s
 
 ### Default Connections
 
-When a Cloud Resource or Service deployment doesn't explicitly specify which credential to use, Planton looks for a default connection for that provider. Defaults can be set at the organization level (applies to all environments) or per-environment (overrides the organization default for that specific environment).
+When an Infra Component or Service deployment doesn't explicitly specify which credential to use, Planton looks for a default connection for that provider. Defaults can be set at the organization level (applies to all environments) or per-environment (overrides the organization default for that specific environment).
 
 The resolution is straightforward: if an environment-level default exists, it wins. Otherwise, the organization-level default is used. If neither exists, the deployment fails with a clear error message telling you to configure a default.
 

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarezerotrustdeviceposturerule.v1alpha1;
 
-// CloudflareZeroTrustDevicePostureRuleStackOutputs captures the observable
+// CloudflareZeroTrustDevicePostureRuleOutputs captures the observable
 // outputs after creating the posture rule.
-message CloudflareZeroTrustDevicePostureRuleStackOutputs {
+message CloudflareZeroTrustDevicePostureRuleOutputs {
   // The Cloudflare-assigned UUID of the rule (what Access and Gateway
   // policies reference).
   string rule_id = 1;

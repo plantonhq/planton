@@ -4,7 +4,7 @@ Deploys a Virtual Private Cloud on AWS -- the isolated network foundation that o
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **VPC** -- the virtual network with your primary IPv4 CIDR (an explicit block or an IPAM allocation), DNS resolution and hostname settings, and the instance tenancy mode
 - **Secondary IPv4 CIDRs** -- created only when `secondaryIpv4Cidrs` is set; each entry (an explicit block, an IPAM-sized allocation, or a pool-pinned block) is associated as its own resource and can be added or removed without recreating the VPC
@@ -20,7 +20,7 @@ To build a working network on top of this VPC, compose the companion components 
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -58,7 +58,7 @@ spec:
 planton apply -f vpc.yaml
 ```
 
-This creates a dual-stack VPC with a `/16` IPv4 range and an Amazon-provided IPv6 `/56`, DNS resolution and hostnames on. A Stack Job tracks the provisioning in real time.
+This creates a dual-stack VPC with a `/16` IPv4 range and an Amazon-provided IPv6 `/56`, DNS resolution and hostnames on. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -76,13 +76,13 @@ These are the most important decisions when configuring a VPC. Explore the full 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. The IPAM pool fields (`ipv4IpamPoolId`, `ipv6IpamPoolId`, and the per-entry `ipamPoolId` on secondary CIDRs) accept literal `ipam-pool-...` IDs -- there is no IPAM pool catalog kind to reference yet.
+This kind has no foreign key dependencies. The IPAM pool fields (`ipv4IpamPoolId`, `ipv6IpamPoolId`, and the per-entry `ipamPoolId` on secondary CIDRs) accept literal `ipam-pool-...` IDs -- there is no IPAM pool catalog kind to reference yet.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -114,7 +114,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 A VPC is the root of an AWS network topology. Compose these components, each referencing this VPC by `status.outputs.vpc_id`:
 
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- carves subnets (public, private, or isolated) from the VPC's address space, with their own routing
-- [**AWS Internet Gateway**](/cloud-catalog/aws-internet-gateway) -- attaches to the VPC to give public subnets inbound and outbound internet access
-- [**AWS NAT Gateway**](/cloud-catalog/aws-nat-gateway) -- gives private subnets outbound internet access, composing an Elastic IP by reference
-- [**AWS Egress-Only Internet Gateway**](/cloud-catalog/aws-egress-only-internet-gateway) -- the IPv6 outbound-only counterpart of a NAT gateway for dual-stack VPCs
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- carves subnets (public, private, or isolated) from the VPC's address space, with their own routing
+- [**AWS Internet Gateway**](/infra-catalog/aws-internet-gateway) -- attaches to the VPC to give public subnets inbound and outbound internet access
+- [**AWS NAT Gateway**](/infra-catalog/aws-nat-gateway) -- gives private subnets outbound internet access, composing an Elastic IP by reference
+- [**AWS Egress-Only Internet Gateway**](/infra-catalog/aws-egress-only-internet-gateway) -- the IPv6 outbound-only counterpart of a NAT gateway for dual-stack VPCs

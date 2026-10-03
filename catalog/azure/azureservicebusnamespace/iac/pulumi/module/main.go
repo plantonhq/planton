@@ -8,13 +8,13 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureservicebusnamespacev1alpha1.AzureServiceBusNamespaceStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureservicebusnamespacev1alpha1.AzureServiceBusNamespaceIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder,
+	// Build the Azure provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static client secret,
 	// keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -49,7 +49,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureservicebusnamespacev1alpha1
 
 	// False = keyless posture: every SAS rule's keys (including the root
 	// rule surfaced in this module's outputs) stop being usable credentials.
-	// Presence-guarded to Azure's default (true): stack inputs built from a
+	// Presence-guarded to Azure's default (true): IaC inputs built from a
 	// manifest materialize proto defaults, but direct paths do not.
 	namespaceArgs.LocalAuthEnabled = pulumi.Bool(presenceGuardedBool(spec.LocalAuthEnabled, true))
 	namespaceArgs.PublicNetworkAccessEnabled = pulumi.Bool(presenceGuardedBool(spec.PublicNetworkAccessEnabled, true))
@@ -125,7 +125,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureservicebusnamespacev1alpha1
 		return errors.Wrapf(err, "failed to create Service Bus namespace %s", spec.NamespaceName)
 	}
 
-	// Export stack outputs. The root SAS rule's four credential faces are
+	// Export outputs. The root SAS rule's four credential faces are
 	// quick-start/break-glass credentials; production workloads mint
 	// least-privilege rules with AzureServiceBusAuthorizationRule or go
 	// keyless (local_auth_enabled false).

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurebackuppolicyfileshare.v1alpha1;
 
-// **AzureBackupPolicyFileShareStackOutputs** captures the outputs of
+// **AzureBackupPolicyFileShareOutputs** captures the outputs of
 // provisioning a file-share backup policy.
-message AzureBackupPolicyFileShareStackOutputs {
+message AzureBackupPolicyFileShareOutputs {
   // The Azure Resource Manager ID of the backup policy.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.RecoveryServices/vaults/{vault}/backupPolicies/{name}
   string backup_policy_id = 1;

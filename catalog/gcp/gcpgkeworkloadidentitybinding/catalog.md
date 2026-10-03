@@ -4,7 +4,7 @@ Creates an IAM policy binding that allows a Kubernetes ServiceAccount (KSA) in a
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **IAM Member Binding** -- a `serviceaccount.IAMMember` that grants `roles/iam.workloadIdentityUser` on the specified Google ServiceAccount to the Kubernetes ServiceAccount, using the member format `serviceAccount:{projectId}.svc.id.goog[{namespace}/{name}]`
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
@@ -52,7 +52,7 @@ spec:
 planton apply -f workload-identity-binding.yaml
 ```
 
-This grants the `cert-manager` Kubernetes ServiceAccount permission to impersonate the specified Google ServiceAccount via Workload Identity. A Stack Job tracks the provisioning in real time.
+This grants the `cert-manager` Kubernetes ServiceAccount permission to impersonate the specified Google ServiceAccount via Workload Identity. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -90,16 +90,16 @@ These are the most important decisions when configuring a Workload Identity bind
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpServiceAccount** | `serviceAccountEmail` | `status.outputs.email` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -114,5 +114,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project that hosts the GKE Workload Identity pool
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- provides the Google ServiceAccount that the KSA impersonates
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project that hosts the GKE Workload Identity pool
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- provides the Google ServiceAccount that the KSA impersonates

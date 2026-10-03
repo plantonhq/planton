@@ -63,7 +63,7 @@ The room's bypass rules ride along in this spec (`bypass_rules`). Cloudflare mod
 | `turnstile_mode` | string | `off`, `invisible` (default), `visible_non_interactive`, `visible_managed`. Non-off needs Advanced. |
 | `bypass_rules` | list | The room's entire bypass-rule table. Action is fixed to `bypass_waiting_room`. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

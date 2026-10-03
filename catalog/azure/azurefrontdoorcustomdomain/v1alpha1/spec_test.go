@@ -34,7 +34,7 @@ func minimalSpec() *AzureFrontDoorCustomDomain {
 	return &AzureFrontDoorCustomDomain{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureFrontDoorCustomDomain",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-front-door-custom-domain",
 		},
 		Spec: &AzureFrontDoorCustomDomainSpec{

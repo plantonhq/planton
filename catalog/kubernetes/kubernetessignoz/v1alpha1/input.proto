@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetessignoz.v1alpha1;
 import "catalog/kubernetes/kubernetessignoz/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// signoz-kubernetes stack-input
-message KubernetesSignozStackInput {
-  // target cloud-resource
+// signoz-kubernetes iac-input
+message KubernetesSignozIacInput {
+  // target infra-component
   KubernetesSignoz target = 1;
   // provider-credential
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

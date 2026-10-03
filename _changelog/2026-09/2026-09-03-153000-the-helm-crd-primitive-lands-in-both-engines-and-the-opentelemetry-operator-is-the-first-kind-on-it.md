@@ -30,7 +30,7 @@
   derive failure (a manifest currently pinning an unpublished version)
   must never stand between a user and deleting their stack. The signal is
   `PLANTON_IAC_OPERATION=destroy`, set by the platform's Pulumi runner and
-  the e2e harness alike (`stackinput.OperationEnvVar`, `stackinput.IsDestroy`).
+  the e2e harness alike (`iacinput.OperationEnvVar`, `iacinput.IsDestroy`).
 - **The Terraform half, generated.** `planton tofu generate-helm-crds`
   writes the canonical `helm_crds.tf`: `data "http"` on the repository
   index (an unpublished version is explained in the module's words beside

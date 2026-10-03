@@ -83,13 +83,13 @@ type deletingHarness struct {
 	deleted bool
 }
 
-func (h *deletingHarness) DeleteOutOfBand(context.Context, *provider.ComponentTestContext) error {
+func (h *deletingHarness) DeleteOutOfBand(context.Context, *provider.KindTestContext) error {
 	h.deleted = true
 	return nil
 }
 
 func TestRunOutOfBandDelete_CapabilityGate(t *testing.T) {
-	tc := &provider.ComponentTestContext{Component: "stripecoupon", Provider: "stripe"}
+	tc := &provider.KindTestContext{Kind: "stripecoupon", Provider: "stripe"}
 
 	// A harness without the capability fails loudly, naming the gap, instead
 	// of passing an act that deleted nothing.

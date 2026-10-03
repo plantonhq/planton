@@ -1,4 +1,4 @@
-# AliCloudFunction Component Added
+# AliCloudFunction Kind Added
 
 **Date**: 2026-02-20
 **Component**: AliCloudFunction
@@ -7,13 +7,13 @@
 
 ## Summary
 
-Added the AliCloudFunction deployment component -- manages Function Compute v3 functions in Alibaba Cloud. FC v3 uses a service-less model where functions are standalone top-level resources. The component supports all major runtime families (Python, Node.js, Java, Go, PHP, .NET), custom runtimes, custom container images, and GPU-accelerated workloads.
+Added the AliCloudFunction catalog kind -- manages Function Compute v3 functions in Alibaba Cloud. FC v3 uses a service-less model where functions are standalone top-level resources. The kind supports all major runtime families (Python, Node.js, Java, Go, PHP, .NET), custom runtimes, custom container images, and GPU-accelerated workloads.
 
 ## What Was Created
 
 ### API Definition
-- `apis/dev/planton/provider/alicloud/alicloudfunction/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AliCloudFunction = 3110` in `CloudResourceKind` enum under a new Serverless category
+- `apis/dev/planton/provider/alicloud/alicloudfunction/v1/` -- Full proto API (spec, api, iac_input, outputs)
+- Registered `AliCloudFunction = 3110` in `CatalogKind` enum under a new Serverless category
 - 12 protobuf message types covering the function spec and all nested configurations (code, VPC, logging, custom container, custom runtime, health check, lifecycle hooks, NAS, GPU)
 
 ### IaC Modules
@@ -24,7 +24,7 @@ Added the AliCloudFunction deployment component -- manages Function Compute v3 f
 - Ginkgo/Gomega spec validation tests: 33 specs covering valid inputs (minimal, compute sizing, OSS code, VPC config, log config, custom container with health check, custom runtime, lifecycle hooks, NAS mount, GPU config, all 18 runtimes, layers with role, boundary values) and invalid inputs (missing required fields, invalid runtime, wrong api_version/kind, missing metadata, out-of-range compute values, invalid gpu_type, invalid log_begin_rule, empty container image, invalid health check values, empty NAS mount_dir)
 
 ### Documentation
-- README.md with configuration reference tables, runtime matrix, and related components
+- README.md with configuration reference tables, runtime matrix, and related kinds
 - examples.md with 4 YAML examples (minimal Python, production API with VPC/logging, custom container with health check, GPU-accelerated AI inference)
 - catalog-page.md with full catalog documentation including quick start, nested config block reference, and 3 deployment examples
 
@@ -45,4 +45,4 @@ Added the AliCloudFunction deployment component -- manages Function Compute v3 f
 - `go test ./...` -- PASS (33/33 specs)
 - `terraform init` -- PASS (alicloud provider v1.271.0)
 - `terraform validate` -- PASS
-- `go build ./pkg/crkreflect/...` -- PASS (kind map regenerated)
+- `go build ./pkg/catalogkindreflect/...` -- PASS (kind map regenerated)

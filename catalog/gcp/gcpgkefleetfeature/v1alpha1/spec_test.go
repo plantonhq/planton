@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 )
@@ -21,7 +21,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: value}}
 }
 
-func reference(kind cloudresourcekind.CloudResourceKind, name string) *foreignkeyv1.StringValueOrRef {
+func reference(kind catalogkind.CatalogKind, name string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{Kind: kind, Name: name}}}
 }
 
@@ -30,7 +30,7 @@ func feature(name string, spec *GcpGkeFleetFeatureSpec) *GcpGkeFleetFeature {
 	return &GcpGkeFleetFeature{
 		ApiVersion: "gcp.planton.dev/v1alpha1",
 		Kind:       "GcpGkeFleetFeature",
-		Metadata:   &shared.CloudResourceMetadata{Name: name},
+		Metadata:   &shared.CatalogObjectMetadata{Name: name},
 		Spec:       spec,
 	}
 }
@@ -80,10 +80,10 @@ var _ = ginkgo.Describe("GcpGkeFleetFeatureSpec", func() {
 
 	ginkgo.It("should accept each fleet-wide settings block on its own feature", func() {
 		for _, msg := range []*GcpGkeFleetFeature{
-			feature("multiclusteringress", &GcpGkeFleetFeatureSpec{Multiclusteringress: &GcpGkeFleetFeatureMultiClusterIngress{ConfigMembership: reference(cloudresourcekind.CloudResourceKind_GcpGkeCluster, "config-cluster")}}),
+			feature("multiclusteringress", &GcpGkeFleetFeatureSpec{Multiclusteringress: &GcpGkeFleetFeatureMultiClusterIngress{ConfigMembership: reference(catalogkind.CatalogKind_GcpGkeCluster, "config-cluster")}}),
 			feature("fleetobservability", &GcpGkeFleetFeatureSpec{Fleetobservability: &GcpGkeFleetFeatureFleetObservability{LoggingConfig: &GcpGkeFleetFeatureFleetLoggingConfig{DefaultConfig: &GcpGkeFleetFeatureLogRoutingConfig{Mode: "COPY"}, FleetScopeLogsConfig: &GcpGkeFleetFeatureLogRoutingConfig{Mode: "MOVE"}}}}),
 			feature("clusterupgrade", &GcpGkeFleetFeatureSpec{Clusterupgrade: &GcpGkeFleetFeatureClusterUpgrade{
-				UpstreamFleets: []*foreignkeyv1.StringValueOrRef{reference(cloudresourcekind.CloudResourceKind_GcpGkeFleet, "dev-fleet")},
+				UpstreamFleets: []*foreignkeyv1.StringValueOrRef{reference(catalogkind.CatalogKind_GcpGkeFleet, "dev-fleet")},
 				PostConditions: &GcpGkeFleetFeatureUpgradePostConditions{Soaking: "604800s"},
 				GkeUpgradeOverrides: []*GcpGkeFleetFeatureGkeUpgradeOverride{{
 					Upgrade:        &GcpGkeFleetFeatureGkeUpgrade{Name: "k8s_control_plane", Version: "1.31.1-gke.1146000"},
@@ -103,7 +103,7 @@ var _ = ginkgo.Describe("GcpGkeFleetFeatureSpec", func() {
 			MembershipConfigs: []*GcpGkeFleetFeatureMembershipConfig{{
 				Membership: literal(membershipName),
 				Configmanagement: &GcpGkeFleetFeatureMembershipConfigManagement{ConfigSync: &GcpGkeFleetFeatureMembershipConfigSync{
-					Oci:         &GcpGkeFleetFeatureConfigSyncOci{SecretType: "gcpserviceaccount", SyncRepo: "us-docker.pkg.dev/p/configs/orders", GcpServiceAccountEmail: reference(cloudresourcekind.CloudResourceKind_GcpServiceAccount, "config-sync")},
+					Oci:         &GcpGkeFleetFeatureConfigSyncOci{SecretType: "gcpserviceaccount", SyncRepo: "us-docker.pkg.dev/p/configs/orders", GcpServiceAccountEmail: reference(catalogkind.CatalogKind_GcpServiceAccount, "config-sync")},
 					StopSyncing: proto.Bool(true),
 					DeploymentOverrides: []*GcpGkeFleetFeatureConfigSyncDeploymentOverride{{
 						DeploymentName: "root-reconciler", DeploymentNamespace: "config-management-system",

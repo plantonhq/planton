@@ -54,7 +54,7 @@ Every other field is optional, and unset means not managed. Rather than tabling 
 
 **Companion surfaces** -- `managed_request_headers` and `managed_response_headers` (Cloudflare-defined transform toggles by id), `url_normalization` (scope + type), `origin_cloud_regions` (origin_ip + vendor + region, keyed by IP), and `waiting_room_crawler_bypass` (the zone-wide boolean; per-room configuration lives on the waiting room itself).
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

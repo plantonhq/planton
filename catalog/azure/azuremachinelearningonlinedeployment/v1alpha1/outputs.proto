@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1;
 
-// **AzureMachineLearningOnlineDeploymentStackOutputs** captures the
+// **AzureMachineLearningOnlineDeploymentOutputs** captures the
 // outputs of provisioning a Machine Learning online deployment.
-message AzureMachineLearningOnlineDeploymentStackOutputs {
+message AzureMachineLearningOnlineDeploymentOutputs {
   // The Azure Resource Manager ID of the online deployment.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.MachineLearningServices/workspaces/{ws}/onlineEndpoints/{endpoint}/deployments/{name}
   string online_deployment_id = 1;

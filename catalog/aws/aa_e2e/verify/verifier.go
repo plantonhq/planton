@@ -15,7 +15,7 @@ import (
 
 // Verifier checks a single component's AWS resource for existence/absence.
 type Verifier interface {
-	// IDOutputKey is the stack-output key carrying the identifier used to verify
+	// IDOutputKey is the output key carrying the identifier used to verify
 	// the resource (e.g. "bucket_id").
 	IDOutputKey() string
 	// VerifyExists returns an error unless the resource exists.
@@ -24,7 +24,7 @@ type Verifier interface {
 	VerifyAbsent(ctx context.Context, cfg aws.Config, id, region string) error
 }
 
-// OutputsVerifier inspects the full stack output map when a single string id is
+// OutputsVerifier inspects the full output map when a single string id is
 // insufficient (e.g. AwsS3ObjectSet verifies HeadObject per key in object_etags).
 type OutputsVerifier interface {
 	Verifier

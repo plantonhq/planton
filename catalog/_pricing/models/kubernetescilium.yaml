@@ -1,5 +1,5 @@
 # Estimate model: the authored capacity footprints of this cluster-capacity
-# component's presets. A hand model instead of a capacity derivation because
+# kind's presets. A hand model instead of a capacity derivation because
 # the two workloads have incompatible multipliers: the operator is a fixed
 # Deployment (spec default 2 leader-elected replicas), but the agent is a
 # DaemonSet -- one pod on EVERY node, so its multiplier is the target
@@ -8,11 +8,11 @@
 # fixed total; these footprints total the FIXED operator pods only, state
 # the agent's PER-NODE reservation explicitly in the basis, and name the
 # node-count multiplication as the first exclusion. Cluster-capacity
-# components carry no priced lines -- the dollar value of the reservation
+# kinds carry no priced lines -- the dollar value of the reservation
 # is the target cluster's node economics.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: kubernetescilium
 spec:

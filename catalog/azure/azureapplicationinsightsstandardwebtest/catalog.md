@@ -4,7 +4,7 @@ Deploys an Application Insights Standard Web Test -- a synthetic availability mo
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Standard Web Test** -- a `Microsoft.Insights/webTests` resource bound to the referenced Application Insights component, configured with the probe request (URL, method, body, headers), the response assertions (status code, SSL certificate, body content), the schedule (frequency, timeout, retry), and the geo-locations it runs from
 - **Azure Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically, merged with any user tags (user values win on key conflicts)
@@ -13,13 +13,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the web test will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
-- **An Application Insights component** to store the test's results and host its availability metric. Provide the component ARM ID directly or reference an AzureApplicationInsights Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the web test will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
+- **An Application Insights component** to store the test's results and host its availability metric. Provide the component ARM ID directly or reference an AzureApplicationInsights Infra Component via ValueFromRef.
 - **A publicly reachable endpoint** -- Azure's test agents probe from the public internet; an endpoint behind an IP allowlist needs Azure's published test-agent ranges admitted.
 
 ## Deploy
@@ -59,7 +59,7 @@ spec:
 planton apply -f web-test.yaml
 ```
 
-This creates a web test on Azure's defaults: a GET probe every 5 minutes from the three listed locations, a 30-second timeout, and any 200 response passing. A Stack Job tracks the provisioning in real time.
+This creates a web test on Azure's defaults: a GET probe every 5 minutes from the three listed locations, a 30-second timeout, and any 200 response passing. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,16 +95,16 @@ These are the most important decisions when configuring a standard web test. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 | **AzureApplicationInsights** | `applicationInsightsId` | `status.outputs.application_insights_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -122,6 +122,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the web test is created
-- [**Azure Application Insights**](/cloud-catalog/azure-application-insights) -- stores the test's results and hosts its availability metric
-- [**Azure Log Analytics Workspace**](/cloud-catalog/azure-log-analytics-workspace) -- the workspace behind the Application Insights component, where availability results are queryable with KQL
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the web test is created
+- [**Azure Application Insights**](/infra-catalog/azure-application-insights) -- stores the test's results and hosts its availability metric
+- [**Azure Log Analytics Workspace**](/infra-catalog/azure-log-analytics-workspace) -- the workspace behind the Application Insights component, where availability results are queryable with KQL

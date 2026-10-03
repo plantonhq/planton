@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesflinkdeployment.v1alpha1;
 import "catalog/kubernetes/kubernetesflinkdeployment/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//flink-deployment-kubernetes stack-input
-message KubernetesFlinkDeploymentStackInput {
-  //target cloud-resource
+//flink-deployment-kubernetes iac-input
+message KubernetesFlinkDeploymentIacInput {
+  //target infra-component
   KubernetesFlinkDeployment target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

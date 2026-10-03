@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added support for environment secrets in `KubernetesCronjob` to be provided either as direct string values or as references to existing Kubernetes Secrets. This enables secure credential management in production deployments by leveraging Kubernetes-native secret storage instead of storing passwords in plaintext within configuration files. This change follows the identical pattern established in the `KubernetesDeployment` component.
+Added support for environment secrets in `KubernetesCronjob` to be provided either as direct string values or as references to existing Kubernetes Secrets. This enables secure credential management in production deployments by leveraging Kubernetes-native secret storage instead of storing passwords in plaintext within configuration files. This change follows the identical pattern established in the `KubernetesDeployment` kind.
 
 ## Problem Statement / Motivation
 
@@ -571,7 +571,7 @@ ginkgo.Describe("Environment secrets validation", func() {
 
 Update all example files to show both options:
 
-- `v1/examples.md` - Main component examples
+- `v1/examples.md` - Main kind examples
 - `v1/iac/pulumi/examples.md` - Pulumi-specific examples
 - `v1/iac/tf/examples.md` - Terraform-specific examples
 
@@ -628,7 +628,7 @@ After making changes, run:
 # 1. Regenerate proto stubs
 make protos
 
-# 2. Run component-specific tests
+# 2. Run kind-specific tests
 go test ./apis/dev/planton/provider/kubernetes/kubernetescronjob/v1/...
 
 # 3. Full build
@@ -638,9 +638,9 @@ make build
 make test
 ```
 
-## Applying to Other Components
+## Applying to Other Kinds
 
-This same change pattern should be applied to these additional components that have the same `env.secrets` pattern:
+This same change pattern should be applied to these additional kinds that have the same `env.secrets` pattern:
 
 ### 1. KubernetesDaemonset
 **Path**: `apis/dev/planton/provider/kubernetes/kubernetesdaemonset/v1/`
@@ -648,17 +648,17 @@ This same change pattern should be applied to these additional components that h
 ### 2. KubernetesStatefulset
 **Path**: `apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/`
 
-**For each component**:
+**For each kind**:
 1. Check if `spec.proto` has the same `Container.App.Env` pattern or equivalent
 2. Apply the same changes to all files listed in the table above
-3. Run tests for that component
+3. Run tests for that kind
 4. Update examples
 
 ## Planton Web Console Integration
 
 When this pattern is adopted, the Planton web console (`planton` repo) will need updates:
 
-### Form Components
+### Form Kinds
 
 1. **Create Form**: Add UI for selecting between `value` and `secretRef`
 2. **Edit Modal**: Support editing both value types
@@ -690,7 +690,7 @@ After `make update-deps` in web console:
 - **GitOps friendly**: Manifests can be safely committed to version control without exposing credentials
 - **Easier rotation**: Password changes only require updating the Kubernetes Secret, not the manifest
 - **Follows proto patterns**: Uses `oneof` pattern consistent with existing `ValueOrRef` in the codebase
-- **Reusable type**: `KubernetesSensitiveValue` is shared across components
+- **Reusable type**: `KubernetesSensitiveValue` is shared across kinds
 - **Backward compatible API structure**: Both Pulumi and Terraform modules handle both value types seamlessly
 
 ## Impact
@@ -701,7 +701,7 @@ After `make update-deps` in web console:
 - Clear documentation with examples for both approaches
 
 ### Developers
-- Pattern established for handling secrets across the Kubernetes provider components
+- Pattern established for handling secrets across the Kubernetes provider kinds
 - All tests updated and passing (7/7 specs)
 - Reusable `KubernetesSensitiveValue` type for other sensitive fields
 

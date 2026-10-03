@@ -9,9 +9,9 @@
 # document in S3, the remote MCP server's live tool listing, or the API
 # Gateway stage's routes -- never in this manifest -- so a dollar figure
 # here would be a guess wearing a dollar sign.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsbedrockagentcoregateway
 spec:

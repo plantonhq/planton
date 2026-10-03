@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# Stack Outputs — matching AwsFsxOpenzfsFileSystemStackOutputs
+# Outputs — matching AwsFsxOpenzfsFileSystemOutputs
 # ---------------------------------------------------------------------------
 # Primary consumers: EKS (PV via FSx OpenZFS CSI driver), ECS (task def NFS
 # volumes), EC2 (direct NFS mount), child volume creation (root_volume_id).

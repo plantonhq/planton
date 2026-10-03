@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: kuberneteskafkaconnector
 spec:
   billing_model: free
   free_tier: The KafkaConnector itself -- a Strimzi custom resource declaring one data pipe (connector class, task count, configuration, desired state) -- never bills. The Connect cluster's operator drives it through the Connect REST API; the resource has no metered existence.
-  notes: "No field of this spec buys anything directly, but the pipe it declares consumes capacity that bills elsewhere: the connector's tasks run on the Connect cluster's workers (the KubernetesKafkaConnect component, whose worker pods reserve cluster capacity billed there), tasks_max bounds how many parallel tasks may occupy those workers, and the data it moves lands in or drains from the Kafka cluster (the KubernetesKafka component). External systems a connector talks to -- source databases, object stores, warehouses -- bill on their own terms outside this catalog."
+  notes: "No field of this spec buys anything directly, but the pipe it declares consumes capacity that bills elsewhere: the connector's tasks run on the Connect cluster's workers (the KubernetesKafkaConnect kind, whose worker pods reserve cluster capacity billed there), tasks_max bounds how many parallel tasks may occupy those workers, and the data it moves lands in or drains from the Kafka cluster (the KubernetesKafka kind). External systems a connector talks to -- source databases, object stores, warehouses -- bill on their own terms outside this catalog."

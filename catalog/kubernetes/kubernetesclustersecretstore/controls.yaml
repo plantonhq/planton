@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: kubernetesclustersecretstore
 spec:
@@ -52,7 +52,7 @@ spec:
       notes: Changes to the store and its credential Secret are Kubernetes API operations captured by the target cluster's audit policy; reads against the backend appear in the backend's own audit trail (e.g. CloudTrail for Secrets Manager), owned by that account.
     - control_id: monitoring-integration
       status: not_applicable
-      notes: The store emits no metrics of its own; sync and backend-error metrics come from the External Secrets Operator's telemetry, owned by the KubernetesExternalSecretsOperator component.
+      notes: The store emits no metrics of its own; sync and backend-error metrics come from the External Secrets Operator's telemetry, owned by the KubernetesExternalSecretsOperator kind.
     - control_id: backup-recovery
       status: not_applicable
       notes: The store is stateless declarative configuration reproducible from its manifest; the secret values it brokers live in the external backend, whose durability and backup posture belong to that system.

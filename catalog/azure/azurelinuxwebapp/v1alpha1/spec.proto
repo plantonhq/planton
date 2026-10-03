@@ -231,7 +231,7 @@ message AzureLinuxWebAppSpec {
   //
   // When identity is configured with SYSTEM_ASSIGNED, the web app gets
   // a system-assigned identity whose principal_id and tenant_id are exported
-  // as stack outputs.
+  // as outputs.
   AzureLinuxWebAppIdentity identity = 20;
 
   // User Assigned Identity ID for accessing Key Vault references.

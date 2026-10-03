@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1;
 
-// AwsBedrockProvisionedThroughputStackOutputs captures observable
+// AwsBedrockProvisionedThroughputOutputs captures observable
 // identifiers from a provisioned Bedrock throughput purchase.
-message AwsBedrockProvisionedThroughputStackOutputs {
+message AwsBedrockProvisionedThroughputOutputs {
   // ARN of the provisioned model - the modelId applications pass to
   // InvokeModel/Converse to consume the dedicated capacity.
   string provisioned_model_arn = 1;

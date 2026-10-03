@@ -4,7 +4,7 @@ Deploys a Pub/Sub schema — the message contract publishers and subscribers agr
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Pub/Sub API enablement** -- the module enables `pubsub.googleapis.com` in the target project before creating the schema (and never disables it on destroy, so tearing down one schema cannot break the project's other Pub/Sub resources)
 - **Pub/Sub Schema** -- a named schema resource in the specified GCP project, holding the contract definition in Avro or Protocol Buffers form
@@ -14,12 +14,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the schema will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef. The module enables the Pub/Sub API itself — no manual API setup is needed.
+- **A GCP project** where the schema will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef. The module enables the Pub/Sub API itself — no manual API setup is needed.
 
 ## Deploy
 
@@ -58,7 +58,7 @@ spec:
 planton apply -f pubsub-schema.yaml
 ```
 
-This creates the schema with its first revision committed. A Stack Job tracks the provisioning in real time.
+This creates the schema with its first revision committed. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,15 +89,15 @@ These are the most important decisions when configuring a Pub/Sub schema. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -114,5 +114,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the schema is created
-- [**GCP Pub/Sub Topic**](/cloud-catalog/gcp-pub-sub-topic) -- attaches this schema to enforce the contract at publish time
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the schema is created
+- [**GCP Pub/Sub Topic**](/infra-catalog/gcp-pub-sub-topic) -- attaches this schema to enforce the contract at publish time

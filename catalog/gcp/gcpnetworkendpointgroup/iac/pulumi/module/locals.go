@@ -25,8 +25,8 @@ type Locals struct {
 	IsZonal bool
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpnetworkendpointgroupv1alpha1.GcpNetworkEndpointGroupStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcpnetworkendpointgroupv1alpha1.GcpNetworkEndpointGroupIacInput) *Locals {
+	target := iacInput.Target
 
 	negName := target.Spec.NegName
 	if negName == "" {

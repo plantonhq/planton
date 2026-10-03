@@ -1,5 +1,5 @@
 // Package pulumiawsprovider is the single, convergent place where every AWS pulumi-aws
-// "classic" module builds its aws.Provider from the stack input's AwsProviderConfig. It mirrors
+// "classic" module builds its aws.Provider from the IaC input's AwsProviderConfig. It mirrors
 // the sibling per-cloud builders (e.g. pulumiawsnativeprovider, pulumigoogleprovider) so a coding
 // agent can learn the AWS credential-resolution path by reading one file.
 //
@@ -66,7 +66,7 @@ import (
 // name when a module needs more than one provider (e.g. multi-region).
 func Get(ctx *pulumi.Context, awsProviderConfig *awsprovider.AwsProviderConfig,
 	region string, nameSuffixes ...string) (*aws.Provider, error) {
-	// ctx.Context() is the stack job's Go context; the STS exchange (when needed) runs on it.
+	// ctx.Context() is the infra job's Go context; the STS exchange (when needed) runs on it.
 	providerArgs, err := buildProviderArgs(ctx.Context(), awsProviderConfig, region, awswebidentity.ResolveCredentials)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to build aws provider args")

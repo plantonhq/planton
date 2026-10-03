@@ -18,15 +18,15 @@ type Locals struct {
 
 // initializeLocals derives the defaulted display name. Dialogflow CX
 // resources carry no labels, so there is no attribution label set.
-func initializeLocals(_ *pulumi.Context, stackInput *gcpdialogflowcxsecuritysettingsv1alpha1.GcpDialogflowCxSecuritySettingsStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpdialogflowcxsecuritysettingsv1alpha1.GcpDialogflowCxSecuritySettingsIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpDialogflowCxSecuritySettings = stackInput.Target
+	locals.GcpDialogflowCxSecuritySettings = iacInput.Target
 
 	locals.DisplayName = locals.GcpDialogflowCxSecuritySettings.Spec.DisplayName
 	if locals.DisplayName == "" {
 		locals.DisplayName = locals.GcpDialogflowCxSecuritySettings.Metadata.Name
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

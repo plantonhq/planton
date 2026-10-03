@@ -3,7 +3,7 @@
 # modules. Cloudflare authenticates with a bearer API token assembled from
 # named permission groups; every group entry is `derived` (static analysis
 # of the module sources, cited in notes) until the live capture lane
-# upgrades it to `proven`. Schema: iac/componentpermissions/v1.
+# upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # The module manages one cloudflare_ruleset resource against
 # POST/PUT/GET/DELETE /{accounts|zones}/{account_or_zone_id}/rulesets
@@ -23,7 +23,7 @@
 # not Cloudflare's). The live capture lane resolves the zone-scope story to
 # proven.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: cloudflareruleset
 spec:

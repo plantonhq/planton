@@ -12,9 +12,9 @@ Unified the entire planton.ai website to the design system's canonical `#0a0a0a`
 
 The website had accumulated three categories of visual inconsistency:
 
-1. **Canvas fragmentation**: The `<body>` tag used Tailwind's `bg-black` (`#000000`) while the design system specified `#0a0a0a` as the page canvas. Pages using the `<Section>` component (homepage, features) painted `#0a0a0a` over the body, masking the mismatch. Pages that didn't (docs, blog, changelog, pricing, tutorials) exposed the pure black body, creating a "shinier" appearance compared to the "paper-like" feel of other pages.
+1. **Canvas fragmentation**: The `<body>` tag used Tailwind's `bg-black` (`#000000`) while the design system specified `#0a0a0a` as the page canvas. Pages using the `<Section>` kind (homepage, features) painted `#0a0a0a` over the body, masking the mismatch. Pages that didn't (docs, blog, changelog, pricing, tutorials) exposed the pure black body, creating a "shinier" appearance compared to the "paper-like" feel of other pages.
 
-2. **Blue-tinted grays**: Multiple components used Tailwind's default `gray-XXX` scale (`gray-300` through `gray-800`), which carries a cool blue tint from Tailwind's slate-adjacent default palette. On the pure-neutral `#0a0a0a` canvas, this blue cast was perceptible and broke the monochrome design language.
+2. **Blue-tinted grays**: Multiple kinds used Tailwind's default `gray-XXX` scale (`gray-300` through `gray-800`), which carries a cool blue tint from Tailwind's slate-adjacent default palette. On the pure-neutral `#0a0a0a` canvas, this blue cast was perceptible and broke the monochrome design language.
 
 3. **Flat overlay hierarchy**: Navigation dropdowns used `#111` (Panel level) with `#2a2a2a` borders -- the same visual treatment as pricing cards and FAQ containers on the page beneath them. On the pricing page, the dropdown was visually indistinguishable from page content.
 
@@ -25,13 +25,13 @@ The website had accumulated three categories of visual inconsistency:
 - Blog post cards used `bg-gray-800` (`#1f2937`) -- a blue-tinted gray that felt out of place in the monochrome theme
 - Navigation dropdown on pricing page blended completely into the page content
 - Footer used `#000` instead of the design system's canvas color
-- Multiple components mixed Tailwind named grays with the neutral palette hex values
+- Multiple kinds mixed Tailwind named grays with the neutral palette hex values
 
 ## Solution / What's New
 
 ### Phase 1: Canvas Unification
 
-Changed the `<body>` background from `bg-black` (`#000`) to `bg-[#0a0a0a]` and swept every page-level component that set its own `bg-black` or `bg-[#010101]` canvas. This covered 20+ files across pricing, solutions, CLI, features, self-service DevOps, and Plantora AI sections.
+Changed the `<body>` background from `bg-black` (`#000`) to `bg-[#0a0a0a]` and swept every page-level kind that set its own `bg-black` or `bg-[#010101]` canvas. This covered 20+ files across pricing, solutions, CLI, features, self-service DevOps, and Plantora AI sections.
 
 ### Phase 2: Unified Canvas Sidebars
 
@@ -101,7 +101,7 @@ Bumped the MegaMenu dropdown panel from Panel level (`#111` + `#2a2a2a` border) 
 - Blog post cards, sort menus, and action menus all use the correct neutral palette
 - Navigation dropdowns are clearly distinguishable from page content on every page
 - The design system document accurately reflects the implemented surface hierarchy
-- Zero blue-tinted Tailwind grays remain in the sidebar, blog, tutorials, and changelog components
+- Zero blue-tinted Tailwind grays remain in the sidebar, blog, tutorials, and changelog kinds
 
 ## Impact
 
@@ -115,7 +115,7 @@ Bumped the MegaMenu dropdown panel from Panel level (`#111` + `#2a2a2a` border) 
 - [Black and White Theme Redesign](2026-03/2026-03-25-144804-black-and-white-theme-redesign.md) -- established the monochrome palette
 - [Monochrome Polish and Contrast Fixes](2026-03/2026-03-25-193704-monochrome-polish-and-contrast-fixes.md) -- initial contrast pass
 - [Monochrome Code Block Alignment](2026-03/2026-03-31-173025-monochrome-code-block-alignment.md) -- aligned code blocks to the three-level surface stack
-- [Website Shell Component Extraction](2026-04/2026-04-01-175418-website-shell-component-extraction.md) -- extracted shared header/footer into `@plantonhq/website-shell`
+- [Website Shell Kind Extraction](2026-04/2026-04-01-175418-website-shell-kind-extraction.md) -- extracted shared header/footer into `@plantonhq/website-shell`
 
 ---
 

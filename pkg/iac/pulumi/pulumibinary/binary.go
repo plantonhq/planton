@@ -14,7 +14,7 @@ import (
 	"github.com/plantonhq/planton/internal/cli/cliprint"
 	"github.com/plantonhq/planton/internal/cli/version"
 	"github.com/plantonhq/planton/internal/cli/workspace"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/downloads"
 	"github.com/plantonhq/planton/pkg/fileutil"
 )
@@ -32,7 +32,7 @@ const (
 	// Full path: ~/.planton/pulumi/workspaces/{stack-fqdn}/
 	WorkspacesSubDir = "workspaces"
 
-	// BinaryPrefix is the prefix for locally cached Pulumi component binaries.
+	// BinaryPrefix is the prefix for locally cached Pulumi module binaries.
 	BinaryPrefix = "pulumi-"
 )
 
@@ -70,24 +70,24 @@ func GetBinaryCacheDir(releaseVersion string) (string, error) {
 }
 
 // GetBinaryPath returns the expected path for a cached binary
-func GetBinaryPath(componentName, releaseVersion string) (string, error) {
+func GetBinaryPath(kindName, releaseVersion string) (string, error) {
 	cacheDir, err := GetBinaryCacheDir(releaseVersion)
 	if err != nil {
 		return "", err
 	}
 
-	binaryName := BuildBinaryName(componentName)
+	binaryName := BuildBinaryName(kindName)
 	return filepath.Join(cacheDir, binaryName), nil
 }
 
-// BuildBinaryName constructs the platform-specific binary filename for a component.
+// BuildBinaryName constructs the platform-specific binary filename for a kind.
 // The binary name includes the platform suffix based on the current OS and architecture.
 // Examples:
 //   - Linux:   "AwsEcsService" -> "pulumi-awsecsservice_linux_amd64"
 //   - macOS:   "AwsEcsService" -> "pulumi-awsecsservice_darwin_arm64"
 //   - Windows: "AwsEcsService" -> "pulumi-awsecsservice_windows_amd64.exe"
-func BuildBinaryName(componentName string) string {
-	baseName := BinaryPrefix + strings.ToLower(componentName)
+func BuildBinaryName(kindName string) string {
+	baseName := BinaryPrefix + strings.ToLower(kindName)
 	suffix := GetPlatformSuffix()
 
 	if runtime.GOOS == "windows" {
@@ -96,9 +96,9 @@ func BuildBinaryName(componentName string) string {
 	return fmt.Sprintf("%s_%s", baseName, suffix)
 }
 
-// BuildDownloadURL constructs the Cloudflare R2 download URL for a platform-specific component binary.
+// BuildDownloadURL constructs the Cloudflare R2 download URL for a platform-specific kind binary.
 //
-// The key is versionless (one live module set per component); the release tag
+// The key is versionless (one live module set per kind); the release tag
 // segment versions the artifact. Known skew edge: when releaseVersion is an
 // OLDER tag whose lanes uploaded the pre-anatomy key shape, the download 404s
 // and the caller falls back to staging (a git checkout of that tag), which
@@ -108,18 +108,18 @@ func BuildBinaryName(componentName string) string {
 //
 //	BuildDownloadURL("AwsEcsService", "v0.3.50")
 //	  -> https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awsecsservice/darwin_arm64.gz
-func BuildDownloadURL(componentName, releaseVersion string) (string, error) {
+func BuildDownloadURL(kindName, releaseVersion string) (string, error) {
 	// Validate against the registry before composing: an unknown kind must
 	// fail plainly here, not as a 404 the fallback path silently absorbs.
-	if _, err := crkreflect.ComponentVersionDir(componentName); err != nil {
-		return "", errors.Wrapf(err, "cannot build the download URL for the %s pulumi module", componentName)
+	if _, err := catalogkindreflect.KindVersionDir(kindName); err != nil {
+		return "", errors.Wrapf(err, "cannot build the download URL for the %s pulumi module", kindName)
 	}
-	return downloads.BuildPulumiDownloadURL(componentName, releaseVersion, GetPlatformSuffix()), nil
+	return downloads.BuildPulumiDownloadURL(kindName, releaseVersion, GetPlatformSuffix()), nil
 }
 
 // IsBinaryCached checks if a binary is already cached
-func IsBinaryCached(componentName, releaseVersion string) (bool, error) {
-	binaryPath, err := GetBinaryPath(componentName, releaseVersion)
+func IsBinaryCached(kindName, releaseVersion string) (bool, error) {
+	binaryPath, err := GetBinaryPath(kindName, releaseVersion)
 	if err != nil {
 		return false, err
 	}
@@ -143,42 +143,42 @@ func IsBinaryCached(componentName, releaseVersion string) (bool, error) {
 	return info.Mode()&0111 != 0, nil
 }
 
-// EnsureBinary ensures the binary for a component is downloaded and cached.
+// EnsureBinary ensures the binary for a kind is downloaded and cached.
 // The releaseVersion can be:
 // - CLI version like "v0.3.2" (uses main planton release)
-// - Module version like "v0.3.1-pulumi-awsecsservice-20260107.01" (uses component-specific release)
+// - Module version like "v0.3.1-pulumi-awsecsservice-20260107.01" (uses kind-specific release)
 // Returns the path to the binary.
-func EnsureBinary(componentName, releaseVersion string) (string, error) {
+func EnsureBinary(kindName, releaseVersion string) (string, error) {
 	// Check if already cached
-	cached, err := IsBinaryCached(componentName, releaseVersion)
+	cached, err := IsBinaryCached(kindName, releaseVersion)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to check binary cache")
 	}
 
-	binaryPath, err := GetBinaryPath(componentName, releaseVersion)
+	binaryPath, err := GetBinaryPath(kindName, releaseVersion)
 	if err != nil {
 		return "", err
 	}
 
 	if cached {
-		cliprint.PrintSuccess(fmt.Sprintf("Using cached module: %s", componentName))
+		cliprint.PrintSuccess(fmt.Sprintf("Using cached module: %s", kindName))
 		return binaryPath, nil
 	}
 
 	// Download the binary
-	cliprint.PrintStep(fmt.Sprintf("Downloading Pulumi module: %s...", componentName))
+	cliprint.PrintStep(fmt.Sprintf("Downloading Pulumi module: %s...", kindName))
 
-	if err := DownloadBinary(componentName, releaseVersion); err != nil {
-		return "", errors.Wrapf(err, "failed to download binary for %s", componentName)
+	if err := DownloadBinary(kindName, releaseVersion); err != nil {
+		return "", errors.Wrapf(err, "failed to download binary for %s", kindName)
 	}
 
-	cliprint.PrintSuccess(fmt.Sprintf("Module downloaded: %s", componentName))
+	cliprint.PrintSuccess(fmt.Sprintf("Module downloaded: %s", kindName))
 	return binaryPath, nil
 }
 
-// DownloadBinary downloads and extracts a platform-specific component binary from Cloudflare R2.
+// DownloadBinary downloads and extracts a platform-specific kind binary from Cloudflare R2.
 // The binary downloaded is platform-specific based on runtime.GOOS and runtime.GOARCH.
-func DownloadBinary(componentName, releaseVersion string) error {
+func DownloadBinary(kindName, releaseVersion string) error {
 	// Ensure cache directory exists
 	cacheDir, err := GetBinaryCacheDir(releaseVersion)
 	if err != nil {
@@ -192,7 +192,7 @@ func DownloadBinary(componentName, releaseVersion string) error {
 	}
 
 	// Build download URL - the release version IS the tag
-	downloadURL, err := BuildDownloadURL(componentName, releaseVersion)
+	downloadURL, err := BuildDownloadURL(kindName, releaseVersion)
 	if err != nil {
 		return err
 	}
@@ -218,7 +218,7 @@ func DownloadBinary(componentName, releaseVersion string) error {
 	defer gzReader.Close()
 
 	// Write to destination
-	binaryPath, err := GetBinaryPath(componentName, releaseVersion)
+	binaryPath, err := GetBinaryPath(kindName, releaseVersion)
 	if err != nil {
 		return err
 	}

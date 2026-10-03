@@ -11,11 +11,11 @@ import "shared/metadata.proto";
 message GcpHierarchicalFirewallPolicy {
   string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
   string kind = 2 [(buf.validate.field).string.const = 'GcpHierarchicalFirewallPolicy'];
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
   GcpHierarchicalFirewallPolicySpec spec = 4 [(buf.validate.field).required = true];
   GcpHierarchicalFirewallPolicyStatus status = 5;
 }
 
 message GcpHierarchicalFirewallPolicyStatus {
-  GcpHierarchicalFirewallPolicyStackOutputs outputs = 1;
+  GcpHierarchicalFirewallPolicyOutputs outputs = 1;
 }

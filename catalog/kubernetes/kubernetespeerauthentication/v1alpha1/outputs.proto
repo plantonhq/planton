@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetespeerauthentication.v1alpha1;
 
-// KubernetesPeerAuthenticationStackOutputs captures observable outputs after the
+// KubernetesPeerAuthenticationOutputs captures observable outputs after the
 // PeerAuthentication is created on the target cluster. PeerAuthentication has no
 // controller-reconciled status subresource that is useful to surface here (istiod
 // enforces the policy in the data plane), so only the resource identity is
 // exported.
-message KubernetesPeerAuthenticationStackOutputs {
+message KubernetesPeerAuthenticationOutputs {
   // Name of the created PeerAuthentication (equals metadata.name).
   string peer_authentication_name = 1;
 

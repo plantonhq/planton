@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -7,9 +7,9 @@
 # meter a preset can start -- model-inference tokens, guardrail text units,
 # retrieval queries -- bills as conversations happen -- stated in
 # exclusions, never padded into fabricated dollars.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awsbedrockagent
 spec:
@@ -30,5 +30,5 @@ spec:
       exclusions:
         - supervisor traffic bills on-demand tokens at amazon.nova-lite-v1:0's rate, and every delegation to the billing collaborator additionally runs THAT agent's model with the relayed conversation history inflating its input tokens -- fan-out spend lands on the collaborator agent's own account meters
         - session memory (storageDays 30) adds a summarization model call per session at the same token rate; the summary storage itself has no published meter
-        - knowledge-base retrieval embeds each query at the KB's embedding model and searches the vector store, which bills on the referenced AwsBedrockKnowledgeBase's backing component
+        - knowledge-base retrieval embeds each query at the KB's embedding model and searches the vector store, which bills on the referenced AwsBedrockKnowledgeBase's backing kind
       notes: Zero committed cost -- supervisor, memory, collaborator wiring, and the knowledge-base association are all free at rest; the zero is commitment-absence, and the real spend fans out across token meters the first delegated conversation starts.

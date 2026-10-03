@@ -4,7 +4,7 @@ package dev.planton.gcp.gcpcloudcomposeruserworkloadsconfigmap.v1alpha1;
 
 // Outputs produced after provisioning a Cloud Composer user workloads
 // ConfigMap.
-message GcpCloudComposerUserWorkloadsConfigMapStackOutputs {
+message GcpCloudComposerUserWorkloadsConfigMapOutputs {
   // Fully qualified resource name.
   // Format: projects/{project}/locations/{region}/environments/{environment}/userWorkloadsConfigMaps/{name}
   string name = 1;

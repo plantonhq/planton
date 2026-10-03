@@ -39,7 +39,7 @@ problems independently:
 - Two chart authoring standards (`forge-planton-infra-chart.mdc` vs
   `author-planton-infra-chart.mdc`) teaching overlapping but different rules.
 - The kind-registry enum, go.mod/MODULE.bazel, doctrine, and six forge-flow
-  rules all carried textual conflicts; a duplicated `--stack-input` flag
+  rules all carried textual conflicts; a duplicated `--iac-input` flag
   registration (both sides added the same fix) panicked the CLI at startup.
 - The GCP branch predated main's labels→annotations platform-key breaking
   change, so its catalog pages taught `metadata.labels` for keys the engine no
@@ -99,7 +99,7 @@ error-aggregating teardown) and ports the GCP branch's capabilities into it:
   (KMS rings, WIF pools, Vertex deployed-index IDs) cannot rerun without it.
 - Consumer-scoped prerequisite overrides
   (`<consumer>/v1/e2e/prerequisites/<dep>.yaml`), resolved for every kind in
-  the transitive chain against the component under test — the documented
+  the transitive chain against the kind under test — the documented
   contract in `e2e/README.md`.
 - Dependency-destroy retries (6 × 60s) folded into the error-aggregating
   teardown: asynchronous producer cleanups (the Cloud SQL → service networking
@@ -110,9 +110,9 @@ its 51 unit tests pass.
 
 ### Catalog union and mechanical resolutions
 
-- `cloud_resource_kind.proto`: union of the three rebuilt catalogs' kinds
+- `catalog_kind.proto`: union of the three rebuilt catalogs' kinds
   (verified zero duplicate enum numbers and zero duplicate id-prefixes);
-  stubs and the crkreflect kind map regenerated, never hand-merged.
+  stubs and the catalogkindreflect kind map regenerated, never hand-merged.
 - ~70 one-side-wins files: the GCP branch's rebuilt catalog pages, site docs,
   and charts win over main's mechanical sweeps of their pre-rebuild versions;
   main's deletions of legacy AWS charts and stale audit artifacts stand;
@@ -132,7 +132,7 @@ its 51 unit tests pass.
 
 Defects found and fixed during unification:
 
-1. **CLI startup panic**: both branches registered the `--stack-input` flag on
+1. **CLI startup panic**: both branches registered the `--iac-input` flag on
    the tofu command group (the same missing-flag fix made twice); the textual
    auto-merge kept both registrations and pflag panics on redefinition — a
    runtime-only class no compile catches. Deduplicated.
@@ -164,7 +164,7 @@ Defects found and fixed during unification:
   `planton secret-coverage --check` green on a working-tree build;
   `pkg/outputs`, `pkg/secretcoverage`, `pkg/refcheck`, and the tofu-generator
   suites green.
-- Site stats regenerated (562 components, 64 charts, 17 providers); gazelle
+- Site stats regenerated (562 kinds, 64 charts, 17 providers); gazelle
   run; `go mod tidy` clean.
 - A live dual-engine smoke (GcpServiceAccount create→verify→destroy) was
   attempted but blocked by an expired local ADC session (`invalid_grant`,

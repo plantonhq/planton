@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -6,9 +6,9 @@
 # free to exist, every meter (custom or partner events ingested, archive
 # processing and storage, delivery logs) follows event flow, and an idle
 # bus bills nothing -- stated in exclusions, never padded into fabricated
-# dollars. Schema: finops/componentcostestimatemodel/v1.
+# dollars. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awseventbridgebus
 spec:
@@ -20,7 +20,7 @@ spec:
       exclusions:
         - custom events published bill per million in 64 KB chunks (a 256 KB payload bills as four events), from the first event -- custom events carry no free allotment
         - AWS management events ride free, permanently
-        - rule targets' compute (Lambda, Step Functions, API destinations) bills on their own components; delivery to another bus or account is its own per-million meter
+        - rule targets' compute (Lambda, Step Functions, API destinations) bills on their own kinds; delivery to another bus or account is its own per-million meter
       notes: Zero committed cost -- the bus is routing configuration, and the ingestion meter starts with the first custom event put onto it.
     - preset: 02-production-encrypted-bus
       region_assumption: us-east-1
@@ -29,9 +29,9 @@ spec:
       exclusions:
         - custom events published bill per million in 64 KB chunks as traffic arrives
         - the archive has no event_pattern, so it records EVERY event delivered to the bus -- per-GB processing on the way in, per-GB-month storage until the 90-day retention expires; with no traffic it records and bills nothing, and replay bills again as custom-event publishing
-        - ERROR-level delivery logging with detail NONE writes records to CloudWatch Logs only on failed deliveries, billing that component's ingestion and storage meters
-        - the customer-managed encryption key's monthly fee and API requests bill on the referenced AwsKmsKey component
-        - events that exhaust delivery retries land in the dead-letter queue, billing its per-request and storage meters on the AwsSqsQueue component -- a healthy bus sends it nothing
+        - ERROR-level delivery logging with detail NONE writes records to CloudWatch Logs only on failed deliveries, billing that kind's ingestion and storage meters
+        - the customer-managed encryption key's monthly fee and API requests bill on the referenced AwsKmsKey kind
+        - events that exhaust delivery retries land in the dead-letter queue, billing its per-request and storage meters on the AwsSqsQueue kind -- a healthy bus sends it nothing
       notes: Zero committed cost -- encryption, logging, DLQ, and the catch-all archive are all posture whose meters follow traffic; the 90-day retention caps how long archived gigabytes accrue storage once events do flow.
     - preset: 03-partner-event-bus
       region_assumption: us-east-1
@@ -39,5 +39,5 @@ spec:
       hours_per_month: 730
       exclusions:
         - every partner event ingested bills at the per-million partner rate with 64 KB chunking -- the SaaS partner's traffic volume, not anything in this manifest, decides the bill
-        - rule targets' compute bills on their own components
+        - rule targets' compute bills on their own kinds
       notes: Zero committed cost -- associating the partner event source starts no meter; the bill begins when the partner sends its first event.

@@ -4,55 +4,55 @@
 # catalog presets through these rules to emit
 # ../estimates/kubernetesairflow.yaml; a server-side estimator can
 # evaluate the same rules against live manifests. Airflow is a
-# multi-workload chart: each fixed component class the spec sizes (API
+# multi-workload chart: each fixed kind class the spec sizes (API
 # server, scheduler, DAG processor, triggerer, Celery workers, the
 # bundled Redis broker, PgBouncer) binds its own replicas and resources;
 # the shared DAG and log volumes are single cluster-wide reservations.
 # Anything only the chart sizes (statsd-exporter, migration and
 # bootstrap Jobs, git-sync sidecars) is excluded loudly below.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesairflow
 spec:
   workloads:
     - label: API server
-      resources_path: components.api_server.resources
+      resources_path: kinds.api_server.resources
       instances:
         field_value:
-          field_path: components.api_server.replicas
+          field_path: kinds.api_server.replicas
           default_when_unset: "1"
     - label: scheduler
-      resources_path: components.scheduler.resources
+      resources_path: kinds.scheduler.resources
       instances:
         field_value:
-          field_path: components.scheduler.replicas
+          field_path: kinds.scheduler.replicas
           default_when_unset: "1"
     - label: DAG processor
-      resources_path: components.dag_processor.resources
+      resources_path: kinds.dag_processor.resources
       instances:
         field_value:
-          field_path: components.dag_processor.replicas
+          field_path: kinds.dag_processor.replicas
           default_when_unset: "1"
     - label: triggerer
-      resources_path: components.triggerer.resources
+      resources_path: kinds.triggerer.resources
       instances:
         field_value:
-          field_path: components.triggerer.replicas
+          field_path: kinds.triggerer.replicas
           default_when_unset: "1"
       volumes:
         - label: local-state
-          size_path: components.triggerer.persistence_size
+          size_path: kinds.triggerer.persistence_size
     - label: worker
-      resources_path: components.workers.resources
+      resources_path: kinds.workers.resources
       instances:
         field_value:
-          field_path: components.workers.replicas
+          field_path: kinds.workers.replicas
           default_when_unset: "1"
       volumes:
         - label: task-log
-          size_path: components.workers.persistence_size
+          size_path: kinds.workers.persistence_size
     - label: Redis broker
       resources_path: broker.bundled_redis.resources
       instances:
@@ -83,16 +83,16 @@ spec:
           op: is_unset
       text: without a Celery broker every task runs as its own ephemeral pod (the KubernetesExecutor path) -- per-task reservations exist only while tasks run and no standing worker fleet is counted
     - applies_when:
-        - field_path: components.workers.keda
+        - field_path: kinds.workers.keda
           op: is_set
       text: when KEDA autoscaling is enabled it owns the Celery worker replica count at runtime between its declared bounds -- the footprint states the declared replicas
     - applies_when:
         - field_path: dags.git_sync
           op: is_set
       text: the git-sync sidecar rides every Airflow component -- its declared resources are per-sidecar and are not multiplied into this footprint
-    - text: a triggerer or worker component block declared without its persistence size is stated at the 100Gi spec-declared default; with no component block at all the chart still provisions the volume, a reservation this footprint cannot count
+    - text: a triggerer or worker kind block declared without its persistence size is stated at the 100Gi spec-declared default; with no kind block at all the chart still provisions the volume, a reservation this footprint cannot count
     - applies_when:
         - field_path: helm_values
           op: is_set
       text: the helm_values overlay merges last and can override any modeled value, including resources and replica counts -- this footprint states the typed spec's declaration
-    - text: the statsd-exporter and the migration and admin-bootstrap Jobs carry only chart-default sizing; the metadata database and any composed Valkey broker are separate components with their own footprints
+    - text: the statsd-exporter and the migration and admin-bootstrap Jobs carry only chart-default sizing; the metadata database and any composed Valkey broker are separate kinds with their own footprints

@@ -4,7 +4,7 @@ Creates a Google Cloud Resource Manager tag key: the NAME half of a tag such as 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Tag key** -- the `tags_tag_key` under the organization or project, with its short name, description, optional purpose, and optional allowed-values regex
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials that can administer tags at the owner. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials that can administer tags at the owner. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### GCP Owner
 
@@ -48,7 +48,7 @@ spec:
 planton apply -f tag-key.yaml
 ```
 
-This creates the organization-wide key `environment`; its values are declared with `GcpTagValue` and bound with `GcpTagBinding`. A Stack Job tracks the provisioning in real time.
+This creates the organization-wide key `environment`; its values are declared with `GcpTagValue` and bound with `GcpTagBinding`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -83,15 +83,15 @@ These are the most important decisions when configuring a tag key. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `parent.projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -112,7 +112,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Tag Value**](/cloud-catalog/gcp-tag-value) -- the values declared under this key
-- [**GCP Tag Binding**](/cloud-catalog/gcp-tag-binding) -- attaches a value to a resource
-- [**GCP Organization Policy**](/cloud-catalog/gcp-org-policy) -- rules conditioned on the tag
-- [**GCP Project**](/cloud-catalog/gcp-project) -- the owner of a project-scoped key
+- [**GCP Tag Value**](/infra-catalog/gcp-tag-value) -- the values declared under this key
+- [**GCP Tag Binding**](/infra-catalog/gcp-tag-binding) -- attaches a value to a resource
+- [**GCP Organization Policy**](/infra-catalog/gcp-org-policy) -- rules conditioned on the tag
+- [**GCP Project**](/infra-catalog/gcp-project) -- the owner of a project-scoped key

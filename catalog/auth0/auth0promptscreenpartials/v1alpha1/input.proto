@@ -5,9 +5,9 @@ package dev.planton.auth0.auth0promptscreenpartials.v1alpha1;
 import "catalog/auth0/auth0promptscreenpartials/v1alpha1/api.proto";
 import "catalog/auth0/provider.proto";
 
-// Auth0PromptScreenPartialsStackInput is the input to the Auth0PromptScreenPartials IaC module.
+// Auth0PromptScreenPartialsIacInput is the input to the Auth0PromptScreenPartials IaC module.
 // It contains the target resource and the Auth0 provider configuration.
-message Auth0PromptScreenPartialsStackInput {
+message Auth0PromptScreenPartialsIacInput {
   // target is the Auth0PromptScreenPartials resource to be deployed.
   Auth0PromptScreenPartials target = 1;
 

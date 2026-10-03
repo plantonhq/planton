@@ -4,7 +4,7 @@ Deploys one secret inside the account-level Cloudflare Secrets Store, readable b
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Store Secret** -- one `cloudflare_secrets_store_secret` inside the referenced store, with the value marked sensitive in state and the declared scopes controlling which Cloudflare surfaces may read it
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Secrets Store Edit on the account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Secrets Store Edit on the account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -53,7 +53,7 @@ spec:
 planton apply -f secret.yaml
 ```
 
-This creates a secret named `openai-api-key` in the store, readable by AI Gateway and Workers only, with the value resolved from a managed secret at deploy time. A Stack Job tracks the provisioning in real time.
+This creates a secret named `openai-api-key` in the store, readable by AI Gateway and Workers only, with the value resolved from a managed secret at deploy time. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -86,15 +86,15 @@ These are the most important decisions when configuring a store secret. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareSecretsStore** | `storeId` | `status.outputs.store_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -115,6 +115,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Secrets Store**](/cloud-catalog/cloudflare-secrets-store) -- the one-per-account vault this secret lives in; wire `storeId` via ValueFromRef.
-- [**Cloudflare Worker**](/cloud-catalog/cloudflare-worker) -- secrets-store bindings that read the secret at runtime.
-- [**Cloudflare AI Gateway**](/cloud-catalog/cloudflare-ai-gateway) -- BYO-keys authentication backed by secrets like this one.
+- [**Cloudflare Secrets Store**](/infra-catalog/cloudflare-secrets-store) -- the one-per-account vault this secret lives in; wire `storeId` via ValueFromRef.
+- [**Cloudflare Worker**](/infra-catalog/cloudflare-worker) -- secrets-store bindings that read the secret at runtime.
+- [**Cloudflare AI Gateway**](/infra-catalog/cloudflare-ai-gateway) -- BYO-keys authentication backed by secrets like this one.

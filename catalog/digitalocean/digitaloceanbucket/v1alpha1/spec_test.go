@@ -22,7 +22,7 @@ func minimalBucket() *DigitalOceanBucket {
 	return &DigitalOceanBucket{
 		ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 		Kind:       "DigitalOceanBucket",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-bucket",
 		},
 		Spec: &DigitalOceanBucketSpec{

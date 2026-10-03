@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 //
 // Identity providers carry no AwsTags map: the aws_cognito_identity_provider
 // resource is not taggable (identity tagging lives on the pool).
@@ -14,10 +14,10 @@ type Locals struct {
 	Spec   *cogidpv1.AwsCognitoIdentityProviderSpec
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *cogidpv1.AwsCognitoIdentityProviderStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *cogidpv1.AwsCognitoIdentityProviderIacInput) *Locals {
 	locals := &Locals{}
-	locals.Target = stackInput.Target
-	locals.Spec = stackInput.Target.Spec
+	locals.Target = iacInput.Target
+	locals.Spec = iacInput.Target.Spec
 
 	return locals
 }

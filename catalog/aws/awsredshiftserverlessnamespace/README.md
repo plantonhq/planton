@@ -12,13 +12,13 @@ A namespace stores; it never computes. Compute lives on `AwsRedshiftServerlessWo
 - **Data movement** -- `iamRoles` + `defaultIamRoleArn` (by reference) for COPY/UNLOAD/Spectrum.
 - **Observability** -- `logExports` streams connection/user-activity/user audit logs to CloudWatch Logs.
 
-## Stack outputs
+## Outputs
 
 `namespace_name` (the join key workgroups attach with), `namespace_id`, `arn`, `db_name`, `admin_password_secret_arn`.
 
 ## How it works
 
-Planton provisions via the Pulumi or Terraform module in `iac/`, both implementing the same contract at full parity. The API contract is protobuf-based (`spec.proto`); stack execution is orchestrated using `AwsRedshiftServerlessNamespaceStackInput` (provider credentials + IaC info).
+Planton provisions via the Pulumi or Terraform module in `iac/`, both implementing the same contract at full parity. The API contract is protobuf-based (`spec.proto`); stack execution is orchestrated using `AwsRedshiftServerlessNamespaceIacInput` (provider credentials + IaC info).
 
 ## References
 

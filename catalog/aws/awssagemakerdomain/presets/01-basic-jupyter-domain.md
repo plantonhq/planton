@@ -26,7 +26,7 @@ No domain-level charges. Costs accrue when users launch JupyterLab instances:
 - Instance compute (e.g. `ml.t3.medium`): billed hourly while the instance runs — the dominant line if instances are left running
 - EFS home directories: billed per GB-month
 
-The verified figure for this preset lives in the component's generated estimate at `catalog/_pricing/estimates/awssagemakerdomain.yaml` — computed from the pinned price book, never hand-typed here.
+The verified figure for this preset lives in the kind's generated estimate at `catalog/_pricing/estimates/awssagemakerdomain.yaml` — computed from the pinned price book, never hand-typed here.
 
 ## Customization
 

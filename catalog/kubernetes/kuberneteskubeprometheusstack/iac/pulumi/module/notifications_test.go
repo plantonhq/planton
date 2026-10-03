@@ -28,9 +28,9 @@ func literal(v string) *foreignkeyv1.StringValueOrRef {
 func productionShapedLocals(t *testing.T) *Locals {
 	t.Helper()
 	emergency := kuberneteskubeprometheusstackv1alpha1.KubernetesKubePrometheusStackPushoverPriority_emergency
-	stackInput := &kuberneteskubeprometheusstackv1alpha1.KubernetesKubePrometheusStackStackInput{
+	iacInput := &kuberneteskubeprometheusstackv1alpha1.KubernetesKubePrometheusStackIacInput{
 		Target: &kuberneteskubeprometheusstackv1alpha1.KubernetesKubePrometheusStack{
-			Metadata: &shared.CloudResourceMetadata{Name: "prod-metrics"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "prod-metrics"},
 			Spec: &kuberneteskubeprometheusstackv1alpha1.KubernetesKubePrometheusStackSpec{
 				Namespace: literal("observability"),
 				Alertmanager: &kuberneteskubeprometheusstackv1alpha1.KubernetesKubePrometheusStackAlertmanager{
@@ -69,7 +69,7 @@ func productionShapedLocals(t *testing.T) *Locals {
 			},
 		},
 	}
-	return initializeLocals(nil, stackInput)
+	return initializeLocals(nil, iacInput)
 }
 
 func TestNotificationsKeepCredentialsInOneMountedSecret(t *testing.T) {

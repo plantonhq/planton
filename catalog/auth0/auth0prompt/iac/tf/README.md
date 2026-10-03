@@ -15,7 +15,7 @@ Terraform/OpenTofu module that manages the login-flow settings of an existing Au
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `universal_login_experience`, `identifier_first`, `webauthn_platform_first_factor` -- each optional, at least one set |
 
 ## Outputs

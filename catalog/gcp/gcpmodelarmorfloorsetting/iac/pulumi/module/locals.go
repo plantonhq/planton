@@ -11,10 +11,10 @@ type Locals struct {
 	GcpModelArmorFloorSetting *gcpmodelarmorfloorsettingv1alpha1.GcpModelArmorFloorSetting
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpmodelarmorfloorsettingv1alpha1.GcpModelArmorFloorSettingStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpmodelarmorfloorsettingv1alpha1.GcpModelArmorFloorSettingIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpModelArmorFloorSetting = stackInput.Target
+	locals.GcpModelArmorFloorSetting = iacInput.Target
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

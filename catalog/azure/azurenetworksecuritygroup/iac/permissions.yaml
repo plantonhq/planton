@@ -2,9 +2,9 @@
 # provision, update, and destroy this component with the official modules.
 # Every entry is `derived` (static analysis of the module sources, cited in
 # notes) until the live capture lane upgrades it to `proven`. Schema:
-# iac/componentpermissions/v1.
+# iac/catalogkindpermissions/v1.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: azurenetworksecuritygroup
 spec:

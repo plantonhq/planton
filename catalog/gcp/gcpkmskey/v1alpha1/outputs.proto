@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpkmskey.v1alpha1;
 
 // Outputs produced after provisioning a GCP KMS key.
-message GcpKmsKeyStackOutputs {
+message GcpKmsKeyOutputs {
   // Fully qualified crypto key resource path.
   // Format: projects/{project}/locations/{location}/keyRings/{keyRing}/cryptoKeys/{name}
   // This is the primary CMEK reference used by BigQuery, Spanner, GKE, CloudSQL,

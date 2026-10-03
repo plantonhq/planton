@@ -25,7 +25,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "app-workers",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{
@@ -45,7 +45,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "autoscale-workers",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{
@@ -67,7 +67,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "labeled-workers",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{
@@ -91,7 +91,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "tainted-workers",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{
@@ -118,7 +118,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "full-featured-workers",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{
@@ -155,7 +155,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "valueless-taint-workers",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{
@@ -181,7 +181,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "gpu-workers",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{
@@ -202,7 +202,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "pinned-autoscale-workers",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{
@@ -229,7 +229,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-pool",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{
@@ -248,7 +248,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-pool",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{
@@ -265,7 +265,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-pool",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{
@@ -284,7 +284,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-pool",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{
@@ -307,7 +307,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-pool",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{
@@ -327,7 +327,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-pool",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{
@@ -353,7 +353,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-pool",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{
@@ -379,7 +379,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-pool",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{
@@ -408,7 +408,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-pool",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{
@@ -429,7 +429,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-pool",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{
@@ -454,7 +454,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-pool",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{
@@ -475,7 +475,7 @@ var _ = ginkgo.Describe("DigitalOceanKubernetesNodePoolSpec Custom Validation Te
 				input := &DigitalOceanKubernetesNodePool{
 					ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 					Kind:       "DigitalOceanKubernetesNodePool",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-pool",
 					},
 					Spec: &DigitalOceanKubernetesNodePoolSpec{

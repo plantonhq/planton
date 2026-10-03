@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsguardduty
 spec:
@@ -10,7 +10,7 @@ spec:
   values:
     - name: detector_id
       derivations:
-        - from_stack_output: detector_id
+        - from_output: detector_id
       where_to_find: >-
         GuardDuty console -> Settings (Detector ID), or
         `aws guardduty list-detectors`.
@@ -23,19 +23,19 @@ spec:
         --detector-id <id>`).
     - name: ip_set_id
       derivations:
-        - from_stack_output_keyed_by_address: ip_set_ids
+        - from_output_keyed_by_address: ip_set_ids
       where_to_find: >-
         `aws guardduty list-ip-sets --detector-id <id>`, matched to
         each spec.ip_sets entry by name.
     - name: threat_intel_set_id
       derivations:
-        - from_stack_output_keyed_by_address: threat_intel_set_ids
+        - from_output_keyed_by_address: threat_intel_set_ids
       where_to_find: >-
         `aws guardduty list-threat-intel-sets --detector-id <id>`,
         matched to each spec.threat_intel_sets entry by name.
     - name: destination_id
       derivations:
-        - from_stack_output: publishing_destination_id
+        - from_output: publishing_destination_id
       where_to_find: >-
         `aws guardduty list-publishing-destinations --detector-id
         <id>` (DestinationId).

@@ -39,7 +39,7 @@ Lifecycle notes worth knowing before operating this resource:
 
 ## Inputs
 
-The module receives an `AzureManagedDiskStackInput` containing:
+The module receives an `AzureManagedDiskIacInput` containing:
 
 - `target.spec.region` / `target.spec.resource_group` / `target.spec.name` -- the disk's ARM identity (references resolved to literals by the platform)
 - `target.spec.storage_account_type` -- the SKU (`STANDARD_LRS` through `ULTRA_SSD_LRS`; PremiumV2/Ultra unlock the independent performance dials)

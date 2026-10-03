@@ -12,13 +12,13 @@ import (
 // groups -- so credential material lives here, membership lives on the
 // group, and the cache itself never changes when access is granted or
 // revoked.
-func Resources(ctx *pulumi.Context, stackInput *awselasticacheuserv1alpha1.AwsElasticacheUserStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awselasticacheuserv1alpha1.AwsElasticacheUserIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which
+	// Build the AWS provider from the IaC input via the shared builder, which
 	// resolves the right credential mechanism (static keys, keyless web identity,
 	// or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsElasticacheUser.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsElasticacheUser.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

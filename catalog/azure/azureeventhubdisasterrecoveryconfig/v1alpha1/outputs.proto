@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package dev.planton.azure.azureeventhubdisasterrecoveryconfig.v1alpha1;
 
-// **AzureEventHubDisasterRecoveryConfigStackOutputs** captures the outputs
+// **AzureEventHubDisasterRecoveryConfigOutputs** captures the outputs
 // of provisioning an Event Hubs geo-DR pairing.
 //
 // Alias-addressed CREDENTIALS deliberately live elsewhere: Azure exposes
 // them through authorization rules, so DR-aware clients take the
 // `*_connection_string_alias` outputs from AzureEventHubNamespace (the
 // root rule) or AzureEventHubAuthorizationRule (scoped rules).
-message AzureEventHubDisasterRecoveryConfigStackOutputs {
+message AzureEventHubDisasterRecoveryConfigOutputs {
   // The Azure Resource Manager ID of the disaster-recovery config (under
   // the primary namespace).
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.EventHub/namespaces/{ns}/disasterRecoveryConfigs/{alias}

@@ -4,7 +4,7 @@ Runs a task definition as a long-lived service: the ECS scheduler keeps the desi
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **ECS Service** -- the scheduler keeping the desired count of tasks running, with its networking, load-balancer registrations, deployment guards, and discovery wiring
 - **Application Auto Scaling resources** -- the scalable target and target-tracking policies (with their AWS-managed CloudWatch alarms) when autoscaling is configured
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **ECS Cluster** -- an AwsEcsCluster referenced by its `cluster_arn` output.
 - **Task Definition** -- an AwsEcsTaskDefinition referenced by its `task_definition_arn` output (the recommended wiring — each new revision rolls the service).
 - **Networking** -- AwsSubnet and AwsSecurityGroup resources for the task ENIs, referenced by their outputs.
@@ -89,7 +89,7 @@ spec:
 planton apply -f ecs-service.yaml
 ```
 
-This keeps two copies of the `api` task running behind the target group, guarded by the circuit breaker. A Stack Job tracks the provisioning in real time.
+This keeps two copies of the `api` task running behind the target group, guarded by the circuit breaker. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -147,7 +147,7 @@ These are the most important decisions when configuring an ECS service. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -163,9 +163,9 @@ These are the most important decisions when configuring an ECS service. Explore 
 | **AwsAlb** | `autoscaling.requestsPerTarget.loadBalancerArnSuffix` | `status.outputs.arn_suffix` |
 | **AwsLbTargetGroup** | `autoscaling.requestsPerTarget.targetGroupArnSuffix` | `status.outputs.arn_suffix` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -190,10 +190,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS ECS Task Definition**](/cloud-catalog/aws-ecs-task-definition) -- WHAT runs, referenced by `taskDefinition`; new revisions roll the service.
-- [**AWS ECS Cluster**](/cloud-catalog/aws-ecs-cluster) -- WHERE it runs, referenced by `clusterArn`.
-- [**AWS LB Target Group**](/cloud-catalog/aws-lb-target-group) -- the service registers task IPs into it; its `arn_suffix` also scopes request-based autoscaling.
-- [**AWS LB Listener**](/cloud-catalog/aws-lb-listener) and [**AWS LB Listener Rule**](/cloud-catalog/aws-lb-listener-rule) -- the routing graph that delivers traffic to the target group.
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) and [**AWS Security Group**](/cloud-catalog/aws-security-group) -- the task ENIs' placement and firewall.
-- [**AWS CloudWatch Alarm**](/cloud-catalog/aws-cloudwatch-alarm) -- gates deployments via `alarms.alarmNames`.
-- [**AWS ALB**](/cloud-catalog/aws-alb) -- its `arn_suffix` output scopes request-based autoscaling.
+- [**AWS ECS Task Definition**](/infra-catalog/aws-ecs-task-definition) -- WHAT runs, referenced by `taskDefinition`; new revisions roll the service.
+- [**AWS ECS Cluster**](/infra-catalog/aws-ecs-cluster) -- WHERE it runs, referenced by `clusterArn`.
+- [**AWS LB Target Group**](/infra-catalog/aws-lb-target-group) -- the service registers task IPs into it; its `arn_suffix` also scopes request-based autoscaling.
+- [**AWS LB Listener**](/infra-catalog/aws-lb-listener) and [**AWS LB Listener Rule**](/infra-catalog/aws-lb-listener-rule) -- the routing graph that delivers traffic to the target group.
+- [**AWS Subnet**](/infra-catalog/aws-subnet) and [**AWS Security Group**](/infra-catalog/aws-security-group) -- the task ENIs' placement and firewall.
+- [**AWS CloudWatch Alarm**](/infra-catalog/aws-cloudwatch-alarm) -- gates deployments via `alarms.alarmNames`.
+- [**AWS ALB**](/infra-catalog/aws-alb) -- its `arn_suffix` output scopes request-based autoscaling.

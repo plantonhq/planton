@@ -10,9 +10,9 @@
 # replays the catalog presets through these rules to emit
 # ../estimates/azurevirtualhub.yaml; a server-side estimator evaluates
 # the same rules against live manifests.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: azurevirtualhub
 spec:
@@ -53,12 +53,12 @@ spec:
     - applies_when:
         - field_path: routing_intent
           op: is_set
-      text: the Azure Firewall the routing intent steers traffic through bills its secured-hub deployment and data-processing meters on its own component
+      text: the Azure Firewall the routing intent steers traffic through bills its secured-hub deployment and data-processing meters on its own kind
     - text: hub-to-hub and inter-region flows bill standard inter-region data-transfer rates
   notes:
     - applies_when:
         - field_path: sku
           op: equals
           value: BASIC
-      text: A hub in a Basic WAN carries no base fee and no data-processing fee -- Microsoft's own statement -- so this estimate totals zero not because the topology is free but because the Basic hub's real spend lives entirely in the site-to-site VPN gateway's scale and connection units, billed on that gateway's own component.
+      text: A hub in a Basic WAN carries no base fee and no data-processing fee -- Microsoft's own statement -- so this estimate totals zero not because the topology is free but because the Basic hub's real spend lives entirely in the site-to-site VPN gateway's scale and connection units, billed on that gateway's own kind.
     - text: Custom route tables, static routes, and BGP peerings with NVAs carry no meters of their own -- the price list publishes none.

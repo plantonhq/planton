@@ -17,8 +17,8 @@ Already set up? Choose a path based on what you want to do.
 ## Deploy Infrastructure
 
 1. [Connect your cloud provider](/docs/connections/cloud-providers) — link your AWS, GCP, or Azure account
-2. [Browse the deployment catalog](/docs/infrastructure/cloud-resource-kinds) — see what you can deploy
-3. [Deploy a Cloud Resource](/docs/infrastructure/cloud-resources) — provision a VPC, database, Kubernetes cluster, or any supported resource
+2. [Browse the deployment catalog](/docs/infrastructure/catalog-kinds) — see what you can deploy
+3. [Deploy an Infra Component](/docs/infrastructure/infra-components) — provision a VPC, database, Kubernetes cluster, or any supported resource
 4. [Compose with Infra Charts](/docs/infrastructure/infra-charts) — deploy a coordinated set of resources as a single unit
 
 ## Deploy Applications
@@ -47,7 +47,7 @@ Already set up? Choose a path based on what you want to do.
 |---------|---------------|
 | [Platform](/docs/platform) | Resource hierarchy, core concepts, and console navigation |
 | [Connections](/docs/connections) | Credentials and integrations for cloud providers, Git, registries, and state backends |
-| [Infrastructure](/docs/infrastructure) | Infrastructure provisioning — Cloud Resources, Infra Charts, Infra Pipelines, Stack Jobs |
+| [Infrastructure](/docs/infrastructure) | Infrastructure provisioning — Infra Components, Infra Charts, Infra Pipelines, Infra Jobs |
 | [CI/CD](/docs/ci-cd) | Application CI/CD — Services, Pipelines, build methods, deployment targets |
 | [Secrets](/docs/secrets) | Secrets management, variables, and secret backends |
 | [Operations](/docs/operations) | Runtime operations — Kubernetes pod management, log streaming, resource browsing |

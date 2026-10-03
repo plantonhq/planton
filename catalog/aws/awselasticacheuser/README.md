@@ -48,7 +48,7 @@ Per-application cache credentials deserve a first-class, composable node:
   coupling, and password count limits are CEL-enforced at validation time.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `user_id`: the user's AWS identifier (same as `metadata.name`)
 - `arn`: the user's ARN (for IAM `elasticache:Connect` policies)

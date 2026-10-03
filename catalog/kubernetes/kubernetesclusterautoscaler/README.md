@@ -7,7 +7,7 @@ the cluster-wide scaling decision — a second installation would fight
 the first over every scale-up. The Helm release name is therefore fixed
 to `cluster-autoscaler` and never derives from `metadata.name`.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **The cluster is GKE or AKS with the managed autoscaler** — both
   platforms ship a MANAGED autoscaler configured as a toggle on the node
@@ -123,9 +123,9 @@ Each provider arm carries its own credential posture:
 
 The cloud-side half of each keyless contract (IRSA trust policy, GCP WI
 binding, Entra federated credential) is written against the chart's
-derived service-account name — which is why it is a stack output.
+derived service-account name — which is why it is an output.
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

@@ -26,7 +26,7 @@ iac/pulumi/
     ├── main.go                # Module coordinator
     ├── workflow.go            # Workflow creation
     ├── locals.go              # Resolved resource + derived values + label merge
-    └── outputs.go             # Stack output constants
+    └── outputs.go             # Output constants
 ```
 
 ## How the module maps the spec
@@ -57,7 +57,7 @@ The module also enables `workflows.googleapis.com` on the target project
 (`disable_on_destroy` false — tearing down one workflow never disables
 Workflows project-wide).
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |---|---|
@@ -68,7 +68,7 @@ Workflows project-wide).
 
 ## Local development
 
-`stack-input.yaml` carries a ready smoke manifest. Run the module directly:
+`iac-input.yaml` carries a ready smoke manifest. Run the module directly:
 
 ```bash
 planton apply --manifest ../../e2e/manifest.yaml --module-dir .

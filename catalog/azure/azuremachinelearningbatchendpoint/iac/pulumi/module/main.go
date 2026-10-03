@@ -8,10 +8,10 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azuremachinelearningbatchendpointv1alpha1.AzureMachineLearningBatchEndpointStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuremachinelearningbatchendpointv1alpha1.AzureMachineLearningBatchEndpointIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the azure-native provider from the stack input via the shared
+	// Build the azure-native provider from the IaC input via the shared
 	// builder, which resolves the right credential mechanism (static client
 	// secret, keyless web identity, or ambient chain). This kind rides
 	// azure-native, not the classic provider: azurerm/classic carry NO ML
@@ -19,7 +19,7 @@ func Resources(ctx *pulumi.Context, stackInput *azuremachinelearningbatchendpoin
 	// from the same ARM specification the Terraform module's raw-API shape
 	// pins (tracked at hashicorp/terraform-provider-azurerm#32011 with a
 	// mandatory move to native resources when azurerm ships them).
-	azureNativeProvider, err := pulumiazurenativeprovider.Get(ctx, stackInput.ProviderConfig)
+	azureNativeProvider, err := pulumiazurenativeprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure-native provider")
 	}

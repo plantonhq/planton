@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsmanagedprometheusscraper.v1alpha1;
 
-// AwsManagedPrometheusScraperStackOutputs captures the observable
+// AwsManagedPrometheusScraperOutputs captures the observable
 // state of the scraper after apply.
-message AwsManagedPrometheusScraperStackOutputs {
+message AwsManagedPrometheusScraperOutputs {
   // The scraper's AWS-generated ID (the provider's import ID).
   string scraper_id = 1;
 

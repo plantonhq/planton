@@ -1,0 +1,175 @@
+---
+alwaysApply: false
+---
+RULE NUMBER
+014
+
+TITLE
+Forge: Add new catalog kind to catalog_kind.proto enum
+
+ROLE
+You are the Planton Code Partner working inside the developer's local workspace in Cursor. This rule ensures that newly forged catalog kinds are properly registered in the `catalog_kind.proto` enum with correct provider ranges and metadata.
+
+SCOPE
+- Add new enum entry to `shared/catalogkind/catalog_kind.proto`
+- Determine correct enum value based on provider range
+- Generate appropriate id_prefix following naming conventions
+- Assign the kind's service_group from the provider's group list
+- Do not modify other forge-generated files
+
+PROVIDER RANGES
+The catalog_kind.proto uses 1,000-wide provider bands (the
+authoritative statement is the band comment table at the top of the enum
+itself -- read it if this list ever disagrees):
+- Test/dev/custom: 1-49
+- SaaS platforms: 50-199
+- AWS: 1000-1999
+- Azure: 2000-2999
+- GCP: 3000-3999
+- Kubernetes: 4000-4999
+- DigitalOcean: 5000-5999
+- Cloudflare: 7000-7999
+- Auth0: 8000-8999
+- OpenFGA: 9000-9999
+- Stripe: 10000-10999
+
+Providers organize their bands into FAMILY SUB-BANDS (see the `--- ... ---`
+comments inside each band). When a wave of related kinds is planned, its
+sub-band is allocated deliberately at wave start -- never grab numbers ad
+hoc inside someone else's family block. Enum numbers are pinned by the
+registry snapshot: after adding entries, regenerate
+`pkg/catalogkindreflect/testdata/registry_numbers.txt` with
+`go test ./pkg/catalogkindreflect/ -run TestRegistryNumberSnapshot -update` in the
+same change.
+
+ID PREFIX PATTERNS
+- AWS: the "aws" head + a 2-5 char abbreviation (e.g., "awsvpc", "awsecr", "awss3")
+- Azure: typically "az" prefix + 2-6 char abbreviation (e.g., "aks", "azdns", "azkv")
+- GCP: typically "gcp" prefix + 3-7 char abbreviation (e.g., "gcpdns", "gcpsql", "gcpcert")
+- Kubernetes: descriptive + "k8s" suffix (e.g., "k8sms", "pgk8s", "cmk8s")
+- DigitalOcean: "do" prefix + abbreviation (e.g., "doapp", "dodns", "docert")
+- Cloudflare: "cf" prefix + abbreviation (e.g., "cfdns", "cfkvn", "cfr2b")
+- Auth0: "a0" prefix + abbreviation (e.g., "a0cli", "a0conn", "a0es")
+- Stripe: "stp" prefix + abbreviation of the Stripe object. A multi-word object takes its initials ("stpwh" webhook endpoint, "stpbpc" billing portal configuration, "stppmc" payment method configuration, "stped" event destination, "stpef" entitlement feature); a one-word object is spelled out, shortened to at most five letters, so two one-word objects never read one letter apart ("stpprod" product, "stpprice" price); when two Stripe objects share initials, each takes Stripe's own id prefix with its vowels dropped instead ("stptxr" tax rate, from txr_; "stptxrg" tax registration, from taxreg_; both would otherwise be "stptr")
+
+SEQUENTIAL STEPS
+1) Identify: Determine the provider and kind name from the resource being forged
+   - Provider from directory path (e.g., `catalog/gcp/gcpcertmanagercert` → gcp)
+   - Kind name from directory name in PascalCase (e.g., `gcpcertmanagercert` → GcpCertManagerCert)
+
+2) Find Next Enum Value:
+   - Read `shared/catalogkind/catalog_kind.proto`
+   - Identify provider's range from PROVIDER RANGES above
+   - Scan existing entries in that range to find the highest used number
+   - Next value = highest + 1
+   - Ensure it's within the provider's range
+
+3) Generate ID Prefix:
+   - The prefix is embedded in EVERY resource id (`ic_<prefix>_<ulid>`) for
+     the resource's lifetime and is the id's only kind discriminator — the
+     CLI, search lookups, and kind auto-detection all resolve the kind from
+     it. Every character rides every id forever, so the budget is hard:
+     * lowercase letters/digits only — NEVER an underscore (it is the id
+       separator the parsers split on)
+     * starts with the provider's tag (gcp/aws/az/k8s...) so any id
+       attributes its provider at a glance
+     * at most 8 characters total; target 5-7
+   - Check for uniqueness against existing id_prefix values (the registry's
+     prefix index hard-fails on duplicates — `go test ./pkg/catalogkindreflect/`
+     is the mechanical gate)
+   - Examples:
+     * GcpCertManagerCert → "gcpcert"
+     * GcpSecretManagerSecret → "gcpsec"
+     * AwsSecurityGroup → "awssg"
+     * AzureKeyVault → "azkv"
+
+4) Choose the Service Group:
+   - Every kind of a grouped provider (aws, azure, gcp, kubernetes,
+     cloudflare, digital_ocean) MUST carry exactly one `service_group` —
+     the provider-console category the kind is browsed under. The
+     registry coherence test fails the build on a missing group, a group
+     belonging to a different provider, or a group on an ungrouped
+     provider (auth0, openfga).
+   - Pick from the provider's values in
+     `shared/catalogkind/catalog_provider_service_group.proto` —
+     choose the group the provider's own console files the underlying
+     service under (e.g. EKS → aws_containers, Key Vault →
+     azure_security). Sub-resources stay with their parent service's
+     group. For Kubernetes: native API objects →
+     kubernetes_core_workloads_apis; cluster machinery/operators →
+     kubernetes_operators_controllers; applications deployed on the
+     cluster → kubernetes_open_source_software.
+   - Adding a NEW group value to that enum is rare and deliberate — it is
+     a proto-lock choke-point edit and needs its `service_group_meta`
+     (provider + Title Case display_name) plus console-side label
+     convergence; prefer an existing group.
+
+5) Insert Enum Entry:
+   - Add the new enum value in numerical order within the provider's section
+   - Use the format:
+     ```proto
+     <KindName> = <number> [(kind_meta) = {
+       provider: <provider_name>
+       version: "v1alpha1"
+       id_prefix: "<generated_prefix>"
+       service_group: <provider_group>
+     }];
+     ```
+   - For kinds that project a single Kubernetes custom resource, add
+     kubernetes_manifest_projection if applicable
+   - For a kind that deliberately runs on fewer engines than both, add
+     `provisioners` with the engines it runs on, by IacProvisioner value
+     name: `provisioners: ["tofu"]` for a kind proven on OpenTofu alone,
+     `["tofu", "terraform"]` for a provider with no Pulumi provider. Leave
+     it out for the ordinary kind with both modules. The anatomy gate then
+     holds the kind's iac/ folder to exactly the modules those engines
+     need, and the CLI and the platform refuse any other engine
+   - Maintain consistent indentation (2 spaces)
+
+6) Regenerate the Kind Reflection Map (MANDATORY):
+   - Run from the repo root: `make generate-catalog-kind-map`
+   - This regenerates `pkg/catalogkindreflect/kind_map_gen.go`, the enum -> proto-message
+     map (`ToMessageMap`) that manifest loading, chart validation, and the E2E
+     harness all resolve kinds through. Without it, the new kind's manifests
+     fail to load ("UNSUPPORTED CATALOG KIND") even though the enum
+     entry and stubs exist -- and no proto build step catches the omission.
+   - `make build` runs this target, but rule 015's `make protos` does NOT --
+     so run it here, immediately after the enum edit.
+
+7) Validation:
+   - Verify no duplicate enum values
+   - Verify no duplicate id_prefix values
+   - Verify enum value is in correct provider range
+   - Verify the service_group belongs to the kind's provider
+     (`go test ./pkg/catalogkindreflect/` runs the coherence and coverage gates)
+   - Verify formatting matches existing entries
+   - Verify the new kind appears in `pkg/catalogkindreflect/kind_map_gen.go`
+   - Verify every reference the spec makes into a container kind (a
+     namespace, a VPC, a subnet, a project) has a containment verdict:
+     `go test ./shared/catalogkind/` lists each new one. `contained`
+     means the resource lives inside the target, so diagrams nest it there;
+     a reference to something the resource only reads or watches (the
+     namespaces a monitor scrapes, a project a store reads secrets from) is
+     access-style and carries `(dev.planton.shared.foreignkey.v1.containment_exempt) = true`
+     on its field. Review the listed verdicts, fix any wrong one on the field,
+     then regenerate the golden file with `-update`.
+
+SUCCESS
+- New enum entry added to catalog_kind.proto
+- Enum value is unique and in correct provider range
+- ID prefix is unique and follows naming convention
+- service_group assigned from the kind's own provider (grouped providers)
+- Entry is inserted in numerical order
+- Formatting matches existing entries
+- File is syntactically correct
+
+OUTPUT
+- Confirm the added enum entry with its number, id_prefix, and service_group
+- Show the provider range and position within that range
+- Example: "Added GcpCertManagerCert = 3019 with id_prefix 'gcpcert' and service_group gcp_security (GCP range: 3000-3999)"
+
+NOTES
+- This rule should be run after api.proto is created (rule 005)
+- The enum number should never be changed once assigned
+- The id_prefix should be globally unique across all providers
+- If the provider's range is full, alert the developer to expand the range

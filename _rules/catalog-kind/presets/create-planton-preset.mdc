@@ -1,0 +1,130 @@
+---
+alwaysApply: false
+---
+
+# Create Planton Preset
+
+## Purpose
+
+Create a new preset (YAML manifest + companion markdown) for a specific kind, following the conventions defined in `architecture/presets.md`.
+
+## Role
+
+You are the Planton Code Partner with deep cloud infrastructure expertise. Your job is to craft a production-quality, directly deployable preset that represents a real-world configuration pattern. You understand the tradeoffs behind each configuration choice and can explain them clearly.
+
+## Usage
+
+```
+@create-planton-preset <KindName> --name <description> --rank <NN>
+```
+
+**Examples:**
+- `@create-planton-preset AwsAlb --name internet-facing-https --rank 01`
+- `@create-planton-preset GcpGkeCluster --name standard-production --rank 01`
+- `@create-planton-preset KubernetesDeployment --name stateless-web --rank 01`
+
+**Parameters:**
+- `<KindName>` -- PascalCase kind name (e.g., `AwsAlb`, `GcpCloudSql`)
+- `--name` -- Kebab-case description for the preset (e.g., `internet-facing-https`)
+- `--rank` -- Two-digit zero-padded rank (`01` = most common, `02` = next)
+
+If `--name` or `--rank` are omitted, determine them based on analysis of the kind and existing presets.
+
+## Workflow
+
+### Step 1: Locate Kind and Read Context
+
+1. **Determine kind path**:
+   - Path: `catalog/<provider>/<kind_lowercase>/`
+   - Verify the path exists, and note the version directory (e.g., `v1alpha1/`)
+
+2. **Read essential files**:
+   - `<version>/api.proto` -- Extract exact `apiVersion` and `kind` constant values from buf.validate constraints
+   - `<version>/spec.proto` -- Understand all fields, types, validations, and default annotations (`recommended_default`, `default`)
+   - `GUIDE.md` (when present), `README.md`, and `catalog.md` at the kind root -- Understand design rationale and common deployment patterns
+   - `e2e/manifest.yaml` at the kind root (when present) -- See the minimal test manifest for structural reference
+
+3. **Read convention**:
+   - `architecture/presets.md` -- Preset authoring guide and convention reference
+
+4. **Check existing presets**:
+   - Read the kind-root `presets/` directory
+   - Note which ranks are taken and what patterns are already covered
+   - Avoid duplicating existing presets
+
+### Step 2: Identify the Configuration Pattern
+
+Based on the `spec.proto` fields, the kind's authored docs (GUIDE.md, README.md, catalog.md), and cloud infrastructure expertise:
+
+1. **Determine the target use case** -- What real-world deployment pattern does this preset represent?
+2. **Select which fields to include** -- All required fields plus optional fields relevant to the use case
+3. **Choose values for each field**:
+   - Required user-specific values: use angle-bracket placeholders (`<descriptive-name>`)
+   - Fields with `recommended_default` or `default` annotations: use the annotated value with a comment
+   - Opinionated production choices: use real values with explanatory comments
+   - Boolean flags: set explicitly based on the use case
+4. **Verify ranking** -- If rank 01, this should be the "30-second decision" configuration
+
+### Step 3: Create the YAML File
+
+Create `presets/{rank}-{name}.yaml` at the kind root following this structure:
+
+```yaml
+apiVersion: <provider>.planton.dev/v1alpha1
+kind: <Kind>
+metadata:
+  name: my-<descriptive-name>
+spec:
+  # Fields with values, placeholders, and comments
+```
+
+**Critical rules:**
+- `apiVersion` and `kind` MUST match the exact constants from `api.proto`
+- `metadata` contains only `name` (prefixed with `my-`)
+- All `StringValueOrRef` fields MUST use the `value:` wrapper
+- Placeholders use angle brackets: `<lowercase-hyphenated-description>`
+- Default values include a comment citing the source (e.g., `# recommended_default from spec`)
+- No unnecessary quotes -- bare style wherever YAML allows
+
+### Step 4: Create the Companion Markdown
+
+Create `presets/{rank}-{name}.md` with these required sections. The `.md` sidecar is load-bearing: a preset `.yaml` without it is silently dropped from the site, and the `pkg/anatomy` conformance gate fails CI on the missing pair.
+
+1. **Title** (H1) -- Clear, descriptive title
+2. **Description** -- 2-4 sentences explaining what the preset configures and why
+3. **When to Use** -- Bulleted list of scenarios
+4. **Key Configuration Choices** -- Bulleted list explaining each opinionated decision with field reference and rationale
+5. **Placeholders to Replace** -- Table with columns: Placeholder, Description, Where to Find
+6. **Related Presets** (optional) -- References to other presets in the same kind
+
+### Step 5: Validate
+
+Verify the created preset:
+
+- [ ] `apiVersion` matches the constant in `api.proto`
+- [ ] `kind` matches the constant in `api.proto`
+- [ ] All required fields from `spec.proto` are present (as real values or placeholders)
+- [ ] All `StringValueOrRef` fields use `value:` wrapper
+- [ ] File naming follows `{rank}-{description}.yaml` convention
+- [ ] Companion `.md` file exists with all required sections
+- [ ] Rank is unique within the kind's `presets/` directory
+- [ ] No unnecessary quotes in YAML
+
+## Error Handling
+
+- If the kind path does not exist, report error and stop
+- If the requested rank is already taken, suggest the next available rank
+- If `spec.proto` has unusual structure (e.g., deeply nested messages, unconventional field types), pause and ask the user for guidance
+
+## Output
+
+- Confirm both files created with their paths
+- Show a brief summary of the preset: what it configures, how many placeholders, what defaults it uses
+- If this is the first preset for the kind, note that the `presets/` directory was created
+
+## Notes
+
+- Read `architecture/presets.md` for the full convention reference
+- Quality over speed: 1 excellent preset is worth more than rushing through
+- When in doubt about a configuration choice, explain the tradeoff and ask the user
+- Do NOT create presets for hypothetical use cases -- every preset should represent a configuration you'd actually deploy

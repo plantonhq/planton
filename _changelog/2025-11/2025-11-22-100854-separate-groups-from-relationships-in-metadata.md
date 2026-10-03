@@ -1,4 +1,4 @@
-# Separate Groups from Relationships in Cloud Resource Metadata
+# Separate Groups from Relationships in Catalog Object Metadata
 
 **Date**: November 22, 2025
 **Type**: Breaking Change
@@ -6,11 +6,11 @@
 
 ## Summary
 
-Refactored cloud resource grouping by adding a dedicated `group` field to `CloudResourceMetadata` and removing the `group` field from `CloudResourceRelationship`. This separates visual resource grouping (an intrinsic resource property) from relationships (connections between resources), fixing a fundamental design flaw where resources were declaring groups for other resources they referenced.
+Refactored infra component grouping by adding a dedicated `group` field to `CatalogObjectMetadata` and removing the `group` field from `InfraComponentRelationship`. This separates visual resource grouping (an intrinsic resource property) from relationships (connections between resources), fixing a fundamental design flaw where resources were declaring groups for other resources they referenced.
 
 ## Problem Statement
 
-Previously, resource grouping was embedded in the `relationships` array via a `group` field in each `CloudResourceRelationship` entry. This created a logical inconsistency: when resource A declared a relationship to resource B, it specified what group resource B belonged to, rather than resource B declaring its own group.
+Previously, resource grouping was embedded in the `relationships` array via a `group` field in each `InfraComponentRelationship` entry. This created a logical inconsistency: when resource A declared a relationship to resource B, it specified what group resource B belonged to, rather than resource B declaring its own group.
 
 ### Example of the Problem
 
@@ -39,12 +39,12 @@ Separated groups from relationships by making group membership a first-class met
 
 ### Key Changes
 
-1. **Added `group` field to `CloudResourceMetadata`** (field 10)
+1. **Added `group` field to `CatalogObjectMetadata`** (field 10)
    - Simple string field for hierarchical group paths
    - Optional - resources can exist without a group
    - Examples: "app/services", "infrastructure/networking", "app/dependencies/data/storage-buckets"
 
-2. **Removed `group` field from `CloudResourceRelationship`**
+2. **Removed `group` field from `InfraComponentRelationship`**
    - Relationships now only describe connections between resources
    - Cleaner semantic: type (depends_on, runs_on, uses, managed_by) describes the relationship
 
@@ -53,18 +53,18 @@ Separated groups from relationships by making group membership a first-class met
 **Before** (relationships contained groups):
 
 ```protobuf
-message CloudResourceRelationship {
-  CloudResourceKind kind = 1;
+message InfraComponentRelationship {
+  CatalogKind kind = 1;
   string env = 2;
   string name = 3;
   RelationshipType type = 4;
   string group = 5;  // ← Removed
 }
 
-message CloudResourceMetadata {
+message CatalogObjectMetadata {
   string name = 1;
   // ... other fields ...
-  repeated CloudResourceRelationship relationships = 9;
+  repeated InfraComponentRelationship relationships = 9;
   // No group field
 }
 ```
@@ -72,15 +72,15 @@ message CloudResourceMetadata {
 **After** (groups in metadata):
 
 ```protobuf
-message CloudResourceMetadata {
+message CatalogObjectMetadata {
   string name = 1;
   // ... other fields ...
-  repeated CloudResourceRelationship relationships = 9;
+  repeated InfraComponentRelationship relationships = 9;
   string group = 10;  // ← Added
 }
 
-message CloudResourceRelationship {
-  CloudResourceKind kind = 1;
+message InfraComponentRelationship {
+  CatalogKind kind = 1;
   string env = 2;
   string name = 3;
   RelationshipType type = 4;
@@ -94,10 +94,10 @@ message CloudResourceRelationship {
 
 **File**: `apis/dev/planton/shared/metadata.proto`
 
-Added group field as the 10th field in `CloudResourceMetadata`:
+Added group field as the 10th field in `CatalogObjectMetadata`:
 
 ```protobuf
-message CloudResourceMetadata {
+message CatalogObjectMetadata {
   string name = 1;
   string slug = 2;
   string id = 3;
@@ -106,18 +106,18 @@ message CloudResourceMetadata {
   map<string, string> labels = 6;
   map<string, string> annotations = 7;
   repeated string tags = 8;
-  repeated dev.planton.shared.relationship.v1.CloudResourceRelationship relationships = 9;
+  repeated dev.planton.shared.relationship.v1.InfraComponentRelationship relationships = 9;
   string group = 10;  // NEW: Group for visual organization in DAG
 }
 ```
 
 **File**: `apis/dev/planton/shared/relationship/v1/relationship.proto`
 
-Removed field 5 (group) from `CloudResourceRelationship`:
+Removed field 5 (group) from `InfraComponentRelationship`:
 
 ```protobuf
-message CloudResourceRelationship {
-  CloudResourceKind kind = 1;
+message InfraComponentRelationship {
+  CatalogKind kind = 1;
   string env = 2;
   string name = 3;
   RelationshipType type = 4;
@@ -127,7 +127,7 @@ message CloudResourceRelationship {
 
 ### Ancillary Changes
 
-**Commented out KubernetesNamespace enum** in `cloud_resource_kind.proto`:
+**Commented out KubernetesNamespace enum** in `catalog_kind.proto`:
 - The KubernetesNamespace implementation directory was empty (only docs)
 - Caused build failures during codegen
 - Temporarily commented out until implementation exists
@@ -176,7 +176,7 @@ The DAG mapper will read from `metadata.group` instead of scanning relationships
 ### Breaking Changes
 
 This is a **breaking change** for any code that:
-- Reads the `group` field from `CloudResourceRelationship`
+- Reads the `group` field from `InfraComponentRelationship`
 - Expects grouping information to be part of relationships
 - Generates proto stubs from the old schema
 
@@ -189,7 +189,7 @@ This is a **breaking change** for any code that:
 
 **For Planton monorepo**:
 1. Upgrade planton dependency to v0.2.237
-2. Update `CloudResourceDagMapper` to read from `metadata.group`
+2. Update `InfraComponentDagMapper` to read from `metadata.group`
 3. Update all infra-chart manifests to use the new structure
 
 ### Code Locations
@@ -197,10 +197,10 @@ This is a **breaking change** for any code that:
 **Planton**:
 - `apis/dev/planton/shared/metadata.proto` - Added group field
 - `apis/dev/planton/shared/relationship/v1/relationship.proto` - Removed group field
-- `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto` - Commented out KubernetesNamespace
+- `apis/dev/planton/shared/catalogkind/catalog_kind.proto` - Commented out KubernetesNamespace
 
 **Planton (pending)**:
-- `backend/libs/java/domain/infra-hub-commons/src/main/java/ai/planton/infrahubcommons/cloudresource/dag/mapper/CloudResourceDagMapper.java` - Will read from `metadata.group`
+- `backend/libs/java/domain/infra-hub-commons/src/main/java/ai/planton/infrahubcommons/infracomponent/dag/mapper/InfraComponentDagMapper.java` - Will read from `metadata.group`
 - `ops/organizations/planton/infra-hub/infra-chart/planton-gcp-environment/templates/**/*.yaml` - Manifest updates
 
 ## Design Decisions
@@ -231,16 +231,16 @@ Not all resources need grouping. Resources that stand alone (like a GCP project 
 ## Related Work
 
 - **[2025-11-22] Remove Automatic Kubernetes Addon Grouping in DAG**: Recent change that decoupled automatic grouping from relationships, setting the stage for this refactoring
-- **[2025-10-17] Explicit Relationships for Cloud Resources**: Introduced the relationships feature that this change now cleans up
+- **[2025-10-17] Explicit Relationships for Infra Components**: Introduced the relationships feature that this change now cleans up
 
 ## Next Steps
 
 1. ✅ Release Planton v0.2.237 with updated protos
 2. ⏳ Update Planton monorepo to consume new version
-3. ⏳ Update CloudResourceDagMapper to read `metadata.group`
+3. ⏳ Update InfraComponentDagMapper to read `metadata.group`
 4. ⏳ Migrate all infra-chart YAML manifests to new structure
 5. ⏳ Test DAG construction and visualization
-6. ⏳ Document the new structure in deployment component templates
+6. ⏳ Document the new structure in catalog kind templates
 
 ---
 

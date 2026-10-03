@@ -20,4 +20,4 @@ resources:
         arg: backups
     exclusions:
       - arg: ipv6_address
-        reason: Optional in the schema but inert at the pin -- the provider never expands it into any create or update API call; only Read writes it back from live state, so a spec field would be a do-nothing knob. The address is exported as the ipv6_address stack output.
+        reason: Optional in the schema but inert at the pin -- the provider never expands it into any create or update API call; only Read writes it back from live state, so a spec field would be a do-nothing knob. The address is exported as the ipv6_address output.

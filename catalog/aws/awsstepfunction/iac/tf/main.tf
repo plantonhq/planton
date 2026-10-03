@@ -11,7 +11,7 @@ resource "aws_sfn_state_machine" "this" {
   type       = local.sm_type
 
   # Publish an immutable version on create and on every configuration change.
-  # The latest version's ARN is exported as a stack output so consumers can
+  # The latest version's ARN is exported as an output so consumers can
   # pin executions to a snapshot instead of the mutable state machine.
   publish = var.spec.publish
 

@@ -4,9 +4,9 @@
 # Azure's Blob Storage price list has no meter for the container object;
 # every charge it shapes (capacity, operations, retrieval) bills on the
 # parent storage account's meters, keyed by the ACCOUNT's access tier and
-# redundancy. Schema: finops/componentcostprofile/v1.
+# redundancy. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurestoragecontainer
 spec:
@@ -37,4 +37,4 @@ spec:
     - "account-level blob features the container's data participates in bill on the account -- blob versioning (versions bill capacity), change feed (per 10,000 changes), blob inventory (per million objects per report), lifecycle tiering transitions (operations), and SFTP (hourly when enabled)"
     - "geo-redundant accounts add geo-replication data transfer per GB, and reads served to the internet add standard bandwidth egress"
     - "the named encryption scope's monthly fee bills on the referenced AzureStorageEncryptionScope component, not here"
-  notes: "The container is the free half of a paid pattern: it scopes access posture, RBAC grants, and encryption keys, while every dollar bills on the parent account's meters. An empty private container holds for exactly nothing, and a busy one costs whatever its blobs and traffic cost AT THE ACCOUNT'S RATES -- which is why the account's tier and redundancy choices, made on the AzureStorageAccount component, are the real price levers. Deleting the container deletes its blobs and with them the capacity charge (soft-delete retention on the account can extend billing past the delete)."
+  notes: "The container is the free half of a paid pattern: it scopes access posture, RBAC grants, and encryption keys, while every dollar bills on the parent account's meters. An empty private container holds for exactly nothing, and a busy one costs whatever its blobs and traffic cost AT THE ACCOUNT'S RATES -- which is why the account's tier and redundancy choices, made on the AzureStorageAccount kind, are the real price levers. Deleting the container deletes its blobs and with them the capacity charge (soft-delete retention on the account can extend billing past the delete)."

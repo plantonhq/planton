@@ -1,4 +1,4 @@
-# Stack outputs — exactly the DigitalOceanDropletAutoscalePoolStackOutputs
+# Outputs — exactly the DigitalOceanDropletAutoscalePoolOutputs
 # contract, identical across both provisioners. The pool's health is
 # deliberately not an output: an apply-time status goes stale the moment
 # DigitalOcean changes it, so live health is read from the API, never from

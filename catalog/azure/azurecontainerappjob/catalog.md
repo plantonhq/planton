@@ -4,7 +4,7 @@ Provisions an Azure Container App Job -- a run-to-completion containerized workl
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Container App Job** -- in the referenced resource group and environment, with exactly one trigger (manual on-demand, cron schedule in UTC, or a KEDA event scaler), the container template (main + init containers, env vars, probes, volume mounts), and the execution bounds (replica timeout, retry limit)
 - **Managed identity wiring** (when configured) -- system-assigned and/or user-assigned identities for keyless Key Vault reads, registry pulls, and event-source polling
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -62,7 +62,7 @@ spec:
 planton apply -f job.yaml
 ```
 
-This creates a job that runs the report container to completion at 2 AM UTC every night, with a 30-minute deadline per execution. A Stack Job tracks the provisioning in real time.
+This creates a job that runs the report container to completion at 2 AM UTC every night, with a 30-minute deadline per execution. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -111,7 +111,7 @@ These are the most important decisions when configuring a job. Explore the full 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -121,9 +121,9 @@ These are the most important decisions when configuring a job. Explore the full 
 | **AzureContainerAppEnvironmentStorage** | `volumes[].storageName` | `status.outputs.storage_name` |
 | **AzureContainerRegistry** | `registries[].server` | `status.outputs.login_server` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -145,9 +145,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- where the job lives
-- [**Azure Container App Environment**](/cloud-catalog/azure-container-app-environment) -- provides the compute, network, and logging the job runs on
-- [**Azure Container App**](/cloud-catalog/azure-container-app) -- the continuously-serving sibling; jobs drain the queues apps fill
-- [**Azure Container App Environment Storage**](/cloud-catalog/azure-container-app-environment-storage) -- persistent Azure Files volumes for execution results
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- keyless registry pulls, vault reads, and event-source polling
-- [**Azure Service Bus Queue**](/cloud-catalog/azure-service-bus-queue) -- the classic event-trigger source for the queue-worker pattern
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- where the job lives
+- [**Azure Container App Environment**](/infra-catalog/azure-container-app-environment) -- provides the compute, network, and logging the job runs on
+- [**Azure Container App**](/infra-catalog/azure-container-app) -- the continuously-serving sibling; jobs drain the queues apps fill
+- [**Azure Container App Environment Storage**](/infra-catalog/azure-container-app-environment-storage) -- persistent Azure Files volumes for execution results
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- keyless registry pulls, vault reads, and event-source polling
+- [**Azure Service Bus Queue**](/infra-catalog/azure-service-bus-queue) -- the classic event-trigger source for the queue-worker pattern

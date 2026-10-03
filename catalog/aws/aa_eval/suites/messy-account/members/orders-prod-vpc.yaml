@@ -14,7 +14,7 @@ metadata:
   env: prod
   labels:
     managed-by: planton-e2e
-    e2e-component: awsvpc
+    e2e-catalog-kind: awsvpc
   annotations:
     planton.dev/e2e: "true"
   tags:

@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcptargethttpproxy
+    e2e-catalog-kind: gcptargethttpproxy
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/gcp/gcptargethttpproxy/e2e/prerequisites/gcphealthcheck-regional.yaml,catalog/gcp/gcptargethttpproxy/e2e/prerequisites/gcpbackendservice-regional.yaml,catalog/gcp/gcptargethttpproxy/e2e/prerequisites/gcpurlmap-regional.yaml"

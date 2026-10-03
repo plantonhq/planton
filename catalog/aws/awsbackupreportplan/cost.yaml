@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsbackupreportplan
 spec:
@@ -11,7 +11,7 @@ spec:
     - field_path: delivery_channel.s3_bucket_name
       sku_meter: S3 storage
       pricing_unit: GB-months
-      impact: Every daily report run drops CSV/JSON files into the referenced bucket, and nothing in this spec ever prunes them -- the files accumulate and bill S3 storage (plus the service's PUT requests) on the AwsS3Bucket component until a bucket-side lifecycle rule expires them.
+      impact: Every daily report run drops CSV/JSON files into the referenced bucket, and nothing in this spec ever prunes them -- the files accumulate and bill S3 storage (plus the service's PUT requests) on the AwsS3Bucket kind until a bucket-side lifecycle rule expires them.
     - field_path: delivery_channel.formats
       sku_meter: S3 storage
       pricing_unit: GB-months

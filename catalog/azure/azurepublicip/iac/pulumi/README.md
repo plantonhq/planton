@@ -25,7 +25,7 @@ inherited DDoS stance) identically on both engines.
 
 ## Inputs
 
-The module receives an `AzurePublicIpStackInput` containing:
+The module receives an `AzurePublicIpIacInput` containing:
 
 - `target.spec.region` / `target.spec.resource_group` / `target.spec.name` -- the address's ARM identity (references resolved to literals by the platform)
 - `target.spec.sku` / `target.spec.sku_tier` / `target.spec.ip_version` -- STANDARD/STANDARD_V2, REGIONAL/GLOBAL, IPV4/IPV6; unset defers to Azure's defaults

@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -7,9 +7,9 @@
 # its policies -- is free to exist, and both published meters (credential
 # requests, policy authorizations) start with agent traffic that lives
 # outside this manifest -- stated in exclusions, never padded into
-# fabricated dollars. Schema: finops/componentcostestimatemodel/v1.
+# fabricated dollars. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awsbedrockagentcoreidentity
 spec:
@@ -30,5 +30,5 @@ spec:
       exclusions:
         - policy authorization bills $0.000025 per request each time a gateway evaluates a tool call against this engine -- gateway traffic invisible to this manifest, with the first 100 temporal policies per engine incurring no additional authorization charges
         - natural-language policy authoring bills $0.13 per 1,000 input tokens, a console workflow this preset never performs -- its two policies arrive as ready Cedar statements
-        - a customer-managed encryption key, if later referenced, would bill per-request on its own AwsKmsKey component; this preset uses the service-managed key at no charge
+        - a customer-managed encryption key, if later referenced, would bill per-request on its own AwsKmsKey kind; this preset uses the service-managed key at no charge
       notes: Zero committed cost -- the engine and its two Cedar policies are free at rest; the authorization meter starts with the first policy-enforced tool call on a gateway, not with this manifest.

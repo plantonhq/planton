@@ -5,9 +5,9 @@
 # default 3: the webhook sits on the admission write path and ships HA
 # by default) and the always-single-replica audit controller. The
 # policies it enforces are separate resources costing engine CPU and
-# memory, never new pods. Schema: finops/componentcapacityderivation/v1.
+# memory, never new pods. Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesgatekeeper
 spec:

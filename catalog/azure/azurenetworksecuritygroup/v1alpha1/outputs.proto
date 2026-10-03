@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurenetworksecuritygroup.v1alpha1;
 
-// **AzureNetworkSecurityGroupStackOutputs** captures the outputs of
+// **AzureNetworkSecurityGroupOutputs** captures the outputs of
 // provisioning an Azure Network Security Group.
-message AzureNetworkSecurityGroupStackOutputs {
+message AzureNetworkSecurityGroupOutputs {
   // The Azure Resource Manager ID of the NSG. This is the primary output:
   // AzureSubnet's network_security_group_id references it to attach the
   // group to a subnet.

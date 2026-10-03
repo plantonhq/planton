@@ -5,9 +5,9 @@ package dev.planton.azure.azureservicebusauthorizationrule.v1alpha1;
 import "catalog/azure/azureservicebusauthorizationrule/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-service-bus-authorization-rule stack-input
-message AzureServiceBusAuthorizationRuleStackInput {
-  //target cloud-resource
+//azure-service-bus-authorization-rule iac-input
+message AzureServiceBusAuthorizationRuleIacInput {
+  //target infra-component
   AzureServiceBusAuthorizationRule target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

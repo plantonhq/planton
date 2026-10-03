@@ -8,7 +8,7 @@ The Terraform/OpenTofu implementation of the `AzureContainerApp` component.
 tf/
 ├── main.tf          # The container app (template, ingress, secrets, registries, dapr, identity)
 ├── variables.tf     # Input variables (metadata + spec)
-├── outputs.tf       # Stack outputs
+├── outputs.tf       # Outputs
 ├── locals.tf        # Tag merge + enum wire-value maps
 └── provider.tf      # Empty azurerm provider (credentials injected as ARM_* env)
 ```

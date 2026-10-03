@@ -40,7 +40,7 @@ var _ = ginkgo.Describe("GcpMonitoringSloSpec", func() {
 		return &GcpMonitoringSlo{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpMonitoringSlo",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-slo",
 			},
 			Spec: &GcpMonitoringSloSpec{

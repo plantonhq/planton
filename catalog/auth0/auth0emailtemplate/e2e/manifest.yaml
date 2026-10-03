@@ -1,5 +1,5 @@
 # Auth0 Email Template Test Manifest
-# This file is used for testing the Auth0EmailTemplate component.
+# This file is used for testing the Auth0EmailTemplate kind.
 #
 # Prerequisites:
 # 1. Set the following environment variables:
@@ -13,7 +13,7 @@
 #    - update:email_templates
 #
 # 3. The tenant must send through its own email provider (e.g., created via
-#    the Auth0EmailProvider component): Auth0 refuses custom templates on the
+#    the Auth0EmailProvider kind): Auth0 refuses custom templates on the
 #    built-in one. The from address must be on a domain that provider may
 #    send for.
 

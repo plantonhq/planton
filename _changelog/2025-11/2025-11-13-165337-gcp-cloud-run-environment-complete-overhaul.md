@@ -7,7 +7,7 @@
 
 ## Summary
 
-Completely overhauled the GCP Cloud Run Environment InfraChart to support full-stack application deployments with optional infrastructure components. The chart now provisions 7 resources (frontend service, optional backend service, PostgreSQL database, Docker repository, storage bucket, service account, and DNS zone) with intelligent conditional rendering and synthetic relationships that ensure proper deployment ordering. All resources are enabled by default but can be toggled individually, and the chart uses semantic relationship types to create a dependency graph that orchestrates parallel deployment where possible while respecting required dependencies.
+Completely overhauled the GCP Cloud Run Environment InfraChart to support full-stack application deployments with optional infrastructure kinds. The chart now provisions 7 resources (frontend service, optional backend service, PostgreSQL database, Docker repository, storage bucket, service account, and DNS zone) with intelligent conditional rendering and synthetic relationships that ensure proper deployment ordering. All resources are enabled by default but can be toggled individually, and the chart uses semantic relationship types to create a dependency graph that orchestrates parallel deployment where possible while respecting required dependencies.
 
 ## Problem Statement
 
@@ -20,7 +20,7 @@ The original GCP Cloud Run Environment chart was minimal, containing only a basi
 - Frontend and backend Cloud Run services
 - DNS zone for custom domains
 
-Creating these resources individually as "Lego blocks" worked but was time-consuming and error-prone, requiring manual orchestration of dependencies.
+Creating these resources individually as "Catalog kinds" worked but was time-consuming and error-prone, requiring manual orchestration of dependencies.
 
 ### Pain Points
 
@@ -332,7 +332,7 @@ planton project create --from-chart gcp/cloud-run-environment \
 
 ### README Sections Added
 
-1. **Included Cloud Resources (conditional)**: Table showing which resources are always/conditionally created
+1. **Included Infra Components (conditional)**: Table showing which resources are always/conditionally created
 2. **Boolean Flags Explained**: How each flag controls resource creation
 3. **Chart Input Values**: Complete parameter reference organized by category
 4. **Resource Dependencies and Deployment Order**: Visual diagram and detailed explanation
@@ -508,10 +508,10 @@ Potential improvements for future iterations:
 - Synthetic relationships (metadata.relationships field)
 - Conditional Jinja2 rendering in templates
 - DAG visualization in web console
-- InfraProject automatic pipeline triggering
+- InfraStack automatic pipeline triggering
 
 ### Platform Features Used
-- CloudResourceMetadata relationships field
+- CatalogObjectMetadata relationships field
 - RelationshipType enum (depends_on, uses, runs_on, managed_by)
 - Relationship grouping for visualization
 - Automatic DAG construction from relationships

@@ -15,7 +15,7 @@ This component owns the region's Config recording singletons -- AWS permits one 
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with AWS Config permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with AWS Config permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -68,7 +68,7 @@ spec:
 planton apply -f aws-config-recorder.yaml
 ```
 
-This starts continuous recording of exactly three resource types, delivering history and daily snapshots to the referenced bucket with one year of queryable retention. A Stack Job tracks the provisioning in real time.
+This starts continuous recording of exactly three resource types, delivering history and daily snapshots to the referenced bucket with one year of queryable retention. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -112,7 +112,7 @@ These are the most important decisions when configuring a Config recorder. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -121,7 +121,7 @@ These are the most important decisions when configuring a Config recorder. Explo
 | **AwsKmsKey** | `deliveryChannel.s3KmsKeyArn` | `status.outputs.key_arn` |
 | **AwsSnsTopic** | `deliveryChannel.snsTopicArn` | `status.outputs.topic_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
 `status.outputs` echoes the singleton's identity and state -- `recorder_name` and `delivery_channel_name` (both `default`, AWS's regional convention), `recording_enabled`, and `region` (Config singletons are addressed by region plus the literal name, so verifiers need both). These are audit and verification echoes rather than composition inputs: AWS Config Rule resources in the region depend on the recorder existing, but reference nothing from it.
 
@@ -137,9 +137,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the service role Config assumes, wired via `roleArn`
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) -- the history bucket, wired via the delivery channel; it must carry the Config service-principal bucket policy
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- optional encryption for delivered files
-- [**AWS SNS Topic**](/cloud-catalog/aws-sns-topic) -- optional delivery notifications
-- [**AWS Config Rule**](/cloud-catalog/aws-config-rule) -- the evaluations that run over what this recorder captures; rules only see recorded types
-- [**AWS Config Aggregator**](/cloud-catalog/aws-config-aggregator) -- the multi-account, multi-region rollup of recorded data
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the service role Config assumes, wired via `roleArn`
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) -- the history bucket, wired via the delivery channel; it must carry the Config service-principal bucket policy
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- optional encryption for delivered files
+- [**AWS SNS Topic**](/infra-catalog/aws-sns-topic) -- optional delivery notifications
+- [**AWS Config Rule**](/infra-catalog/aws-config-rule) -- the evaluations that run over what this recorder captures; rules only see recorded types
+- [**AWS Config Aggregator**](/infra-catalog/aws-config-aggregator) -- the multi-account, multi-region rollup of recorded data

@@ -5,9 +5,9 @@ package dev.planton.auth0.auth0eventstream.v1alpha1;
 import "catalog/auth0/auth0eventstream/v1alpha1/api.proto";
 import "catalog/auth0/provider.proto";
 
-// Auth0EventStreamStackInput is the input to the Auth0EventStream IaC module.
+// Auth0EventStreamIacInput is the input to the Auth0EventStream IaC module.
 // It contains the target resource and the Auth0 provider configuration.
-message Auth0EventStreamStackInput {
+message Auth0EventStreamIacInput {
   // target is the Auth0EventStream resource to be deployed.
   Auth0EventStream target = 1;
 

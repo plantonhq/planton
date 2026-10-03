@@ -7,10 +7,10 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *gcppubsubtopicv1alpha1.GcpPubSubTopicStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *gcppubsubtopicv1alpha1.GcpPubSubTopicIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, stackInput.ProviderConfig)
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

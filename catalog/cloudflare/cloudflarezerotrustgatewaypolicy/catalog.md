@@ -4,7 +4,7 @@ Deploys one Cloudflare Gateway policy: a wirefilter expression over employee tra
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Gateway Policy** — a `cloudflare_zero_trust_gateway_policy` on the account, carrying the action, the singular `filter` (sent as a one-element list, which is all Cloudflare accepts), the three wirefilter expressions, and optional expiration or per-weekday schedule for DNS rules
 - **Rule Settings** — always sent: an empty object when the spec configures nothing (the provider's own drift workaround), otherwise the full settings tree
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module with a Cloudflare API token carrying Account → Zero Trust → Edit. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module with a Cloudflare API token carrying Account → Zero Trust → Edit. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -56,11 +56,11 @@ spec:
 planton apply -f gateway-policy.yaml
 ```
 
-This creates an active DNS policy blocking the named domain for every WARP-enrolled device, with the block page shown and a reason attached. Without `enabled: true` the same manifest would deploy a rule that filters nothing. A Stack Job tracks the provisioning in real time.
+This creates an active DNS policy blocking the named domain for every WARP-enrolled device, with the block page shown and a reason attached. Without `enabled: true` the same manifest would deploy a rule that filters nothing. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire a private resolver's virtual network to a resource managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, wire a private resolver's virtual network to a resource managed by another Infra Component:
 
 ```yaml
 spec:
@@ -101,16 +101,16 @@ These are the most important decisions when configuring a Gateway policy. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | CloudflareZeroTrustTunnelVirtualNetwork | `spec.ruleSettings.dnsResolvers.ipv4[].vnetId` | `status.outputs.virtual_network_id` |
 | CloudflareZeroTrustTunnelVirtualNetwork | `spec.ruleSettings.dnsResolvers.ipv6[].vnetId` | `status.outputs.virtual_network_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -131,9 +131,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Zero Trust List**](/cloud-catalog/cloudflare-zero-trust-list) — reusable domain/IP/email sets referenced by ID from the `traffic` expression.
-- [**Cloudflare Zero Trust Tunnel Virtual Network**](/cloud-catalog/cloudflare-zero-trust-tunnel-virtual-network) — the private network `ruleSettings.dnsResolvers.*.vnetId` routes resolver traffic through.
-- [**Cloudflare Zero Trust Device Posture Rule**](/cloud-catalog/cloudflare-zero-trust-device-posture-rule) — the health checks the `devicePosture` expression matches on.
-- [**Cloudflare Zero Trust DNS Location**](/cloud-catalog/cloudflare-zero-trust-dns-location) — the per-site entry points DNS policies can match on.
-- [**Cloudflare Zero Trust Gateway Settings**](/cloud-catalog/cloudflare-zero-trust-gateway-settings) — the account-wide posture (TLS decryption, logging) these policies run under.
-- [**Cloudflare Ruleset**](/cloud-catalog/cloudflare-ruleset) — website WAF and firewall for zone traffic; Gateway policies filter employee traffic. Different product, different kind.
+- [**Cloudflare Zero Trust List**](/infra-catalog/cloudflare-zero-trust-list) — reusable domain/IP/email sets referenced by ID from the `traffic` expression.
+- [**Cloudflare Zero Trust Tunnel Virtual Network**](/infra-catalog/cloudflare-zero-trust-tunnel-virtual-network) — the private network `ruleSettings.dnsResolvers.*.vnetId` routes resolver traffic through.
+- [**Cloudflare Zero Trust Device Posture Rule**](/infra-catalog/cloudflare-zero-trust-device-posture-rule) — the health checks the `devicePosture` expression matches on.
+- [**Cloudflare Zero Trust DNS Location**](/infra-catalog/cloudflare-zero-trust-dns-location) — the per-site entry points DNS policies can match on.
+- [**Cloudflare Zero Trust Gateway Settings**](/infra-catalog/cloudflare-zero-trust-gateway-settings) — the account-wide posture (TLS decryption, logging) these policies run under.
+- [**Cloudflare Ruleset**](/infra-catalog/cloudflare-ruleset) — website WAF and firewall for zone traffic; Gateway policies filter employee traffic. Different product, different kind.

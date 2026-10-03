@@ -23,7 +23,7 @@ import (
 	"github.com/plantonhq/planton/e2e/framework/provider"
 	"github.com/plantonhq/planton/e2e/framework/runner"
 	profilepkg "github.com/plantonhq/planton/pkg/e2e/profile"
-	componentv1 "github.com/plantonhq/planton/qa/componente2eprofile/v1"
+	kindv1 "github.com/plantonhq/planton/qa/catalogkinde2eprofile/v1"
 )
 
 var (
@@ -88,334 +88,334 @@ func TestMain(m *testing.M) {
 // --- DigitalOcean VPC (root of the FK graph; the shared network fixture) ---
 
 func TestDigitalOceanVpc_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanvpc", "pulumi")
+	runAllScenariosForKind(t, "digitaloceanvpc", "pulumi")
 }
 func TestDigitalOceanVpc_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanvpc", "terraform")
+	runAllScenariosForKind(t, "digitaloceanvpc", "terraform")
 }
 
 // --- DigitalOcean Droplet (composed topology: deploys the Vpc prerequisite) ---
 
 func TestDigitalOceanDroplet_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandroplet", "pulumi")
+	runAllScenariosForKind(t, "digitaloceandroplet", "pulumi")
 }
 func TestDigitalOceanDroplet_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandroplet", "terraform")
+	runAllScenariosForKind(t, "digitaloceandroplet", "terraform")
 }
 
 // --- DigitalOcean Volume (standalone block storage) ---
 
 func TestDigitalOceanVolume_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanvolume", "pulumi")
+	runAllScenariosForKind(t, "digitaloceanvolume", "pulumi")
 }
 func TestDigitalOceanVolume_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanvolume", "terraform")
+	runAllScenariosForKind(t, "digitaloceanvolume", "terraform")
 }
 
 // --- DigitalOcean Firewall (standalone; droplet attachment arms ride scenarios) ---
 
 func TestDigitalOceanFirewall_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanfirewall", "pulumi")
+	runAllScenariosForKind(t, "digitaloceanfirewall", "pulumi")
 }
 func TestDigitalOceanFirewall_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanfirewall", "terraform")
+	runAllScenariosForKind(t, "digitaloceanfirewall", "terraform")
 }
 
 // --- DigitalOcean Load Balancer (composed topology: deploys the Vpc prerequisite) ---
 
 func TestDigitalOceanLoadBalancer_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanloadbalancer", "pulumi")
+	runAllScenariosForKind(t, "digitaloceanloadbalancer", "pulumi")
 }
 func TestDigitalOceanLoadBalancer_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanloadbalancer", "terraform")
+	runAllScenariosForKind(t, "digitaloceanloadbalancer", "terraform")
 }
 
 // --- DigitalOcean Database Cluster (slow lane: ~5 min creates, billed hourly) ---
 
 func TestDigitalOceanDatabaseCluster_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandatabasecluster", "pulumi")
+	runAllScenariosForKind(t, "digitaloceandatabasecluster", "pulumi")
 }
 func TestDigitalOceanDatabaseCluster_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandatabasecluster", "terraform")
+	runAllScenariosForKind(t, "digitaloceandatabasecluster", "terraform")
 }
 
 // --- DigitalOcean Database User (satellite: rides the cluster prerequisite) ---
 
 func TestDigitalOceanDatabaseUser_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandatabaseuser", "pulumi")
+	runAllScenariosForKind(t, "digitaloceandatabaseuser", "pulumi")
 }
 func TestDigitalOceanDatabaseUser_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandatabaseuser", "terraform")
+	runAllScenariosForKind(t, "digitaloceandatabaseuser", "terraform")
 }
 
 // --- DigitalOcean Database Db (satellite: rides the cluster prerequisite) ---
 
 func TestDigitalOceanDatabaseDb_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandatabasedb", "pulumi")
+	runAllScenariosForKind(t, "digitaloceandatabasedb", "pulumi")
 }
 func TestDigitalOceanDatabaseDb_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandatabasedb", "terraform")
+	runAllScenariosForKind(t, "digitaloceandatabasedb", "terraform")
 }
 
 // --- DigitalOcean Database Connection Pool (satellite: rides the cluster prerequisite) ---
 
 func TestDigitalOceanDatabaseConnectionPool_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandatabaseconnectionpool", "pulumi")
+	runAllScenariosForKind(t, "digitaloceandatabaseconnectionpool", "pulumi")
 }
 func TestDigitalOceanDatabaseConnectionPool_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandatabaseconnectionpool", "terraform")
+	runAllScenariosForKind(t, "digitaloceandatabaseconnectionpool", "terraform")
 }
 
 // --- DigitalOcean Database Firewall (satellite: rides the cluster prerequisite) ---
 
 func TestDigitalOceanDatabaseFirewall_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandatabasefirewall", "pulumi")
+	runAllScenariosForKind(t, "digitaloceandatabasefirewall", "pulumi")
 }
 func TestDigitalOceanDatabaseFirewall_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandatabasefirewall", "terraform")
+	runAllScenariosForKind(t, "digitaloceandatabasefirewall", "terraform")
 }
 
 // --- DigitalOcean Database Replica (satellite; its own billing class: a second cluster-sized node) ---
 
 func TestDigitalOceanDatabaseReplica_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandatabasereplica", "pulumi")
+	runAllScenariosForKind(t, "digitaloceandatabasereplica", "pulumi")
 }
 func TestDigitalOceanDatabaseReplica_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandatabasereplica", "terraform")
+	runAllScenariosForKind(t, "digitaloceandatabasereplica", "terraform")
 }
 
 // --- DigitalOcean Kubernetes Cluster (slow lane: ~5-10 min creates; Vpc prerequisite) ---
 
 func TestDigitalOceanKubernetesCluster_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceankubernetescluster", "pulumi")
+	runAllScenariosForKind(t, "digitaloceankubernetescluster", "pulumi")
 }
 func TestDigitalOceanKubernetesCluster_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceankubernetescluster", "terraform")
+	runAllScenariosForKind(t, "digitaloceankubernetescluster", "terraform")
 }
 
 // --- DigitalOcean Kubernetes Node Pool (composed topology: deploys the cluster prerequisite) ---
 
 func TestDigitalOceanKubernetesNodePool_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceankubernetesnodepool", "pulumi")
+	runAllScenariosForKind(t, "digitaloceankubernetesnodepool", "pulumi")
 }
 func TestDigitalOceanKubernetesNodePool_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceankubernetesnodepool", "terraform")
+	runAllScenariosForKind(t, "digitaloceankubernetesnodepool", "terraform")
 }
 
 // --- DigitalOcean DNS Zone (a domain; cheap and instant) ---
 
 func TestDigitalOceanDnsZone_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandnszone", "pulumi")
+	runAllScenariosForKind(t, "digitaloceandnszone", "pulumi")
 }
 func TestDigitalOceanDnsZone_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandnszone", "terraform")
+	runAllScenariosForKind(t, "digitaloceandnszone", "terraform")
 }
 
 // --- DigitalOcean DNS Record (composed topology: deploys the DnsZone prerequisite) ---
 
 func TestDigitalOceanDnsRecord_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandnsrecord", "pulumi")
+	runAllScenariosForKind(t, "digitaloceandnsrecord", "pulumi")
 }
 func TestDigitalOceanDnsRecord_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandnsrecord", "terraform")
+	runAllScenariosForKind(t, "digitaloceandnsrecord", "terraform")
 }
 
 // --- DigitalOcean Certificate (lets_encrypt arms need a delegated domain -- environmental gate) ---
 
 func TestDigitalOceanCertificate_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceancertificate", "pulumi")
+	runAllScenariosForKind(t, "digitaloceancertificate", "pulumi")
 }
 func TestDigitalOceanCertificate_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceancertificate", "terraform")
+	runAllScenariosForKind(t, "digitaloceancertificate", "terraform")
 }
 
 // --- DigitalOcean Container Registry (one per account -- lanes must not run concurrently) ---
 
 func TestDigitalOceanContainerRegistry_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceancontainerregistry", "pulumi")
+	runAllScenariosForKind(t, "digitaloceancontainerregistry", "pulumi")
 }
 func TestDigitalOceanContainerRegistry_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceancontainerregistry", "terraform")
+	runAllScenariosForKind(t, "digitaloceancontainerregistry", "terraform")
 }
 
 // --- DigitalOcean Bucket (Spaces; needs SPACES_ACCESS_KEY_ID / SPACES_SECRET_ACCESS_KEY) ---
 
 func TestDigitalOceanBucket_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanbucket", "pulumi")
+	runAllScenariosForKind(t, "digitaloceanbucket", "pulumi")
 }
 func TestDigitalOceanBucket_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanbucket", "terraform")
+	runAllScenariosForKind(t, "digitaloceanbucket", "terraform")
 }
 
 // --- DigitalOcean App (git-source deploys run a real build -- slow lane) ---
 
 func TestDigitalOceanApp_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanapp", "pulumi")
+	runAllScenariosForKind(t, "digitaloceanapp", "pulumi")
 }
 func TestDigitalOceanApp_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanapp", "terraform")
+	runAllScenariosForKind(t, "digitaloceanapp", "terraform")
 }
 
 // --- DigitalOcean Function (deploys an App Platform app carrying a functions section) ---
 
 func TestDigitalOceanFunction_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanfunction", "pulumi")
+	runAllScenariosForKind(t, "digitaloceanfunction", "pulumi")
 }
 func TestDigitalOceanFunction_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanfunction", "terraform")
+	runAllScenariosForKind(t, "digitaloceanfunction", "terraform")
 }
 
 // --- DigitalOcean Project ---
 
 func TestDigitalOceanProject_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanproject", "pulumi")
+	runAllScenariosForKind(t, "digitaloceanproject", "pulumi")
 }
 func TestDigitalOceanProject_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanproject", "terraform")
+	runAllScenariosForKind(t, "digitaloceanproject", "terraform")
 }
 
 // --- DigitalOcean SSH Key ---
 
 func TestDigitalOceanSshKey_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceansshkey", "pulumi")
+	runAllScenariosForKind(t, "digitaloceansshkey", "pulumi")
 }
 func TestDigitalOceanSshKey_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceansshkey", "terraform")
+	runAllScenariosForKind(t, "digitaloceansshkey", "terraform")
 }
 
 // --- DigitalOcean Monitor Alert ---
 
 func TestDigitalOceanMonitorAlert_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanmonitoralert", "pulumi")
+	runAllScenariosForKind(t, "digitaloceanmonitoralert", "pulumi")
 }
 func TestDigitalOceanMonitorAlert_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanmonitoralert", "terraform")
+	runAllScenariosForKind(t, "digitaloceanmonitoralert", "terraform")
 }
 
 // --- DigitalOcean Uptime Check (composes its alert rules) ---
 
 func TestDigitalOceanUptimeCheck_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanuptimecheck", "pulumi")
+	runAllScenariosForKind(t, "digitaloceanuptimecheck", "pulumi")
 }
 func TestDigitalOceanUptimeCheck_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanuptimecheck", "terraform")
+	runAllScenariosForKind(t, "digitaloceanuptimecheck", "terraform")
 }
 
 // --- DigitalOcean Database Kafka Topic (shared Kafka fixture; run serially with the schema kind) ---
 
 func TestDigitalOceanDatabaseKafkaTopic_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandatabasekafkatopic", "pulumi")
+	runAllScenariosForKind(t, "digitaloceandatabasekafkatopic", "pulumi")
 }
 func TestDigitalOceanDatabaseKafkaTopic_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandatabasekafkatopic", "terraform")
+	runAllScenariosForKind(t, "digitaloceandatabasekafkatopic", "terraform")
 }
 
 // --- DigitalOcean Database Kafka Schema (shared Kafka fixture; run serially with the topic kind) ---
 
 func TestDigitalOceanDatabaseKafkaSchema_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandatabasekafkaschema", "pulumi")
+	runAllScenariosForKind(t, "digitaloceandatabasekafkaschema", "pulumi")
 }
 func TestDigitalOceanDatabaseKafkaSchema_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandatabasekafkaschema", "terraform")
+	runAllScenariosForKind(t, "digitaloceandatabasekafkaschema", "terraform")
 }
 
 // --- DigitalOcean Reserved IP (unassigned IPv4 BILLS -- zero-orphan sweep is doubly binding) ---
 
 func TestDigitalOceanReservedIp_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanreservedip", "pulumi")
+	runAllScenariosForKind(t, "digitaloceanreservedip", "pulumi")
 }
 func TestDigitalOceanReservedIp_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanreservedip", "terraform")
+	runAllScenariosForKind(t, "digitaloceanreservedip", "terraform")
 }
 
 // --- DigitalOcean VPC Peering (dual VPC fixtures via the scenario's e2e-prerequisites annotation) ---
 
 func TestDigitalOceanVpcPeering_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanvpcpeering", "pulumi")
+	runAllScenariosForKind(t, "digitaloceanvpcpeering", "pulumi")
 }
 func TestDigitalOceanVpcPeering_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanvpcpeering", "terraform")
+	runAllScenariosForKind(t, "digitaloceanvpcpeering", "terraform")
 }
 
 // --- DigitalOcean Spaces Key (per-bucket scenario rides the Bucket fixture; the bucket lane needs the Spaces key pair env) ---
 
 func TestDigitalOceanSpacesKey_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanspaceskey", "pulumi")
+	runAllScenariosForKind(t, "digitaloceanspaceskey", "pulumi")
 }
 func TestDigitalOceanSpacesKey_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceanspaceskey", "terraform")
+	runAllScenariosForKind(t, "digitaloceanspaceskey", "terraform")
 }
 
 // --- DigitalOcean CDN (bucket-origin fixture via the scenario's e2e-prerequisites annotation) ---
 
 func TestDigitalOceanCdn_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceancdn", "pulumi")
+	runAllScenariosForKind(t, "digitaloceancdn", "pulumi")
 }
 func TestDigitalOceanCdn_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceancdn", "terraform")
+	runAllScenariosForKind(t, "digitaloceancdn", "terraform")
 }
 
 // --- DigitalOcean Droplet Autoscale Pool (SshKey registry prerequisite; member droplets BILL and destroy destroys them) ---
 
 func TestDigitalOceanDropletAutoscalePool_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandropletautoscalepool", "pulumi")
+	runAllScenariosForKind(t, "digitaloceandropletautoscalepool", "pulumi")
 }
 func TestDigitalOceanDropletAutoscalePool_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "digitaloceandropletautoscalepool", "terraform")
+	runAllScenariosForKind(t, "digitaloceandropletautoscalepool", "terraform")
 }
 
-// runAllScenariosForComponent discovers and runs all E2E scenarios for a
-// DigitalOcean component.
-func runAllScenariosForComponent(t *testing.T, component, engine string) {
+// runAllScenariosForKind discovers and runs all E2E scenarios for a
+// DigitalOcean kind.
+func runAllScenariosForKind(t *testing.T, kindDir, engine string) {
 	t.Helper()
 
-	if cp, err := profilepkg.LoadComponentProfile(repoRoot, "digitalocean", component); err == nil && cp.Spec != nil {
+	if cp, err := profilepkg.LoadKindProfile(repoRoot, "digitalocean", kindDir); err == nil && cp.Spec != nil {
 		switch cp.Spec.Status {
-		case componentv1.ComponentE2EProfileSpec_deferred,
-			componentv1.ComponentE2EProfileSpec_skip,
-			componentv1.ComponentE2EProfileSpec_stub,
+		case kindv1.CatalogKindE2EProfileSpec_deferred,
+			kindv1.CatalogKindE2EProfileSpec_skip,
+			kindv1.CatalogKindE2EProfileSpec_stub,
 			// pending_proof: fully authored, offline-validated, awaiting its
 			// first live proof. The proving session flips the profile to green
 			// immediately before executing the lanes; until then a sweep must
 			// never run it.
-			componentv1.ComponentE2EProfileSpec_pending_proof:
+			kindv1.CatalogKindE2EProfileSpec_pending_proof:
 			reason := cp.Spec.DeferredReason
 			if reason == "" {
 				reason = cp.Spec.Status.String()
 			}
-			t.Skipf("component %s E2E profile status is %s: %s", component, cp.Spec.Status, reason)
+			t.Skipf("kind %s E2E profile status is %s: %s", kindDir, cp.Spec.Status, reason)
 		}
 	}
 
-	moduleDir, err := discovery.ModuleDir(repoRoot, "digitalocean", component, engine)
+	moduleDir, err := discovery.ModuleDir(repoRoot, "digitalocean", kindDir, engine)
 	if err != nil {
-		t.Fatalf("failed to locate %s %s module: %v", component, engine, err)
+		t.Fatalf("failed to locate %s %s module: %v", kindDir, engine, err)
 	}
 
 	if !fileExists(moduleDir) {
-		t.Skipf("component %s %s module not found at %s", component, engine, moduleDir)
+		t.Skipf("kind %s %s module not found at %s", kindDir, engine, moduleDir)
 	}
 
-	scenarios, err := discovery.DiscoverTestScenarios(repoRoot, "digitalocean", component)
+	scenarios, err := discovery.DiscoverTestScenarios(repoRoot, "digitalocean", kindDir)
 	if err != nil {
-		t.Fatalf("failed to discover test scenarios for %s: %v", component, err)
+		t.Fatalf("failed to discover test scenarios for %s: %v", kindDir, err)
 	}
 
 	if len(scenarios) == 0 {
-		t.Skipf("no test scenarios found for %s", component)
+		t.Skipf("no test scenarios found for %s", kindDir)
 	}
 
-	t.Logf("Discovered %d scenarios for %s [%s]", len(scenarios), component, engine)
+	t.Logf("Discovered %d scenarios for %s [%s]", len(scenarios), kindDir, engine)
 
 	for _, scenario := range scenarios {
 		scenario := scenario
 		t.Run(scenario.Name, func(t *testing.T) {
-			runSingleScenario(t, component, moduleDir, engine, scenario)
+			runSingleScenario(t, kindDir, moduleDir, engine, scenario)
 		})
 	}
 }
 
-func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenario discovery.TestScenario) {
+func runSingleScenario(t *testing.T, kindDir, moduleDir, engine string, scenario discovery.TestScenario) {
 	t.Helper()
 
 	// Scenarios needing owner-arranged external context (the
@@ -426,14 +426,14 @@ func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenar
 	// carry the arrangement -- unset tokens would otherwise fail expansion
 	// loudly, turning a recorded deferral into a false failure.
 	if missing, err := runner.ScenarioMissingRequiredEnv(scenario.ManifestPath); err != nil {
-		t.Fatalf("reading required-env declaration for scenario %s/%s: %v", component, scenario.Name, err)
+		t.Fatalf("reading required-env declaration for scenario %s/%s: %v", kindDir, scenario.Name, err)
 	} else if len(missing) > 0 {
 		t.Skipf("scenario %s/%s needs owner-arranged environment variables that are unset: %s (per %s)",
-			component, scenario.Name, strings.Join(missing, ", "), runner.ScenarioRequiredEnvAnnotation)
+			kindDir, scenario.Name, strings.Join(missing, ", "), runner.ScenarioRequiredEnvAnnotation)
 	}
 
-	tc := &provider.ComponentTestContext{
-		Component: component,
+	tc := &provider.KindTestContext{
+		Kind: kindDir,
 		// The provider is ALWAYS the catalog directory slug. Deriving it from
 		// the registry enum would yield "digital_ocean", and the import
 		// round-trip's map lookup would silently skip instead of running.
@@ -457,11 +457,11 @@ func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenar
 	if engine == "pulumi" {
 		// GenerateStackName enforces the length cap uniqueness-preservingly
 		// (blind truncation here would collide long kind names' scenarios).
-		tc.StackName = runner.GenerateStackName(component+"-"+scenario.Name, runID)
+		tc.StackName = runner.GenerateStackName(kindDir+"-"+scenario.Name, runID)
 	}
 
 	ctx := context.Background()
-	result := runner.RunComponentTest(ctx, tc, testHarness)
+	result := runner.RunKindTest(ctx, tc, testHarness)
 
 	for _, phase := range result.Phases {
 		status := "PASS"
@@ -475,10 +475,10 @@ func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenar
 	}
 
 	if !result.Passed {
-		t.Fatalf("scenario %s/%s [%s] failed (total: %s)", component, scenario.Name, engine, result.Duration)
+		t.Fatalf("scenario %s/%s [%s] failed (total: %s)", kindDir, scenario.Name, engine, result.Duration)
 	}
 
-	t.Logf("scenario %s/%s [%s] passed (total: %s)", component, scenario.Name, engine, result.Duration)
+	t.Logf("scenario %s/%s [%s] passed (total: %s)", kindDir, scenario.Name, engine, result.Duration)
 }
 
 func fileExists(path string) bool {

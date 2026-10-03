@@ -77,7 +77,7 @@ func resolveCheckPath(root string, c evalCheck) (string, error) {
 			return "", fmt.Errorf("kind %q does not resolve: %w", c.Kind, err)
 		}
 		// reference.md lives in the version dir beside the protos; GUIDE.md
-		// lives at the component root, one level up.
+		// lives at the kind root, one level up.
 		protoDir := filepath.Dir(res.Message.ParentFile().Path())
 		if c.File == "GUIDE.md" {
 			return filepath.Join(root, filepath.Dir(protoDir), c.File), nil

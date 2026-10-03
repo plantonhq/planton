@@ -55,12 +55,12 @@ message OpenFgaRelationshipTuple {
   // Must be "OpenFgaRelationshipTuple" for this resource type.
   string kind = 2 [(buf.validate.field).string.const = 'OpenFgaRelationshipTuple'];
 
-  // metadata contains standard cloud resource metadata.
+  // metadata contains standard catalog object metadata.
   // - name: Unique identifier for the tuple within Planton
   // - org: Organization that owns this tuple
   // - env: Environment (development, staging, production)
   // - labels: Key-value pairs for filtering and organization
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec contains the desired configuration for the OpenFGA relationship tuple.
   // Includes the store ID, user, relation, object, and optional condition.
@@ -75,8 +75,8 @@ message OpenFgaRelationshipTuple {
 // OpenFgaRelationshipTupleStatus represents the current state of an OpenFGA Relationship Tuple resource.
 // This is populated by the deployment system and contains read-only outputs.
 message OpenFgaRelationshipTupleStatus {
-  // outputs contains the stack outputs from the OpenFGA relationship tuple deployment.
+  // outputs contains the outputs from the OpenFGA relationship tuple deployment.
   // These values are populated after successful deployment and confirm
   // the tuple was created.
-  OpenFgaRelationshipTupleStackOutputs outputs = 1;
+  OpenFgaRelationshipTupleOutputs outputs = 1;
 }

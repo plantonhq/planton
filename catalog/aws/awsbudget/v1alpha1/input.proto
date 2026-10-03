@@ -5,9 +5,9 @@ package dev.planton.aws.awsbudget.v1alpha1;
 import "catalog/aws/awsbudget/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsBudgetStackInput is the input for the IaC modules that manage a
+// AwsBudgetIacInput is the input for the IaC modules that manage a
 // Budgets budget and its folded actions.
-message AwsBudgetStackInput {
+message AwsBudgetIacInput {
   // target is the AwsBudget resource to deploy.
   AwsBudget target = 1;
   // provider_config contains the AWS provider credentials and configuration.

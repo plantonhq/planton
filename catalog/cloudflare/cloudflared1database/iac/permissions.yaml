@@ -3,12 +3,12 @@
 # modules. Cloudflare authenticates with a bearer API token assembled from
 # named permission groups; every group entry is `derived` (static analysis
 # of the module sources, cited in notes) until the live capture lane
-# upgrades it to `proven`. Schema: iac/componentpermissions/v1.
+# upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # The component README and catalog.md say only that the token needs "D1
 # permissions" -- no more specific prose existed to migrate.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: cloudflared1database
 spec:

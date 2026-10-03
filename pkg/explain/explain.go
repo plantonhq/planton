@@ -98,7 +98,7 @@ type EnumValue struct {
 // Field is one manifest field. Name is the protojson name -- the exact key
 // written in YAML manifests and chart templates. ProtoName is the proto
 // field name (snake_case) -- the canonical spelling of a valueFrom
-// fieldPath, because the control plane stores cloud objects with proto
+// fieldPath, because the control plane stores catalog objects with proto
 // field names and canonicalizes reference paths to them (camelCase is
 // tolerated on input and rewritten).
 type Field struct {

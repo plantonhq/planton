@@ -6,7 +6,7 @@
 turns a `TektonConfig` declaration into running Tekton components and
 keeps them converged. One install per cluster (an upstream contract).
 
-Not the right component when:
+Not the right kind when:
 
 - **You want Tekton itself** — that is `KubernetesTekton`: the
   declaration of which components run (Pipelines, Triggers, Dashboard,
@@ -60,7 +60,7 @@ version field — the `TektonConfig` surface `KubernetesTekton` models is
 designed against the pinned release. `image_registry` points every image
 Tekton publishes at a mirror of ghcr.io; the modules read the images the
 pinned release installs from a table built for that release, and refuse a
-table built for another. The stack outputs name the registry and the four
+table built for another. The outputs name the registry and the four
 images Tekton injects into build pods (entrypoint, nop, workingdirinit,
 sidecarlogresults) exactly as the cluster pulls them, digests included --
 the list to mirror and allow-list before the first build.

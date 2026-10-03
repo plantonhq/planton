@@ -28,7 +28,7 @@ hidden from the UI.
 - Model building: billed per training cell/AutoML job
 - Domain infrastructure: EFS storage, billed per GB-month
 
-The verified figure for this preset lives in the component's generated estimate at `catalog/_pricing/estimates/awssagemakerdomain.yaml` — computed from the pinned price book, never hand-typed here.
+The verified figure for this preset lives in the kind's generated estimate at `catalog/_pricing/estimates/awssagemakerdomain.yaml` — computed from the pinned price book, never hand-typed here.
 
 ## Customization
 

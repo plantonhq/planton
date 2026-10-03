@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcporgpolicy.v1alpha1;
 
-// GcpOrgPolicyStackOutputs captures the policy's identity after
+// GcpOrgPolicyOutputs captures the policy's identity after
 // provisioning.
-message GcpOrgPolicyStackOutputs {
+message GcpOrgPolicyOutputs {
   // The policy's full resource name, `{scope}/policies/{constraint}` --
   // e.g. `projects/123456789012/policies/compute.disableSerialPortAccess`.
   // Google returns the project scope as the project NUMBER even when the

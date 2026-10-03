@@ -37,7 +37,7 @@ flowchart TB
         C2[pulumi/preview.go] --> D
         C3[tofu/apply.go] --> D
         C4["... 14 more files"] --> D
-        D --> E[crkreflect.ExtractKindFromYaml]
+        D --> E[catalogkindreflect.ExtractKindFromYaml]
         D --> F[gitrepo.GetLocalRepoPath]
         D --> G{provisioner?}
         G -->|pulumi| H[pulumimodule.GetLocalModulePath]
@@ -48,7 +48,7 @@ flowchart TB
 ### Key Changes
 
 1. **New `localmodule` Package**: Created `pkg/iac/localmodule/local_module.go` with a single `GetModuleDir()` function
-2. **YAML-Based Kind Detection**: Uses `crkreflect.ExtractKindFromYaml()` instead of proto reflection, avoiding the `GetKind()` build error
+2. **YAML-Based Kind Detection**: Uses `catalogkindreflect.ExtractKindFromYaml()` instead of proto reflection, avoiding the `GetKind()` build error
 3. **Custom Error Type**: `localmodule.Error` with `Stage`, `Cause`, `Context`, and `Hint` fields
 4. **Kind Name Fallback**: Fixed `ExtractKindNameByKind` to return `kind.String()` when `kindMeta.Name` is empty
 
@@ -65,8 +65,8 @@ func GetModuleDir(targetManifestPath string, cmd *cobra.Command, prov shared.Iac
     
     // 2. Read and parse manifest to extract kind (from YAML, not proto)
     manifestBytes, _ := os.ReadFile(targetManifestPath)
-    cloudResourceKind, _ := crkreflect.ExtractKindFromYaml(manifestBytes)
-    kindName := crkreflect.ExtractKindNameByKind(cloudResourceKind)
+    catalogKind, _ := catalogkindreflect.ExtractKindFromYaml(manifestBytes)
+    kindName := catalogkindreflect.ExtractKindNameByKind(catalogKind)
     
     // 3. Verify repo exists
     // 4. Get module path based on provisioner
@@ -103,7 +103,7 @@ type Error struct {
 The proto `kind_meta` extension for some resource kinds (like `KubernetesNats`) doesn't have an explicit `name` field set. The fix adds a simple fallback:
 
 ```go
-func ExtractKindNameByKind(kind cloudresourcekind.CloudResourceKind) string {
+func ExtractKindNameByKind(kind catalogkind.CatalogKind) string {
     kindMeta, err := KindMeta(kind)
     if err != nil {
         return ""
@@ -178,7 +178,7 @@ if localModule {
 |------|--------|
 | `pkg/iac/localmodule/local_module.go` | **New** - Centralized GetModuleDir function |
 | `pkg/iac/localmodule/BUILD.bazel` | **New** - Bazel build file |
-| `pkg/crkreflect/kind_name_by_kind.go` | **Modified** - Added fallback to `kind.String()` |
+| `pkg/catalogkindreflect/kind_name_by_kind.go` | **Modified** - Added fallback to `kind.String()` |
 | `cmd/planton/root/pulumi/*.go` | **Modified** - 7 files refactored to use localmodule |
 | `cmd/planton/root/tofu/*.go` | **Modified** - 5 files refactored to use localmodule |
 | `cmd/planton/root/*.go` | **Modified** - 5 files refactored to use localmodule |
@@ -201,7 +201,7 @@ planton tofu apply --manifest nats.yaml --local-module
 
 - **Prior**: `--local-module` flag initial implementation (session before this refactoring)
 - **Related**: `pkg/iac/gitrepo/local_repo.go` - GetLocalRepoPath utility
-- **Related**: `pkg/crkreflect/kind_from_yaml.go` - ExtractKindFromYaml function
+- **Related**: `pkg/catalogkindreflect/kind_from_yaml.go` - ExtractKindFromYaml function
 
 ---
 

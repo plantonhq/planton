@@ -42,7 +42,7 @@ The spec folds three Cloudflare surfaces with different lifecycles: the configur
 | `logging` | object | redact_pii + per-rule-type (dns/http/l4) log switches. |
 | `pac_files` | list | PAC files: name + contents required; slug immutable. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

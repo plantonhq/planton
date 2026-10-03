@@ -24,7 +24,7 @@ import (
 // uses the outputs form.
 //
 // Beyond existence, the deploy side asserts every wiring value the module
-// CLAIMS in its stack outputs: `region` against the bucket's live location
+// CLAIMS in its outputs: `region` against the bucket's live location
 // (Spaces answers GetBucketLocation with the region slug), and `endpoint`,
 // `bucket_domain_name`, and `urn` against the shapes DigitalOcean defines
 // for them. The region assertion is the one that matters most: a Spaces

@@ -4,7 +4,7 @@ Deploys an Azure user-assigned managed identity: a standalone Entra ID identity 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **User-Assigned Managed Identity** -- an Entra ID identity in the specified region and resource group, independent of the resources it is assigned to
 - **Optional regional isolation** -- when `isolationScope: REGIONAL` is set, token issuance for the identity is restricted to its own region (a data-residency / blast-radius control)
@@ -16,12 +16,12 @@ The identity is deliberately just the identity. What it may DO is granted throug
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the managed identity will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the managed identity will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f identity.yaml
 ```
 
-This creates a user-assigned managed identity with NO permissions -- a freshly-created identity can do nothing until AzureRoleAssignment resources grant it access. A Stack Job tracks the provisioning in real time.
+This creates a user-assigned managed identity with NO permissions -- a freshly-created identity can do nothing until AzureRoleAssignment resources grant it access. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -97,15 +97,15 @@ These are the most important decisions when configuring a user-assigned managed 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -124,6 +124,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the managed identity is created
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- grants the identity permissions by targeting its `principal_id` output
-- [**Azure Federated Identity Credential**](/cloud-catalog/azure-federated-identity-credential) -- declares keyless trust rules on the identity's `identity_id` output
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the managed identity is created
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- grants the identity permissions by targeting its `principal_id` output
+- [**Azure Federated Identity Credential**](/infra-catalog/azure-federated-identity-credential) -- declares keyless trust rules on the identity's `identity_id` output

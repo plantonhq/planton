@@ -75,7 +75,7 @@ Traffic Director proxies skip certificates and use `serverTlsPolicy` instead.
 | `proxyBind` | Bind to Traffic Director mesh VIPs (`INTERNAL_SELF_MANAGED` only). Global proxies only. Immutable |
 | `deletionPolicy` | What destroy does: `DELETE` (default) removes the proxy, `PREVENT` fails the destroy to protect a production TLS frontend, `ABANDON` leaves it serving unmanaged |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -103,7 +103,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 - **Scope is immutable and chain-wide** — a proxy cannot move between global and regional; a regional proxy's URL map, certificates, SSL policy, and forwarding rule must be regional in the same region, and `certificateMap`, `quicOverride`, `tlsEarlyData`, and `proxyBind` are rejected when `region` is set (the regional resource has none of them).
 - **`urlMap`, certificates, `sslPolicy`, `serverTlsPolicy`, and `quicOverride` update in place**; name, description, keep-alive, `tlsEarlyData`, and `proxyBind` are ForceNew.
 
-## Related Components
+## Related Kinds
 
 - [GcpManagedSslCertificate](/docs/catalog/gcp/gcpmanagedsslcertificate) — Google-managed certificates for `sslCertificates`
 - [GcpCertManagerCert](/docs/catalog/gcp/gcpcertmanagercert) — Certificate Manager certificates for the internal-ALB list

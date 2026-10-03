@@ -10,7 +10,7 @@ import (
 
 // bucket provisions the Spaces bucket, its per-bucket settings satellites
 // (CORS configuration, bucket policy, access logging), and exports the
-// stack outputs declared in outputs.proto.
+// outputs declared in outputs.proto.
 func bucket(
 	ctx *pulumi.Context,
 	locals *Locals,
@@ -177,7 +177,7 @@ func bucket(
 		}
 	}
 
-	// Stack outputs from the SDK's real attribute names. The provider's urn
+	// Outputs from the SDK's real attribute names. The provider's urn
 	// attribute is BucketUrn in the SDK (URN() is Pulumi's own resource
 	// URN, a different thing).
 	ctx.Export(OpBucketId, createdBucket.ID())

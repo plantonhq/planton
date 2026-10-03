@@ -68,7 +68,7 @@ architecture, and it deserves a first-class, composable node:
   are CEL-enforced at validation time.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `vpc_endpoint_id`: the endpoint's id (vpce-...)
 - `arn`: the endpoint's ARN

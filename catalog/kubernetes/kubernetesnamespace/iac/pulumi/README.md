@@ -64,7 +64,7 @@ module/
 ├── resource_quota.go    # ResourceQuota implementation
 ├── limit_range.go       # LimitRange implementation
 ├── network_policies.go  # NetworkPolicy creation
-└── outputs.go           # Stack outputs
+└── outputs.go           # Outputs
 ```
 
 ## Configuration Patterns

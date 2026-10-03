@@ -2,7 +2,7 @@
 
 Pulumi Go module for `GcpAlloydbUser`. Enables `alloydb.googleapis.com`, then creates `alloydb.User` with BUILT_IN or IAM authentication and optional database roles.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

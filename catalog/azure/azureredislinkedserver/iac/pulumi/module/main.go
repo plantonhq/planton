@@ -17,12 +17,12 @@ import (
 // segments (matching the Terraform module's regex semantics).
 var redisCacheIdPattern = regexp.MustCompile(`(?i)/resourcegroups/([^/]+)/.*/redis/([^/]+)$`)
 
-func Resources(ctx *pulumi.Context, stackInput *azureredislinkedserverv1alpha1.AzureRedisLinkedServerStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureredislinkedserverv1alpha1.AzureRedisLinkedServerIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -73,7 +73,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureredislinkedserverv1alpha1.A
 		return errors.Wrapf(err, "failed to create redis linked server on cache %s", targetCacheName)
 	}
 
-	// Export stack outputs. Azure names the link after the linked
+	// Export outputs. Azure names the link after the linked
 	// (secondary) cache; the geo hostname follows the CURRENT primary
 	// across failovers.
 	ctx.Export(OpLinkedServerId, createdLinkedServer.ID())

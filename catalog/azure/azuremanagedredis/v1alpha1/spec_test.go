@@ -31,7 +31,7 @@ func minimalSpec() *AzureManagedRedis {
 	return &AzureManagedRedis{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureManagedRedis",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-managed-redis",
 		},
 		Spec: &AzureManagedRedisSpec{

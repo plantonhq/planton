@@ -16,17 +16,17 @@ Usage: Invoke explicitly as `@build-and-fix-planton-infra-charts` when charts ne
 
 You are working on **Planton**, an infrastructure deployment platform. Understanding the architecture is essential to making correct fixes.
 
-**Planton** orchestrates infrastructure deployments across cloud providers. Users compose infrastructure from Cloud Resources — atomic units like VPCs, databases, and Kubernetes clusters — each defined by a protobuf schema.
+**Planton** orchestrates infrastructure deployments across cloud providers. Users compose infrastructure from Infra Components — atomic units like VPCs, databases, and Kubernetes clusters — each defined by a protobuf schema.
 
 **Planton open source** is the open-source foundation. It provides:
-- **Protobuf APIs** that define the configuration schema for every Cloud Resource kind (field names, types, enums, validation rules).
+- **Protobuf APIs** that define the configuration schema for every catalog kind (field names, types, enums, validation rules).
 - **Pulumi and Terraform modules** that provision the actual infrastructure.
 - **A CLI** that validates manifests against the proto schemas and orchestrates deployment.
 
-**InfraCharts** are parameterized templates that bundle multiple Cloud Resources into reusable blueprints (analogous to Helm charts for Kubernetes). Each chart contains:
+**InfraCharts** are parameterized templates that bundle multiple Infra Components into reusable blueprints (analogous to Helm charts for Kubernetes). Each chart contains:
 - `Chart.yaml` — metadata (name, description)
 - `values.yaml` — parameters with defaults
-- `templates/` — Jinja2 templates that render Cloud Resource YAML manifests
+- `templates/` — Jinja2 templates that render Infra Component YAML manifests
 
 When `planton chart build` runs, templates are rendered with default values and the resulting YAML manifests are **validated against the protobuf schemas**. Any field name, enum value, or message structure that doesn't match the proto definition causes a validation error.
 
@@ -42,7 +42,7 @@ These paths are always available on this machine:
 | InfraCharts | `~/scm/github.com/plantonhq/planton/charts` |
 | Provider proto specs | `~/scm/github.com/plantonhq/planton/catalog/<provider>/<kind>/v1alpha1/spec.proto` |
 | Shared relationship proto | `~/scm/github.com/plantonhq/planton/shared/relationship/v1/relationship.proto` |
-| CloudResourceKind enum | `~/scm/github.com/plantonhq/planton/shared/cloudresourcekind/cloud_resource_kind.proto` |
+| CatalogKind enum | `~/scm/github.com/plantonhq/planton/shared/catalogkind/catalog_kind.proto` |
 
 **Proto path convention**: For a resource kind like `AwsS3Bucket`, the spec lives at:
 ```
@@ -79,7 +79,7 @@ job). Fix offline failures first — the authoring standard is
 
 Note: the offline gate validates against the CURRENT working tree's protos,
 while the platform validates against the protos its control plane was built
-with. When the two trees diverge (component schemas changed since the last
+with. When the two trees diverge (kind schemas changed since the last
 release), a chart can pass one gate and fail the other — that skew is real,
 not a tooling bug, and resolves when the platform upgrades to the release
 carrying the new schemas.
@@ -265,8 +265,8 @@ spec:
 
 One proto definition is used across every Kubernetes environment chart. Know it well:
 
-**CloudResourceRelationship** (`relationship.proto`):
-Fields: `kind` (CloudResourceKind enum), `env` (string), `name` (string, required), `type` (RelationshipType: `depends_on`, `runs_on`, `managed_by`, `uses`).
+**InfraComponentRelationship** (`relationship.proto`):
+Fields: `kind` (CatalogKind enum), `env` (string), `name` (string, required), `type` (RelationshipType: `depends_on`, `runs_on`, `managed_by`, `uses`).
 There is **no `group` field**. Kubernetes addon templates declare their cluster
 ordering with a `runs_on` relationship on the node-group (or cluster) resource;
 the Kubernetes provider connection carries the cluster identity, so specs have
@@ -339,7 +339,7 @@ Do not commit or create changelogs unless explicitly asked.
 
 ## Quality Standards
 
-This repository is a critical component of a production platform serving real infrastructure deployments. Every template fix must meet these standards:
+This repository is a critical kind of a production platform serving real infrastructure deployments. Every template fix must meet these standards:
 
 - **Traceable to proto**: Every change must be justified by a specific field, enum, or message in the proto definition. No guessing.
 - **Minimal diff**: Change only what the proto requires. Don't reformat, reorganize, or "improve" templates beyond what's needed to pass validation.

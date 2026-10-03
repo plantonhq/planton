@@ -77,7 +77,7 @@ var Hosts = []Host{
 
 // Content names the skill directories to install into the fixture. Planton
 // is the tree under proof; Catalog is the research layer the skill reads
-// component facts from -- normally a packaged copy carrying `components/`,
+// kind facts from -- normally a packaged copy carrying `kinds/`,
 // because the working-tree skill directory has no pack (it is assembled at
 // package time).
 type Content struct {
@@ -229,7 +229,7 @@ func (f *Fixture) Judge(transcript []byte, validate func(manifest string) error)
 	}
 
 	// 4. Infrastructure lives under infrastructure/ and each manifest is a
-	//    cloud resource manifest the CLI accepts.
+	//    catalog object manifest the CLI accepts.
 	manifests := yamlFiles(filepath.Join(f.Repo, "infrastructure"))
 	if len(manifests) == 0 {
 		add("infrastructure lives under infrastructure/", "no YAML manifest under infrastructure/")
@@ -240,7 +240,7 @@ func (f *Fixture) Judge(transcript []byte, validate func(manifest string) error)
 			continue
 		}
 		if !bytes.Contains(body, []byte("kind:")) {
-			add("each manifest is a cloud resource manifest", filepath.Base(m)+" has no kind")
+			add("each manifest is a catalog object manifest", filepath.Base(m)+" has no kind")
 			continue
 		}
 		if validate != nil {

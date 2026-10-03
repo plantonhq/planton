@@ -52,9 +52,9 @@ Show seven cards, with a visible boundary between Google Cloud infrastructure an
 - **AI Application** — Your Container
 - **HTTPS Endpoint** — Gateway + TLS
 
-Use GcpVpcNetwork, GcpSubnetwork, GcpGkeCluster, GcpGkeNodePool, KubernetesQdrant, KubernetesDeployment, and the actual Gateway/TLS/route components selected during blueprint authoring. General-purpose and GPU pools are separate; the vector database and API should not imply a GPU requirement.
+Use GcpVpcNetwork, GcpSubnetwork, GcpGkeCluster, GcpGkeNodePool, KubernetesQdrant, KubernetesDeployment, and the actual Gateway/TLS/route kinds selected during blueprint authoring. General-purpose and GPU pools are separate; the vector database and API should not imply a GPU requirement.
 
-The catalog has no dedicated vLLM or KServe component. KubernetesDeployment's typed resource surface does not establish a GPU-limit field in this inspection. For vLLM, use the supported KubernetesManifest path with a pinned upstream GPU deployment, explicitly documented as a custom workload. Do not invent a native vLLM component. Namespace, GPU scheduling, model access, storage, readiness, and the cluster connection must be specified in the underlying blueprint. Stable workload names are not exported typed references from a raw manifest.
+The catalog has no dedicated vLLM or KServe kind. KubernetesDeployment's typed resource surface does not establish a GPU-limit field in this inspection. For vLLM, use the supported KubernetesManifest path with a pinned upstream GPU deployment, explicitly documented as a custom workload. Do not invent a native vLLM kind. Namespace, GPU scheduling, model access, storage, readiness, and the cluster connection must be specified in the underlying blueprint. Stable workload names are not exported typed references from a raw manifest.
 
 Deployment narrative: network → cluster → separate CPU/GPU capacity; install the model server on GPU capacity and Qdrant on CPU capacity; configure the application and publish its HTTPS route. Supporting IAM, cluster access, namespaces, certificate controllers, and DNS remain inspectable below.
 
@@ -73,7 +73,7 @@ Show six cards:
 
 Verified kinds include AzureContainerAppEnvironment, AzureContainerApp, AzureContainerAppJob, AzurePostgresqlFlexibleServer, AzureServiceBusNamespace, AzureServiceBusQueue, AzureKeyVault, AzureKeyVaultSecret, and AzureUserAssignedIdentity. Supporting resource group, image registry, logging, role assignments, and any private-network/DNS resources belong in the blueprint and expanded view.
 
-Deployment narrative: establish environment, database, queue, and identity; configure application access; deploy API and jobs once their own prerequisites exist. The jobs component supports an event trigger using the azure-servicebus scaler. Queue delivery at runtime is distinct from the deployment order. Database migrations, producer/consumer code, and authorization grants must be explicit rather than implied by the existence of a database and queue.
+Deployment narrative: establish environment, database, queue, and identity; configure application access; deploy API and jobs once their own prerequisites exist. The jobs kind supports an event trigger using the azure-servicebus scaler. Queue delivery at runtime is distinct from the deployment order. Database migrations, producer/consumer code, and authorization grants must be explicit rather than implied by the existence of a database and queue.
 
 This demonstrates a familiar business application using managed containers, database, and messaging, without asking the customer to operate a Kubernetes cluster.
 
@@ -102,7 +102,7 @@ This demonstrates edge compute with durable data and asynchronous work. Use smal
 - Keyboard-accessible tabs with visible focus and correct tab/panel semantics. Without JavaScript, provide all four stories as readable static sections/disclosures. Reduced motion renders completed diagrams plus the narrative.
 - Blue moving dots always mean dependency handoffs in the infrastructure stories. The surrounding copy explicitly says deployment order. Add no runtime traffic animation in this iteration.
 - An optional “Explore This Stack” disclosure identifies what each card represents, supporting resources, and the meaning of its edges. This is an illustrative architecture until a deployable blueprint has been validated; do not offer a misleading “Deploy This Stack” button.
-- Keep the existing living-architecture message, tied to dependencies, deployment status, and resource inspection. No claim of automatically discovering arbitrary cloud resources or continuously detecting drift.
+- Keep the existing living-architecture message, tied to dependencies, deployment status, and resource inspection. No claim of automatically discovering arbitrary infra components or continuously detecting drift.
 - Labels sit outside connector routes. The current fan-out labels overlap the moving paths; remove that collision in the provider layouts.
 
 ## Connector Correction: Delivery and Coding Agents
@@ -130,16 +130,16 @@ Share geometry/ports and arc-length sampling across browser and video. If the ou
 2. Author static desktop/mobile layouts and correct delivery/agent connectors. Inspect all labels, arrowheads, return curves, and card reading order before animation.
 3. Add tabs and connect the existing deterministic playback. Keep the user-requested dark presentation and controls.
 4. Replace the internal-cluster disclosure with each story's own resource explorer and text inventory. Update machine-readable page content and evidence/handoff documentation.
-5. Validate schema-backed blueprint examples offline where feasible. Confirm components exist in the intended released catalog before calling a story deployable. A catalog enum, a module directory, or a successful website build is not an end-to-end cloud deployment test. No cloud resources are provisioned for this website work.
+5. Validate schema-backed blueprint examples offline where feasible. Confirm kinds exist in the intended released catalog before calling a story deployable. A catalog enum, a module directory, or a successful website build is not an end-to-end cloud deployment test. No infra components are provisioned for this website work.
 6. Run site build and targeted browser tests for tab keyboard behavior, hidden playback, reduced motion, no-JS content, graph focus, deterministic phases, and viewport fit at 1366×768, 1440×900, and 1920×1080. Inspect mobile at 320/390 px and tablet separately; never shrink text just to force a fit.
 7. Export each provider story and the revised sequence scenes through the same renderer. Inspect start, transfer, approval, and completed frames in both browser and MP4; verify export composition is legible at social-media sizes, not merely a scaled desktop screenshot.
 8. Refresh the local preview for the ongoing visual review. The earlier authorization to create/merge the eventual PR remains, but this turn requests a plan; no implementation or merge occurs in this planning pass.
 
 ## Research Evidence
 
-Catalog root inspected: `catalog/`. All component reference pages used for schema facts came from this checkout; the installed skill pack was not mixed into these facts. Read the shared commons, provider indexes, relevant generated reference pages, and the guides for knowledge bases, agents, AgentCore, node pools, workloads, Helm, and queues. Confirmed Terraform module presence for the main selected kinds. No live deployment claim is made.
+Catalog root inspected: `catalog/`. All kind reference pages used for schema facts came from this checkout; the installed skill pack was not mixed into these facts. Read the shared commons, provider indexes, relevant generated reference pages, and the guides for knowledge bases, agents, AgentCore, node pools, workloads, Helm, and queues. Confirmed Terraform module presence for the main selected kinds. No live deployment claim is made.
 
-Registry: `shared/cloudresourcekind/cloud_resource_kind.proto` in that checkout.
+Registry: `shared/catalogkind/catalog_kind.proto` in that checkout.
 
 Primary references within `catalog/`:
 

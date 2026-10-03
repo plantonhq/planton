@@ -1,4 +1,4 @@
-# Stack outputs — flattened onto KubernetesAltinityOperatorStackOutputs
+# Outputs — flattened onto KubernetesAltinityOperatorOutputs
 # by the platform. Keep in lockstep with the Pulumi module's exports.
 
 output "namespace" {

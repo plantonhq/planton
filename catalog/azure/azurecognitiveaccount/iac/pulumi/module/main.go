@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurecognitiveaccountv1alpha1.AzureCognitiveAccountStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurecognitiveaccountv1alpha1.AzureCognitiveAccountIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -276,7 +276,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecognitiveaccountv1alpha1.Az
 	ctx.Export(OpCognitiveAccountName, createdAccount.Name)
 	ctx.Export(OpEndpoint, createdAccount.Endpoint)
 	// Sensitive on the provider schema; additionally marked secret so
-	// the exported stack outputs mask them (empty when local auth is
+	// the exported outputs mask them (empty when local auth is
 	// disabled).
 	ctx.Export(OpPrimaryAccessKey, pulumi.ToSecret(createdAccount.PrimaryAccessKey))
 	ctx.Export(OpSecondaryAccessKey, pulumi.ToSecret(createdAccount.SecondaryAccessKey))

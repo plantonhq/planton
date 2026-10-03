@@ -9,15 +9,15 @@ main.go (entrypoint)
   └── module/
         ├── main.go             — Resources() orchestrator
         ├── locals.go           — Locals struct and initialization
-        ├── outputs.go          — Stack output key constants
+        ├── outputs.go          — output key constants
         └── certificate_pack.go — pack creation
 ```
 
 ## How It Works
 
-1. `main.go` loads the `CloudflareCertificatePackStackInput` from the `STACK_INPUT` environment variable (base64-encoded YAML).
+1. `main.go` loads the `CloudflareCertificatePackIacInput` from the `IAC_INPUT` environment variable (base64-encoded YAML).
 2. `module.Resources()` initializes locals, creates a Cloudflare provider, and orders the pack. The `type` default (`advanced`) is coalesced here so a standalone run matches the Terraform module.
-3. Stack outputs are exported matching `CloudflareCertificatePackStackOutputs`, including `zone_id` because a pack's API identity is (zone_id, certificate_pack_id).
+3. Outputs are exported matching `CloudflareCertificatePackOutputs`, including `zone_id` because a pack's API identity is (zone_id, certificate_pack_id).
 
 A pack is an order, not an editable object: changing hosts, CA, validation method, or validity days replaces the pack.
 
@@ -38,4 +38,4 @@ make test
 
 - `github.com/pulumi/pulumi-cloudflare/sdk/v6` — Cloudflare Pulumi provider
 - `github.com/pulumi/pulumi/sdk/v3` — Pulumi SDK
-- `github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule` — Shared stack input loading and provider wiring
+- `github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule` — Shared IaC input loading and provider wiring

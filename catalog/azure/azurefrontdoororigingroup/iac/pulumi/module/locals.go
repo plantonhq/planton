@@ -23,11 +23,11 @@ var healthProbeRequestTypeStrings = map[azurefrontdoororigingroupv1alpha1.AzureF
 	azurefrontdoororigingroupv1alpha1.AzureFrontDoorOriginGroupHealthProbeRequestType_GET:  "GET",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurefrontdoororigingroupv1alpha1.AzureFrontDoorOriginGroupStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurefrontdoororigingroupv1alpha1.AzureFrontDoorOriginGroupIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureFrontDoorOriginGroup = stackInput.Target
-	locals.ProfileId = stackInput.Target.Spec.ProfileId.GetValue()
+	locals.AzureFrontDoorOriginGroup = iacInput.Target
+	locals.ProfileId = iacInput.Target.Spec.ProfileId.GetValue()
 
 	// No Azure tags: ARM does not support tags on Front Door origin
 	// groups, so the platform's identity tags live on the profile.

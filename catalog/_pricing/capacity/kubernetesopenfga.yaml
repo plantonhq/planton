@@ -5,9 +5,9 @@
 # resources field carries the (default_container_resources) annotation --
 # the sizing the modules apply when a manifest omits resources -- and the
 # estimator states those defaults with their origin named in the basis.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesopenfga
 spec:

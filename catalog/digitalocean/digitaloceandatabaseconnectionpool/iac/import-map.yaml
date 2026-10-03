@@ -1,22 +1,22 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceandatabaseconnectionpool
 spec:
   # The pool's identity is the (cluster, name) pair -- DigitalOcean mints no
-  # standalone pool id. Both halves are stack outputs, so zero user input
+  # standalone pool id. Both halves are outputs, so zero user input
   # when state is present.
   values:
     - name: cluster_id
       derivations:
-        - from_stack_output: cluster_id
+        - from_output: cluster_id
       where_to_find: >-
         DigitalOcean control panel -> Databases -> the PostgreSQL cluster ->
         the UUID in the cluster's page URL, or `doctl databases list` (the
         ID column).
     - name: pool_name
       derivations:
-        - from_stack_output: pool_name
+        - from_output: pool_name
       where_to_find: >-
         DigitalOcean control panel -> Databases -> the cluster -> Connection
         Pools tab (the pool's name), or `doctl databases pool list

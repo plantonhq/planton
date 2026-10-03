@@ -18,13 +18,13 @@ import (
 // first boot, registers itself, and receives its own individually
 // revocable identity; task replacement re-joins with the same token (its
 // lineage re-admits the runner it originally admitted).
-func Resources(ctx *pulumi.Context, stackInput *awsplantonrunnerv1alpha1.AwsPlantonRunnerStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsplantonrunnerv1alpha1.AwsPlantonRunnerIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which
+	// Build the AWS provider from the IaC input via the shared builder, which
 	// resolves the right credential mechanism (static keys, keyless web identity,
 	// or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsPlantonRunner.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsPlantonRunner.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

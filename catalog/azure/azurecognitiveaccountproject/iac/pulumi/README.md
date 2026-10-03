@@ -2,7 +2,7 @@
 
 ## Overview
 
-Provisions an AI Foundry project on an Azure AI services account using the classic `pulumi-azure` (azurerm-bridged) SDK, from the kind's typed stack input.
+Provisions an AI Foundry project on an Azure AI services account using the classic `pulumi-azure` (azurerm-bridged) SDK, from the kind's typed IaC input.
 
 ## Design Decisions
 
@@ -12,7 +12,7 @@ Provisions an AI Foundry project on an Azure AI services account using the class
 
 ## Inputs
 
-The module consumes `AzureCognitiveAccountProjectStackInput`: the target resource (metadata + spec) and the Azure provider configuration. `cognitive_account_id` arrives pre-resolved; `GetValue()` returns the literal ARM ID.
+The module consumes `AzureCognitiveAccountProjectIacInput`: the target resource (metadata + spec) and the Azure provider configuration. `cognitive_account_id` arrives pre-resolved; `GetValue()` returns the literal ARM ID.
 
 ## Outputs
 

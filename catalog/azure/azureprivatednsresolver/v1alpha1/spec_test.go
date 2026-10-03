@@ -35,7 +35,7 @@ func validResource() *AzurePrivateDnsResolver {
 	return &AzurePrivateDnsResolver{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzurePrivateDnsResolver",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-resolver",
 		},
 		Spec: &AzurePrivateDnsResolverSpec{

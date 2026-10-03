@@ -1,10 +1,10 @@
 # GCP Cloud SQL Database
 
-Creates a database inside an existing Google Cloud SQL instance. Databases are composable satellites of the instance — one instance hosts many databases, each owned by its own application, each created, reviewed, and deleted as a first-class Cloud Resource. Pairs naturally with GCP Cloud SQL User for per-application credentials.
+Creates a database inside an existing Google Cloud SQL instance. Databases are composable satellites of the instance — one instance hosts many databases, each owned by its own application, each created, reviewed, and deleted as a first-class Infra Component. Pairs naturally with GCP Cloud SQL User for per-application credentials.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cloud SQL Database** -- a `google_sql_database` on the referenced instance, with the specified name and (optionally) an engine-specific character set and collation
 
@@ -12,11 +12,11 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### GCP Project
 
-- **A Cloud SQL instance** -- the [GcpCloudSql](/cloud-catalog/gcp-cloud-sql) instance that hosts the database. Reference it via ValueFromRef so the pipeline deploys the instance first.
+- **A Cloud SQL instance** -- the [GcpCloudSql](/infra-catalog/gcp-cloud-sql) instance that hosts the database. Reference it via ValueFromRef so the pipeline deploys the instance first.
 
 ## Deploy
 
@@ -52,7 +52,7 @@ spec:
 planton apply -f database.yaml
 ```
 
-This creates a UTF8 `orders` database on the referenced instance, ready for a GcpCloudSqlUser to connect to. A Stack Job tracks the provisioning in real time.
+This creates a UTF8 `orders` database on the referenced instance, ready for a GcpCloudSqlUser to connect to. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -84,16 +84,16 @@ These are the most important decisions when configuring a Cloud SQL database. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpCloudSql** | `instance` | `status.outputs.instance_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -112,5 +112,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Cloud SQL**](/cloud-catalog/gcp-cloud-sql) -- the instance that hosts this database
-- [**GCP Cloud SQL User**](/cloud-catalog/gcp-cloud-sql-user) -- per-application credentials for connecting to this database
+- [**GCP Cloud SQL**](/infra-catalog/gcp-cloud-sql) -- the instance that hosts this database
+- [**GCP Cloud SQL User**](/infra-catalog/gcp-cloud-sql-user) -- per-application credentials for connecting to this database

@@ -9,11 +9,11 @@ import (
 	"github.com/plantonhq/planton/internal/cli/ui"
 	"github.com/plantonhq/planton/internal/cli/workspace"
 	"github.com/plantonhq/planton/internal/manifest"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/pkg/iac/iacinput"
+	"github.com/plantonhq/planton/pkg/iac/iacinput/iacinputproviderconfig"
 	"github.com/plantonhq/planton/pkg/iac/localmodule"
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
-	"github.com/plantonhq/planton/pkg/iac/stackinput"
-	"github.com/plantonhq/planton/pkg/iac/stackinput/stackinputproviderconfig"
 	"github.com/plantonhq/planton/pkg/iac/tofu/tfbackend"
 	"github.com/plantonhq/planton/pkg/iac/tofu/tofumodule"
 	"github.com/plantonhq/planton/pkg/kubernetes/kubecontext"
@@ -69,7 +69,7 @@ func initHandler(cmd *cobra.Command, args []string) {
 		flag.Require(err, flag.Manifest, targetManifestPath, "--manifest path/to/manifest.yaml (or --input-dir <dir> holding target.yaml)")
 	}
 
-	providerConfig, err := stackinputproviderconfig.GetFromFlagsSimple(cmd.Flags())
+	providerConfig, err := iacinputproviderconfig.GetFromFlagsSimple(cmd.Flags())
 	if err != nil {
 		cliprint.PrintError(fmt.Sprintf("failed to get provider config: %v", err))
 		os.Exit(1)
@@ -81,7 +81,7 @@ func initHandler(cmd *cobra.Command, args []string) {
 		os.Exit(1)
 	}
 
-	kindName, err := crkreflect.ExtractKindFromProto(manifestObject)
+	kindName, err := catalogkindreflect.ExtractKindFromProto(manifestObject)
 	if err != nil {
 		cliprint.PrintError(fmt.Sprintf("failed to extract kind name from manifest: %v", err))
 		os.Exit(1)
@@ -119,9 +119,9 @@ func initHandler(cmd *cobra.Command, args []string) {
 
 	modulePath := pathResult.ModulePath
 
-	stackInputYaml, err := stackinput.BuildStackInputYaml(manifestObject, providerConfig)
+	iacInputYaml, err := iacinput.BuildIacInputYaml(manifestObject, providerConfig)
 	if err != nil {
-		cliprint.PrintError(fmt.Sprintf("failed to build stack input yaml: %v", err))
+		cliprint.PrintError(fmt.Sprintf("failed to build IaC input yaml: %v", err))
 		os.Exit(1)
 	}
 
@@ -139,7 +139,7 @@ func initHandler(cmd *cobra.Command, args []string) {
 		cliprint.PrintInfo(fmt.Sprintf("Using kubectl context: %s", kubeCtx))
 	}
 
-	providerConfigEnvVars, err := tofumodule.GetProviderConfigEnvVars(stackInputYaml, workspaceDir, kubeCtx)
+	providerConfigEnvVars, err := tofumodule.GetProviderConfigEnvVars(iacInputYaml, workspaceDir, kubeCtx)
 	if err != nil {
 		ui.EngineFailure("Provider credentials could not be prepared", err,
 			"check the provider configuration's fields against `planton explain <provider connection kind>`")

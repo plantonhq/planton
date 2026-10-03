@@ -4,7 +4,7 @@ Declares a Cloud Build private worker pool: dedicated build machines in one regi
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `cloudbuild.googleapis.com` on the pool's project (never disabled on destroy)
 - **Worker pool** -- one `cloudbuild_worker_pool`
@@ -76,7 +76,7 @@ planton apply -f cloud-build-worker-pool.yaml
 - `peeredNetworkIpRange` is CIDR notation (`/26` or `192.168.0.0/29`); `networkAttachment` is a full attachment name.
 - `diskSizeGb` is 0-1000; `displayName` is at most 63 characters.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -106,7 +106,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpCloudBuildTrigger** -- builds that run on the pool (`build.options.workerPool`)
 - **GcpDeployTarget** -- Cloud Deploy jobs that run on the pool (`executionConfigs[].workerPool`)

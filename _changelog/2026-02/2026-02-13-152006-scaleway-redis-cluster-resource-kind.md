@@ -55,13 +55,13 @@ flowchart TD
 ### Proto Schema (4 files)
 
 - `spec.proto`: 10 fields covering zone, version, node_type, cluster_size, tls_enabled, user_name, password, acl_rules, private_network_id (StringValueOrRef), and settings. CEL validation enforces ACL/PN mutual exclusivity at the message level.
-- `stack_outputs.proto`: 6 outputs -- cluster_id, public network endpoint (port + IPs), private network endpoint (port + IPs), TLS certificate. Only one endpoint set is populated based on networking mode.
+- `outputs.proto`: 6 outputs -- cluster_id, public network endpoint (port + IPs), private network endpoint (port + IPs), TLS certificate. Only one endpoint set is populated based on networking mode.
 - `api.proto`: Standard resource wrapper with `scaleway.planton.dev/v1` API version.
-- `stack_input.proto`: Target + ScalewayProviderConfig.
+- `iac_input.proto`: Target + ScalewayProviderConfig.
 
 ### Pulumi Go Module (6 files)
 
-- `cluster.go`: Creates `redis.NewCluster()` with conditional ACL or Private Network blocks. Exports all 6 stack outputs using `ApplyT` for computed endpoint fields. Fixed `*int` pointer dereference for port outputs.
+- `cluster.go`: Creates `redis.NewCluster()` with conditional ACL or Private Network blocks. Exports all 6 outputs using `ApplyT` for computed endpoint fields. Fixed `*int` pointer dereference for port outputs.
 - `locals.go`: Resolves `StringValueOrRef` for private_network_id, builds standard Scaleway tags.
 - `main.go`: Orchestrator calling locals -> provider -> cluster.
 - Uses `redis` subpackage: `redis.NewCluster`, `redis.ClusterArgs`, `redis.ClusterAclArgs`, `redis.ClusterPrivateNetworkArgs`.

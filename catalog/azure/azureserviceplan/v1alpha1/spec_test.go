@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -21,7 +21,7 @@ func minimalSpec() *AzureServicePlan {
 	return &AzureServicePlan{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureServicePlan",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-plan",
 		},
 		Spec: &AzureServicePlanSpec{
@@ -218,7 +218,7 @@ var _ = ginkgo.Describe("AzureServicePlanSpec Validation Tests", func() {
 				input.Spec.ResourceGroup = &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &foreignkeyv1.ValueFromRef{
-							Kind:      cloudresourcekind.CloudResourceKind_AzureResourceGroup,
+							Kind:      catalogkind.CatalogKind_AzureResourceGroup,
 							Name:      "shared-rg",
 							FieldPath: "status.outputs.resource_group_name",
 						},
@@ -402,7 +402,7 @@ var _ = ginkgo.Describe("AzureServicePlanSpec Validation Tests", func() {
 				input := &AzureServicePlan{
 					ApiVersion: "azure.planton.dev/v1alpha1",
 					Kind:       "AzureServicePlan",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-plan",
 					},
 				}

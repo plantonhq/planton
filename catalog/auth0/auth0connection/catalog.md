@@ -4,7 +4,7 @@ Deploys an Auth0 Connection that bridges Auth0 with an identity source -- a host
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Auth0 Connection** -- a connection resource configured with the specified strategy, display name, and provider-specific options (database, social, SAML, OIDC, or Azure AD)
 - **Connection Clients** -- created only when `enabledClients` is configured, a resource linking this connection to the specified Auth0 applications so they can offer it as a login option
@@ -13,14 +13,14 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Auth0 Provider Connection** -- an active connection in the Connect module with Auth0 domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Auth0 Provider Connection** -- an active connection in the Connect module with Auth0 domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Auth0 Account
 
 - **OAuth credentials from the social provider** (only for social strategies) -- a client ID and secret from the provider's developer console, set in `socialOptions`.
 - **Identity Provider metadata** (only for enterprise strategies) -- SAML sign-in endpoint and X.509 signing certificate for `samlOptions`, the issuer URL for `oidcOptions`, or the app registration credentials and tenant domain for `azureAdOptions`.
-- **Auth0 Client application IDs** (only for `enabledClients`) -- provide client IDs directly or reference Auth0Client Cloud Resources via ValueFromRef.
+- **Auth0 Client application IDs** (only for `enabledClients`) -- provide client IDs directly or reference Auth0Client Infra Components via ValueFromRef.
 - **The password-advanced-options entitlement** (only for `passwordHistorySize`, `passwordNoPersonalInfo`, or `passwordDictionary`) -- these database options call a paid Auth0 API and the deployment fails with a 403 on free and lower-tier tenants. Leave them unset unless the tenant carries the entitlement.
 
 ## Deploy
@@ -51,7 +51,7 @@ spec:
 planton apply -f auth0-connection.yaml
 ```
 
-This creates an Auth0-hosted database connection with a `good` password policy and brute-force protection enabled. Until `enabledClients` lists at least one application, no application offers this connection as a login option. A Stack Job tracks the provisioning in real time.
+This creates an Auth0-hosted database connection with a `good` password policy and brute-force protection enabled. Until `enabledClients` lists at least one application, no application offers this connection as a login option. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -74,7 +74,7 @@ These are the most important decisions when configuring an Auth0 Connection. Exp
 
 **Strategy** -- The `strategy` field is a one-way door: it determines the identity source type, which options block applies, and it cannot be changed after creation -- switching a connection from `auth0` to `samlp` means a new connection and a user migration. Use `auth0` for a hosted database, social strategy names like `google-oauth2` or `github` for social login, and `samlp`, `oidc`, or `waad` for corporate SSO.
 
-**Enabled clients** -- The `enabledClients` field is the connection's blast door. If left empty, no application can authenticate through this connection -- users see nothing and login attempts fail, with no error at deploy time. List every application that should offer this connection, directly by client ID or by referencing Auth0Client Cloud Resources via ValueFromRef.
+**Enabled clients** -- The `enabledClients` field is the connection's blast door. If left empty, no application can authenticate through this connection -- users see nothing and login attempts fail, with no error at deploy time. List every application that should offer this connection, directly by client ID or by referencing Auth0Client Infra Components via ValueFromRef.
 
 **Password policy** -- The `databaseOptions.passwordPolicy` field sets complexity requirements for database connections, from `none` to `excellent` (10+ characters with mixed case, numeric, and special). Use `good` or higher for production with `bruteForceProtection: true`. The advanced controls (`passwordHistorySize`, `passwordNoPersonalInfo`, `passwordDictionary`) require the paid entitlement noted in Before You Deploy.
 
@@ -82,15 +82,15 @@ These are the most important decisions when configuring an Auth0 Connection. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **Auth0Client** (optional) | `enabledClients` | `status.outputs.client_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -107,4 +107,4 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Auth0 Application (Client)**](/cloud-catalog/auth0-client) -- applications that use this connection for authentication, linked via `enabledClients`
+- [**Auth0 Application (Client)**](/infra-catalog/auth0-client) -- applications that use this connection for authentication, linked via `enabledClients`

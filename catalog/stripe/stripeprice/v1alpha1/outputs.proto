@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.stripe.stripeprice.v1alpha1;
 
-// StripePriceStackOutputs identifies the price.
+// StripePriceOutputs identifies the price.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/price
-message StripePriceStackOutputs {
+message StripePriceOutputs {
   // id is the price's Stripe id (price_...), the value Checkout sessions, subscriptions, payment
   // links and a StripeBillingPortalConfiguration's switchable prices reference. It changes when
   // the price is replaced.

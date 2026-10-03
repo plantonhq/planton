@@ -2,8 +2,8 @@
 // +build !codegen
 
 // Package moduleverify proves that an IaC module directory conforms to the
-// contract of a cloud resource kind — the confidence gate behind customizing
-// the module that deploys a catalog component.
+// contract of a catalog kind — the confidence gate behind customizing
+// the module that deploys a catalog kind.
 //
 // The checks are anchored to the kind's schema (through the same generator
 // and transformer machinery the deploy path uses), never to the official
@@ -22,9 +22,9 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // Severity classifies a violation by deployment impact.
@@ -72,7 +72,7 @@ func (r *Result) HasErrors() bool {
 
 // Input configures a verification run.
 type Input struct {
-	// KindName is the cloud resource kind whose contract the module must
+	// KindName is the catalog kind whose contract the module must
 	// honor. Tolerant forms accepted (AwsS3Bucket, awss3bucket, aws-s3-bucket).
 	KindName string
 
@@ -97,11 +97,11 @@ type Input struct {
 // run itself could not happen (unknown kind, unreadable directory);
 // conformance findings are reported through Result.Violations.
 func Verify(in Input) (*Result, error) {
-	kind := crkreflect.KindFromString(in.KindName)
-	if kind == cloudresourcekind.CloudResourceKind_unspecified {
-		return nil, errors.Errorf("unknown cloud resource kind %q — kind names follow the catalog (e.g. AwsS3Bucket)", in.KindName)
+	kind := catalogkindreflect.KindFromString(in.KindName)
+	if kind == catalogkind.CatalogKind_unspecified {
+		return nil, errors.Errorf("unknown catalog kind %q — kind names follow the catalog (e.g. AwsS3Bucket)", in.KindName)
 	}
-	kindName := crkreflect.ExtractKindNameByKind(kind)
+	kindName := catalogkindreflect.ExtractKindNameByKind(kind)
 
 	moduleDir, err := filepath.Abs(in.ModuleDir)
 	if err != nil {

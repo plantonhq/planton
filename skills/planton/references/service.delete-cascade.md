@@ -1,11 +1,11 @@
 ---
 title: Deleting a Service — The Cleanup Cascade
-description: Service deletion is a narrated teardown that stops in-flight runs, DESTROYS deployed cloud resources environment by environment (reverse promotion order, reverse dependency order), then removes history and the record — with a retain-the-resources hand-over arm and a protected-environment refusal. Read when someone wants to retire a service, a deletion refused or failed partway (the retry is re-issuing the same delete), or the record should go while the infrastructure stays.
+description: Service deletion is a narrated teardown that stops in-flight runs, DESTROYS deployed infra components environment by environment (reverse promotion order, reverse dependency order), then removes history and the record — with a retain-the-resources hand-over arm and a protected-environment refusal. Read when someone wants to retire a service, a deletion refused or failed partway (the retry is re-issuing the same delete), or the record should go while the infrastructure stays.
 ---
 
 # Deleting a Service — The Cleanup Cascade
 
-Deleting a service deletes it genuinely: the platform stops the service's in-flight runs, DESTROYS its deployed cloud resources environment by environment, then removes the run history and the record itself — narrated live so the person watches the teardown happen. Read this when someone wants to retire a service, when a deletion refused and you need to explain why, when a deletion failed partway, or when someone wants the record gone but the infrastructure kept.
+Deleting a service deletes it genuinely: the platform stops the service's in-flight runs, DESTROYS its deployed infra components environment by environment, then removes the run history and the record itself — narrated live so the person watches the teardown happen. Read this when someone wants to retire a service, when a deletion refused and you need to explain why, when a deletion failed partway, or when someone wants the record gone but the infrastructure kept.
 
 ## What delete actually does
 
@@ -32,7 +32,7 @@ A destroy that errors stops the cascade LOUDLY: the narrated timeline shows exac
 
 ## Keeping the infrastructure: the hand-over arm
 
-`planton service delete <service> --retain-cloud-resources` removes the service from the platform — history and record — while deliberately leaving every deployed cloud resource running. From that moment the resources are unmanaged: no record, no rollback, no verification. This is the hand-over case (another team, another tool, another platform takes ownership), and the narration says so plainly. It also passes the protection refusal, because nothing is destroyed.
+`planton service delete <service> --retain-infra-components` removes the service from the platform — history and record — while deliberately leaving every deployed infra component running. From that moment the resources are unmanaged: no record, no rollback, no verification. This is the hand-over case (another team, another tool, another platform takes ownership), and the narration says so plainly. It also passes the protection refusal, because nothing is destroyed.
 
 ## Watching a deletion
 

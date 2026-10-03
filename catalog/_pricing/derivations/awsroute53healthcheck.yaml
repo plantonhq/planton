@@ -8,9 +8,9 @@
 # manifest's region -- and split by endpoint class (AWS vs non-AWS
 # endpoint), which no manifest field can prove; the endpoint lines state
 # the non-AWS assumption in their basis.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsroute53healthcheck
 spec:
@@ -105,17 +105,17 @@ spec:
       price_slug: route53-health-check-optional-feature-non-aws
       basis: latency measurement is one billed optional feature per month; the spec restricts measure_latency to endpoint checks, so this line never fires for calculated or metric checks
   exclusions:
-    - text: the probed endpoint's own infrastructure, and any Route 53 hosted zones or DNS records the check gates, bill as their own components -- this fee covers only the health check itself
+    - text: the probed endpoint's own infrastructure, and any Route 53 hosted zones or DNS records the check gates, bill as their own kinds -- this fee covers only the health check itself
     - applies_when:
         - field_path: check_type
           op: equals
           value: CLOUDWATCH_METRIC
-      text: the mirrored CloudWatch alarm and its metrics bill on CloudWatch, outside this component
+      text: the mirrored CloudWatch alarm and its metrics bill on CloudWatch, outside this kind
     - applies_when:
         - field_path: check_type
           op: equals
           value: CALCULATED
-      text: each child health check bills as its own AwsRoute53HealthCheck component -- this fee covers only the aggregating check
+      text: each child health check bills as its own AwsRoute53HealthCheck kind -- this fee covers only the aggregating check
   notes:
     - text: Health-check fees are global -- one published rate regardless of the manifest's region -- and prorated for partial months.
     - applies_when:

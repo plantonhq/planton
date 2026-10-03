@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurevirtualhub.v1alpha1;
 
-// **AzureVirtualHubStackOutputs** captures the outputs of provisioning
+// **AzureVirtualHubOutputs** captures the outputs of provisioning
 // a Virtual Hub and its routing children.
-message AzureVirtualHubStackOutputs {
+message AzureVirtualHubOutputs {
   // The Azure Resource Manager ID of the hub -- what connections,
   // gateways, and firewalls reference as their virtual_hub_id.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualHubs/{name}

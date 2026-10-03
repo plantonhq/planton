@@ -1,7 +1,7 @@
 # Azure Observability Wave: Log Analytics + App Insights Depth, Azure Monitor Alerting Family
 
 **Date**: 2026-07-10
-**Type**: Feature — component depth rework ×2 + new component forge ×4
+**Type**: Feature — kind depth rework ×2 + new kind forge ×4
 **Scope**: `apis/dev/planton/provider/azure/{azureloganalyticsworkspace,azureapplicationinsights,azuremonitordiagnosticsetting,azuremonitoractiongroup,azuremonitormetricalert,azuremonitorscheduledqueryalert}/v1`, kind registry, Azure E2E harness, `pkg/outputs` conformance, forge rule 009, `e2e/README.md`
 
 ## Summary

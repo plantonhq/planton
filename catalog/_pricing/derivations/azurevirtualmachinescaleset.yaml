@@ -7,9 +7,9 @@
 # generator replays the catalog presets through these rules to emit
 # ../estimates/azurevirtualmachinescaleset.yaml; a server-side
 # estimator evaluates the same rules against live manifests.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: azurevirtualmachinescaleset
 spec:
@@ -61,7 +61,7 @@ spec:
           op: is_unset
       text: each instance's managed OS disk bills at the tier matching the configured storage SKU and size (image-inherited when unset), a per-instance managed-disk meter not yet priced here
     - text: fleet-wide data disks (data_disks) bill one managed disk per instance at each definition's tier
-    - text: instance-level public IPs configured inline bill per address; referenced subnets, load balancer pools, and application gateway pools bill on their own components
+    - text: instance-level public IPs configured inline bill per address; referenced subnets, load balancer pools, and application gateway pools bill on their own kinds
     - text: network egress follows traffic and client placement
   notes:
     - applies_when:

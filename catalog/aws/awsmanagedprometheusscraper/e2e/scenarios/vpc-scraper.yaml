@@ -15,7 +15,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsmanagedprometheusscraper
+    e2e-catalog-kind: awsmanagedprometheusscraper
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AwsManagedPrometheus,AwsSecurityGroup"

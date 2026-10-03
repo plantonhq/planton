@@ -11,12 +11,12 @@ go_library(
     importpath = "github.com/plantonhq/planton/pkg/e2e/profile",
     visibility = ["//visibility:public"],
     deps = [
-        "//pkg/crkreflect",
+        "//pkg/catalogkindreflect",
         "//pkg/protobufyaml",
-        "//qa/componente2eprofile/v1:componente2eprofile",
+        "//qa/catalogkinde2eprofile/v1:catalogkinde2eprofile",
         "//qa/providere2eprofile/v1:providere2eprofile",
         "//shared",
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
         "@com_github_pkg_errors//:errors",
         "@org_golang_google_protobuf//encoding/protojson",
         "@org_golang_google_protobuf//proto",
@@ -28,7 +28,7 @@ go_test(
     srcs = ["discover_test.go"],
     embed = [":profile"],
     deps = [
-        "//qa/componente2eprofile/v1:componente2eprofile",
+        "//qa/catalogkinde2eprofile/v1:catalogkinde2eprofile",
         "//shared",
     ],
 )

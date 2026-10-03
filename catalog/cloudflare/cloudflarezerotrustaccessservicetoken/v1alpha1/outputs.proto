@@ -4,9 +4,9 @@ package dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1;
 
 import "shared/options/options.proto";
 
-// CloudflareZeroTrustAccessServiceTokenStackOutputs captures the observable
+// CloudflareZeroTrustAccessServiceTokenOutputs captures the observable
 // outputs after creating an Access service token.
-message CloudflareZeroTrustAccessServiceTokenStackOutputs {
+message CloudflareZeroTrustAccessServiceTokenOutputs {
   // The UUID of the service token (the API identity used for import and
   // policy `service_token` rules).
   string service_token_id = 1;

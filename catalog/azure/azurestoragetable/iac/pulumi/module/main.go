@@ -11,12 +11,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurestoragetablev1alpha1.AzureStorageTableStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurestoragetablev1alpha1.AzureStorageTableIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -38,7 +38,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurestoragetablev1alpha1.AzureS
 	// passes storage_account_id (the resource-manager path) --
 	// pulumi-azure v6 has not yet bridged the table's storage_account_id
 	// input (verified at v6.38, the latest v6). The created table is
-	// identical and all stack outputs match byte-for-byte (both engines
+	// identical and all outputs match byte-for-byte (both engines
 	// export the same resource_manager_id); only the provider's internal
 	// addressing differs. Re-align to StorageAccountId when a bridge
 	// release carries it on storage.Table.
@@ -85,7 +85,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurestoragetablev1alpha1.AzureS
 		return errors.Wrapf(err, "failed to create storage table %s", spec.TableName)
 	}
 
-	// Export stack outputs. The resource_manager_id attribute (rather
+	// Export outputs. The resource_manager_id attribute (rather
 	// than the resource id) keeps table_id byte-identical across engines
 	// regardless of which addressing path the provider used. The table's
 	// data-plane URL is deliberately NOT exported -- compose client URLs

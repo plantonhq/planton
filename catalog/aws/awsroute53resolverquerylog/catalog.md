@@ -4,7 +4,7 @@ Deploys a Route 53 Resolver query logging configuration — the pipeline that re
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Resolver Query Log Configuration** — the logging pipeline pointing at your destination ARN. Immutable except tags: changing the name or destination replaces it (log data already written stays in the destination)
 - **Query Log Config Associations** — one per `vpcIds` entry, turning logging on for that VPC. Associations are pure joins with no update path, and an association can flip to FAILED asynchronously after a clean apply if the resolver cannot write to the destination
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Route 53 Resolver permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Route 53 Resolver permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -55,7 +55,7 @@ spec:
 planton apply -f resolver-query-log.yaml
 ```
 
-This creates a logging configuration writing the app VPC's resolver queries to the referenced CloudWatch log group. A Stack Job tracks the provisioning in real time.
+This creates a logging configuration writing the app VPC's resolver queries to the referenced CloudWatch log group. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -96,7 +96,7 @@ These are the most important decisions when configuring resolver query logging. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -105,9 +105,9 @@ These are the most important decisions when configuring resolver query logging. 
 
 S3 bucket and Kinesis Data Firehose destinations travel as literal ARNs in `destinationArn`.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -126,8 +126,8 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**AWS VPC**](/cloud-catalog/aws-vpc) — the VPCs whose resolver queries are logged, wired via `vpcIds`
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) — the interactive destination, wired via `destinationArn`
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — the archival destination, passed as a literal bucket ARN in `destinationArn`
-- [**AWS Route 53 Resolver DNS Firewall**](/cloud-catalog/aws-route53-resolver-firewall) — its rule verdicts appear in these logs; the tuning loop for ALERT-first policies
-- [**AWS Route 53 Zone**](/cloud-catalog/aws-route53-zone) — the other logging surface: hosted-zone query logging for what Route 53 answers publicly
+- [**AWS VPC**](/infra-catalog/aws-vpc) — the VPCs whose resolver queries are logged, wired via `vpcIds`
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) — the interactive destination, wired via `destinationArn`
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — the archival destination, passed as a literal bucket ARN in `destinationArn`
+- [**AWS Route 53 Resolver DNS Firewall**](/infra-catalog/aws-route53-resolver-firewall) — its rule verdicts appear in these logs; the tuning loop for ALERT-first policies
+- [**AWS Route 53 Zone**](/infra-catalog/aws-route53-zone) — the other logging surface: hosted-zone query logging for what Route 53 answers publicly

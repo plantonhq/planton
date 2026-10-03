@@ -4,7 +4,7 @@ Provisions a Cloudflare Tunnel virtual network: an isolated routing segment that
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Virtual Network** -- a named, account-scoped routing segment
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Cloudflare Tunnel edit access. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Cloudflare Tunnel edit access. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -47,7 +47,7 @@ spec:
 planton apply -f cloudflare-zero-trust-tunnel-virtual-network.yaml
 ```
 
-This creates a named routing segment for the prod data center. A Stack Job tracks the provisioning in real time.
+This creates a named routing segment for the prod data center. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -61,13 +61,13 @@ These are the most important decisions when configuring a virtual network. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies -- a virtual network is a self-contained, account-scoped leaf.
+This kind has no foreign key dependencies -- a virtual network is a self-contained, account-scoped leaf.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -85,5 +85,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Zero Trust Tunnel Route**](/cloud-catalog/cloudflare-zero-trust-tunnel-route) -- routes advertise CIDRs within this virtual network
-- [**Cloudflare Zero Trust Tunnel**](/cloud-catalog/cloudflare-zero-trust-tunnel) -- the tunnel a route binds a network to
+- [**Cloudflare Zero Trust Tunnel Route**](/infra-catalog/cloudflare-zero-trust-tunnel-route) -- routes advertise CIDRs within this virtual network
+- [**Cloudflare Zero Trust Tunnel**](/infra-catalog/cloudflare-zero-trust-tunnel) -- the tunnel a route binds a network to

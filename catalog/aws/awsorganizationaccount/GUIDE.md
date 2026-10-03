@@ -1,4 +1,4 @@
-# AwsOrganizationAccount — Component Guide
+# AwsOrganizationAccount — Kind Guide
 
 Authored operational judgment for the member-account component: the
 design decisions behind the spec's shape, and what to know before

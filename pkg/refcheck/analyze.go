@@ -1,4 +1,4 @@
-// Package refcheck validates foreign-key reference integrity across the cloud-resource
+// Package refcheck validates foreign-key reference integrity across the infra-component
 // registry: every composition key a field declares -- its (default_kind,
 // default_kind_field_path) pair and each (foreignkey.v1.candidate) entry -- must point
 // at a real field on the referenced kind's resolved target -- its status.outputs message
@@ -21,9 +21,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/refannotations"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -45,15 +45,15 @@ type Finding struct {
 	Reason     string // why it does not resolve
 }
 
-// Analyze walks every production cloud-resource kind and returns the foreign-key
+// Analyze walks every production catalog kind and returns the foreign-key
 // references that do not resolve, sorted deterministically. Hermetic `_test` kinds and
 // unimplemented kinds are skipped -- matching the kind-map codegen -- so the report
 // reflects the real surface.
 func Analyze() []Finding {
 	var findings []Finding
-	for _, kind := range crkreflect.KindsList() {
-		provider := crkreflect.GetProvider(kind)
-		if provider == cloudresourcekind.CloudResourceProvider_cloud_resource_provider_unspecified {
+	for _, kind := range catalogkindreflect.KindsList() {
+		provider := catalogkindreflect.GetProvider(kind)
+		if provider == catalogkind.CatalogProvider_catalog_provider_unspecified {
 			continue
 		}
 		// The `_test` provider holds hermetic fixtures; they are exercised directly by
@@ -61,7 +61,7 @@ func Analyze() []Finding {
 		if provider.String()[0] == '_' {
 			continue
 		}
-		msg, err := crkreflect.NewInstance(kind)
+		msg, err := catalogkindreflect.NewInstance(kind)
 		if err != nil {
 			// Enum value exists but the API package is not implemented yet.
 			continue
@@ -76,7 +76,7 @@ func Analyze() []Finding {
 	return findings
 }
 
-func walk(md protoreflect.MessageDescriptor, prefix string, declaringKind cloudresourcekind.CloudResourceKind, provider string, visited map[protoreflect.FullName]bool, out *[]Finding) {
+func walk(md protoreflect.MessageDescriptor, prefix string, declaringKind catalogkind.CatalogKind, provider string, visited map[protoreflect.FullName]bool, out *[]Finding) {
 	if visited[md.FullName()] {
 		return
 	}
@@ -118,14 +118,14 @@ func walk(md protoreflect.MessageDescriptor, prefix string, declaringKind cloudr
 //
 // A field with no annotations, or an intentional kind-less reference (a route target
 // that can point at any kind), has nothing to validate.
-func checkField(fd protoreflect.FieldDescriptor, fieldPath string, declaringKind cloudresourcekind.CloudResourceKind, provider string) []Finding {
+func checkField(fd protoreflect.FieldDescriptor, fieldPath string, declaringKind catalogkind.CatalogKind, provider string) []Finding {
 	annotations := refannotations.Of(fd)
 	if !annotations.IsReference() && annotations.DefaultKindFieldPath == "" {
 		return nil
 	}
 
 	var findings []Finding
-	mk := func(targetKind cloudresourcekind.CloudResourceKind, refPath, reason string) {
+	mk := func(targetKind catalogkind.CatalogKind, refPath, reason string) {
 		findings = append(findings, Finding{
 			Kind:       declaringKind.String(),
 			Provider:   provider,
@@ -141,11 +141,11 @@ func checkField(fd protoreflect.FieldDescriptor, fieldPath string, declaringKind
 			"reference annotations sit on a field that is not a StringValueOrRef or ValueFromRef -- no reader sees them there")
 		return findings
 	}
-	if annotations.DefaultKind == cloudresourcekind.CloudResourceKind_unspecified && annotations.DefaultKindFieldPath != "" {
+	if annotations.DefaultKind == catalogkind.CatalogKind_unspecified && annotations.DefaultKindFieldPath != "" {
 		mk(annotations.DefaultKind, annotations.DefaultKindFieldPath, "default_kind_field_path is set but default_kind is unspecified")
 		return findings
 	}
-	if len(annotations.Candidates) > 0 && annotations.DefaultKind != cloudresourcekind.CloudResourceKind_unspecified {
+	if len(annotations.Candidates) > 0 && annotations.DefaultKind != catalogkind.CatalogKind_unspecified {
 		defaultKey := refannotations.Key{Kind: annotations.DefaultKind, FieldPath: annotations.DefaultKindFieldPath}
 		listed := false
 		for _, c := range annotations.Candidates {
@@ -177,11 +177,11 @@ func checkField(fd protoreflect.FieldDescriptor, fieldPath string, declaringKind
 // provisions with spec.name, which a chart may set differently, so the reference would
 // hand the consumer a name nothing carries. The path always resolves, which is why this
 // needs its own rule. It returns an empty string when the path is sound.
-func ownNameReason(kind cloudresourcekind.CloudResourceKind, refPath string) string {
+func ownNameReason(kind catalogkind.CatalogKind, refPath string) string {
 	if refPath != "metadata.name" {
 		return ""
 	}
-	inst, err := crkreflect.NewInstance(kind)
+	inst, err := catalogkindreflect.NewInstance(kind)
 	if err != nil {
 		return ""
 	}
@@ -209,13 +209,13 @@ func isReferenceField(fd protoreflect.FieldDescriptor) bool {
 
 // targetRoot resolves the message descriptor the path is rooted at, dispatching on the
 // path prefix against the referenced kind's top-level API message:
-//   - "status.outputs." -> the kind's stack-outputs message (deploy-time results)
+//   - "status.outputs." -> the kind's outputs message (deploy-time results)
 //   - "spec."           -> the kind's spec message (declared inputs)
 //   - "metadata."       -> the kind's metadata message (e.g. referencing a parent by name)
 //
 // Any other root is itself a defect.
-func targetRoot(kind cloudresourcekind.CloudResourceKind, refPath string) (protoreflect.MessageDescriptor, string, string) {
-	inst, err := crkreflect.NewInstance(kind)
+func targetRoot(kind catalogkind.CatalogKind, refPath string) (protoreflect.MessageDescriptor, string, string) {
+	inst, err := catalogkindreflect.NewInstance(kind)
 	if err != nil {
 		return nil, "", "referenced kind " + kind.String() + " is not a registered/implemented kind"
 	}
@@ -243,7 +243,7 @@ func targetRoot(kind cloudresourcekind.CloudResourceKind, refPath string) (proto
 
 // childMessage returns the descriptor of a direct message field on the top-level API
 // message (e.g. "spec" or "metadata") plus the path remainder beneath that root.
-func childMessage(top protoreflect.MessageDescriptor, root string, kind cloudresourcekind.CloudResourceKind, refPath string) (protoreflect.MessageDescriptor, string, string) {
+func childMessage(top protoreflect.MessageDescriptor, root string, kind catalogkind.CatalogKind, refPath string) (protoreflect.MessageDescriptor, string, string) {
 	fd := top.Fields().ByName(protoreflect.Name(root))
 	if fd == nil || fd.Kind() != protoreflect.MessageKind {
 		return nil, "", "target kind " + kind.String() + " has no " + root + " message"

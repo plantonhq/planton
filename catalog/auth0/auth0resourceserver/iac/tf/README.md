@@ -17,7 +17,7 @@ Terraform/OpenTofu module that creates an Auth0 Resource Server (API), its scope
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `identifier` (required); token settings, `scopes`, the access policy (`subject_type_authorization`), proof of possession, token encryption, authorization details and policy, anonymous-session settings, Online Refresh Tokens, and `third_party_client_default_grants` (optional) |
 
 ## Outputs

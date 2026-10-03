@@ -19,12 +19,12 @@ var identityTypeStrings = map[azuredatafactoryv1alpha1.AzureDataFactoryIdentityT
 	azuredatafactoryv1alpha1.AzureDataFactoryIdentityType_SYSTEM_AND_USER_ASSIGNED: "SystemAssigned, UserAssigned",
 }
 
-func Resources(ctx *pulumi.Context, stackInput *azuredatafactoryv1alpha1.AzureDataFactoryStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuredatafactoryv1alpha1.AzureDataFactoryIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}

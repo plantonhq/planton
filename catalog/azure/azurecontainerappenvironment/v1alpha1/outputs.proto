@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azurecontainerappenvironment.v1alpha1;
 
-// **AzureContainerAppEnvironmentStackOutputs** captures the outputs of
+// **AzureContainerAppEnvironmentOutputs** captures the outputs of
 // provisioning an Azure Container Apps Managed Environment.
 //
 // The primary output is `environment_id`, referenced by everything that
@@ -17,7 +17,7 @@ package dev.planton.azure.azurecontainerappenvironment.v1alpha1;
 // platform-reserved outputs matter for network planning in VNet-injected
 // environments; `custom_domain_verification_id` is the TXT-record value
 // that proves domain ownership for a custom DNS suffix.
-message AzureContainerAppEnvironmentStackOutputs {
+message AzureContainerAppEnvironmentOutputs {
   // The Azure Resource Manager ID of the Container App Environment.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.App/managedEnvironments/{name}
   //

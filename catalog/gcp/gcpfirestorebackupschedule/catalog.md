@@ -4,7 +4,7 @@ Declares a managed, periodic backup schedule for a Cloud Firestore database — 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Firestore Backup Schedule** -- a daily or weekly schedule attached to the target database; Firestore takes each backup automatically (you pin only the weekly day — timing within the day is Firestore's)
 - **Backups over time** -- each run produces a backup kept for the retention window; backups already taken OUTLIVE the schedule and age out per their retention
@@ -16,12 +16,12 @@ The recurrence (daily vs weekly, and the weekly day) is immutable after creation
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A Firestore database** in the target project — reference a `GcpFirestoreDatabase` Cloud Resource via ValueFromRef, or use `"(default)"` for the project's primary database.
+- **A Firestore database** in the target project — reference a `GcpFirestoreDatabase` Infra Component via ValueFromRef, or use `"(default)"` for the project's primary database.
 
 ## Deploy
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f firestore-backup-schedule.yaml
 ```
 
-This schedules daily backups of the default database, each kept for 7 days. A Stack Job tracks the provisioning in real time.
+This schedules daily backups of the default database, each kept for 7 days. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -83,16 +83,16 @@ These are the most important decisions when configuring a backup schedule. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 | **GcpFirestoreDatabase** | `database` | `status.outputs.database_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -109,6 +109,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Firestore Database**](/cloud-catalog/gcp-firestore-database) -- provides the database the schedule protects
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project when it differs from the connection default
-- [**GCP Firestore Index**](/cloud-catalog/gcp-firestore-index) -- the same database's query layer, declared side by side
+- [**GCP Firestore Database**](/infra-catalog/gcp-firestore-database) -- provides the database the schedule protects
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project when it differs from the connection default
+- [**GCP Firestore Index**](/infra-catalog/gcp-firestore-index) -- the same database's query layer, declared side by side

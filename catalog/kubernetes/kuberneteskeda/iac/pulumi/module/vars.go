@@ -13,7 +13,7 @@ var vars = struct {
 	// for the operator ("keda-operator" regardless of release name) — the
 	// subject cloud-side keyless bindings (IRSA trust policies, GCP WI
 	// bindings, Entra federated credentials) are written against, so it is
-	// surfaced as a stack output.
+	// surfaced as an output.
 	OperatorServiceAccountName string
 }{
 	// Chart identity — MUST be identical in the Terraform module's locals

@@ -4,11 +4,11 @@ Provisions an additional logical database inside a DigitalOcean managed database
 
 ## Layout
 
-- `main.go` -- entrypoint (`package main`), loads the stack input and calls the module
+- `main.go` -- entrypoint (`package main`), loads the IaC input and calls the module
 - `module/main.go` -- orchestration: locals, provider, resource
 - `module/database_db.go` -- the `DatabaseDb` resource and output exports
 - `module/locals.go` -- target handle (the resource has no tag surface, so no label set applies)
-- `module/outputs.go` -- output key constants (the `DigitalOceanDatabaseDbStackOutputs` contract)
+- `module/outputs.go` -- output key constants (the `DigitalOceanDatabaseDbOutputs` contract)
 
 ## Behavior notes
 

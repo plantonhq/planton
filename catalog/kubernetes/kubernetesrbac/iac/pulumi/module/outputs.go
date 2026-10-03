@@ -4,7 +4,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Output keys for stack outputs. Keys match outputs.proto field names.
+// Output keys for outputs. Keys match outputs.proto field names.
 const (
 	OutputRoleName    = "role_name"
 	OutputRoleKind    = "role_kind"
@@ -13,7 +13,7 @@ const (
 	OutputNamespace   = "namespace"
 )
 
-// exportOutputs exports all stack outputs: the names and kinds of the objects in
+// exportOutputs exports all outputs: the names and kinds of the objects in
 // the grant (binding fields are empty when no binding was created, namespace is
 // empty for cluster-scoped grants).
 func exportOutputs(ctx *pulumi.Context, locals *Locals) error {

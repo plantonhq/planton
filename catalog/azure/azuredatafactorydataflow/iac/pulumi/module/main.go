@@ -14,12 +14,12 @@ import (
 // selects which resource is created, and flipping it replaces the
 // object. The SDK generates a parallel type set per resource, hence
 // the twin builders in builders.go.
-func Resources(ctx *pulumi.Context, stackInput *azuredatafactorydataflowv1alpha1.AzureDataFactoryDataFlowStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuredatafactorydataflowv1alpha1.AzureDataFactoryDataFlowIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}

@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpvpcpeering
+    e2e-catalog-kind: gcpvpcpeering
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpvpcpeering/e2e/prerequisites/gcpvpcnetwork-peer.yaml,catalog/gcp/gcpvpcpeering/e2e/prerequisites/gcpvpcpeering-side-b.yaml"

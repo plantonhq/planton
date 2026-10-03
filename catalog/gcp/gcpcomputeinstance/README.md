@@ -92,7 +92,7 @@ This creates a Spot Debian 12 VM on the default network with an ephemeral extern
 | `instanceEncryptionKey` | object | No | Instance-level CMEK (`kmsKey` reference + optional `kmsKeyServiceAccount`), distinct from per-disk keys. Create-time only |
 | `deletionPolicy` | string | No | `DELETE` (default), `PREVENT` (destroy fails), or `ABANDON` (VM left running, removed from management) |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

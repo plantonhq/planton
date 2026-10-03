@@ -5,7 +5,7 @@ servers that unseal themselves through a Cloud KMS key, and hourly Raft
 snapshots landing keylessly in a Google Cloud Storage bucket — the seal
 key, the bucket, and both identities declared by reference to the catalog's
 GCP kinds, so nothing here is typed twice and nothing is a credential. This
-is the production half of the GKE resource set in the component guide; the
+is the production half of the GKE resource set in the kind guide; the
 restore half is a second `KubernetesOpenBao` on the SAME key with a
 `restore` block, on the day the original is gone.
 

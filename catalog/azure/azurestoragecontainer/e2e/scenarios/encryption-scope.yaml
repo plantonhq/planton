@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurestoragecontainer
+    e2e-catalog-kind: azurestoragecontainer
   annotations:
     planton.dev/e2e: "true"
     # Scenario-local account + scope, in deploy order (the scope

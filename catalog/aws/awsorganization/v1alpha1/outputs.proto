@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsorganization.v1alpha1;
 
-// AwsOrganizationStackOutputs captures the observable state of the
+// AwsOrganizationOutputs captures the observable state of the
 // organization after apply.
-message AwsOrganizationStackOutputs {
+message AwsOrganizationOutputs {
   // The organization's AWS-generated ID ("o-..." - also the
   // provider's import ID).
   string organization_id = 1;

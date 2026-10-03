@@ -5,10 +5,10 @@ package dev.planton.aws.awseventbridgeapidestination.v1alpha1;
 import "catalog/aws/awseventbridgeapidestination/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsEventBridgeApiDestinationStackInput is the input for the IaC
+// AwsEventBridgeApiDestinationIacInput is the input for the IaC
 // modules that manage an EventBridge API destination and its
 // connection.
-message AwsEventBridgeApiDestinationStackInput {
+message AwsEventBridgeApiDestinationIacInput {
   // target is the AwsEventBridgeApiDestination resource to deploy.
   AwsEventBridgeApiDestination target = 1;
   // provider_config contains the AWS provider credentials and configuration.

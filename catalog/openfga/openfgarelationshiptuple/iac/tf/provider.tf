@@ -6,7 +6,7 @@
 # - FGA_CLIENT_ID, FGA_CLIENT_SECRET, FGA_API_TOKEN_ISSUER: For client credentials auth
 #
 # These environment variables are automatically configured by Planton
-# from the OpenFgaProviderConfig in the stack input.
+# from the OpenFgaProviderConfig in the IaC input.
 #
 # Reference: https://registry.terraform.io/providers/openfga/openfga/latest/docs
 

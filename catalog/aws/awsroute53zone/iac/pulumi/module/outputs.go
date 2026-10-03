@@ -1,6 +1,6 @@
 package module
 
-// Stack output keys — must stay in lockstep with AwsRoute53ZoneStackOutputs.
+// Output keys — must stay in lockstep with AwsRoute53ZoneOutputs.
 const (
 	OpZoneId            = "zone_id"
 	OpZoneName          = "zone_name"

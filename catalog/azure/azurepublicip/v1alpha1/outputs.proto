@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurepublicip.v1alpha1;
 
-// **AzurePublicIpStackOutputs** captures the outputs of provisioning an
+// **AzurePublicIpOutputs** captures the outputs of provisioning an
 // Azure Public IP Address.
-message AzurePublicIpStackOutputs {
+message AzurePublicIpOutputs {
   // The Azure Resource Manager ID of the public IP. This is the primary
   // output: AzureApplicationGateway, AzureLoadBalancer, and
   // AzureNatGateway reference it to attach the address.

@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsmskcluster.v1alpha1;
 
-// AwsMskClusterStackOutputs captures observable identifiers and endpoints from a deployed
+// AwsMskClusterOutputs captures observable identifiers and endpoints from a deployed
 // Amazon MSK cluster. These outputs enable downstream resources (Lambda event source mappings,
 // ECS/EKS consumer services, Firehose delivery streams) to connect to the cluster and
 // integrate with monitoring, security, and data pipeline workflows.
-message AwsMskClusterStackOutputs {
+message AwsMskClusterOutputs {
   // cluster_arn is the Amazon Resource Name of the MSK cluster,
   // used in IAM policies, event source mappings, and cross-service references.
   string cluster_arn = 1;

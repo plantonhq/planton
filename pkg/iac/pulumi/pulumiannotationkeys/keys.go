@@ -3,11 +3,11 @@
 //
 // Platform-behavior signals live in metadata.annotations, never metadata.labels:
 // labels are derived into cloud-provider tags by planton IaC modules, so a platform
-// key there would leak internal detail onto the user's real cloud resources.
+// key there would leak internal detail onto the user's real infra components.
 package pulumiannotationkeys
 
 const (
-	// StackFqdnAnnotationKey is the primary annotation that takes precedence over individual components
+	// StackFqdnAnnotationKey is the primary annotation that takes precedence over individual kinds
 	// Format: "organization/project/stack"
 	StackFqdnAnnotationKey = "pulumi.planton.dev/stack.fqdn"
 

@@ -7,9 +7,9 @@
 # presets through these rules to emit
 # ../estimates/azurevirtualmachine.yaml; a server-side estimator
 # evaluates the same rules against live manifests.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: azurevirtualmachine
 spec:
@@ -78,7 +78,7 @@ spec:
           op: not_equals
           value: PREMIUM_LRS
       text: a 128 GiB OS disk on a non-Premium storage SKU bills a tier not yet in the price book
-    - text: referenced data disks, network interfaces, and public IPs are first-class components billing on their own lines
+    - text: referenced data disks, network interfaces, and public IPs are first-class kinds billing on their own lines
     - text: network egress follows traffic and client placement
   notes:
     - applies_when:

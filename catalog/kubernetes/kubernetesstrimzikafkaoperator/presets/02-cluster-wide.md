@@ -37,7 +37,7 @@ workloads live.
 
 None — this preset deploys as-is.
 
-## Related Components
+## Related Kinds
 
 - **KubernetesKafka** — declared in ANY namespace; this operator
   reconciles them all

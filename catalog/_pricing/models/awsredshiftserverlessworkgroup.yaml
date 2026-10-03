@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -7,9 +7,9 @@
 # execute -- AWS's pricing page states verbatim there are no charges during
 # idle periods -- and the pinned base capacity sets the RATE while running,
 # not a reservation. Stated in exclusions, never padded into fabricated
-# dollars. Schema: finops/componentcostestimatemodel/v1.
+# dollars. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awsredshiftserverlessworkgroup
 spec:
@@ -42,6 +42,6 @@ spec:
       exclusions:
         - RPU-hours bill per second while queries run at the pinned 32-RPU baseline up to the 128-RPU cap -- AWS's published example rate is $0.375 per RPU-hour (US East N. Virginia); idle meters zero, and the daily 200 RPU-hour deactivate limit HARD-CAPS the compute bill by turning queries off at the breach until the day resets
         - cross-region datasharing bills per terabyte transferred to consumers in other regions -- this preset's monthly 5 TB limit only LOGS at breach, so the transfer meter keeps running past it
-        - the managed VPC endpoint (bi-tools-vpc) and the ACM-fronted custom domain appear on no meter of the Redshift pricing page; the referenced ACM certificate is free public ACM issuance on its own component
+        - the managed VPC endpoint (bi-tools-vpc) and the ACM-fronted custom domain appear on no meter of the Redshift pricing page; the referenced ACM certificate is free public ACM issuance on its own kind
         - warehouse data bills Redshift Managed Storage GB-month on the attached namespace, never here
       notes: Zero committed cost -- commitment-absence, not a free service. This is the governed shape; the deactivate usage limit converts the workload's worst case into a hard daily budget (200 RPU-hours), which is a CEILING on spend, not a commitment of it. The RPU-hour rate is regional -- the pricing page publishes $0.375 (US East N. Virginia) as its worked example.

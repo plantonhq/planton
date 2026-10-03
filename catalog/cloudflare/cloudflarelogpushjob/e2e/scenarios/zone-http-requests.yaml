@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: cloudflarelogpushjob
+    e2e-catalog-kind: cloudflarelogpushjob
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "CloudflareDnsZone"

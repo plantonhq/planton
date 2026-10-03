@@ -17,7 +17,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpglobalforwardingrule
+    e2e-catalog-kind: gcpglobalforwardingrule
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "GcpVpcNetwork,catalog/gcp/gcpglobalforwardingrule/e2e/prerequisites/gcpsubnetwork-proxy-only.yaml,catalog/gcp/gcpglobalforwardingrule/e2e/prerequisites/gcphealthcheck-regional.yaml,catalog/gcp/gcpglobalforwardingrule/e2e/prerequisites/gcpbackendservice-regional.yaml,catalog/gcp/gcpglobalforwardingrule/e2e/prerequisites/gcpurlmap-regional.yaml,catalog/gcp/gcpglobalforwardingrule/e2e/prerequisites/gcptargethttpproxy-regional.yaml"

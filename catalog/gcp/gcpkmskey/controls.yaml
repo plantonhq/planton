@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: gcpkmskey
 spec:
@@ -21,7 +21,7 @@ spec:
       evidence:
         type: spec_default
         reference: The stored data is the key material itself, and its provenance is the customer-vs-provider choice -- unset (false) means Google generates the material; import_only=true makes the key a BYOK container that only ever holds customer-supplied versions, so no Google-generated material ever exists in it.
-      notes: The 04-import-only-byok preset takes the BYOK posture (with the required skip_initial_version_creation). For every other GCP service this component IS the customer-managed key they reference.
+      notes: The 04-import-only-byok preset takes the BYOK posture (with the required skip_initial_version_creation). For every other GCP service this kind IS the customer-managed key they reference.
     - control_id: enc-in-transit
       status: enforced_by_default
       evidence:

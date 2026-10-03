@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1;
 
-// DigitalOceanDropletAutoscalePoolStackOutputs captures the key outputs
+// DigitalOceanDropletAutoscalePoolOutputs captures the key outputs
 // after provisioning a droplet autoscale pool.
 //
 // The pool's health is deliberately NOT an output: a status captured at
@@ -12,7 +12,7 @@ package dev.planton.digitalocean.digitaloceandropletautoscalepool.v1alpha1;
 // verifier asserts it that way. Member droplet ids are likewise not outputs:
 // they churn by design, so firewalls and load balancers address the fleet
 // through the template's tags, never through this contract.
-message DigitalOceanDropletAutoscalePoolStackOutputs {
+message DigitalOceanDropletAutoscalePoolOutputs {
   // Retired: `status` (an apply-time health snapshot). Never reuse the
   // number or the name.
   reserved 2;

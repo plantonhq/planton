@@ -10,12 +10,12 @@ Updated the `zone_id` field in `CivoDnsRecordSpec` from a plain `string` type to
 
 ## Problem Statement / Motivation
 
-The CivoDnsRecord component was initially forged with `zone_id` as a plain string field. This was inconsistent with other DNS record components in the project which use `StringValueOrRef` for zone references.
+The CivoDnsRecord kind was initially forged with `zone_id` as a plain string field. This was inconsistent with other DNS record kinds in the project which use `StringValueOrRef` for zone references.
 
 ### Pain Points
 
 - Users couldn't wire CivoDnsRecord to CivoDnsZone outputs using `value_from`
-- Inconsistent API patterns across DNS record components (AWS, GCP, Azure all use `StringValueOrRef`)
+- Inconsistent API patterns across DNS record kinds (AWS, GCP, Azure all use `StringValueOrRef`)
 - Manual copy-paste of zone IDs instead of declarative resource references
 
 ## Solution / What's New
@@ -85,7 +85,7 @@ func strVal(s string) *foreignkeyv1.StringValueOrRef {
 
 ## Benefits
 
-- **Consistent API patterns** across all DNS record components
+- **Consistent API patterns** across all DNS record kinds
 - **Declarative resource wiring** via `value_from` references
 - **Reduced manual errors** by eliminating copy-paste of zone IDs
 - **Better developer experience** with IDE autocomplete for referenced resources
@@ -100,7 +100,7 @@ func strVal(s string) *foreignkeyv1.StringValueOrRef {
 
 - AwsRoute53DnsRecord uses same pattern for `zone_id`
 - GcpDnsRecord uses same pattern for `managed_zone` and `project_id`
-- Part of broader DNS record component standardization effort
+- Part of broader DNS record kind standardization effort
 
 ---
 

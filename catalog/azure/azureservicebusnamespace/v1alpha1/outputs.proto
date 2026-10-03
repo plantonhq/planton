@@ -4,7 +4,7 @@ package dev.planton.azure.azureservicebusnamespace.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureServiceBusNamespaceStackOutputs** captures the outputs of
+// **AzureServiceBusNamespaceOutputs** captures the outputs of
 // provisioning an Azure Service Bus namespace.
 //
 // `namespace_id` is the ARM identity every child kind references
@@ -19,7 +19,7 @@ import "shared/options/options.proto";
 // use; production workloads should mint least-privilege credentials with
 // AzureServiceBusAuthorizationRule, or go keyless (local_auth_enabled
 // false + Entra data-plane roles), which makes these keys unusable.
-message AzureServiceBusNamespaceStackOutputs {
+message AzureServiceBusNamespaceOutputs {
   // The Azure Resource Manager ID of the namespace.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ServiceBus/namespaces/{name}
   //

@@ -305,7 +305,7 @@ metadata:
 ### For Development
 
 - **Clean Architecture**: Separated concerns (config, validation, UI, prompts)
-- **Testable Components**: Pure functions for validation, clear interfaces
+- **Testable Kinds**: Pure functions for validation, clear interfaces
 - **Extensible**: Easy to add new backend types or configuration sources
 
 ## Impact

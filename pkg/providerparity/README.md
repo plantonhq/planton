@@ -5,7 +5,7 @@ for each cloud provider, what the pinned Terraform provider can configure
 versus what the catalog's kinds expose and consume.
 
 **This is provider parity, not cross-engine parity.** Cross-engine parity
-(`pkg/iac/MODULE_PARITY.md`, `PARITY-EXCEPTION:` comments, the component
+(`pkg/iac/MODULE_PARITY.md`, `PARITY-EXCEPTION:` comments, the kind
 audit's parity focus) is one kind's Terraform and Pulumi modules
 implementing the same contract identically. Provider parity — this package —
 is the catalog covering the full configurable surface of the pinned
@@ -25,7 +25,7 @@ reads it. Three independent censuses feed the measurement:
    pin replaces the artifact, and the resulting check failures are the
    migration work list.
 2. **The contract side comes from descriptors.** `spec_census.go` walks the
-   kind registry via `pkg/crkreflect` and enumerates every spec leaf field —
+   kind registry via `pkg/catalogkindreflect` and enumerates every spec leaf field —
    the same walk shape as `pkg/secretcoverage` (StringValueOrRef as one
    leaf, map/list handling, recursion guard). Text/regex counting of protos
    undercounts nested specs and is banned for parity numbers.
@@ -209,7 +209,7 @@ makes the coverage claim verifiable instead of trusted:
   distribution), the per-kind depth accounting with live-proof status, the
   breadth disposition totals, and the full enumerated per-resource record.
   Deterministic markdown — no timestamps; freshness is the named pin.
-- **PROVEN** is joined mechanically from the component E2E profiles
+- **PROVEN** is joined mechanically from the catalog kind E2E profiles
   (`e2eproof.go`): a kind is proven when its profile is green with BOTH
   provisioners validated. Claim language stays "built for 100% Terraform
   parity" — the page never asserts achieved parity; it shows the measured

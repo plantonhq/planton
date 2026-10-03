@@ -34,7 +34,7 @@ func validResource() *AzureSearchService {
 	return &AzureSearchService{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureSearchService",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-search-service",
 		},
 		Spec: &AzureSearchServiceSpec{

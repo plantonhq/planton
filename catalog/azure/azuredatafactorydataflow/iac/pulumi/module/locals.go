@@ -11,10 +11,10 @@ type Locals struct {
 
 // A data flow carries no tags (ARM sub-resources of a factory expose
 // none), so there is no tag map to derive.
-func initializeLocals(ctx *pulumi.Context, stackInput *azuredatafactorydataflowv1alpha1.AzureDataFactoryDataFlowStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuredatafactorydataflowv1alpha1.AzureDataFactoryDataFlowIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureDataFactoryDataFlow = stackInput.Target
+	locals.AzureDataFactoryDataFlow = iacInput.Target
 
 	return locals
 }

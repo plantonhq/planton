@@ -1,6 +1,6 @@
 # AzureFirewall -- Terraform/OpenTofu Module
 
-Creates an Azure Firewall (`azurerm_firewall`, azurerm ~> 5.0) in the referenced resource group, deployed into the referenced subnet (or Virtual WAN hub), fronted by the referenced public IPs, enforcing the referenced policy. Behaviorally identical to the Pulumi module for the same stack input.
+Creates an Azure Firewall (`azurerm_firewall`, azurerm ~> 5.0) in the referenced resource group, deployed into the referenced subnet (or Virtual WAN hub), fronted by the referenced public IPs, enforcing the referenced policy. Behaviorally identical to the Pulumi module for the same IaC input.
 
 Credentials are injected by the runtime as `ARM_*` environment variables (the provider block is deliberately empty -- that is what enables keyless/OIDC auth).
 

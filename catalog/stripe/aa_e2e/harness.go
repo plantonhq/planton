@@ -36,11 +36,11 @@ type Harness struct {
 	// mu guards the deployed maps, written by VerifyDeployed and read by VerifyDestroyed, the
 	// upgrade's judgment and the out-of-band act.
 	mu               sync.Mutex
-	deployedIDs      map[string]string            // manifest path + component -> Stripe id
-	deployedChildren map[string]map[string]string // manifest path + component -> child key -> Stripe id
+	deployedIDs      map[string]string            // manifest path + kind -> Stripe id
+	deployedChildren map[string]map[string]string // manifest path + kind -> child key -> Stripe id
 	// deployedSecrets holds a SHA-256 of each signing secret, never the secret, so a recreated or
 	// replaced object can be shown to have come with a new one.
-	deployedSecrets map[string]string // manifest path + component -> hex digest
+	deployedSecrets map[string]string // manifest path + kind -> hex digest
 }
 
 // NewHarness creates a Stripe harness; credentials are read in Setup.
@@ -81,20 +81,20 @@ func (h *Harness) Teardown(ctx context.Context) error {
 // stores the id for VerifyDestroyed. A kind that folds children (a meter's alerts, a product's
 // feature links, a Radar list's items) reports their ids as a map output, and each child is
 // checked and stored too.
-func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs map[string]interface{}) error {
-	v, err := verify.GetVerifier(component)
+func (h *Harness) VerifyDeployed(ctx context.Context, kindDir string, outputs map[string]interface{}) error {
+	v, err := verify.GetVerifier(kindDir)
 	if err != nil {
 		return err
 	}
 	id, _ := outputs["id"].(string)
 	if id == "" {
-		return errors.Errorf("no id found in the outputs of %s", component)
+		return errors.Errorf("no id found in the outputs of %s", kindDir)
 	}
 	var children map[string]string
 	cv, folds := v.(verify.ChildVerifier)
 	if folds {
 		if children, err = childIDs(outputs[cv.ChildOutput()]); err != nil {
-			return errors.Wrapf(err, "%s: output %s", component, cv.ChildOutput())
+			return errors.Wrapf(err, "%s: output %s", kindDir, cv.ChildOutput())
 		}
 	}
 
@@ -103,12 +103,12 @@ func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs 
 	// must report one.
 	firstAct, _ := ctx.Value(provider.FirstActManifestPathKey{}).(string)
 	createdHere := firstAct == "" || upgradeExpectation(ctx) != provider.UpgradeInPlace
-	secretDigest, err := secretDigestOf(component, v, outputs, createdHere)
+	secretDigest, err := secretDigestOf(kindDir, v, outputs, createdHere)
 	if err != nil {
 		return err
 	}
 
-	key := componentKey(ctx, component)
+	key := kindKey(ctx, kindDir)
 	h.mu.Lock()
 	previousID, previousSecret := h.deployedIDs[key], h.deployedSecrets[key]
 	h.deployedIDs[key] = id
@@ -127,10 +127,10 @@ func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs 
 	// The same manifest deployed again with a new object is a recreation (the out-of-band act's
 	// recovery): a signing secret must be new with it.
 	if previousID != "" && previousID != id && secretDigest != "" && secretDigest == previousSecret {
-		return errors.Errorf("%s: %s was recreated as %s but reports the old object's signing secret", component, previousID, id)
+		return errors.Errorf("%s: %s was recreated as %s but reports the old object's signing secret", kindDir, previousID, id)
 	}
 	if firstAct != "" {
-		return h.verifyUpgrade(ctx, v, component, firstAct, id, secretDigest)
+		return h.verifyUpgrade(ctx, v, kindDir, firstAct, id, secretDigest)
 	}
 	return nil
 }
@@ -148,58 +148,58 @@ func upgradeExpectation(ctx context.Context) string {
 // object must meet its kind's delete truth -- an old price archived, an old endpoint gone, an old
 // tax registration still collecting -- and a signing secret changes with the object and only
 // with it. A second act that declares nothing is refused, never passed unjudged.
-func (h *Harness) verifyUpgrade(ctx context.Context, v verify.Verifier, component, firstAct, id, secretDigest string) error {
+func (h *Harness) verifyUpgrade(ctx context.Context, v verify.Verifier, kindDir, firstAct, id, secretDigest string) error {
 	expectation := upgradeExpectation(ctx)
-	firstKey := firstAct + "::" + component
+	firstKey := firstAct + "::" + kindDir
 	h.mu.Lock()
 	firstID, firstSecret := h.deployedIDs[firstKey], h.deployedSecrets[firstKey]
 	h.mu.Unlock()
 	if firstID == "" {
-		return errors.Errorf("%s: no id stored for the first act (%s)", component, firstAct)
+		return errors.Errorf("%s: no id stored for the first act (%s)", kindDir, firstAct)
 	}
 
 	switch expectation {
 	case provider.UpgradeInPlace:
 		if id != firstID {
 			return errors.Errorf("%s: the upgrade is declared %s, but Stripe now holds %s where the first act created %s: the change replaced it",
-				component, provider.UpgradeInPlace, id, firstID)
+				kindDir, provider.UpgradeInPlace, id, firstID)
 		}
 		// An empty secret here is the imported state's (the round trip ran before this act).
 		if secretDigest != "" && secretDigest != firstSecret {
-			return errors.Errorf("%s: the object was updated in place, but its signing secret changed", component)
+			return errors.Errorf("%s: the object was updated in place, but its signing secret changed", kindDir)
 		}
 		return nil
 	case provider.UpgradeReplaced:
 		if id == firstID {
-			return errors.Errorf("%s: the upgrade is declared %s, but %s kept its id: the change was applied in place", component, provider.UpgradeReplaced, id)
+			return errors.Errorf("%s: the upgrade is declared %s, but %s kept its id: the change was applied in place", kindDir, provider.UpgradeReplaced, id)
 		}
 		if secretDigest != "" && secretDigest == firstSecret {
-			return errors.Errorf("%s: %s replaced %s but reports the old object's signing secret", component, id, firstID)
+			return errors.Errorf("%s: %s replaced %s but reports the old object's signing secret", kindDir, id, firstID)
 		}
-		return errors.Wrapf(v.VerifyDestroyed(h.client, firstID), "%s: the object the upgrade replaced (%s)", component, firstID)
+		return errors.Wrapf(v.VerifyDestroyed(h.client, firstID), "%s: the object the upgrade replaced (%s)", kindDir, firstID)
 	default:
 		return errors.Errorf("%s: the second act must declare %s: %s or %s (got %q)",
-			component, provider.ExpectUpgradeAnnotation, provider.UpgradeInPlace, provider.UpgradeReplaced, expectation)
+			kindDir, provider.ExpectUpgradeAnnotation, provider.UpgradeInPlace, provider.UpgradeReplaced, expectation)
 	}
 }
 
 // DeleteOutOfBand deletes the deployed object through Stripe's API, the way a person in the
 // Dashboard would, for the out-of-band act. Only a kind Stripe deletes outright qualifies.
-func (h *Harness) DeleteOutOfBand(ctx context.Context, tc *provider.ComponentTestContext) error {
-	v, err := verify.GetVerifier(tc.Component)
+func (h *Harness) DeleteOutOfBand(ctx context.Context, tc *provider.KindTestContext) error {
+	v, err := verify.GetVerifier(tc.Kind)
 	if err != nil {
 		return err
 	}
 	d, ok := v.(verify.OutOfBandDeletable)
 	if !ok {
-		return errors.Errorf("%s: Stripe keeps this object after its destroy (deactivated or forgotten), so the out-of-band act does not apply", tc.Component)
+		return errors.Errorf("%s: Stripe keeps this object after its destroy (deactivated or forgotten), so the out-of-band act does not apply", tc.Kind)
 	}
-	key := componentKey(ctx, tc.Component)
+	key := kindKey(ctx, tc.Kind)
 	h.mu.Lock()
 	id := h.deployedIDs[key]
 	h.mu.Unlock()
 	if id == "" {
-		return errors.Errorf("no stored id for %s -- VerifyDeployed may not have run", tc.Component)
+		return errors.Errorf("no stored id for %s -- VerifyDeployed may not have run", tc.Kind)
 	}
 	if err := d.DeleteOutOfBand(h.client, id); err != nil {
 		return err
@@ -211,14 +211,14 @@ func (h *Harness) DeleteOutOfBand(ctx context.Context, tc *provider.ComponentTes
 // secretDigestOf checks a kind's signing secret, when it reports one, and returns its SHA-256 in
 // hex ("" when there is none). A secret is required only of an object this deploy created
 // (createdHere); any reported secret must be one. The secret itself never leaves this function.
-func secretDigestOf(component string, v verify.Verifier, outputs map[string]interface{}, createdHere bool) (string, error) {
+func secretDigestOf(kindDir string, v verify.Verifier, outputs map[string]interface{}, createdHere bool) (string, error) {
 	sv, ok := v.(verify.SecretVerifier)
 	if !ok || sv.SecretOutput() == "" {
 		return "", nil
 	}
 	secret, _ := outputs[sv.SecretOutput()].(string)
 	if secret != "" || createdHere {
-		if err := verify.CheckSecretShape(component, sv, secret); err != nil {
+		if err := verify.CheckSecretShape(kindDir, sv, secret); err != nil {
 			return "", err
 		}
 	}
@@ -231,18 +231,18 @@ func secretDigestOf(component string, v verify.Verifier, outputs map[string]inte
 
 // VerifyDestroyed checks what destroy left, which differs by kind: a deleted endpoint is gone,
 // while a deactivated configuration is still there, inactive.
-func (h *Harness) VerifyDestroyed(ctx context.Context, component string) error {
-	v, err := verify.GetVerifier(component)
+func (h *Harness) VerifyDestroyed(ctx context.Context, kindDir string) error {
+	v, err := verify.GetVerifier(kindDir)
 	if err != nil {
 		return err
 	}
-	key := componentKey(ctx, component)
+	key := kindKey(ctx, kindDir)
 	h.mu.Lock()
 	id, stored := h.deployedIDs[key]
 	children := h.deployedChildren[key]
 	h.mu.Unlock()
 	if !stored {
-		return errors.Errorf("no stored id for %s -- VerifyDeployed may not have run", component)
+		return errors.Errorf("no stored id for %s -- VerifyDeployed may not have run", kindDir)
 	}
 	if err := v.VerifyDestroyed(h.client, id); err != nil {
 		return err
@@ -277,11 +277,11 @@ func childIDs(output interface{}) (map[string]string, error) {
 	return ids, nil
 }
 
-// componentKey combines the manifest path from the context with the component, so scenarios of
+// kindKey combines the manifest path from the context with the kind, so scenarios of
 // one kind running side by side never share an id.
-func componentKey(ctx context.Context, component string) string {
+func kindKey(ctx context.Context, kindDir string) string {
 	if mp, ok := ctx.Value(provider.ManifestPathKey{}).(string); ok && mp != "" {
-		return mp + "::" + component
+		return mp + "::" + kindDir
 	}
-	return component
+	return kindDir
 }

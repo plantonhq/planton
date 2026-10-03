@@ -9,13 +9,13 @@ import (
 )
 
 // Resources creates all Pulumi resources for the Gateway API CRDs installation.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesgatewayapicrdsv1alpha1.KubernetesGatewayApiCrdsStackInput) error {
+func Resources(ctx *pulumi.Context, iacInput *kubernetesgatewayapicrdsv1alpha1.KubernetesGatewayApiCrdsIacInput) error {
 	// Initialize locals with computed values
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// Set up kubernetes provider from the supplied cluster credential
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}

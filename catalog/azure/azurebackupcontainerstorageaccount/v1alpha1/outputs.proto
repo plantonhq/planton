@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurebackupcontainerstorageaccount.v1alpha1;
 
-// **AzureBackupContainerStorageAccountStackOutputs** captures the
+// **AzureBackupContainerStorageAccountOutputs** captures the
 // outputs of registering a storage account as a backup container.
-message AzureBackupContainerStorageAccountStackOutputs {
+message AzureBackupContainerStorageAccountOutputs {
   // The Azure Resource Manager ID of the backup container
   // registration.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.RecoveryServices/vaults/{vault}/backupFabrics/Azure/protectionContainers/StorageContainer;storage;{sa-rg};{sa-name}

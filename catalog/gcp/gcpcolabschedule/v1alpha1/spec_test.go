@@ -43,7 +43,7 @@ var _ = ginkgo.Describe("GcpColabScheduleSpec", func() {
 		return &GcpColabSchedule{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpColabSchedule",
-			Metadata:   &shared.CloudResourceMetadata{Name: "nightly-report"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "nightly-report"},
 			Spec: &GcpColabScheduleSpec{
 				Location:              "us-central1",
 				Cron:                  "0 6 * * *",

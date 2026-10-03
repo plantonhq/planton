@@ -26,7 +26,7 @@ iac/pulumi/
     ├── network_peering.go       # CREATE form
     ├── peering_routes_config.go # ROUTES-CONFIG form
     ├── locals.go                # Peering name and form selection
-    └── outputs.go               # Stack output constants
+    └── outputs.go               # Output constants
 ```
 
 ## Usage with Planton CLI
@@ -36,7 +36,7 @@ planton pulumi up --manifest ../../e2e/manifest.yaml --stack org/project/stack
 planton pulumi destroy --manifest ../../e2e/manifest.yaml --stack org/project/stack
 ```
 
-Credentials are provided via stack input (by the CLI), not in the manifest `spec`.
+Credentials are provided via IaC input (by the CLI), not in the manifest `spec`.
 
 ## What the module does
 

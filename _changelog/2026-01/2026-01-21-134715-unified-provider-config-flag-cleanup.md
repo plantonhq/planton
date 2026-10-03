@@ -2,7 +2,7 @@
 
 **Date**: January 21, 2026
 **Type**: Refactoring
-**Components**: CLI Flags, Provider Framework, Stack Input, IAC Execution
+**Components**: CLI Flags, Provider Framework, IaC Input, IAC Execution
 
 ## Summary
 
@@ -17,8 +17,8 @@ Following the implementation of IaC-agnostic provider config loading (2026-01-20
 - **Flag proliferation**: 10+ individual provider flags (`--aws-provider-config`, `--gcp-provider-config`, `--azure-provider-config`, etc.) cluttered the CLI help output
 - **Code duplication**: Each provider had its own configuration file with nearly identical logic
 - **Maintenance burden**: Adding new providers required creating new flags, constants, and handler code
-- **Complex function signatures**: Functions accepted variadic options `...StackInputProviderConfigOption` instead of a clean struct
-- **Dead code**: Legacy `options.go` with `StackInputProviderConfigOptions` struct was no longer used by the main execution path
+- **Complex function signatures**: Functions accepted variadic options `...IacInputProviderConfigOption` instead of a clean struct
+- **Dead code**: Legacy `options.go` with `IacInputProviderConfigOptions` struct was no longer used by the main execution path
 
 ## Solution / What's New
 
@@ -35,14 +35,14 @@ flowchart LR
     CLI --> F5[--cloudflare-provider-config]
     CLI --> F6[... 5 more flags]
     
-    F1 --> Options[StackInputProviderConfigOptions]
+    F1 --> Options[IacInputProviderConfigOptions]
     F2 --> Options
     F3 --> Options
     F4 --> Options
     F5 --> Options
     F6 --> Options
     
-    Options --> Stack[Build Stack Input]
+    Options --> Stack[Build IaC Input]
 ```
 
 ### After: Single Unified Flag
@@ -55,7 +55,7 @@ flowchart LR
     Flag --> Config[ProviderConfig struct]
     Detect --> Config
     
-    Config --> Stack[Build Stack Input]
+    Config --> Stack[Build IaC Input]
 ```
 
 ## Implementation Details
@@ -101,7 +101,7 @@ SnowflakeProviderConfig
 
 **Before** (options.go):
 ```go
-type StackInputProviderConfigOptions struct {
+type IacInputProviderConfigOptions struct {
     AtlasProviderConfigPath      string
     Auth0ProviderConfigPath      string
     AwsProviderConfigPath        string
@@ -119,7 +119,7 @@ type StackInputProviderConfigOptions struct {
 ```go
 type ProviderConfig struct {
     Path     string                   // Single config path
-    Provider CloudResourceProvider     // Auto-detected from manifest
+    Provider CatalogProvider     // Auto-detected from manifest
 }
 ```
 
@@ -127,14 +127,14 @@ type ProviderConfig struct {
 
 **Before**:
 ```go
-func Run(..., providerConfigOptions ...StackInputProviderConfigOption) error
-func BuildStackInputYaml(manifest, opts StackInputProviderConfigOptions) (string, error)
+func Run(..., providerConfigOptions ...IacInputProviderConfigOption) error
+func BuildIacInputYaml(manifest, opts IacInputProviderConfigOptions) (string, error)
 ```
 
 **After**:
 ```go
 func Run(..., providerConfig *ProviderConfig) error
-func BuildStackInputYaml(manifest, providerConfig *ProviderConfig) (string, error)
+func BuildIacInputYaml(manifest, providerConfig *ProviderConfig) (string, error)
 ```
 
 ### Command Handler Updates
@@ -143,11 +143,11 @@ All 18 command handlers updated to use `GetFromFlagsSimple()`:
 
 ```go
 // Before
-providerConfigOptions, err := stackinputproviderconfig.BuildWithFlags(cmd.Flags())
+providerConfigOptions, err := iacinputproviderconfig.BuildWithFlags(cmd.Flags())
 // ... use providerConfigOptions...
 
 // After
-providerConfig, err := stackinputproviderconfig.GetFromFlagsSimple(cmd.Flags())
+providerConfig, err := iacinputproviderconfig.GetFromFlagsSimple(cmd.Flags())
 // ... use providerConfig directly
 ```
 

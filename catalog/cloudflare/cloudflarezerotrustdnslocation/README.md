@@ -42,7 +42,7 @@
 | `dns_destination_ips_id` | string | Leave unset for the shared pool auto-assign. |
 | `client_default` | bool | Make this the account's default location. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

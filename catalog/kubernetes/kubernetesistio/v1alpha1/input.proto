@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesistio.v1alpha1;
 import "catalog/kubernetes/kubernetesistio/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//kubernetes-istio stack-input
-message KubernetesIstioStackInput {
-  //target cloud-resource
+//kubernetes-istio iac-input
+message KubernetesIstioIacInput {
+  //target infra-component
   KubernetesIstio target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

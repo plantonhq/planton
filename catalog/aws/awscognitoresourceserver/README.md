@@ -65,7 +65,7 @@ spec:
 | `scopes[].scopeName` | `string` | Yes | Scope name (no spaces, `/`, `"`, or `\`). Max 100 scopes. |
 | `scopes[].scopeDescription` | `string` | Yes | Shown on consent screens. |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

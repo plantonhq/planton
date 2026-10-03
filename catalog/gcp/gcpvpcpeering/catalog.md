@@ -4,7 +4,7 @@ Manages one side of a Google Cloud VPC Network Peering: the peering entry on you
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions exactly one of:
+When you deploy this Infra Component, the IaC module provisions exactly one of:
 
 - **Network peering** (`peerNetwork` set) -- the `compute_network_peering` entry on your network with its route-exchange flags
 - **Peering routes config** (`peerNetwork` empty) -- the `compute_network_peering_routes_config` on an existing peering named `peeringName`
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions exactly one of:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with `roles/compute.networkAdmin` on the network's project (and on the peer's project when creating a peering to it). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with `roles/compute.networkAdmin` on the network's project (and on the peer's project when creating a peering to it). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### GCP Networks
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f vpc-peering.yaml
 ```
 
-This creates the hub's side of a hub-spoke peering and shares the hub's VPN/Interconnect routes with the spoke. A Stack Job tracks the provisioning in real time.
+This creates the hub's side of a hub-spoke peering and shares the hub's VPN/Interconnect routes with the spoke. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -105,16 +105,16 @@ These are the most important decisions when configuring a peering. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpVpcNetwork** | `network` | `status.outputs.network_self_link` |
 | **GcpVpcNetwork** | `peerNetwork` | `status.outputs.network_self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -133,6 +133,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- the networks on both sides
-- [**GCP Service Networking Connection**](/cloud-catalog/gcp-service-networking-connection) -- the Google-managed peering the routes-config form tunes
-- [**GCP HA VPN Gateway**](/cloud-catalog/gcp-ha-vpn-gateway) -- the dynamic routes `exportCustomRoutes` shares with the peer
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- the networks on both sides
+- [**GCP Service Networking Connection**](/infra-catalog/gcp-service-networking-connection) -- the Google-managed peering the routes-config form tunes
+- [**GCP HA VPN Gateway**](/infra-catalog/gcp-ha-vpn-gateway) -- the dynamic routes `exportCustomRoutes` shares with the peer

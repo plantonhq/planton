@@ -6,9 +6,9 @@
 # default) -- every one with its own replica count and resources block.
 # The policies the engine enforces are separate resources costing
 # engine CPU and memory, never new pods.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kuberneteskyverno
 spec:

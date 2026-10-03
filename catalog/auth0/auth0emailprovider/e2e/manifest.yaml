@@ -1,5 +1,5 @@
 # Auth0 Email Provider Test Manifest
-# This file is used for testing the Auth0EmailProvider component.
+# This file is used for testing the Auth0EmailProvider kind.
 #
 # Applying it REPLACES the email provider of the tenant the credential
 # belongs to: run it only against a test tenant whose emails nobody relies

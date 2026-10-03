@@ -43,7 +43,7 @@ var _ = ginkgo.Describe("GcpTargetHttpsProxySpec", func() {
 		return &GcpTargetHttpsProxy{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpTargetHttpsProxy",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-https-proxy",
 			},
 			Spec: &GcpTargetHttpsProxySpec{

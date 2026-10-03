@@ -19,7 +19,7 @@ output "access_key_id" {
 }
 
 output "secret_access_key" {
-  # Base64-encoded to match the stack-outputs contract (the proto documents the
+  # Base64-encoded to match the outputs contract (the proto documents the
   # secret as base64), keeping both engines' outputs byte-identical.
   description = "Base64-encoded secret access key (if created)."
   value       = try(base64encode(aws_iam_access_key.this[0].secret), "")

@@ -4,7 +4,7 @@ Deploys an Azure Route Table — a reusable set of user-defined routes (UDRs) th
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Route Table** -- the named table with BGP route propagation set per your dial (Azure defaults to enabled)
 - **User-Defined Routes** -- each route managed inline as part of the table (a route has no life of its own in Azure); the table is the authoritative route list, so a deploy removes routes added out-of-band
@@ -16,12 +16,12 @@ The subnet-side attachment is NOT created here — which subnets adopt this tabl
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the table will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the table will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 - **For virtual-appliance routes**: the appliance's private IP — reference an AzureFirewall's `private_ip_address` output (the hub-spoke seam), or pass the literal IP of a non-firewall NVA.
 
 ## Deploy
@@ -59,7 +59,7 @@ spec:
 planton apply -f route-table.yaml
 ```
 
-This creates a route table that sends every attached subnet's internet-bound traffic through the firewall at 10.0.1.4, with BGP propagation disabled so learned on-premises routes cannot bypass it. A Stack Job tracks the provisioning in real time.
+This creates a route table that sends every attached subnet's internet-bound traffic through the firewall at 10.0.1.4, with BGP propagation disabled so learned on-premises routes cannot bypass it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -97,16 +97,16 @@ These are the most important decisions when configuring a Route Table. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 | **AzureFirewall** (optional, per appliance route) | `routes[].nextHopInIpAddress` | `status.outputs.private_ip_address` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -126,7 +126,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the table is created
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- adopts this table by referencing its `route_table_id` output (the attachment lives on the subnet, one table serving many)
-- [**Azure Firewall**](/cloud-catalog/azure-firewall) -- the classic virtual-appliance next hop, referenced by its `private_ip_address` output
-- [**Azure NAT Gateway**](/cloud-catalog/azure-nat-gateway) -- the complementary egress path: NAT for outbound internet, this table for steering and inspection
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the table is created
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- adopts this table by referencing its `route_table_id` output (the attachment lives on the subnet, one table serving many)
+- [**Azure Firewall**](/infra-catalog/azure-firewall) -- the classic virtual-appliance next hop, referenced by its `private_ip_address` output
+- [**Azure NAT Gateway**](/infra-catalog/azure-nat-gateway) -- the complementary egress path: NAT for outbound internet, this table for steering and inspection

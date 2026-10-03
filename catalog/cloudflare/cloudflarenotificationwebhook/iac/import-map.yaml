@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarenotificationwebhook
 spec:
@@ -13,7 +13,7 @@ spec:
         id field).
     - name: webhook_id
       derivations:
-        - from_stack_output: webhook_id
+        - from_output: webhook_id
       where_to_find: >-
         `GET /accounts/<account_id>/alerting/v3/destinations/webhooks` on the
         Cloudflare v4 API (the id field; match by name or url), or the

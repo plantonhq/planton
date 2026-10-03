@@ -113,7 +113,7 @@ spec:
 |-------|------|-------------|
 | `notificationTopicArn` | StringValueOrRef | SNS topic ARN for cluster event notifications |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -132,7 +132,7 @@ spec:
 - **Security is network-only** — Memcached has no authentication. Always deploy in a VPC with properly configured security groups to restrict access.
 - **Transit encryption** — Only available on engine version 1.6.12+. Earlier versions will fail at the AWS API level if TLS is enabled.
 
-## Related Components
+## Related Kinds
 
 - **AwsRedisElasticache** — Redis/Valkey caching with replication, persistence, and authentication
 - **AwsVpc** — VPC for network isolation (referenced by `subnetIds`)

@@ -1,4 +1,4 @@
-// Package manifestgraph is the one home for treating a SET of cloud-resource
+// Package manifestgraph is the one home for treating a SET of infra-component
 // manifests as a dependency graph: node identity, reference collection, the
 // strict reference rules, edge derivation from the manifests' own composition
 // facts, topological ordering, classification of what resolves inside the set

@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpworkloadidentitypoolprovider.v1alpha1;
 
 // Outputs produced after provisioning a GCP Workload Identity Pool Provider.
-message GcpWorkloadIdentityPoolProviderStackOutputs {
+message GcpWorkloadIdentityPoolProviderOutputs {
   // The full resource name:
   // projects/<project_number>/locations/global/workloadIdentityPools/<pool_id>/providers/<provider_id>.
   // This is the AUDIENCE for the keyless-auth handshake: OIDC tokens minted

@@ -4,7 +4,7 @@ Attaches one Google Cloud Resource Manager tag value to one resource -- the act 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Tag binding** -- the `tags_tag_binding` between the value and the resource's full resource name; for a regional or zonal resource (set `location`), the `tags_location_tag_binding` served from that location instead
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials that can use the tag value and tag the target resource. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials that can use the tag value and tag the target resource. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### GCP Resource
 
@@ -46,7 +46,7 @@ spec:
 planton apply -f tag-binding.yaml
 ```
 
-This binds `environment/prod` to the project the credentials are configured for -- no parent needed. A Stack Job tracks the provisioning in real time.
+This binds `environment/prod` to the project the credentials are configured for -- no parent needed. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -83,7 +83,7 @@ These are the most important decisions when configuring a tag binding. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -91,9 +91,9 @@ These are the most important decisions when configuring a tag binding. Explore t
 | **GcpProject** (optional) | `parent.projectId` | `status.outputs.project_number` |
 | **GcpFolder** (optional) | `parent.folderId` | `status.outputs.folder_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -113,8 +113,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Tag Value**](/cloud-catalog/gcp-tag-value) -- the value being bound
-- [**GCP Tag Key**](/cloud-catalog/gcp-tag-key) -- the key the value belongs to
-- [**GCP Folder**](/cloud-catalog/gcp-folder) -- a folder as the tagged resource
-- [**GCP Project**](/cloud-catalog/gcp-project) -- a project as the tagged resource
-- [**GCP Organization Policy**](/cloud-catalog/gcp-org-policy) -- rules that fire on the bound tag
+- [**GCP Tag Value**](/infra-catalog/gcp-tag-value) -- the value being bound
+- [**GCP Tag Key**](/infra-catalog/gcp-tag-key) -- the key the value belongs to
+- [**GCP Folder**](/infra-catalog/gcp-folder) -- a folder as the tagged resource
+- [**GCP Project**](/infra-catalog/gcp-project) -- a project as the tagged resource
+- [**GCP Organization Policy**](/infra-catalog/gcp-org-policy) -- rules that fire on the bound tag

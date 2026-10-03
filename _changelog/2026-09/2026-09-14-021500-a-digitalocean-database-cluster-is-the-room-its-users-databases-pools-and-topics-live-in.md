@@ -4,7 +4,7 @@
 
 - **`DigitalOceanDatabaseCluster` is a container kind.** Six kinds are created on a managed cluster and API-addressed under its id -- `DigitalOceanDatabaseUser`, `DigitalOceanDatabaseDb`, `DigitalOceanDatabaseConnectionPool`, `DigitalOceanDatabaseFirewall`, `DigitalOceanDatabaseKafkaTopic`, and `DigitalOceanDatabaseKafkaSchema` -- and none can exist before it. The kind metadata now says what their own specs already said ("an additional user ON a managed database cluster"; "a topic ON a DigitalOcean managed Kafka cluster"): on a diagram the cluster is the room they stand in.
 - **Three references into a cluster are containment-exempt, travelling with the mark.** `DigitalOceanDatabaseReplicaSpec.cluster` names the primary a read replica FOLLOWS -- a replica is a single-node cluster of its own, in the primary's region or another, not something created inside it. `DigitalOceanMonitorAlertSpec.database_cluster_ids` names the clusters an alert policy WATCHES. `DigitalOceanAppDatabase.cluster_name` names an existing cluster an App Platform app ATTACHES as a dependency it connects to. Without these three lines the mark alone would have drawn a replica inside its primary, an alert inside the database it watches, and an app inside the database it connects to.
-- The containment-decision registry (`shared/cloudresourcekind/testdata/containment_decisions.txt`) gains exactly nine lines: the six children `contained` in the cluster, the three references `exempt`; nothing else in the registry moved.
+- The containment-decision registry (`shared/catalogkind/testdata/containment_decisions.txt`) gains exactly nine lines: the six children `contained` in the cluster, the three references `exempt`; nothing else in the registry moved.
 
 ## Why
 
@@ -13,7 +13,7 @@
 ## How to check
 
 ```bash
-go test ./shared/cloudresourcekind/...   # green; the golden carries the six contained and three exempt lines
-grep -n "container_kind: true" -B12 shared/cloudresourcekind/cloud_resource_kind.proto | grep -A12 "DigitalOceanDatabaseCluster ="
+go test ./shared/catalogkind/...   # green; the golden carries the six contained and three exempt lines
+grep -n "container_kind: true" -B12 shared/catalogkind/catalog_kind.proto | grep -A12 "DigitalOceanDatabaseCluster ="
 grep -n containment_exempt catalog/digitalocean/digitaloceandatabasereplica/v1alpha1/spec.proto catalog/digitalocean/digitaloceanmonitoralert/v1alpha1/spec.proto catalog/digitalocean/app_spec.proto
 ```

@@ -25,7 +25,7 @@ import "shared/foreignkey/v1/foreign_key.proto";
 // changes state — it has no metrics, periods, or thresholds of its own.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 message AwsCloudwatchCompositeAlarmSpec {
   // The AWS region where the resource will be created.
   // Example: "us-west-2", "eu-west-1"
@@ -44,7 +44,7 @@ message AwsCloudwatchCompositeAlarmSpec {
   // Example: "ALARM(\"cpu-high\") AND ALARM(\"error-rate-high\")"
   //
   // Compose alarm names from AwsCloudwatchAlarm resources via their exported
-  // `alarm_name` stack output. Maximum 10240 characters.
+  // `alarm_name` output. Maximum 10240 characters.
   string alarm_rule = 2 [
     (buf.validate.field).required = true,
     (buf.validate.field).string.max_len = 10240

@@ -18,7 +18,7 @@ func validFallbackOrigin() *CloudflareCustomHostnameFallbackOrigin {
 	return &CloudflareCustomHostnameFallbackOrigin{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareCustomHostnameFallbackOrigin",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-fallback-origin"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-fallback-origin"},
 		Spec: &CloudflareCustomHostnameFallbackOriginSpec{
 			ZoneId: ref("0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d"),
 			Origin: ref("origin.helpdesk.io"),

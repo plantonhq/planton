@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpBigtableTableSpec", func() {
 		return &GcpBigtableTable{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpBigtableTable",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "events",
 			},
 			Spec: &GcpBigtableTableSpec{

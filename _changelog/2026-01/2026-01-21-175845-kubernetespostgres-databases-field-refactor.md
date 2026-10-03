@@ -160,7 +160,7 @@ Both Pulumi and Terraform modules handle the conversion internally - the Zalando
 ## Related Work
 
 - Follows the same pattern as `KubernetesPostgresUser` message
-- Part of ongoing API clarity improvements across deployment components
+- Part of ongoing API clarity improvements across catalog kinds
 
 ---
 

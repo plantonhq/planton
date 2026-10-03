@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpvertexaifeaturegroup.v1alpha1;
 
-// GcpVertexAiFeatureGroupStackOutputs captures the feature group's identity
+// GcpVertexAiFeatureGroupOutputs captures the feature group's identity
 // and the features registered in it.
-message GcpVertexAiFeatureGroupStackOutputs {
+message GcpVertexAiFeatureGroupOutputs {
   // Full resource name:
   // projects/{project}/locations/{location}/featureGroups/{feature_group_id}.
   string name = 1;

@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package dev.planton.finops.catalogkindcostprofile.v1;
+
+// CatalogKindCostProfileSpec is the kind's cost anatomy. Authoring
+// contract: every statement here must be true of the OFFICIAL modules as
+// shipped -- a profile describes what the kind IS, not what a customer
+// might customize it into. Field paths use spec-relative proto field names
+// (the same vocabulary as import-map from_spec_field), validated against the
+// served version's compiled descriptors by the conformance gate: a schema
+// rename that orphans a path fails CI loudly.
+message CatalogKindCostProfileSpec {
+  // How this kind's cloud cost fundamentally accrues. Pick the model
+  // that describes the DOMINANT behavior; use hybrid when both an always-on
+  // baseline and usage-driven dimensions materially exist.
+  BillingModel billing_model = 1;
+
+  // Charges that accrue while the resource exists, independent of traffic
+  // or usage. Empty for purely usage-based, free, and cluster-capacity
+  // kinds. These are what a "this costs money the moment you create
+  // it" warning is built from.
+  repeated BaselineCharge baseline_charges = 2;
+
+  // The spec fields that move the bill, each mapped to the functionality
+  // the provider meters for it. This is the heart of the profile: an
+  // estimator reads a manifest, looks up each driver's field value, and
+  // prices the metered functionality from the central price book. Order by
+  // impact, largest first.
+  repeated CostDriver cost_drivers = 3;
+
+  // Provider free-tier or free-allowance notes relevant to this kind,
+  // in plain language (e.g. "25 GB storage and 25 provisioned RCU/WCU
+  // always free per account"). Empty when no free tier applies.
+  string free_tier = 4;
+
+  // Cost dimensions a per-manifest estimate deliberately EXCLUDES because
+  // they depend on runtime behavior no manifest can predict (data transfer,
+  // request volume, cross-AZ traffic). Every estimate rendered from this
+  // profile must state these exclusions -- an estimate that hides what it
+  // cannot know is a lie with a dollar sign.
+  repeated string estimate_exclusions = 5;
+
+  // Free-form notes on cost behavior that fits no structured field
+  // (pricing cliffs, regional variance warnings, decommission costs).
+  string notes = 6;
+}
+
+// BillingModel classifies how a kind's cloud cost accrues.
+enum BillingModel {
+  billing_model_unspecified = 0;
+  // Charges accrue every hour the resource exists, regardless of use
+  // (a load balancer's hourly fee, a cluster's management fee).
+  always_on = 1;
+  // Charges accrue only with use: requests served, storage consumed,
+  // data processed. Zero use is (near) zero cost.
+  usage_based = 2;
+  // Both an always-on baseline and usage-driven dimensions are material.
+  hybrid = 3;
+  // The provider bills nothing for this resource itself (IAM roles,
+  // security groups, configuration objects).
+  free = 4;
+  // Kubernetes workloads: cost is the share of cluster node capacity the
+  // workload's resource requests reserve, plus any persistent volumes --
+  // no cloud SKU bills for the resource directly. The drivers are the
+  // requests/replica/storage fields; the unit prices are the cluster's
+  // node economics.
+  cluster_capacity = 5;
+}
+
+// BaselineCharge is one always-on charge that starts accruing at creation.
+// Its identity fields follow the FinOps FOCUS column semantics so the
+// charge can be joined against real billing data.
+message BaselineCharge {
+  // The provider offering that bills, in the provider's own vocabulary
+  // (FOCUS ServiceName), e.g. "Elastic Load Balancing", "Google Kubernetes
+  // Engine". This is how a user recognizes the charge on their bill.
+  string service_name = 1;
+  // The functionality being metered (FOCUS SkuMeter), e.g. "load balancer
+  // hours", "cluster management fee".
+  string sku_meter = 2;
+  // The unit prices are quoted in (FOCUS PricingUnit), e.g. "hours".
+  string pricing_unit = 3;
+  // What the charge is for, in one plain sentence.
+  string description = 4;
+}
+
+// CostDriver maps one spec field to the provider functionality it scales.
+message CostDriver {
+  // Spec-relative proto field path (snake_case, dot-separated), e.g.
+  // "billing_mode" or "default_node_pool.node_count". May traverse or
+  // terminate on repeated/map/message fields when the COUNT or contents of
+  // the collection is what drives cost (e.g. "replicas" on a global table
+  // -- each entry is a full billed copy). Validated against the served
+  // version's descriptors by the conformance gate.
+  string field_path = 1;
+  // The functionality the provider meters for this field (FOCUS SkuMeter
+  // semantics), e.g. "provisioned write capacity", "LCU usage", "node
+  // vCPU and memory". This is the join key an estimator prices from the
+  // central price book -- and later, the join key against real billing
+  // rows.
+  string sku_meter = 2;
+  // The unit that functionality is priced in (FOCUS PricingUnit), e.g.
+  // "WCU-hours", "GB-month". Empty when the driver selects BETWEEN pricing
+  // models (a billing_mode switch) rather than scaling one meter.
+  string pricing_unit = 3;
+  // How the field moves the bill, in one or two plain sentences an agent
+  // can relay to a user verbatim (e.g. "each additional replica region is
+  // a full billed copy of the table's storage and writes").
+  string impact = 4;
+}

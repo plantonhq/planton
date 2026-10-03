@@ -16,7 +16,7 @@ message CloudflareKvNamespace {
   string kind = 2 [(buf.validate.field).string.const = 'CloudflareKvNamespace'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   CloudflareKvNamespaceSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,7 +27,7 @@ message CloudflareKvNamespace {
 
 // cloudflare-kv-namespace status
 message CloudflareKvNamespaceStatus {
-  //stack-outputs
-  //  cloudflare-kv-namespace stack-outputs
-  CloudflareKvNamespaceStackOutputs outputs = 1;
+  //outputs
+  //  cloudflare-kv-namespace outputs
+  CloudflareKvNamespaceOutputs outputs = 1;
 }

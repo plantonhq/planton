@@ -11,9 +11,9 @@
 # rule referencing one refuses the whole estimate rather than
 # understating it. A custom_statement is an opaque escape hatch these
 # rules cannot inspect and refuses for the same reason.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awswafwebacl
 spec:

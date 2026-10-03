@@ -49,14 +49,14 @@ type resolvedPermission struct {
 	ResourceServerIdentifier string
 }
 
-// initializeLocals creates and populates the Locals struct from the stack input.
-func initializeLocals(ctx *pulumi.Context, stackInput *auth0userv1alpha1.Auth0UserStackInput) (*Locals, error) {
+// initializeLocals creates and populates the Locals struct from the IaC input.
+func initializeLocals(ctx *pulumi.Context, iacInput *auth0userv1alpha1.Auth0UserIacInput) (*Locals, error) {
 	locals := &Locals{}
 
-	locals.Auth0User = stackInput.Target
+	locals.Auth0User = iacInput.Target
 
-	spec := stackInput.Target.Spec
-	metadata := stackInput.Target.Metadata
+	spec := iacInput.Target.Spec
+	metadata := iacInput.Target.Metadata
 
 	locals.ResourceName = metadata.Name
 	locals.ConnectionName = spec.ConnectionName.GetValue()

@@ -1,7 +1,7 @@
 # Kubernetes ingress and metrics rebuilt: ingress-nginx at full depth, metrics-server forged, HPA scaling proven live
 
 **Date**: 2026-07-22
-**Scope**: `apis/dev/planton/provider/kubernetes` (kubernetesingressnginx rebuilt; kubernetesmetricsserver forged), `cloudresourcekind` (KubernetesMetricsServer = 857), `aa_e2e/verify` (ingress-nginx + metrics-server install verifiers, HPA behavioral verifier, manifest helpers), `kuberneteshorizontalpodautoscaler` (behavioral-scaling scenario + CPU-burner fixture), `e2e` + Makefile Tier-1, `pkg/outputs`, `pkg/iac/importmap` (two proven maps + ledger), site catalog, `_rules/deployment-component` (forge + update lessons)
+**Scope**: `apis/dev/planton/provider/kubernetes` (kubernetesingressnginx rebuilt; kubernetesmetricsserver forged), `catalogkind` (KubernetesMetricsServer = 857), `aa_e2e/verify` (ingress-nginx + metrics-server install verifiers, HPA behavioral verifier, manifest helpers), `kuberneteshorizontalpodautoscaler` (behavioral-scaling scenario + CPU-burner fixture), `e2e` + Makefile Tier-1, `pkg/outputs`, `pkg/iac/importmap` (two proven maps + ledger), site catalog, `_rules/catalog-kind` (forge + update lessons)
 
 ## What changed
 
@@ -105,7 +105,7 @@ HorizontalPodAutoscaler actually scales.
 
 ## Workflow lessons folded into the rules
 
-- Forge rule: kind-cluster lanes must serialize when one lane's component
+- Forge rule: kind-cluster lanes must serialize when one lane's kind
   is another's fixture or a cluster singleton; a lane killed mid-install
   orphans a `pending-install` Helm release that blocks later installs of
   the same name — sweep before re-running.

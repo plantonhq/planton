@@ -12,13 +12,13 @@ import (
 // Resources is the main entry point for the Pulumi module.
 // It orchestrates the creation of a Kubernetes ServiceAccount with image-pull
 // secrets, the token-automount setting, and workload-identity annotations.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesserviceaccountv1alpha1.KubernetesServiceAccountStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesserviceaccountv1alpha1.KubernetesServiceAccountIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// Create Kubernetes provider from credentials
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
 		ctx,
-		stackInput.ProviderConfig,
+		iacInput.ProviderConfig,
 		"kubernetes",
 	)
 	if err != nil {

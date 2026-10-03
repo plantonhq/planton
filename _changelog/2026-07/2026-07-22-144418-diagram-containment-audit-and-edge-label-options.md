@@ -10,7 +10,7 @@ Architecture diagrams rendered from these APIs can now nest resources inside the
 
 ## Problem Statement / Motivation
 
-The `container_kind` flag on `CloudResourceKindMeta` drives visual containment in downstream architecture diagrams: a resource that references a container kind is drawn inside its boundary. Only 26 of 562 kinds were marked — VPCs, Kubernetes clusters, resource groups, projects — so diagrams rendered most infrastructure as a flat web of boxes. A subnet, the single most important boundary in any provider's own reference diagrams, was furniture rather than a room.
+The `container_kind` flag on `CatalogKindMeta` drives visual containment in downstream architecture diagrams: a resource that references a container kind is drawn inside its boundary. Only 26 of 562 kinds were marked — VPCs, Kubernetes clusters, resource groups, projects — so diagrams rendered most infrastructure as a flat web of boxes. A subnet, the single most important boundary in any provider's own reference diagrams, was furniture rather than a room.
 
 Marking more kinds naively would have produced false diagrams, because references into a container kind carry two opposite meanings:
 
@@ -59,7 +59,7 @@ Human-authored edge labels on consumer reference fields, starting with the AWS E
 
 ### 4. The registry gate
 
-`apis/dev/planton/shared/cloudresourcekind/containment_decisions_test.go` walks every compiled-in provider spec via proto reflection and diffs all references-into-containers against a committed golden file (`testdata/containment_decisions.txt`, 509 contained + 106 exempt). Adding a field, kind, or container marking without recording a verdict fails the build with instructions. Companion tests pin the extension numbers and reject annotations authored on non-reference fields (where the platform's edge selector would never read them) or exemptions targeting non-container kinds (inert and misleading).
+`apis/dev/planton/shared/catalogkind/containment_decisions_test.go` walks every compiled-in provider spec via proto reflection and diffs all references-into-containers against a committed golden file (`testdata/containment_decisions.txt`, 509 contained + 106 exempt). Adding a field, kind, or container marking without recording a verdict fails the build with instructions. Companion tests pin the extension numbers and reject annotations authored on non-reference fields (where the platform's edge selector would never read them) or exemptions targeting non-container kinds (inert and misleading).
 
 ```mermaid
 flowchart LR
@@ -76,7 +76,7 @@ No runtime behavior changes in this repository — the options are descriptor me
 
 ## Known Limitations
 
-- Kubernetes provider specs were deliberately left untouched (a concurrent effort owns that surface). Four access-style references from Kubernetes components into container kinds (external-dns and ingress-nginx into DNS zones/subnets, OpenBao into GCP KMS/project) are recorded as `contained` in the golden file for now and should gain `containment_exempt` when that surface reopens.
+- Kubernetes provider specs were deliberately left untouched (a concurrent effort owns that surface). Four access-style references from Kubernetes kinds into container kinds (external-dns and ingress-nginx into DNS zones/subnets, OpenBao into GCP KMS/project) are recorded as `contained` in the golden file for now and should gain `containment_exempt` when that surface reopens.
 - Labels are authored only for the AWS EKS-story kinds in this change; other kinds rely on client-side humanization until authored.
 
 ## Related Work

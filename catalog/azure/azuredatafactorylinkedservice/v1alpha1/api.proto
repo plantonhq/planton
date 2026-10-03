@@ -21,7 +21,7 @@ message AzureDataFactoryLinkedService {
   string kind = 2 [(buf.validate.field).string.const = 'AzureDataFactoryLinkedService'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   AzureDataFactoryLinkedServiceSpec spec = 4 [(buf.validate.field).required = true];
@@ -33,7 +33,7 @@ message AzureDataFactoryLinkedService {
 // AzureDataFactoryLinkedServiceStatus represents the status of an
 // Azure Data Factory linked service deployment.
 message AzureDataFactoryLinkedServiceStatus {
-  //stack-outputs
-  //  azure-data-factory-linked-service stack-outputs
-  AzureDataFactoryLinkedServiceStackOutputs outputs = 1;
+  //outputs
+  //  azure-data-factory-linked-service outputs
+  AzureDataFactoryLinkedServiceOutputs outputs = 1;
 }

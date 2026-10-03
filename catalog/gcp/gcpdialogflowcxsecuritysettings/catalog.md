@@ -4,7 +4,7 @@ Sets the privacy policy your conversational agents run under: personal data scru
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `dialogflow.googleapis.com` on the project
 - **Security settings** -- a `diagflow.CxSecuritySettings` with redaction, retention, audio export, and Insights export
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Dialogflow admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Dialogflow admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Optional Dependencies
@@ -48,7 +48,7 @@ spec:
 planton apply -f dialogflow-cx-security-settings.yaml
 ```
 
-This creates settings in the global location that redact personal data and keep conversation history for 30 days. A Stack Job tracks the provisioning in real time.
+This creates settings in the global location that redact personal data and keep conversation history for 30 days. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -66,16 +66,16 @@ These are the most important decisions when configuring security settings. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpGcsBucket** | `audioExportSettings.gcsBucket` | `status.outputs.bucket_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -93,5 +93,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Dialogflow CX Agent**](/cloud-catalog/gcp-dialogflow-cx-agent) -- the agents that apply these settings
-- [**GCP GCS Bucket**](/cloud-catalog/gcp-gcs-bucket) -- where exported audio lands
+- [**GCP Dialogflow CX Agent**](/infra-catalog/gcp-dialogflow-cx-agent) -- the agents that apply these settings
+- [**GCP GCS Bucket**](/infra-catalog/gcp-gcs-bucket) -- where exported audio lands

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azureloadbalancer.v1alpha1;
 
-// **AzureLoadBalancerStackOutputs** captures the outputs of provisioning
+// **AzureLoadBalancerOutputs** captures the outputs of provisioning
 // an Azure Load Balancer.
 //
 // The maps keyed by sub-resource NAME are the composition seams: backend
@@ -12,7 +12,7 @@ package dev.planton.azure.azureloadbalancer.v1alpha1;
 // NAT-rule association references `status.outputs.nat_rule_ids.<rule-name>`,
 // and a scale set's rolling-upgrade health probe references
 // `status.outputs.probe_ids.<probe-name>`.
-message AzureLoadBalancerStackOutputs {
+message AzureLoadBalancerOutputs {
   // The Azure Resource Manager ID of the load balancer.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/loadBalancers/{name}
   string load_balancer_id = 1;

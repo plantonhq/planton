@@ -1,7 +1,7 @@
 package module
 
-// Stack output keys — must stay in lockstep with
-// AwsRoute53HealthCheckStackOutputs.
+// Output keys — must stay in lockstep with
+// AwsRoute53HealthCheckOutputs.
 const (
 	OpHealthCheckId  = "health_check_id"
 	OpHealthCheckArn = "health_check_arn"

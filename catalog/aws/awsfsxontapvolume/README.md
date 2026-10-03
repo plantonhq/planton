@@ -119,7 +119,7 @@ spec:
 | `autocommit_period` | object | (none) | Auto-commit files to WORM after inactivity. |
 | `retention_period` | object | (none) | Default/min/max retention bounds. |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
@@ -130,7 +130,7 @@ spec:
 | `flexcache_endpoint_type` | FlexCache endpoint type (NONE/ORIGIN/CACHE) |
 | `ontap_volume_type` | Confirmed volume type (RW/DP) |
 
-## Related Components
+## Related Kinds
 
 - [AwsFsxOntapStorageVirtualMachine](../awsfsxontapstoragevirtualmachine/) — Parent SVM
 - [AwsFsxOntapFileSystem](../awsfsxontapfilesystem/) — Grandparent file system

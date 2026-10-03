@@ -5,16 +5,16 @@ Pulumi (Go) IaC module for a scheduled waiting-room event -- a time window whose
 ## Architecture
 
 ```
-main.go                       — Entrypoint loading the stack input
+main.go                       — Entrypoint loading the IaC input
 module/main.go                — Resources(): provider setup, resource, outputs
 module/locals.go              — Locals initialization
 module/waiting_room_event.go  — cloudflare.WaitingRoomEvent
-module/outputs.go             — Stack output keys
+module/outputs.go             — output keys
 ```
 
 ## Behavior
 
-Mirrors the Terraform module's contract exactly: RFC3339 times, duration walls, shuffle-needs-prequeue, users pair both-or-neither, `event_id` / `waiting_room_id` / `zone_id` stack outputs.
+Mirrors the Terraform module's contract exactly: RFC3339 times, duration walls, shuffle-needs-prequeue, users pair both-or-neither, `event_id` / `waiting_room_id` / `zone_id` outputs.
 
 ## Outputs
 

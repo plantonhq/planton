@@ -9,7 +9,7 @@ provider.tf   — Cloudflare provider configuration
 variables.tf  — Input variables mirroring CloudflareHyperdriveConfigSpec
 locals.tf     — Resource naming
 main.tf       — cloudflare_hyperdrive_config resource
-outputs.tf    — Stack outputs (hyperdrive_id, name)
+outputs.tf    — outputs (hyperdrive_id, name)
 ```
 
 ## Usage

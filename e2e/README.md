@@ -5,13 +5,13 @@ verify the results against real providers.
 
 ## What This Framework Does
 
-Every Planton component ships with Pulumi and Terraform modules that create
+Every Planton kind ships with Pulumi and Terraform modules that create
 cloud infrastructure. These E2E tests prove that those modules actually work by
 executing the full lifecycle against real providers:
 
-1. **VALIDATE** -- load the manifest and build the stack input
+1. **VALIDATE** -- load the manifest and build the IaC input
 2. **DEPLOY** -- run the IaC module (Pulumi up or Terraform apply)
-3. **VERIFY-OUT** -- check that stack outputs are populated
+3. **VERIFY-OUT** -- check that outputs are populated
 4. **VERIFY-RES** -- confirm resources exist using provider-native tools
 5. **DESTROY** -- tear down all created resources
 6. **VERIFY-CLN** -- confirm resources are gone
@@ -19,7 +19,7 @@ executing the full lifecycle against real providers:
 If any phase fails, the framework still attempts DESTROY to avoid leaking
 resources.
 
-When a component has dependencies (see "Component Dependencies" below), the
+When a kind has dependencies (see "Kind Dependencies" below), the
 framework wraps this lifecycle with a **DEPENDENCIES-UP** phase before VALIDATE
 and a **DEPENDENCIES-DOWN** phase after VERIFY-CLN (teardown in reverse order).
 
@@ -32,7 +32,7 @@ second plan means the module and the provider disagree about applied state —
 the send-omitted-value and Optional+Computed echo defect classes, which
 users otherwise meet as a perpetual diff on every re-apply (first live
 catch: the Identity Platform config's server-materialized
-`sign_in.phone_number` block). The gate covers the component under test
+`sign_in.phone_number` block). The gate covers the kind under test
 only; prerequisite fixtures belong to other kinds' contracts. Arm it per
 provider after the catalog's known no-op re-plan classes are burned down.
 
@@ -49,17 +49,17 @@ module OUTPUT drifts, which users meet as a perpetual "changes to outputs"
 on every re-apply. The remedy is never to silence the gate: export a
 module-derived value (built from spec/identity), or normalize the
 attribute to the form the output contract documents — in BOTH engines, so
-stack outputs stay byte-identical.
+outputs stay byte-identical.
 
 ## Directory Layout
 
-### Component E2E Structure
+### Kind E2E Structure
 
-Test scenarios, profiles, and fixtures live **next to their components** at the
-component root's `e2e/` level:
+Test scenarios, profiles, and fixtures live **next to their kinds** at the
+kind root's `e2e/` level:
 
 ```
-catalog/{provider}/{component}/
+catalog/{provider}/{kind}/
   e2e/
     manifest.yaml          <-- the canonical validated example manifest
     profile.yaml           <-- E2E profile (tier, status, provisioners, timeout)
@@ -68,7 +68,7 @@ catalog/{provider}/{component}/
       with-probes.yaml
       with-hpa.yaml
     prerequisite.yaml      <-- optional: this kind's install profile, used when it
-                               is itself a prerequisite of another component
+                               is itself a prerequisite of another kind
   iac/
     pulumi/                <-- Pulumi module
     tf/                    <-- Terraform module
@@ -91,11 +91,11 @@ catalog/{provider}/aa_e2e/
 For Kubernetes, the harness creates a `kind` cluster and uses `kubectl` for
 verification.
 
-## Component Dependencies
+## Kind Dependencies
 
-Some components need other resources installed before they can be applied -- an
+Some kinds need other resources installed before they can be applied -- an
 operator that owns their CRD, or the CRDs themselves. The harness deploys these
-dependencies before the component under test and tears them down in reverse
+dependencies before the kind under test and tears them down in reverse
 order afterward, resolved by `ResolveDependencies`
 ([dependencies.go](framework/runner/dependencies.go)) from the proto registry.
 Each dependency deploys on its own kind's engine, whatever engine the lane under
@@ -108,17 +108,17 @@ its own lane is. When an HCL dependency's destroy fails, its working copy is
 kept and named in the error: it holds the only record of what is still live.
 
 Each kind declares its prerequisites in the proto registry
-(`CloudResourceKindMeta.prerequisites` in `cloud_resource_kind.proto`). The
+(`CatalogKindMeta.prerequisites` in `catalog_kind.proto`). The
 harness resolves them transitively and installs each one using, in order of
-preference, a consumer-scoped override at the consuming component's
+preference, a consumer-scoped override at the consuming kind's
 `e2e/prerequisites/<dep>.yaml` (for when the same prerequisite kind needs a
 different install shape per consumer — e.g. GcpGlobalAddress as an EXTERNAL
 VIP for a forwarding rule vs an INTERNAL VPC_PEERING range for a service
 networking connection), then the dependency's `e2e/prerequisite.yaml` (its
 published install profile), then its `e2e/scenarios/minimal.yaml`. Declaring
-`prerequisites: [X]` is all that is needed -- no per-component wiring.
+`prerequisites: [X]` is all that is needed -- no per-kind wiring.
 
-**Transitive prerequisites resolve against the component under test, not against
+**Transitive prerequisites resolve against the kind under test, not against
 intermediate dependencies.** If kind A depends on B and B depends on C, the install
 manifest for C is looked up under A's `e2e/prerequisites/c.yaml` (then C's published
 profile), NOT under B's consumer-scoped overrides. So when B's install profile
@@ -138,7 +138,7 @@ half-finished teardown do not 409 on recreate.
 *Example:* every Gateway API kind declares `KubernetesGatewayApiCrds`, so the
 harness installs the Gateway API CRDs (experimental channel, version-pinned)
 before applying a GatewayClass / Gateway / route / ReferenceGrant. The Tier 3
-operator-dependent components (Postgres, Kafka, ...) likewise declare their
+operator-dependent kinds (Postgres, Kafka, ...) likewise declare their
 operator kind, which installs from the operator's `scenarios/minimal.yaml`.
 
 ### Dependency lifecycle robustness (asynchronous producer cleanup)
@@ -182,7 +182,7 @@ service networking connection chain):
   copy, for every scenario.) Pulumi dependency stacks are keyed by run id, so every scenario in a run reuses the
   same stack name; if an earlier scenario's teardown half-completed, stale
   state would otherwise make a later `up` a silent no-op while the actual
-  cloud resource is gone.
+  infra component is gone.
 
 The SCENARIO's own DESTROY phase (distinct from the fixture-chain teardown
 above) is single-attempt by default — a destroy failure is usually a real
@@ -221,11 +221,11 @@ uniqueness lives (a multi-instance install profile's `-a`/`-b`/`-c` instance
 suffix and the run id). The live-caught failure class this kills: three
 same-kind install-profile instances whose names truncated identically shared
 ONE dependency stack, so each successive `pulumi up` silently REPLACED the
-previous instance's cloud resource — the component under test then failed
+previous instance's infra component — the kind under test then failed
 with a stale resolved reference ("InvalidSubnet ... does not exist" moments
 after the fixture "deployed and verified"), and teardown destroyed one stack
 then burned its full retry budget on "no stack named" ghosts. That signature
-— a fixture that verified cleanly, a component create rejecting the fixture's
+— a fixture that verified cleanly, a kind create rejecting the fixture's
 id, and repeated "no stack named <truncated-name>" destroys — means stack-name
 collision, not a module defect.
 
@@ -240,7 +240,7 @@ versions `DESTROYED`/`DESTROY_SCHEDULED`, rotation off) instead of absence;
 (3) the post-run sweep expectation is "no ACTIVE material", not "no objects"
 — run-scoped rings/keys accumulate in the test project as inert, zero-cost
 residue by GCP design. Do not hand-sweep them; there is nothing to sweep.
-(4) A component whose PREREQUISITE is undeletable gets ONE live scenario:
+(4) A kind whose PREREQUISITE is undeletable gets ONE live scenario:
 prerequisites redeploy per scenario with the same engine-scoped run id, so
 a second scenario re-creates the just-"destroyed" (state-only) prerequisite
 and 409s on its own leftover. Fold the arms into one scenario and record
@@ -309,7 +309,7 @@ the service is destroyed, and until GCP garbage-collects it the subnetwork
 destroy fails with `resourceInUseByAnotherResource` (the reservation itself
 cannot be deleted — it is held by the serverless service agent). A scenario
 whose prerequisite teardown depends on such a release must NOT run live:
-record it as an E2E exclusion in the component's `e2e/profile.yaml` with the
+record it as an E2E exclusion in the kind's `e2e/profile.yaml` with the
 specific reason, and prove the surface offline instead. Fixed prerequisite
 names make this worse (a stranded subnet collides with the next run), so any
 scenario in an async-release blast radius should carry `${E2E_RUN_ID}` in its
@@ -479,7 +479,7 @@ The filename MUST end in `.setup.sh`. The repo's blanket `*.sh` gitignore would 
 
 The runner executes it as the `SETUP` phase -- after DEPENDENCIES-UP and
 reference resolution (the fixtures the script seeds into exist), before
-VALIDATE (a seeding failure stops the lane before any component deploy). The
+VALIDATE (a seeding failure stops the lane before any kind deploy). The
 script runs via bash from the repo root, once per engine lane, inheriting the
 process environment (cloud CLI logins, the harness's `ARM_*`/`PLANTON_E2E_*`
 exports) plus `E2E_RUN_ID` (engine-scoped), `E2E_SCENARIO`, and
@@ -487,7 +487,7 @@ exports) plus `E2E_RUN_ID` (engine-scoped), `E2E_SCENARIO`, and
 chain still tears down.
 
 **Publishing seeded facts to the manifest under test.** Some facts exist only
-AFTER seeding and are exactly what the component must declare: the storage
+AFTER seeding and are exactly what the kind must declare: the storage
 path of the backup the script just took, the id of a snapshot it cut, a name
 a fixture's controller generated. The script publishes them as `NAME=value`
 lines (`NAME` matching `[A-Z][A-Z0-9_]*`) into the file at
@@ -525,7 +525,7 @@ Rules that keep the seam honest:
 
 ### Failure-mode lanes: a deliberate failure as machine-verified evidence
 
-Some scenarios PROVE by failing: a component deployed with a credential a
+Some scenarios PROVE by failing: a kind deployed with a credential a
 real service rejects (the canonical case: a Planton runner appliance with a
 fake enrollment token). The framework carries two annotation-activated
 shapes, both dispatching to optional harness capabilities
@@ -560,7 +560,7 @@ post-mortem (VERIFY-CLN has no VerifyDeployed state to reuse), and
 runtime-cause classifiers should fail IMMEDIATELY on recognizable
 wrong-cause states (pull failures) rather than polling them into a timeout.
 
-### Lifecycle lanes: proving a component's second act
+### Lifecycle lanes: proving a kind's second act
 
 The standard lifecycle proves one install. Some promises are about what
 happens NEXT -- a version bump re-applies what the module owns, a destroy
@@ -569,7 +569,7 @@ module must refuse is refused before anything is touched, an object
 someone deleted in the vendor's console comes back the way the GUIDE says.
 Four annotations on a scenario extend the lifecycle; each reuses the same
 engine input binding the first deploy used, so a second manifest reaches
-the engine exactly the way the first did (a fresh stack input for Pulumi, a
+the engine exactly the way the first did (a fresh IaC input for Pulumi, a
 regenerated tfvars in the same working directory for Terraform):
 
 - **`planton.dev/e2e-upgrade-manifest: <file beside the scenario>`** adds
@@ -673,12 +673,12 @@ metadata:
 
 The value is provider-interpreted (`provider.IdentityProvisioner`). The
 Kubernetes harness builds a ServiceAccount bound, through one ClusterRole,
-to exactly the rules the component's `iac/permissions.yaml` declares
+to exactly the rules the kind's `iac/permissions.yaml` declares
 (`declared`), or those rules with the named verbs withheld
 (`declared-minus`), mints a short-lived token, and hands the lane a
 `self_managed` provider configuration that authenticates as it. The
-configuration reaches both engines through the same stack-input path a
-console deploy uses (Pulumi through the stack input; Terraform as
+configuration reaches both engines through the same iac-input path a
+console deploy uses (Pulumi through the IaC input; Terraform as
 `KUBECONFIG`/`KUBE_CONFIG_PATH` written into the lane's working directory),
 so nothing about the process environment changes and the fixture chain
 keeps the harness's posture. The IDENTITY phase runs after SETUP and before
@@ -699,7 +699,7 @@ plus an owner-arranged R2 key pair (`PLANTON_E2E_CLOUDFLARE_R2_ACCESS_KEY_ID`
 / `PLANTON_E2E_CLOUDFLARE_R2_SECRET_ACCESS_KEY`; Cloudflare mints R2 keys only
 in its dashboard). Pulumi receives the pair as `provider_config.r2` and
 OpenTofu as `TF_VAR_r2_*`, exactly as a console deploy delivers it, so a
-component that reads R2 objects through the S3 API (the Worker's r2 bundle)
+kind that reads R2 objects through the S3 API (the Worker's r2 bundle)
 is proven on the product path rather than on whatever `AWS_*` credentials the
 machine holds. A scenario declaring it lists those variables in
 `planton.dev/e2e-required-env`.
@@ -746,7 +746,7 @@ without it.
 
 Profiles are KRM-style YAML files (`apiVersion: qa.planton.dev/v1`) that
 declare how E2E tests are executed. The CI workflow reads these profiles to
-dynamically generate the test matrix -- no hardcoded component lists.
+dynamically generate the test matrix -- no hardcoded kind lists.
 
 ### Provider Profile (`aa_e2e/profile.yaml`)
 
@@ -767,13 +767,13 @@ spec:
   max_concurrent_tests: 8
 ```
 
-### Component Profile (`e2e/profile.yaml`)
+### Kind Profile (`e2e/profile.yaml`)
 
-Declares a component's E2E readiness:
+Declares a kind's E2E readiness:
 
 ```yaml
 apiVersion: qa.planton.dev/v1
-kind: ComponentE2EProfile
+kind: CatalogKindE2EProfile
 metadata:
   name: kubernetesvalkey
 spec:
@@ -790,14 +790,14 @@ Status values:
 - **stub** -- module is a stub with no real deployment logic
 
 The status is enforced at two layers: CI matrices are built from `planton
-e2e discover` filters, and the provider test runners load the component's
-profile and `t.Skip` any non-green component (with the profile's
+e2e discover` filters, and the provider test runners load the kind's
+profile and `t.Skip` any non-green kind (with the profile's
 `deferred_reason` in the skip message) -- so a full-provider suite run
 never fails on a documented deferral.
 
-## Discovering Components
+## Discovering Kinds
 
-The `planton e2e discover` CLI command scans profiles and displays component
+The `planton e2e discover` CLI command scans profiles and displays kind
 readiness:
 
 ```bash
@@ -823,13 +823,13 @@ of `pulumi` (for Pulumi E2E) or `tofu`/`terraform` (for Terraform E2E).
 # All Kubernetes E2E tests (Pulumi + Terraform, all tiers)
 make e2e-test-kubernetes
 
-# Pulumi-only, single component
-make e2e-test-component component=KubernetesNamespace_Pulumi
+# Pulumi-only, single kind
+make e2e-test-kind kind=KubernetesNamespace_Pulumi
 
 # Terraform-only, Tier 1
 make e2e-test-kubernetes-terraform-tier1
 
-# Terraform-only, single component
+# Terraform-only, single kind
 go test -tags=e2e -timeout=30m -v -count=1 \
   -run "TestKubernetesNamespace_Terraform/minimal$" ./e2e/...
 ```
@@ -841,7 +841,7 @@ program available during destroy so BeforeDelete/AfterDelete resource hooks
 fire). Older Pulumi CLIs do not know the flag, and the failure mode is nasty:
 every phase up to and including VERIFY-RES passes, then DESTROY fails
 instantly with `unknown flag: --run-program` -- so the lane fails AFTER
-creating real cloud resources, whose stack state lives in the run's temp
+creating real infra components, whose stack state lives in the run's temp
 backend and is discarded when the process exits. The resources must then be
 swept by hand (`az group list` / the provider's own list commands) before a
 re-run. Verified live: v3.137.0 fails exactly this way; v3.256.0 works.
@@ -849,7 +849,7 @@ Check `pulumi destroy --help | grep run-program` before the first lane on
 any machine, and upgrade the CLI rather than editing the runner -- the flag
 is load-bearing for delete-hook correctness.
 
-### Sensitive stack outputs: the Pulumi output reader passes `--show-secrets`
+### Sensitive outputs: the Pulumi output reader passes `--show-secrets`
 
 The runner reads Pulumi outputs with `pulumi stack output --json
 --show-secrets`. The flag is load-bearing: without it Pulumi masks every
@@ -918,10 +918,10 @@ pass (do not relaunch into it; the retry burns the whole chain again), then
 re-run only the failed scenario. Memory can read healthy throughout; CPU
 scheduler starvation alone is enough to trigger it.
 
-### Long-running Azure components (AKS)
+### Long-running Azure kinds (AKS)
 
 AKS clusters take roughly 5–10 minutes to create and a similar time to delete.
-Component E2E profiles for `azureakscluster` and `azureaksnodepool` set
+Catalog kind E2E profiles for `azureakscluster` and `azureaksnodepool` set
 `timeout_minutes: 60–75`. When invoking tests directly, size `-timeout` beyond
 the default 30m:
 
@@ -930,7 +930,7 @@ go test -tags=e2e -timeout=90m -v -count=1 \
   -run 'TestAzureAksCluster_Pulumi/minimal' ./e2e/azure/...
 ```
 
-### Long-running Azure components (VPN gateways)
+### Long-running Azure kinds (VPN gateways)
 
 Classic virtual network gateways are the suite's slowest single
 resource: measured live (VpnGw1AZ, eastus), the create ran **36m** and
@@ -946,7 +946,7 @@ Burstable VM sizes in `eastus` may support only availability zone `1` — multi-
 lists fail with `AvailabilityZoneNotSupported`. AKS E2E scenarios in this repo
 use `zones: ["1"]` for the test subscription.
 
-### Long-running Azure components (ExpressRoute circuits)
+### Long-running Azure kinds (ExpressRoute circuits)
 
 An ExpressRoute circuit CREATE is a slow ARM long-running operation:
 measured live at **~17-19 minutes** per create (Equinix / "Washington
@@ -955,10 +955,10 @@ consecutive creates on both engines), while the delete completes in a
 minute or two. Budget it in every lane whose prerequisite chain deploys
 the fixture circuit (the circuit-peering lane pays it inside
 DEPENDENCIES-UP), and note the peering's own DELETE runs ~7-8 minutes.
-The circuit-family component profiles carry `timeout_minutes: 45` for
+The circuit-family kind profiles carry `timeout_minutes: 45` for
 exactly this class.
 
-### Long-running Azure components (Virtual WAN hubs)
+### Long-running Azure kinds (Virtual WAN hubs)
 
 A Virtual WAN hub create is dominated by its managed router reaching a
 Provisioned routing state: measured live (Standard hub, eastus/eastus2),
@@ -974,7 +974,7 @@ fixture before their own resource starts. One hub per region per WAN:
 scenario hubs must live in a different region than the fixture hub
 (eastus2 vs eastus in this repo) so overlapping lanes can never collide.
 
-### Long-running Azure components (ExpressRoute gateways in vWAN hubs)
+### Long-running Azure kinds (ExpressRoute gateways in vWAN hubs)
 
 An ExpressRoute gateway in a Virtual WAN hub is the vWAN family's second
 slow class: measured live (one scale unit, eastus), the create ran
@@ -983,7 +983,7 @@ slow class: measured live (one scale unit, eastus), the create ran
 fixture-hub cycle first (see above) -- a single-engine lane totals
 **~70-75 minutes**; budget `-timeout=180m` per engine.
 
-### Long-running Azure components (vWAN VPN gateways)
+### Long-running Azure kinds (vWAN VPN gateways)
 
 A site-to-site VPN gateway in a Virtual WAN hub is the vWAN family's
 third slow class: measured live (one scale unit, eastus, consistent
@@ -1001,7 +1001,7 @@ fixture gateway occupies the fixture hub's slot, so the gateway and
 connection lanes must run SEQUENTIALLY, and a wedged gateway teardown
 blocks every subsequent lane needing that slot until swept.
 
-### Long-running Azure components (point-to-site VPN gateways)
+### Long-running Azure kinds (point-to-site VPN gateways)
 
 A point-to-site VPN gateway in a Virtual WAN hub is the vWAN family's
 fourth slow class, timing-identical to its site-to-site sibling:
@@ -1018,7 +1018,7 @@ but two P2S lanes sharing a fixture hub must run SEQUENTIALLY, and a
 wedged gateway teardown blocks the hub's P2S slot AND the hub's own
 deletion until swept.
 
-### Long-running Azure components (ML managed online deployments)
+### Long-running Azure kinds (ML managed online deployments)
 
 A managed online deployment provisions a real VM (no scale-to-zero).
 Measured live (one Standard_F2s_v2, eastus, both engines): create
@@ -1039,10 +1039,10 @@ real body defect) and gets its own recorded boundary.
 
 ### A dirty `e2e/profile.yaml` on a shared checkout is a LIVE proof lane's state
 
-The proof workflow flips a component's profile `pending_proof` -> `green`
+The proof workflow flips a kind's profile `pending_proof` -> `green`
 immediately before its lanes and keeps the flip UNCOMMITTED until the
 session's wrap-up commit -- so on a checkout shared by concurrent agent
-sessions, an uncommitted `status: green` on a pending-proof component is
+sessions, an uncommitted `status: green` on a pending-proof kind is
 the signature of a proof lane running RIGHT NOW, not stray drift. A
 concurrent session that discards it (observed live: an authoring session's
 wrap-up reset the flip mid-lane) makes the proof session's next lane
@@ -1249,7 +1249,7 @@ exactly as it started. Never write a non-default value to a no-op-destroy
 surface on a zone the lane does not own.
 
 
-### Long-running Azure components (Bastion hosts)
+### Long-running Azure kinds (Bastion hosts)
 
 A Bastion host is the ~10-minute duration class outside gateways:
 measured live (BASIC SKU, eastus, dedicated AzureBastionSubnet), the
@@ -1270,7 +1270,7 @@ per virtual network and ONE endpoint per delegated subnet, and every
 lane in the family -- the resolver's own smoke AND the fixture resolver
 the ruleset/link chains deploy -- anchors the same fixture network and
 delegated subnets. **Never run any two of this family's lanes
-concurrently**, and never use the `make e2e-test-component` wrapper for
+concurrently**, and never use the `make e2e-test-kind` wrapper for
 the resolver (its unanchored `-run "Test.*AzurePrivateDnsResolver"`
 regex matches all three kinds' test entries at once); use exact
 anchored filters like `-run 'TestAzurePrivateDnsResolver_Pulumi$'`.
@@ -1489,7 +1489,7 @@ plus every side-channel knob the policy also owns), because a
 source-diff of the provider cannot prove combinations the provider never
 validates. When such a rejection surfaces, front-load it as a spec CEL
 (with the ARM error code in the message trail), fix the scenario, and
-record the contract in the component docs -- the next component in the
+record the contract in the kind docs -- the next kind in the
 same service family should check for sibling "managed by the parent"
 exclusions up front.
 
@@ -1600,7 +1600,7 @@ decode create responses without a read-after-create, so every computed
 attribute the create response omitted sits NULL in state until the first
 refresh backfills it. Three failure shapes, worst first: (1) a module
 expression dereferencing the attribute (`resource.ruleset.id` feeding a
-folded child resource) HARD-FAILS the apply; (2) a stack output riding the
+folded child resource) HARD-FAILS the apply; (2) an output riding the
 attribute ships EMPTY on first deploy on both engines -- a wrong output,
 not just noise; (3) on Terraform, the first refresh backfills the value
 and flips the output, failing the strict idempotency re-plan with a
@@ -1625,20 +1625,20 @@ fields) plus null-safe outputs -- not by a read-after-create, which cannot
 conjure an object the API never creates. Run the probe on BOTH identity
 variants before concluding which class you have.
 
-### A transitioning phase is never a stack output: the async-phase-output class
+### A transitioning phase is never an output: the async-phase-output class
 
 Distinct from the read-after-create class above (where a stable value
 merely arrives late): some resources carry a status attribute that
 GENUINELY TRANSITIONS server-side after create (a certificate deployment
 moving pending_deployment -> active seconds later). Exporting it as a
-stack output makes strict idempotency structurally unpassable -- the
+output makes strict idempotency structurally unpassable -- the
 refresh after the transition flips the output, `-detailed-exitcode`
 answers 2 on a "Changes to Outputs"-only diff, and a real customer sees a
 phantom pending change on every plan after the transition. No
 read-after-create fixes it (the create-time read captures the WRONG
 phase), and no catalog tolerance can absorb an idempotency failure. The
 fix is contract-level, in both engines: transitioning phases are not
-deployment facts, so they are not stack outputs -- drop the output and
+deployment facts, so they are not outputs -- drop the output and
 teach readers to query the provider's API for live phase. Outputs carry
 only values that are stable once the apply returns (ids, names, expiry
 timestamps). First measured user (live 2026-08-28):
@@ -1746,7 +1746,7 @@ the Terraform module AND `pulumi.IgnoreChanges` on the same property in the
 Pulumi module -- the BRIDGED provider surfaces the same phantom update in
 previews (a preview never refreshes, but it DOES run the provider's plan
 against stored state, so "Pulumi previews hide refresh drift" is NOT immunity
-to this class). The stack output still reads the real value from state.
+to this class). The output still reads the real value from state.
 First measured user (live 2026-08-27, v5.23.0):
 `cloudflare_zero_trust_device_default_profile.policy_id` -- both engines
 measured drifting, both converged by the ignore.
@@ -2058,7 +2058,7 @@ as its execution layer. For each test scenario:
 1. The TF module (`iac/tf/`) is copied to a temp directory
 2. `terraform.tfvars` is generated from the manifest proto via `ProtoToTFVars()`
 3. `backend.tf` is written with a local backend
-4. Provider env vars are extracted from the stack-input YAML by the same loader the CLI and the platform runner use. For Kubernetes lanes there is no provider config, so the loader's local-workflow branch hands the Terraform providers the harness's own `KUBECONFIG` under the names they read (`KUBE_CONFIG_PATH`, `KUBE_CTX`); the harness adds nothing of its own, so a green lane proves what a laptop gets
+4. Provider env vars are extracted from the iac-input YAML by the same loader the CLI and the platform runner use. For Kubernetes lanes there is no provider config, so the loader's local-workflow branch hands the Terraform providers the harness's own `KUBECONFIG` under the names they read (`KUBE_CONFIG_PATH`, `KUBE_CTX`); the harness adds nothing of its own, so a green lane proves what a laptop gets
 5. Terratest runs `tofu init` + `tofu apply` with built-in transient error retry
 6. The same kubectl verifiers validate the deployed infrastructure
 7. Terratest runs `tofu destroy`
@@ -2138,7 +2138,7 @@ engine; a zonal NAT gateway scenario ~7 min per engine end-to-end (create
 NAT gateway is the same order; an NLB scenario ~6 min per engine (create
 2-3 min, delete similar). Budget `-timeout` for scenarios × engines plus the
 import round-trip when `PLANTON_E2E_IMPORT_ROUNDTRIP=1` is set (it re-imports
-and re-plans every resource, roughly doubling a component's Terraform lane).
+and re-plans every resource, roughly doubling a kind's Terraform lane).
 
 **Probe Service Quotas BEFORE any instance-backed SageMaker lane — most
 endpoint instance quotas default to ZERO on every account.** The per-type
@@ -2442,7 +2442,7 @@ manifest that repeats a mapping key now fails loudly at load instead
 of silently keeping the last value.
 
 **A kind whose manifests can deploy OFF the ambient region must export
-`region` in its stack outputs — the harness verifies where the outputs
+`region` in its outputs — the harness verifies where the outputs
 say, not where the scenario deployed.** The harness's VerifyDeployed
 resolves the verifier's region from `outputs["region"]`; when the
 output is absent the SDK falls back to the ambient region, and a
@@ -2696,7 +2696,7 @@ stranding orphans when the first dies teardown-less (live hit 2026-08-13:
 a Bedrock flow lane's first execution created the fixed-name MANAGED-KB
 prerequisite six minutes before the reported execution's own start, which
 then failed 409 against it; the stranded KB outlived both). The signature
-is a cloud resource whose `createdAt` PRECEDES the reported command's
+is an infra component whose `createdAt` PRECEDES the reported command's
 possible start window. Defenses: pipe lane logs through `tee -a` with a
 per-launch header line (echo a timestamped RUN marker before `go test`) so
 a truncation-invisible predecessor cannot exist, and treat any
@@ -2713,7 +2713,7 @@ with the proof session's own files copied in. Two hard rules from the
 first live use (2026-08-14): (1) copy files into the worktree ONLY
 between lanes — a stub synced mid-run broke the running lane's own
 DESTROY, because `pulumi destroy` recompiles the module program against
-the tree as it stands and a new CEL rejected the in-flight stack-input
+the tree as it stands and a new CEL rejected the in-flight iac-input
 (the never-edit-what-a-lane-reads class via the sync side door); and
 (2) the main tree stays the record tree — profile flips and spec/module
 fixes land there first and copy over, so the wrap commit never depends
@@ -2726,7 +2726,7 @@ lanes honest meanwhile.
 the CLI's model before diagnosing a missing field.** The CLI parses
 responses against its bundled service model and discards members it does
 not know, so evidence gathered with `aws <svc> get-*` can show a
-just-modeled field as absent while the cloud resource carries it (live
+just-modeled field as absent while the infra component carries it (live
 hit 2026-08-12: `get-distribution-config` from aws-cli 2.33.24 omitted
 CloudFront's `CacheTagConfig` — same-wave `ResponseCompletionTimeout` and
 `IpAddressType` appeared fine — while the Terraform destroy-refresh read
@@ -2770,7 +2770,7 @@ its header line with the process gone is this class — name loop
 variables defensively (`G_ID`), same family as the `:s`/`:l` modifier
 trap below. (1) **watch
 the name the MODULE derives, not metadata.name** — some kinds name their
-cloud resource from a spec field (ECR's `spec.repository_name`), and a
+infra component from a spec field (ECR's `spec.repository_name`), and a
 watcher armed on metadata.name polls a resource that never exists,
 producing an all-NotFound log that looks like a timing miss (28 clean
 iterations, zero captures — beyond plausible bad luck is the signature;
@@ -3016,7 +3016,7 @@ kind exists; that is design, not a defect). Pre-existing findings live in
 `fixture_integrity_baseline.yaml` and only ever burn down; a new finding is
 a manifest fix, never a new baseline entry. Run it with
 `go test ./e2e/framework/runner/ -run TestCatalogFixtureIntegrity`.
-Components whose profile records `status: deferred` are skipped by the
+Kinds whose profile records `status: deferred` are skipped by the
 catalog walk: a deferral is the kind's own record that its lanes cannot run
 (some wall-class prerequisites are structurally unshippable — e.g. an AWS
 Organization fixture would mutate the shared account irreversibly), so the
@@ -3149,7 +3149,7 @@ update in the same apply.
 **Typed-client gaps in the pinned Google API line:** a brand-new GCP service
 may have no typed client in the repo's pinned `google.golang.org/api`
 version (Memorystore for Valkey was first). Do not bump the shared
-dependency mid-component for one verifier — the harness carries an
+dependency mid-kind for one verifier — the harness carries an
 ADC-authenticated plain HTTP client (`Services.RestClient`) for exactly
 this: probe the service's documented REST GET path and decode the few
 fields the posture assertions need. Swap to the typed client whenever the
@@ -3165,7 +3165,7 @@ observation adds two facts: it strikes WITHOUT any interrupt (a chained
 `go test ... && go test ...` command was doubled whole, both siblings ran
 to clean completion), and the collision surface includes the SHARED module
 source directories — the sibling's dependency deploy overwrote the kind's
-`stack-input.yaml` between a lane's apply and its IDEMPOTENCY preview, so
+`iac-input.yaml` between a lane's apply and its IDEMPOTENCY preview, so
 the preview compiled against the sibling's prerequisite manifest and
 reported a bogus replace (a different cloud-side name from a run id no
 logged lane used is the tell). The fourth observation adds a SERIAL
@@ -3195,11 +3195,11 @@ whose names carry a run-id suffix that matches no logged lane (creation
 timestamps from the audit log date the dead spawn precisely).
 
 **Run GCP e2e batches SEQUENTIALLY — never two `go test` processes at once:**
-the GCP dependency deploys write each prerequisite's stack-input into the
+the GCP dependency deploys write each prerequisite's iac-input into the
 SHARED module source directories under `apis/.../iac/pulumi`, so a second
 concurrent `go test` process picks up the first's on-disk manifests and
 collides on the other run's names (409 already-exists / cross-contaminated
-stacks). Run one component's batch to completion (or one scenario at a time)
+stacks). Run one kind's batch to completion (or one scenario at a time)
 before starting the next; parallelism within a single process is bounded by
 the framework, but two processes are not isolated from each other.
 
@@ -3267,7 +3267,7 @@ harness handles the class once, in `VerifyDestroyed`: a verifier returns the
 typed `verify.StillExistsError` when the API still answers, and only that
 error is re-probed (2s apart, 60s budget); credentials, rate limits, and
 broken lookups still fail the phase on the first probe. New verifiers
-return `&StillExistsError{Component, ID}` for "not gone yet" and wrap
+return `&StillExistsError{Kind, ID}` for "not gone yet" and wrap
 everything else as a genuine error — never a bare `Errorf` for the lingering
 case, or the poll cannot see it.
 
@@ -3275,7 +3275,7 @@ case, or the poll cannot see it.
 environment-authenticated run.** The DigitalOcean tofu modules take the
 token as `var.digitalocean_token`; declared required, the first Terraform
 lane failed at apply with "No value for required variable" because the
-E2E stack input carries no provider config (both engines are meant to read
+E2E IaC input carries no provider config (both engines are meant to read
 the ambient environment). The contract is now `default = null`: a null
 token makes the provider fall back to its own `DIGITALOCEAN_TOKEN` /
 `DIGITALOCEAN_ACCESS_TOKEN` defaults, exactly as the Pulumi bridge does, so
@@ -3337,7 +3337,7 @@ lane since carries an IDEMPOTENCY phase (a second plan or preview right
 after DEPLOY must propose nothing). The switch is inert unless the provider
 test file reads it — `e2e/digitalocean/digitalocean_test.go` loads the
 provider profile in `TestMain` and copies the flag into every
-`ComponentTestContext`, exactly as the GCP, AWS, Azure, and Cloudflare test
+`KindTestContext`, exactly as the GCP, AWS, Azure, and Cloudflare test
 files do. The first armed run proved why: without the wiring the profile
 claimed a gate that never ran, and with it the very first lane caught the
 backups perma-diff below. A new provider test file must copy both blocks
@@ -3408,7 +3408,7 @@ zone's inline records import as `{domain},{record_id}`; the record ids are
 not derivable from spec or metadata, so the zone exports `record_ids`
 keyed by the same key both engines use for each record
 (`<name>-<recIdx>-<valIdx>`), and the import map derives `record_id` with
-`from_stack_output_keyed_by_address` — the `awsvpc` / `awskmskey` pattern.
+`from_output_keyed_by_address` — the `awsvpc` / `awskmskey` pattern.
 Nine resources round-tripped blind on the first run.
 
 **Tags outlive the resources that created them, and unset-region Droplets
@@ -3593,11 +3593,11 @@ on `~spec` for exactly this). The App and Function specs now carry their
 own `DigitalOceanAppRegion` enum; any future kind that composes
 `digitalocean_app` must use it, never `DigitalOceanRegion`.
 
-**App Platform names: one API rule for apps AND components, and apps are
+**App Platform names: one API rule for apps AND kinds, and apps are
 account-unique.** `POST /v2/apps/propose` is a validate-only endpoint
 (creates nothing, prices the spec, and reports `app_name_available`) — use
 it as the free first probe for any App Platform question. Measured: app
-names AND every component name must match `^[a-z][a-z0-9-]{0,30}[a-z0-9]$`
+names AND every kind name must match `^[a-z][a-z0-9-]{0,30}[a-z0-9]$`
 (2–32, letter-first; `9abc`, `Hello_World`, and `web.1` are all rejected
 with the field named), and a 43-character name is rejected at 32. Both
 kinds validate every name with that pattern, and every App Platform
@@ -3607,7 +3607,7 @@ resource carrying its own validated, account-unique name exposes that name
 on its spec — the Function kind used to derive it from `metadata.name`,
 which no e2e metadata name could satisfy.
 
-**A functions component reads `project.yml` from `source_dir`, and the
+**A functions kind reads `project.yml` from `source_dir`, and the
 sample's is at the repo root.** DigitalOcean's
 `sample-functions-nodejs-helloworld` keeps `project.yml` at the root with
 the code under `packages/`; its own deploy template uses `source_dir: /`.
@@ -3638,7 +3638,7 @@ encrypted; upstream #869), documented on both kinds.
 every guard on every pin bump.** The App module guarded six arms as Pulumi
 SDK gaps at v4.49.0; four of them (`maintenance`, `vpc` as a one-element
 `vpcs` list, ingress `authority`, alert `destinations` on app-level and all
-component alerts) had closed at the v4.53.0 pin the tree carried for a
+kind alerts) had closed at the v4.53.0 pin the tree carried for a
 month, so Pulumi customers got a hard error for settings Terraform
 customers had all along. At the next bump (v4.53.0 → v4.79.1) every one of
 the 21 guards then in the tree had closed -- ten on the DOKS cluster, three
@@ -4127,31 +4127,31 @@ create real infrastructure are gated.
 The framework does not hardcode resource names. Instead, it parses each test
 manifest at runtime to extract the resource name, namespace, and kind, then
 builds the appropriate verification dynamically. This means adding a new test
-scenario is as simple as dropping a YAML file into the component's
+scenario is as simple as dropping a YAML file into the kind's
 `e2e/scenarios/` folder -- no Go code changes needed.
 
 ## Adding a New Test Scenario
 
-1. Create a YAML manifest in `{component}/e2e/scenarios/` with a descriptive
+1. Create a YAML manifest in `{kind}/e2e/scenarios/` with a descriptive
    filename
-2. Use a unique `metadata.name` (and unique namespace if the component creates
+2. Use a unique `metadata.name` (and unique namespace if the kind creates
    one) to avoid collisions with other scenarios
-3. Run `make e2e-test-component component={ComponentName}` to verify it works
+3. Run `make e2e-test-kind kind={KindName}` to verify it works
 4. That's it -- the framework discovers and runs it automatically
 
-## Adding a New Component
+## Adding a New Kind
 
 1. Create the IaC modules (`iac/pulumi/`, `iac/tf/`)
-2. Create `e2e/profile.yaml` with the component's E2E profile
+2. Create `e2e/profile.yaml` with the kind's E2E profile
 3. Create at least `e2e/scenarios/minimal.yaml` with a minimal test manifest
-4. If the component needs other resources installed first, declare them as
-   `prerequisites` on the kind in `cloud_resource_kind.proto` (the harness
-   installs them automatically -- see "Component Dependencies").
-5. Add a `Test{ComponentName}_{Provisioner}` function in the appropriate test
-   file (e.g., `kubernetes_test.go`), and -- if the component name does not
+4. If the kind needs other resources installed first, declare them as
+   `prerequisites` on the kind in `catalog_kind.proto` (the harness
+   installs them automatically -- see "Kind Dependencies").
+5. Add a `Test{KindName}_{Provisioner}` function in the appropriate test
+   file (e.g., `kubernetes_test.go`), and -- if the kind name does not
    PascalCase trivially -- a `toPascalCase` entry in
    `pkg/e2e/profile/discover.go` so the CI matrix regex matches it
-6. The CI workflow picks up the new component automatically from the profile
+6. The CI workflow picks up the new kind automatically from the profile
 
 > **A kind with scenarios, a verifier, and a `pending_proof` profile is still unrunnable without step 5.** Shipping `e2e/scenarios/`, a registered verifier, and an import map is not enough: `go test -run 'Test{Kind}_...'` matches zero tests until the two `Test{Kind}_{Pulumi,Terraform}` wrappers exist in the provider's `e2e/{provider}/{provider}_test.go`. First caught on a kind whose only live exercise for weeks was as a chained VIP fixture; caught again on a wave-closing kind that shipped the full offline bar (scenarios, verifier, profile) and omitted only the two wrappers -- `discover` listed it `pending_proof` while no `-run` filter could ever start a lane. A BUILD.bazel `srcs` miss on a new verifier file is the sibling class (gazelle-managed -- run `make gazelle`, never hand-edit). The cheap structural fix is an offline gate that diffs each provider's tier-1 profiles against its test-entry list the same way `TestCatalogFixtureIntegrity` guards prerequisite chains; that spans every provider harness, so it is a framework proposal, not a mid-proof edit. Until it exists, the authoring checklist's step 5 is load-bearing: grep the test file for the kind name before enqueueing.
 >
@@ -4172,7 +4172,7 @@ scenario is as simple as dropping a YAML file into the component's
 ### Real-cloud harness Setup: validate credentials and export preconditions
 
 For a real-cloud provider (`test_substrate: real_cloud`), the framework builds
-every stack input with a **nil provider config**, so the IaC modules resolve
+every IaC input with a **nil provider config**, so the IaC modules resolve
 credentials from the SDK's ambient chain (a keyless CLI/SSO login locally, OIDC
 federation in CI) rather than from a stored secret. The harness `Setup` therefore
 owns two responsibilities beyond wiring verifiers:
@@ -4208,7 +4208,7 @@ owns two responsibilities beyond wiring verifiers:
 
 - **Never call `ctx.Export` inside an `ApplyT` callback in a Pulumi module.**
   Apply callbacks run on output-resolution goroutines, and the exports map
-  they write is the same map the SDK's end-of-program stack-output
+  they write is the same map the SDK's end-of-program output
   marshaling reads — a data race that kills the whole program with
   `fatal error: concurrent map read and map write`, timing-dependent and
   therefore FLAKY (first hit: the subnetwork module's per-index
@@ -4218,7 +4218,7 @@ owns two responsibilities beyond wiring verifiers:
   registers every export synchronously with a value DERIVED via `ApplyT`
   (`ctx.Export(key, out.ApplyT(...))` is safe — it is the export
   registration itself that must stay on the program goroutine). When a
-  fixture deploy dies this way mid-chain, the created cloud resource
+  fixture deploy dies this way mid-chain, the created infra component
   usually IS recorded in the run-scoped stack state, so the next scenario's
   `up --refresh` adopts it — but the failed scenario's own teardown can
   strand it against the chain's parent (a VPC refusing deletion while the
@@ -4235,7 +4235,7 @@ owns two responsibilities beyond wiring verifiers:
   own verifier registered in the provider harness** — the dependency deployer
   verifies each fixture right after installing it, so a missing verifier fails the
   composed scenario at DEPENDENCIES-UP with "no verifier registered", not at the
-  component under test. Wiring a new composed component therefore means wiring
+  kind under test. Wiring a new composed kind therefore means wiring
   verifiers for its whole prerequisite chain (plus a `prerequisite.yaml` or minimal
   scenario for each prerequisite).
 - **Prefer a GET-by-ID existence probe over a HEAD unless the service is known to
@@ -4347,7 +4347,7 @@ owns two responsibilities beyond wiring verifiers:
   409-looped for 11 minutes. The fix is the prerequisite ORDER on
   `AzureBackupProtectedFileShare` -- the share lists BEFORE the registration,
   so teardown unregisters first (lock released), then deletes the share; the
-  reorder is commented in `cloud_resource_kind.proto` as load-bearing. The
+  reorder is commented in `catalog_kind.proto` as load-bearing. The
   general rule: when a prerequisite kind LOCKS another prerequisite's
   resources while alive (registrations, guards, attachments), the locking
   kind must list LAST among its siblings so it dies first.
@@ -4400,7 +4400,7 @@ owns two responsibilities beyond wiring verifiers:
 - **Never let sequential scenarios destroy and recreate the same globally unique
   parent name.** When a kind's registry prerequisite chain deploys a fixture
   whose name is globally unique (an Azure SQL logical server, a Key Vault),
-  every scenario of a multi-scenario component tears the fixture down and the
+  every scenario of a multi-scenario kind tears the fixture down and the
   next scenario recreates it — and Azure can hold the just-deleted name long
   enough that the recreate hangs indefinitely (a `Microsoft.Sql/servers` create
   stuck 20+ minutes with no write in the activity log). Give each scenario its
@@ -4431,24 +4431,24 @@ owns two responsibilities beyond wiring verifiers:
 ```
 e2e/
   e2e_test.go             -- TestMain: shared infrastructure lifecycle
-  kubernetes_test.go      -- Kubernetes test entry points (per-component)
+  kubernetes_test.go      -- Kubernetes test entry points (per-kind)
   framework/
     runner/               -- 6-phase lifecycle engine, Pulumi/Terraform execution
     provider/             -- Harness interface definition
-    discovery/            -- Filesystem scanner for components and scenarios
+    discovery/            -- Filesystem scanner for kinds and scenarios
     reporter/             -- JSON + Markdown report generation
 
 pkg/e2e/profile/          -- E2E profile loader and discovery
-  loader.go               -- YAML→proto loading for provider and component profiles
+  loader.go               -- YAML→proto loading for provider and kind profiles
   discover.go             -- Profile scanning, filtering, GitHub matrix generation
   paths.go                -- Well-known filesystem paths
 
 qa/      -- Proto schema for E2E profiles (KRM-style)
   shared/                 -- Shared enums (CostClass)
   providere2eprofile/v1/  -- ProviderE2EProfile KRM API
-  componente2eprofile/v1/ -- ComponentE2EProfile KRM API
+  catalogkinde2eprofile/v1/ -- CatalogKindE2EProfile KRM API
 ```
 
 The framework is engine-agnostic. The runner supports both Pulumi and Terraform
-execution paths. Each component test runs through the same lifecycle regardless
+execution paths. Each kind test runs through the same lifecycle regardless
 of which engine is used.

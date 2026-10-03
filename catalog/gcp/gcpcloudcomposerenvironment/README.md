@@ -6,7 +6,7 @@ Deploys a Google Cloud Composer environment (`google_composer_environment`) — 
 
 Cloud Composer lets teams run production Airflow without operating Kubernetes, databases, or storage themselves. You declare the environment — sizing, networking, software, security — and upload DAGs to a bucket; Composer handles everything underneath.
 
-This component targets **Composer 2.x and 3**. Composer 1.x is a deprecated generation and its fields are excluded. Both networking models are covered: VPC peering (Composer 2.x) and Private Service Connect, including Composer 3's network-attachment entry point.
+This kind targets **Composer 2.x and 3**. Composer 1.x is a deprecated generation and its fields are excluded. Both networking models are covered: VPC peering (Composer 2.x) and Private Service Connect, including Composer 3's network-attachment entry point.
 
 **Timing note**: environment creation takes 25-45 minutes — Composer assembles a GKE cluster, Cloud SQL database, and web server behind the scenes.
 
@@ -38,7 +38,7 @@ This creates a small public-endpoint environment in the provider's default proje
 | **Networking (Composer 3)** | `node_config.composer_network_attachment` (+ `composer_internal_ipv4_cidr_block`), `enable_private_environment`, `enable_private_builds_only` |
 | **VPC-native ranges** | `node_config.ip_allocation_policy` — pod and services ranges, each a named secondary range XOR a CIDR; `node_config.enable_ip_masq_agent` for pod-to-node SNAT |
 | **Software** | `software_config` — `image_version`, `airflow_config_overrides`, `pypi_packages`, `env_variables` (plain text), `secret_env_variables` (each value stored in its own Secret Manager secret; the env var holds the version's resource name), `web_server_plugins_mode` (Composer 3), `cloud_data_lineage_integration` |
-| **Workloads** | `workloads_config` — per-component CPU/memory/storage for scheduler, web server, workers (autoscaling `min_count`/`max_count`), triggerer, and DAG processor (Composer 3) |
+| **Workloads** | `workloads_config` — per-kind CPU/memory/storage for scheduler, web server, workers (autoscaling `min_count`/`max_count`), triggerer, and DAG processor (Composer 3) |
 | **Security** | `kms_key_name` (CMEK for all Composer-managed resources), `web_server_network_access_control` (UI IP allowlist), `master_authorized_networks_config` (GKE control-plane allowlist) |
 | **Operations** | `maintenance_window` (RFC3339 window + RRULE recurrence, min 12 hours), `recovery_config` (scheduled snapshots), `data_retention_config` (task log storage mode, Airflow metadata retention 30-730 days) |
 | **Storage** | `storage_bucket` — an existing bucket for DAGs/plugins/data instead of the auto-created one |
@@ -46,7 +46,7 @@ This creates a small public-endpoint environment in the provider's default proje
 
 **Immutable fields** (require environment replacement if changed): `region`, `environment_name`, all node networking (`network`, `subnetwork`, network attachment, IP allocation), `private_environment_config`, `kms_key_name`, and `storage_bucket`. Workload sizing, environment size, resilience mode, software configuration, maintenance window, access control, and labels update in place.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -69,7 +69,7 @@ This creates a small public-endpoint environment in the provider's default proje
 
 - **Composer 1.x fields** (`node_count`; node_config `zone`, `machine_type`, `disk_size_gb`, `oauth_scopes`; `ip_allocation_policy.use_ip_aliases`; software_config `python_version`, `scheduler_count`; `database_config`; `web_server_config`; private_environment_config `web_server_ipv4_cidr_block`) — Composer 1 is a deprecated generation.
 
-## Related Components
+## Related Kinds
 
 - **GcpVpcNetwork** / **GcpSubnetwork** — the network and subnetwork for VPC peering deployments
 - **GcpServiceAccount** — the node identity (must hold `roles/composer.worker`)

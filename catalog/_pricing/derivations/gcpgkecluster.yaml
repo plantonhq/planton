@@ -5,9 +5,9 @@
 # resources or, in Autopilot, on per-pod charges -- both named in the
 # exclusions. The estimate generator replays the catalog presets through
 # these rules to emit ../estimates/gcpgkecluster.yaml.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: gcpgkecluster
 spec:
@@ -34,7 +34,7 @@ spec:
           op: equals
           value: "true"
       text: Autopilot pod charges -- running pods bill per second for the vCPU, memory, and ephemeral storage they request, entirely workload-dependent
-    - text: Cloud Logging ingestion for the enabled log components, network egress, and Cloud NAT for private nodes
+    - text: Cloud Logging ingestion for the enabled log kinds, network egress, and Cloud NAT for private nodes
   notes:
     - applies_when:
         - field_path: enable_autopilot

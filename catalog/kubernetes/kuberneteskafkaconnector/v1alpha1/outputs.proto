@@ -3,10 +3,10 @@ syntax = "proto3";
 package dev.planton.kubernetes.kuberneteskafkaconnector.v1alpha1;
 
 /**
- * **KubernetesKafkaConnectorStackOutputs** — the handles a declared
+ * **KubernetesKafkaConnectorOutputs** — the handles a declared
  * connector exports.
  */
-message KubernetesKafkaConnectorStackOutputs {
+message KubernetesKafkaConnectorOutputs {
   // Namespace the KafkaConnector resource lives in (the Connect
   // cluster's namespace).
   string namespace = 1;

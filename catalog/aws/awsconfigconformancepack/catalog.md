@@ -4,7 +4,7 @@ Deploys an AWS Config conformance pack -- a template bundle that turns a ruleset
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Conformance Pack** -- an account-scoped pack, or (when `organizationScope: true`) an organization pack deployed into every member account minus exclusions; the pack's name is `metadata.name`
 - **Pack-Owned Config Rules** -- created by AWS from the template, not by the module directly: every rule the template declares materializes prefixed with the pack name, owned and managed by the pack's service-linked role
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with AWS Config permissions; for organization scope, its credentials must belong to the management account or a delegated Config administrator. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with AWS Config permissions; for organization scope, its credentials must belong to the management account or a delegated Config administrator. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -69,7 +69,7 @@ spec:
 planton apply -f aws-config-conformance-pack.yaml
 ```
 
-This deploys a three-rule S3 hygiene pack -- no public reads, no public writes, versioning on -- scored as one compliance number in this account, with all three rules created and owned by the pack. A Stack Job tracks the provisioning in real time.
+This deploys a three-rule S3 hygiene pack -- no public reads, no public writes, versioning on -- scored as one compliance number in this account, with all three rules created and owned by the pack. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -106,15 +106,15 @@ These are the most important decisions when configuring a conformance pack. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsS3Bucket** | `deliveryS3Bucket` | `status.outputs.bucket_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-`status.outputs` echoes the pack's identity -- `pack_name` (the import ID at either scope), `pack_arn` (the account-scope or organization-scope ARN, whichever deployed), and `region` (packs are addressed by region plus name, so verifiers need both). These are audit and import values, not composition inputs: compliance scores are consumed through the Config console and APIs, not by other Cloud Resources.
+`status.outputs` echoes the pack's identity -- `pack_name` (the import ID at either scope), `pack_arn` (the account-scope or organization-scope ARN, whichever deployed), and `region` (packs are addressed by region plus name, so verifiers need both). These are audit and import values, not composition inputs: compliance scores are consumed through the Config console and APIs, not by other Infra Components.
 
 ## Common Patterns
 
@@ -128,7 +128,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Config Recorder**](/cloud-catalog/aws-config-recorder) -- the hard prerequisite; deploy it first in every region (and account) the pack covers
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) -- the optional results-delivery bucket (org scope requires the `awsconfigconforms` name prefix), and the host for S3-based templates
-- [**AWS Config Rule**](/cloud-catalog/aws-config-rule) -- the standalone alternative for single checks and account-specific exceptions outside any pack
-- [**AWS Config Aggregator**](/cloud-catalog/aws-config-aggregator) -- rolls per-account pack scores into the organization-wide compliance view
+- [**AWS Config Recorder**](/infra-catalog/aws-config-recorder) -- the hard prerequisite; deploy it first in every region (and account) the pack covers
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) -- the optional results-delivery bucket (org scope requires the `awsconfigconforms` name prefix), and the host for S3-based templates
+- [**AWS Config Rule**](/infra-catalog/aws-config-rule) -- the standalone alternative for single checks and account-specific exceptions outside any pack
+- [**AWS Config Aggregator**](/infra-catalog/aws-config-aggregator) -- rolls per-account pack scores into the organization-wide compliance view

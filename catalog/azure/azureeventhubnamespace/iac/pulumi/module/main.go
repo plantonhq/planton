@@ -8,13 +8,13 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureeventhubnamespacev1alpha1.AzureEventHubNamespaceStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureeventhubnamespacev1alpha1.AzureEventHubNamespaceIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder,
+	// Build the Azure provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static client secret,
 	// keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -49,7 +49,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureeventhubnamespacev1alpha1.A
 
 	// STANDARD's elastic scaling: Azure grows TUs up to the ceiling under
 	// load but never shrinks them back. Azure validates the ceiling/enable
-	// pairing at apply time. Presence-guarded: stack inputs built from a
+	// pairing at apply time. Presence-guarded: IaC inputs built from a
 	// manifest materialize proto defaults, but direct paths do not.
 	if spec.AutoInflateEnabled != nil {
 		namespaceArgs.AutoInflateEnabled = pulumi.BoolPtr(spec.GetAutoInflateEnabled())
@@ -138,7 +138,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureeventhubnamespacev1alpha1.A
 		return errors.Wrapf(err, "failed to create Event Hubs namespace %s", spec.NamespaceName)
 	}
 
-	// Export stack outputs. The root SAS rule's credential faces are
+	// Export outputs. The root SAS rule's credential faces are
 	// quick-start/break-glass credentials; production workloads mint
 	// least-privilege rules with AzureEventHubAuthorizationRule or go
 	// keyless (local_authentication_enabled false). The alias faces are

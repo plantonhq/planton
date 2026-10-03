@@ -5,18 +5,18 @@ Pulumi (Go) IaC module for managing a Cloudflare zone's caching and performance 
 ## Architecture
 
 ```
-main.go              — Entrypoint loading the stack input
+main.go              — Entrypoint loading the IaC input
 module/main.go       — Resources(): provider setup, settings, outputs
 module/locals.go     — Locals initialization
 module/cache_settings.go — One conditionally-emitted resource per managed setting
-module/outputs.go    — Stack output keys (zone_id)
+module/outputs.go    — output keys (zone_id)
 ```
 
 ## Behavior
 
 An unset spec field is NOT MANAGED: the module never sends it. Most of these settings have no delete at Cloudflare — destroy drops state and abandons the live values (smart tiered cache and cache variants are the real-delete exceptions). Argo Smart Routing is paid and KEEPS BILLING after destroy: apply `argo_smart_routing: false` first when retiring it.
 
-The module mirrors the Terraform module's contract exactly: same resource set, same on/off mapping, same managed-extensions-only variants object (the Pulumi SDK pluralizes the per-extension field names where Terraform keeps the API's singular names), same `zone_id` stack output.
+The module mirrors the Terraform module's contract exactly: same resource set, same on/off mapping, same managed-extensions-only variants object (the Pulumi SDK pluralizes the per-extension field names where Terraform keeps the API's singular names), same `zone_id` output.
 
 ## Outputs
 

@@ -15,16 +15,16 @@
 //	entries/**            every user-facing kind's catalog entry (title,
 //	                      description, slug, logo, contract links, official
 //	                      IaC module directories, and -- for covered
-//	                      components -- fact-sheet summaries), provider/kind
+//	                      kinds -- fact-sheet summaries), provider/kind
 //	                      layout
-//	costs/**              covered components' cost profiles, provider/kind
+//	costs/**              covered kinds' cost profiles, provider/kind
 //	                      layout, byte-identical to the tree's cost.yaml
-//	controls/**           covered components' control profiles (controls.yaml)
-//	permissions/**        covered components' permission manifests
+//	controls/**           covered kinds' control profiles (controls.yaml)
+//	permissions/**        covered kinds' permission manifests
 //	                      (iac/permissions.yaml)
-//	estimates/**          covered components' generated per-preset cost
+//	estimates/**          covered kinds' generated per-preset cost
 //	                      estimates, provider/kind layout
-//	derivations/**        derived components' machine-executable cost
+//	derivations/**        derived kinds' machine-executable cost
 //	                      derivations (value-to-quantity rules a server-side
 //	                      estimator evaluates against live manifests),
 //	                      provider/kind layout
@@ -33,7 +33,7 @@
 //	pricebooks/**         the pinned per-provider price books the estimates
 //	                      were generated from and the derivations price by
 //
-// Fact-sheet coverage is presence-based: a component without the cost/
+// Fact-sheet coverage is presence-based: a kind without the cost/
 // controls/permissions sidecars ships no cargo and its entry carries no
 // summaries -- absence means "not yet covered", never "free".
 //

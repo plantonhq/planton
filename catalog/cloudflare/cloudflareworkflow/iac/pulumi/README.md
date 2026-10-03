@@ -5,16 +5,16 @@ Pulumi (Go) IaC module for a Workflow registration: the binding of a durable-exe
 ## Architecture
 
 ```
-main.go              — Entrypoint loading the stack input
+main.go              — Entrypoint loading the IaC input
 module/main.go       — Resources(): provider setup, resource, outputs
 module/locals.go     — Locals initialization
 module/workflow.go   — cloudflare.Workflow
-module/outputs.go    — Stack output keys
+module/outputs.go    — output keys
 ```
 
 ## Behavior
 
-Mirrors the Terraform module's contract exactly: retention values pass through verbatim (the API accepts milliseconds or duration expressions), absent retention/limits/schedules trees keep Cloudflare's defaults, and the `workflow_name` / `version_id` stack outputs. Create is a PUT at the API (name-as-upsert); account_id and workflow_name force replacement.
+Mirrors the Terraform module's contract exactly: retention values pass through verbatim (the API accepts milliseconds or duration expressions), absent retention/limits/schedules trees keep Cloudflare's defaults, and the `workflow_name` / `version_id` outputs. Create is a PUT at the API (name-as-upsert); account_id and workflow_name force replacement.
 
 ## Outputs
 

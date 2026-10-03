@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: stripeproduct
 spec:
@@ -7,13 +7,13 @@ spec:
   values:
     - name: product_id
       derivations:
-        - from_stack_output: id
+        - from_output: id
       where_to_find: >-
         Stripe Dashboard -> Product catalog (the product's id, prod_..., on its page), or `GET
         /v1/products` (the id of the entry whose name matches).
     - name: product_feature_id
       derivations:
-        - from_stack_output_keyed_by_address: product_feature_ids
+        - from_output_keyed_by_address: product_feature_ids
       where_to_find: >-
         The id of each feature link: the `product_feature_ids` output keyed by the entitlement
         feature's id (feat_...), or `GET /v1/products/<product id>/features` (the id of the entry

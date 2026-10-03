@@ -4,7 +4,7 @@ Deploys a data volume within an FSx for NetApp ONTAP Storage Virtual Machine, wi
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **ONTAP Volume** -- a data container within the specified SVM, mounted at the configured junction path, with the chosen volume style (FlexVol or FlexGroup) and security style
 - **Tiering Policy** -- created only when `tieringPolicy` is provided; controls automatic data movement between primary SSD and capacity pool storage based on access patterns
@@ -16,12 +16,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **An FSx ONTAP Storage Virtual Machine** -- the volume's parent SVM must be provisioned first. Provide the SVM ID directly or reference an AwsFsxOntapStorageVirtualMachine Cloud Resource via ValueFromRef.
+- **An FSx ONTAP Storage Virtual Machine** -- the volume's parent SVM must be provisioned first. Provide the SVM ID directly or reference an AwsFsxOntapStorageVirtualMachine Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -54,7 +54,7 @@ spec:
 planton apply -f fsx-ontap-volume.yaml
 ```
 
-This creates a 100 GB FlexVol volume mounted at `/data` with ONTAP storage efficiency (deduplication, compression, compaction) enabled. No tiering, SnapLock, or FlexGroup is configured. A Stack Job tracks the provisioning in real time.
+This creates a 100 GB FlexVol volume mounted at `/data` with ONTAP storage efficiency (deduplication, compression, compaction) enabled. No tiering, SnapLock, or FlexGroup is configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -91,15 +91,15 @@ These are the most important decisions when configuring an ONTAP volume. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsFsxOntapStorageVirtualMachine** | `storageVirtualMachineId` | `status.outputs.svm_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -122,4 +122,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS FSx ONTAP Storage Virtual Machine**](/cloud-catalog/aws-fsx-ontap-storage-virtual-machine) -- provides the parent SVM that hosts this volume's protocol endpoints and namespace
+- [**AWS FSx ONTAP Storage Virtual Machine**](/infra-catalog/aws-fsx-ontap-storage-virtual-machine) -- provides the parent SVM that hosts this volume's protocol endpoints and namespace

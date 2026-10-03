@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package dev.planton.auth0.auth0connection.v1alpha1;
 
-// Auth0ConnectionStackOutputs contains the outputs from an Auth0 Connection deployment.
+// Auth0ConnectionOutputs contains the outputs from an Auth0 Connection deployment.
 // These outputs provide essential identifiers and information for integrating
 // the connection with applications and monitoring its configuration.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/connection#attributes-reference
 // https://www.pulumi.com/registry/packages/auth0/api-docs/connection/#outputs
-message Auth0ConnectionStackOutputs {
+message Auth0ConnectionOutputs {
   // id is the unique identifier of the Auth0 connection.
   // This is the primary identifier used in Auth0 APIs and Management Dashboard.
   // Format: "con_" followed by a unique string (e.g., "con_0000000000000001").

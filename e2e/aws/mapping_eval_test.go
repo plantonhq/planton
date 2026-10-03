@@ -18,7 +18,7 @@ import (
 )
 
 // MappingEvalEnvVar opts the mapping-eval lane in. Opt-in like the import
-// round-trip: it deploys whole multi-component suites (create-and-destroy)
+// round-trip: it deploys whole multi-kind suites (create-and-destroy)
 // and scans the account, which is a deliberate, scheduled spend -- not part
 // of every e2e invocation.
 const MappingEvalEnvVar = "PLANTON_E2E_MAPPING_EVAL"
@@ -242,11 +242,11 @@ func runMappingEvalChain(t *testing.T, suiteName string) *mappingeval.Report {
 		t.Fatalf("baseline proposal violates the contract: %v", err)
 	}
 
-	components := make([]string, 0, len(suite.Members))
+	kindDirs := make([]string, 0, len(suite.Members))
 	for _, member := range suite.Members {
-		components = append(components, member.Component)
+		kindDirs = append(kindDirs, member.KindDir)
 	}
-	scoreOptions, err := mappingeval.ScoreOptionsFromCatalog(repoRoot, "aws", components)
+	scoreOptions, err := mappingeval.ScoreOptionsFromCatalog(repoRoot, "aws", kindDirs)
 	if err != nil {
 		t.Fatalf("deriving score options: %v", err)
 	}

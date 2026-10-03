@@ -4,7 +4,7 @@ Deploys a single DNS record within a Cloudflare zone, covering both simple types
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cloudflare DNS Record** -- one record in the specified zone with the configured type, value, TTL, and proxy setting. When `proxied` is `true` (A, AAAA, or CNAME only), traffic routes through Cloudflare's CDN and WAF and the origin IP is hidden; otherwise the record is DNS-only.
 
@@ -12,12 +12,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has DNS edit access. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has DNS edit access. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
 
-- **A Cloudflare DNS zone** -- the target zone must exist and be active. Provide the zone ID directly or reference a CloudflareDnsZone Cloud Resource via ValueFromRef.
+- **A Cloudflare DNS zone** -- the target zone must exist and be active. Provide the zone ID directly or reference a CloudflareDnsZone Infra Component via ValueFromRef.
 - **The record's target** -- for A records, the origin's IPv4 address; for AAAA, the IPv6 address; for CNAME/MX/NS, the target hostname; for structured types, the fields of the matching `data` block.
 
 ## Deploy
@@ -52,7 +52,7 @@ spec:
 planton apply -f cloudflare-dns-record.yaml
 ```
 
-This creates a proxied A record pointing `www` to the specified IP address with automatic TTL. Traffic flows through Cloudflare's CDN and WAF. A Stack Job tracks the provisioning in real time.
+This creates a proxied A record pointing `www` to the specified IP address with automatic TTL. Traffic flows through Cloudflare's CDN and WAF. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,15 +92,15 @@ These are the most important decisions when configuring a DNS record. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** | `zoneId` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -122,5 +122,5 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) -- provides the zone ID where this DNS record is created
-- [**Cloudflare Custom Hostname Fallback Origin**](/cloud-catalog/cloudflare-custom-hostname-fallback-origin) -- SaaS zones need an in-zone record backing the fallback origin hostname; this component creates it
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) -- provides the zone ID where this DNS record is created
+- [**Cloudflare Custom Hostname Fallback Origin**](/infra-catalog/cloudflare-custom-hostname-fallback-origin) -- SaaS zones need an in-zone record backing the fallback origin hostname; this component creates it

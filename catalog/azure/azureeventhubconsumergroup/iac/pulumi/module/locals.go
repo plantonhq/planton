@@ -40,11 +40,11 @@ func parseEventHubId(eventHubId string) (resourceGroupName, namespaceName, event
 	return matches[1], matches[2], matches[3], nil
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureeventhubconsumergroupv1alpha1.AzureEventHubConsumerGroupStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureeventhubconsumergroupv1alpha1.AzureEventHubConsumerGroupIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureEventHubConsumerGroup = stackInput.Target
-	locals.EventHubId = stackInput.Target.Spec.EventHubId.GetValue()
+	locals.AzureEventHubConsumerGroup = iacInput.Target
+	locals.EventHubId = iacInput.Target.Spec.EventHubId.GetValue()
 
 	// Consumer groups carry no Azure tags: ARM does not support tags on
 	// Event Hubs entities, so the platform's identity tags live on the

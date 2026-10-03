@@ -4,7 +4,7 @@ Runs many GKE clusters as one. A fleet is the home of your clusters' shared conf
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- the Fleet API on the host project
 - **Fleet** -- the project's one fleet, with its cluster defaults
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with fleet admin permissions on the host project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with fleet admin permissions on the host project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ## Deploy
@@ -47,7 +47,7 @@ spec:
 planton apply -f gke-fleet.yaml
 ```
 
-This creates the fleet before any cluster joins it, ready for team scopes and features. A Stack Job tracks the provisioning in real time.
+This creates the fleet before any cluster joins it, ready for team scopes and features. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -65,15 +65,15 @@ These are the most important decisions when configuring a fleet. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -91,7 +91,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP GKE Fleet Scope**](/cloud-catalog/gcp-gke-fleet-scope) -- team scopes inside the fleet
-- [**GCP GKE Fleet Feature**](/cloud-catalog/gcp-gke-fleet-feature) -- fleet-wide features
-- [**GCP GKE Fleet Membership**](/cloud-catalog/gcp-gke-fleet-membership) -- explicit cluster registration
-- [**GCP GKE Cluster**](/cloud-catalog/gcp-gke-cluster) -- clusters that join through `fleetProject`
+- [**GCP GKE Fleet Scope**](/infra-catalog/gcp-gke-fleet-scope) -- team scopes inside the fleet
+- [**GCP GKE Fleet Feature**](/infra-catalog/gcp-gke-fleet-feature) -- fleet-wide features
+- [**GCP GKE Fleet Membership**](/infra-catalog/gcp-gke-fleet-membership) -- explicit cluster registration
+- [**GCP GKE Cluster**](/infra-catalog/gcp-gke-cluster) -- clusters that join through `fleetProject`

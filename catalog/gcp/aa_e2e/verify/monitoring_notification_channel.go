@@ -12,7 +12,7 @@ import (
 // the channel exists with a concrete type. Verifiers are outputs-driven
 // and scenario-agnostic, so the disabled-channel scenario's enabled=false
 // posture is proven by a live API read during the proof lane, not here —
-// enabled is deliberately NOT a stack output (outputs are composition
+// enabled is deliberately NOT an output (outputs are composition
 // handles, not test hooks). Never assert verification_status: email
 // channels report UNVERIFIED until a human verifies, by design.
 type monitoringNotificationChannelVerifier struct{}

@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureapplicationgatewayv1alpha1.AzureApplicationGatewayStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureapplicationgatewayv1alpha1.AzureApplicationGatewayIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -141,7 +141,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureapplicationgatewayv1alpha1.
 	gatewayArgs.ForceFirewallPolicyAssociation = pulumi.Bool(spec.ForceFirewallPolicyAssociation)
 
 	// Presence-guarded false-default: unset falls back to Azure's default
-	// (HTTP/2 off) -- stack inputs built from a manifest do NOT
+	// (HTTP/2 off) -- IaC inputs built from a manifest do NOT
 	// materialize proto defaults.
 	if spec.Http2Enabled != nil {
 		gatewayArgs.Http2Enabled = pulumi.Bool(spec.GetHttp2Enabled())
@@ -167,7 +167,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureapplicationgatewayv1alpha1.
 		return errors.Wrapf(err, "failed to create application gateway %s", spec.Name)
 	}
 
-	// Export stack outputs. The name-keyed maps are the composition
+	// Export outputs. The name-keyed maps are the composition
 	// seams: NICs and scale sets join pools through
 	// backend_address_pool_ids; frontends chain through
 	// frontend_ip_configuration_ids.

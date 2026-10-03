@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awsrestapidomain
 spec:
@@ -38,7 +38,7 @@ spec:
       notes: Applies to PRIVATE domains; on REGIONAL and EDGE domains there is no network-source filter at the domain itself -- IP restrictions live in the APIs' resource policies or a WAF web ACL on their stages. Associations are add/remove only (no in-place update), matching the modules' replace semantics.
     - control_id: edge-protection
       status: not_applicable
-      notes: AWS WAF attaches to REST API stages, not to custom domains -- and the CloudFront distribution behind an EDGE domain is AWS-managed, with no customer web ACL surface. The lever lives on the AwsRestApiGateway component's stages.
+      notes: AWS WAF attaches to REST API stages, not to custom domains -- and the CloudFront distribution behind an EDGE domain is AWS-managed, with no customer web ACL surface. The lever lives on the AwsRestApiGateway kind's stages.
     - control_id: rbac
       status: configurable
       field_path: policy

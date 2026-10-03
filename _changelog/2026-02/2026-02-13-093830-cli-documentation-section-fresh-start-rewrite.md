@@ -65,7 +65,7 @@ Every claim was cross-referenced against source code:
 
 ### Key Discovery: `-f` Shorthand Availability
 
-During source verification, discovered that the `-f` shorthand for `--manifest` is only registered on unified commands (via `AddManifestSourceFlags` which calls `StringP`), not on direct engine commands (which register `--manifest` via plain `String` without shorthand). Similarly, `--clipboard` and `--stack-input` are only available on unified commands.
+During source verification, discovered that the `-f` shorthand for `--manifest` is only registered on unified commands (via `AddManifestSourceFlags` which calls `StringP`), not on direct engine commands (which register `--manifest` via plain `String` without shorthand). Similarly, `--clipboard` and `--iac-input` are only available on unified commands.
 
 This was inaccurately documented in the previous pages and is now correctly reflected in all 8 pages.
 

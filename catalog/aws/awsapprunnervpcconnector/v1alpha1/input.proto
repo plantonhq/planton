@@ -5,10 +5,10 @@ package dev.planton.aws.awsapprunnervpcconnector.v1alpha1;
 import "catalog/aws/awsapprunnervpcconnector/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsAppRunnerVpcConnectorStackInput is the input for the
+// AwsAppRunnerVpcConnectorIacInput is the input for the
 // aws-app-runner-vpc-connector IaC modules.
-message AwsAppRunnerVpcConnectorStackInput {
-  // target cloud-resource
+message AwsAppRunnerVpcConnectorIacInput {
+  // target infra-component
   AwsAppRunnerVpcConnector target = 1;
 
   // provider-config

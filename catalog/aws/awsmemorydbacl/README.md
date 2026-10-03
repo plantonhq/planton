@@ -39,7 +39,7 @@ edit, not a cluster change:
   modeled as a resource.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `acl_name`: what clusters attach via their `aclName` (same as
   `metadata.name`)

@@ -42,7 +42,7 @@ func vpcLink(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) error 
 		return errors.Wrap(err, "failed to create VPC link")
 	}
 
-	// Export outputs matching AwsHttpApiVpcLinkStackOutputs.
+	// Export outputs matching AwsHttpApiVpcLinkOutputs.
 	ctx.Export(OpVpcLinkId, createdVpcLink.ID())
 	ctx.Export(OpVpcLinkArn, createdVpcLink.Arn)
 

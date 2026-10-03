@@ -12,8 +12,8 @@ type Locals struct {
 	GcpSubnetwork *gcpsubnetworkv1alpha1.GcpSubnetwork
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpsubnetworkv1alpha1.GcpSubnetworkStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpsubnetworkv1alpha1.GcpSubnetworkIacInput) *Locals {
 	return &Locals{
-		GcpSubnetwork: stackInput.Target,
+		GcpSubnetwork: iacInput.Target,
 	}
 }

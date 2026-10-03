@@ -8,9 +8,9 @@
 # metrics-exporter sidecar (its own resources block). The ClickHouse
 # clusters it reconciles reserve their own capacity on their
 # KubernetesClickHouse resources -- never here.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesaltinityoperator
 spec:

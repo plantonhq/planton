@@ -33,7 +33,7 @@ var _ = ginkgo.Describe("GcpHealthCheckSpec", func() {
 		return &GcpHealthCheck{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpHealthCheck",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-health-check",
 			},
 			Spec: &GcpHealthCheckSpec{

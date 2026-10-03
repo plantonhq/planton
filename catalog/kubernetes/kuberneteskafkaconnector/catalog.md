@@ -4,7 +4,7 @@ Declares ONE data pipe — a connector instance — on a Strimzi `KafkaConnector
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **KafkaConnector** — the Strimzi custom resource, named after this resource, placed in the Connect cluster's own namespace and bound to the cluster through the `strimzi.io/cluster` label (rendered from `connectCluster`)
 - **Connector instance** (reconciled by the Connect cluster's operator, not the module) — the running pipe on the Connect workers, keyed by `metadata.name` inside the cluster. Consumer-group names for sinks follow `connect-<name>`
@@ -64,7 +64,7 @@ spec:
 planton apply -f kafka-connector.yaml
 ```
 
-This declares a Debezium Postgres CDC source: the workers resolve the database password from a Kubernetes Secret at connector start — it never lands in this resource, in IaC state, or in kubectl output. A Stack Job tracks the provisioning in real time.
+This declares a Debezium Postgres CDC source: the workers resolve the database password from a Kubernetes Secret at connector start — it never lands in this resource, in IaC state, or in kubectl output. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -106,7 +106,7 @@ These are the most important decisions when declaring a connector. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -115,9 +115,9 @@ These are the most important decisions when declaring a connector. Explore the f
 | **KubernetesConfigMap** | `listOffsets.toConfigMap` | `status.outputs.configmap_name` |
 | **KubernetesConfigMap** | `alterOffsets.fromConfigMap` | `status.outputs.configmap_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -136,7 +136,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kafka Connect**](/cloud-catalog/kubernetes-kafka-connect) — the Connect cluster whose workers run this pipe; its `image`, `plugins`, or `build` arms deliver connector classes the stock image lacks
-- [**Apache Kafka**](/cloud-catalog/kubernetes-kafka) — the event bus this pipe reads from or writes to; bootstrap endpoints come from the Kafka cluster's own outputs
-- [**Kafka Topic**](/cloud-catalog/kubernetes-kafka-topic) — declare the topics a source emits into or a sink consumes from as code
-- [**Kubernetes ConfigMap**](/cloud-catalog/kubernetes-config-map) — offset listing and override targets referenced by `listOffsets` and `alterOffsets`
+- [**Kafka Connect**](/infra-catalog/kubernetes-kafka-connect) — the Connect cluster whose workers run this pipe; its `image`, `plugins`, or `build` arms deliver connector classes the stock image lacks
+- [**Apache Kafka**](/infra-catalog/kubernetes-kafka) — the event bus this pipe reads from or writes to; bootstrap endpoints come from the Kafka cluster's own outputs
+- [**Kafka Topic**](/infra-catalog/kubernetes-kafka-topic) — declare the topics a source emits into or a sink consumes from as code
+- [**Kubernetes ConfigMap**](/infra-catalog/kubernetes-config-map) — offset listing and override targets referenced by `listOffsets` and `alterOffsets`

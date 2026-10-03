@@ -9,7 +9,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 )
@@ -23,7 +23,7 @@ func settings(spec *Auth0TenantSettingsSpec) *Auth0TenantSettings {
 	return &Auth0TenantSettings{
 		ApiVersion: "auth0.planton.dev/v1alpha1",
 		Kind:       "Auth0TenantSettings",
-		Metadata:   &shared.CloudResourceMetadata{Name: "tenant-settings"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "tenant-settings"},
 		Spec:       spec,
 	}
 }
@@ -32,7 +32,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: value}}
 }
 
-func reference(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func reference(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{
 		Kind:      kind,
 		Name:      name,
@@ -93,7 +93,7 @@ var _ = ginkgo.Describe("Auth0TenantSettings Validation Tests", func() {
 
 		ginkgo.It("accepts the default domain alone, read from a verified custom domain", func() {
 			expectValid(&Auth0TenantSettingsSpec{
-				DefaultCustomDomain: reference(cloudresourcekind.CloudResourceKind_Auth0CustomDomainVerification,
+				DefaultCustomDomain: reference(catalogkind.CatalogKind_Auth0CustomDomainVerification,
 					"sign-in-domain-verification", "status.outputs.domain"),
 			})
 		})
@@ -134,9 +134,9 @@ var _ = ginkgo.Describe("Auth0TenantSettings Validation Tests", func() {
 				OidcLogout:                                     &Auth0TenantSettingsOidcLogout{RpLogoutEndSessionEndpointDiscovery: proto.Bool(true)},
 				Mtls:                                           &Auth0TenantSettingsMtls{EnableEndpointAliases: proto.Bool(true)},
 				SkipNonVerifiableCallbackUriConfirmationPrompt: proto.Bool(false),
-				DefaultAudience: reference(cloudresourcekind.CloudResourceKind_Auth0ResourceServer,
+				DefaultAudience: reference(catalogkind.CatalogKind_Auth0ResourceServer,
 					"platform-api", "status.outputs.identifier"),
-				DefaultDirectory: reference(cloudresourcekind.CloudResourceKind_Auth0Connection,
+				DefaultDirectory: reference(catalogkind.CatalogKind_Auth0Connection,
 					"users", "status.outputs.name"),
 				DefaultTokenQuota: &Auth0TenantSettingsDefaultTokenQuota{
 					Clients: &Auth0TenantSettingsTokenQuota{ClientCredentials: &Auth0TenantSettingsClientCredentialsQuota{

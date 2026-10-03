@@ -8,9 +8,9 @@
 # template disks live inside a repeated list these rules cannot resolve --
 # excluded honestly, never guessed. The estimate generator replays the
 # catalog presets through these rules to emit
-# ../estimates/gcpcomputemig.yaml. Schema: finops/componentcostderivation/v1.
+# ../estimates/gcpcomputemig.yaml. Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: gcpcomputemig
 spec:

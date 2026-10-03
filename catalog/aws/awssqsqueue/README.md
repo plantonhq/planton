@@ -38,7 +38,7 @@ The **AwsSqsQueue** resource provides a standardized way to provision and manage
   - **redrive_permission**: `"allowAll"` (AWS default behavior), `"denyAll"` (this queue may never be a DLQ), or `"byQueue"` (only the listed queues).
   - **source_queue_arns**: With `"byQueue"`, the 1–10 source queues permitted to redrive into this queue. Accepts literal ARNs or `valueFrom` references to other AwsSqsQueue resources.
 
-## Stack Outputs
+## Outputs
 
 After provisioning, the AwsSqsQueue resource provides the following outputs:
 

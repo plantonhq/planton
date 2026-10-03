@@ -14,7 +14,7 @@ Generated `variables.tf` mirrors the `DigitalOceanDatabaseReplicaSpec` proto: `c
 
 ## Outputs
 
-Exactly the `DigitalOceanDatabaseReplicaStackOutputs` contract: `replica_id` (the API UUID -- the `uuid` attribute, not the legacy composite state id), `cluster_id`, `replica_name`, `host`, `private_host`, `port`, `database`, `user`, and the secrets `password`, `uri`, `private_uri`.
+Exactly the `DigitalOceanDatabaseReplicaOutputs` contract: `replica_id` (the API UUID -- the `uuid` attribute, not the legacy composite state id), `cluster_id`, `replica_name`, `host`, `private_host`, `port`, `database`, `user`, and the secrets `password`, `uri`, `private_uri`.
 
 ## Behavior notes
 

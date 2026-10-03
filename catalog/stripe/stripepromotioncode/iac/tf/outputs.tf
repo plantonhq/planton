@@ -1,5 +1,5 @@
 # StripePromotionCode Outputs
-# Maps to the StripePromotionCodeStackOutputs protobuf message.
+# Maps to the StripePromotionCodeOutputs protobuf message.
 
 output "id" {
   description = "The promotion code's Stripe id (promo_...); it changes when the code is replaced"

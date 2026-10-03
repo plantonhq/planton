@@ -13,7 +13,7 @@ cluster tears down and comes back in seconds — but nothing real can
 depend on it. Credentials still work the production way: the operator
 generates them into the `dev-rabbitmq-default-user` Secret (keys
 username, password, host, port, connection_string, ...), exported in
-the stack outputs. In-cluster clients connect at the exported
+the outputs. In-cluster clients connect at the exported
 `amqp_endpoint` (port 5672); the management UI is a
 `port_forward_command` away on 15672.
 

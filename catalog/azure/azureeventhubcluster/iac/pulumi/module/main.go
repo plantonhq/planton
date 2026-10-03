@@ -10,13 +10,13 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureeventhubclusterv1alpha1.AzureEventHubClusterStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureeventhubclusterv1alpha1.AzureEventHubClusterIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder,
+	// Build the Azure provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static client secret,
 	// keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -27,7 +27,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureeventhubclusterv1alpha1.Azu
 	// is a one-value constant -- Dedicated is the ONLY sku family Azure
 	// sells for clusters -- so the module composes the string from the
 	// capacity count instead of surfacing it as configuration. Presence-
-	// guarded to 1 CU (Azure's entry size): stack inputs built from a
+	// guarded to 1 CU (Azure's entry size): IaC inputs built from a
 	// manifest materialize proto defaults, but direct paths do not.
 	capacityUnits := int32(1)
 	if spec.CapacityUnits != nil {
@@ -65,7 +65,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureeventhubclusterv1alpha1.Azu
 		return errors.Wrapf(err, "failed to create Event Hubs cluster %s", spec.ClusterName)
 	}
 
-	// Export stack outputs. cluster_id is what an AzureEventHubNamespace's
+	// Export outputs. cluster_id is what an AzureEventHubNamespace's
 	// dedicated_cluster_id references to place the namespace on this
 	// cluster.
 	ctx.Export(OpClusterId, createdCluster.ID())

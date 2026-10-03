@@ -5,8 +5,8 @@ package dev.planton.aws.awsneptunecluster.v1alpha1;
 import "catalog/aws/awsneptunecluster/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsNeptuneClusterStackInput is the input for the IaC modules that deploy the Neptune cluster.
-message AwsNeptuneClusterStackInput {
+// AwsNeptuneClusterIacInput is the input for the IaC modules that deploy the Neptune cluster.
+message AwsNeptuneClusterIacInput {
   // target is the AwsNeptuneCluster resource to deploy.
   AwsNeptuneCluster target = 1;
   // provider_config contains the AWS provider credentials and configuration.

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsiamgroup.v1alpha1;
 
-// AwsIamGroupStackOutputs captures the observable state of the IAM
+// AwsIamGroupOutputs captures the observable state of the IAM
 // group after apply.
-message AwsIamGroupStackOutputs {
+message AwsIamGroupOutputs {
   // The group's ARN.
   string group_arn = 1;
 

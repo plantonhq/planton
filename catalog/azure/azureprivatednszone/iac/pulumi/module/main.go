@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureprivatednszonev1alpha1.AzurePrivateDnsZoneStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureprivatednszonev1alpha1.AzurePrivateDnsZoneIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -72,7 +72,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureprivatednszonev1alpha1.Azur
 		return errors.Wrapf(err, "failed to create private dns zone %s", spec.Name)
 	}
 
-	// Export stack outputs from the created resource. zone_id is the join
+	// Export outputs from the created resource. zone_id is the join
 	// key virtual network links, private endpoints, and VNet-integrated
 	// databases attach through; resource_group_name is echoed for tooling
 	// that addresses records by zone name + resource group.

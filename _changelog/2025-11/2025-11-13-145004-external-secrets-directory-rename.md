@@ -18,7 +18,7 @@ The External Secrets Operator addon directory was named `externalsecretskubernet
 - **Mixed Signals**: Directory name suggested "Kubernetes" suffix but API was clean
 - **Pattern Mismatch**: Other correctly-named addons (like `altinityoperator/`, `elasticoperator/`) use clean directory names
 
-The proto message types were already correctly defined as `ExternalSecrets`, `ExternalSecretsSpec`, `ExternalSecretsStackInput`, etc.—only the directory name needed updating.
+The proto message types were already correctly defined as `ExternalSecrets`, `ExternalSecretsSpec`, `ExternalSecretsIacInput`, etc.—only the directory name needed updating.
 
 ## Solution / What's New
 
@@ -50,16 +50,16 @@ message ExternalSecrets {
 apis/dev/planton/provider/kubernetes/addon/externalsecretskubernetes/v1/
 ├── api.proto
 ├── spec.proto
-├── stack_input.proto
-├── stack_outputs.proto
+├── iac_input.proto
+├── outputs.proto
 └── iac/
 
 # After
 apis/dev/planton/provider/kubernetes/addon/externalsecrets/v1/
 ├── api.proto
 ├── spec.proto
-├── stack_input.proto
-├── stack_outputs.proto
+├── iac_input.proto
+├── outputs.proto
 └── iac/
 ```
 
@@ -87,7 +87,7 @@ externalsecretsv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubern
 
 ### Registry Entry
 
-The cloud resource registry entry was already correct:
+The catalog kind registry entry was already correct:
 
 ```protobuf
 // Already correct - no suffix
@@ -155,8 +155,8 @@ spec:
 **Proto Files** (package declarations updated):
 - `api.proto`
 - `spec.proto`
-- `stack_input.proto`
-- `stack_outputs.proto`
+- `iac_input.proto`
+- `outputs.proto`
 
 **Implementation** (import paths updated):
 - `iac/pulumi/main.go`

@@ -4,7 +4,7 @@ Deploys a single Azure SQL database onto an existing logical server (AzureMssqlS
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SQL Database** -- on the referenced logical server, born by the chosen create mode (fresh, copy, secondary, point-in-time restore, recovery, dropped-database restore, or LTR restore), with its own SKU or elastic-pool membership
 - **Bacpac Import** -- executed at creation when `import` is set on a fresh database; schema and data load from a .bacpac in blob storage
@@ -59,7 +59,7 @@ spec:
 planton apply -f mssql-database.yaml
 ```
 
-This creates a fresh General Purpose database on the referenced server with zone redundancy and a 14-day point-in-time restore window. A Stack Job tracks the provisioning in real time.
+This creates a fresh General Purpose database on the referenced server with zone redundancy and a 14-day point-in-time restore window. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,7 +94,7 @@ These are the most important decisions when configuring a SQL database. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -104,9 +104,9 @@ These are the most important decisions when configuring a SQL database. Explore 
 | **AzureUserAssignedIdentity** | `userAssignedIdentityIds` | `status.outputs.identity_id` |
 | **AzureKeyVaultKey** | `transparentDataEncryptionKeyVaultKeyId` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -125,8 +125,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure MSSQL Server**](/cloud-catalog/azure-mssql-server) -- the logical server this database attaches to
-- [**Azure MSSQL Elastic Pool**](/cloud-catalog/azure-mssql-elastic-pool) -- shared capacity the database can join
-- [**Azure MSSQL Failover Group**](/cloud-catalog/azure-mssql-failover-group) -- lists this database for cross-region DR
-- [**Azure Key Vault Key**](/cloud-catalog/azure-key-vault-key) -- the database-level customer-managed TDE key
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- unwraps the database-level CMK
+- [**Azure MSSQL Server**](/infra-catalog/azure-mssql-server) -- the logical server this database attaches to
+- [**Azure MSSQL Elastic Pool**](/infra-catalog/azure-mssql-elastic-pool) -- shared capacity the database can join
+- [**Azure MSSQL Failover Group**](/infra-catalog/azure-mssql-failover-group) -- lists this database for cross-region DR
+- [**Azure Key Vault Key**](/infra-catalog/azure-key-vault-key) -- the database-level customer-managed TDE key
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- unwraps the database-level CMK

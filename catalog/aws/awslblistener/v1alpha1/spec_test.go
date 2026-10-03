@@ -44,7 +44,7 @@ func minimalValidListener() *AwsLbListener {
 	return &AwsLbListener{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsLbListener",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "http-80",
 		},
 		Spec: &AwsLbListenerSpec{

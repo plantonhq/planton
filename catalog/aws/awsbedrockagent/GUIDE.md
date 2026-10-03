@@ -1,4 +1,4 @@
-# AwsBedrockAgent — Component Guide
+# AwsBedrockAgent — Kind Guide
 
 Authored operational judgment for the Bedrock agent component: the design
 decisions behind the spec's shape, and what to know before running agents

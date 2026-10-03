@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.aws.awsfsxlustrefilesystem.v1alpha1;
 
-// AwsFsxLustreFileSystemStackOutputs captures observable identifiers and endpoints
+// AwsFsxLustreFileSystemOutputs captures observable identifiers and endpoints
 // from a provisioned FSx for Lustre file system. These outputs are used by
 // downstream resources to wire dependencies via StringValueOrRef.
 //
@@ -14,7 +14,7 @@ package dev.planton.aws.awsfsxlustrefilesystem.v1alpha1;
 // - Data repository associations: needs `file_system_id` and `file_system_arn`
 //
 // Mount command: mount -t lustre <dns_name>@tcp:/<mount_name> /mnt/fsx
-message AwsFsxLustreFileSystemStackOutputs {
+message AwsFsxLustreFileSystemOutputs {
   // The ID of the file system (e.g., "fs-0123456789abcdef0"). This is the
   // primary identifier used by EKS PersistentVolumes, ECS task definitions,
   // and AWS Batch compute environments.

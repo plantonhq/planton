@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awssagemakerimage.v1alpha1;
 
-// AwsSagemakerImageStackOutputs captures observable identifiers from a
+// AwsSagemakerImageOutputs captures observable identifiers from a
 // provisioned SageMaker image and its versions.
-message AwsSagemakerImageStackOutputs {
+message AwsSagemakerImageOutputs {
   // The image name (the AWS identity Studio configurations reference).
   string image_name = 1;
 

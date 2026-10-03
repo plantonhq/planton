@@ -10,7 +10,7 @@ import (
 
 // Flatten converts a map[string]interface{} (as produced by Pulumi's
 // automation API or any JSON-deserialized output map) into a flat
-// map[string]string suitable for the IacStackOutputsPayload wire format.
+// map[string]string suitable for the IacOutputsPayload wire format.
 //
 // Type coercion rules:
 //   - string: direct copy

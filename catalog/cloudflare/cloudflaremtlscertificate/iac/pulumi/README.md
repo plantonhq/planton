@@ -5,16 +5,16 @@ Pulumi (Go) IaC module for a certificate uploaded to the account-level mTLS cert
 ## Architecture
 
 ```
-main.go                       — Entrypoint loading the stack input
+main.go                       — Entrypoint loading the IaC input
 module/main.go                — Resources(): provider setup, resource, outputs
 module/locals.go              — Locals initialization
 module/mtls_certificate.go    — cloudflare.MtlsCertificate
-module/outputs.go             — Stack output keys
+module/outputs.go             — output keys
 ```
 
 ## Behavior
 
-Mirrors the Terraform module's contract exactly: create-only semantics (any change replaces the upload), the optional private key sent only when present, and the `certificate_id` / `expires_on` / `serial_number` stack outputs.
+Mirrors the Terraform module's contract exactly: create-only semantics (any change replaces the upload), the optional private key sent only when present, and the `certificate_id` / `expires_on` / `serial_number` outputs.
 
 ## Outputs
 

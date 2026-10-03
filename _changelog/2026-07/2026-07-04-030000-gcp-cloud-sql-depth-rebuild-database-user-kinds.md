@@ -21,7 +21,7 @@ The data wave's first consumer of the session-011 PSA pair needed a deep instanc
 - Full released-floor `settings` surface: engine enum incl. SQL Server, disk, `ip_configuration` (private network ref → `GcpVpc.network_id`, SSL, PSC, authorized networks), backup/PITR, maintenance + deny window, insights, password policy, data cache, flags, CMEK ref, replica arm, dual deletion protection.
 - `root_password` marked `(sensitive)` with Pulumi `ToSecret`; TF on `google ~> 6.0`; `sqladmin.googleapis.com` enablement; converter-contract plain-string refs; ambient-project fallback.
 - Registry `prerequisites: [GcpServiceNetworkingConnection]` for private-IP composition.
-- Three rewritten presets (Postgres private-IP production, MySQL HA, Postgres read replica); extended stack outputs (`service_account_email`, `dns_name`, `psc_service_attachment_link`).
+- Three rewritten presets (Postgres private-IP production, MySQL HA, Postgres read replica); extended outputs (`service_account_email`, `dns_name`, `psc_service_attachment_link`).
 
 ### `GcpCloudSqlDatabase` (637, `gcpsqldb`)
 

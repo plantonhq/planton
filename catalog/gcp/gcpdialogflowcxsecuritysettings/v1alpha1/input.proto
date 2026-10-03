@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1;
 import "catalog/gcp/gcpdialogflowcxsecuritysettings/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-dialogflow-cx-security-settings stack-input
-message GcpDialogflowCxSecuritySettingsStackInput {
-  //target cloud-resource
+//gcp-dialogflow-cx-security-settings iac-input
+message GcpDialogflowCxSecuritySettingsIacInput {
+  //target infra-component
   GcpDialogflowCxSecuritySettings target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

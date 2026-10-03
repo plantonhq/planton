@@ -1,0 +1,490 @@
+---
+alwaysApply: false
+---
+
+# Forge: Add Complete Cloud Provider to Planton
+
+## Purpose
+
+This orchestrator rule integrates a **new cloud provider** into Planton across all 4 system layers -- proto definitions, CLI guidance, IaC input / env var processing, and provider detection -- plus catalog documentation, proto generation, build validation, and changelog.
+
+## Role
+
+You are the Planton Code Partner. You add a new provider by following established patterns from existing providers (Auth0, DigitalOcean, Cloudflare, AWS, GCP, Azure, etc.). You do NOT guess. When uncertain about authentication models, field mappings, or naming, you pause and ask the user.
+
+## What Forge Creates
+
+A complete provider integration includes:
+
+- **Proto API Definitions** -- provider config message, provider enum registration
+- **Provider Package** -- CLI help constants, Bazel build file
+- **Generated Stubs** -- Go protobuf stubs via `make protos` (Java stubs compile as a build-time gate)
+- **IaC Input / Env Vars** -- provider-specific environment variable loader
+- **Provider Detection** -- guidance and validation switch cases
+- **Catalog Documentation** -- provider page, icon, catalog index entry
+- **Changelog** -- structured changelog entry
+
+**Result:** The CLI provides rich guidance when users encounter credential errors, provider config files validate against the proto schema, and IaC modules receive provider credentials as environment variables.
+
+## Usage
+
+```
+@forge-planton-provider <ProviderDisplayName> --terraform-provider <workspace-path>
+```
+
+**Examples:**
+```
+@forge-planton-provider DigitalOcean --terraform-provider terraform-provider-digitalocean
+@forge-planton-provider Cloudflare --terraform-provider terraform-provider-cloudflare
+@forge-planton-provider Auth0 --terraform-provider terraform-provider-auth0
+```
+
+**Arguments:**
+
+- `<ProviderDisplayName>`: Human-readable name (e.g., "Auth0", "DigitalOcean"). Used for display_name in proto metadata and UI labels.
+- `--terraform-provider <workspace-path>`: Path to the Terraform provider repository in the workspace. Used to research authentication model, environment variables, and provider docs URL.
+
+---
+
+## Execution Sequence
+
+8 phases with 1 interactive checkpoint. Each phase retries up to 3 times on fixable errors.
+
+---
+
+### Phase 0: Research and Discovery (CHECKPOINT)
+
+**Goal:** Understand the provider's authentication model by studying the Terraform provider source, then confirm findings with the user before writing any code.
+
+**Step 0.1 -- Study Terraform provider authentication**
+
+Read the Terraform provider source in the workspace to determine:
+
+1. **Provider configuration block**: Find the provider schema definition (typically in `internal/provider/` or the root). Look for the `Schema` map in the provider's `Configure` function to identify all accepted arguments.
+2. **Environment variables**: Identify every `XXXX_*` environment variable the provider reads. These are typically declared via `DefaultFunc: schema.EnvDefaultFrom("VARIABLE_NAME")` or similar patterns in the provider source.
+3. **Authentication model classification**:
+   - **Flat**: Single set of credential fields, all at the top level (like Auth0's domain/client_id/client_secret or DigitalOcean's api_token). Most providers fall here.
+   - **Multi-method (oneof)**: Multiple distinct authentication methods where only one is active at a time (e.g. a provider that accepts password auth, application credentials, or a pre-issued token as mutually exclusive strategies). This is rare -- only use when the provider genuinely supports mutually exclusive auth strategies with different field sets.
+4. **Required vs. optional fields**: Which fields are mandatory for authentication vs. optional configuration (region, zone, project scope, etc.).
+5. **Provider docs URL**: The Terraform registry URL, typically `https://registry.terraform.io/providers/<org>/<name>/latest/docs`.
+
+**Step 0.2 -- Determine enum number**
+
+Read `shared/catalogkind/catalog_provider.proto` -- find the highest `CatalogProvider` enum value and add 1.
+
+**Step 0.3 -- Derive naming conventions**
+
+From the display name, derive:
+
+- `provider_id`: lowercase snake_case for proto enum (e.g., `auth0`, `digital_ocean`, `open_fga`)
+- `provider_package`: lowercase for Go package and proto package (e.g., `auth0`, `digitalocean`, `cloudflare`)
+- `provider_group`: `<provider_package>.planton.dev` (e.g., `auth0.planton.dev`)
+- `ProtoConfigName`: PascalCase + `ProviderConfig` (e.g., `Auth0ProviderConfig`, `DigitalOceanProviderConfig`)
+- `config_filename`: `<provider_package>-provider-config.yaml`
+
+**CHECKPOINT -- Present findings and ask for confirmation:**
+
+Present the following to the user in a clear table and ask for explicit confirmation before proceeding:
+
+1. **Auth model**: Flat or multi-method? If multi-method, list the methods.
+2. **Credential fields table**: For each field, show: field name, proto type, required/optional, mapped environment variable, description.
+3. **Enum assignment**: `CatalogProvider` enum value.
+4. **Naming**: provider_id, provider_package, provider_group, ProtoConfigName, display_name, config_filename, docs URL.
+
+**Do NOT proceed until the user confirms.** If the user corrects any finding, update before continuing.
+
+---
+
+### Phase 1: Proto Definitions (2 files)
+
+**Goal:** Define the provider config proto and register the provider in the shared provider enum.
+
+**Step 1.1 -- CREATE `catalog/<provider_package>/provider.proto`**
+
+Follow the pattern from existing providers. The proto file MUST include:
+
+- `syntax = "proto3";`
+- `package dev.planton.<provider_package>;`
+- `import "buf/validate/validate.proto";`
+- A top-level doc comment explaining the provider, auth model, field-to-env-var mapping, and docs links
+- The `<ProtoConfigName>` message with:
+  - Each field documented with its purpose and mapped environment variable
+  - Required fields annotated with `[(buf.validate.field).required = true]`
+  - For **flat** providers: all fields at the top level (see `catalog/auth0/provider.proto`)
+  - For **multi-method** providers: a `oneof credentials` block with sub-messages per method, plus common fields outside the oneof
+
+**Credential fields carry no `sensitive` annotation.** The option marks a secret inside a kind's spec, the manifest a person writes and the platform stores, so the platform can insist on a managed secret reference there. A provider config is never such a manifest: on Planton a connection stores its credentials as typed secret references and the runner builds the provider config in memory at deploy, and offline the config is the user's own file. So no reader would act on the annotation and no stored copy exists for it to protect, which is why the secret-coverage gate walks kind specs only. Document each credential field's secrecy in its comment instead ("highly sensitive; treat as a secret").
+
+**Pattern reference (flat):** `catalog/auth0/provider.proto`
+
+**Step 1.2 -- MODIFY `shared/catalogkind/catalog_provider.proto`**
+
+Add the new enum entry at the end of the `CatalogProvider` enum (before the closing brace), following the exact format:
+
+```protobuf
+<provider_id> = <N> [(provider_meta) = {
+  group: "<provider_group>"
+  display_name: "<ProviderDisplayName>"
+}];
+```
+
+**Validation:** Verify no duplicate enum values.
+
+---
+
+### Phase 2: Provider Package (2 files)
+
+**Goal:** Create the CLI help constants and Bazel build file for the provider package.
+
+**Step 2.1 -- CREATE `catalog/<provider_package>/cli_help.go`**
+
+This file defines 6 constants that drive the terminal experience when users encounter credential errors. Quality here directly impacts UX.
+
+```go
+package <provider_package>
+
+// EnvironmentVariables lists all environment variables supported by the <ProviderDisplayName> provider.
+var EnvironmentVariables = []string{
+    // List all env vars from Phase 0 research
+}
+
+// EnvironmentVariablesHelp provides export commands for the supported environment variables.
+const EnvironmentVariablesHelp = `export <ENV_VAR_1>="<placeholder>"
+export <ENV_VAR_2>="<placeholder>"
+...`
+
+// ConfigFileExample provides an example YAML configuration file.
+const ConfigFileExample = `<field_1>: "<placeholder>"
+<field_2>: "<placeholder>"
+...`
+
+// ConfigFileName is the suggested filename for the provider config.
+const ConfigFileName = "<provider_package>-provider-config.yaml"
+
+// ProviderDisplayName is the human-readable name for this provider.
+const ProviderDisplayName = "<ProviderDisplayName>"
+
+// ProviderDocsURL points to the Terraform provider documentation.
+const ProviderDocsURL = "<terraform_registry_url>"
+```
+
+**Pattern reference:** `catalog/auth0/cli_help.go`
+
+Guidelines:
+- Group required fields first, then optional with a `# Optional` separator
+- Use realistic placeholder values (not just `<value>`) where conventions exist (e.g., region examples)
+- Comment out optional fields in `ConfigFileExample`
+- Include a package-level doc comment explaining the auth model and what drives these constants
+
+**Step 2.2 -- CREATE `catalog/<provider_package>/BUILD.bazel`**
+
+```starlark
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "<provider_package>",
+    srcs = [
+        "cli_help.go",
+        "provider.pb.go",
+    ],
+    importpath = "github.com/plantonhq/planton/catalog/<provider_package>",
+    visibility = ["//visibility:public"],
+    deps = [
+        "@build_buf_gen_go_bufbuild_protovalidate_protocolbuffers_go//buf/validate",
+        "@org_golang_google_protobuf//reflect/protoreflect",
+        "@org_golang_google_protobuf//runtime/protoimpl",
+    ],
+)
+```
+
+**Pattern reference:** `catalog/auth0/BUILD.bazel`
+
+Note: If the provider proto uses `oneof` with sub-messages, the deps may need additional entries. Check the generated `provider.pb.go` after Phase 3 and update if needed.
+
+---
+
+### Phase 3: Proto Generation
+
+**Goal:** Generate Go protobuf stubs (Java stubs are generated alongside and compiled as a build-time gate).
+
+Run from the repo root:
+
+```bash
+make protos
+```
+
+This executes: `buf generate` (from the repo root), copies the generated Go stubs into place, compiles the generated Java stubs via Bazel as an early-failure gate (catching reserved-keyword conflicts like `public` or `class`), and runs gazelle.
+
+**Verify:**
+
+1. `catalog/<provider_package>/provider.pb.go` exists and contains the generated Go types.
+2. `shared/catalogkind/catalog_provider.pb.go` is regenerated with the new enum entry.
+
+If `make protos` fails, fix proto syntax errors (wrong import paths, missing semicolons, duplicate field numbers) and retry (up to 3 attempts).
+
+---
+
+### Phase 4: IaC Input / Env Vars (2 files)
+
+**Goal:** Create the provider-specific environment variable loader and register it in the main loader.
+
+**Step 4.1 -- CREATE `pkg/iac/iacinput/providerenvvars/<provider_package>.go`**
+
+```go
+package providerenvvars
+
+import (
+    "github.com/pkg/errors"
+    <provider_alias> "github.com/plantonhq/planton/catalog/<provider_package>"
+)
+
+// load<ProviderPascal>EnvVars loads <ProviderDisplayName> provider config and returns environment variables.
+func load<ProviderPascal>EnvVars(providerConfigYaml []byte) (map[string]string, error) {
+    config := new(<provider_alias>.<ProtoConfigName>)
+    if err := loadProviderConfigProto(providerConfigYaml, config); err != nil {
+        return nil, errors.Wrap(err, "failed to load <ProviderDisplayName> provider config")
+    }
+
+    envVars := map[string]string{}
+
+    // Map each proto field to its corresponding environment variable.
+    // For flat providers: straightforward field-to-env-var mapping.
+    // For multi-method providers: switch on the oneof and emit method-specific vars,
+    // then emit common vars.
+    ...
+
+    return envVars, nil
+}
+```
+
+**Pattern reference (flat):** `pkg/iac/iacinput/providerenvvars/auth0.go`
+
+For flat providers, map each non-empty string field with `putIfSet`, never a bare assignment: `TestEveryProviderBuilder_EmptyConfig_EmitsNoEmptyVariable` hands every provider's builder an empty config (`{}`), enumerated from the enum, and fails on any variable emitted with an empty value or any error. For multi-method providers, switch on the `credentials` oneof case first, then handle common fields.
+
+This loader is also the one place a credential guard can live. Provider configs are never validated against their proto rules on the deploy path (the runner and the CLI build the config and load it straight into env vars), so a check that must hold on every deploy -- a key that must belong to the mode the config declares (`stripe.go`) -- is Go in this loader, returning a refusal that names what was observed and the fix, and never echoes a secret. Keep an empty config passing: the missing credential is reported by whoever requires it.
+
+Add the new file (and its test) to `pkg/iac/iacinput/providerenvvars/BUILD.bazel`, with `//catalog/<provider_package>` in `deps`; gazelle ran during `make protos`, before this file existed.
+
+**A second credential plane rides `TF_VAR_*`.** When the provider config carries a credential the provider plugin itself does not read -- an S3-compatible key pair for the provider's object store (Cloudflare R2, DigitalOcean Spaces) that a module reads through a secondary provider -- emit it as the `TF_VAR_*` name of the sensitive, nullable variable the consuming modules declare in `iac/tf/credentials.tf`, and only when present (`putIfSet`). Terraform silently ignores a `TF_VAR_*` a module does not declare, so emitting it for every kind of the provider is safe. Never emit it as `AWS_ACCESS_KEY_ID` / `AWS_SECRET_ACCESS_KEY`: an S3 state backend authenticated from the environment reads those names too. References: `cloudflare.go` (R2), `digitalocean.go` (Spaces).
+
+**Step 4.2 -- MODIFY `pkg/iac/iacinput/providerenvvars/loader.go`**
+
+1. Add the provider import.
+2. Add a case in the `loadProviderEnvVars()` switch:
+
+```go
+case catalogkind.CatalogProvider_<provider_id>:
+    return load<ProviderPascal>EnvVars(providerConfigYaml)
+```
+
+Insert the case in the existing switch statement, maintaining alphabetical order within the switch is NOT required -- just add at the end before the `default` case, following the pattern of recent additions.
+
+---
+
+### Phase 5: Provider Detection (4 files)
+
+**Goal:** Wire the provider into CLI guidance, config validation, display names and the credentials-required check.
+
+**Step 5.1 -- MODIFY `pkg/iac/iacinput/providerdetect/guidance.go`**
+
+1. Add the import: `<provider_alias> "github.com/plantonhq/planton/catalog/<provider_package>"`
+2. Add a case in ALL 4 switch functions:
+   - `ProviderConfigExample()`: return `<provider_alias>.ConfigFileExample`
+   - `ProviderConfigFilename()`: return `<provider_alias>.ConfigFileName`
+   - `ProviderEnvironmentVariablesHelp()`: return `<provider_alias>.EnvironmentVariablesHelp`
+   - `ProviderDocsURL()`: return `<provider_alias>.ProviderDocsURL`
+
+Each case follows this format:
+```go
+case catalogkind.CatalogProvider_<provider_id>:
+    return <provider_alias>.ConfigFileExample
+```
+
+**Step 5.2 -- MODIFY `pkg/iac/iacinput/providerdetect/validate.go`**
+
+1. Add the import: `<provider_alias> "github.com/plantonhq/planton/catalog/<provider_package>"`
+2. Add a case in `ProviderConfigProto()` -- the one provider-to-config-type map, which the `-p` validation and the provider-parity tooling's provider-config census both read:
+
+```go
+case catalogkind.CatalogProvider_<provider_id>:
+    return new(<provider_alias>.<ProtoConfigName>), nil
+```
+
+**Step 5.3 -- MODIFY `pkg/iac/iacinput/providerdetect/detect.go`**
+
+Add a case to `ProviderDisplayName()` returning `<ProviderDisplayName>`; without it, CLI messages print the raw enum name.
+
+**Step 5.4 -- MODIFY `pkg/iac/iacinput/iacinputproviderconfig/backend_options.go`**
+
+Add a case to `ValidateProviderConfig()` returning "<ProviderDisplayName> credentials required for resource '%s'. Provide credentials via provider_config in API request" when the provider cannot run without credentials (every provider except the few whose default path needs none).
+
+Add `//catalog/<provider_package>` to `pkg/iac/iacinput/providerdetect/BUILD.bazel` `deps`.
+
+---
+
+### Phase 6: Build Validation
+
+**Goal:** Verify the entire integration compiles.
+
+Run the following build commands and fix any errors (retry up to 3 times per command):
+
+1. **The touched packages compile** (from the repo root; name each package -- a `/...` pattern walks the whole tree and the repository's hooks refuse it):
+   ```bash
+   go build ./catalog/<provider_package> ./pkg/iac/iacinput/providerenvvars ./pkg/iac/iacinput/providerdetect ./pkg/iac/iacinput/iacinputproviderconfig
+   ```
+
+2. **Their tests pass**, including the empty-config test every new builder is held to:
+   ```bash
+   go test ./pkg/iac/iacinput/providerenvvars ./pkg/catalogkindreflect
+   ```
+
+If any build fails, identify the error, fix it, and retry. Common issues:
+- Missing imports in Go files
+- Wrong proto field names in Go code (proto uses `snake_case`, Go uses `PascalCase`)
+- Missing case in switch statements causing exhaustiveness warnings
+
+---
+
+### Phase 7: Changelog
+
+**Goal:** Document the integration with a structured changelog entry.
+
+**CREATE `_changelog/<YYYY-MM>/<YYYY-MM-DD-HHMMSS>-<provider_package>-provider-integration.md`**
+
+Use the current date and time for the timestamp. Follow the established changelog format:
+
+```markdown
+# <ProviderDisplayName> Provider Integration
+
+**Date**: <Month Day, Year>
+**Type**: Feature
+**Components**: Provider Framework, API Definitions, CLI Integration
+
+## Summary
+
+Added <ProviderDisplayName> as provider #<N> to Planton...
+
+## Problem Statement / Motivation
+
+...
+
+## Solution / What's New
+
+### Architecture
+
+(Include a mermaid flowchart showing the 4 layers)
+
+### Authentication Model
+
+(Include a mermaid diagram showing field-to-env-var mapping)
+
+## Implementation Details
+
+### 1. Proto Definitions
+### 2. CLI Guidance
+### 3. Env Var Mapping
+### 4. Catalog Documentation
+
+## Files Changed
+
+| Layer | New Files | Modified Files |
+|-------|-----------|----------------|
+| Proto | ... | ... |
+| ... | ... | ... |
+
+**Total**: <N> files, ~<N> insertions
+
+## Benefits
+
+### For Users
+### For Developers
+
+## Impact
+
+### Direct
+### Future Work Enabled
+
+---
+
+**Status**: Production Ready
+**Build**: CLI and proto stubs pass
+```
+
+**Pattern reference:** `_changelog/2025-12/2025-12-30-054629-auth0-provider-integration.md`
+
+---
+
+## Error Handling
+
+- Each phase retries up to 3 times on fixable errors (build failures, syntax errors).
+- If a phase fails after 3 attempts, STOP and report the error clearly. Do not proceed to the next phase.
+- Proto generation errors (Phase 3) block all subsequent phases.
+- Build validation errors (Phase 6) should be traced back to the originating phase and fixed there.
+
+## Progress Tracking
+
+Provide progress updates after each phase:
+
+```
+[0/7] Research and discovery complete -- awaiting confirmation
+[1/7] Proto definitions created
+[2/7] Provider package created (cli_help.go, BUILD.bazel)
+[3/7] Proto stubs generated (make protos)
+[4/7] IaC input / env vars wired
+[5/7] Provider detection wired
+[6/7] Build validation passed
+[7/7] Changelog written
+
+Provider integration complete!
+```
+
+## Reference Files
+
+These files serve as the canonical patterns. When in doubt, read the Auth0 implementation (flat model) and follow exactly. No current provider uses the multi-method model; when one arrives, the `oneof credentials` shape described in Phase 1 is the contract.
+
+### Proto Layer
+- `catalog/auth0/provider.proto` -- flat provider config
+- `shared/catalogkind/catalog_provider.proto` -- provider enum
+
+### Provider Package
+- `catalog/auth0/cli_help.go` -- CLI constants
+- `catalog/auth0/BUILD.bazel` -- Bazel build
+
+### IaC Input / Env Vars
+- `pkg/iac/iacinput/providerenvvars/auth0.go` -- flat env var loader
+- `pkg/iac/iacinput/providerenvvars/loader.go` -- main loader switch
+
+### Provider Detection
+- `pkg/iac/iacinput/providerdetect/guidance.go` -- guidance switch functions
+- `pkg/iac/iacinput/providerdetect/validate.go` -- `ProviderConfigProto()`
+- `pkg/iac/iacinput/providerdetect/detect.go` -- `ProviderDisplayName()`
+- `pkg/iac/iacinput/iacinputproviderconfig/backend_options.go` -- `ValidateProviderConfig()`
+
+### Changelog
+- `_changelog/2025-12/2025-12-30-054629-auth0-provider-integration.md` -- Auth0 (flat)
+- `_changelog/2026-01/2026-01-17-075626-openfga-provider-integration.md` -- OpenFGA (flat)
+
+## Authentication Model Decision Guide
+
+Use this guide during Phase 0 to classify the provider:
+
+**Use FLAT model when:**
+- The provider has a single authentication method (API key, access key pair, client credentials, etc.)
+- All credential fields coexist without conflict
+- Examples: AWS (access key + secret), Auth0 (domain + client_id + client_secret), DigitalOcean (API token), Cloudflare (API token or API key + email), GCP (service account key)
+
+**Use MULTI-METHOD (oneof) model when:**
+- The provider explicitly supports 2+ mutually exclusive authentication strategies
+- Each strategy requires different fields that would be confusing if presented together
+- The Terraform provider source has distinct code paths per auth method
+- Example shape: password auth vs. application credentials vs. a pre-issued token
+
+**When in doubt, prefer FLAT.** Most providers use a single auth method. The oneof model adds complexity across the layers (proto, env var loader with oneof switch, CLI guidance covering each method). Only use it when the provider genuinely supports fundamentally different auth strategies.
+
+## Notes
+
+- This rule is interactive -- it pauses at the Phase 0 checkpoint to confirm decisions with the user.
+- A provider with no Pulumi provider, or one proven on fewer engines, declares the engines its kinds run on in each kind's `kind_meta.provisioners` (see the kind forge rule); nothing at the provider level records it.
+- The Terraform provider workspace path is used for research only; no files in it are modified.
+- Proto generation (`make protos`) must succeed before any Go code that imports the generated stubs.
+- The `BUILD.bazel` file may need gazelle updates after proto generation. Running `make protos` handles this via the `${BAZEL} run //:gazelle` step.

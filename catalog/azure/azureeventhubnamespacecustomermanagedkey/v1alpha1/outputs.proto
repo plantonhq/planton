@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.azure.azureeventhubnamespacecustomermanagedkey.v1alpha1;
 
-// **AzureEventHubNamespaceCustomerManagedKeyStackOutputs** captures the
+// **AzureEventHubNamespaceCustomerManagedKeyOutputs** captures the
 // outputs of applying customer-managed-key encryption to an Event Hubs
 // namespace.
-message AzureEventHubNamespaceCustomerManagedKeyStackOutputs {
+message AzureEventHubNamespaceCustomerManagedKeyOutputs {
   // The provider's identity for the CMK configuration -- the namespace's
   // ARM ID (the configuration is a property of the namespace; it has no
   // ARM object of its own).

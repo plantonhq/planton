@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurefabriccapacity
 spec:
@@ -7,7 +7,7 @@ spec:
   values:
     - name: fabric_capacity_id
       derivations:
-        - from_stack_output: fabric_capacity_id
+        - from_output: fabric_capacity_id
       where_to_find: >-
         Portal -> Microsoft Fabric -> Capacities -> the capacity ->
         Properties -> Resource ID, or `az resource show --resource-type

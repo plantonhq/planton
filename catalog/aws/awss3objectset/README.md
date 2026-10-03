@@ -44,7 +44,7 @@ Uniform encryption and access posture belongs on the bucket — `AwsS3Bucket` mo
 
 Destroying an object removes all of its versions on versioned buckets. For objects under GOVERNANCE-mode Object Lock retention or legal holds, `force_destroy` sends the governance-bypass flag with the delete (valid only on Object Lock-enabled buckets) so retained objects can still be torn down deliberately.
 
-## Stack Outputs
+## Outputs
 
 - **bucket_id**: The bucket the objects were uploaded to.
 - **object_arns**: Map of object key to ARN, for IAM policy Resource lists.

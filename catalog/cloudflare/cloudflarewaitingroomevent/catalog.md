@@ -4,7 +4,7 @@ Deploys a scheduled event on a Cloudflare waiting room: a time window (a product
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Waiting Room Event** — one event on the named room and zone, active between `eventStartTime` and `eventEndTime`, carrying only the override fields the spec sets
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Zone → Waiting Room → Edit on the target zone. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Zone → Waiting Room → Edit on the target zone. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Cloudflare Account
@@ -52,7 +52,7 @@ spec:
 planton apply -f waiting-room-event.yaml
 ```
 
-This creates a four-hour window with no overrides — the room queues with its own thresholds throughout. A Stack Job tracks the provisioning in real time.
+This creates a four-hour window with no overrides — the room queues with its own thresholds throughout. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,16 +95,16 @@ These are the most important decisions when configuring a waiting room event. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareWaitingRoom** | `waitingRoomId` | `status.outputs.waiting_room_id` |
 | **CloudflareDnsZone** | `zoneId` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -124,5 +124,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Waiting Room**](/cloud-catalog/cloudflare-waiting-room) — the room this event overrides; create it first and wire `waitingRoomId` from its output
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) — the zone the room belongs to; `zoneId` references its `zone_id` output
+- [**Cloudflare Waiting Room**](/infra-catalog/cloudflare-waiting-room) — the room this event overrides; create it first and wire `waitingRoomId` from its output
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) — the zone the room belongs to; `zoneId` references its `zone_id` output

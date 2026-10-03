@@ -36,7 +36,7 @@ var _ = ginkgo.Describe("GcpMonitoringUptimeCheckSpec", func() {
 		return &GcpMonitoringUptimeCheck{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpMonitoringUptimeCheck",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-uptime-check",
 			},
 			Spec: &GcpMonitoringUptimeCheckSpec{

@@ -1,12 +1,12 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsrestapivpclink
 spec:
   values:
     - name: vpc_link_id
       derivations:
-        - from_stack_output: vpc_link_id
+        - from_output: vpc_link_id
       where_to_find: >-
         API Gateway console -> VPC links (the ID), or
         `aws apigateway get-vpc-links` (id).

@@ -4,7 +4,7 @@ Installs KEDA — Kubernetes Event-Driven Autoscaling — from the official Helm
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm Release** -- the `keda-operator` Deployment, the `keda-operator-metrics-apiserver` Deployment (registers the cluster-wide `v1beta1.external.metrics.k8s.io` APIService), the `keda-admission-webhooks` Deployment, and RBAC
 - **CRDs** -- ScaledObject, ScaledJob, TriggerAuthentication, and companions — annotated to survive uninstall by default, so removing the release does not cascade-delete every scaling declaration in the cluster
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Kubernetes Cluster
 
@@ -51,11 +51,11 @@ spec:
 planton apply -f keda.yaml
 ```
 
-The engine then watches ScaledObjects in all namespaces — deploy the scaling declarations alongside the workloads they scale. A Stack Job tracks the provisioning in real time.
+The engine then watches ScaledObjects in all namespaces — deploy the scaling declarations alongside the workloads they scale. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, hand KEDA's internal TLS to a cert-manager issuer managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, hand KEDA's internal TLS to a cert-manager issuer managed by another Infra Component:
 
 ```yaml
 spec:
@@ -91,7 +91,7 @@ These are the most important decisions when configuring KEDA. Explore the full f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -99,9 +99,9 @@ These are the most important decisions when configuring KEDA. Explore the full f
 | **KubernetesIssuer** | `certificates.certManagerIssuer.issuer.name` | `status.outputs.issuer_name` |
 | **KubernetesClusterIssuer** | `certificates.certManagerIssuer.clusterIssuer.name` | `status.outputs.cluster_issuer_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -121,8 +121,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) -- the workloads ScaledObjects and ScaledJobs scale, including to zero (the same holds for StatefulSets and Jobs)
-- [**Cert Manager**](/cloud-catalog/kubernetes-cert-manager) -- can own KEDA's internal TLS certificates in place of the self-generated ones
-- [**Cert Manager Issuer**](/cloud-catalog/kubernetes-issuer) -- the issuer KEDA's certificates reference when cert-manager owns them
-- [**Metrics Server**](/cloud-catalog/kubernetes-metrics-server) -- the complementary pipeline: metrics-server covers instantaneous CPU/memory, KEDA covers event-driven and external signals
-- [**Kubernetes HorizontalPodAutoscaler**](/cloud-catalog/kubernetes-horizontal-pod-autoscaler) -- KEDA drives HPAs under the hood; hand-authored HPAs must not target the same workload a ScaledObject manages
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- the workloads ScaledObjects and ScaledJobs scale, including to zero (the same holds for StatefulSets and Jobs)
+- [**Cert Manager**](/infra-catalog/kubernetes-cert-manager) -- can own KEDA's internal TLS certificates in place of the self-generated ones
+- [**Cert Manager Issuer**](/infra-catalog/kubernetes-issuer) -- the issuer KEDA's certificates reference when cert-manager owns them
+- [**Metrics Server**](/infra-catalog/kubernetes-metrics-server) -- the complementary pipeline: metrics-server covers instantaneous CPU/memory, KEDA covers event-driven and external signals
+- [**Kubernetes HorizontalPodAutoscaler**](/infra-catalog/kubernetes-horizontal-pod-autoscaler) -- KEDA drives HPAs under the hood; hand-authored HPAs must not target the same workload a ScaledObject manages

@@ -11,9 +11,9 @@
 # droplets identically in every region, so every entry is pinned "global".
 # The estimate generator replays the catalog presets through these rules to
 # emit ../estimates/digitaloceandroplet.yaml.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: digitaloceandroplet
 spec:
@@ -76,7 +76,7 @@ spec:
     - applies_when:
         - field_path: volume_ids
           op: is_set
-      text: "attached block storage volumes bill on their own DigitalOceanVolume components at 0.10 USD/GiB/mo -- attachment adds no droplet-side charge"
+      text: "attached block storage volumes bill on their own DigitalOceanVolume kinds at 0.10 USD/GiB/mo -- attachment adds no droplet-side charge"
     - text: "droplet snapshots bill 0.06 USD/GB per month and are taken outside this spec"
   notes:
     - text: "Priced at DigitalOcean's global droplet rates -- the pricing page carries one price table with no region dimension, so the resolved region moves availability, not the rate."

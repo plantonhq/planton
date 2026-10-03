@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/plantonhq/planton/e2e/framework/provider"
-	permissionsv1 "github.com/plantonhq/planton/iac/componentpermissions/v1"
+	permissionsv1 "github.com/plantonhq/planton/iac/catalogkindpermissions/v1"
 )
 
 func TestParseIdentitySpec(t *testing.T) {
@@ -85,7 +85,7 @@ func TestClusterRoleRulesRefuseAWithholdAWildcardWouldVoid(t *testing.T) {
 }
 
 func TestIdentityNameIsAValidObjectName(t *testing.T) {
-	name := identityName(&provider.ComponentTestContext{Component: "kuberneteshelmrelease", Engine: "terraform", RunID: "20260903T1200_Z.abc"})
+	name := identityName(&provider.KindTestContext{Kind: "kuberneteshelmrelease", Engine: "terraform", RunID: "20260903T1200_Z.abc"})
 	if len(name) > 63 || strings.ContainsAny(name, "_.TZ") || !strings.HasPrefix(name, "lane-kuberneteshelmrelease-terraform-") {
 		t.Fatalf("not a valid lowercase DNS label: %q", name)
 	}

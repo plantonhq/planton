@@ -63,7 +63,7 @@ schemaSettings:
 
 `AVRO` reviews well in pull requests, carries logical types (timestamps, decimals), and is the format Pub/Sub's BigQuery delivery (`useTopicSchema`) and Cloud Storage Avro export understand natively. `PROTOCOL_BUFFER` suits publishers that already serialize protobuf and want compact binary encoding (pair with a topic encoding of `BINARY`).
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -84,7 +84,7 @@ provider version is representable through this spec; the recorded
 judgment lives in `iac/provider-parity.yaml`, checked by
 `planton provider-parity --check`.
 
-## Related Components
+## Related Kinds
 
 - **GcpPubSubTopic** — attaches this schema via `schemaSettings.schema`
 - **GcpPubSubSubscription** — consumes schema-validated messages (BigQuery delivery's `useTopicSchema` and Cloud Storage `avroConfig.useTopicSchema` derive layout from the topic's schema)

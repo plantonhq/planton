@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for a Cloud Deploy custom targ
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `customTargetType` |
-| `module/locals.go` | Stack input, attribution labels, the label merge |
+| `module/locals.go` | IaC input, attribution labels, the label merge |
 | `module/custom_target_type.go` | API enablement, the type, the custom-actions and tasks builders, the send-only-when-set helpers, the outputs |
 | `module/outputs.go` | Output key constants (`name`, `custom_target_type_id`, `uid`) |
 

@@ -5,7 +5,7 @@ package dev.planton.gcp.gcpiamoauthclient.v1alpha1;
 import "shared/options/options.proto";
 
 // Outputs produced after provisioning a workforce OAuth client.
-message GcpIamOauthClientStackOutputs {
+message GcpIamOauthClientOutputs {
   // The system-generated OAuth client ID applications present in OAuth
   // flows (distinct from the user-chosen resource ID).
   string client_id = 1;

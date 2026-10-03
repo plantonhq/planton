@@ -14,7 +14,7 @@ single controller machinery (the component split is on
 beside the ingress controller — never in an application environment.
 The full public-HTTPS composition checklist lives in the
 [KubernetesClusterIssuer guide](../kubernetesclusterissuer/GUIDE.md);
-this component is its step one.
+this kind is its step one.
 
 ## The namespace is effectively permanent
 

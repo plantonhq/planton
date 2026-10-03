@@ -1,5 +1,5 @@
 # Auth0Action Outputs
-# Maps to the Auth0ActionStackOutputs protobuf message
+# Maps to the Auth0ActionOutputs protobuf message
 
 output "id" {
   description = "The unique identifier of the Auth0 action"

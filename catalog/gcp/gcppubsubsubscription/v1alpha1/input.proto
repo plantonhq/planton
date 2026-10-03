@@ -5,7 +5,7 @@ package dev.planton.gcp.gcppubsubsubscription.v1alpha1;
 import "catalog/gcp/gcppubsubsubscription/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-message GcpPubSubSubscriptionStackInput {
+message GcpPubSubSubscriptionIacInput {
   GcpPubSubSubscription target = 1;
   dev.planton.gcp.GcpProviderConfig provider_config = 2;
 }

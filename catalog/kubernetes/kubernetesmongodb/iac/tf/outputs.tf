@@ -1,5 +1,5 @@
-# Stack outputs — identical names and derivations in the Pulumi module's
-# outputs.go / main.go exports (KubernetesMongodbStackOutputs).
+# Outputs — identical names and derivations in the Pulumi module's
+# outputs.go / main.go exports (KubernetesMongodbOutputs).
 
 output "namespace" {
   description = "Namespace the cluster runs in"

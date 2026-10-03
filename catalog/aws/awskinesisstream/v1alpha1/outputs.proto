@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awskinesisstream.v1alpha1;
 
-// AwsKinesisStreamStackOutputs captures observable identifiers from a provisioned
+// AwsKinesisStreamOutputs captures observable identifiers from a provisioned
 // Kinesis Data Stream. These outputs are used by downstream resources (e.g.,
 // Kinesis Firehose delivery streams, Lambda event source mappings, EventBridge
 // targets) to wire dependencies via StringValueOrRef.
-message AwsKinesisStreamStackOutputs {
+message AwsKinesisStreamOutputs {
   // The Amazon Resource Name (ARN) of the Kinesis stream. This is the primary
   // identifier used for IAM policies, cross-service permissions, and as a
   // source/target reference in other resources (e.g., Firehose source,

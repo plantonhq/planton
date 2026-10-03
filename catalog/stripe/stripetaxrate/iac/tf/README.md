@@ -15,7 +15,7 @@ OpenTofu module that declares one Stripe tax rate. Stripe kinds run on OpenTofu 
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `display_name` (required), `percentage`, `inclusive`; `country`, `state`, `jurisdiction`, `description`, `tax_type`, `active`, `metadata` |
 
 ## Outputs

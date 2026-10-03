@@ -69,7 +69,7 @@ every network the gateway routes to, without per-subnet associations.
   exactly-one-grantee rules are CEL-enforced at validation time.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `client_vpn_endpoint_id` / `client_vpn_endpoint_arn`: the endpoint's
   identifiers

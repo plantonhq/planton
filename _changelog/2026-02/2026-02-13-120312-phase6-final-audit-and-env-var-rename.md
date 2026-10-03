@@ -38,9 +38,9 @@ All `PROJECT_PLANTON_*` environment variables renamed to `PLANTON_*`:
 ### Documentation Fixes
 
 - **getting-started.md**: Added required `namespace` and `diskSize` fields to KubernetesPostgres manifest, added links to tutorials and provider setup guides, added troubleshooting link
-- **index.md**: Fixed `RedisKubernetes` to `KubernetesRedis`, fixed icon from raw emoji to valid key, updated all provider component counts, added Scaleway and OpenStack to provider grid, added Tutorials/Examples/Contributing sections
+- **index.md**: Fixed `RedisKubernetes` to `KubernetesRedis`, fixed icon from raw emoji to valid key, updated all provider kind counts, added Scaleway and OpenStack to provider grid, added Tutorials/Examples/Contributing sections
 - **troubleshooting.md**: Fixed icon from `wrench` to `gear`, full audit confirmed clean (no Planton references, no out-of-scope commands)
-- **cloud-resource-kinds.md**: Fixed Azure count from 12 to 10
+- **catalog-kinds.md**: Fixed Azure count from 12 to 10
 
 ## Implementation Details
 
@@ -76,7 +76,7 @@ All `PROJECT_PLANTON_*` environment variables renamed to `PLANTON_*`:
 - All internal links verified across 7 sections
 - Troubleshooting links added to `index.md` and `getting-started.md`
 - All frontmatter icons validated against `iconMap`
-- Component/provider counts verified against `cloud_resource_kind.proto`
+- Kind/provider counts verified against `catalog_kind.proto`
 - Final Planton sweep confirmed zero commercial references (only `plantonhq` in GitHub URLs and Homebrew tap)
 
 ## Benefits

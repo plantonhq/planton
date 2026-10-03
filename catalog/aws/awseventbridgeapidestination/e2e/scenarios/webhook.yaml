@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awseventbridgeapidestination
+    e2e-catalog-kind: awseventbridgeapidestination
   annotations:
     planton.dev/e2e: "true"
   tags:

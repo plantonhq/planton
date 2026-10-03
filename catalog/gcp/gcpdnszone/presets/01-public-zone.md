@@ -24,7 +24,7 @@ Creates a public Cloud DNS managed zone for an internet-facing domain. DNS recor
 - **02-private-vpc** — internal service discovery on a VPC
 - **03-private-dnssec** — public zone with DNSSEC enabled
 
-## Related Components
+## Related Kinds
 
 - [GcpDnsRecord](/docs/catalog/gcp/gcpdnsrecord) — individual DNS records in this zone
 - [GcpProject](/docs/catalog/gcp/gcpproject) — project that owns the zone

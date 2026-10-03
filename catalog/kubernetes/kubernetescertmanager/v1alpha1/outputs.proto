@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetescertmanager.v1alpha1;
 
-// KubernetesCertManagerStackOutputs captures observable outputs after
+// KubernetesCertManagerOutputs captures observable outputs after
 // cert-manager installation.
-message KubernetesCertManagerStackOutputs {
+message KubernetesCertManagerOutputs {
   // Kubernetes namespace cert-manager was installed into.
   string namespace = 1;
 

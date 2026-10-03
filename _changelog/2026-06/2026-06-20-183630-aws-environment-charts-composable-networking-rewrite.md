@@ -20,10 +20,10 @@ cross-resource `fieldPath` references on snake_case.
 
 ## Problem Statement / Motivation
 
-Planton decomposed AWS networking: the VPC component became a thin, real-VPC-only
+Planton decomposed AWS networking: the VPC kind became a thin, real-VPC-only
 resource, and subnets, internet gateways, NAT gateways, and Elastic IPs became
-first-class standalone components composed by reference. This is a deliberate
-"LEGO block" design — lifecycles differ, and an explicit graph is easier for both
+first-class standalone kinds composed by reference. This is a deliberate
+"catalog kind" design — lifecycles differ, and an explicit graph is easier for both
 humans and coding agents to reason about and recombine.
 
 ### Pain Points
@@ -36,7 +36,7 @@ humans and coding agents to reason about and recombine.
   non-VPC resources (EKS, ALB, RDS, MSK, SageMaker, IAM, KMS, …) were invalid.
 - **Inconsistent output casing.** Some charts used camelCase `fieldPath`
   (`status.outputs.vpcId`), others snake_case. The verified source of truth (each
-  component's `default_kind_field_path` and its presets) is snake_case.
+  kind's `default_kind_field_path` and its presets) is snake_case.
 - **Latent resource drift.** A few resources had fallen behind their schemas
   independent of networking (see Implementation Details).
 
@@ -99,7 +99,7 @@ Aurora RDS + ElastiCache Redis (microservices), SageMaker domain (ml-workbench).
   `vpcEnabled` / `customImagesEnabled` (ml-workbench), `create_hosted_zone` /
   `enable_kms_encryption` (eks).
 
-### Subnet routing example (verified against the component preset)
+### Subnet routing example (verified against the kind preset)
 
 ```yaml
 routes:

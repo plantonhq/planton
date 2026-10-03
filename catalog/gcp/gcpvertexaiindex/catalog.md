@@ -4,7 +4,7 @@ Deploys a Vertex AI Vector Search index: the data structure that holds embedding
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Vertex AI Index** -- a regional Vector Search index with the configured embedding geometry (dimensions, distance measure, normalization, shard size)
 - **Nearest-Neighbor Algorithm** -- tree-AH approximate search (tuned or GCP-default) or brute-force exact search, chosen by which algorithm block the spec carries; omitting both applies GCP's default tree-AH tuning
@@ -16,12 +16,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the index will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef. The module enables the Vertex AI API itself, so the connection's principal needs permission to enable services on a fresh project.
+- **A GCP project** where the index will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef. The module enables the Vertex AI API itself, so the connection's principal needs permission to enable services on a fresh project.
 - **Embedding model decided** -- the index's dimensions and distance measure must match the embedding model's output exactly, and both are immutable.
 - **Data format** (batch loads) -- vector files in Cloud Storage laid out per GCP's Vector Search format, in the same region.
 - **Cloud KMS key** (only for CMEK) -- a key in the same region as the index, with the Vertex AI service agent granted `roles/cloudkms.cryptoKeyEncrypterDecrypter`.
@@ -61,7 +61,7 @@ spec:
 planton apply -f vertex-index.yaml
 ```
 
-This creates an empty stream-update index for 768-dimension embeddings with default tree-AH tuning — ready for near-real-time upserts. A Stack Job tracks the provisioning in real time.
+This creates an empty stream-update index for 768-dimension embeddings with default tree-AH tuning — ready for near-real-time upserts. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,16 +94,16 @@ These are the most important decisions when configuring an index. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 | **GcpKmsKey** (optional) | `kmsKeyName` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -124,8 +124,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the index is created
-- [**GCP Vertex AI Index Endpoint**](/cloud-catalog/gcp-vertex-ai-index-endpoint) -- the serving surface this index is deployed onto
-- [**GCP Vertex AI Deployed Index**](/cloud-catalog/gcp-vertex-ai-deployed-index) -- joins this index to an endpoint via `index`; the final resource that makes queries servable
-- [**GCP GCS Bucket**](/cloud-catalog/gcp-gcs-bucket) -- holds the vector data files a batch index loads from (compose the bucket name into `contentsDeltaUri`)
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- the customer-managed key for index data at rest
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the index is created
+- [**GCP Vertex AI Index Endpoint**](/infra-catalog/gcp-vertex-ai-index-endpoint) -- the serving surface this index is deployed onto
+- [**GCP Vertex AI Deployed Index**](/infra-catalog/gcp-vertex-ai-deployed-index) -- joins this index to an endpoint via `index`; the final resource that makes queries servable
+- [**GCP GCS Bucket**](/infra-catalog/gcp-gcs-bucket) -- holds the vector data files a batch index loads from (compose the bucket name into `contentsDeltaUri`)
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- the customer-managed key for index data at rest

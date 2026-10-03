@@ -10,14 +10,14 @@ import (
 // Resources is the main entry point for the Pulumi module.
 // It orchestrates the creation of a Kubernetes Ingress with its host rules,
 // TLS configuration, and backends.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesingressv1alpha1.KubernetesIngressStackInput) error {
+func Resources(ctx *pulumi.Context, iacInput *kubernetesingressv1alpha1.KubernetesIngressIacInput) error {
 	// Initialize locals with derived values
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// Create Kubernetes provider from credentials
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
 		ctx,
-		stackInput.ProviderConfig,
+		iacInput.ProviderConfig,
 		"kubernetes",
 	)
 	if err != nil {

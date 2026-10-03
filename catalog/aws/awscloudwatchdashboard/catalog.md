@@ -4,7 +4,7 @@ Deploys a CloudWatch dashboard — a named canvas of metric graphs, Logs Insight
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **CloudWatch Dashboard** — named by `dashboardName`, carrying the full widget layout from `dashboardBody`. Any widget type CloudWatch supports lands on the 24-column grid: metric graphs, Logs Insights queries, alarm status tiles, text/markdown panels.
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, carrying `cloudwatch:PutDashboard`, `cloudwatch:GetDashboard`, and `cloudwatch:DeleteDashboards`. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, carrying `cloudwatch:PutDashboard`, `cloudwatch:GetDashboard`, and `cloudwatch:DeleteDashboards`. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -65,7 +65,7 @@ spec:
 planton apply -f cloudwatch-dashboard.yaml
 ```
 
-This creates a two-widget dashboard named `CheckoutHealth` in us-east-1 — a markdown header and a Lambda error graph. A Stack Job tracks the provisioning in real time.
+This creates a two-widget dashboard named `CheckoutHealth` in us-east-1 — a markdown header and a Lambda error graph. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -85,11 +85,11 @@ These are the most important decisions when configuring a dashboard. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. Widgets reference metrics by namespace and dimension names and alarms by ARN, all inside the `dashboardBody` document — these travel as plain strings, not typed references.
+This kind has no foreign key dependencies. Widgets reference metrics by namespace and dimension names and alarms by ARN, all inside the `dashboardBody` document — these travel as plain strings, not typed references.
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` records the dashboard's identity: `dashboard_name` (the provider's import ID) and `dashboard_arn`. Nothing downstream composes on a dashboard — these outputs exist for auditing and import, not for ValueFromRef wiring.
 
@@ -105,6 +105,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS CloudWatch Alarm**](/cloud-catalog/aws-cloudwatch-alarm) — alarm status widgets reference alarm ARNs; the dashboard is where their state is read at a glance
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) — Logs Insights query widgets tail and aggregate a log group's events on the same canvas
-- [**AWS CloudWatch Synthetics**](/cloud-catalog/aws-cloudwatch-synthetics) — canary success-rate and latency metrics are natural widgets on a service health dashboard
+- [**AWS CloudWatch Alarm**](/infra-catalog/aws-cloudwatch-alarm) — alarm status widgets reference alarm ARNs; the dashboard is where their state is read at a glance
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) — Logs Insights query widgets tail and aggregate a log group's events on the same canvas
+- [**AWS CloudWatch Synthetics**](/infra-catalog/aws-cloudwatch-synthetics) — canary success-rate and latency metrics are natural widgets on a service health dashboard

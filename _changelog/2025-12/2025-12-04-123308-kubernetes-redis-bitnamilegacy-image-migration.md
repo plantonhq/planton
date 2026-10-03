@@ -130,7 +130,7 @@ Our configuration properly overrides these default values to use `bitnamilegacy/
 ### Immediate Benefits
 
 - ✅ **All Redis deployments now succeed** - No more ImagePullBackOff errors
-- ✅ **Production services restored** - Critical infrastructure components operational
+- ✅ **Production services restored** - Critical infrastructure kinds operational
 - ✅ **Latest Redis version** - Upgraded from 7.0.11 to 8.2.1
 - ✅ **Consistent implementation** - Same image across Pulumi and Terraform
 
@@ -143,7 +143,7 @@ Our configuration properly overrides these default values to use `bitnamilegacy/
 
 ## Impact
 
-### Affected Components
+### Affected Kinds
 
 **Direct Impact**:
 - All `KubernetesRedis` resource deployments (Pulumi and Terraform)

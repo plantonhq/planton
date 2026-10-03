@@ -5,9 +5,9 @@ package dev.planton.aws.awseksaddon.v1alpha1;
 import "catalog/aws/awseksaddon/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-eks-addon stack-input
-message AwsEksAddonStackInput {
-  //target cloud-resource
+//aws-eks-addon iac-input
+message AwsEksAddonIacInput {
+  //target infra-component
   AwsEksAddon target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

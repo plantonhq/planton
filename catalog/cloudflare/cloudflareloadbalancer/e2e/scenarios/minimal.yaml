@@ -15,7 +15,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: cloudflareloadbalancer
+    e2e-catalog-kind: cloudflareloadbalancer
   annotations:
     planton.dev/e2e: "true"
   tags:

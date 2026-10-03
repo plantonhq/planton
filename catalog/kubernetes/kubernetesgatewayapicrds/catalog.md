@@ -4,7 +4,7 @@ Installs the Kubernetes Gateway API Custom Resource Definitions on any Kubernete
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Gateway API CRDs** -- cluster-scoped Custom Resource Definitions applied from the official Gateway API release manifest. As of v1.6 the standard channel installs GatewayClass, Gateway, ListenerSet, HTTPRoute, GRPCRoute, TLSRoute, TCPRoute, UDPRoute, ReferenceGrant, and BackendTLSPolicy. The experimental channel adds experimental resources (such as XBackendTrafficPolicy) plus experimental fields on the standard resources.
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -48,7 +48,7 @@ spec:
 planton apply -f gateway-api-crds.yaml
 ```
 
-This installs the standard channel Gateway API CRDs at version v1.6.1, enabling the full route family (Gateway, GatewayClass, ListenerSet, HTTP/GRPC/TLS/TCP/UDP routes, ReferenceGrant, BackendTLSPolicy) cluster-wide. No namespace is required since CRDs are cluster-scoped. A Stack Job tracks the provisioning in real time.
+This installs the standard channel Gateway API CRDs at version v1.6.1, enabling the full route family (Gateway, GatewayClass, ListenerSet, HTTP/GRPC/TLS/TCP/UDP routes, ReferenceGrant, BackendTLSPolicy) cluster-wide. No namespace is required since CRDs are cluster-scoped. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -62,13 +62,13 @@ These are the most important decisions when configuring Gateway API CRDs. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies.
+This kind has no foreign key dependencies.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -86,14 +86,14 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-This component is the family prerequisite: every Gateway API kind in the catalog deploys onto the CRDs it installs.
+This kind is the family prerequisite: every Gateway API kind in the catalog deploys onto the CRDs it installs.
 
-- [**Kubernetes GatewayClass**](/cloud-catalog/kubernetes-gateway-class) -- binds a controller implementation to the API these CRDs define
-- [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) -- the traffic-handling instance deployed onto these CRDs
-- [**Kubernetes ListenerSet**](/cloud-catalog/kubernetes-listener-set) -- merges additional listeners into an opted-in Gateway
-- [**Kubernetes HTTPRoute**](/cloud-catalog/kubernetes-http-route) -- the workhorse route kind
-- [**Kubernetes GRPCRoute**](/cloud-catalog/kubernetes-grpc-route) -- gRPC method-level routing
-- [**Kubernetes TLSRoute**](/cloud-catalog/kubernetes-tls-route) -- SNI-based routing for passthrough TLS
-- [**Kubernetes TCPRoute**](/cloud-catalog/kubernetes-tcp-route) -- raw TCP forwarding (standard-channel from v1.6.0)
-- [**Kubernetes UDPRoute**](/cloud-catalog/kubernetes-udp-route) -- raw UDP forwarding (standard-channel from v1.6.0)
-- [**Kubernetes ReferenceGrant**](/cloud-catalog/kubernetes-reference-grant) -- cross-namespace reference permissions for the family
+- [**Kubernetes GatewayClass**](/infra-catalog/kubernetes-gateway-class) -- binds a controller implementation to the API these CRDs define
+- [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) -- the traffic-handling instance deployed onto these CRDs
+- [**Kubernetes ListenerSet**](/infra-catalog/kubernetes-listener-set) -- merges additional listeners into an opted-in Gateway
+- [**Kubernetes HTTPRoute**](/infra-catalog/kubernetes-http-route) -- the workhorse route kind
+- [**Kubernetes GRPCRoute**](/infra-catalog/kubernetes-grpc-route) -- gRPC method-level routing
+- [**Kubernetes TLSRoute**](/infra-catalog/kubernetes-tls-route) -- SNI-based routing for passthrough TLS
+- [**Kubernetes TCPRoute**](/infra-catalog/kubernetes-tcp-route) -- raw TCP forwarding (standard-channel from v1.6.0)
+- [**Kubernetes UDPRoute**](/infra-catalog/kubernetes-udp-route) -- raw UDP forwarding (standard-channel from v1.6.0)
+- [**Kubernetes ReferenceGrant**](/infra-catalog/kubernetes-reference-grant) -- cross-namespace reference permissions for the family

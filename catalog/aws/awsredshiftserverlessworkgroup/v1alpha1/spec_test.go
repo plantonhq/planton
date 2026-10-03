@@ -37,7 +37,7 @@ func validWorkgroup() *AwsRedshiftServerlessWorkgroup {
 	return &AwsRedshiftServerlessWorkgroup{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsRedshiftServerlessWorkgroup",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-workgroup",
 		},
 		Spec: &AwsRedshiftServerlessWorkgroupSpec{

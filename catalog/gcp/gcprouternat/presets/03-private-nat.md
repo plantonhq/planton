@@ -33,7 +33,7 @@ This preset creates a PRIVATE-type NAT gateway that translates traffic between V
 - **01-all-subnets-auto** — internet egress for a single VPC
 - **02-static-ip-allowlisting** — stable public egress IPs
 
-## Related Components
+## Related Kinds
 
 - [GcpSubnetwork](/docs/catalog/gcp/gcpsubnetwork) — the PRIVATE_NAT-purpose range provider
 - [GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork) — the spoke network

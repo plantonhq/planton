@@ -2,9 +2,9 @@
 # (iac/tf and iac/pulumi -- behaviorally equivalent). Derived from the
 # resources the modules create directly plus everything the pinned
 # seaweedfs chart (seaweedfs.github.io/seaweedfs/helm, default 4.40.0)
-# renders inside the Helm release. Schema: catalog/componentpermissions/v1.
+# renders inside the Helm release. Schema: catalog/catalogkindpermissions/v1.
 apiVersion: catalog.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: kubernetesseaweedfs
 spec:

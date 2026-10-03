@@ -19,7 +19,7 @@ message AwsEc2Instance {
 
   // metadata captures identifying information (name, org, version, etc.)
   // and must pass standard validations for resource naming.
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec holds the core configuration data defining how the EC2 instance is deployed.
   AwsEc2InstanceSpec spec = 4 [(buf.validate.field).required = true];
@@ -31,5 +31,5 @@ message AwsEc2Instance {
 // AwsEc2InstanceStatus describes the status fields for an EC2 instance resource.
 message AwsEc2InstanceStatus {
   // outputs captures the outputs returned by Pulumi/Terraform after provisioning.
-  AwsEc2InstanceStackOutputs outputs = 1;
+  AwsEc2InstanceOutputs outputs = 1;
 }

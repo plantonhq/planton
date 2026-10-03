@@ -29,7 +29,7 @@ func validCluster() *AwsNeptuneCluster {
 	return &AwsNeptuneCluster{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsNeptuneCluster",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-neptune",
 		},
 		Spec: &AwsNeptuneClusterSpec{

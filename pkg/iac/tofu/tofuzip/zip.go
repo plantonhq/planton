@@ -12,7 +12,7 @@ import (
 	"github.com/plantonhq/planton/internal/cli/cliprint"
 	"github.com/plantonhq/planton/internal/cli/version"
 	"github.com/plantonhq/planton/internal/cli/workspace"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/downloads"
 	"github.com/plantonhq/planton/pkg/fileutil"
 )
@@ -55,21 +55,21 @@ func GetModuleCacheDir(releaseVersion string) (string, error) {
 }
 
 // GetModulePath returns the expected path for a cached module folder
-// (~/.planton/terraform/modules/{version}/{component}/)
-func GetModulePath(componentName, releaseVersion string) (string, error) {
+// (~/.planton/terraform/modules/{version}/{kind}/)
+func GetModulePath(kindName, releaseVersion string) (string, error) {
 	cacheDir, err := GetModuleCacheDir(releaseVersion)
 	if err != nil {
 		return "", err
 	}
 
-	// Module folder name is lowercase component name
-	moduleFolderName := strings.ToLower(componentName)
+	// Module folder name is lowercase kind name
+	moduleFolderName := strings.ToLower(kindName)
 	return filepath.Join(cacheDir, moduleFolderName), nil
 }
 
 // BuildDownloadURL constructs the Cloudflare R2 download URL for a Terraform module zip.
 //
-// The key is versionless (one live module set per component); the release tag
+// The key is versionless (one live module set per kind); the release tag
 // segment versions the artifact. Known skew edge: when releaseVersion is an
 // OLDER tag whose lanes uploaded the pre-anatomy key shape, the download 404s
 // and the caller falls back to staging (a git checkout of that tag), which
@@ -79,18 +79,18 @@ func GetModulePath(componentName, releaseVersion string) (string, error) {
 //
 //	BuildDownloadURL("AwsEcsService", "v0.3.50")
 //	  -> https://downloads.planton.dev/releases/v0.3.50/modules/terraform/awsecsservice/module.zip
-func BuildDownloadURL(componentName, releaseVersion string) (string, error) {
+func BuildDownloadURL(kindName, releaseVersion string) (string, error) {
 	// Validate against the registry before composing: an unknown kind must
 	// fail plainly here, not as a 404 the fallback path silently absorbs.
-	if _, err := crkreflect.ComponentVersionDir(componentName); err != nil {
-		return "", errors.Wrapf(err, "cannot build the download URL for the %s terraform module", componentName)
+	if _, err := catalogkindreflect.KindVersionDir(kindName); err != nil {
+		return "", errors.Wrapf(err, "cannot build the download URL for the %s terraform module", kindName)
 	}
-	return downloads.BuildTerraformDownloadURL(componentName, releaseVersion), nil
+	return downloads.BuildTerraformDownloadURL(kindName, releaseVersion), nil
 }
 
 // IsModuleCached checks if a module is already cached and has .tf files
-func IsModuleCached(componentName, releaseVersion string) (bool, error) {
-	modulePath, err := GetModulePath(componentName, releaseVersion)
+func IsModuleCached(kindName, releaseVersion string) (bool, error) {
+	modulePath, err := GetModulePath(kindName, releaseVersion)
 	if err != nil {
 		return false, err
 	}
@@ -115,19 +115,19 @@ func IsModuleCached(componentName, releaseVersion string) (bool, error) {
 	return false, nil
 }
 
-// EnsureModule ensures the module for a component is downloaded and cached.
+// EnsureModule ensures the module for a kind is downloaded and cached.
 // The releaseVersion can be:
 // - CLI version like "v0.3.2" (uses main planton release)
-// - Module version like "v0.3.2+terraform.awsecsservice.20260108.0" (uses component-specific release)
+// - Module version like "v0.3.2+terraform.awsecsservice.20260108.0" (uses kind-specific release)
 // Returns the path to the module folder.
-func EnsureModule(componentName, releaseVersion string) (string, error) {
+func EnsureModule(kindName, releaseVersion string) (string, error) {
 	// Check if already cached
-	cached, err := IsModuleCached(componentName, releaseVersion)
+	cached, err := IsModuleCached(kindName, releaseVersion)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to check module cache")
 	}
 
-	modulePath, err := GetModulePath(componentName, releaseVersion)
+	modulePath, err := GetModulePath(kindName, releaseVersion)
 	if err != nil {
 		return "", err
 	}
@@ -138,18 +138,18 @@ func EnsureModule(componentName, releaseVersion string) (string, error) {
 	}
 
 	// Download the module
-	cliprint.PrintStep(fmt.Sprintf("Downloading Terraform module for %s...", componentName))
+	cliprint.PrintStep(fmt.Sprintf("Downloading Terraform module for %s...", kindName))
 
-	if err := DownloadAndExtractZip(componentName, releaseVersion); err != nil {
-		return "", errors.Wrapf(err, "failed to download module for %s", componentName)
+	if err := DownloadAndExtractZip(kindName, releaseVersion); err != nil {
+		return "", errors.Wrapf(err, "failed to download module for %s", kindName)
 	}
 
 	cliprint.PrintSuccess(fmt.Sprintf("Module downloaded: %s", filepath.Base(modulePath)))
 	return modulePath, nil
 }
 
-// DownloadAndExtractZip downloads and extracts a component's Terraform module zip from Cloudflare R2.
-func DownloadAndExtractZip(componentName, releaseVersion string) error {
+// DownloadAndExtractZip downloads and extracts a kind's Terraform module zip from Cloudflare R2.
+func DownloadAndExtractZip(kindName, releaseVersion string) error {
 	// Ensure cache directory exists
 	cacheDir, err := GetModuleCacheDir(releaseVersion)
 	if err != nil {
@@ -163,7 +163,7 @@ func DownloadAndExtractZip(componentName, releaseVersion string) error {
 	}
 
 	// Build download URL - the release version IS the tag
-	downloadURL, err := BuildDownloadURL(componentName, releaseVersion)
+	downloadURL, err := BuildDownloadURL(kindName, releaseVersion)
 	if err != nil {
 		return err
 	}
@@ -200,7 +200,7 @@ func DownloadAndExtractZip(componentName, releaseVersion string) error {
 	cliprint.PrintInfo(fmt.Sprintf("Downloaded %d bytes", written))
 
 	// Get the module destination path
-	modulePath, err := GetModulePath(componentName, releaseVersion)
+	modulePath, err := GetModulePath(kindName, releaseVersion)
 	if err != nil {
 		return err
 	}

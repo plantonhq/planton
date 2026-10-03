@@ -11,9 +11,9 @@
 # region, so the entry is pinned "global". The estimate generator replays
 # the catalog presets through these rules to emit
 # ../estimates/digitaloceanloadbalancer.yaml.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: digitaloceanloadbalancer
 spec:
@@ -80,7 +80,7 @@ spec:
       price_slug: do-lb-regional-node-monthly
       basis: "one node -- the lb-small shape, whether pinned explicitly or taken as DigitalOcean's default when both size and size_unit are unset"
   exclusions:
-    - text: "backend droplets bill on their own DigitalOceanDroplet components; attachment adds no charge"
+    - text: "backend droplets bill on their own DigitalOceanDroplet kinds; attachment adds no charge"
     - text: "traffic through the balancer carries no separate bandwidth meter -- outbound transfer draws from the backend droplets' pooled monthly allowance"
   notes:
     - text: "Priced at DigitalOcean's global regional-balancer rate of 12.00 USD per node per month -- the pricing page carries no region dimension. Forwarding rules, health checks, sticky sessions, the firewall, and TLS termination are free configuration on the same nodes."

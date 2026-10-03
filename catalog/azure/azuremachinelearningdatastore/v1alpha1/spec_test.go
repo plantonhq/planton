@@ -35,7 +35,7 @@ func validResource() *AzureMachineLearningDatastore {
 	return &AzureMachineLearningDatastore{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureMachineLearningDatastore",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-ml-datastore",
 		},
 		Spec: &AzureMachineLearningDatastoreSpec{

@@ -135,7 +135,7 @@ func iamUser(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) (*IamU
 		// bridges as *string (Optional+Computed), so the output assigns
 		// directly.
 		accessKeyStatus = accessKey.Status
-		// Base64-encoded to match the stack-outputs contract (the proto
+		// Base64-encoded to match the outputs contract (the proto
 		// documents the secret as base64), keeping both engines' outputs
 		// byte-identical. Pulumi already tracks the value as a secret.
 		secretAccessKey = accessKey.Secret.ApplyT(func(s string) *string {

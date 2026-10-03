@@ -1,5 +1,5 @@
 # Auth0Role Outputs
-# Maps to the Auth0RoleStackOutputs protobuf message
+# Maps to the Auth0RoleOutputs protobuf message
 
 output "id" {
   description = "The unique identifier of the Auth0 role (e.g. rol_abc123)"

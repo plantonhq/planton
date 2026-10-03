@@ -34,7 +34,7 @@ This preset creates a regional Standard cluster with private nodes, Dataplane V2
 - **02-autopilot** — let GKE manage nodes entirely and bill per pod
 - **03-dev-zonal** — the smallest, cheapest cluster for development
 
-## Related Components
+## Related Kinds
 
 - [GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork) — the network the cluster lives in
 - [GcpSubnetwork](/docs/catalog/gcp/gcpsubnetwork) — carries the pod/service secondary ranges

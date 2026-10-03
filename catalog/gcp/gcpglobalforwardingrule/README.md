@@ -88,7 +88,7 @@ This creates a port-443 frontend with a Google-assigned ephemeral IP; add `ipAdd
 | `externalManagedBackendBucketMigrationState` / `...TestingPercentage` | The EXTERNAL → EXTERNAL_MANAGED backend-bucket canary migration, without recreating the VIP. Global rules only |
 | `deletionPolicy` | What destroy does: `DELETE` (default), `PREVENT` (refuse), or `ABANDON` (keep serving, drop from management) |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -119,7 +119,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 - **Scope is immutable and chain-wide**: a rule cannot move between global and regional; a regional rule's proxy, backend service, and address must be regional in the same region, and a regional external ALB needs a proxy-only subnet (`GcpSubnetwork` with `purpose: REGIONAL_MANAGED_PROXY`) in the region before the rule can be created.
 - **An unset scheme is `EXTERNAL` on both scopes** — both engines send it explicitly, so a manifest means the same thing wherever it lives; set `INTERNAL` outright for an internal passthrough NLB.
 
-## Related Components
+## Related Kinds
 
 - [GcpTargetHttpsProxy](/docs/catalog/gcp/gcptargethttpsproxy) — the default target
 - [GcpTargetHttpProxy](/docs/catalog/gcp/gcptargethttpproxy) — the port-80 redirect target

@@ -5,10 +5,10 @@ package dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1;
 import "catalog/auth0/auth0clientfrommetadatadocument/v1alpha1/api.proto";
 import "catalog/auth0/provider.proto";
 
-// Auth0ClientFromMetadataDocumentStackInput is the input to the
+// Auth0ClientFromMetadataDocumentIacInput is the input to the
 // Auth0ClientFromMetadataDocument IaC module. It contains the target resource
 // and the Auth0 provider configuration.
-message Auth0ClientFromMetadataDocumentStackInput {
+message Auth0ClientFromMetadataDocumentIacInput {
   // target is the Auth0ClientFromMetadataDocument resource to be deployed.
   Auth0ClientFromMetadataDocument target = 1;
 

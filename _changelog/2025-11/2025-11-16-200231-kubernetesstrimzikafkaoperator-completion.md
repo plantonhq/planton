@@ -1,4 +1,4 @@
-# KubernetesStrimziKafkaOperator: Component Completion to Production-Ready Status
+# KubernetesStrimziKafkaOperator: Kind Completion to Production-Ready Status
 
 **Date**: November 16, 2025  
 **Type**: Feature  
@@ -7,11 +7,11 @@
 
 ## Summary
 
-Completed the KubernetesStrimziKafkaOperator component from 58.37% (partially complete) to 85%+ (functionally complete / production-ready) by addressing all critical gaps identified in the audit. Created comprehensive validation tests, user-facing documentation, Pulumi module enhancements, and documented Terraform status. No spec changes were required as the protobuf definitions were already well-designed with proper validation rules.
+Completed the KubernetesStrimziKafkaOperator kind from 58.37% (partially complete) to 85%+ (functionally complete / production-ready) by addressing all critical gaps identified in the audit. Created comprehensive validation tests, user-facing documentation, Pulumi module enhancements, and documented Terraform status. No spec changes were required as the protobuf definitions were already well-designed with proper validation rules.
 
 ## Problem Statement
 
-The KubernetesStrimziKafkaOperator component audit (2025-11-14) revealed strong foundations but critical gaps blocking production readiness:
+The KubernetesStrimziKafkaOperator kind audit (2025-11-14) revealed strong foundations but critical gaps blocking production readiness:
 
 ### Exceptional Strengths (What Existed)
 
@@ -22,7 +22,7 @@ The KubernetesStrimziKafkaOperator component audit (2025-11-14) revealed strong 
   - GitOps-friendly design documentation
 - ✅ Complete protobuf API definitions with buf.validate rules
 - ✅ Working Pulumi implementation (Strimzi Helm chart deployment with watchAnyNamespace)
-- ✅ Correct cloud resource registry entry
+- ✅ Correct catalog kind registry entry
 
 ### Critical Gaps (Blocking Production)
 
@@ -32,7 +32,7 @@ The KubernetesStrimziKafkaOperator component audit (2025-11-14) revealed strong 
 - ❌ **Missing Pulumi enhancements** - No locals.go for computed values (missing 2.22%)
 - ❌ **No supporting files** - Missing manifest examples, Pulumi docs (1.67% of 13.33%)
 
-The component was **functional for Pulumi-based deployments** but lacked the testing and documentation infrastructure required for production use.
+The kind was **functional for Pulumi-based deployments** but lacked the testing and documentation infrastructure required for production use.
 
 ## Solution
 
@@ -130,10 +130,10 @@ type locals struct {
     chartVersion string
 }
 
-func newLocals(stackInput *kubernetesstrimzikafkaoperatorv1.KubernetesStrimziKafkaOperatorStackInput) *locals {
+func newLocals(iacInput *kubernetesstrimzikafkaoperatorv1.KubernetesStrimziKafkaOperatorIacInput) *locals {
     operatorName := "strimzi-kafka-operator"
-    if stackInput.Metadata != nil && stackInput.Metadata.Name != "" {
-        operatorName = stackInput.Metadata.Name
+    if iacInput.Metadata != nil && iacInput.Metadata.Name != "" {
+        operatorName = iacInput.Metadata.Name
     }
 
     labels := pulumi.StringMap{
@@ -204,8 +204,8 @@ spec:
 
 - `api.proto` - **No changes** - Validation constraints already correct
 - `spec.proto` - **No changes** - Container resources spec complete with defaults
-- `stack_input.proto` - **No changes**
-- `stack_outputs.proto` - **No changes**
+- `iac_input.proto` - **No changes**
+- `outputs.proto` - **No changes**
 
 The spec.proto already defined sensible defaults:
 
@@ -231,7 +231,7 @@ Tests verify the complete validation rule set:
 
 1. **API Version Constraint**: Must match "kubernetes.planton.dev/v1" exactly
 2. **Kind Constraint**: Must match "KubernetesStrimziKafkaOperator" exactly
-3. **Required Metadata**: CloudResourceMetadata must be present
+3. **Required Metadata**: CatalogObjectMetadata must be present
 4. **Required Spec**: KubernetesStrimziKafkaOperatorSpec must be present
 5. **Required Container**: Container field in spec must be present (buf.validate.field.required = true)
 6. **Resource Defaults**: CPU/memory limits applied correctly
@@ -306,7 +306,7 @@ The combination of research docs + user docs creates complete picture:
 
 ### Kafka Ecosystem Context
 
-This component enables Planton users to deploy the **Strimzi Kafka Operator**, which then allows them to create:
+This kind enables Planton users to deploy the **Strimzi Kafka Operator**, which then allows them to create:
 
 - **Kafka Clusters**: Declarative Kafka deployments via `Kafka` CRD
 - **Kafka Topics**: Topic management via `KafkaTopic` CRD
@@ -339,7 +339,7 @@ PASS
 
 ### Integration Verification Path
 
-While this completion focused on component infrastructure, actual Strimzi deployment verification would involve:
+While this completion focused on kind infrastructure, actual Strimzi deployment verification would involve:
 
 ```bash
 # 1. Deploy operator
@@ -425,7 +425,7 @@ These represent 6-7% additional completion that could be added in future polish 
 
 ## Migration Guide
 
-**No migration required** - This is a completion of existing component, not a breaking change.
+**No migration required** - This is a completion of existing kind, not a breaking change.
 
 No spec changes were made, so existing deployments (if any) are unaffected.
 
@@ -447,7 +447,7 @@ No spec changes were made, so existing deployments (if any) are unaffected.
 
 ## Conclusion
 
-The KubernetesStrimziKafkaOperator component transitioned from 58.37% (functional but undocumented) to 85%+ (functionally complete / production-ready) through systematic completion of critical gaps.
+The KubernetesStrimziKafkaOperator kind transitioned from 58.37% (functional but undocumented) to 85%+ (functionally complete / production-ready) through systematic completion of critical gaps.
 
 **Key Achievements**:
 - ✅ Validation verified (9 tests passing)
@@ -458,7 +458,7 @@ The KubernetesStrimziKafkaOperator component transitioned from 58.37% (functiona
 
 **No spec changes were required**, demonstrating the original API design (container resources with defaults) was sound. All improvements were in testing, documentation, and supporting infrastructure.
 
-The component now provides a **clear path** for users: deploy operator → create Kafka clusters → manage topics/users. Combined with the exceptional 32.5 KB research doc, users have comprehensive knowledge from "why Strimzi?" to "how to deploy?" to "production best practices."
+The kind now provides a **clear path** for users: deploy operator → create Kafka clusters → manage topics/users. Combined with the exceptional 32.5 KB research doc, users have comprehensive knowledge from "why Strimzi?" to "how to deploy?" to "production best practices."
 
-**Key differentiator**: This completion successfully bridges the gap between operator deployment (infrastructure concern) and Kafka cluster usage (application concern), making the component truly production-ready.
+**Key differentiator**: This completion successfully bridges the gap between operator deployment (infrastructure concern) and Kafka cluster usage (application concern), making the kind truly production-ready.
 

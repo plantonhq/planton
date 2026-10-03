@@ -5,9 +5,9 @@ package dev.planton.cloudflare.cloudflarecustomhostname.v1alpha1;
 import "catalog/cloudflare/cloudflarecustomhostname/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-//cloudflare-custom-hostname stack-input
-message CloudflareCustomHostnameStackInput {
-  //target cloud-resource
+//cloudflare-custom-hostname iac-input
+message CloudflareCustomHostnameIacInput {
+  //target infra-component
   CloudflareCustomHostname target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

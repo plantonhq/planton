@@ -4,7 +4,7 @@ Deploys a managed Kubernetes cluster (DOKS) on DigitalOcean with the full provid
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **DigitalOcean Kubernetes Cluster** -- a managed DOKS cluster in the specified region and VPC, at the configured Kubernetes version, with optional HA control plane, surge and auto upgrades, custom subnets, and SSO
 - **Default Node Pool** -- worker nodes with the configured instance size, node count, optional autoscaling between `minNodes` and `maxNodes`, Kubernetes node labels and taints, and pool tags
@@ -19,12 +19,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### DigitalOcean Account
 
-- **A VPC network** in the target region (required). Provide the VPC UUID directly or reference a DigitalOceanVpc Cloud Resource via ValueFromRef.
+- **A VPC network** in the target region (required). Provide the VPC UUID directly or reference a DigitalOceanVpc Infra Component via ValueFromRef.
 - **A Kubernetes version DigitalOcean offers today** -- check with `doctl kubernetes options versions` (or `GET /v2/kubernetes/options`). Prefer a minor prefix (`"1.35"`): DigitalOcean resolves it to the current patch, and it stays creatable for the minor's whole support window. A full slug (`"1.35.7-do.5"`) pins the exact starting point but is retired within weeks, after which a create naming it fails with 422. Measured 2026-09-16: 1.34, 1.35, 1.36 offered.
 
 ## Deploy
@@ -59,7 +59,7 @@ spec:
 planton apply -f do-k8s-cluster.yaml
 ```
 
-This creates a 3-node Kubernetes cluster in the NYC3 region with everything else at DigitalOcean defaults. A Stack Job tracks the provisioning in real time.
+This creates a 3-node Kubernetes cluster in the NYC3 region with everything else at DigitalOcean defaults. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,15 +92,15 @@ These are the most important decisions when configuring a DOKS cluster. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **DigitalOceanVpc** | `vpc` | `status.outputs.vpc_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -122,7 +122,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean VPC**](/cloud-catalog/digital-ocean-vpc) -- provides the VPC network for cluster placement (required)
-- [**DigitalOcean Kubernetes Node Pool**](/cloud-catalog/digital-ocean-kubernetes-node-pool) -- adds independently sized worker pools to the cluster
-- [**DigitalOcean Cloud Firewall**](/cloud-catalog/digital-ocean-firewall) -- Droplet firewall rules that allow traffic from or to the cluster by its `cluster_id`
-- [**DigitalOcean Database Firewall**](/cloud-catalog/digital-ocean-database-firewall) -- trusts the cluster as a source so in-cluster workloads can reach a managed database
+- [**DigitalOcean VPC**](/infra-catalog/digital-ocean-vpc) -- provides the VPC network for cluster placement (required)
+- [**DigitalOcean Kubernetes Node Pool**](/infra-catalog/digital-ocean-kubernetes-node-pool) -- adds independently sized worker pools to the cluster
+- [**DigitalOcean Cloud Firewall**](/infra-catalog/digital-ocean-firewall) -- Droplet firewall rules that allow traffic from or to the cluster by its `cluster_id`
+- [**DigitalOcean Database Firewall**](/infra-catalog/digital-ocean-database-firewall) -- trusts the cluster as a source so in-cluster workloads can reach a managed database

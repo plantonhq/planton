@@ -3,14 +3,14 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesingress.v1alpha1;
 
 /**
- * **KubernetesIngressStackOutputs** captures the observable handles of a deployed
+ * **KubernetesIngressOutputs** captures the observable handles of a deployed
  * Ingress. The load-balancer address handles are what DNS automation composes on:
  * point records at `load_balancer_ip` / `load_balancer_hostname` (or let
  * external-dns read the same status). Both stay empty until an ingress controller
  * claims and reconciles the Ingress — an Ingress without a controller is valid
  * but unserved.
  */
-message KubernetesIngressStackOutputs {
+message KubernetesIngressOutputs {
   // The name of the Ingress object as created in the cluster.
   string ingress_name = 1;
 

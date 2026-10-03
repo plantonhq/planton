@@ -14,11 +14,11 @@ import (
 // kubernetes_namespace_v1 with count. The module stamps only the Planton
 // governance labels.
 func namespace(ctx *pulumi.Context,
-	stackInput *kubernetesopenfgav1alpha1.KubernetesOpenFgaStackInput,
+	iacInput *kubernetesopenfgav1alpha1.KubernetesOpenFgaIacInput,
 	locals *Locals,
 	kubernetesProvider pulumi.ProviderResource,
 ) (*kubernetescorev1.Namespace, error) {
-	if !stackInput.Target.Spec.CreateNamespace {
+	if !iacInput.Target.Spec.CreateNamespace {
 		return nil, nil
 	}
 

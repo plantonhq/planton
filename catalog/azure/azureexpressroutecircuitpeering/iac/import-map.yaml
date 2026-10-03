@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azureexpressroutecircuitpeering
 spec:
@@ -9,7 +9,7 @@ spec:
   values:
     - name: express_route_circuit_peering_id
       derivations:
-        - from_stack_output: express_route_circuit_peering_id
+        - from_output: express_route_circuit_peering_id
       where_to_find: >-
         Portal -> ExpressRoute circuits -> the circuit -> Peerings -> the
         peering -> Resource ID, or `az network express-route peering show

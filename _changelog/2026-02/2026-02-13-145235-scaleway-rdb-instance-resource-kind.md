@@ -47,13 +47,13 @@ flowchart TD
 ### Proto Schema (4 files)
 
 - `spec.proto`: 18 fields covering core config, networking, HA, storage, backup, security, admin user, databases, users with inline privileges, and engine settings. Engine validation via regex pattern `^(PostgreSQL|MySQL)-[0-9]+$`. Permission validation via string enum `["readonly", "readwrite", "all", "none"]`.
-- `stack_outputs.proto`: 6 outputs -- instance_id, public endpoint (ip + port), private endpoint (ip + port), TLS certificate.
+- `outputs.proto`: 6 outputs -- instance_id, public endpoint (ip + port), private endpoint (ip + port), TLS certificate.
 - `api.proto`: Standard resource wrapper with `scaleway.planton.dev/v1` API version.
-- `stack_input.proto`: Target + ScalewayProviderConfig.
+- `iac_input.proto`: Target + ScalewayProviderConfig.
 
 ### Pulumi Go Module (6 files)
 
-- `instance.go`: Creates the RDB instance with admin user, optional Private Network (IPAM), HA, backup, encryption, volume, and engine settings. Exports all 6 stack outputs.
+- `instance.go`: Creates the RDB instance with admin user, optional Private Network (IPAM), HA, backup, encryption, volume, and engine settings. Exports all 6 outputs.
 - `databases_users.go`: Creates databases, users, privileges, and ACL in dependency order. Uses name-keyed maps for privileges.
 - `locals.go`: Resolves `StringValueOrRef` for private_network_id, builds standard Scaleway tags.
 - `main.go`: Orchestrator calling instance → databasesAndUsers.

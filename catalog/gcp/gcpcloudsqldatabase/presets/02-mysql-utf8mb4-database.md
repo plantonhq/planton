@@ -24,7 +24,7 @@ This preset creates a MySQL application database with the modern `utf8mb4` chara
 
 - **01-postgres-app-database** — the PostgreSQL form (UTF8 is implicit there)
 
-## Related Components
+## Related Kinds
 
 - [GcpCloudSql](/docs/catalog/gcp/gcpcloudsql) — the instance this database lives on
 - [GcpCloudSqlUser](/docs/catalog/gcp/gcpcloudsqluser) — pair each application database with its own user

@@ -9,7 +9,7 @@ Creates a Data Protection backup vault -- the safe that modern Azure Backup data
 - `dataprotection.BackupVault` -- the vault
 - `dataprotection.BackupVaultCustomerManagedKey` -- created only when `spec.encryption` is set (the provider's sibling resource that rewrites the vault's own security settings)
 
-## Stack Outputs
+## Outputs
 
 - `backup_vault_id` -- the vault's full ARM ID; what backup policies and backup instances reference their vault by
 - `backup_vault_name` -- the vault's name

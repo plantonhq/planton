@@ -1,4 +1,4 @@
-# Stack outputs — flattened onto KubernetesPlantonPlatformStackOutputs by
+# Outputs — flattened onto KubernetesPlantonPlatformOutputs by
 # the platform. Keep in lockstep with the Pulumi module's exports. All
 # values derive from the declaration itself (the operator's naming is
 # deterministic per platform name), so they are stable from the first

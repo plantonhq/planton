@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added the AwsFsxOpenzfsFileSystem resource kind (enum 292, id_prefix `awsfxz`) to Planton, enabling fully managed NFS file system deployments built on the OpenZFS file system. The component supports SINGLE_AZ_1, SINGLE_AZ_2, and MULTI_AZ_1 deployment types with configurable NFS exports, ZSTD/LZ4 compression, per-user/group quotas, provisioned IOPS, and automatic backups.
+Added the AwsFsxOpenzfsFileSystem resource kind (enum 292, id_prefix `awsfxz`) to Planton, enabling fully managed NFS file system deployments built on the OpenZFS file system. The kind supports SINGLE_AZ_1, SINGLE_AZ_2, and MULTI_AZ_1 deployment types with configurable NFS exports, ZSTD/LZ4 compression, per-user/group quotas, provisioned IOPS, and automatic backups.
 
 ## Problem Statement / Motivation
 
@@ -14,13 +14,13 @@ FSx for OpenZFS is AWS's general-purpose NFS file system service, positioned bet
 
 ### Pain Points
 
-- No Planton component for deploying managed NFS with ZFS features
+- No Planton kind for deploying managed NFS with ZFS features
 - Teams needing NFS storage with compression, quotas, or Multi-AZ HA had no declarative option
 - FSx OpenZFS is a fundamentally different service from FSx Lustre — separate Terraform resource, distinct schema, unique sub-resource hierarchy
 
 ## Solution / What's New
 
-A complete deployment component following the FSx family pattern established by AwsFsxLustreFileSystem (R29a). The OpenZFS component differs from Lustre in several key ways:
+A complete catalog kind following the FSx family pattern established by AwsFsxLustreFileSystem (R29a). The OpenZFS kind differs from Lustre in several key ways:
 
 - **Multi-AZ support**: MULTI_AZ_1 deployment with automatic failover, preferred subnet, route table management, and floating IP
 - **NFS exports**: Client-level access control with IP/CIDR/wildcard and mount options
@@ -70,7 +70,7 @@ Feature parity with Pulumi module. Dynamic blocks for `disk_iops_configuration`,
 
 ## Related Work
 
-- AwsFsxLustreFileSystem (R29a) — sibling FSx component for HPC workloads
+- AwsFsxLustreFileSystem (R29a) — sibling FSx kind for HPC workloads
 - AwsElasticFileSystem (R11) — simpler serverless NFS alternative
 - Part of the AWS resource expansion project (20260215.02.sp.aws-resource-expansion)
 

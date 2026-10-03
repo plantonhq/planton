@@ -5,10 +5,10 @@ package dev.planton.azure.azurecontainerappenvironmentmanagedcertificate.v1alpha
 import "catalog/azure/azurecontainerappenvironmentmanagedcertificate/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureContainerAppEnvironmentManagedCertificateStackInput is the input to the IaC module.
+// AzureContainerAppEnvironmentManagedCertificateIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-message AzureContainerAppEnvironmentManagedCertificateStackInput {
-  // target cloud-resource to be deployed
+message AzureContainerAppEnvironmentManagedCertificateIacInput {
+  // target infra-component to be deployed
   AzureContainerAppEnvironmentManagedCertificate target = 1;
   // provider-config for Azure authentication
   dev.planton.azure.AzureProviderConfig provider_config = 2;

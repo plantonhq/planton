@@ -5,9 +5,9 @@ package dev.planton.auth0.auth0user.v1alpha1;
 import "catalog/auth0/auth0user/v1alpha1/api.proto";
 import "catalog/auth0/provider.proto";
 
-// Auth0UserStackInput is the input to the Auth0User IaC module.
+// Auth0UserIacInput is the input to the Auth0User IaC module.
 // It contains the target resource and the Auth0 provider configuration.
-message Auth0UserStackInput {
+message Auth0UserIacInput {
   // target is the Auth0User resource to be deployed.
   Auth0User target = 1;
 

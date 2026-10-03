@@ -2,7 +2,7 @@
 
 Built for 100% parity with the Terraform DigitalOcean provider's `digitalocean_vpc_peering` resource at the pinned provider version.
 
-## What this component models
+## What this kind models
 
 A private-network peering connection between exactly two DigitalOcean VPCs, letting resources in both networks reach each other over DigitalOcean's private fabric -- no public internet path, no VPN.
 

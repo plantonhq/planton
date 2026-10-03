@@ -1,4 +1,4 @@
-# KubernetesArgocd Component Completion
+# KubernetesArgocd Kind Completion
 
 **Date**: November 16, 2025  
 **Type**: Enhancement  
@@ -6,11 +6,11 @@
 
 ## Summary
 
-Completed the KubernetesArgocd component from 58.5% (Partially Complete) to ~95% (Production Ready) by implementing the entirely missing Terraform module, completing the skeleton Pulumi module with actual resource provisioning, fixing incorrect examples, and creating comprehensive documentation. **No specification changes were made** - the excellent proto definitions and tests remained unchanged. This unblocks Argo CD deployments via Planton CLI.
+Completed the KubernetesArgocd kind from 58.5% (Partially Complete) to ~95% (Production Ready) by implementing the entirely missing Terraform module, completing the skeleton Pulumi module with actual resource provisioning, fixing incorrect examples, and creating comprehensive documentation. **No specification changes were made** - the excellent proto definitions and tests remained unchanged. This unblocks Argo CD deployments via Planton CLI.
 
 ## Problem Statement / Motivation
 
-The KubernetesArgocd component had exceptional research documentation (22KB comprehensive guide) but was critically blocked from production use due to missing IaC implementations, as identified in audit report (2025-11-15-114015.md):
+The KubernetesArgocd kind had exceptional research documentation (22KB comprehensive guide) but was critically blocked from production use due to missing IaC implementations, as identified in audit report (2025-11-15-114015.md):
 
 ### Critical Blockers
 
@@ -45,8 +45,8 @@ The API definitions were already correct and well-designed. All changes were imp
 
 - ✅ `api.proto` - **unchanged** (correct kind: `KubernetesArgocd`)
 - ✅ `spec.proto` - **unchanged** (container resources, ingress fields correct)
-- ✅ `stack_input.proto` - **unchanged**
-- ✅ `stack_outputs.proto` - **unchanged** (6 output fields)
+- ✅ `iac_input.proto` - **unchanged**
+- ✅ `outputs.proto` - **unchanged** (6 output fields)
 - ✅ `api_test.go` - **unchanged** (1 test already passing)
 
 **No upstream API changes required.**
@@ -219,15 +219,15 @@ type Locals struct {
     Labels                   map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesargocdv1.KubernetesArgocdStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *kubernetesargocdv1.KubernetesArgocdIacInput) *Locals {
     locals := &Locals{}
-    target := stackInput.Target
+    target := iacInput.Target
     
     // Build labels
     locals.Labels = map[string]string{
         kuberneteslabelkeys.Resource:     strconv.FormatBool(true),
         kuberneteslabelkeys.ResourceName: target.Metadata.Name,
-        kuberneteslabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_KubernetesArgocd.String(),
+        kuberneteslabelkeys.ResourceKind: catalogkind.CatalogKind_KubernetesArgocd.String(),
     }
     
     // Namespace: argo-<resource-id>
@@ -240,7 +240,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesargocdv1.Kubern
     // Service name: <release-name>-argocd-server
     locals.ServiceName = fmt.Sprintf("%s-argocd-server", resourceId)
     
-    // Export all stack outputs
+    // Export all outputs
     ctx.Export(Namespace, pulumi.String(locals.Namespace))
     ctx.Export(Service, pulumi.String(locals.ServiceName))
     ctx.Export(KubeEndpoint, pulumi.String(locals.KubeServiceFqdn))
@@ -254,10 +254,10 @@ func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesargocdv1.Kubern
 
 **Before** (skeleton):
 ```go
-func Resources(ctx *pulumi.Context, stackInput *kubernetesargocdv1.KubernetesArgocdStackInput) error {
+func Resources(ctx *pulumi.Context, iacInput *kubernetesargocdv1.KubernetesArgocdIacInput) error {
     // Create kubernetes-provider from the credential
     _, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-        stackInput.ProviderConfig, "kubernetes")
+        iacInput.ProviderConfig, "kubernetes")
     if err != nil {
         return errors.Wrap(err, "failed to setup gcp provider")
     }
@@ -268,13 +268,13 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesargocdv1.KubernetesArg
 
 **After** (complete):
 ```go
-func Resources(ctx *pulumi.Context, stackInput *kubernetesargocdv1.KubernetesArgocdStackInput) error {
+func Resources(ctx *pulumi.Context, iacInput *kubernetesargocdv1.KubernetesArgocdIacInput) error {
     // Initialize local values
-    locals := initializeLocals(ctx, stackInput)
+    locals := initializeLocals(ctx, iacInput)
     
     // Create kubernetes-provider
     kubeProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-        stackInput.ProviderConfig, "kubernetes")
+        iacInput.ProviderConfig, "kubernetes")
     if err != nil {
         return errors.Wrap(err, "failed to setup kubernetes provider")
     }
@@ -293,7 +293,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesargocdv1.KubernetesArg
     }
     
     // Get resource specifications
-    containerResources := stackInput.Target.Spec.Container.Resources
+    containerResources := iacInput.Target.Spec.Container.Resources
     
     // Prepare Helm chart values
     helmValues := pulumi.Map{
@@ -387,7 +387,7 @@ Added 4 comprehensive examples:
 
 **Created `iac/tf/README.md`** (3.5KB):
 - Prerequisites and usage instructions
-- What gets deployed (namespace, Helm release, components)
+- What gets deployed (namespace, Helm release, kinds)
 - Configuration guide
 - Accessing Argo CD (port-forward and ingress)
 - Default admin credentials retrieval
@@ -464,7 +464,7 @@ Examples:
 
 ### Output Fields
 
-All 6 outputs from `stack_outputs.proto` are now populated:
+All 6 outputs from `outputs.proto` are now populated:
 
 | Output | Example Value | Use Case |
 |--------|---------------|----------|
@@ -528,7 +528,7 @@ All 6 outputs from `stack_outputs.proto` are now populated:
 - Argo CD can now be deployed via Planton CLI
 - Both Pulumi and Terraform methods fully functional
 - Examples are correct and can be copy-pasted
-- Component ready for production use
+- Kind ready for production use
 
 **Downstream Effects**:
 - Enables GitOps workflows for Planton users
@@ -624,7 +624,7 @@ planton tofu apply --manifest argocd.yaml --auto-approve
 
 ## Known Limitations
 
-None - component is now feature-complete for production use.
+None - kind is now feature-complete for production use.
 
 ## Future Enhancements
 

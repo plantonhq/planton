@@ -14,7 +14,7 @@ NOT mean the tunnel is Connected -- the far side must negotiate.
 
 The Azure provider is built through the shared provider builder, which
 resolves the right credential mechanism (static client secret, keyless
-web identity, or ambient chain) from the stack input.
+web identity, or ambient chain) from the IaC input.
 
 ## Design Decisions
 
@@ -35,7 +35,7 @@ web identity, or ambient chain) from the stack input.
 
 ## Inputs
 
-The module receives an `AzureVirtualNetworkGatewayConnectionStackInput` containing:
+The module receives an `AzureVirtualNetworkGatewayConnectionIacInput` containing:
 
 - `target.spec.region` / `target.spec.resource_group` / `target.spec.name` -- the connection's ARM identity (references resolved to literals by the platform)
 - `target.spec.type` -- IPSEC / VNET_TO_VNET / EXPRESS_ROUTE, deciding the required far side

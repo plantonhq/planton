@@ -20,7 +20,7 @@ func validMinimalSpec() *AwsSecurityGroup {
 	return &AwsSecurityGroup{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsSecurityGroup",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-security-group",
 		},
 		Spec: &AwsSecurityGroupSpec{

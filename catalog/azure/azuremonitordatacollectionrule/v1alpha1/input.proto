@@ -5,10 +5,10 @@ package dev.planton.azure.azuremonitordatacollectionrule.v1alpha1;
 import "catalog/azure/azuremonitordatacollectionrule/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureMonitorDataCollectionRuleStackInput is the input to the IaC
+// AzureMonitorDataCollectionRuleIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-message AzureMonitorDataCollectionRuleStackInput {
+message AzureMonitorDataCollectionRuleIacInput {
   // The data collection rule resource to deploy.
   AzureMonitorDataCollectionRule target = 1;
 

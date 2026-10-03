@@ -1,4 +1,4 @@
-# Fix Two Tofu Stack-Job Failures: ExternalDNS StringValueOrRef Typing and ClusterIssuer Solver Map-Collapse
+# Fix Two Tofu Infra-Job Failures: ExternalDNS StringValueOrRef Typing and ClusterIssuer Solver Map-Collapse
 
 **Date**: June 5, 2026
 **Type**: Bug Fix
@@ -6,7 +6,7 @@
 
 ## Summary
 
-Two `tofu` provisioner stack jobs in the `gosilver-networking-stack` infra pipeline
+Two `tofu` provisioner infra jobs in the `gosilver-networking-stack` infra pipeline
 failed against Planton modules pinned at `v0.3.75`. `KubernetesExternalDns` failed
 variable parsing with `attribute "cloudflare": attribute "dns_zone_id": object
 required, but have string`, and `KubernetesClusterIssuer` failed the
@@ -57,7 +57,7 @@ introduces a new pattern.
 
 ```mermaid
 flowchart LR
-  spec["CloudObject spec<br/>dns_zone_id.value_from"] --> xform["ValueFromRefsTransformer<br/>resolves ref to value"]
+  spec["CatalogObject spec<br/>dns_zone_id.value_from"] --> xform["ValueFromRefsTransformer<br/>resolves ref to value"]
   xform --> conv["proto->tfvars converter<br/>flattens StringValueOrRef"]
   conv --> tfvars["terraform.tfvars<br/>dns_zone_id = &quot;zone-id&quot;"]
   tfvars --> before["BEFORE: var.spec typed<br/>object({value, value_from})"]
@@ -158,7 +158,7 @@ planton validate-outputs --kind KubernetesClusterIssuer --module-dir <clusteriss
 
 ## Benefits
 
-- Unblocks the `gosilver-networking-stack` ExternalDNS and ClusterIssuer stack jobs
+- Unblocks the `gosilver-networking-stack` ExternalDNS and ClusterIssuer infra jobs
   on the tofu provisioner.
 - Removes the only `StringValueOrRef`-as-object divergence in the Terraform module
   set, so the flattening contract now holds uniformly.

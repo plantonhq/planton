@@ -4,7 +4,7 @@ Deploys one linked service inside an Azure Data Factory -- a saved connection in
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions exactly one linked service of the type the spec's variant block declares:
+When you deploy this Infra Component, the IaC module provisions exactly one linked service of the type the spec's variant block declares:
 
 - **Storage** -- Azure Blob Storage, Azure Files, Table Storage, Data Lake Storage Gen2
 - **Databases** -- Azure SQL Database, SQL Server, SQL Managed Instance, Synapse, PostgreSQL, MySQL, Cosmos DB (SQL API), Cosmos DB for MongoDB, Snowflake, Kusto, ODBC
@@ -62,7 +62,7 @@ spec:
 planton apply -f data-factory-linked-service.yaml
 ```
 
-This creates a blob storage connection authenticated as the factory's managed identity -- no connection string, no SAS token, no key to rotate or leak. A Stack Job tracks the provisioning in real time.
+This creates a blob storage connection authenticated as the factory's managed identity -- no connection string, no SAS token, no key to rotate or leak. An Infra Job tracks the provisioning in real time.
 
 For variants that do carry inline secrets (connection strings, passwords, access tokens, service principal keys), reference managed secrets as `$secret/<slug>` instead of pasting values -- or better, use the variant's Key Vault reference block so no secret sits in the manifest at all.
 
@@ -106,7 +106,7 @@ These are the most important decisions when configuring a linked service. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -118,9 +118,9 @@ These are the most important decisions when configuring a linked service. Explor
 | **AzureSearchService** (search variant) | `azureSearch.url` | `status.outputs.endpoint` |
 | **AzureDataFactoryLinkedService** (every Key Vault secret reference) | `*.linkedServiceName` | `status.outputs.linked_service_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -141,9 +141,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Data Factory**](/cloud-catalog/azure-data-factory) -- the factory the connection lives in, referenced by `dataFactoryId`
-- [**Azure Data Factory Dataset**](/cloud-catalog/azure-data-factory-dataset) -- every dataset reads through a linked service
-- [**Azure Data Factory Integration Runtime**](/cloud-catalog/azure-data-factory-integration-runtime) -- the compute the connection runs through, for private targets
-- [**Azure Key Vault**](/cloud-catalog/azure-key-vault) -- the vault behind the key vault variant and every Key-Vault-sourced secret
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- blob and Data Lake Gen2 connections point at its endpoints
-- [**Azure AI Search Service**](/cloud-catalog/azure-search-service) -- the search variant references its endpoint output
+- [**Azure Data Factory**](/infra-catalog/azure-data-factory) -- the factory the connection lives in, referenced by `dataFactoryId`
+- [**Azure Data Factory Dataset**](/infra-catalog/azure-data-factory-dataset) -- every dataset reads through a linked service
+- [**Azure Data Factory Integration Runtime**](/infra-catalog/azure-data-factory-integration-runtime) -- the compute the connection runs through, for private targets
+- [**Azure Key Vault**](/infra-catalog/azure-key-vault) -- the vault behind the key vault variant and every Key-Vault-sourced secret
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- blob and Data Lake Gen2 connections point at its endpoints
+- [**Azure AI Search Service**](/infra-catalog/azure-search-service) -- the search variant references its endpoint output

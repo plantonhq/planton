@@ -67,7 +67,7 @@ Beyond rules, the spec models:
 - For set-reference rules: [AwsWafIpSet](../awswafipset/README.md) and/or [AwsWafRegexPatternSet](../awswafregexpatternset/README.md) in matching scope
 - For logging: a destination resource named starting with `aws-waf-logs-`
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

@@ -1,5 +1,5 @@
 # Auth0EventStream Outputs
-# These outputs match the Auth0EventStreamStackOutputs protobuf message
+# These outputs match the Auth0EventStreamOutputs protobuf message
 
 output "id" {
   description = "The unique identifier of the Auth0 event stream"

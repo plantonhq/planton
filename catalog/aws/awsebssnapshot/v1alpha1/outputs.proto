@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsebssnapshot.v1alpha1;
 
-// AwsEbsSnapshotStackOutputs captures the observable state of the
+// AwsEbsSnapshotOutputs captures the observable state of the
 // snapshot after apply.
-message AwsEbsSnapshotStackOutputs {
+message AwsEbsSnapshotOutputs {
   // The snapshot's id (snap-...) - what volume restores, copies, and
   // permission grants reference, and the provider's import ID (volume
   // arm only; copies and imports are create-only at the provider).

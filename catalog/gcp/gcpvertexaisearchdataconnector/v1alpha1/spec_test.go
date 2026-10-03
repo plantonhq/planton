@@ -37,7 +37,7 @@ var _ = ginkgo.Describe("GcpVertexAiSearchDataConnectorSpec", func() {
 		return &GcpVertexAiSearchDataConnector{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpVertexAiSearchDataConnector",
-			Metadata:   &shared.CloudResourceMetadata{Name: "jira-federated"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "jira-federated"},
 			Spec: &GcpVertexAiSearchDataConnectorSpec{
 				Location:   "global",
 				DataSource: "jira",

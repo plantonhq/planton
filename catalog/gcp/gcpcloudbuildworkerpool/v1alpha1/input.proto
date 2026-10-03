@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpcloudbuildworkerpool.v1alpha1;
 import "catalog/gcp/gcpcloudbuildworkerpool/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-cloud-build-worker-pool stack-input
-message GcpCloudBuildWorkerPoolStackInput {
-  //target cloud-resource
+//gcp-cloud-build-worker-pool iac-input
+message GcpCloudBuildWorkerPoolIacInput {
+  //target infra-component
   GcpCloudBuildWorkerPool target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

@@ -13,11 +13,11 @@ import (
 // when create_namespace is false — the namespace must then already exist).
 // Terraform equivalent: kubernetes_namespace_v1 with count.
 func namespace(ctx *pulumi.Context,
-	stackInput *kuberneteskafkaconnectv1alpha1.KubernetesKafkaConnectStackInput,
+	iacInput *kuberneteskafkaconnectv1alpha1.KubernetesKafkaConnectIacInput,
 	locals *Locals,
 	kubernetesProvider pulumi.ProviderResource,
 ) (*kubernetescorev1.Namespace, error) {
-	if !stackInput.Target.Spec.CreateNamespace {
+	if !iacInput.Target.Spec.CreateNamespace {
 		return nil, nil
 	}
 

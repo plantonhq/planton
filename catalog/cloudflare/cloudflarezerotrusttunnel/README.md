@@ -46,7 +46,7 @@ spec:
 | `ingress[].originRequest` / `originRequest` | no | Per-rule / tunnel-wide origin connection settings (timeouts, TLS, Access) |
 | `originRequest.access.audTag` | — | Access application AUD tags (literal or `CloudflareZeroTrustAccessApplication` refs) |
 
-## Stack outputs
+## Outputs
 
 | Output | Description |
 |---|---|

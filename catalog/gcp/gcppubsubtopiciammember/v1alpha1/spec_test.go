@@ -43,7 +43,7 @@ var _ = ginkgo.Describe("GcpPubSubTopicIamMemberSpec", func() {
 		return &GcpPubSubTopicIamMember{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpPubSubTopicIamMember",
-			Metadata:   &shared.CloudResourceMetadata{Name: "sink-publisher"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "sink-publisher"},
 			Spec: &GcpPubSubTopicIamMemberSpec{
 				Topic:  valueOf("projects/my-project/topics/audit-logs"),
 				Role:   valueOf("roles/pubsub.publisher"),

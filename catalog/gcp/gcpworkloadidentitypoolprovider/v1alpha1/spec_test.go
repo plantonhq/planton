@@ -30,7 +30,7 @@ var _ = ginkgo.Describe("GcpWorkloadIdentityPoolProviderSpec", func() {
 		return &GcpWorkloadIdentityPoolProvider{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpWorkloadIdentityPoolProvider",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-provider",
 			},
 			Spec: &GcpWorkloadIdentityPoolProviderSpec{

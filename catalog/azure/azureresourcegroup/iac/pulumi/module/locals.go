@@ -5,7 +5,7 @@ import (
 
 	azureresourcegroupv1alpha1 "github.com/plantonhq/planton/catalog/azure/azureresourcegroup/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -14,17 +14,17 @@ type Locals struct {
 	AzureTags          map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureresourcegroupv1alpha1.AzureResourceGroupStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureresourcegroupv1alpha1.AzureResourceGroupIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureResourceGroup = stackInput.Target
-	target := stackInput.Target
+	locals.AzureResourceGroup = iacInput.Target
+	target := iacInput.Target
 
 	// Create Azure tags for resource tagging
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureResourceGroup.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureResourceGroup.String()),
 	}
 
 	if target.Metadata.Id != "" {

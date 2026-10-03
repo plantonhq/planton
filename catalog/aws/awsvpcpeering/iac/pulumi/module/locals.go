@@ -5,11 +5,11 @@ import (
 
 	awsvpcpeeringv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsvpcpeering/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 type Locals struct {
 	Target *awsvpcpeeringv1alpha1.AwsVpcPeering
 	Spec   *awsvpcpeeringv1alpha1.AwsVpcPeeringSpec
@@ -17,7 +17,7 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, in *awsvpcpeeringv1alpha1.AwsVpcPeeringStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, in *awsvpcpeeringv1alpha1.AwsVpcPeeringIacInput) *Locals {
 	locals := &Locals{}
 	locals.Target = in.Target
 	locals.Spec = in.Target.Spec
@@ -30,7 +30,7 @@ func initializeLocals(_ *pulumi.Context, in *awsvpcpeeringv1alpha1.AwsVpcPeering
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsVpcPeering.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsVpcPeering.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

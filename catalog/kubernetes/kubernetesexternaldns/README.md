@@ -54,7 +54,7 @@ The controller ServiceAccount name is pinned to `metadata.name` and exported (`s
 - **`spec.prometheus.service_monitor`**: opt-in ServiceMonitor (requires the Prometheus operator CRDs — the release fails without them)
 - **`spec.helm_values`**: escape hatch for chart values beyond the typed fields — never the primary interface
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

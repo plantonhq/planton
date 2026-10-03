@@ -27,10 +27,10 @@ import (
 //   - Node Kubernetes versions may lag the control plane by up to two
 //     minor versions: orchestrator_version is the seam for canarying node
 //     upgrades pool by pool.
-func Resources(ctx *pulumi.Context, stackInput *azureaksnodepoolv1alpha1.AzureAksNodePoolStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureaksnodepoolv1alpha1.AzureAksNodePoolIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}

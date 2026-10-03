@@ -167,7 +167,7 @@ export const TRUST_PAGES: readonly TrustPage[] = [
       { label: 'Evidence, Per Component', text: verified.proof[3] },
       { label: 'Four Framework Crosswalks', text: 'The HIPAA Security Rule, SOC 2 Trust Services Criteria, FedRAMP Moderate, and the CIS AWS Foundations Benchmark are mapped onto the control vocabulary, requirement by requirement, quoted from the published source.' },
       { label: 'Computed, Never Stored', text: 'A component\u2019s framework posture is computed when you look at it, from its controls and the crosswalks. No verdict is ever stored on a component.' },
-      { label: 'Least-Privilege Runners', text: 'The deploy runs under an identity built from the component kind\u2019s own permissions file: exactly the actions that kind needs to create and manage itself, and nothing else.' },
+      { label: 'Least-Privilege Runners', text: 'The deploy runs under an identity built from the kind\u2019s own permissions file: exactly the actions that kind needs to create and manage itself, and nothing else.' },
     ],
     artifact: {
       kind: 'record',

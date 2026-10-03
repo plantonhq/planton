@@ -4,7 +4,7 @@ A certificate authority in a Certificate Authority Service CA pool: a self-signe
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Certificate authority** -- a `privateca_certificate_authority` in the named pool, with its own CA certificate (subject, X.509 fields, lifetime) and signing key (a Google-managed HSM key or your own Cloud KMS key version), activated and enabled on create
 
@@ -92,7 +92,7 @@ planton apply -f root-ca.yaml
 - `subordinateConfig` and `pemCaCertificate` apply only to `type: SUBORDINATE`; `pemCaCertificate` needs `subordinateConfig.pemIssuerChain`.
 - The subject has a `commonName`; a `subjectAltName` block lists at least one name.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -125,7 +125,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpPrivateCaPool** -- the pool the authority lives in
 - **GcpPrivateCaCertificate** -- certificates it signs

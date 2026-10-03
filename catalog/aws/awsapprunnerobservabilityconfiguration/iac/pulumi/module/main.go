@@ -9,12 +9,12 @@ import (
 
 // Resources orchestrates observability configuration creation and exports
 // outputs.
-func Resources(ctx *pulumi.Context, stackInput *awsapprunnerobservabilityconfigurationv1alpha1.AwsAppRunnerObservabilityConfigurationStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsapprunnerobservabilityconfigurationv1alpha1.AwsAppRunnerObservabilityConfigurationIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which resolves
+	// Build the AWS provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static keys, keyless web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsAppRunnerObservabilityConfiguration.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsAppRunnerObservabilityConfiguration.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

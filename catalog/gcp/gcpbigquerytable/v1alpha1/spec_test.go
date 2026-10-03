@@ -36,7 +36,7 @@ var _ = ginkgo.Describe("GcpBigQueryTableSpec", func() {
 		return &GcpBigQueryTable{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpBigQueryTable",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-bq-table",
 			},
 			Spec: &GcpBigQueryTableSpec{

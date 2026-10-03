@@ -5,9 +5,9 @@ package dev.planton.auth0.auth0emailtemplate.v1alpha1;
 import "catalog/auth0/auth0emailtemplate/v1alpha1/api.proto";
 import "catalog/auth0/provider.proto";
 
-// Auth0EmailTemplateStackInput is the input to the Auth0EmailTemplate IaC module.
+// Auth0EmailTemplateIacInput is the input to the Auth0EmailTemplate IaC module.
 // It contains the target resource and the Auth0 provider configuration.
-message Auth0EmailTemplateStackInput {
+message Auth0EmailTemplateIacInput {
   // target is the Auth0EmailTemplate resource to be deployed.
   Auth0EmailTemplate target = 1;
 

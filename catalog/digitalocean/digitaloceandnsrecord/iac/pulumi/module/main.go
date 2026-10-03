@@ -10,15 +10,15 @@ import (
 // Resources is the entry point for provisioning DigitalOcean DNS records.
 func Resources(
 	ctx *pulumi.Context,
-	stackInput *digitaloceandnsrecordv1alpha1.DigitalOceanDnsRecordStackInput,
+	iacInput *digitaloceandnsrecordv1alpha1.DigitalOceanDnsRecordIacInput,
 ) error {
 	// 1. Initialize locals.
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// 2. Create DigitalOcean provider from credential.
 	digitalOceanProvider, err := pulumidigitaloceanprovider.Get(
 		ctx,
-		stackInput.ProviderConfig,
+		iacInput.ProviderConfig,
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup digitalocean provider")

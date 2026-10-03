@@ -5,7 +5,7 @@ import (
 
 	azurefrontdoorendpointv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurefrontdoorendpoint/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -15,11 +15,11 @@ type Locals struct {
 	AzureTags              map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurefrontdoorendpointv1alpha1.AzureFrontDoorEndpointStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurefrontdoorendpointv1alpha1.AzureFrontDoorEndpointIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureFrontDoorEndpoint = stackInput.Target
-	target := stackInput.Target
+	locals.AzureFrontDoorEndpoint = iacInput.Target
+	target := iacInput.Target
 
 	locals.ProfileId = target.Spec.ProfileId.GetValue()
 
@@ -30,7 +30,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurefrontdoorendpointv1a
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureFrontDoorEndpoint.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureFrontDoorEndpoint.String()),
 	}
 
 	if target.Metadata.Id != "" {

@@ -1,0 +1,214 @@
+---
+description: Action rule to write or upgrade a kind's catalog.md — THE catalog page. Produces a source-verified, search- and agent-optimized landing page following the one standard structure.
+globs: []
+alwaysApply: false
+---
+
+# Rule: Write Catalog Page (catalog.md)
+
+**Purpose**: Guide an AI agent through writing (or upgrading) a kind's `catalog.md`. The file lives at the kind root and is THE catalog page: the user-facing landing page rendered by the console's public catalog — the page a person or an AI agent lands on when searching for this piece of software or cloud service.
+
+**Trigger**: User references this rule, the forge flow reaches rule 020, or a session touches a kind whose catalog page sits below this standard.
+
+**Output**: A single file at `catalog/{provider}/{kind}/catalog.md`
+
+---
+
+## Where catalog.md Sits (the routing law — read this before writing a word)
+
+Every kind carries four documentation surfaces with a hard routing rule. Content placed on the wrong surface WILL drift from its source of truth:
+
+| Surface | Owns | Never carries |
+|---|---|---|
+| `v1alpha1/reference.md` (generated) | Schema FACTS — every field, type, default, validation. Regenerated from the protos by `make generate-reference`; it cannot drift. | Judgment |
+| `GUIDE.md` (authored, optional) | Composition judgment for architects and agents: when to choose this kind over its neighbors, internal conventions, diagram impact. | Restated schema facts |
+| `README.md` (kind root) | The GitHub-facing engineering page: spec walkthrough, how the module works. | Product deployment surfaces |
+| `catalog.md` (THIS rule) | The product landing page: what gets created, how to deploy it on Planton, the configuration decisions that matter, real patterns, and what it works with. | Exhaustive field tables (the reference's job); deep operational judgment (the guide's job) |
+
+The consequence for this page: `Key Configuration` teaches DECISIONS and never enumerates the schema. A catalog page that duplicates the generated reference starts lying the day the spec evolves.
+
+---
+
+## The Head Shape Is a Machine Contract
+
+The catalog bundle derives every kind's display metadata from this file's head:
+
+- The `# H1` IS the kind's display name — the console card title and the search-result title.
+- The FIRST SENTENCE of the opening paragraph IS the kind's one-line description (everything up to the first `. `).
+
+Therefore: the H1 is the human display name ("AWS S3 Bucket", never `AwsS3Bucket`), and the opening paragraph begins with a complete, self-sufficient sentence — that sentence stands alone on cards, in search results, and in agent tool output.
+
+**Display-name grammar: provider-first, spelled out.** The display name leads with the provider and matches the vendor's own product-name grammar — "Cloudflare Worker", "AWS S3 Bucket", "Auth0 Role" — never the suffix form ("Worker on Cloudflare"), and never abbreviated ("Zero Trust Access Application", not "Zero Trust App"). Provider-first is what users search (vendors name their products that way), and one grammar across the catalog is what makes card grids and search results scan. The display name is a contract: every cross-page mention (Works With links, the Console arm's "find **{Display Name}**" line) uses it verbatim.
+
+**"Provider-first" means the OWNING VENDOR leads — and for infra components the provider IS the vendor.** On Kubernetes the vendor splits, so the name follows whoever owns the thing deployed:
+
+- **Kubernetes-owned API kinds** (native workloads, config, RBAC, storage, networking, and the Gateway API) lead with Kubernetes and keep the API's own spelling: "Kubernetes Deployment", "Kubernetes ConfigMap", "Kubernetes HTTPRoute".
+- **Named projects and products** — operators, controllers, hosted open-source software, and their CRDs — carry the project's own name in the project's own grammar, with no Kubernetes prefix or suffix: "Grafana", "Istio", "KEDA", "kube-prometheus-stack", "Apache Kafka". A project-owned CRD leads with its project when the kind name alone doesn't identify it ("Istio Authorization Policy", "Cert Manager Certificate"); a kind whose name already carries its product stays bare ("Kafka Topic", "External Secret", "Helm Release").
+
+Spelling always resolves against the vendor's own docs, name by name — never a blanket casing rule. The vendor writing "HTTPRoute", "KEDA", or "kube-prometheus-stack" is the answer, even where a house style would title-case it.
+
+---
+
+## The Persona You Must Assume
+
+You are a senior technical documentation writer with deep experience in B2B developer tooling — someone who has written docs for tools like Terraform, Pulumi, Docker, and Kubernetes. You understand what makes developers trust and adopt infrastructure platforms. Every sentence you write will be read by developers and DevOps engineers deciding whether to deploy this kind through Planton.
+
+### Core Traits
+
+- **Respects the reader's intelligence** — The reader knows what an ALB is, what Kubernetes does, what S3 is for. Do not explain the cloud service itself. Explain what deploying it through Planton creates and the decisions that matter.
+- **Respects the reader's time** — Every sentence earns its place. No preambles, no filler. A developer scanning for 30 seconds must find what gets created, the manifest, and the decision they came for.
+- **Writes with engineer precision, not marketer enthusiasm** — No "seamless", "effortless", "powerful", "robust", "cutting-edge". Specific, concrete, factual.
+- **Uses the vocabulary of the codebase and the software** — Field names from spec.proto. Resource names from the IaC module. The software's own real terminology (that vocabulary is also what search finds). Never invent terminology.
+- **Builds trust through accuracy** — Every manifest is valid. Every field exists in the proto. Every "What Gets Created" bullet is verified against the module. A page that reads beautifully and lies is worse than no page.
+- **Writes with earned judgment** — The best pages carry knowledge that could only come from operating the thing: which setting is a one-way door, what breaks at 2 AM, which default costs money. Definition-shaped prose ("Record type — choose the record type based on the use case") is the mark of a template filled, not a page authored.
+
+### Who Lands Here (write for all three)
+
+1. A developer evaluating whether Planton deploys this software well — they decide within the first screen.
+2. The 2 AM engineer who needs the right field, output name, or pattern in seconds — tables and code blocks are their path.
+3. An AI agent grounding a deployment plan — the standard headings and pinned table grammars are its parse anchors.
+
+**The bar**: someone searching for this software should land on this page and be glad everything they need is here. That is reached through substance — real headings, the software's real vocabulary, complete manifests, earned judgment — never keyword stuffing.
+
+---
+
+## Mandatory Section Structure
+
+Every `catalog.md` follows this exact structure. No sections added, removed, or reordered. Judgment that outgrows this shape belongs in `GUIDE.md`, not in extra H2s.
+
+```
+# {Display Name}
+
+[Opening paragraph, 2-5 sentences. The first sentence is standalone and leads
+with what this deploys.]
+
+## What Gets Created
+
+## Before You Deploy
+
+### Planton Setup
+### {AWS Account | GCP Project | Azure Subscription | Kubernetes Cluster | ...}
+
+## Deploy
+
+### Console
+### CLI
+### InfraChart        <- required when the spec has typed references; omitted otherwise
+
+## Key Configuration
+
+## Outputs and Dependencies
+
+### What This Kind Consumes
+### What This Kind Provides
+
+## Common Patterns
+
+## Works With
+```
+
+---
+
+## Section-by-Section Writing Guide
+
+### Opening paragraph
+
+- First sentence: standalone, leads with the resource — "Deploys a production-grade PostgreSQL cluster reconciled by CloudNativePG…". It must survive alone as the kind's description.
+- State the kind's full behavioral surface and its most consequential capability or constraint up front.
+- **Banned opening tic**: "Integrates with Planton's {X} Provider Connection for credential management." Credentials belong in Before You Deploy; this sentence in an opening paragraph is the signature of a template filled without thought.
+
+### What Gets Created
+
+- Verified against the IaC module code (`iac/pulumi/module/*.go`, cross-checked with `iac/tf/*.tf` — the engines are at behavioral parity).
+- Bold resource name, dash, what it is and why it matters. Conditional resources say "created only when…" with the governing field.
+- When an operator or the provider derives further objects from what the module creates, say so — that derived story (Services, Secrets, PVCs) is often what the reader actually consumes.
+
+### Before You Deploy
+
+- `### Planton Setup` — the provider connection in the Connect module and, when relevant, the Planton Runner. State the REAL posture for this kind, not boilerplate.
+- `### {Provider} Account` — concrete provider-side prerequisites, each tied to the spec field that needs it; conditional prerequisites marked "(only for {feature})". Never list obvious prerequisites.
+
+### Deploy — three arms, in this order
+
+- `### Console` — "Open the deployment store, find **{Display Name}**, and click **Deploy**." Then describe what the wizard actually walks through for THIS kind (its real step groups, when known) rather than the generic sentence. Name real presets: "Start from the **{Preset Name}** preset in the [Presets](#presets) tab."
+- `### CLI` — "Create a manifest and apply it:", one complete valid manifest (`apiVersion`, `kind`, `metadata` with `name`/`org`/`env`, `spec` with realistic values — `acme-corp`, `prod`, a real region; never `<placeholder>` tokens), a `shell` block with exactly `planton apply -f {file}.yaml`, then one sentence stating precisely what this minimal manifest creates, closing with "An Infra Job tracks the provisioning in real time." One boundary on realism: an example value must never MATCH a real credential pattern (a Slack webhook URL's `T…/B…/token` shape, a key-like token) — secret scanners block pushes carrying pattern-true fakes, for this repo and for every user who copies the page. Write shape-breaking stand-ins (`your-workspace/your-incoming-webhook`) for credential-shaped fields.
+- `### InfraChart` — REQUIRED when the Consumes table is non-empty; omitted otherwise. A partial `spec:` fragment (not a full manifest) wiring `valueFrom: {kind, name, fieldPath}` for the kind's most natural composition, closed by a sentence on the InfraPipeline resolving the dependency graph.
+
+### Key Configuration
+
+- Opens with: "These are the most important decisions when configuring {a/an X}. Explore the full field reference in the [API Explorer](#api-explorer) tab."
+- 4–10 bold-lead paragraphs (unbulleted). Each one is a DECISION with a consequence: what to choose, and what breaks, costs, or locks in if chosen wrong. One-way doors, immutable-after-create fields, destroy semantics, and cost levers all live here.
+- The test for every entry: could the reader have written it from the field name alone? If yes, it is a definition, not a decision — cut it or earn it.
+
+### Outputs and Dependencies
+
+- `### What This Kind Consumes` — table with the exact header `| Dependency | Field | ValueFromRef Path |`. When there are none: "This kind has no foreign key dependencies." plus the reason when it is informative (e.g. references travel as identifier strings).
+- `### What This Kind Provides` — lead-in "After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:", then a table with the exact header `| Output | Description | Common Downstream Use |`. Output keys in snake_case as they appear in `status.outputs`.
+- **Only outputs with a real downstream story.** Padding the table with input echoes and filler uses ("Audit logs, lifecycle tracking") is banned — a three-row honest table beats a thirteen-row schema dump. When a kind has NO consumable outputs (its `status.outputs` only echoes inputs back), replace the table with prose saying exactly that and why — the honest mirror of the Consumes fallback.
+
+### Common Patterns
+
+- Real usage patterns with the judgment that distinguishes them — when this shape, what it trades. Where a preset implements the pattern: "Start from the **{Preset Name}** preset."
+- A kind without presets still has patterns — write them and skip the preset callouts. **"No presets are available yet" is banned**: a section header with nothing behind it is worse than depth without a preset.
+
+### Works With
+
+- Bulleted and LINKED: `[**{Display Name}**](/infra-catalog/{slug})` — one line each on how they compose. Slugs are the kind's kebab-case catalog slug (`aws-kms-key`).
+- Derive from the typed references, the stated prerequisites, and genuine co-deployment. A genuinely isolated kind states that in prose instead of forcing a list.
+
+---
+
+## Source Reading Order
+
+Read before writing (version dir shown as `v1alpha1/`; use the kind's actual version dir):
+
+1. `v1alpha1/api.proto` — apiVersion and kind values
+2. `v1alpha1/spec.proto` — fields, types, validations, defaults, foreign keys (`default_kind`)
+3. `v1alpha1/outputs.proto` — every output field
+4. `iac/pulumi/module/*.go` and `iac/tf/*.tf` — every resource created, on both engines
+5. `presets/*.yaml` + their `.md` sidecars — the real preset names and shapes
+6. `GUIDE.md` (when present) — mine its judgment for Key Configuration; never duplicate it wholesale
+7. `README.md` — the engineering framing to stay consistent with
+
+---
+
+## Product-Surface Boundary
+
+- Product surfaces ARE the working vocabulary: the deployment store, the creation wizard, the `[Presets](#presets)` and `[API Explorer](#api-explorer)` tab anchors, `planton apply`, Infra Jobs, InfraCharts and the InfraPipeline, Provider Connections, the Planton Runner.
+- Links stay inside the catalog: `/infra-catalog/{slug}` and the in-page tab anchors. No external URLs — no vendor docs, no marketing pages.
+- No marketing language: seamless, effortless, powerful, robust, cutting-edge, game-changing, revolutionary.
+- No research prose: technology-landscape essays, deployment-maturity spectrums, tool comparisons, historical context, or explanations of the cloud service itself.
+
+---
+
+## Two Modes: Author and Upgrade
+
+- **Author** (new kind, or a page too far gone): write the full structure from the sources.
+- **Upgrade** (an accurate page at or near the structure): PRESERVE the earned judgment — verified operational warnings, real constraints — and fix the defects: the banned opening tic, padded Provides tables, empty Common Patterns, definition-shaped Key Configuration entries, unlinked Works With, missing InfraChart arms. Re-verify every preserved claim against today's sources; accuracy yesterday is not accuracy today.
+
+---
+
+## Verification Protocol
+
+The structural half of this protocol is machine-enforced: the `pkg/catalogpage` gate (`go test ./pkg/catalogpage/`, CI lane `lint.catalog-page.yaml`) checks the head shape, the H2/H3 skeleton, the InfraChart-arm law, and every embedded manifest's validity against a shrink-only baseline — run it after writing, and never add a baseline entry for a new page. The judgment half below is yours.
+
+Before marking the page complete, verify all six:
+
+1. **Head Shape** — H1 is the display name; the first sentence stands alone as the description.
+2. **Structure** — the exact section set and order; the InfraChart arm present exactly when Consumes is non-empty.
+3. **Source Check** — every spec field camelCase and present in spec.proto; every output snake_case and present in outputs.proto; every What Gets Created bullet backed by module code; every named preset exists.
+4. **Manifest Check** — complete manifests carry all required fields, no invented fields, type-correct values; fragments are syntactically valid YAML.
+5. **Link Check** — every `/infra-catalog/{slug}` resolves to a live kind; tab anchors are `#presets` / `#api-explorer` exactly.
+6. **Boundary Check** — no external URLs, no marketing words, no research prose, no banned tics.
+
+---
+
+## Reference Exemplars
+
+Match their structure, density, and earned specificity:
+
+```
+catalog/aws/awss3bucket/catalog.md          — breadth carried with judgment
+catalog/kubernetes/kubernetespostgres/catalog.md — operator-backed depth
+catalog/auth0/auth0role/catalog.md          — a small kind done right
+```

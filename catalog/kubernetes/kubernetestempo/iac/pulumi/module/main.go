@@ -17,17 +17,17 @@ import (
 // `<name>-r2-credentials` Secret) so no credential ever lands in the
 // chart's rendered configuration; the helm_values escape hatch merges last with Helm -f
 // semantics — the exact semantic twin of the Terraform module.
-func Resources(ctx *pulumi.Context, stackInput *kubernetestempov1alpha1.KubernetesTempoStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetestempov1alpha1.KubernetesTempoIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

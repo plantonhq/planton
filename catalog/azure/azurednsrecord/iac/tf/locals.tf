@@ -1,6 +1,6 @@
 locals {
   # Identity tags -- the same keys and values the Pulumi module writes.
-  # resource_kind is the CloudResourceKind enum name lowercased, spelled as
+  # resource_kind is the CatalogKind enum name lowercased, spelled as
   # that exact literal; resource_id is added (id_tag below) only when the
   # resource has an id, never with the name as a stand-in.
   base_tags = {
@@ -27,7 +27,7 @@ locals {
   final_tags = merge(local.base_tags, local.org_tag, local.env_tag, local.id_tag, var.spec.tags)
 
   # The platform materializes the proto default (300) before the module
-  # runs; the coalesce is a same-value safety net for direct stack-input
+  # runs; the coalesce is a same-value safety net for direct iac-input
   # paths, never a different fallback.
   ttl = coalesce(var.spec.ttl_seconds, 300)
 

@@ -412,7 +412,7 @@ func (*agentCoreEvaluationVerifier) VerifyAbsentFromOutputs(ctx context.Context,
 	return nil
 }
 
-// outputKeys returns a stack output's map entries as key -> string value
+// outputKeys returns an output's map entries as key -> string value
 // (empty when the output is absent or not a map).
 func outputKeys(outputs map[string]interface{}, key string) map[string]string {
 	result := map[string]string{}

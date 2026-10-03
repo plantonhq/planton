@@ -1,10 +1,10 @@
 # Auth0 Role
 
-Deploys an Auth0 Role and its complete set of API permissions (scopes) as a single Cloud Resource. Roles are the middle layer of Auth0 role-based access control (RBAC) -- they group the scopes defined on a Resource Server into a reusable access tier that you assign to users.
+Deploys an Auth0 Role and its complete set of API permissions (scopes) as a single Infra Component. Roles are the middle layer of Auth0 role-based access control (RBAC) -- they group the scopes defined on a Resource Server into a reusable access tier that you assign to users.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Auth0 Role** -- a role configured with the specified display name and description
 - **Role Permissions** -- created only when `permissions` is non-empty, an authoritative permission assignment that sets the role's complete scope list
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Auth0 Provider Connection** -- an active connection in the Connect module with Auth0 domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Auth0 Provider Connection** -- an active connection in the Connect module with Auth0 domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Auth0 Account
@@ -52,7 +52,7 @@ spec:
 planton apply -f auth0-role.yaml
 ```
 
-This creates an Editor role and grants it two scopes on a single API. All spec fields are optional -- omit `permissions` to create an empty role, or omit `name` to default the role name to `metadata.name`. A Stack Job tracks the provisioning in real time.
+This creates an Editor role and grants it two scopes on a single API. All spec fields are optional -- omit `permissions` to create an empty role, or omit `name` to default the role name to `metadata.name`. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -68,13 +68,13 @@ These are the most important decisions when configuring an Auth0 Role. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. Permissions reference a Resource Server by its identifier (audience) string rather than a typed reference.
+This kind has no foreign key dependencies. Permissions reference a Resource Server by its identifier (audience) string rather than a typed reference.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -94,4 +94,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Auth0 Resource Server (API)**](/cloud-catalog/auth0-resource-server) -- defines the scopes a role grants; each permission references a Resource Server by its identifier (audience).
+- [**Auth0 Resource Server (API)**](/infra-catalog/auth0-resource-server) -- defines the scopes a role grants; each permission references a Resource Server by its identifier (audience).

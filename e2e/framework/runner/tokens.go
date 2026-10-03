@@ -12,7 +12,7 @@ import (
 )
 
 // RunIDToken is the placeholder scenario and prerequisite manifests use for
-// values that must be unique per test run. Some cloud resources reserve their
+// values that must be unique per test run. Some infra components reserve their
 // user-chosen identifier long after deletion (soft-delete retention windows —
 // e.g. workload identity pools and KMS key rings), so a manifest that hardcodes
 // such an identifier can never be deployed twice: the second run (even the

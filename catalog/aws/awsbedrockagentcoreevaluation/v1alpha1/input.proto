@@ -5,9 +5,9 @@ package dev.planton.aws.awsbedrockagentcoreevaluation.v1alpha1;
 import "catalog/aws/awsbedrockagentcoreevaluation/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsBedrockAgentCoreEvaluationStackInput is the input for the IaC
+// AwsBedrockAgentCoreEvaluationIacInput is the input for the IaC
 // modules that deploy the AgentCore Evaluations bundle.
-message AwsBedrockAgentCoreEvaluationStackInput {
+message AwsBedrockAgentCoreEvaluationIacInput {
   // target is the AwsBedrockAgentCoreEvaluation resource to deploy.
   AwsBedrockAgentCoreEvaluation target = 1;
   // provider_config contains the AWS provider credentials and configuration.

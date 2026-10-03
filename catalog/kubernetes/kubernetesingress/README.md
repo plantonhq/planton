@@ -2,9 +2,9 @@
 
 ## Overview
 
-**KubernetesIngress** is a Planton component that creates and manages Kubernetes `networking/v1` Ingress objects as first-class, declaratively managed resources. An Ingress declares HTTP(S) exposure for in-cluster Services: host rules and path matches routing to Service backends, with optional TLS termination from certificate Secrets.
+**KubernetesIngress** is a catalog kind that creates and manages Kubernetes `networking/v1` Ingress objects as first-class, declaratively managed resources. An Ingress declares HTTP(S) exposure for in-cluster Services: host rules and path matches routing to Service backends, with optional TLS termination from certificate Secrets.
 
-The component covers the complete `networking/v1` IngressSpec surface — ingress class selection, a default backend, TLS blocks, and host/path rules with all three path types. The single deliberate omission is the `resource` backend variant (an ObjectRef to an arbitrary same-namespace object): it is controller-specific and rarely implemented, and Service backends cover the real exposure paths.
+The kind covers the complete `networking/v1` IngressSpec surface — ingress class selection, a default backend, TLS blocks, and host/path rules with all three path types. The single deliberate omission is the `resource` backend variant (an ObjectRef to an arbitrary same-namespace object): it is controller-specific and rarely implemented, and Service backends cover the real exposure paths.
 
 ## Purpose
 
@@ -84,7 +84,7 @@ Controller-specific behavior goes through `annotations` — the upstream contrac
 - **`spec.tls`**: TLS termination blocks
 - **`spec.labels`** / **`spec.annotations`**: Merged with standard Planton governance labels
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -96,7 +96,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Resolve the target namespace and backend/Secret references (literal values or resolved references)
 2. Merge user labels and annotations with standard Planton tracking labels

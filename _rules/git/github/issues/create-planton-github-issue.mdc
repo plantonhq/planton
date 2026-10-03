@@ -36,7 +36,7 @@ References: `@generate-planton-issue-info`, `@README.md`.
 Based on the conversation context and affected files, automatically infer labels:
 
 ### Area Labels (from file paths)
-- `catalog/**` → `area/component,area/<provider>`
+- `catalog/**` → `area/kind,area/<provider>`
 - `cmd/planton/**` → `area/cli`
 - `pkg/**` → `area/pkg`
 - `internal/**` → `area/cli,area/internal`
@@ -44,7 +44,7 @@ Based on the conversation context and affected files, automatically infer labels
 - `tools/**` → `area/tooling`
 - `.cursor/**` → `area/dx`
 - `docs/**` → `area/docs`
-- `_rules/component/forge/**` → `area/forge`
+- `_rules/catalog-kind/forge/**` → `area/forge`
 
 ### Type Labels (from issue nature)
 - Bug/error in conversation → `bug,type/bug`
@@ -64,7 +64,7 @@ Based on the conversation context and affected files, automatically infer labels
 - Design needed → `needs-design`
 - Team input needed → `needs-discussion`
 
-### Component Labels (from providers)
+### Kind Labels (from providers)
 - Kubernetes deployments → `kubernetes`
 - AWS deployments → `aws`
 - GCP deployments → `gcp`
@@ -72,7 +72,7 @@ Based on the conversation context and affected files, automatically infer labels
 - Pulumi-related → `pulumi`
 - Terraform-related → `terraform`
 
-Combine relevant labels with commas (no spaces): `bug,area/component,priority/high,kubernetes`
+Combine relevant labels with commas (no spaces): `bug,area/kind,priority/high,kubernetes`
 
 ## Non-interactive workflow (exact commands)
 Execute these steps in the repo root. Keep commands non-interactive.
@@ -133,10 +133,10 @@ echo ""
 ```
 
 ## Options (optional, if provided in context)
-- Labels: provide comma-separated `ISSUE_LABELS=bug,area/component,priority/high`
+- Labels: provide comma-separated `ISSUE_LABELS=bug,area/kind,priority/high`
 - Assignees: provide comma-separated `ISSUE_ASSIGNEES=user1,user2`
 - Milestone: provide `ISSUE_MILESTONE="Q1 2025"` or milestone number
-- Project: provide `ISSUE_PROJECT="Components"` or project number
+- Project: provide `ISSUE_PROJECT="Kinds"` or project number
 - Open in browser: set `ISSUE_WEB=1` to open issue in browser after creation
 
 ## Typical Usage Patterns
@@ -148,7 +148,7 @@ After troubleshooting an issue and gathering all the details:
 ```
 AI will:
 1. Generate comprehensive bug report with root cause analysis
-2. Infer labels like `bug,area/component,priority/high`
+2. Infer labels like `bug,area/kind,priority/high`
 3. Create issue with all investigation findings
 4. Return issue URL for tracking
 
@@ -178,10 +178,10 @@ AI will:
 ### Combining Labels
 Always include at least:
 1. **Type**: `bug`, `enhancement`, `chore`, etc.
-2. **Area**: `area/component`, `area/cli`, etc.
+2. **Area**: `area/kind`, `area/cli`, etc.
 3. **Priority**: `priority/high`, `priority/medium`, etc.
 
-Example: `bug,area/component,area/kubernetes,priority/critical,P0`
+Example: `bug,area/kind,area/kubernetes,priority/critical,P0`
 
 ### Common Label Combinations
 - Critical bug: `bug,type/bug,priority/critical,P0,area/<affected-area>`
@@ -199,7 +199,7 @@ The issue description should automatically include:
 - Data structures examined
 - Root cause findings
 - Proposed solutions with code examples
-- Testing checklist based on affected components
+- Testing checklist based on affected kinds
 
 ## Integration with Workspace Files
 
@@ -237,12 +237,12 @@ After creating an issue:
 
 ### Example 1: Create Bug Report with Auto-Labels
 ```bash
-# After investigating Postgres component validation issue
+# After investigating Postgres kind validation issue
 @create-planton-github-issue
 
 # AI generates:
-# Title: "Postgres component spec validation broken for port conflicts"
-# Labels: bug,area/component,area/kubernetes,priority/critical,P0
+# Title: "Postgres kind spec validation broken for port conflicts"
+# Labels: bug,area/kind,area/kubernetes,priority/critical,P0
 # Body: Full investigation with root cause, affected files, solutions
 ```
 

@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -11,9 +11,9 @@
 # Each preset's rule arithmetic (rules + outbound rules vs the included
 # five) is computed here and defended in its quantity basis. The niche
 # GATEWAY SKU and GLOBAL tier bill different meters no committed preset
-# uses and are not modeled. Schema: finops/componentcostestimatemodel/v1.
+# uses and are not modeled. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: azureloadbalancer
 spec:
@@ -29,8 +29,8 @@ spec:
           quantity_basis: the preset declares 2 load-balancing rules (http, https) and no outbound rules -- 2 of the 5 rules the flat meter includes, so the whole month bills the included meter alone, once per hour regardless of rule count (2 rules and 5 rules price identically); the meter bills in Azure's Global region, so the eastus assumption moves nothing
       exclusions:
         - data processed bills per GB through the rules and follows traffic entirely
-        - the referenced Standard public IP bills hourly on its own AzurePublicIp component
-        - backend pool members bill their own compute on their own components
+        - the referenced Standard public IP bills hourly on its own AzurePublicIp kind
+        - backend pool members bill their own compute on their own kinds
       notes: Rules past the combined fifth (load-balancing plus outbound) would each add a per-rule hourly overage meter -- this preset sits at 2 and has headroom for 3 more before the bill changes shape.
     - preset: 02-internal
       region_assumption: eastus
@@ -43,8 +43,8 @@ spec:
           quantity_basis: the preset declares 1 load-balancing rule (app) and no outbound rules -- 1 of the included 5, so the flat hourly meter is the whole committed bill; internal frontends change exposure, not price (the rule meters read the same for private traffic)
       exclusions:
         - data processed bills per GB through the rule and follows east-west traffic entirely
-        - the referenced subnet and its virtual network are their own components; the frontend's private address is free
-        - backend pool members bill their own compute on their own components
+        - the referenced subnet and its virtual network are their own kinds; the frontend's private address is free
+        - backend pool members bill their own compute on their own kinds
       notes: The zone-redundant frontend posture (zones ["1","2","3"]) is free -- Azure prices Standard Load Balancer identically with or without zone redundancy.
     - preset: 03-outbound-and-nat
       region_assumption: eastus
@@ -57,6 +57,6 @@ spec:
           quantity_basis: the preset declares 1 load-balancing rule (http) plus 1 outbound rule (egress) -- outbound rules count against the same included five, putting this preset at 2 of 5; the two inbound NAT rules (ssh-admin, per-instance-ssh) are free and count toward nothing
       exclusions:
         - data processed bills per GB through the load-balancing rule and follows traffic; traffic forwarded by the inbound NAT rules is not metered
-        - the referenced Standard public IP bills hourly on its own AzurePublicIp component
-        - backend pool members bill their own compute on their own components
+        - the referenced Standard public IP bills hourly on its own AzurePublicIp kind
+        - backend pool members bill their own compute on their own kinds
       notes: Explicit SNAT (the outbound rule) re-uses the rule meters -- it moves a rule-count slot, not a new meter; the SNAT port budget (allocated_outbound_ports) is a behavior lever with no price of its own.

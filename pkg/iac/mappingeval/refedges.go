@@ -5,7 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/pkg/refannotations"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -26,7 +26,7 @@ type RefEdge struct {
 	// TargetKind is the producer's kind: the reference's own kind when set,
 	// otherwise the consuming field's default_kind annotation. unspecified
 	// when neither declares it (the edge is then compared by name alone).
-	TargetKind cloudresourcekind.CloudResourceKind
+	TargetKind catalogkind.CatalogKind
 	// TargetName is the producer's metadata.name as the reference states it.
 	TargetName string
 }

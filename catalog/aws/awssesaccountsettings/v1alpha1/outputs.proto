@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awssesaccountsettings.v1alpha1;
 
-// AwsSesAccountSettingsStackOutputs captures the observable identity
+// AwsSesAccountSettingsOutputs captures the observable identity
 // of the region's SES account settings.
-message AwsSesAccountSettingsStackOutputs {
+message AwsSesAccountSettingsOutputs {
   // The 12-digit AWS account ID the settings belong to (also the
   // provider's import ID for the suppression singleton).
   string account_id = 1;

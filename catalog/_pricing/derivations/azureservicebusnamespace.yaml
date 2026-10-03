@@ -10,9 +10,9 @@
 # estimate generator replays the catalog presets through these rules to
 # emit ../estimates/azureservicebusnamespace.yaml; a server-side
 # estimator evaluates the same rules against live manifests.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: azureservicebusnamespace
 spec:
@@ -67,11 +67,11 @@ spec:
         - field_path: sku
           op: equals
           value: PREMIUM
-      text: Geo-Replication, when configured, bills per GB replicated by geography zone, and the replica is a second Premium namespace billing its own messaging units on its own component
+      text: Geo-Replication, when configured, bills per GB replicated by geography zone, and the replica is a second Premium namespace billing its own messaging units on its own kind
     - applies_when:
         - field_path: customer_managed_key
           op: is_set
-      text: customer-managed-key encryption drives Key Vault key operations billed on the referenced vault's own components
+      text: customer-managed-key encryption drives Key Vault key operations billed on the referenced vault's own kinds
     - text: network egress follows consumer placement
   notes:
     - applies_when:

@@ -4,7 +4,7 @@ Declares a project's GKE fleet: the one fleet a fleet host project holds, its di
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `gkehub.googleapis.com` (the Fleet API) on the host project (never disabled on destroy)
 - **Fleet** -- the project's one fleet (`default` in `global`)
@@ -62,7 +62,7 @@ planton apply -f gke-fleet.yaml
 - `displayName` is 4-30 allowed characters.
 - `policyBindings` are unique platform policy names and need `evaluationMode: POLICY_BINDINGS`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -91,7 +91,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpGkeFleetScope** -- team scopes inside the fleet
 - **GcpGkeFleetFeature** -- fleet features (Config Sync, Policy Controller, Service Mesh, multi-cluster ingress, upgrade sequencing)

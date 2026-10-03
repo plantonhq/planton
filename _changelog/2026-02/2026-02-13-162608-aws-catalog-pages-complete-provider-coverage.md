@@ -6,34 +6,34 @@
 
 ## Summary
 
-Wrote hand-written, source-verified catalog pages for all 21 remaining AWS deployment components, completing the AWS provider's catalog documentation at 25/25 components. Each page follows the established 9-section standard with progressive examples, configuration reference tables verified against protobuf definitions, and resource lists verified against Pulumi module source. Also fixed an incorrect foreign key field path (`subnet_ids` to `public_subnets[0].id` / `private_subnets[0].id`) in the ALB exemplar and ECS Service pages.
+Wrote hand-written, source-verified catalog pages for all 21 remaining AWS catalog kinds, completing the AWS provider's catalog documentation at 25/25 kinds. Each page follows the established 9-section standard with progressive examples, configuration reference tables verified against protobuf definitions, and resource lists verified against Pulumi module source. Also fixed an incorrect foreign key field path (`subnet_ids` to `public_subnets[0].id` / `private_subnets[0].id`) in the ALB exemplar and ECS Service pages.
 
 ## Problem Statement / Motivation
 
-The Planton docs catalog had only 4 of 25 AWS components with hand-written catalog pages (ALB, EKS Cluster, RDS Instance, S3 Bucket). The remaining 21 components relied on auto-generated research documents that contained technology landscape essays, deployment maturity spectrums, and tool comparisons -- content that belongs in a blog post, not a deployment catalog. Developers evaluating Planton's AWS coverage had no quick-reference documentation for VPC, IAM, Lambda, ECS, CloudFront, or any other AWS service.
+The Planton docs catalog had only 4 of 25 AWS kinds with hand-written catalog pages (ALB, EKS Cluster, RDS Instance, S3 Bucket). The remaining 21 kinds relied on auto-generated research documents that contained technology landscape essays, deployment maturity spectrums, and tool comparisons -- content that belongs in a blog post, not a deployment catalog. Developers evaluating Planton's AWS coverage had no quick-reference documentation for VPC, IAM, Lambda, ECS, CloudFront, or any other AWS service.
 
 ### Pain Points
 
-- 84% of AWS components (21/25) had no developer-facing catalog documentation
+- 84% of AWS kinds (21/25) had no developer-facing catalog documentation
 - Auto-generated docs were 300-1000+ lines of research prose, not actionable deployment guides
-- No quick-start manifests, no configuration reference tables, no stack output documentation
+- No quick-start manifests, no configuration reference tables, no output documentation
 - Developers had to read raw protobuf files to understand configuration options
 
 ## Solution / What's New
 
-21 new `catalog-page.md` files written across 3 execution rounds using 4 parallel documentation agents per round. Each page follows the mandatory 9-section structure established by the `write-planton-component-catalog-page.mdc` rule and verified against the `audit-planton-component-catalog-page.mdc` checklist.
+21 new `catalog-page.md` files written across 3 execution rounds using 4 parallel documentation agents per round. Each page follows the mandatory 9-section structure established by the `write-catalog-kind-catalog-page.mdc` rule and verified against the `audit-catalog-kind-catalog-page.mdc` checklist.
 
-### Components Covered
+### Kinds Covered
 
-**Round 1 -- Networking + Security Foundations (8 components)**
+**Round 1 -- Networking + Security Foundations (8 kinds)**
 - AwsVpc, AwsSecurityGroup, AwsRoute53Zone, AwsRoute53DnsRecord
 - AwsCertManagerCert, AwsKmsKey, AwsIamRole, AwsIamUser
 
-**Round 2 -- Compute + Containers (8 components)**
+**Round 2 -- Compute + Containers (8 kinds)**
 - AwsEcsCluster, AwsEcsService, AwsEksNodeGroup, AwsLambda
 - AwsCloudFront, AwsEcrRepo, AwsEc2Instance, AwsClientVpn
 
-**Round 3 -- Databases + Storage (5 components)**
+**Round 3 -- Databases + Storage (5 kinds)**
 - AwsRdsCluster, AwsDocumentDb, AwsDynamoDb, AwsSecretsManager, AwsS3ObjectSet
 
 ### Execution Pipeline
@@ -47,13 +47,13 @@ flowchart LR
     R1 --- A4[Agent 4: IAM]
 ```
 
-Each agent reads `api.proto`, `spec.proto`, `stack_outputs.proto`, and `iac/pulumi/module/*.go` before writing, then runs the 6-point verification protocol.
+Each agent reads `api.proto`, `spec.proto`, `outputs.proto`, and `iac/pulumi/module/*.go` before writing, then runs the 6-point verification protocol.
 
 ## Implementation Details
 
 ### Complexity Spectrum
 
-The 21 components span a wide range of complexity:
+The 21 kinds span a wide range of complexity:
 
 - **Minimal** (0 required fields): AwsEcsCluster -- empty `spec: {}` creates a valid Fargate cluster
 - **Simple** (1 required field): AwsSecretsManager -- just `secretNames` list
@@ -66,7 +66,7 @@ Notable discoveries during source reading:
 
 - **AwsEcsService**: Hardcodes `FARGATE` launch type and `awsvpc` network mode despite proto comments mentioning EC2
 - **AwsEc2Instance**: Auto-generates RSA-4096 key pairs via `pulumi-tls` for BASTION/INSTANCE_CONNECT connection methods
-- **AwsDocumentDb**: Creates both cluster and instances in a single component (unlike RDS which separates them)
+- **AwsDocumentDb**: Creates both cluster and instances in a single kind (unlike RDS which separates them)
 - **AwsSecretsManager**: Seeds placeholder values and uses `IgnoreChanges` for GitOps-safe secret management
 - **AwsRdsCluster**: `subnetIds` and `dbSubnetGroupName` are mutually exclusive (CEL validation)
 - **AwsClientVpn**: Only `certificate` authentication is supported in v1 despite enum defining `directory` and `cognito`
@@ -74,21 +74,21 @@ Notable discoveries during source reading:
 
 ### Bug Fix: Foreign Key Field Paths
 
-The spot audit identified incorrect foreign key paths in the AwsAlb exemplar and AwsEcsService catalog pages. The VPC stack outputs define `public_subnets` and `private_subnets` (each with `.id`, `.name`, `.cidr` sub-fields), not `subnet_ids`. Fixed in both files.
+The spot audit identified incorrect foreign key paths in the AwsAlb exemplar and AwsEcsService catalog pages. The VPC outputs define `public_subnets` and `private_subnets` (each with `.id`, `.name`, `.cidr` sub-fields), not `subnet_ids`. Fixed in both files.
 
 ## Benefits
 
 - AWS provider goes from 16% to **100%** catalog page coverage (4/25 to 25/25)
-- Total project catalog coverage goes from 29 to **50** of ~197 production components
-- Every AWS component now has: quick-start manifest, configuration reference with validation rules, progressive examples, and stack output documentation
-- Foreign key `valueFrom` examples demonstrate cross-component references where applicable
-- Consistent 9-section structure enables developers to navigate any AWS component page with the same mental model
+- Total project catalog coverage goes from 29 to **50** of ~197 production kinds
+- Every AWS kind now has: quick-start manifest, configuration reference with validation rules, progressive examples, and output documentation
+- Foreign key `valueFrom` examples demonstrate cross-kind references where applicable
+- Consistent 9-section structure enables developers to navigate any AWS kind page with the same mental model
 
 ## Impact
 
-- **Developers evaluating Planton**: Can now see complete AWS coverage documentation for all 25 components
+- **Developers evaluating Planton**: Can now see complete AWS coverage documentation for all 25 kinds
 - **DevOps engineers**: Have copy-pasteable manifests and configuration reference tables for every AWS resource
-- **Documentation system**: The `write-planton-component-catalog-page.mdc` and `audit-planton-component-catalog-page.mdc` rules proved effective at scale (21 pages in one session)
+- **Documentation system**: The `write-catalog-kind-catalog-page.mdc` and `audit-catalog-kind-catalog-page.mdc` rules proved effective at scale (21 pages in one session)
 - **Quality bar**: Spot audit of 4 pages (VPC, Lambda, ECS Service, DynamoDB) showed 3/4 passing with zero issues; 1 critical fix applied
 
 ## Related Work

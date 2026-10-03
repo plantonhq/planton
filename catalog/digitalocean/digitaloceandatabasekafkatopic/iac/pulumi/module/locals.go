@@ -11,9 +11,9 @@ type Locals struct {
 	DigitalOceanDatabaseKafkaTopic *digitaloceandatabasekafkatopicv1alpha1.DigitalOceanDatabaseKafkaTopic
 }
 
-// initializeLocals copies stack-input fields into the Locals struct.
-func initializeLocals(_ *pulumi.Context, stackInput *digitaloceandatabasekafkatopicv1alpha1.DigitalOceanDatabaseKafkaTopicStackInput) *Locals {
+// initializeLocals copies iac-input fields into the Locals struct.
+func initializeLocals(_ *pulumi.Context, iacInput *digitaloceandatabasekafkatopicv1alpha1.DigitalOceanDatabaseKafkaTopicIacInput) *Locals {
 	return &Locals{
-		DigitalOceanDatabaseKafkaTopic: stackInput.Target,
+		DigitalOceanDatabaseKafkaTopic: iacInput.Target,
 	}
 }

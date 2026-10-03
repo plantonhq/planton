@@ -69,7 +69,7 @@ Two functions changed, one line each:
 base64.StdEncoding.EncodeToString([]byte(c.ServiceAccountKey))
 ```
 
-**Terraform env-var path** (`pkg/iac/stackinput/providerenvvars/kubernetes.go`):
+**Terraform env-var path** (`pkg/iac/iacinput/providerenvvars/kubernetes.go`):
 
 ```go
 base64.StdEncoding.EncodeToString([]byte(c.ServiceAccountKey))

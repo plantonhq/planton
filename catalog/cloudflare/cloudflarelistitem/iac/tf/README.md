@@ -9,7 +9,7 @@ provider.tf   — Cloudflare provider configuration
 variables.tf  — Input variables mirroring CloudflareListItemSpec
 locals.tf     — Resource naming
 main.tf       — cloudflare_list_item resource
-outputs.tf    — Stack outputs (item_id, list_id)
+outputs.tf    — outputs (item_id, list_id)
 ```
 
 ## Usage

@@ -28,7 +28,7 @@ Before any code, each record was read as the visitor it names and as a copywrite
 
 ## Must not claim
 
-Any dollar-savings figure; "compliant" of any component or deployment; a framework verdict; anything from chapter 13 on a page (rules over spec content, refusal records, estimate-versus-actual, service health, image scanning, the account scan, the mobile companion); a paraphrased quote or a quote from a persona we have not sold to; a competitor's name; a price as a literal in prose; a per-minute runner rate.
+Any dollar-savings figure; "compliant" of any kind or deployment; a framework verdict; anything from chapter 13 on a page (rules over spec content, refusal records, estimate-versus-actual, service health, image scanning, the account scan, the mobile companion); a paraphrased quote or a quote from a persona we have not sold to; a competitor's name; a price as a literal in prose; a per-minute runner rate.
 
 ## Verification
 

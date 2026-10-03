@@ -10,27 +10,27 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func stackInput(spec *auth0resourceserverv1alpha1.Auth0ResourceServerSpec) *auth0resourceserverv1alpha1.Auth0ResourceServerStackInput {
+func iacInput(spec *auth0resourceserverv1alpha1.Auth0ResourceServerSpec) *auth0resourceserverv1alpha1.Auth0ResourceServerIacInput {
 	if spec.Identifier == "" {
 		spec.Identifier = "https://api.example.com/"
 	}
-	return &auth0resourceserverv1alpha1.Auth0ResourceServerStackInput{
+	return &auth0resourceserverv1alpha1.Auth0ResourceServerIacInput{
 		Target: &auth0resourceserverv1alpha1.Auth0ResourceServer{
-			Metadata: &shared.CloudResourceMetadata{Name: "api"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "api"},
 			Spec:     spec,
 		},
 	}
 }
 
 func argsFor(spec *auth0resourceserverv1alpha1.Auth0ResourceServerSpec) *auth0.ResourceServerArgs {
-	return resourceServerArgs(initializeLocals(stackInput(spec)))
+	return resourceServerArgs(initializeLocals(iacInput(spec)))
 }
 
 // An API adopted into this kind with only its identifier declared must preview
 // no change for anything the spec never declared: none of the settings beyond
 // the always-sent token flags may be sent, and no default grant is declared.
 func TestEmptySpecSendsNoNewArguments(t *testing.T) {
-	locals := initializeLocals(stackInput(&auth0resourceserverv1alpha1.Auth0ResourceServerSpec{}))
+	locals := initializeLocals(iacInput(&auth0resourceserverv1alpha1.Auth0ResourceServerSpec{}))
 	args := resourceServerArgs(locals)
 
 	unsent := map[string]interface{}{

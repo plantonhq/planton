@@ -35,9 +35,9 @@ import (
 
 func main() {
     pulumi.Run(func(ctx *pulumi.Context) error {
-        return module.Resources(ctx, stackInput)
+        return module.Resources(ctx, iacInput)
     })
 }
 ```
 
-The Planton runner supplies `stackInput`. See the kind [README](../../README.md) and [GUIDE](../../GUIDE.md).
+The Planton runner supplies `iacInput`. See the kind [README](../../README.md) and [GUIDE](../../GUIDE.md).

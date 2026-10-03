@@ -1,5 +1,5 @@
 # StripePaymentMethodConfiguration Outputs
-# Maps to the StripePaymentMethodConfigurationStackOutputs protobuf message: the configuration a
+# Maps to the StripePaymentMethodConfigurationOutputs protobuf message: the configuration a
 # payment names and the methods it actually offers.
 
 output "id" {

@@ -23,14 +23,14 @@ import (
 	"github.com/hashicorp/hcl/v2/hclparse"
 	"github.com/hashicorp/hcl/v2/hclsyntax"
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
-// catalogRoot is where components live, relative to the repo root. A
+// catalogRoot is where kinds live, relative to the repo root. A
 // package-local constant by convention (pkg/anatomy, pkg/e2e/profile,
 // pkg/iac/importmap do the same); the version segment never appears in
-// module paths -- iac/ sits at the component root.
+// module paths -- iac/ sits at the kind root.
 const catalogRoot = "catalog"
 
 // tfResourceRe matches top-level terraform resource declarations.
@@ -89,16 +89,16 @@ type ModuleCensus struct {
 // anatomy-clean catalog (zero baseline entries) still fails CI on the first
 // missing module, while a catalog carrying recorded anatomy debt can be
 // measured without that debt hiding every other kind's numbers.
-func ModuleCensusForProvider(repoRoot string, provider cloudresourcekind.CloudResourceProvider) ([]ModuleCensus, error) {
+func ModuleCensusForProvider(repoRoot string, provider catalogkind.CatalogProvider) ([]ModuleCensus, error) {
 	var out []ModuleCensus
-	for _, kind := range crkreflect.KindsList() {
-		if crkreflect.GetProvider(kind) != provider {
+	for _, kind := range catalogkindreflect.KindsList() {
+		if catalogkindreflect.GetProvider(kind) != provider {
 			continue
 		}
-		if _, err := crkreflect.NewInstance(kind); err != nil {
+		if _, err := catalogkindreflect.NewInstance(kind); err != nil {
 			continue // enum value exists but the kind is not implemented yet
 		}
-		moduleRel := filepath.Join(catalogRoot, crkreflect.ProviderDirName(provider), strings.ToLower(kind.String()), "iac", "tf")
+		moduleRel := filepath.Join(catalogRoot, catalogkindreflect.ProviderDirName(provider), strings.ToLower(kind.String()), "iac", "tf")
 		moduleAbs := filepath.Join(repoRoot, moduleRel)
 		if _, err := os.Stat(moduleAbs); os.IsNotExist(err) {
 			out = append(out, ModuleCensus{Kind: kind.String(), ModuleDir: moduleRel, MissingModule: true})

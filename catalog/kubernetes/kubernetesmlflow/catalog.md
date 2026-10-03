@@ -4,7 +4,7 @@ Declares one MLflow tracking server and model registry -- every training run's p
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **The tracking-server Deployment** -- the official image at the pinned tag (default `v3.15.0-full`), `replicas` per your declaration (more than one requires the postgres backend AND an object artifact store -- enforced at validation), with readiness/liveness probes and your resource requests/limits
@@ -19,7 +19,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -57,11 +57,11 @@ spec:
 planton apply -f mlflow.yaml
 ```
 
-This declares the secured team default -- and the near-empty manifest IS the point: basic auth ON with the admin password generated into `mlflow-admin-auth` (key `password`), tracking state on a 5Gi sqlite PVC, artifacts on a 10Gi PVC served through the tracking server, everything by absence. Point training code at the tracking endpoint from the stack outputs and set `MLFLOW_TRACKING_USERNAME` / `MLFLOW_TRACKING_PASSWORD`. A Stack Job tracks the provisioning in real time.
+This declares the secured team default -- and the near-empty manifest IS the point: basic auth ON with the admin password generated into `mlflow-admin-auth` (key `password`), tracking state on a 5Gi sqlite PVC, artifacts on a 10Gi PVC served through the tracking server, everything by absence. Point training code at the tracking endpoint from the outputs and set `MLFLOW_TRACKING_USERNAME` / `MLFLOW_TRACKING_PASSWORD`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the backend to a PostgreSQL and the artifacts to a SeaweedFS managed by other Cloud Resources:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the backend to a PostgreSQL and the artifacts to a SeaweedFS managed by other Infra Components:
 
 ```yaml
 spec:
@@ -119,7 +119,7 @@ These are the most important decisions when configuring MLflow. Explore the full
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -130,9 +130,9 @@ These are the most important decisions when configuring MLflow. Explore the full
 | **KubernetesSeaweedFs** | `artifactStore.s3Compatible.endpoint` | `status.outputs.s3_endpoint` |
 | **KubernetesSeaweedFs** | `artifactStore.s3Compatible.credentialsSecret.secretName` | `status.outputs.s3_credentials_secret_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -155,9 +155,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**PostgreSQL**](/cloud-catalog/kubernetes-postgres) -- the durable backend store; the `backendStore.postgres` foreign-key defaults point at it
-- [**MySQL**](/cloud-catalog/kubernetes-mysql) -- the MySQL alternative for the backend store
-- [**SeaweedFS**](/cloud-catalog/kubernetes-seaweed-fs) -- the natural in-cluster artifact store; its S3 endpoint and credentials Secret slot into `artifactStore.s3Compatible`
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the namespace for the deployment
-- [**Kubernetes Ingress**](/cloud-catalog/kubernetes-ingress) -- exposure over the exported `service` handle, where TLS terminates
-- [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) -- the Gateway API alternative for exposing the tracking server
+- [**PostgreSQL**](/infra-catalog/kubernetes-postgres) -- the durable backend store; the `backendStore.postgres` foreign-key defaults point at it
+- [**MySQL**](/infra-catalog/kubernetes-mysql) -- the MySQL alternative for the backend store
+- [**SeaweedFS**](/infra-catalog/kubernetes-seaweed-fs) -- the natural in-cluster artifact store; its S3 endpoint and credentials Secret slot into `artifactStore.s3Compatible`
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the namespace for the deployment
+- [**Kubernetes Ingress**](/infra-catalog/kubernetes-ingress) -- exposure over the exported `service` handle, where TLS terminates
+- [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) -- the Gateway API alternative for exposing the tracking server

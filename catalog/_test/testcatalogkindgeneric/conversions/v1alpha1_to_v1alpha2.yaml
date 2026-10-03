@@ -1,0 +1,48 @@
+# Conversion bridge for TestCatalogKindGeneric: v1alpha1 <-> v1alpha2.
+#
+# This is the catalog's permanent conversion fixture -- one operation of each
+# breaking-change class, exercised by the golden corpus in
+# conversions/testdata/ and by the certification suite. Paths address the
+# DOCUMENT (JSON field names), the durable contract every store speaks.
+kind: TestCatalogKindGeneric
+from: v1alpha1
+to: v1alpha2
+
+ops:
+  # RENAME: pure field rename.
+  - rename: { from: spec.stringField, to: spec.displayName }
+
+  # RESHAPE: plain command strings become structured steps.
+  - map:
+      path: spec.commands
+      to: spec.steps
+      expr: 'value.map(c, {"command": c})'
+
+  # REMOVAL: v1alpha2 dropped the field; upgrading loses it and SAYS so.
+  - drop:
+      path: spec.stringNoDefault
+      lossy:
+        reason: "v1alpha2 removed stringNoDefault; the value has no destination and is dropped on upgrade"
+
+  # ADDITION: the new field takes its schema default on upgrade.
+  - default: { path: spec.replicas, value: 1 }
+
+reverse:
+  - rename: { from: spec.displayName, to: spec.stringField }
+
+  - map:
+      path: spec.steps
+      to: spec.commands
+      expr: 'value.map(s, s.command)'
+
+  # v1alpha1 cannot express replicas; downgrading loses it and SAYS so.
+  - drop:
+      path: spec.replicas
+      lossy:
+        reason: "v1alpha1 cannot express replicas; the value is dropped on downgrade"
+
+# Other resources hold this kind's output paths as data (foreign-key
+# annotations, valueFrom fieldPaths); the rename is declared so referrer
+# documents can be rewritten in the same migration run.
+outputPaths:
+  - { from: status.outputs.endpoint, to: status.outputs.url }

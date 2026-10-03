@@ -5,9 +5,9 @@ package dev.planton.azure.azuremanageddisk.v1alpha1;
 import "catalog/azure/azuremanageddisk/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-managed-disk stack-input
-message AzureManagedDiskStackInput {
-  //target cloud-resource
+//azure-managed-disk iac-input
+message AzureManagedDiskIacInput {
+  //target infra-component
   AzureManagedDisk target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

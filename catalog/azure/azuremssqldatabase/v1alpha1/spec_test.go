@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -35,7 +35,7 @@ func minimalSpec() *AzureMssqlDatabase {
 	return &AzureMssqlDatabase{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureMssqlDatabase",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-db",
 		},
 		Spec: &AzureMssqlDatabaseSpec{
@@ -220,7 +220,7 @@ var _ = ginkgo.Describe("AzureMssqlDatabaseSpec Validation Tests", func() {
 			input.Spec.ServerId = &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 					ValueFrom: &foreignkeyv1.ValueFromRef{
-						Kind:      cloudresourcekind.CloudResourceKind_AzureMssqlServer,
+						Kind:      catalogkind.CatalogKind_AzureMssqlServer,
 						Name:      "orders-sql",
 						FieldPath: "status.outputs.server_id",
 					},

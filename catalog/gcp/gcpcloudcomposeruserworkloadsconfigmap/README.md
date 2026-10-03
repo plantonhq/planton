@@ -62,7 +62,7 @@ planton apply -f configmap.yaml
 | `projectId` | `StringValueOrRef` | provider default | GCP project of the Composer environment. |
 | `deletionPolicy` | `string` | `DELETE` | What a destroy does: `DELETE` the ConfigMap, `PREVENT` (fail — protects configuration live pipelines depend on), or `ABANDON` (keep it in the cluster, drop from management). |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -76,7 +76,7 @@ planton apply -f configmap.yaml
 - **Data updates in place**; `configMapName`, `environment`, `region`, and `projectId` are immutable.
 - **Deleting this resource deletes the Kubernetes ConfigMap** from the environment.
 
-## Related Components
+## Related Kinds
 
 - [GcpCloudComposerEnvironment](/docs/catalog/gcp/gcpcloudcomposerenvironment) — the environment the ConfigMap is delivered into
 - [GcpCloudComposerUserWorkloadsSecret](/docs/catalog/gcp/gcpcloudcomposeruserworkloadssecret) — the secret-bearing sibling for credentials

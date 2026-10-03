@@ -22,7 +22,7 @@ func validMinimalSpec() *AwsMskCluster {
 	return &AwsMskCluster{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsMskCluster",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-msk-cluster",
 		},
 		Spec: &AwsMskClusterSpec{
@@ -661,7 +661,7 @@ var _ = ginkgo.Describe("AwsMskClusterSpec Validation Tests", func() {
 				input := &AwsMskCluster{
 					ApiVersion: "aws.planton.dev/v1alpha1",
 					Kind:       "AwsMskCluster",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "test-msk-cluster",
 					},
 				}

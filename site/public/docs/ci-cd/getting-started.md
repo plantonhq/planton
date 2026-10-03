@@ -57,7 +57,7 @@ See [What is a Service?](/docs/ci-cd/what-is-a-service) for a full explanation o
 
 The first pipeline starts immediately. Navigate to the **Pipelines** tab on your service detail page to watch progress.
 
-The pipeline progresses through two stages — **Build** (clone, build artifact, push to registry) and **Deploy** (provision cloud resources for each environment). Build logs stream in real time. Each deployment environment creates a Stack Job that you can inspect for detailed provisioning output.
+The pipeline progresses through two stages — **Build** (clone, build artifact, push to registry) and **Deploy** (provision infra components for each environment). Build logs stream in real time. Each deployment environment creates an Infra Job that you can inspect for detailed provisioning output.
 
 See [Pipelines](/docs/ci-cd/pipelines) for the full pipeline model, trigger types, and manual approval gates.
 

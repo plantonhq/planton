@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesgateway.v1alpha1;
 
-// KubernetesGatewayStackOutputs captures observable outputs after the Gateway
+// KubernetesGatewayOutputs captures observable outputs after the Gateway
 // is created on the target cluster. Controller-managed status (assigned
 // addresses, listener conditions) is reconciled asynchronously by the Gateway
 // implementation and read via kubectl, so it is intentionally not stored here.
-message KubernetesGatewayStackOutputs {
+message KubernetesGatewayOutputs {
   // Name of the created Gateway (equals metadata.name). Routes attach to this
   // Gateway by referencing this name in their parentRefs; in InfraCharts it
   // orders the Gateway before the Routes that target it.

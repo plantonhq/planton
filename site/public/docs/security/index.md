@@ -96,7 +96,7 @@ Every resource change in Planton is captured as an immutable version record. The
 - **Unified diffs** — Git-style diffs showing exactly what changed
 - **Who and when** — The identity account that made the change and the timestamp
 - **Event type** — Whether the resource was created, updated, deleted, or restored
-- **Deployment linkage** — For infrastructure changes, the version links to the Stack Job that executed the deployment, including whether it succeeded or failed
+- **Deployment linkage** — For infrastructure changes, the version links to the Infra Job that executed the deployment, including whether it succeeded or failed
 
 Version records are append-only and immutable. They form a linked chain — you can walk backward through any resource's complete history.
 

@@ -7,7 +7,7 @@ cluster-scoped, and one server owns the backup records in the store. The
 Helm release name is therefore fixed to `velero` and never derives from
 `metadata.name`.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want application-level backups** — Velero backs up Kubernetes
   resources and volume data; database-consistent dumps (a point-in-time
@@ -127,7 +127,7 @@ cloud-side half of each keyless contract is written against the chart's
 fixed `velero-server` service account — which is why it is a stack
 output.
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

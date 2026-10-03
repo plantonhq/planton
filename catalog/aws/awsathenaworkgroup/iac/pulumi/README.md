@@ -12,7 +12,7 @@ Provisions an Amazon Athena workgroup using Pulumi (Go).
 
 ## How It Works
 
-The module receives an `AwsAthenaWorkgroupStackInput` (the manifest plus
+The module receives an `AwsAthenaWorkgroupIacInput` (the manifest plus
 provider credentials), builds the AWS provider through the shared
 builder, and renders the workgroup from the spec. Send conditions match
 the Terraform module argument-for-argument — the spec's presence

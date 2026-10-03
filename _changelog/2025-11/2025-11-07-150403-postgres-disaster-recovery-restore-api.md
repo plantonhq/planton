@@ -61,7 +61,7 @@ Considered using `restore_from_s3_path` (declarative), rejected because:
 - Doesn't map well to Percona (uses restore jobs, not standby)
 - Implicit promotion (remove field) vs explicit (set `enabled: false`)
 
-**2. Component Independence**
+**2. Kind Independence**
 
 Each database can specify its own R2 credentials via `restore.r2_config`, enabling:
 - True cross-cluster independence
@@ -193,7 +193,7 @@ func buildRestoreConfig(
 
 ```go
 // Build restore configuration (standby block + STANDBY_* env vars)
-operatorBucket := "" // TODO: Extract from stackInput if available
+operatorBucket := "" // TODO: Extract from iacInput if available
 var restoreConfig *PostgresKubernetesRestoreConfig
 if locals.PostgresKubernetes.Spec.BackupConfig != nil {
     restoreConfig = locals.PostgresKubernetes.Spec.BackupConfig.Restore
@@ -300,7 +300,7 @@ spec:
 **Deploy**:
 
 ```bash
-cd ops/organizations/planton/infra-hub/cloud-resources/app-prod/kubernetes/workload/app/dependencies/databases
+cd ops/organizations/planton/infra-hub/infra-components/app-prod/kubernetes/workload/app/dependencies/databases
 
 export POSTGRES_MODULE=~/scm/github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/workload/postgreskubernetes/v1/iac/pulumi
 
@@ -403,7 +403,7 @@ kubectl exec -n postgres-app-prod-api-resources $POD -- psql -U postgres -c "CRE
 **Independent Deployments**:
 - Each database carries its own R2 credentials
 - No cross-references between deployments
-- True component independence
+- True kind independence
 
 ### For Developers
 
@@ -442,7 +442,7 @@ kubectl exec -n postgres-app-prod-api-resources $POD -- psql -U postgres -c "CRE
 - **Source**: `db-pgk8s-planton-app-prod-main` (447 days old, PostgreSQL 14)
 - **Backup**: Latest from R2 (2025-11-07)
 
-**Verified Components**:
+**Verified Kinds**:
 - ✅ Pulumi deployment successful
 - ✅ Zalando manifest has correct `spec:standby` block
 - ✅ All `STANDBY_*` environment variables configured

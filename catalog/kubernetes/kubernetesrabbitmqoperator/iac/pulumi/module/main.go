@@ -31,11 +31,11 @@ import (
 // DESTROY SEMANTICS: every document deletes with the resource, INCLUDING
 // the CRD — which cascade-deletes every RabbitmqCluster on the cluster.
 // The spec's CRD-lifecycle note carries the warning.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesrabbitmqoperatorv1alpha1.KubernetesRabbitMqOperatorStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesrabbitmqoperatorv1alpha1.KubernetesRabbitMqOperatorIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}

@@ -4,7 +4,7 @@ Attaches one external issuer to a Workload Identity Pool — the piece that turn
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Workload Identity Pool Provider** -- an `iam.WorkloadIdentityPoolProvider` under the target pool, configured with exactly one issuer type (OIDC, AWS, SAML, or X.509), its attribute mapping, and its attribute condition
 
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### GCP Project
 
-- **A workload identity pool** for the provider to attach to. Provide the bare pool ID directly or reference a GcpWorkloadIdentityPool Cloud Resource via ValueFromRef.
+- **A workload identity pool** for the provider to attach to. Provide the bare pool ID directly or reference a GcpWorkloadIdentityPool Infra Component via ValueFromRef.
 - **The issuer's verification material** -- an OIDC issuer URI (or JWKS for private issuers), a 12-digit AWS account ID, SAML IdP metadata XML, or PEM trust anchors. All of it is public verification material, never a secret.
 
 ## Deploy
@@ -54,7 +54,7 @@ spec:
 planton apply -f gcp-workload-identity-pool-provider.yaml
 ```
 
-This attaches a GitHub Actions OIDC issuer to the `github-actions` pool, scoped so only workflows in the `acme` GitHub org can federate. A Stack Job tracks the provisioning in real time.
+This attaches a GitHub Actions OIDC issuer to the `github-actions` pool, scoped so only workflows in the `acme` GitHub org can federate. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,14 +87,14 @@ These are the most important decisions when configuring a provider. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpWorkloadIdentityPool** | `workloadIdentityPoolId` | `status.outputs.workload_identity_pool_id` |
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains values that downstream consumers use:
 
@@ -116,7 +116,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Workload Identity Pool**](/cloud-catalog/gcp-workload-identity-pool) -- the trust boundary this provider attaches to; its `workload_identity_pool_id` output feeds the pool field
-- [**GCP Service Account IAM Member**](/cloud-catalog/gcp-service-account-iam-member) -- grants the provider's federated principals impersonation of a service account (`roles/iam.workloadIdentityUser`)
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the identity federated workloads act as, keylessly
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the project that owns the pool and this provider
+- [**GCP Workload Identity Pool**](/infra-catalog/gcp-workload-identity-pool) -- the trust boundary this provider attaches to; its `workload_identity_pool_id` output feeds the pool field
+- [**GCP Service Account IAM Member**](/infra-catalog/gcp-service-account-iam-member) -- grants the provider's federated principals impersonation of a service account (`roles/iam.workloadIdentityUser`)
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the identity federated workloads act as, keylessly
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the project that owns the pool and this provider

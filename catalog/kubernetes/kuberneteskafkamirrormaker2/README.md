@@ -7,7 +7,7 @@ declares a MirrorMaker 2 deployment; KubernetesStrimziKafkaOperator
 installs the ENGINE that reconciles it, and must watch this
 namespace.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want a general-purpose Connect cluster** — MirrorMaker 2 IS
   Connect under the hood, but it is a dedicated replication engine
@@ -110,7 +110,7 @@ the source and checkpoint connectors of a mirror.
 - **`spec.rack` / `spec.metrics` / `spec.node_selector` /
   `spec.tolerations`**
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

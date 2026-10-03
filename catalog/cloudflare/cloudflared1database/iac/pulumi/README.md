@@ -10,7 +10,7 @@ This module implements the CloudflareD1Database resource using Pulumi's Go SDK a
 
 ```
 iac/pulumi/
-├── main.go              # Entrypoint - loads stack input and calls module
+├── main.go              # Entrypoint - loads IaC input and calls module
 ├── Pulumi.yaml          # Pulumi project configuration
 ├── Makefile            # Build and deployment targets
 ├── debug.sh            # Debug helper script
@@ -23,7 +23,7 @@ iac/pulumi/
 
 ## Inputs
 
-The module accepts a `CloudflareD1DatabaseStackInput` protobuf message containing:
+The module accepts a `CloudflareD1DatabaseIacInput` protobuf message containing:
 
 ### Provider Configuration
 
@@ -52,7 +52,7 @@ The CloudflareD1Database resource containing:
 
 ## Outputs
 
-The module exports the following stack outputs:
+The module exports the following outputs:
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -90,7 +90,7 @@ If `region` is unspecified or `cloudflare_d1_region_unspecified`, the field is o
 
 ### Via Planton CLI
 
-The typical usage is through the Planton CLI, which handles stack input creation and Pulumi execution:
+The typical usage is through the Planton CLI, which handles IaC input creation and Pulumi execution:
 
 ```bash
 planton apply -f database.yaml
@@ -105,8 +105,8 @@ For debugging or manual execution:
    export CLOUDFLARE_API_TOKEN="your-cloudflare-api-token"
    ```
 
-2. **Create Stack Input File**:
-   Create a `stack-input.json` file with the CloudflareD1DatabaseStackInput protobuf structure serialized to JSON.
+2. **Create IaC Input File**:
+   Create a `iac-input.json` file with the CloudflareD1DatabaseIacInput protobuf structure serialized to JSON.
 
 3. **Run Pulumi**:
    ```bash
@@ -127,7 +127,7 @@ This sets `PULUMI_LOG_LEVEL=debug` and runs `pulumi up` with detailed output.
 
 ### Locals Initialization
 
-The `initializeLocals` function copies the stack input into a `Locals` struct for easy access throughout the module:
+The `initializeLocals` function copies the IaC input into a `Locals` struct for easy access throughout the module:
 
 ```go
 type Locals struct {
@@ -141,7 +141,7 @@ type Locals struct {
 The module uses a shared Pulumi Cloudflare provider helper to instantiate the provider with credentials:
 
 ```go
-cloudflareProvider, err := pulumicloudflareprovider.Get(ctx, stackInput.ProviderConfig)
+cloudflareProvider, err := pulumicloudflareprovider.Get(ctx, iacInput.ProviderConfig)
 ```
 
 ### Database Resource Creation
@@ -152,7 +152,7 @@ The `database` function creates the `cloudflare.D1Database` resource:
 2. Optionally adds `PrimaryLocationHint` if region is specified
 3. Optionally adds `ReadReplication` if read_replication is specified
 4. Creates the resource with the Cloudflare provider
-5. Exports stack outputs
+5. Exports outputs
 
 ### Read Replication Handling
 
@@ -259,7 +259,7 @@ export CLOUDFLARE_API_TOKEN="your-token"
 For issues specific to this Pulumi module, check:
 1. Component tests pass: `go test ./v1/`
 2. Pulumi build succeeds: `make build`
-3. Stack input is valid: Validate against protobuf schema
+3. IaC input is valid: Validate against protobuf schema
 
 For general Cloudflare D1 questions, see [../../README.md](../../README.md).
 

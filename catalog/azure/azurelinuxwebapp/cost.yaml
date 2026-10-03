@@ -6,9 +6,9 @@
 # the instance-hour rate, and the plan bills those instances the same
 # whether one app or ten run on them. The app object itself adds no meter
 # of its own, so a dollar figure here would be a guess wearing a dollar
-# sign. Schema: finops/componentcostprofile/v1.
+# sign. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurelinuxwebapp
 spec:

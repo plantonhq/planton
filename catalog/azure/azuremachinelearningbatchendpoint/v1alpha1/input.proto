@@ -5,10 +5,10 @@ package dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1;
 import "catalog/azure/azuremachinelearningbatchendpoint/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureMachineLearningBatchEndpointStackInput is the input to the IaC
+// AzureMachineLearningBatchEndpointIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-message AzureMachineLearningBatchEndpointStackInput {
+message AzureMachineLearningBatchEndpointIacInput {
   // The batch endpoint resource to deploy.
   AzureMachineLearningBatchEndpoint target = 1;
 

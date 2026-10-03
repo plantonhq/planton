@@ -2,9 +2,9 @@
 
 ## Overview
 
-**KubernetesStorageClass** is a Planton component that creates and manages Kubernetes StorageClasses — the cluster's storage menu — as first-class, declaratively managed resources. A StorageClass names a provisioner (the CSI driver that creates volumes), the provisioner-specific parameters (disk type, IOPS, encryption, filesystem), and the lifecycle policies for the volumes it provisions (reclaim, binding timing, expandability). PersistentVolumeClaims then request the class by name.
+**KubernetesStorageClass** is a catalog kind that creates and manages Kubernetes StorageClasses — the cluster's storage menu — as first-class, declaratively managed resources. A StorageClass names a provisioner (the CSI driver that creates volumes), the provisioner-specific parameters (disk type, IOPS, encryption, filesystem), and the lifecycle policies for the volumes it provisions (reclaim, binding timing, expandability). PersistentVolumeClaims then request the class by name.
 
-The component covers the complete `storage.k8s.io/v1` StorageClass surface: provisioner, parameters, reclaim policy, volume binding mode, volume expansion, mount options, topology restrictions, and the default-class marker. There is nothing an upstream StorageClass can express that this spec cannot.
+The kind covers the complete `storage.k8s.io/v1` StorageClass surface: provisioner, parameters, reclaim policy, volume binding mode, volume expansion, mount options, topology restrictions, and the default-class marker. There is nothing an upstream StorageClass can express that this spec cannot.
 
 ## Purpose
 
@@ -57,7 +57,7 @@ Two structural facts shape everything about StorageClasses:
 - **`spec.is_default_class`**: Marks the cluster default (see above)
 - **`spec.labels`** / **`spec.annotations`**: Merged with standard Planton labels for tracking and governance. The default-class annotation is managed by `is_default_class` — set that field instead of adding the annotation here
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -94,7 +94,7 @@ Claims then request the class by name (`storage_class_name: {value: fast-ssd}`),
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Merge user labels and annotations with standard Planton tracking labels
 2. Render the default-class marker: `is_default_class: true` becomes the `storageclass.kubernetes.io/is-default-class: "true"` annotation

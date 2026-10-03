@@ -5,9 +5,9 @@ package dev.planton.digitalocean.digitaloceanvpcpeering.v1alpha1;
 import "catalog/digitalocean/digitaloceanvpcpeering/v1alpha1/api.proto";
 import "catalog/digitalocean/provider.proto";
 
-//digital-ocean-vpc-peering stack-input
-message DigitalOceanVpcPeeringStackInput {
-  //target cloud-resource
+//digital-ocean-vpc-peering iac-input
+message DigitalOceanVpcPeeringIacInput {
+  //target infra-component
   DigitalOceanVpcPeering target = 1;
   //provider-config
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;

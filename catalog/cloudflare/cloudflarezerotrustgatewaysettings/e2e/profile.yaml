@@ -1,5 +1,5 @@
 apiVersion: qa.planton.dev/v1
-kind: ComponentE2EProfile
+kind: CatalogKindE2EProfile
 metadata:
   name: cloudflarezerotrustgatewaysettings
 spec:
@@ -24,7 +24,7 @@ spec:
   # LIVE-PROVEN 2026-08-27: safe-surfaces on both engines, full lifecycle,
   # with the THREE-resource blind round-trip green at zero tolerances --
   # settings + logging as bare account-id singletons and the PAC file via
-  # the pacfile_ids keyed stack output. One wall measured and fixed at the
+  # the pacfile_ids keyed output. One wall measured and fixed at the
   # full bar: an omitted PAC-file slug gets a RANDOM server slug that is
   # replace-forcing, so every refreshed plan proposed recreating the file
   # -- both modules now derive a deterministic name-based slug when unset.

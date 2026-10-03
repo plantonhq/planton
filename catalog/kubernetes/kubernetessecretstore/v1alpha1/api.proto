@@ -16,7 +16,7 @@ message KubernetesSecretStore {
   string kind = 2 [(buf.validate.field).string.const = 'KubernetesSecretStore'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   KubernetesSecretStoreSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,6 +27,6 @@ message KubernetesSecretStore {
 
 //kubernetes-secret-store status.
 message KubernetesSecretStoreStatus {
-  //stack-outputs
-  KubernetesSecretStoreStackOutputs outputs = 1;
+  //outputs
+  KubernetesSecretStoreOutputs outputs = 1;
 }

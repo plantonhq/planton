@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for a Vertex AI schedule from 
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `schedule` |
-| `module/locals.go` | Stack input holder |
+| `module/locals.go` | IaC input holder |
 | `module/schedule.go` | Enables the API; maps the schedule, the notebook or pipeline request, and resolves a pipeline network's project number; exports the outputs |
 | `module/outputs.go` | Output key constants (`name`, `schedule_id`, `location`) |
 

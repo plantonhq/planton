@@ -6,7 +6,7 @@
 
 ## Summary
 
-The R2 backup/restore configuration on both Kubernetes Postgres components —
+The R2 backup/restore configuration on both Kubernetes Postgres kinds —
 `KubernetesPostgres` (per-database) and `KubernetesZalandoPostgresOperator`
 (cluster-wide) — is rebuilt to one symmetric, composable shape. The storage
 bucket is now a first-class `StringValueOrRef` (`bucket`) that can reference any
@@ -14,14 +14,14 @@ S3-compatible bucket resource's output, separated from an `object_prefix`. The
 modules compose the full WAL-G target — `s3://<bucket>/<object_prefix>/$(SCOPE)/$(PGVERSION)`
 — internally on both engines, so callers never type Zalando/WAL-G path internals.
 The duplicate per-direction R2-config messages are unified into a single
-credentials message per component.
+credentials message per kind.
 
 ## Problem Statement / Motivation
 
 The bucket was folded into a free-form S3 prefix string, so it could not be
 cross-referenced from a bucket resource, and callers had to hand-encode the
 operator's `$(SCOPE)/$(PGVERSION)` substitution. Backup and restore each defined
-their own identical R2-config message. The two sibling components diverged on the
+their own identical R2-config message. The two sibling kinds diverged on the
 same concept, which undercuts the goal of an agent learning one provider by
 reading another.
 
@@ -38,7 +38,7 @@ flowchart LR
   end
 ```
 
-### Canonical shape (both components)
+### Canonical shape (both kinds)
 
 - `bucket` — a bare `StringValueOrRef` (no `default_kind`): a literal name, or a
   `value_from` reference to any S3-compatible bucket output (for example a
@@ -46,7 +46,7 @@ flowchart LR
   set explicitly so no single provider is assumed.
 - `object_prefix` — the base path under the bucket; the module appends the
   per-cluster/per-version segments.
-- A single `*R2Credentials` message per component
+- A single `*R2Credentials` message per kind
   (`KubernetesPostgresR2Credentials`, `KubernetesZalandoPostgresOperatorR2Credentials`)
   with `cloudflare_account_id`, `access_key_id`, and `(sensitive)` `secret_access_key`.
 
@@ -104,7 +104,7 @@ Kubernetes Secret referenced via `secretKeyRef` (never plaintext).
 
 Authors and coding agents wire Postgres backups by referencing a bucket resource
 and an environment prefix; the operator-internal path layout is owned entirely by
-the modules. Both Kubernetes Postgres components now teach the same pattern.
+the modules. Both Kubernetes Postgres kinds now teach the same pattern.
 
 ---
 

@@ -19,7 +19,7 @@ func feature(spec *StripeEntitlementFeatureSpec) *StripeEntitlementFeature {
 	return &StripeEntitlementFeature{
 		ApiVersion: "stripe.planton.dev/v1alpha1",
 		Kind:       "StripeEntitlementFeature",
-		Metadata:   &shared.CloudResourceMetadata{Name: "api-access"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "api-access"},
 		Spec:       spec,
 	}
 }

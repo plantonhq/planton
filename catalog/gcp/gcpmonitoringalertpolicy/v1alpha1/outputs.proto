@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpmonitoringalertpolicy.v1alpha1;
 
 // Outputs produced after provisioning a Cloud Monitoring alert policy.
-message GcpMonitoringAlertPolicyStackOutputs {
+message GcpMonitoringAlertPolicyOutputs {
   // The server-assigned resource name of the policy.
   // Format: projects/{project}/alertPolicies/{policy_id}
   // The handle for cross-referencing the policy in dashboards, snooze

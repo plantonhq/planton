@@ -21,7 +21,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsplantonrunner
+    e2e-catalog-kind: awsplantonrunner
   annotations:
     planton.dev/e2e: "true"
     # The subnet's default route references the internet gateway fixture, so
@@ -58,7 +58,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsplantonrunner
+    e2e-catalog-kind: awsplantonrunner
   annotations:
     planton.dev/e2e: "true"
     # The subnet's default route references the internet gateway fixture, so

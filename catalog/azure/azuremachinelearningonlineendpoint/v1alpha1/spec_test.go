@@ -33,7 +33,7 @@ func validResource() *AzureMachineLearningOnlineEndpoint {
 	return &AzureMachineLearningOnlineEndpoint{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureMachineLearningOnlineEndpoint",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-ml-online-endpoint",
 		},
 		Spec: &AzureMachineLearningOnlineEndpointSpec{

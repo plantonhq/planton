@@ -49,14 +49,14 @@ planton pulumi up --manifest gateway-class.yaml --stack org/project/env
 | `parametersRef.namespace` | string | No | Namespace of the referent; set only for namespace-scoped resources |
 | `description` | string | No | Human-friendly description (max 64 characters) |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `gateway_class_name` | Name of the created GatewayClass (equals `metadata.name`). Reference this from `KubernetesGateway.spec.gateway_class_name`. |
 | `controller_name` | The controller managing this GatewayClass |
 
-## Related Components
+## Related Kinds
 
 - **KubernetesGatewayApiCrds** -- installs the Gateway API CRDs (prerequisite)
 - **KubernetesGateway** -- references this class via `gatewayClassName` to define listeners and entry points

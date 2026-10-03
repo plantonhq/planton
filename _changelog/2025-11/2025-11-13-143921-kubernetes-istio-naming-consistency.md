@@ -2,11 +2,11 @@
 
 **Date**: November 13, 2025  
 **Type**: Refactoring  
-**Components**: API Definitions, Cloud Resource Registry, Documentation, Code Generation, Pulumi CLI Integration
+**Components**: API Definitions, Catalog Kind Registry, Documentation, Code Generation, Pulumi CLI Integration
 
 ## Summary
 
-Renamed the `IstioKubernetes` resource to `KubernetesIstio` across all proto definitions, documentation, and implementation code to align with Planton's naming conventions for Kubernetes addon operators. This change follows the established pattern where Kubernetes addons use the format `Kubernetes{Technology}` rather than `{Technology}Kubernetes`, improving consistency with other recently refactored resources like `AltinityOperator`, `CertManager`, `ExternalDns`, and similar components. Additionally, the directory structure was renamed from `istiokubernetes` to `kubernetesistio` to match the new naming convention.
+Renamed the `IstioKubernetes` resource to `KubernetesIstio` across all proto definitions, documentation, and implementation code to align with Planton's naming conventions for Kubernetes addon operators. This change follows the established pattern where Kubernetes addons use the format `Kubernetes{Technology}` rather than `{Technology}Kubernetes`, improving consistency with other recently refactored resources like `AltinityOperator`, `CertManager`, `ExternalDns`, and similar kinds. Additionally, the directory structure was renamed from `istiokubernetes` to `kubernetesistio` to match the new naming convention.
 
 ## Problem Statement / Motivation
 
@@ -18,10 +18,10 @@ The Istio service mesh addon resource was originally named `IstioKubernetes` wit
 - **Directory Mismatch**: Having `istiokubernetes` as the directory name while moving to `KubernetesIstio` as the type name would create confusion
 - **Redundant Context**: The resource lives under `provider/kubernetes/addon/`, making the original naming feel out of place
 - **Verbose API Surface**: Users had to write `kind: IstioKubernetes` in manifests, which reads awkwardly compared to `kind: KubernetesIstio`
-- **Code Verbosity**: Proto message types like `IstioKubernetesSpec` and `IstioKubernetesStackInput` felt unnecessarily long
+- **Code Verbosity**: Proto message types like `IstioKubernetesSpec` and `IstioKubernetesIacInput` felt unnecessarily long
 - **Mixed Conventions**: Having both `{Technology}Kubernetes` and `Kubernetes{Technology}` patterns across addons created confusion about which pattern to follow for new resources
 
-The provider namespace (`dev.planton.provider.kubernetes.addon.kubernetesistio.v1`) now clearly indicates this is a Kubernetes component with a consistent naming structure.
+The provider namespace (`dev.planton.provider.kubernetes.addon.kubernetesistio.v1`) now clearly indicates this is a Kubernetes kind with a consistent naming structure.
 
 ## Solution / What's New
 
@@ -29,7 +29,7 @@ Performed a comprehensive rename from `IstioKubernetes` to `KubernetesIstio` acr
 
 1. **Directory Structure**: Renamed `istiokubernetes/` to `kubernetesistio/` to match the new type naming
 2. **Proto API Definitions**: Updated all message types, field references, and validation constraints
-3. **Cloud Resource Registry**: Modified the enum entry in `cloud_resource_kind.proto`
+3. **Catalog Kind Registry**: Modified the enum entry in `catalog_kind.proto`
 4. **Documentation**: Updated user-facing documentation and implementation guides
 5. **Implementation Code**: Modified Go code in Pulumi modules to use renamed types
 6. **Code Generation**: The codegen already had correct 1:1 mapping for the new directory name
@@ -61,7 +61,7 @@ All files and subdirectories were moved to reflect the new naming convention.
 
 ### Proto File Changes
 
-**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/catalogkind/catalog_kind.proto`
 
 ```protobuf
 // Before
@@ -94,7 +94,7 @@ message IstioKubernetes {
 }
 
 message IstioKubernetesStatus {
-  IstioKubernetesStackOutputs outputs = 1;
+  IstioKubernetesOutputs outputs = 1;
 }
 
 // After
@@ -107,7 +107,7 @@ message KubernetesIstio {
 }
 
 message KubernetesIstioStatus {
-  KubernetesIstioStackOutputs outputs = 1;
+  KubernetesIstioOutputs outputs = 1;
 }
 ```
 
@@ -123,13 +123,13 @@ message KubernetesIstioSpec { ... }
 message KubernetesIstioSpecContainer { ... }
 ```
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/kubernetesistio/v1/stack_input.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/kubernetesistio/v1/iac_input.proto`
 
 ```protobuf
 // Before
 package dev.planton.provider.kubernetes.addon.istiokubernetes.v1;
 
-message IstioKubernetesStackInput {
+message IstioKubernetesIacInput {
   IstioKubernetes target = 1;
   ...
 }
@@ -137,24 +137,24 @@ message IstioKubernetesStackInput {
 // After
 package dev.planton.provider.kubernetes.addon.kubernetesistio.v1;
 
-message KubernetesIstioStackInput {
+message KubernetesIstioIacInput {
   KubernetesIstio target = 1;
   ...
 }
 ```
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/kubernetesistio/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/kubernetesistio/v1/outputs.proto`
 
 Package and message names updated:
 
 ```protobuf
 // Before
 package dev.planton.provider.kubernetes.addon.istiokubernetes.v1;
-message IstioKubernetesStackOutputs { ... }
+message IstioKubernetesOutputs { ... }
 
 // After
 package dev.planton.provider.kubernetes.addon.kubernetesistio.v1;
-message KubernetesIstioStackOutputs { ... }
+message KubernetesIstioOutputs { ... }
 ```
 
 ### Implementation Code Changes
@@ -167,14 +167,14 @@ import (
   istiokubernetesv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/istiokubernetes/v1"
 )
 
-stackInput := &istiokubernetesv1.IstioKubernetesStackInput{}
+iacInput := &istiokubernetesv1.IstioKubernetesIacInput{}
 
 // After
 import (
   kubernetesistiov1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/kubernetesistio/v1"
 )
 
-stackInput := &kubernetesistiov1.KubernetesIstioStackInput{}
+iacInput := &kubernetesistiov1.KubernetesIstioIacInput{}
 ```
 
 **File**: `apis/dev/planton/provider/kubernetes/addon/kubernetesistio/v1/iac/pulumi/module/main.go`
@@ -185,19 +185,19 @@ import (
   istiokubernetesv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/istiokubernetes/v1"
 )
 
-func Resources(ctx *pulumi.Context, in *istiokubernetesv1.IstioKubernetesStackInput) error
+func Resources(ctx *pulumi.Context, in *istiokubernetesv1.IstioKubernetesIacInput) error
 
 // After
 import (
   kubernetesistiov1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/kubernetesistio/v1"
 )
 
-func Resources(ctx *pulumi.Context, in *kubernetesistiov1.KubernetesIstioStackInput) error
+func Resources(ctx *pulumi.Context, in *kubernetesistiov1.KubernetesIstioIacInput) error
 ```
 
 ### Code Generation Updates
 
-**File**: `pkg/crkreflect/codegen/main.go`
+**File**: `pkg/catalogkindreflect/codegen/main.go`
 
 The code generator already had a 1:1 mapping that worked correctly:
 
@@ -245,7 +245,7 @@ Updated descriptive text:
 ### Build Process
 
 1. **Proto Generation**: Ran `make protos` to regenerate Go stubs from updated proto files
-2. **Kind Map Regeneration**: Ran `make generate-cloud-resource-kind-map` to update the cloud resource kind mapping
+2. **Kind Map Regeneration**: Ran `make generate-catalog-kind-map` to update the catalog kind mapping
 3. **Gazelle Update**: Ran `./bazelw run //:gazelle` to update BUILD.bazel files
 4. **Compilation Verification**: Successfully compiled all affected Go packages
 5. **Linter Validation**: Confirmed no linter errors in modified proto or Go files
@@ -263,8 +263,8 @@ kind: KubernetesIstio  # vs. kind: IstioKubernetes
 
 Proto message names are now more concise and follow a consistent pattern:
 - `KubernetesIstioSpec` (was `IstioKubernetesSpec`)
-- `KubernetesIstioStackInput` (was `IstioKubernetesStackInput`)
-- `KubernetesIstioStackOutputs` (was `IstioKubernetesStackOutputs`)
+- `KubernetesIstioIacInput` (was `IstioKubernetesIacInput`)
+- `KubernetesIstioOutputs` (was `IstioKubernetesOutputs`)
 
 ### Naming Consistency
 
@@ -349,25 +349,25 @@ Future work should evaluate:
 ## Files Modified
 
 **Proto Definitions** (5 files):
-- `cloud_resource_kind.proto` - Enum entry
+- `catalog_kind.proto` - Enum entry
 - `api.proto` - Main API message types
 - `spec.proto` - Spec and container message types (already had correct naming for spec messages)
-- `stack_input.proto` - Stack input message type
-- `stack_outputs.proto` - Stack outputs message type (already had correct naming)
+- `iac_input.proto` - IaC input message type
+- `outputs.proto` - Outputs message type (already had correct naming)
 
 **Implementation** (2 files):
-- `iac/pulumi/main.go` - Stack input type reference and import path
+- `iac/pulumi/main.go` - IaC input type reference and import path
 - `iac/pulumi/module/main.go` - Function signature and import path
 
 **Documentation** (1 file):
 - `docs/README.md` - All manifest examples and API references
 
 **Code Generation** (1 file):
-- `pkg/crkreflect/codegen/main.go` - Already had correct 1:1 mapping
+- `pkg/catalogkindreflect/codegen/main.go` - Already had correct 1:1 mapping
 
 **Generated Files**:
 - `*.pb.go` files (auto-regenerated from proto definitions)
-- `pkg/crkreflect/kind_map_gen.go` (auto-regenerated via codegen)
+- `pkg/catalogkindreflect/kind_map_gen.go` (auto-regenerated via codegen)
 - `BUILD.bazel` files (auto-updated via Gazelle)
 
 **Directory Rename**:

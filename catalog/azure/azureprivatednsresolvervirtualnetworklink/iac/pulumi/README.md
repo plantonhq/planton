@@ -8,7 +8,7 @@ Creates the virtual network link that makes a DNS forwarding ruleset take effect
 
 - `privatedns.ResolverVirtualNetworkLink` -- the link (a child of the forwarding ruleset)
 
-## Stack Outputs
+## Outputs
 
 - `virtual_network_link_id` -- the link's ARM resource ID
 - `virtual_network_link_name` -- the link's name

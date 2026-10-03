@@ -38,4 +38,4 @@ module "vpc" {
 
 ## Outputs
 
-Exactly the kind's stack-output contract, identical to the Pulumi module: `vpc_id`, `ip_range`, `urn`.
+Exactly the kind's output contract, identical to the Pulumi module: `vpc_id`, `ip_range`, `urn`.

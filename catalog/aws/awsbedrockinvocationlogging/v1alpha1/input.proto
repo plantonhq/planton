@@ -5,9 +5,9 @@ package dev.planton.aws.awsbedrockinvocationlogging.v1alpha1;
 import "catalog/aws/awsbedrockinvocationlogging/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsBedrockInvocationLoggingStackInput is the input for the IaC
+// AwsBedrockInvocationLoggingIacInput is the input for the IaC
 // modules that manage the region's Bedrock invocation logging.
-message AwsBedrockInvocationLoggingStackInput {
+message AwsBedrockInvocationLoggingIacInput {
   // target is the AwsBedrockInvocationLogging resource to deploy.
   AwsBedrockInvocationLogging target = 1;
   // provider_config contains the AWS provider credentials and configuration.

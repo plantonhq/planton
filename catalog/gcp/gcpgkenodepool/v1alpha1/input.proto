@@ -6,8 +6,8 @@ import "catalog/gcp/gcpgkenodepool/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
 //input for gcp-gke-node-pool stack
-message GcpGkeNodePoolStackInput {
-  //target cloud-resource
+message GcpGkeNodePoolIacInput {
+  //target infra-component
   GcpGkeNodePool target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

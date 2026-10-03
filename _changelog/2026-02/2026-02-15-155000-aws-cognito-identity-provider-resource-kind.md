@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added AwsCognitoIdentityProvider (R12a) as a new AWS resource kind for managing external identity providers (Google, Facebook, Login with Amazon, Sign in with Apple, OIDC, SAML) federated into Amazon Cognito User Pools. This is the fifteenth new AWS resource kind in the cloud provider expansion project, and the first Planton component to use a proto enum for provider-specific type safety and strongly typed oneof configuration messages.
+Added AwsCognitoIdentityProvider (R12a) as a new AWS resource kind for managing external identity providers (Google, Facebook, Login with Amazon, Sign in with Apple, OIDC, SAML) federated into Amazon Cognito User Pools. This is the fifteenth new AWS resource kind in the cloud provider expansion project, and the first Planton kind to use a proto enum for provider-specific type safety and strongly typed oneof configuration messages.
 
 ## Problem Statement / Motivation
 
-The AwsCognitoUserPool (R12) was completed earlier in this session, but identity providers were deliberately deferred to a separate component because they have independent lifecycles (ForceNew on name and type, can be added/removed without affecting the pool). Users configuring federated sign-in need a dedicated resource to manage the external IdP registration, attribute mapping, and provider-specific OAuth/OIDC/SAML configuration.
+The AwsCognitoUserPool (R12) was completed earlier in this session, but identity providers were deliberately deferred to a separate kind because they have independent lifecycles (ForceNew on name and type, can be added/removed without affecting the pool). Users configuring federated sign-in need a dedicated resource to manage the external IdP registration, attribute mapping, and provider-specific OAuth/OIDC/SAML configuration.
 
 ### Pain Points
 
@@ -21,7 +21,7 @@ The AwsCognitoUserPool (R12) was completed earlier in this session, but identity
 
 ## Solution / What's New
 
-A complete deployment component with strongly typed provider configuration instead of the flat map used by Terraform/Pulumi. Each provider type has its own proto message with required/optional field annotations, giving users auto-complete, validation, and self-documenting APIs.
+A complete catalog kind with strongly typed provider configuration instead of the flat map used by Terraform/Pulumi. Each provider type has its own proto message with required/optional field annotations, giving users auto-complete, validation, and self-documenting APIs.
 
 ### Key Features
 
@@ -75,11 +75,11 @@ The Pulumi module's `buildProviderDetails()` function converts each typed messag
 
 - **Users**: Can now configure social login and enterprise SSO through Planton with type-safe manifests
 - **Infra charts**: Identity providers can be composed with User Pools using StringValueOrRef for the user_pool_id
-- **Pattern**: First component to use a proto enum for provider-specific values, establishing a precedent for future typed-config patterns
+- **Pattern**: First kind to use a proto enum for provider-specific values, establishing a precedent for future typed-config patterns
 
 ## Related Work
 
-- `2026-02-15-150832-aws-cognito-user-pool-resource-kind.md` -- Parent component (R12)
+- `2026-02-15-150832-aws-cognito-user-pool-resource-kind.md` -- Parent kind (R12)
 - AwsEventBridgeRule -- Child resource pattern reference
 - Cloud provider expansion project: 15 of ~32 AWS resource kinds complete
 

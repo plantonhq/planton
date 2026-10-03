@@ -10,15 +10,15 @@ import (
 // Resources is the module entrypoint.
 func Resources(
 	ctx *pulumi.Context,
-	stackInput *digitaloceanfirewallv1alpha1.DigitalOceanFirewallStackInput,
+	iacInput *digitaloceanfirewallv1alpha1.DigitalOceanFirewallIacInput,
 ) error {
 	// 1. Setup locals.
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// 2. Instantiate provider from credential.
 	digitalOceanProvider, err := pulumidigitaloceanprovider.Get(
 		ctx,
-		stackInput.ProviderConfig,
+		iacInput.ProviderConfig,
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup digitalocean provider")

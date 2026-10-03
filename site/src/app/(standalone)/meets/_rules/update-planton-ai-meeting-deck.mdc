@@ -52,7 +52,7 @@ When this rule is triggered, I will:
 
 - **Content updates** - Text, data, messaging changes
 - **Structural updates** - Add/remove/reorder slides
-- **Visual updates** - Styling, layout, component changes
+- **Visual updates** - Styling, layout, kind changes
 - **Notes updates** - Presenter notes refinements
 
 ---
@@ -139,7 +139,7 @@ I will create a changelog entry documenting all changes made during the session.
 
 **Date:** [Current date]
 **Type:** Enhancement
-**Components:** Meets Micro-App, [Guest Slug] Presentation
+**Kinds:** Meets Micro-App, [Guest Slug] Presentation
 
 ## Summary
 
@@ -190,12 +190,12 @@ I will create a changelog entry documenting all changes made during the session.
 Updating text, data, or messaging in existing slides:
 
 1. Identify which slides need content changes
-2. Update the slide component files
+2. Update the slide kind files
 3. Review and iterate
 
 ### B. Adding New Slides
 
-1. Create new slide component file (e.g., `S13NewTopic.tsx`)
+1. Create new slide kind file (e.g., `S13NewTopic.tsx`)
 2. Add import to `config.ts`
 3. Insert into slides array at correct position
 4. Add presenter notes
@@ -217,7 +217,7 @@ Updating text, data, or messaging in existing slides:
 ### E. Presenter Notes Only
 
 1. Update `presenterNotes` arrays in `config.ts`
-2. No slide component changes needed
+2. No slide kind changes needed
 3. Test with 'N' key in browser
 
 ---

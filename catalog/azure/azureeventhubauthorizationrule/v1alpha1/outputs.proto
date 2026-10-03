@@ -4,10 +4,10 @@ package dev.planton.azure.azureeventhubauthorizationrule.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureEventHubAuthorizationRuleStackOutputs** captures the outputs of
+// **AzureEventHubAuthorizationRuleOutputs** captures the outputs of
 // provisioning a SAS authorization rule. Both scope variants expose
 // identical credential faces.
-message AzureEventHubAuthorizationRuleStackOutputs {
+message AzureEventHubAuthorizationRuleOutputs {
   // The Azure Resource Manager ID of the authorization rule.
   // Namespace scope: .../namespaces/{ns}/authorizationRules/{name}
   // Hub scope: .../namespaces/{ns}/eventhubs/{hub}/authorizationRules/{name}

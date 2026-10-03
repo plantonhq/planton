@@ -59,7 +59,7 @@ func tunnelTypeToArm(t azureloadbalancerv1alpha1.AzureLoadBalancerTunnelType) st
 }
 
 // optionalInt32 resolves an optional int32 field to its value or, when
-// unset, the proto-declared default. Stack-input paths that bypass the
+// unset, the proto-declared default. IaC-input paths that bypass the
 // manifest loader deliver unset optionals as nil, and sending a bare
 // getter's zero would fail the provider's range validations (e.g. a
 // probe interval must be >= 5) -- the fallback keeps unset meaning
@@ -72,12 +72,12 @@ func optionalInt32(v *int32, def int32) int32 {
 	return def
 }
 
-func Resources(ctx *pulumi.Context, stackInput *azureloadbalancerv1alpha1.AzureLoadBalancerStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureloadbalancerv1alpha1.AzureLoadBalancerIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -243,7 +243,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureloadbalancerv1alpha1.AzureL
 
 	// Health probes. probe_threshold is the flap dampener: consecutive
 	// successes required before a recovered instance is re-admitted.
-	// The optional dials are presence-guarded: on stack-input paths that
+	// The optional dials are presence-guarded: on iac-input paths that
 	// bypass the manifest loader an unset field arrives as nil, and a
 	// bare getter's zero would fail the provider's range validation --
 	// the fallbacks are the proto defaults, matching the Terraform
@@ -410,7 +410,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureloadbalancerv1alpha1.AzureL
 		}
 	}
 
-	// Export stack outputs. The maps keyed by sub-resource name are the
+	// Export outputs. The maps keyed by sub-resource name are the
 	// composition seams members reference (backend_pool_ids for pool
 	// membership, nat_rule_ids for NIC NAT-rule associations, probe_ids
 	// for a scale set's rolling-upgrade health probe).

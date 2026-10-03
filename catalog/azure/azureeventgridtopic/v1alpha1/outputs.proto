@@ -4,9 +4,9 @@ package dev.planton.azure.azureeventgridtopic.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureEventgridTopicStackOutputs** captures the outputs from
+// **AzureEventgridTopicOutputs** captures the outputs from
 // provisioning an Azure Event Grid topic.
-message AzureEventgridTopicStackOutputs {
+message AzureEventgridTopicOutputs {
   // The topic's Azure Resource Manager ID.
   string topic_id = 1;
 

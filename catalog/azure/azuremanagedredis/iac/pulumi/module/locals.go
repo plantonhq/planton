@@ -5,7 +5,7 @@ import (
 
 	azuremanagedredisv1alpha1 "github.com/plantonhq/planton/catalog/azure/azuremanagedredis/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -102,11 +102,11 @@ var identityTypeStrings = map[azuremanagedredisv1alpha1.AzureManagedRedisIdentit
 	azuremanagedredisv1alpha1.AzureManagedRedisIdentityType_SYSTEM_AND_USER_ASSIGNED: "SystemAssigned, UserAssigned",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuremanagedredisv1alpha1.AzureManagedRedisStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuremanagedredisv1alpha1.AzureManagedRedisIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureManagedRedis = stackInput.Target
-	target := stackInput.Target
+	locals.AzureManagedRedis = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -121,7 +121,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azuremanagedredisv1alpha1
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureManagedRedis.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureManagedRedis.String()),
 	}
 
 	if target.Metadata.Id != "" {

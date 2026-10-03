@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awsserverlesselasticache.v1alpha1;
 
-// AwsServerlessElasticacheStackOutputs captures observable identifiers and
+// AwsServerlessElasticacheOutputs captures observable identifiers and
 // endpoints from a provisioned ElastiCache Serverless cache. These outputs
 // are used by downstream resources to wire dependencies via StringValueOrRef.
-message AwsServerlessElasticacheStackOutputs {
+message AwsServerlessElasticacheOutputs {
   // The Amazon Resource Name of the serverless cache. Used in IAM policies
   // and cross-service permissions.
   string arn = 1;

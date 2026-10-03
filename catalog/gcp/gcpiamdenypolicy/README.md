@@ -4,7 +4,7 @@ Creates an IAM deny policy — rules that BLOCK principals from using specific p
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Deny Policy** -- a `google_iam_deny_policy` attached to the configured parent, carrying the deny rules (denied principals, denied permissions, exceptions, and optional conditions)
 
@@ -79,7 +79,7 @@ planton apply -f deny-policy.yaml
 - **At most one parent arm**: set at most one of `parent.projectId`, `parent.folderId`, `parent.organizationId`; all empty means the provider's default project.
 - **Every rule needs a `denyRule`** body; a `denialCondition`, when present, needs an `expression`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -107,7 +107,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpProject](/docs/catalog/gcp/gcpproject) — provides a project attach point via ValueFromRef
 - [GcpProjectIamMember](/docs/catalog/gcp/gcpprojectiammember) — the allow-policy side; deny policies override whatever it grants

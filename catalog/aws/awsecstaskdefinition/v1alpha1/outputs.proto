@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awsecstaskdefinition.v1alpha1;
 
-// AwsEcsTaskDefinitionStackOutputs captures the observable outputs of a
+// AwsEcsTaskDefinitionOutputs captures the observable outputs of a
 // registered task definition revision, for ECS services and scheduled tasks
 // to reference.
-message AwsEcsTaskDefinitionStackOutputs {
+message AwsEcsTaskDefinitionOutputs {
   // The full ARN of the registered revision, including the revision number
   // (e.g. "arn:aws:ecs:us-west-2:123456789012:task-definition/api:7"). The
   // primary handle an ECS service references via

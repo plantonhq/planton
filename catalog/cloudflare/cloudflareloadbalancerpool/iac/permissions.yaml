@@ -3,7 +3,7 @@
 # modules. Cloudflare authenticates with a bearer API token assembled from
 # named permission groups; every group entry is `derived` (static analysis
 # of the module sources, cited in notes) until the live capture lane
-# upgrades it to `proven`. Schema: iac/componentpermissions/v1.
+# upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # The component's catalog.md states the requirement in prose ("a Cloudflare
 # API token that has Load Balancing edit access") -- migrated here
@@ -11,7 +11,7 @@
 # (the zone-scoped "Load Balancers Write" group governs the zone-attached
 # load balancers, not this account-level resource).
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: cloudflareloadbalancerpool
 spec:

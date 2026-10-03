@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.aws.awselasticip.v1alpha1;
 
-// AwsElasticIpStackOutputs captures observable identifiers from a provisioned Elastic IP.
+// AwsElasticIpOutputs captures observable identifiers from a provisioned Elastic IP.
 //
 // The primary output is `allocation_id`, which downstream resources use to wire
 // dependencies via StringValueOrRef. For example, an AwsNlb uses
 // the allocation_id in its subnet_mapping to bind a static public IP to the NLB.
-message AwsElasticIpStackOutputs {
+message AwsElasticIpOutputs {
   // The allocation ID of the Elastic IP (e.g., "eipalloc-0123456789abcdef0").
   // This is the primary identifier used to reference the EIP in other AWS
   // resources such as NLB subnet mappings, NAT Gateways, and EIP associations.

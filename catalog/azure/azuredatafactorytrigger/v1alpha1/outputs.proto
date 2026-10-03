@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azuredatafactorytrigger.v1alpha1;
 
-// **AzureDataFactoryTriggerStackOutputs** captures the outputs from
+// **AzureDataFactoryTriggerOutputs** captures the outputs from
 // provisioning an Azure Data Factory trigger.
-message AzureDataFactoryTriggerStackOutputs {
+message AzureDataFactoryTriggerOutputs {
   // The trigger's Azure Resource Manager ID
   // ({factory_id}/triggers/{name}) -- the same ID shape for all four
   // trigger types.

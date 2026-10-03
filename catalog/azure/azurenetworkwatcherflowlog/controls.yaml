@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: azurenetworkwatcherflowlog
 spec:
@@ -41,7 +41,7 @@ spec:
       notes: The component itself enforces no end-user sign-in -- it packages no human sign-in surface; any credentials it carries are workload or administrative access, whose posture rbac and workload-identity carry.
     - control_id: audit-logging
       status: not_applicable
-      notes: "This component IS an audit recorder -- for the NETWORK layer: who talked to whom, on which ports, allowed or denied. Its own configuration changes land in the Azure Activity Log automatically. Neither is a toggle here; the one honesty worth stating is that flow logging observes traffic, it never controls it."
+      notes: "This kind IS an audit recorder -- for the NETWORK layer: who talked to whom, on which ports, allowed or denied. Its own configuration changes land in the Azure Activity Log automatically. Neither is a toggle here; the one honesty worth stating is that flow logging observes traffic, it never controls it."
     - control_id: monitoring-integration
       status: configurable
       field_path: traffic_analytics

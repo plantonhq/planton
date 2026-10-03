@@ -27,7 +27,7 @@ func validToken(spec *CloudflareZeroTrustAccessServiceTokenSpec) *CloudflareZero
 	return &CloudflareZeroTrustAccessServiceToken{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZeroTrustAccessServiceToken",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-service-token",
 		},
 		Spec: spec,

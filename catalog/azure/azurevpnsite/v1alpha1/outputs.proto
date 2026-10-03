@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurevpnsite.v1alpha1;
 
-// **AzureVpnSiteStackOutputs** captures the outputs of provisioning a
+// **AzureVpnSiteOutputs** captures the outputs of provisioning a
 // VPN site.
-message AzureVpnSiteStackOutputs {
+message AzureVpnSiteOutputs {
   // The Azure Resource Manager ID of the VPN site -- what a
   // connection references as its remote_vpn_site_id.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/vpnSites/{name}

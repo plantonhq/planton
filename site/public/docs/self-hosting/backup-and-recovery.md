@@ -16,7 +16,7 @@ A self-hosted Planton is, at bottom, one PostgreSQL database -- and its bundled 
 
 ## What is in the backup, and what is not
 
-**In it:** everything the platform's database holds. After a restore, the organizations are there, the environments and their cloud resources are there, the deployment history is there, and people sign in with the passwords they had, because the identity realm is in the same database.
+**In it:** everything the platform's database holds. After a restore, the organizations are there, the environments and their infra components are there, the deployment history is there, and people sign in with the passwords they had, because the identity realm is in the same database.
 
 **Also in it:** the secrets manager. The bundled vault stores its data in that same database, so the credentials behind your cloud connections, your config secrets, and the platform's signing keys come back with the records. Keyless cloud connections keep working after a restore because the platform's signing key is the same key.
 

@@ -4,7 +4,7 @@ Creates a Compute Engine Managed Instance Group — a self-healing, optionally a
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Instance template** -- the immutable VM shape (machine type, disks, networking, identity, scheduling); every template change rotates to a fresh template natively
 - **Instance group manager** -- the fleet controller: size, canary versions, rolling updates, auto-healing, stateful disks/IPs, standby pools
@@ -76,7 +76,7 @@ spec:
 planton apply -f mig.yaml
 ```
 
-This creates a regional fleet of e2-small Debian 12 VMs scaling between 2 and 10 replicas on a 60% CPU target, rolled proactively with a three-instance surge on every template change. A Stack Job tracks the provisioning in real time.
+This creates a regional fleet of e2-small Debian 12 VMs scaling between 2 and 10 replicas on a 60% CPU target, rolled proactively with a three-instance surge on every template change. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -122,7 +122,7 @@ These are the most important decisions when configuring a managed instance group
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -136,9 +136,9 @@ These are the most important decisions when configuring a managed instance group
 | **GcpComputeDisk** (optional) | `template.disks[].source`, `perInstanceConfigs[].preservedState.disks[].source` | `status.outputs.self_link` |
 | **GcpAddress** (optional) | `perInstanceConfigs[].preservedState.externalIps[].address` | `status.outputs.address` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -160,9 +160,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Backend Service**](/cloud-catalog/gcp-backend-service) -- consumes the `instance_group` output as a backend
-- [**GCP Health Check**](/cloud-catalog/gcp-health-check) -- drives auto-healing and LB health
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) / [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- the fleet's network home
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the VMs' workload identity
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- CMEK for the fleet's disks
-- [**GCP Compute Instance**](/cloud-catalog/gcp-compute-instance) -- the single-VM sibling for pets rather than cattle
+- [**GCP Backend Service**](/infra-catalog/gcp-backend-service) -- consumes the `instance_group` output as a backend
+- [**GCP Health Check**](/infra-catalog/gcp-health-check) -- drives auto-healing and LB health
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) / [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- the fleet's network home
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the VMs' workload identity
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- CMEK for the fleet's disks
+- [**GCP Compute Instance**](/infra-catalog/gcp-compute-instance) -- the single-VM sibling for pets rather than cattle

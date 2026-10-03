@@ -7,9 +7,9 @@
 # footprint is the plugin replicas. The sidecars the plugin injects into
 # PostgreSQL instance pods, and the PostgreSQL clusters themselves, reserve
 # their capacity on their KubernetesPostgres resources -- never here.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetescnpgbarmancloudplugin
 spec:

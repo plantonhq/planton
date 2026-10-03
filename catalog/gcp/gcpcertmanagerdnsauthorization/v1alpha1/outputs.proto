@@ -4,7 +4,7 @@ package dev.planton.gcp.gcpcertmanagerdnsauthorization.v1alpha1;
 
 // Outputs produced after provisioning a Certificate Manager DNS
 // authorization.
-message GcpCertManagerDnsAuthorizationStackOutputs {
+message GcpCertManagerDnsAuthorizationOutputs {
   // Fully-qualified resource ID of the authorization
   // (projects/{project}/locations/{location}/dnsAuthorizations/{name}).
   // This is the exact value a GcpCertManagerCert's dns_authorizations list

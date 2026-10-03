@@ -4,7 +4,7 @@ Creates an IAM deny policy — rules that BLOCK principals from using specific p
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Deny Policy** -- a `google_iam_deny_policy` attached to the configured parent, carrying the deny rules (denied principals, denied permissions, exceptions, and optional tag-based conditions)
 
@@ -56,7 +56,7 @@ spec:
 planton apply -f deny-policy.yaml
 ```
 
-This blocks secret-version access for everyone in the provider's default project except the break-glass service account — no role grant can override it, and `PREVENT` makes the guardrail fail destroys instead of silently vanishing. A Stack Job tracks the provisioning in real time.
+This blocks secret-version access for everyone in the provider's default project except the break-glass service account — no role grant can override it, and `PREVENT` makes the guardrail fail destroys instead of silently vanishing. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -88,16 +88,16 @@ These are the most important decisions when configuring a deny policy. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `parent.projectId` | `status.outputs.project_id` |
 | **GcpFolder** (optional) | `parent.folderId` | `status.outputs.folder_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -114,6 +114,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides a project attach point
-- [**GCP Project IAM Member**](/cloud-catalog/gcp-project-iam-member) -- the allow side of IAM; deny policies override its grants
-- [**GCP Secret Manager Secret**](/cloud-catalog/gcp-secret-manager-secret) -- the break-glass secrets deny policies typically guard
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides a project attach point
+- [**GCP Project IAM Member**](/infra-catalog/gcp-project-iam-member) -- the allow side of IAM; deny policies override its grants
+- [**GCP Secret Manager Secret**](/infra-catalog/gcp-secret-manager-secret) -- the break-glass secrets deny policies typically guard

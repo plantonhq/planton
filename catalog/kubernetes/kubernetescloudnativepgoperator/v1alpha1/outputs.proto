@@ -3,13 +3,13 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetescloudnativepgoperator.v1alpha1;
 
 /**
- * **KubernetesCloudNativePgOperatorStackOutputs** — the composition handles
+ * **KubernetesCloudNativePgOperatorOutputs** — the composition handles
  * a deployed CloudNativePG operator exports. The operator has no
  * per-database surface of its own; KubernetesPostgres resources compose
  * against the CRDs it installs, so the handles here identify the
  * installation rather than any workload.
  */
-message KubernetesCloudNativePgOperatorStackOutputs {
+message KubernetesCloudNativePgOperatorOutputs {
   // Namespace the operator runs in. The Barman Cloud plugin
   // (KubernetesCnpgBarmanCloudPlugin) must be installed into this same
   // namespace -- reference this output from its `namespace` field.

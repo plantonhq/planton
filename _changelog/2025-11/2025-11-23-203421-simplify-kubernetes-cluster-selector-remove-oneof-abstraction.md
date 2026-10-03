@@ -17,7 +17,7 @@ The original design used a `KubernetesAddonTargetCluster` wrapper message with a
 message KubernetesAddonTargetCluster {
   oneof credential_source {
     string kubernetes_credential_id = 1;
-    KubernetesClusterCloudResourceSelector kubernetes_cluster_selector = 2;
+    KubernetesClusterInfraComponentSelector kubernetes_cluster_selector = 2;
   }
 }
 ```
@@ -25,7 +25,7 @@ message KubernetesAddonTargetCluster {
 ### Pain Points
 
 - **Over-engineered**: The `oneof` abstraction added complexity without providing meaningful value
-- **Confusing naming**: Two similar names (`KubernetesClusterCloudResourceSelector` vs `KubernetesClusterSelector`) caused confusion
+- **Confusing naming**: Two similar names (`KubernetesClusterInfraComponentSelector` vs `KubernetesClusterSelector`) caused confusion
 - **Direct selection sufficient**: In practice, direct cluster selection via kind and name is all that's needed
 - **Incorrect validations**: The enum validation contained wrong values (615, 218) that didn't match actual cluster resource kinds
 - **Missing support**: Civo Kubernetes clusters were not included in supported cluster types
@@ -40,7 +40,7 @@ Simplified the API by using `KubernetesClusterSelector` directly as the target c
 // Simplified - no wrapper, direct usage
 message KubernetesClusterSelector {
   // Can be one of the supported kubernetes cluster kinds
-  dev.planton.shared.cloudresourcekind.CloudResourceKind cluster_kind = 1 [(buf.validate.field).enum = {
+  dev.planton.shared.catalogkind.CatalogKind cluster_kind = 1 [(buf.validate.field).enum = {
     in: [
       400,  //AzureAksCluster
       207,  //AwsEksCluster
@@ -62,7 +62,7 @@ message KubernetesClusterSelector {
    - AWS: 207 (`AwsEksCluster`) instead of 218 (`AwsIamUser`)
    - GCP: 607 (`GcpGkeCluster`) instead of 615 (`GcpGkeWorkloadIdentityBinding`)
 3. **Added Civo**: Included 1507 (`CivoKubernetesCluster`) in supported cluster kinds
-4. **Cleaner naming**: Renamed `KubernetesClusterCloudResourceSelector` → `KubernetesClusterSelector`
+4. **Cleaner naming**: Renamed `KubernetesClusterInfraComponentSelector` → `KubernetesClusterSelector`
 
 ## Implementation Details
 
@@ -77,14 +77,14 @@ Removed the `KubernetesAddonTargetCluster` message entirely and updated `Kuberne
 -message KubernetesAddonTargetCluster {
 -  oneof credential_source {
 -    string kubernetes_credential_id = 1;
--    KubernetesClusterCloudResourceSelector kubernetes_cluster_selector = 2;
+-    KubernetesClusterInfraComponentSelector kubernetes_cluster_selector = 2;
 -  }
 -}
 
  // **KubernetesClusterSelector** defines a selector for a Kubernetes cluster in the same environment as the addon.
  message KubernetesClusterSelector {
 -  //can be either gcp-gke-cluster-core
-   dev.planton.shared.cloudresourcekind.CloudResourceKind cluster_kind = 1 [(buf.validate.field).enum = {
+   dev.planton.shared.catalogkind.CatalogKind cluster_kind = 1 [(buf.validate.field).enum = {
      in: [
 -      400, //AzureAksCluster
 -      615, //GcpGkeClusterCore
@@ -144,13 +144,13 @@ spec = &KubernetesAltinityOperatorSpec{
 ```go
 spec = &KubernetesAltinityOperatorSpec{
     TargetCluster: &kubernetes.KubernetesClusterSelector{
-        ClusterKind: cloudresourcekind.CloudResourceKind_GcpGkeCluster,
+        ClusterKind: catalogkind.CatalogKind_GcpGkeCluster,
         ClusterName: "my-k8s-cluster",
     },
 }
 ```
 
-All 9 test files now import and use `cloudresourcekind.CloudResourceKind_GcpGkeCluster` instead of hardcoded `615`.
+All 9 test files now import and use `catalogkind.CatalogKind_GcpGkeCluster` instead of hardcoded `615`.
 
 ## Benefits
 
@@ -167,7 +167,7 @@ All 9 test files now import and use `cloudresourcekind.CloudResourceKind_GcpGkeC
 
 ### Better Test Code
 
-- **More readable**: `CloudResourceKind_GcpGkeCluster` is self-documenting vs magic number `615`
+- **More readable**: `CatalogKind_GcpGkeCluster` is self-documenting vs magic number `615`
 - **Type-safe**: IDE autocomplete and compile-time checking for enum values
 - **Less error-prone**: No risk of typos in numeric values
 
@@ -197,7 +197,7 @@ This is a **breaking change** for the API schema. Any existing code using `Kuber
 +}
 ```
 
-### Affected Components
+### Affected Kinds
 
 **API Layer**:
 - All Kubernetes addon proto definitions
@@ -241,7 +241,7 @@ This explains why validation failures may have occurred with the old values.
 ### Future Enhancements
 
 With this simplified structure, future cluster provider additions will be straightforward:
-- Add the cluster resource kind to `CloudResourceKind` enum
+- Add the cluster resource kind to `CatalogKind` enum
 - Add the enum value to `KubernetesClusterSelector` validation list
 - No wrapper modifications needed
 

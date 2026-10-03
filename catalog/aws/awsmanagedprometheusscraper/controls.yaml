@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awsmanagedprometheusscraper
 spec:
@@ -60,7 +60,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: This component IS monitoring collection -- its entire job is feeding Prometheus metrics into the destination workspace. Its own health is observable via the logging configuration and the destination's ingestion metrics.
+        reference: This kind IS monitoring collection -- its entire job is feeding Prometheus metrics into the destination workspace. Its own health is observable via the logging configuration and the destination's ingestion metrics.
     - control_id: backup-recovery
       status: not_applicable
       notes: Stateless collector -- nothing to back up. The scraper is declarative and re-creatable from the manifest; collected metrics live (and are retained) in the destination workspace.

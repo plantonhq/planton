@@ -38,7 +38,7 @@ flowchart LR
 - **Terraform modules**: dead `target_cluster = optional(object({...}))` blocks removed from 12 hand-written `variables.tf`; the 14 generated CRD-projection modules regenerated (comment-only diffs).
 - **Charts**: all 54 addon templates across the 6 Kubernetes environment charts (`aws`, `azure`, `gcp`, `digital-ocean`, `civo`, `scaleway`) drop the `targetCluster` stanza. Addons in the five non-AWS charts that relied on it as their only (or namespace-less) spec content now declare explicit `namespace` / `createNamespace` values matching the AWS chart's proven shapes — fixing two validation-failure classes (`field spec is nil`, `spec.namespace: value is required`) across 45 templates.
 - **Dev fixtures**: 8 `iac/hack/manifest.yaml` smoke-test manifests cleaned.
-- **Docs**: ~110 apis-tree docs (READMEs, catalog pages, iac READMEs), 41 site catalog docs, the deployment-components concept page, and the protodefaults README rewritten timelessly. All 134 dated `docs/audit/` snapshots deleted repo-wide (obsolete point-in-time QA artifacts).
+- **Docs**: ~110 apis-tree docs (READMEs, catalog pages, iac READMEs), 41 site catalog docs, the catalog-kinds concept page, and the protodefaults README rewritten timelessly. All 134 dated `docs/audit/` snapshots deleted repo-wide (obsolete point-in-time QA artifacts).
 
 ## Implementation Details
 
@@ -58,7 +58,7 @@ flowchart LR
 
 ### Known pre-existing failures (documented, not introduced here)
 
-- `TestAwsProviderTfConvergence` (`pkg/iac/stackinput/providerenvvars`) fails at HEAD: the guard expects 71 AWS `provider.tf` files but the rebuilt AWS catalog has 89, and `awsec2instance`/`awsecscluster` wire `region` into their provider blocks. This belongs to the AWS catalog effort's in-flight work.
+- `TestAwsProviderTfConvergence` (`pkg/iac/iacinput/providerenvvars`) fails at HEAD: the guard expects 71 AWS `provider.tf` files but the rebuilt AWS catalog has 89, and `awsec2instance`/`awsecscluster` wire `region` into their provider blocks. This belongs to the AWS catalog effort's in-flight work.
 - Chart validation failures in `azure`, `gcp`, `scaleway`, `alicloud`, `hetznercloud`, `oci`, and `openstack` charts stem from chart-vs-proto drift in non-addon manifests (e.g. `AzureAksNodePool` enum default mismatch, `GcpGkeCluster` required fields) that predates this change; none reference the removed field.
 
 ## Impact

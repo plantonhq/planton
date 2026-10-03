@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpcertmanagertrustconfig.v1alpha1;
 
 // Outputs produced after provisioning a Certificate Manager trust config.
-message GcpCertManagerTrustConfigStackOutputs {
+message GcpCertManagerTrustConfigOutputs {
   // Full resource name of the trust config
   // (projects/{project}/locations/{location}/trustConfigs/{name}) -- the
   // value a server TLS policy's mTLS client-validation trust config and a

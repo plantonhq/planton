@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpglobalforwardingrule.v1alpha1;
 
 // Outputs produced after provisioning a GCP global forwarding rule.
-message GcpGlobalForwardingRuleStackOutputs {
+message GcpGlobalForwardingRuleOutputs {
   // The IP address this frontend accepts traffic on — the load balancer's
   // VIP, and the value DNS records point at. The API always reports the
   // literal IP number here, even when the spec referenced an address

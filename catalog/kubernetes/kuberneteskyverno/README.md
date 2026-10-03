@@ -6,7 +6,7 @@
 engine: validation, mutation, generation, and cleanup driven by
 policies written as Kubernetes resources.
 
-Not the right component when:
+Not the right kind when:
 
 - **You want the policies themselves** — this kind installs the ENGINE.
   ClusterPolicy / Policy resources (and the policies.kyverno.io v1

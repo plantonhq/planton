@@ -11,12 +11,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azuremysqlflexibleserverv1alpha1.AzureMysqlFlexibleServerStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuremysqlflexibleserverv1alpha1.AzureMysqlFlexibleServerIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -76,7 +76,7 @@ func Resources(ctx *pulumi.Context, stackInput *azuremysqlflexibleserverv1alpha1
 
 	// Version is only sent for a fresh server: replicas and restores
 	// inherit the source's version. Presence-guarded to the spec default
-	// (8.0.21) -- stack inputs built from a manifest do NOT materialize
+	// (8.0.21) -- IaC inputs built from a manifest do NOT materialize
 	// proto defaults.
 	if isDefaultMode {
 		if spec.Version != nil {
@@ -301,7 +301,7 @@ func Resources(ctx *pulumi.Context, stackInput *azuremysqlflexibleserverv1alpha1
 		}
 	}
 
-	// Export stack outputs from the created resources.
+	// Export outputs from the created resources.
 	ctx.Export(OpServerId, server.ID())
 	ctx.Export(OpServerName, server.Name)
 	ctx.Export(OpFqdn, server.Fqdn)

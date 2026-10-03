@@ -1,10 +1,10 @@
 # DigitalOcean Reserved IP -- Operational Guide
 
-What experience with this component teaches that the field reference cannot.
+What experience with this kind teaches that the field reference cannot.
 
 ## The idle state is the expensive state
 
-Most orphaned cloud resources cost nothing; a forgotten UNASSIGNED reserved IPv4 accrues a monthly charge forever. Assignment suspends the charge entirely. If a reservation stops being useful, destroy it -- "keep it around just in case" is the one posture this kind punishes.
+Most orphaned infra components cost nothing; a forgotten UNASSIGNED reserved IPv4 accrues a monthly charge forever. Assignment suspends the charge entirely. If a reservation stops being useful, destroy it -- "keep it around just in case" is the one posture this kind punishes.
 
 ## The address is the asset -- and destroy releases it permanently
 

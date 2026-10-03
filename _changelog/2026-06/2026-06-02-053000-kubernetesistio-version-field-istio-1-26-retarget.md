@@ -55,7 +55,7 @@ correctly ride the new `1.26.8` default and need no change.
 
 ## Version model
 
-The Istio *typed-schema* version (the crd2pulumi SDK, the forthcoming typed components, and the
+The Istio *typed-schema* version (the crd2pulumi SDK, the forthcoming typed kinds, and the
 CRDs installed by `KubernetesIstioBaseCrds`) is a property of this Planton release, pinned in one
 place (`pkg/kubernetes/kubernetestypes/Makefile` `istio_release`). The only user-facing version
 knob is `KubernetesIstio.version` (an untyped Helm mesh install). Coherence rule: to use the

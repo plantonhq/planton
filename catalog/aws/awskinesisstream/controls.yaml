@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awskinesisstream
 spec:
@@ -54,7 +54,7 @@ spec:
       notes: The component itself enforces no end-user sign-in -- it packages no human sign-in surface; any credentials it carries are workload or administrative access, whose posture rbac and workload-identity carry.
     - control_id: audit-logging
       status: not_applicable
-      notes: The stream has no audit-logging configuration of its own; administrative API calls are captured by account-level AWS CloudTrail, outside this component's choices.
+      notes: The stream has no audit-logging configuration of its own; administrative API calls are captured by account-level AWS CloudTrail, outside this kind's choices.
     - control_id: monitoring-integration
       status: enforced_by_default
       evidence:

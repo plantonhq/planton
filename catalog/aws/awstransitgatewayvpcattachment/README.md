@@ -29,7 +29,7 @@ The attachment is its own resource because it is the unit the Transit Gateway ro
 | `defaultRouteTableAssociation` | optional bool | gateway-inherited | Associate with the gateway's default route table. Set `false` when a custom `AwsTransitGatewayRouteTable` owns the association -- an attachment can be associated with at most ONE table |
 | `defaultRouteTablePropagation` | optional bool | gateway-inherited | Propagate this VPC's CIDRs into the default route table |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |---|---|

@@ -1,4 +1,4 @@
-# Azure Resource Group and Log Analytics Workspace Components
+# Azure Resource Group and Log Analytics Workspace Kinds
 
 **Date**: February 13, 2026
 **Type**: Feature
@@ -6,23 +6,23 @@
 
 ## Summary
 
-Added two new Azure deployment components to Planton: `AzureResourceGroup` (enum 400) and `AzureLogAnalyticsWorkspace` (enum 450). AzureResourceGroup is a new foundational resource that makes resource groups a first-class citizen in the composability model, and AzureLogAnalyticsWorkspace is the first Azure resource to use `StringValueOrRef resource_group` for proper infra-chart DAG wiring.
+Added two new Azure catalog kinds to Planton: `AzureResourceGroup` (enum 400) and `AzureLogAnalyticsWorkspace` (enum 450). AzureResourceGroup is a new foundational resource that makes resource groups a first-class citizen in the composability model, and AzureLogAnalyticsWorkspace is the first Azure resource to use `StringValueOrRef resource_group` for proper infra-chart DAG wiring.
 
 ## Problem Statement / Motivation
 
-Azure resource expansion from 10 to 33 resource kinds requires foundational components to be in place before higher-level resources can be built. Two gaps existed:
+Azure resource expansion from 10 to 33 resource kinds requires foundational kinds to be in place before higher-level resources can be built. Two gaps existed:
 
 ### Pain Points
 
 - **Resource groups were not modeled as a first-class resource** -- the `resource_group` field on Azure specs was a plain `string`, making it the only cross-resource reference that didn't use `StringValueOrRef`. This created a hole in the infra-chart dependency graph.
-- **No monitoring foundation** -- Log Analytics Workspaces are required by Container Insights (AKS), Application Insights, and Container App Environments, but no workspace component existed.
+- **No monitoring foundation** -- Log Analytics Workspaces are required by Container Insights (AKS), Application Insights, and Container App Environments, but no workspace kind existed.
 - **Existing Azure enum numbering didn't leave room** for a resource group at the front of the Azure block.
 
 ## Solution / What's New
 
 ### AzureResourceGroup (R00, enum 400)
 
-A deliberately minimal component with 2 spec fields and 3 outputs:
+A deliberately minimal kind with 2 spec fields and 3 outputs:
 
 ```yaml
 apiVersion: azure.planton.dev/v1
@@ -97,9 +97,9 @@ Existing Azure resources (400-409) were shifted to 401-410 to make room for Azur
 
 Note: `daily_quota_gb` uses `double` (not `int32`) because Azure's API supports fractional GB values.
 
-### Both Components Include
+### Both Kinds Include
 
-- 4 proto files (spec, stack_outputs, api, stack_input)
+- 4 proto files (spec, outputs, api, iac_input)
 - Comprehensive validation tests (12 and 18 tests respectively, all passing)
 - Complete Pulumi module (Go, using `pulumi-azure` classic SDK v6)
 - Complete Terraform module (HCL, using `azurerm` provider ~> 4.0)
@@ -119,8 +119,8 @@ AzureResourceGroup as a first-class resource supersedes DD02 (which had decided 
 
 ## Impact
 
-- **New files**: ~40 files across 2 component directories
-- **Modified files**: `cloud_resource_kind.proto` (enum renumbering + 2 new entries), plus regenerated .pb.go and .pb.ts stubs
+- **New files**: ~40 files across 2 kind directories
+- **Modified files**: `catalog_kind.proto` (enum renumbering + 2 new entries), plus regenerated .pb.go and .pb.ts stubs
 - **Test coverage**: 30 validation tests (12 + 18), all passing
 - **Queue progress**: 2 of 24 Azure resources complete (R00, R01)
 

@@ -15,7 +15,7 @@ Terraform/OpenTofu module that registers an Auth0 application from its Client ID
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `external_client_id` (required); `external_client_id_version`, `app_type`, `grant_types`, `description`, `allowed_origins`, `web_origins`, `oidc_conformant`, `require_proof_of_possession`, `skip_non_verifiable_callback_uri_confirmation_prompt`, `redirection_policy`, `organization_discovery_methods`, `default_organization`, `client_metadata`, `jwt_configuration`, `refresh_token`, `token_quota` (optional) |
 
 `variables.tf` is generated from the spec proto (`planton tofu generate-variables`); never edit it by hand.

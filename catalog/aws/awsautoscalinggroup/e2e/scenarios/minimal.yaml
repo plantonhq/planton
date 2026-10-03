@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsautoscalinggroup
+    e2e-catalog-kind: awsautoscalinggroup
   annotations:
     planton.dev/e2e: "true"
   tags:

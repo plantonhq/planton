@@ -4,9 +4,9 @@ package dev.planton.gcp.gcpredisinstance.v1alpha1;
 
 import "shared/options/options.proto";
 
-// GcpRedisInstanceStackOutputs captures observable values produced after
+// GcpRedisInstanceOutputs captures observable values produced after
 // provisioning a Memorystore for Redis instance.
-message GcpRedisInstanceStackOutputs {
+message GcpRedisInstanceOutputs {
   // Hostname or IP address of the primary Redis endpoint.
   // Clients connect to this address for read and write operations.
   string host = 1;

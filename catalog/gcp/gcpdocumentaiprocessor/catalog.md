@@ -4,7 +4,7 @@ Turns documents into data. A Document AI processor reads PDFs, scans, and photos
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `documentai.googleapis.com` on the project
 - **Processor** -- a Document AI processor of the chosen type, location, and encryption
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Document AI admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Document AI admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Optional Dependencies
@@ -48,7 +48,7 @@ spec:
 planton apply -f document-ai-processor.yaml
 ```
 
-This creates an invoice parser in the `us` multi-region; its `process_endpoint` output is where your application posts invoices. A Stack Job tracks the provisioning in real time.
+This creates an invoice parser in the `us` multi-region; its `process_endpoint` output is where your application posts invoices. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -66,16 +66,16 @@ These are the most important decisions when configuring a processor. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpKmsKey** | `kmsKeyName` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -94,6 +94,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- customer-managed encryption
-- [**GCP GCS Bucket**](/cloud-catalog/gcp-gcs-bucket) -- batch input and output documents
-- [**GCP Vertex AI Search Data Store**](/cloud-catalog/gcp-vertex-ai-search-data-store) -- search and RAG over parsed documents
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- customer-managed encryption
+- [**GCP GCS Bucket**](/infra-catalog/gcp-gcs-bucket) -- batch input and output documents
+- [**GCP Vertex AI Search Data Store**](/infra-catalog/gcp-vertex-ai-search-data-store) -- search and RAG over parsed documents

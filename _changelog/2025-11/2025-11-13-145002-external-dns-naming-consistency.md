@@ -2,7 +2,7 @@
 
 **Date**: November 13, 2025  
 **Type**: Refactoring  
-**Components**: API Definitions, Cloud Resource Registry, Documentation, Pulumi CLI Integration
+**Components**: API Definitions, Catalog Kind Registry, Documentation, Pulumi CLI Integration
 
 ## Summary
 
@@ -17,17 +17,17 @@ The ExternalDNS addon resource was originally named `ExternalDnsKubernetes`, whi
 - **Redundant Context**: The resource lives under `provider/kubernetes/addon/`, making the "Kubernetes" suffix in the name redundant
 - **Verbose API Surface**: Users had to write `kind: ExternalDnsKubernetes` in manifests, which is unnecessarily long
 - **Naming Inconsistency**: Mixed naming patterns across addon operators—some with suffixes, some without
-- **Code Verbosity**: Proto message types like `ExternalDnsKubernetesSpec` and `ExternalDnsKubernetesStackInput` were excessively long
+- **Code Verbosity**: Proto message types like `ExternalDnsKubernetesSpec` and `ExternalDnsKubernetesIacInput` were excessively long
 - **Poor Developer Experience**: The redundancy made code harder to read and type
 
-The provider namespace (`dev.planton.provider.kubernetes.addon.externaldns.v1`) already clearly indicates this is a Kubernetes component, so including "Kubernetes" in every message name adds noise without value.
+The provider namespace (`dev.planton.provider.kubernetes.addon.externaldns.v1`) already clearly indicates this is a Kubernetes kind, so including "Kubernetes" in every message name adds noise without value.
 
 ## Solution / What's New
 
 Performed a comprehensive rename from `ExternalDnsKubernetes` to `ExternalDns` across:
 
 1. **Proto API Definitions**: Updated all message types, field references, and validation constraints
-2. **Cloud Resource Registry**: Modified the enum entry in `cloud_resource_kind.proto`
+2. **Catalog Kind Registry**: Modified the enum entry in `catalog_kind.proto`
 3. **Documentation**: Updated all user-facing docs and implementation guides
 4. **Implementation Code**: Modified Go code in Pulumi modules to use renamed types
 
@@ -79,33 +79,33 @@ message ExternalDnsKubernetesSpec { ... }
 message ExternalDnsSpec { ... }
 ```
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/externaldns/v1/stack_input.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/externaldns/v1/iac_input.proto`
 
 ```protobuf
 // Before
-message ExternalDnsKubernetesStackInput {
+message ExternalDnsKubernetesIacInput {
   ExternalDnsKubernetes target = 1;
 }
 
 // After
-message ExternalDnsStackInput {
+message ExternalDnsIacInput {
   ExternalDns target = 1;
 }
 ```
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/externaldns/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/externaldns/v1/outputs.proto`
 
 ```protobuf
 // Before
-message ExternalDnsKubernetesStackOutputs { ... }
+message ExternalDnsKubernetesOutputs { ... }
 
 // After
-message ExternalDnsStackOutputs { ... }
+message ExternalDnsOutputs { ... }
 ```
 
 ### Registry Update
 
-**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/catalogkind/catalog_kind.proto`
 
 ```protobuf
 // Before
@@ -131,26 +131,26 @@ ExternalDns = 823 [(kind_meta) = {
 
 ```go
 // Before
-stackInput := &externaldnsv1.ExternalDnsKubernetesStackInput{}
+iacInput := &externaldnsv1.ExternalDnsKubernetesIacInput{}
 
 // After
-stackInput := &externaldnsv1.ExternalDnsStackInput{}
+iacInput := &externaldnsv1.ExternalDnsIacInput{}
 ```
 
 **File**: `apis/dev/planton/provider/kubernetes/addon/externaldns/v1/iac/pulumi/module/main.go`
 
 ```go
 // Before
-func Resources(ctx *pulumi.Context, stackInput *externaldnsv1.ExternalDnsKubernetesStackInput) error
+func Resources(ctx *pulumi.Context, iacInput *externaldnsv1.ExternalDnsKubernetesIacInput) error
 
 // After
-func Resources(ctx *pulumi.Context, stackInput *externaldnsv1.ExternalDnsStackInput) error
+func Resources(ctx *pulumi.Context, iacInput *externaldnsv1.ExternalDnsIacInput) error
 ```
 
 ### Documentation Updates
 
 Updated all occurrences in:
-- `docs/README.md` (main component documentation)
+- `docs/README.md` (main kind documentation)
 
 ## Benefits
 
@@ -165,8 +165,8 @@ kind: ExternalDns  # vs. kind: ExternalDnsKubernetes
 
 Proto message names are now more concise:
 - `ExternalDnsSpec` (was `ExternalDnsKubernetesSpec`)
-- `ExternalDnsStackInput` (was `ExternalDnsKubernetesStackInput`)
-- `ExternalDnsStackOutputs` (was `ExternalDnsKubernetesStackOutputs`)
+- `ExternalDnsIacInput` (was `ExternalDnsKubernetesIacInput`)
+- `ExternalDnsOutputs` (was `ExternalDnsKubernetesOutputs`)
 
 ### Naming Consistency
 
@@ -220,17 +220,17 @@ spec:
 **Proto Definitions** (4 files):
 - `api.proto` - Main API message types
 - `spec.proto` - Spec message type
-- `stack_input.proto` - Stack input message type
-- `stack_outputs.proto` - Stack outputs message type
+- `iac_input.proto` - IaC input message type
+- `outputs.proto` - Outputs message type
 
 **Registry** (1 file):
-- `cloud_resource_kind.proto` - Enum entry
+- `catalog_kind.proto` - Enum entry
 
 **Documentation** (1 file):
-- `docs/README.md` - Component documentation
+- `docs/README.md` - Kind documentation
 
 **Implementation** (2 files):
-- `iac/pulumi/main.go` - Stack input type reference
+- `iac/pulumi/main.go` - IaC input type reference
 - `iac/pulumi/module/main.go` - Function signature
 
 **Generated Files**:

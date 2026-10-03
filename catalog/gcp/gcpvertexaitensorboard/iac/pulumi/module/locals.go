@@ -6,7 +6,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpvertexaitensorboardv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaitensorboard/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -21,9 +21,9 @@ type Locals struct {
 	DisplayName string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpvertexaitensorboardv1alpha1.GcpVertexAiTensorboardStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpvertexaitensorboardv1alpha1.GcpVertexAiTensorboardIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpVertexAiTensorboard = stackInput.Target
+	locals.GcpVertexAiTensorboard = iacInput.Target
 	metadata := locals.GcpVertexAiTensorboard.Metadata
 
 	locals.DisplayName = locals.GcpVertexAiTensorboard.Spec.DisplayName
@@ -40,7 +40,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpvertexaitensorboardv1alp
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = metadata.Name
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpVertexAiTensorboard.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpVertexAiTensorboard.String())
 
 	if metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = metadata.Org
@@ -52,6 +52,6 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpvertexaitensorboardv1alp
 		locals.GcpLabels[gcplabelkeys.ResourceId] = metadata.Id
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

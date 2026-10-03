@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: kubernetesissuer
 spec:
   billing_model: free
   free_tier: The Issuer itself -- a namespace-scoped cert-manager certificate authority front-end, plus the small credential Secrets the module materializes beside it -- never bills. Certificate issuance through any of its backends (ACME public CAs like Let's Encrypt, a Secret-held CA keypair, self-signed, Vault PKI) has no metered charge here.
-  notes: "No field of this spec buys anything: config selects and configures a signing backend, and the credential values it carries land as Kubernetes Secrets in the Issuer's own namespace. What actually runs is cert-manager (the KubernetesCertManager component), whose pods consume cluster capacity billed there. External systems a backend talks to bill on their own terms outside this catalog entry: a Vault/OpenBao server is its own deployment, and ACME DNS-01 solvers write records into cloud DNS zones (Route53, Cloud DNS, Azure DNS) that bill through those providers."
+  notes: "No field of this spec buys anything: config selects and configures a signing backend, and the credential values it carries land as Kubernetes Secrets in the Issuer's own namespace. What actually runs is cert-manager (the KubernetesCertManager kind), whose pods consume cluster capacity billed there. External systems a backend talks to bill on their own terms outside this catalog entry: a Vault/OpenBao server is its own deployment, and ACME DNS-01 solvers write records into cloud DNS zones (Route53, Cloud DNS, Azure DNS) that bill through those providers."

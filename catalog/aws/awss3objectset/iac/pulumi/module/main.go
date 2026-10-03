@@ -11,13 +11,13 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *awss3objectsetv1alpha1.AwsS3ObjectSetStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awss3objectsetv1alpha1.AwsS3ObjectSetIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 	spec := locals.AwsS3ObjectSet.Spec
 
-	// Build the AWS provider from the stack input via the shared builder, which resolves
+	// Build the AWS provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static keys, keyless web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

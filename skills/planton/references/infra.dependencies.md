@@ -20,7 +20,7 @@ knows.
 ## valueFrom — the primary wiring mechanism
 
 When resource B needs an ID or ARN that resource A creates after deployment,
-never paste a literal. Reference A's stack output:
+never paste a literal. Reference A's output:
 
 ```yaml
 spec:
@@ -33,7 +33,7 @@ spec:
 
 Rules:
 
-- **kind** — PascalCase cloud resource kind of the producer.
+- **kind** — PascalCase catalog kind of the producer.
 - **name** — must match the producer's `metadata.name` exactly (including
   template expressions — both sides must render to the same string).
 - **fieldPath** — `status.outputs.<outputName>`. Both snake_case
@@ -48,7 +48,7 @@ string or the `valueFrom` block above.
 
 ### Which kinds a field accepts
 
-The schema report and the component reference page list, for each such
+The schema report and the kind reference page list, for each such
 field, the kinds it composes from and the output each one gives
 (`references: AwsS3Bucket (status.outputs.bucket_arn), AwsCloudwatchLogGroup
 (status.outputs.log_group_arn), ...`). Read them there:
@@ -61,7 +61,7 @@ field, the kinds it composes from and the output each one gives
   secondary ranges: `status.outputs.secondary_ranges.0.ip_cidr_range` --
   appending a list index or map key to a listed output is fine).
 - Naming a listed kind with a different output is refused: the listed output
-  is the one the component is proven to consume (an ARN, not a name).
+  is the one the kind is proven to consume (an ARN, not a name).
 - A kind the field does not list still works with an explicit `kind:` and
   `fieldPath:` when the value fits.
 
@@ -75,7 +75,7 @@ implied.
 
 Some outputs are secrets the producer creates: an Auth0 client's
 `client_secret`, an AWS IAM user's `secret_access_key`, a registry's
-`admin_password`. The component's reference page marks them `(sensitive)`
+`admin_password`. The kind's reference page marks them `(sensitive)`
 in its Outputs table. On Planton such an output never holds the value: the
 deploy stores it in the organization's secret store and the output holds a
 reference (`$secret/@<env>/<kind>-outputs-<name>/<output>`), which the
@@ -127,7 +127,7 @@ When no catalog pack is reachable, or to drill one leaf's exact contract:
    sufficient.
 
 Build errors for bad references are explicit: `Invalid valueFrom references:
-Field 'no_such_output' not found in …StackOutputs for kind: …` — fix the
+Field 'no_such_output' not found in …Outputs for kind: …` — fix the
 `fieldPath` leaf to match the schema report, not the provider's API docs.
 
 ## References cross chart boundaries — look before you expose a param
@@ -151,8 +151,8 @@ name that infrastructure produces, run this check in order:
    producer's `metadata.name` expression (see the naming nuance below).
 3. **The org's existing estate** — the producer was deployed by an earlier
    chart or by hand: ground it with the CLI (`planton search
-   cloud-resources --all-envs`, whose KIND column names each deployed
-   resource's kind; `planton get <kind> <name>`; `planton infra project
+   infra-components --all-envs`, whose KIND column names each deployed
+   resource's kind; `planton get <kind> <name>`; `planton infra stack
    list`) and reference the real deployed name.
 4. **Only when all three come up empty** is a param honest — and even then,
    prefer a param that names the RESOURCE (`vpc_name`) feeding a `valueFrom`
@@ -182,7 +182,7 @@ name that infrastructure produces, run this check in order:
   producers-first, finish and deploy the shared chart before the app chart,
   and say the order out loud when handing off.
 - **Only `string | valueFrom` fields carry references** (the explain report
-  and the component's reference page mark them). A plain string field cannot
+  and the kind's reference page mark them). A plain string field cannot
   hold a reference — for those, ground the literal with the CLI rather than
   asking the user.
 - **The build validates the reference's SHAPE, not its target's existence**:

@@ -2,11 +2,11 @@
 
 Built for 100% parity with the Terraform DigitalOcean provider's `digitalocean_uptime_check` and `digitalocean_uptime_alert` resources at the pinned provider version.
 
-## What this component models
+## What this kind models
 
 An availability/latency probe on an EXTERNAL endpoint, run from DigitalOcean's global vantage regions, plus its alert rules. The alert rows are composed here -- one alert resource per row -- because they cannot exist without the check, and because DigitalOcean's standalone alert resource leaves the parent check id mutable (re-pointing an alert orphans it on its old check, a corruption class this composition makes unrepresentable).
 
-The component covers both resources' full argument surfaces:
+The kind covers both resources' full argument surfaces:
 
 - `check_name` -- the display name
 - `target` -- a URL for http/https probes, a hostname or IP for ping (DigitalOcean enforces the pairing)

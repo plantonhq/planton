@@ -25,13 +25,13 @@ Clusters are always VPC-native (alias IP): pods and services draw from secondary
 - **Dataplane V2**: `datapath_provider`, FQDN / Cilium cluster-wide network policy, dataplane observability metrics and relay, in-transit pod traffic encryption
 - **Security**: CMEK etcd encryption (KMS key ref, incl. all-objects encryption), customer-managed control-plane CAs and signing keys (`user_managed_keys`), Binary Authorization, Security Posture dashboard, RBAC binding lockdown, authenticator groups, confidential nodes (SEV/SEV-SNP/TDX), anonymous-auth hardening, mesh certificates
 - **Secrets**: Secret Manager CSI add-on with rotation cadence, and the Secret Manager sync add-on (secrets into Kubernetes Secrets) with its own rotation
-- **Observability**: per-component logging/monitoring (incl. KCP components), managed Prometheus (+ auto-monitoring scope), Pub/Sub lifecycle notifications, cost allocation, BigQuery usage export
+- **Observability**: per-kind logging/monitoring (incl. KCP components), managed Prometheus (+ auto-monitoring scope), Pub/Sub lifecycle notifications, cost allocation, BigQuery usage export
 - **Addons**: HTTP LB, HPA, PD/Filestore/GCS-Fuse/Parallelstore/Lustre CSI drivers, Backup for GKE, NodeLocal DNSCache, Config Connector, Stateful HA, Ray operator (+ logging/monitoring), Cloud Run, pod snapshots, agent sandbox, slice controller, Slurm operator
 - **Node-pool defaults**: creation-time defaults for every pool (image streaming, kubelet read-only port, logging variant, containerd private-registry access)
 - **Fleet registration**: `fleet_project` (a `GcpGkeFleet` or `GcpProject` reference, or a project ID) + membership type for multi-cluster features; Google creates the membership and the cluster exports its name as `fleet_membership`, which team scopes and per-cluster fleet feature settings reference
 - **Lifecycle & scale**: engine-side `deletion_policy` (DELETE/PREVENT/ABANDON) under `deletion_protection`, alpha clusters and beta API groups for evaluation, and read-side performance switches for very large clusters (`ignore_node_count_changes`, `skip_node_pool_refresh`)
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |---|---|
@@ -60,7 +60,7 @@ matched, mapped, or excluded with the reason recorded in
 | `tpu_config`, `pod_security_policy_config`, `cluster_telemetry`, `protect_config` and other beta-only blocks | Exist only in the `google-beta` provider; GA is the parity baseline, and beta surface enters only through the catalog's admission list (`pkg/providerparity/admissions/google-beta.yaml`), which admits resources, not fields -- none of these blocks is admitted for this kind. |
 | `enterprise_config` | Deprecated on the provider at the pinned version. |
 
-## Related Components
+## Related Kinds
 
 - **GcpVpcNetwork** — the network the cluster lives in
 - **GcpSubnetwork** — carries the primary node range and pod/service secondary ranges

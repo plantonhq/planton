@@ -3,13 +3,13 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesperconamongooperator.v1alpha1;
 
 /**
- * **KubernetesPerconaMongoOperatorStackOutputs** — the composition
+ * **KubernetesPerconaMongoOperatorOutputs** — the composition
  * handles a deployed Percona Operator for MongoDB exports. The operator
  * has no per-database surface of its own; KubernetesMongodb resources
  * compose against the CRDs it installs, so the handles here identify
  * the installation rather than any workload.
  */
-message KubernetesPerconaMongoOperatorStackOutputs {
+message KubernetesPerconaMongoOperatorOutputs {
   // Namespace the operator runs in.
   string namespace = 1;
 

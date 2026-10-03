@@ -7,9 +7,9 @@
 # traffic -- but the committed QUANTITY is the bundle's size, and the
 # manifest states only an S3 key (bundles/my-agent.zip), never a size,
 # so a dollar figure here would be a guess wearing a dollar sign.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsbedrockagentcoreruntime
 spec:

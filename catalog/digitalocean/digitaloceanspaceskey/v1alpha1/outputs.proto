@@ -4,9 +4,9 @@ package dev.planton.digitalocean.digitaloceanspaceskey.v1alpha1;
 
 import "shared/options/options.proto";
 
-// DigitalOceanSpacesKeyStackOutputs captures the key outputs after
+// DigitalOceanSpacesKeyOutputs captures the key outputs after
 // provisioning a Spaces access key.
-message DigitalOceanSpacesKeyStackOutputs {
+message DigitalOceanSpacesKeyOutputs {
   // The access key ID (also the resource's API identity). Pairs with
   // secret_key as S3-style credentials against the Spaces endpoint.
   string access_key = 1;

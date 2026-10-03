@@ -5,10 +5,10 @@ package dev.planton.kubernetes.kubernetespodmonitor.v1alpha1;
 import "catalog/kubernetes/kubernetespodmonitor/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// KubernetesPodMonitorStackInput provides the inputs for creating the
+// KubernetesPodMonitorIacInput provides the inputs for creating the
 // PodMonitor on a Kubernetes cluster.
-message KubernetesPodMonitorStackInput {
-  // target cloud-resource
+message KubernetesPodMonitorIacInput {
+  // target infra-component
   KubernetesPodMonitor target = 1;
   // provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

@@ -23,7 +23,7 @@ var Delete = &cobra.Command{
 
 ⚠️  WARNING: This is a destructive operation that permanently removes the stack metadata.
 
-IMPORTANT: This command does NOT destroy cloud resources. If your stack still has 
+IMPORTANT: This command does NOT destroy infra components. If your stack still has 
 resources deployed, you should run 'planton pulumi destroy' first to tear 
 down the infrastructure, then use this command to remove the stack metadata.
 

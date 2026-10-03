@@ -10,13 +10,13 @@ import (
 // Resources is the entry point invoked by the plantonCLI.
 func Resources(
 	ctx *pulumi.Context,
-	stackInput *cloudflarezerotrustaccessapplicationv1alpha1.CloudflareZeroTrustAccessApplicationStackInput,
+	iacInput *cloudflarezerotrustaccessapplicationv1alpha1.CloudflareZeroTrustAccessApplicationIacInput,
 ) error {
 	// 1. Gather handy references and credentials.
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// 2. Stand‑up a Cloudflare provider from the supplied API token.
-	cloudflareProvider, err := pulumicloudflareprovider.Get(ctx, stackInput.ProviderConfig)
+	cloudflareProvider, err := pulumicloudflareprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup cloudflare provider")
 	}

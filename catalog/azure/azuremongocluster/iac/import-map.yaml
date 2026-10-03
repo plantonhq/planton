@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuremongocluster
 spec:
@@ -9,12 +9,12 @@ spec:
   values:
     - name: mongo_cluster_id
       derivations:
-        - from_stack_output: mongo_cluster_id
+        - from_output: mongo_cluster_id
       where_to_find: >-
         `az resource show --resource-type
         Microsoft.DocumentDB/mongoClusters --name <cluster-name>
         --resource-group <rg> --query id`, or the component's own
-        mongo_cluster_id stack output.
+        mongo_cluster_id output.
     - name: firewall_rule_name
       derivations:
         - from_address_key: true

@@ -1,0 +1,17 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "catalogkindcapacityderivation",
+    srcs = [
+        "api.pb.go",
+        "spec.pb.go",
+    ],
+    importpath = "github.com/plantonhq/planton/finops/catalogkindcapacityderivation/v1",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//finops/catalogkindcostderivation/v1:catalogkindcostderivation",
+        "//shared",
+        "@org_golang_google_protobuf//reflect/protoreflect",
+        "@org_golang_google_protobuf//runtime/protoimpl",
+    ],
+)

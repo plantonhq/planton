@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: cloudflareaccountapitoken
 spec:
@@ -44,7 +44,7 @@ spec:
       field_path: policies
       evidence:
         type: spec_default
-        reference: This component IS an authorization surface -- each policy binds permission groups (allow or deny) to explicitly named account and zone resources, so least privilege is expressed here.
+        reference: This kind IS an authorization surface -- each policy binds permission groups (allow or deny) to explicitly named account and zone resources, so least privilege is expressed here.
     - control_id: workload-identity
       status: configurable
       field_path: policies.permission_group_ids

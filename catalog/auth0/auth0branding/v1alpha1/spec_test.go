@@ -19,7 +19,7 @@ func branding(spec *Auth0BrandingSpec) *Auth0Branding {
 	return &Auth0Branding{
 		ApiVersion: "auth0.planton.dev/v1alpha1",
 		Kind:       "Auth0Branding",
-		Metadata:   &shared.CloudResourceMetadata{Name: "branding"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "branding"},
 		Spec:       spec,
 	}
 }

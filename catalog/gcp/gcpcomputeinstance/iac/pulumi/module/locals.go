@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpcomputeinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcomputeinstance/v1alpha1"
@@ -22,14 +22,14 @@ type Locals struct {
 	InstanceName string
 }
 
-// initializeLocals fills the Locals struct from the incoming stack input.
-func initializeLocals(stackInput *gcpcomputeinstancev1alpha1.GcpComputeInstanceStackInput) *Locals {
+// initializeLocals fills the Locals struct from the incoming IaC input.
+func initializeLocals(iacInput *gcpcomputeinstancev1alpha1.GcpComputeInstanceIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.GcpComputeInstance = stackInput.Target
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpComputeInstance = iacInput.Target
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 
-	target := stackInput.Target
+	target := iacInput.Target
 
 	locals.InstanceName = target.Spec.InstanceName
 	if locals.InstanceName == "" {
@@ -44,7 +44,7 @@ func initializeLocals(stackInput *gcpcomputeinstancev1alpha1.GcpComputeInstanceS
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = strconv.FormatBool(true)
 	locals.GcpLabels[gcplabelkeys.ResourceName] = locals.InstanceName
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpComputeInstance.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpComputeInstance.String())
 
 	if target.Metadata.Id != "" {
 		locals.GcpLabels[gcplabelkeys.ResourceId] = target.Metadata.Id

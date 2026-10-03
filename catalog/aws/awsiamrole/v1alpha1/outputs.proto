@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awsiamrole.v1alpha1;
 
-// AwsIamRoleStackOutputs captures the observable outputs of a provisioned IAM
+// AwsIamRoleOutputs captures the observable outputs of a provisioned IAM
 // role, for downstream resources (Lambda functions, ECS services, instance
 // profiles, trust relationships, ...) to reference.
-message AwsIamRoleStackOutputs {
+message AwsIamRoleOutputs {
   // The ARN of the IAM role (e.g. "arn:aws:iam::123456789012:role/my-role").
   // What most service integrations reference via status.outputs.role_arn --
   // Lambda's role, an ECS task role, a Step Functions execution role, and so

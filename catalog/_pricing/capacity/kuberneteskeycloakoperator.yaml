@@ -6,9 +6,9 @@
 # annotation with upstream's own operator sizing -- applied by the
 # modules when a manifest omits resources and stated by the estimator
 # with its origin named in the basis. The operator binds no persistent
-# volumes. Schema: finops/componentcapacityderivation/v1.
+# volumes. Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kuberneteskeycloakoperator
 spec:

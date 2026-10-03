@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpmanagedkafkatopic.v1alpha1;
 
-// GcpManagedKafkaTopicStackOutputs captures the topic's identity.
-message GcpManagedKafkaTopicStackOutputs {
+// GcpManagedKafkaTopicOutputs captures the topic's identity.
+message GcpManagedKafkaTopicOutputs {
   // Full resource name --
   // projects/{project}/locations/{location}/clusters/{cluster}/topics/{topic_id}.
   string name = 1;

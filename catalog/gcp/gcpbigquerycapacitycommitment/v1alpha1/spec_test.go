@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpBigQueryCapacityCommitmentSpec", func() {
 		return &GcpBigQueryCapacityCommitment{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpBigQueryCapacityCommitment",
-			Metadata:   &shared.CloudResourceMetadata{Name: "annual-100"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "annual-100"},
 			Spec:       &GcpBigQueryCapacityCommitmentSpec{SlotCount: 100, Plan: "ANNUAL"},
 		}
 	}

@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added `operator_version` field to the KubernetesTektonOperator component spec, allowing users to specify which version of the Tekton Operator to deploy. The default value is set to `v0.78.0` (the latest release from OperatorHub) via proto field options. Also fixed a Server-Side Apply field conflict that prevented successful deployment.
+Added `operator_version` field to the KubernetesTektonOperator kind spec, allowing users to specify which version of the Tekton Operator to deploy. The default value is set to `v0.78.0` (the latest release from OperatorHub) via proto field options. Also fixed a Server-Side Apply field conflict that prevented successful deployment.
 
 ## Problem Statement / Motivation
 
-The KubernetesTektonOperator component had hardcoded operator versions in both the Terraform and Pulumi modules, making it difficult for users to:
+The KubernetesTektonOperator kind had hardcoded operator versions in both the Terraform and Pulumi modules, making it difficult for users to:
 
 ### Pain Points
 
@@ -151,7 +151,7 @@ spec:
 | `iac/tf/locals.tf` | Compute release URL from version |
 | `iac/tf/main.tf` | Fixed TektonConfig (removed conflicting field) |
 | `examples.md` | Added version usage examples |
-| `v1/README.md` | Added operator_version to component structure |
+| `v1/README.md` | Added operator_version to kind structure |
 | `iac/pulumi/README.md` | Updated vars.go example, fixed TektonConfig docs |
 | `iac/pulumi/overview.md` | Updated upgrade path documentation |
 | `iac/tf/README.md` | Added operator_version to variables table |
@@ -170,7 +170,7 @@ spec:
   targetCluster:
     clusterName: "my-cluster"
   container: {}
-  components:
+  kinds:
     pipelines: true
     triggers: true
     dashboard: true
@@ -188,7 +188,7 @@ spec:
   targetCluster:
     clusterName: "my-cluster"
   container: {}
-  components:
+  kinds:
     pipelines: true
     triggers: true
     dashboard: false
@@ -225,7 +225,7 @@ spec:
 ## Related Work
 
 - [KubernetesSolrOperator version field](2025-12-20-052215-kubernetes-solr-operator-version-field.md) - Similar pattern for Solr Operator
-- [KubernetesTektonOperator component](2025-12-19-055933-kubernetes-tekton-operator-component.md) - Original component creation
+- [KubernetesTektonOperator kind](2025-12-19-055933-kubernetes-tekton-operator-component.md) - Original kind creation
 - `dev/planton/shared/options/options.proto` - Provides the `default` field option
 
 ---

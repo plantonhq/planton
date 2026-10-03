@@ -21,7 +21,7 @@
 
 ### Developer-Friendly CLI
 - **Unified Deployment Command**: Utilize the `planton pulumi up --manifest <api-resource.yaml>` command to deploy the operator effortlessly.
-- **Default Module Configuration**: Automatically configure stack inputs using default Pulumi modules, reducing setup complexity.
+- **Default Module Configuration**: Automatically configure IaC inputs using default Pulumi modules, reducing setup complexity.
 - **Git Integration**: Specify custom Pulumi modules via Git repository details for customized deployments.
 
 ### Production-Grade Deployment
@@ -48,7 +48,7 @@ Refer to the examples section for detailed usage instructions.
 1. **Namespace Creation**: Creates the `kubernetes-altinity-operator` namespace with proper labels
 2. **Helm Release**: Deploys the operator using the official Altinity Helm chart
 3. **Resource Configuration**: Applies resource limits and requests from the spec
-4. **Output Capture**: Exports the namespace to stack outputs for reference
+4. **Output Capture**: Exports the namespace to outputs for reference
 
 ### Helm Chart Details
 
@@ -73,7 +73,7 @@ Specifies the container-level configurations for the operator.
   - **requests**: Guaranteed resources (default: 100m CPU, 256Mi memory)
   - **limits**: Maximum resources (default: 1000m CPU, 1Gi memory)
 
-### KubernetesAltinityOperatorStackOutputs
+### KubernetesAltinityOperatorOutputs
 Provides outputs from the deployed operator infrastructure.
 
 - **namespace**: Kubernetes namespace where the operator is deployed (always `kubernetes-altinity-operator`)
@@ -90,8 +90,8 @@ make build
 ### Local Testing
 
 ```bash
-# Set up stack input
-export PULUMI_STACK_INPUT=/path/to/manifest.yaml
+# Set up IaC input
+export PULUMI_IAC_INPUT=/path/to/manifest.yaml
 
 # Run locally
 ./debug.sh

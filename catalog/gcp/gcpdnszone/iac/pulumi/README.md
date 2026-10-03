@@ -9,7 +9,7 @@ Go Pulumi program provisioning `gcp.dns.ManagedZone` with API enablement.
 
 ## Outputs
 
-Exported as stack outputs: `zone_id`, `zone_name`, `nameservers`.
+Exported as outputs: `zone_id`, `zone_name`, `nameservers`.
 
 ## Notes
 

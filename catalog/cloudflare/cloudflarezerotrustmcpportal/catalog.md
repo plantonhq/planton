@@ -4,7 +4,7 @@ Publishes a Cloudflare MCP portal: the single Access-protected endpoint users an
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **MCP Portal** — a `cloudflare_zero_trust_access_ai_controls_mcp_portal` carrying the slug, serving hostname, display name, code-mode and Gateway-filtering toggles, and the published server rows with their per-portal overrides
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module with a Cloudflare API token carrying Account → Zero Trust → Edit. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module with a Cloudflare API token carrying Account → Zero Trust → Edit. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -48,7 +48,7 @@ spec:
 planton apply -f portal.yaml
 ```
 
-This creates an empty Access-protected portal at the hostname; add server rows to publish registrations through it. A Stack Job tracks the provisioning in real time.
+This creates an empty Access-protected portal at the hostname; add server rows to publish registrations through it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,15 +85,15 @@ These are the most important decisions when configuring an MCP portal. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | CloudflareZeroTrustMcpServer | `spec.servers[].serverId` | `status.outputs.server_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -112,6 +112,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Zero Trust MCP Server**](/cloud-catalog/cloudflare-zero-trust-mcp-server) — the registrations this portal publishes; deploy them first.
-- [**Cloudflare Zero Trust Organization**](/cloud-catalog/cloudflare-zero-trust-organization) — the login experience in front of the portal's Access protection.
-- [**Cloudflare Zero Trust Access Application**](/cloud-catalog/cloudflare-zero-trust-access-application) — the broader Access family the portal's hostname protection belongs to.
+- [**Cloudflare Zero Trust MCP Server**](/infra-catalog/cloudflare-zero-trust-mcp-server) — the registrations this portal publishes; deploy them first.
+- [**Cloudflare Zero Trust Organization**](/infra-catalog/cloudflare-zero-trust-organization) — the login experience in front of the portal's Access protection.
+- [**Cloudflare Zero Trust Access Application**](/infra-catalog/cloudflare-zero-trust-access-application) — the broader Access family the portal's hostname protection belongs to.

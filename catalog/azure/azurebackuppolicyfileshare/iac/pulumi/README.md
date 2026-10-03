@@ -8,7 +8,7 @@ Creates an Azure Backup policy for Azure Files shares -- the schedule and layere
 
 - `backup.PolicyFileShare` -- the policy (`.../vaults/{vault}/backupPolicies/{name}`)
 
-## Stack Outputs
+## Outputs
 
 - `backup_policy_id` -- the policy's full ARM ID (what protected file shares bind to)
 - `backup_policy_name` -- unique on its vault

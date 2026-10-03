@@ -1,13 +1,13 @@
 # DigitalOcean Firewall -- Pulumi Module
 
-Deploys a `digitalocean:index/firewall:Firewall` from a `DigitalOceanFirewall` stack input: the named rule set (both directions, all five source/destination classes), Droplet targeting by resolved reference, and tag targeting. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`, which carries the complete provider argument surface for this resource — no PARITY-EXCEPTION guards.
+Deploys a `digitalocean:index/firewall:Firewall` from a `DigitalOceanFirewall` IaC input: the named rule set (both directions, all five source/destination classes), Droplet targeting by resolved reference, and tag targeting. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`, which carries the complete provider argument surface for this resource — no PARITY-EXCEPTION guards.
 
 ## Module structure
 
-- `main.go` -- Pulumi program entry point reading the stack input
+- `main.go` -- Pulumi program entry point reading the IaC input
 - `module/main.go` -- `Resources()`: locals, provider, firewall
-- `module/locals.go` -- stack-input references and the standard Planton label map
-- `module/firewall.go` -- the firewall resource, reference resolution, and the stack-output export
+- `module/locals.go` -- iac-input references and the standard Planton label map
+- `module/firewall.go` -- the firewall resource, reference resolution, and the output export
 - `module/outputs.go` -- output key constants (the kind's outputs.proto contract)
 
 ## Behavior notes
@@ -17,4 +17,4 @@ Deploys a `digitalocean:index/firewall:Firewall` from a `DigitalOceanFirewall` s
 
 ## Outputs
 
-Exactly the kind's stack-output contract, identical to the Terraform module: `firewall_id`.
+Exactly the kind's output contract, identical to the Terraform module: `firewall_id`.

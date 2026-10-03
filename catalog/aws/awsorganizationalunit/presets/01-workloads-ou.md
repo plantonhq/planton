@@ -20,7 +20,7 @@ directly under the organization root, wired by reference.
 - `ouName` takes spaces and arbitrary characters ("Core Services") —
   renames apply in place
 - Place accounts in it with
-  [AWS Organization Account](/cloud-catalog/aws-organization-account)
+  [AWS Organization Account](/infra-catalog/aws-organization-account)
   (`parentId` → this OU's `ou_id` output)
 - Attach guardrails with
-  [AWS Organization Policy](/cloud-catalog/aws-organization-policy)
+  [AWS Organization Policy](/infra-catalog/aws-organization-policy)

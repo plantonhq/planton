@@ -1,4 +1,4 @@
-// Package eject copies the official IaC module behind a catalog component
+// Package eject copies the official IaC module behind a catalog kind
 // into a user-owned directory, ready to customize.
 //
 // An ejected module is a first-party redistribution of Apache-2.0 catalog
@@ -20,10 +20,10 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/fileutil"
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // NotesFileName is the generated contract-notes file written into every
@@ -33,7 +33,7 @@ const NotesFileName = "CONTRACT.md"
 
 // Input configures a single eject operation.
 type Input struct {
-	// KindName is the cloud resource kind whose official module is ejected.
+	// KindName is the catalog kind whose official module is ejected.
 	// Tolerant forms accepted (AwsS3Bucket, awss3bucket, aws-s3-bucket).
 	KindName string
 
@@ -78,11 +78,11 @@ type Result struct {
 // Eject copies the official module for the given kind and provisioner into
 // in.OutputDir and prepares it for customization.
 func Eject(in Input) (*Result, error) {
-	kind := crkreflect.KindFromString(in.KindName)
-	if kind == cloudresourcekind.CloudResourceKind_unspecified {
-		return nil, errors.Errorf("unknown cloud resource kind %q — kind names follow the catalog (e.g. AwsS3Bucket)", in.KindName)
+	kind := catalogkindreflect.KindFromString(in.KindName)
+	if kind == catalogkind.CatalogKind_unspecified {
+		return nil, errors.Errorf("unknown catalog kind %q — kind names follow the catalog (e.g. AwsS3Bucket)", in.KindName)
 	}
-	kindName := crkreflect.ExtractKindNameByKind(kind)
+	kindName := catalogkindreflect.ExtractKindNameByKind(kind)
 
 	switch in.Provisioner {
 	case provisioner.ProvisionerTypePulumi, provisioner.ProvisionerTypeTofu, provisioner.ProvisionerTypeTerraform:
@@ -191,8 +191,8 @@ func includeInEjectedCopy(relPath string, d os.DirEntry) bool {
 
 // moduleSubPath returns the module directory relative to a repo root for the
 // given provisioner — the same derivation the deploy-path resolvers use.
-func moduleSubPath(kind cloudresourcekind.CloudResourceKind, kindName string, prov provisioner.ProvisionerType) string {
-	providerSegment := strings.ReplaceAll(crkreflect.GetProvider(kind).String(), "_", "")
+func moduleSubPath(kind catalogkind.CatalogKind, kindName string, prov provisioner.ProvisionerType) string {
+	providerSegment := strings.ReplaceAll(catalogkindreflect.GetProvider(kind).String(), "_", "")
 	engineDir := "tf"
 	if prov == provisioner.ProvisionerTypePulumi {
 		engineDir = "pulumi"

@@ -5,9 +5,9 @@ package dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1;
 import "catalog/digitalocean/digitaloceandatabaseuser/v1alpha1/api.proto";
 import "catalog/digitalocean/provider.proto";
 
-//digital-ocean-database-user stack-input
-message DigitalOceanDatabaseUserStackInput {
-  //target cloud-resource
+//digital-ocean-database-user iac-input
+message DigitalOceanDatabaseUserIacInput {
+  //target infra-component
   DigitalOceanDatabaseUser target = 1;
   //provider-config
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;

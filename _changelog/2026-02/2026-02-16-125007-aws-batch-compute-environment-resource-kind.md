@@ -10,7 +10,7 @@ Added the `AwsBatchComputeEnvironment` resource kind (enum 321, id_prefix `awsba
 
 ## Problem Statement / Motivation
 
-AWS Batch is a foundational service for running batch processing workloads — data pipelines, ETL, ML training, and scientific computing. Before this component, teams deploying AWS Batch had to manually manage the three-way relationship between compute environments, job queues, and scheduling policies. There was no declarative, version-controlled way to provision this infrastructure through Planton.
+AWS Batch is a foundational service for running batch processing workloads — data pipelines, ETL, ML training, and scientific computing. Before this kind, teams deploying AWS Batch had to manually manage the three-way relationship between compute environments, job queues, and scheduling policies. There was no declarative, version-controlled way to provision this infrastructure through Planton.
 
 ### Pain Points
 
@@ -21,7 +21,7 @@ AWS Batch is a foundational service for running batch processing workloads — d
 
 ## Solution / What's New
 
-A complete `AwsBatchComputeEnvironment` deployment component covering:
+A complete `AwsBatchComputeEnvironment` catalog kind covering:
 
 - **4 compute types**: EC2, SPOT, FARGATE, FARGATE_SPOT
 - **Bundled job queues**: At least one required, with priority routing and automatic job-state time-limit actions
@@ -30,16 +30,16 @@ A complete `AwsBatchComputeEnvironment` deployment component covering:
 
 ### Bundling Design
 
-The component bundles compute environments + job queues + scheduling policy because a compute environment without a queue is incomplete infrastructure. Job definitions are excluded — they have independent lifecycles (versioned, application-level) and should be managed separately.
+The kind bundles compute environments + job queues + scheduling policy because a compute environment without a queue is incomplete infrastructure. Job definitions are excluded — they have independent lifecycles (versioned, application-level) and should be managed separately.
 
 ## Implementation Details
 
 ### Proto API (4 files)
 
 - `spec.proto` — 8 message types with CEL cross-field validations (instance_role required for EC2/SPOT, spot_fleet_role required for SPOT, launch template id-or-name exclusivity)
-- `stack_outputs.proto` — 6 outputs including per-queue ARN map
+- `outputs.proto` — 6 outputs including per-queue ARN map
 - `api.proto` — KRM wiring with `aws.planton.dev/v1` api_version
-- `stack_input.proto` — Standard stack input with provider config
+- `iac_input.proto` — Standard IaC input with provider config
 
 ### Pulumi Module (6 files)
 

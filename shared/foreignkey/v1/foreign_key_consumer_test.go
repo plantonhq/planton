@@ -2,28 +2,28 @@
 //
 // WHY THIS IS A SEPARATE FILE (not in foreign_key_test.go):
 // Go's import cycle restriction prevents `package foreignkeyv1` from importing
-// testcloudresourcegenericv1alpha1, because that generated code already imports foreignkeyv1
+// testcatalogkindgenericv1alpha1, because that generated code already imports foreignkeyv1
 // (it uses StringValueOrRef). The standard Go solution is an external test package:
 // `package foreignkeyv1_test` is treated as a separate package by the Go toolchain,
 // breaking the cycle while still being in the same directory.
 //
 // WHY THESE TESTS EXIST HERE (co-located with StringValueOrRef):
-// The comprehensive boundary tests live in testcloudresourcegeneric/v1/spec_test.go.
+// The comprehensive boundary tests live in testcatalogkindgeneric/v1/spec_test.go.
 // These tests serve a different purpose: they are a STRUCTURAL TRIPWIRE. By importing
-// testcloudresourcegenericv1alpha1 in the foreignkey package's test directory, we create a
-// compile-time dependency. If TestCloudResourceGeneric is ever removed or its package
+// testcatalogkindgenericv1alpha1 in the foreignkey package's test directory, we create a
+// compile-time dependency. If TestCatalogKindGeneric is ever removed or its package
 // path changes, this file fails to compile — immediately flagging the loss of
 // consumer-level StringValueOrRef validation coverage.
 //
 // The tests here are intentionally minimal (4 cases) because they exist for structural
-// integrity, not exhaustive coverage. spec_test.go in testcloudresourcegeneric has the
+// integrity, not exhaustive coverage. spec_test.go in testcatalogkindgeneric has the
 // full boundary matrix.
 //
 // RELATED FILES:
 //   - foreign_key.proto                              (the CEL rule)
 //   - foreign_key_test.go                            (message-level isolation tests)
-//   - _test/testcloudresourcegeneric/v1/spec.proto   (required_ref + optional_ref fields)
-//   - _test/testcloudresourcegeneric/v1/spec_test.go (comprehensive boundary tests)
+//   - _test/testcatalogkindgeneric/v1/spec.proto   (required_ref + optional_ref fields)
+//   - _test/testcatalogkindgeneric/v1/spec_test.go (comprehensive boundary tests)
 
 package foreignkeyv1_test
 
@@ -35,21 +35,21 @@ import (
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 
 	// STRUCTURAL TRIPWIRE: This import creates a compile-time dependency on
-	// TestCloudResourceGeneric. If that package is ever removed, this file fails
+	// TestCatalogKindGeneric. If that package is ever removed, this file fails
 	// to compile — alerting maintainers that the cross-cutting consumer tests
 	// below (and the comprehensive boundary tests in spec_test.go) need a new home.
-	testresource "github.com/plantonhq/planton/catalog/_test/testcloudresourcegeneric/v1alpha1"
+	testresource "github.com/plantonhq/planton/catalog/_test/testcatalogkindgeneric/v1alpha1"
 )
 
-// validTestResource returns a valid TestCloudResourceGeneric envelope for mutation-based testing.
-func validTestResource() *testresource.TestCloudResourceGeneric {
-	return &testresource.TestCloudResourceGeneric{
+// validTestResource returns a valid TestCatalogKindGeneric envelope for mutation-based testing.
+func validTestResource() *testresource.TestCatalogKindGeneric {
+	return &testresource.TestCatalogKindGeneric{
 		ApiVersion: "_test.planton.dev/v1alpha1",
-		Kind:       "TestCloudResourceGeneric",
-		Metadata: &shared.CloudResourceMetadata{
+		Kind:       "TestCatalogKindGeneric",
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-resource",
 		},
-		Spec: &testresource.TestCloudResourceGenericSpec{
+		Spec: &testresource.TestCatalogKindGenericSpec{
 			RequiredRef: &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 					Value: "valid-value",
@@ -63,9 +63,9 @@ var _ = ginkgo.Describe("StringValueOrRef — Cross-Cutting Consumer Validation"
 
 	// These tests validate that the message-level CEL rule propagates correctly
 	// through protovalidate's recursive validation when StringValueOrRef is used
-	// as a field inside a full cloud resource envelope.
+	// as a field inside a full infra component envelope.
 
-	ginkgo.Describe("required_ref on TestCloudResourceGeneric", func() {
+	ginkgo.Describe("required_ref on TestCatalogKindGeneric", func() {
 
 		ginkgo.Context("with empty struct", func() {
 			ginkgo.It("should fail — CEL rule rejects empty message inside required field", func() {
@@ -85,7 +85,7 @@ var _ = ginkgo.Describe("StringValueOrRef — Cross-Cutting Consumer Validation"
 		})
 	})
 
-	ginkgo.Describe("optional_ref on TestCloudResourceGeneric", func() {
+	ginkgo.Describe("optional_ref on TestCatalogKindGeneric", func() {
 
 		ginkgo.Context("with empty struct", func() {
 			ginkgo.It("should fail — CEL fires on message presence, not field annotation", func() {

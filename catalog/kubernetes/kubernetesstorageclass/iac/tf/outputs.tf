@@ -1,4 +1,4 @@
-# Stack outputs — must flatten onto KubernetesStorageClassStackOutputs
+# Outputs — must flatten onto KubernetesStorageClassOutputs
 # (outputs.proto) identically to the Pulumi module's exports.
 
 output "storage_class_name" {

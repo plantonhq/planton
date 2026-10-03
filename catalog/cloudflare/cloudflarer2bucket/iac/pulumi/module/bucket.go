@@ -258,7 +258,7 @@ func bucket(
 		}
 	}
 
-	// 9. Export stack outputs. The S3 endpoint is the jurisdiction's host: a
+	// 9. Export outputs. The S3 endpoint is the jurisdiction's host: a
 	// bucket created in "eu" (or "fedramp", "us") is served ONLY through
 	// <account>.<jurisdiction>.r2.cloudflarestorage.com -- the default host
 	// fails rather than redirects -- so every URL this stack hands out is

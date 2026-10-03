@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: cloudflarednszone
 spec:
@@ -17,7 +17,7 @@ spec:
       notes: There is no component-owned data at rest to key (see enc-at-rest).
     - control_id: enc-in-transit
       status: not_applicable
-      notes: "Plain DNS resolution is unencrypted by protocol; encrypted transport (DoH/DoT) is Cloudflare resolver-side infrastructure, not a zone dial. The zone's REAL transit-security surface is dnssec.enabled -- Cloudflare signs the zone and publishes the DS material as stack outputs for the registrar, giving resolvers origin authentication and response integrity (with multi_signer, presigned, and use_nsec3 refinements). That is authenticity, not encryption, so it is recorded here as the honest adjudication rather than claimed against an encryption control."
+      notes: "Plain DNS resolution is unencrypted by protocol; encrypted transport (DoH/DoT) is Cloudflare resolver-side infrastructure, not a zone dial. The zone's REAL transit-security surface is dnssec.enabled -- Cloudflare signs the zone and publishes the DS material as outputs for the registrar, giving resolvers origin authentication and response integrity (with multi_signer, presigned, and use_nsec3 refinements). That is authenticity, not encryption, so it is recorded here as the honest adjudication rather than claimed against an encryption control."
     - control_id: no-public-access
       status: configurable
       field_path: type

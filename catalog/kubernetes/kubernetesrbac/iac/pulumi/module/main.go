@@ -10,9 +10,9 @@ import (
 // Resources is the main entry point for the Pulumi module.
 // It deploys one RBAC grant: a role (created or existing) plus, when subjects are
 // present, a binding that points every subject at that role.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesrbacv1alpha1.KubernetesRbacStackInput) error {
+func Resources(ctx *pulumi.Context, iacInput *kubernetesrbacv1alpha1.KubernetesRbacIacInput) error {
 	// Initialize locals with derived values (scope, role name/kind, binding name/kind)
-	locals, err := initializeLocals(ctx, stackInput)
+	locals, err := initializeLocals(ctx, iacInput)
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize locals")
 	}
@@ -20,7 +20,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesrbacv1alpha1.Kubernete
 	// Create Kubernetes provider from credentials
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
 		ctx,
-		stackInput.ProviderConfig,
+		iacInput.ProviderConfig,
 		"kubernetes",
 	)
 	if err != nil {

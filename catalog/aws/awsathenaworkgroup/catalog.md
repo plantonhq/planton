@@ -4,7 +4,7 @@ Deploys an Amazon Athena workgroup that isolates query execution, enforces cost 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Athena Workgroup** -- a query execution environment with configurable result storage location, encryption settings, cost controls, engine version selection, and CloudWatch metrics publishing
 - **AWS Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically for tracking and governance
@@ -13,14 +13,14 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
 - **An S3 bucket** for query result storage. Configure the S3 URI in `resultConfiguration.outputLocation` (e.g., `s3://my-bucket/athena-results/`). When omitted, each query must specify its own result location.
-- **A KMS key** (optional) for encrypting query results when using SSE-KMS or CSE-KMS encryption. Provide the ARN directly or reference an AwsKmsKey Cloud Resource via ValueFromRef.
-- **An IAM role** (optional) for Apache Spark workloads. Required only for workgroups running PySpark notebooks or Spark SQL. Provide the ARN directly or reference an AwsIamRole Cloud Resource.
+- **A KMS key** (optional) for encrypting query results when using SSE-KMS or CSE-KMS encryption. Provide the ARN directly or reference an AwsKmsKey Infra Component via ValueFromRef.
+- **An IAM role** (optional) for Apache Spark workloads. Required only for workgroups running PySpark notebooks or Spark SQL. Provide the ARN directly or reference an AwsIamRole Infra Component.
 
 ## Deploy
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f athena-workgroup.yaml
 ```
 
-This creates an Athena workgroup that stores query results in the specified S3 location, enforces workgroup-level settings (individual queries cannot override), and publishes execution metrics to CloudWatch. No result encryption or cost controls are configured. A Stack Job tracks the provisioning and streams progress in real time.
+This creates an Athena workgroup that stores query results in the specified S3 location, enforces workgroup-level settings (individual queries cannot override), and publishes execution metrics to CloudWatch. No result encryption or cost controls are configured. An Infra Job tracks the provisioning and streams progress in real time.
 
 ### InfraChart
 
@@ -97,7 +97,7 @@ These are the most important decisions when configuring an Athena workgroup. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -108,9 +108,9 @@ These are the most important decisions when configuring an Athena workgroup. Exp
 | **AwsKmsKey** (optional) | `monitoring.s3Logging.kmsKey` | `status.outputs.key_arn` |
 | **AwsIamRole** (optional) | `executionRole` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -132,5 +132,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for query result encryption
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- provides an execution role for Apache Spark workloads
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for query result encryption
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- provides an execution role for Apache Spark workloads

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsredshiftserverlessworkgroup.v1alpha1;
 
-// AwsRedshiftServerlessWorkgroupStackOutputs captures the observable
+// AwsRedshiftServerlessWorkgroupOutputs captures the observable
 // identifiers and connection endpoint of the workgroup after deployment.
-message AwsRedshiftServerlessWorkgroupStackOutputs {
+message AwsRedshiftServerlessWorkgroupOutputs {
   // The workgroup name -- the handle the Redshift Serverless APIs, the
   // credentials API (GetCredentials), and custom domain associations
   // address the workgroup by.

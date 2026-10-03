@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflareipaccessrule
 spec:
@@ -15,7 +15,7 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: rule_id
       derivations:
-        - from_stack_output: rule_id
+        - from_output: rule_id
       where_to_find: >-
         Cloudflare dashboard -> Security -> WAF -> Tools -> IP Access Rules,
         or `GET /accounts/<account_id>/firewall/access_rules/rules` on the

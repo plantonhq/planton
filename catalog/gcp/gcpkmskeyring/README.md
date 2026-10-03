@@ -68,7 +68,7 @@ Every field is ForceNew. Because rings cannot be deleted, a change abandons the 
 
 Run `gcloud kms locations list` for the full list.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -82,7 +82,7 @@ Run `gcloud kms locations list` for the full list.
 - **No labels**: the key ring API has no labels surface — no attribution labels are stamped, identically on both engines.
 - **Re-creating a same-named ring**: creation against an existing name fails (the ring is still there); import the existing ring instead.
 
-## Related Components
+## Related Kinds
 
 - [GcpKmsKey](../gcpkmskey/) — the cryptographic keys grouped by this ring
 - [GcpProject](../gcpproject/) — provides the GCP project by reference

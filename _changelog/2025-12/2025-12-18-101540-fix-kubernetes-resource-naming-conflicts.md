@@ -6,17 +6,17 @@
 
 ## Summary
 
-Fixed resource naming conflicts that occurred when multiple Kubernetes components were deployed to the same namespace. All 38 Kubernetes components now use computed resource names based on `{metadata.name}-{purpose}` pattern instead of static names, enabling safe namespace sharing across multiple instances and different component types.
+Fixed resource naming conflicts that occurred when multiple Kubernetes kinds were deployed to the same namespace. All 38 Kubernetes kinds now use computed resource names based on `{metadata.name}-{purpose}` pattern instead of static names, enabling safe namespace sharing across multiple instances and different kind types.
 
 ## Problem Statement / Motivation
 
-The [December 16, 2025 Namespace Creation Control](./2025-12-16-184915-kubernetes-components-namespace-creation-control.md) feature added `create_namespace: false` support, allowing users to deploy multiple components to the same namespace. However, this revealed a critical flaw: many Kubernetes resources used static names that conflict when sharing namespaces.
+The [December 16, 2025 Namespace Creation Control](./2025-12-16-184915-kubernetes-components-namespace-creation-control.md) feature added `create_namespace: false` support, allowing users to deploy multiple kinds to the same namespace. However, this revealed a critical flaw: many Kubernetes resources used static names that conflict when sharing namespaces.
 
 ### Pain Points
 
 - **Deployment failures**: Two Redis instances in the same namespace both tried to create a Secret named `redis-password`, causing Server-Side Apply conflicts
-- **Service collisions**: Multiple components using `ingress-external-lb` as their LoadBalancer service name
-- **Cross-component conflicts**: Redis, NATS, Postgres, and MongoDB all could conflict if deployed to the same namespace
+- **Service collisions**: Multiple kinds using `ingress-external-lb` as their LoadBalancer service name
+- **Cross-kind conflicts**: Redis, NATS, Postgres, and MongoDB all could conflict if deployed to the same namespace
 - **Poor observability**: Static names like `redis-password` didn't indicate which specific instance the resource belonged to
 
 ### Real-World Example
@@ -69,11 +69,11 @@ All Kubernetes resources now use computed names with the pattern:
 {metadata.name}-{purpose}
 ```
 
-Users can include the component type in their `metadata.name` if they want to distinguish resources across different component types (e.g., naming a Redis instance `redis-my-cache` results in `redis-my-cache-password`).
+Users can include the kind in their `metadata.name` if they want to distinguish resources across different kind types (e.g., naming a Redis instance `redis-my-cache` results in `redis-my-cache-password`).
 
 ### Before vs After
 
-| Component | Resource | Before (Static) | After (Computed) |
+| Kind | Resource | Before (Static) | After (Computed) |
 |-----------|----------|-----------------|------------------|
 | Redis `my-cache` | Secret | `redis-password` | `my-cache-password` |
 | Redis `my-cache` | Service | `ingress-external-lb` | `my-cache-external-lb` |
@@ -128,9 +128,9 @@ type Locals struct {
 **2. Initialize computed names:**
 
 ```go
-func initializeLocals(ctx *pulumi.Context, stackInput *...) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *...) *Locals {
     // Computed resource names to avoid conflicts when multiple instances share a namespace
-    // Users can prefix metadata.name with component type if needed (e.g., "redis-my-cache")
+    // Users can prefix metadata.name with kind if needed (e.g., "redis-my-cache")
     locals.PasswordSecretName = fmt.Sprintf("%s-password", target.Metadata.Name)
     locals.ExternalLbServiceName = fmt.Sprintf("%s-external-lb", target.Metadata.Name)
     
@@ -175,7 +175,7 @@ var vars = struct {
 ```hcl
 locals {
   # Computed resource names to avoid conflicts when multiple instances share a namespace
-  # Users can prefix metadata.name with component type if needed (e.g., "redis-my-cache")
+  # Users can prefix metadata.name with kind if needed (e.g., "redis-my-cache")
   password_secret_name      = "${var.metadata.name}-password"
   external_lb_service_name  = "${var.metadata.name}-external-lb"
 }
@@ -213,9 +213,9 @@ auth = {
 }
 ```
 
-### Components Updated
+### Kinds Updated
 
-All 38 Kubernetes components (excluding `kubernetesnamespace`) were audited and fixed:
+All 38 Kubernetes kinds (excluding `kubernetesnamespace`) were audited and fixed:
 
 **Data Stores:**
 - kubernetesredis
@@ -283,7 +283,7 @@ All 38 Kubernetes components (excluding `kubernetesnamespace`) were audited and 
 
 ### 1. Namespace Sharing Works
 
-Multiple instances of the same component type can now coexist in a single namespace:
+Multiple instances of the same kind can now coexist in a single namespace:
 
 ```bash
 # Both Redis instances in same namespace - no conflicts
@@ -293,9 +293,9 @@ my-cache-password         Opaque   1
 session-store-password    Opaque   1
 ```
 
-### 2. Cross-Component Coexistence
+### 2. Cross-Kind Coexistence
 
-Different component types can share a namespace without conflicts:
+Different kind types can share a namespace without conflicts:
 
 ```bash
 # Redis, NATS, and Postgres in same namespace - all unique names
@@ -328,7 +328,7 @@ metadata:
   name: my-cache
 # Results in: my-cache-password, my-cache-external-lb
 
-# Option 2: Include component type for clarity
+# Option 2: Include kind for clarity
 metadata:
   name: redis-prod-cache
 # Results in: redis-prod-cache-password, redis-prod-cache-external-lb
@@ -372,7 +372,7 @@ metadata:
 - Enabled namespace sharing
 - **Revealed this naming conflict issue**
 
-**[Fix Nil Namespace Panic (Dec 16, 2025)](./2025-12-16-215949-fix-nil-namespace-panic-kubernetes-components.md)**:
+**[Fix Nil Namespace Panic (Dec 16, 2025)](./2025-12-16-215949-fix-nil-namespace-panic-kubernetes-kinds.md)**:
 - Fixed panic when `create_namespace: false`
 - Established provider-passing pattern used in this fix
 
@@ -380,29 +380,29 @@ metadata:
 
 **`apis/dev/planton/provider/kubernetes/_cursor/ensure-no-name-conflicts.instructions.md`**:
 - Comprehensive standalone instructions for coding agents
-- Step-by-step guide for auditing and fixing components
+- Step-by-step guide for auditing and fixing kinds
 - Checklists for Pulumi and Terraform changes
 - Code examples showing before/after patterns
 
 ## Code Metrics
 
-- **Components updated**: 38 Kubernetes components
-- **Files modified per component**: ~4-6 (Pulumi) + ~3-4 (Terraform)
+- **Kinds updated**: 38 Kubernetes kinds
+- **Files modified per kind**: ~4-6 (Pulumi) + ~3-4 (Terraform)
 - **Total files modified**: ~300+
-- **Pattern applied**: Consistent across all components
-- **Build verification**: All components pass `go build ./...` and `terraform validate`
+- **Pattern applied**: Consistent across all kinds
+- **Build verification**: All kinds pass `go build ./...` and `terraform validate`
 
 ## Verification
 
-All components were verified with:
+All kinds were verified with:
 
 ```bash
 # Pulumi
-cd apis/dev/planton/provider/kubernetes/<component>/v1/iac/pulumi
+cd apis/dev/planton/provider/kubernetes/<kind>/v1/iac/pulumi
 go build ./...
 
 # Terraform
-cd apis/dev/planton/provider/kubernetes/<component>/v1/iac/tf
+cd apis/dev/planton/provider/kubernetes/<kind>/v1/iac/tf
 terraform init -backend=false
 terraform validate
 ```
@@ -410,6 +410,6 @@ terraform validate
 ---
 
 **Status**: ✅ Production Ready  
-**Impact**: All 38 Kubernetes components support safe namespace sharing  
-**Testing**: Build verification completed for all components  
-**Timeline**: Single session, applied across all components using parallel coding agents
+**Impact**: All 38 Kubernetes kinds support safe namespace sharing  
+**Testing**: Build verification completed for all kinds  
+**Timeline**: Single session, applied across all kinds using parallel coding agents

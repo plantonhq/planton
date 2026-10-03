@@ -28,7 +28,7 @@ go_test(
     ],
     embed = [":specprojection"],
     deps = [
-        "//catalog/_test/testcloudresourcekubernetes/v1alpha1",
+        "//catalog/_test/testcatalogkindkubernetes/v1alpha1",
         "//catalog/kubernetes",
         "//catalog/kubernetes/kubernetesservicemonitor/v1alpha1",
         "//shared/foreignkey/v1:foreignkey",

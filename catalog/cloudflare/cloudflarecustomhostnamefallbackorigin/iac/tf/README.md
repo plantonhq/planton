@@ -9,7 +9,7 @@ provider.tf   — Cloudflare provider configuration
 variables.tf  — Input variables mirroring CloudflareCustomHostnameFallbackOriginSpec
 locals.tf     — Zone id and origin flattening (StringValueOrRef → string)
 main.tf       — cloudflare_custom_hostname_fallback_origin resource
-outputs.tf    — Stack outputs (created_at, updated_at, errors, zone_id)
+outputs.tf    — outputs (created_at, updated_at, errors, zone_id)
 ```
 
 ## Usage
@@ -41,7 +41,7 @@ This is a zone singleton: one fallback origin per zone, and its API identity IS 
 | `updated_at` | RFC3339 last-updated timestamp |
 | `zone_id` | The zone this singleton belongs to |
 
-There is no `status` output: deployment is asynchronous (`pending_deployment` → `active`), and a point-in-time phase is never a stable stack output — it flips on the first refresh after the transition and re-plans forever.
+There is no `status` output: deployment is asynchronous (`pending_deployment` → `active`), and a point-in-time phase is never a stable output — it flips on the first refresh after the transition and re-plans forever.
 
 ## Provider Version
 

@@ -21,11 +21,11 @@ type Locals struct {
 	Manage bool
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureservicebusauthorizationrulev1alpha1.AzureServiceBusAuthorizationRuleStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureservicebusauthorizationrulev1alpha1.AzureServiceBusAuthorizationRuleIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureServiceBusAuthorizationRule = stackInput.Target
-	spec := stackInput.Target.Spec
+	locals.AzureServiceBusAuthorizationRule = iacInput.Target
+	spec := iacInput.Target.Spec
 
 	locals.NamespaceId = spec.NamespaceId.GetValue()
 	locals.QueueId = spec.QueueId.GetValue()

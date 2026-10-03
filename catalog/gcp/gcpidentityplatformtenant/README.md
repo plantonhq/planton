@@ -4,7 +4,7 @@ Creates one Identity Platform TENANT — an isolated user pool with its own sign
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Tenant** -- an `identity_platform_tenant` with its display name, sign-up switches, kill switch, and client permissions
 - **Tenant-scoped IdP configs** -- one composed resource per entry in `defaultSupportedIdps` (Google, Facebook, ...), `oauthIdpConfigs` (custom OIDC), and `inboundSamlConfigs` (enterprise SSO), all scoped to this tenant only
@@ -27,7 +27,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### GCP Project
 
-- **A GCP project with Identity Platform initialized and `allowTenants` enabled** (the GcpIdentityPlatformConfig kind). Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
+- **A GCP project with Identity Platform initialized and `allowTenants` enabled** (the GcpIdentityPlatformConfig kind). Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
 - **IAM**: the deploying identity needs `roles/identityplatform.admin` or broader.
 
 ## Deploy
@@ -77,7 +77,7 @@ planton apply -f tenant.yaml
 - **Tenant-level requirements**: OIDC `displayName` required; SAML `spConfig.callbackUri` (must be `https://`) and `spConfig.spEntityId` both required.
 - **`deletionPolicy`** in `DELETE`/`PREVENT`/`ABANDON`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -105,7 +105,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpIdentityPlatformConfig](/docs/catalog/gcp/gcpidentityplatformconfig) — the project singleton whose `multiTenant.allowTenants` gates tenant creation
 - [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project containing the tenant

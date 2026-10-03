@@ -41,9 +41,9 @@ spec:
 | `updated_at` | Last-update timestamp |
 | `zone_id` | The SaaS zone this singleton belongs to (its API identity IS the zone) |
 
-There is no `status` output: deployment is asynchronous (`pending_deployment` → `active`), and a point-in-time phase is never a stable stack output. There is no `errors` output for the same reason — Cloudflare fills and clears that diagnostic list asynchronously (measured live on the sibling custom hostname). Read both from the Cloudflare API or dashboard.
+There is no `status` output: deployment is asynchronous (`pending_deployment` → `active`), and a point-in-time phase is never a stable output. There is no `errors` output for the same reason — Cloudflare fills and clears that diagnostic list asynchronously (measured live on the sibling custom hostname). Read both from the Cloudflare API or dashboard.
 
-## Related components
+## Related kinds
 
 - `CloudflareCustomHostname` — per-customer hostnames that route to this origin.
 - `CloudflareDnsZone` — the SaaS zone.

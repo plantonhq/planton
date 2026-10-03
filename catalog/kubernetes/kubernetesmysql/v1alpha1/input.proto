@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesmysql.v1alpha1;
 import "catalog/kubernetes/kubernetesmysql/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//KubernetesMysql stack-input
-message KubernetesMysqlStackInput {
-  //target cloud-resource
+//KubernetesMysql iac-input
+message KubernetesMysqlIacInput {
+  //target infra-component
   KubernetesMysql target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

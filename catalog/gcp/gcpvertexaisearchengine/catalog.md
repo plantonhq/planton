@@ -4,7 +4,7 @@ Stands up a Vertex AI Search app over your data stores: a search engine with Goo
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `discoveryengine.googleapis.com` on the project (and `dialogflow.googleapis.com` for a chat engine)
 - **Engine** -- exactly one of `discoveryengine.SearchEngine`, `ChatEngine`, or `RecommendationEngine`, chosen by `engineType`
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Discovery Engine admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Discovery Engine admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Required Dependencies
@@ -67,7 +67,7 @@ spec:
 planton apply -f vertex-ai-search-engine.yaml
 ```
 
-This creates an Enterprise-tier search engine with generated answers and a public widget embeddable on `www.example.com`. A Stack Job tracks the provisioning in real time.
+This creates an Enterprise-tier search engine with generated answers and a public widget embeddable on `www.example.com`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,7 +85,7 @@ These are the most important decisions when configuring an engine. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -97,9 +97,9 @@ These are the most important decisions when configuring an engine. Explore the f
 | **GcpModelArmorTemplate** | `assistants[].customerPolicy.modelArmorConfig.userPromptTemplate`, `.responseTemplate` | `status.outputs.name` |
 | **GcpDialogflowCxAgent** | `chatEngineConfig.dialogflowAgentToLink` | `status.outputs.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -125,8 +125,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Vertex AI Search Data Store**](/cloud-catalog/gcp-vertex-ai-search-data-store) -- the stores the engine reads
-- [**GCP Vertex AI Search Data Connector**](/cloud-catalog/gcp-vertex-ai-search-data-connector) -- connector-synced stores in their own collection
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- customer-managed encryption
-- [**GCP Model Armor Template**](/cloud-catalog/gcp-model-armor-template) -- the safety templates assistants screen prompts and responses through
-- [**GCP Dialogflow CX Agent**](/cloud-catalog/gcp-dialogflow-cx-agent) -- the conversational agent a chat engine answers through, managed as its own block
+- [**GCP Vertex AI Search Data Store**](/infra-catalog/gcp-vertex-ai-search-data-store) -- the stores the engine reads
+- [**GCP Vertex AI Search Data Connector**](/infra-catalog/gcp-vertex-ai-search-data-connector) -- connector-synced stores in their own collection
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- customer-managed encryption
+- [**GCP Model Armor Template**](/infra-catalog/gcp-model-armor-template) -- the safety templates assistants screen prompts and responses through
+- [**GCP Dialogflow CX Agent**](/infra-catalog/gcp-dialogflow-cx-agent) -- the conversational agent a chat engine answers through, managed as its own block

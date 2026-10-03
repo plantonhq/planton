@@ -59,7 +59,7 @@ education. Everything else about the machinery stays in reserve per
 
 ## The two-chart pattern: shared infrastructure + environment chart
 
-When an ask mixes platform components and app workloads, propose the split —
+When an ask mixes platform kinds and app workloads, propose the split —
 by name, up front:
 
 - **The shared-infrastructure chart** (deployed once): VPC/network, the EKS
@@ -80,18 +80,18 @@ by name, up front:
   service's URL from its own environment's resources, and the service's
   delete cascade removes only what the service declares
   (`service.configuring-deployments.md`, "What belongs on the service, and
-  what belongs on the infra project" — the one-question test, and the
+  what belongs on the infra stack" — the one-question test, and the
   three-step move when a chart already carries them). Only when there is no
   service — the user wants the infrastructure alone — does the environment
   chart carry a **placeholder `KubernetesDeployment`** (image as a param) and
   its route.
 
 **Placement doctrine — operators follow the cluster, never the app.**
-Cluster-scoped, shared-by-design components — the Gateway API CRDs, Istio,
+Cluster-scoped, shared-by-design kinds — the Gateway API CRDs, Istio,
 the GatewayClass, cert-manager, external-dns, any operator or controller —
 live in the shared-infrastructure chart, exactly once. A per-environment
 chart never installs one: the same chart deployed into dev and prod would
-install a cluster-wide singleton twice, and the platform components'
+install a cluster-wide singleton twice, and the platform kinds'
 lifecycle belongs with the cluster they serve, not with any one app. The
 same rule one level down: the charts keep what outlives any one service —
 the cluster, the shared ingress controller and gateway, the DNS zone, the

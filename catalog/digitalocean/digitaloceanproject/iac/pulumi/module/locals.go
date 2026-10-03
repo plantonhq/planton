@@ -11,9 +11,9 @@ type Locals struct {
 	DigitalOceanProject *digitaloceanprojectv1alpha1.DigitalOceanProject
 }
 
-// initializeLocals copies stack-input fields into the Locals struct.
-func initializeLocals(_ *pulumi.Context, stackInput *digitaloceanprojectv1alpha1.DigitalOceanProjectStackInput) *Locals {
+// initializeLocals copies iac-input fields into the Locals struct.
+func initializeLocals(_ *pulumi.Context, iacInput *digitaloceanprojectv1alpha1.DigitalOceanProjectIacInput) *Locals {
 	return &Locals{
-		DigitalOceanProject: stackInput.Target,
+		DigitalOceanProject: iacInput.Target,
 	}
 }

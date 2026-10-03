@@ -5,9 +5,9 @@ package dev.planton.stripe.stripebillingportalconfiguration.v1alpha1;
 import "catalog/stripe/provider.proto";
 import "catalog/stripe/stripebillingportalconfiguration/v1alpha1/api.proto";
 
-// StripeBillingPortalConfigurationStackInput is the input to the StripeBillingPortalConfiguration
+// StripeBillingPortalConfigurationIacInput is the input to the StripeBillingPortalConfiguration
 // IaC module. It contains the target resource and the Stripe provider configuration.
-message StripeBillingPortalConfigurationStackInput {
+message StripeBillingPortalConfigurationIacInput {
   // target is the StripeBillingPortalConfiguration resource to be deployed.
   StripeBillingPortalConfiguration target = 1;
 

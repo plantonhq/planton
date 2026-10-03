@@ -37,7 +37,7 @@ The snippet NAME is the identity. Cloudflare's create call is an upsert, so depl
 | `files` | list of `{name, content}` | Yes | At least one source file. `content` must be byte-stable. |
 | `main_module` | string | Yes | The entry file -- must name one of `files`. The provider argument is `metadata`. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

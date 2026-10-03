@@ -4,7 +4,7 @@ Deploys a Linux Function App for event-driven serverless workloads with configur
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Linux Function App** -- a serverless compute resource in the specified Azure region, bound to an App Service Plan, with the chosen application stack, app settings, connection strings, and security configuration
 - **Storage Binding** -- connects the Function App to an Azure Storage Account for trigger management, execution logs, and internal coordination, using either an access key or managed identity
@@ -16,15 +16,15 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the Function App will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
-- **An App Service Plan** that provides compute resources. Consumption (Y1) for pay-per-execution, Elastic Premium (EP*) for pre-warmed instances, or Dedicated (B*/S*/P*) for reserved capacity. Provide the plan ID directly or reference an AzureServicePlan Cloud Resource via ValueFromRef.
-- **An Azure Storage Account** for Functions runtime state. Provide the account name directly or reference an AzureStorageAccount Cloud Resource via ValueFromRef.
-- **Application Insights** (optional) for APM telemetry. Provide the connection string directly or reference an AzureApplicationInsights Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the Function App will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
+- **An App Service Plan** that provides compute resources. Consumption (Y1) for pay-per-execution, Elastic Premium (EP*) for pre-warmed instances, or Dedicated (B*/S*/P*) for reserved capacity. Provide the plan ID directly or reference an AzureServicePlan Infra Component via ValueFromRef.
+- **An Azure Storage Account** for Functions runtime state. Provide the account name directly or reference an AzureStorageAccount Infra Component via ValueFromRef.
+- **Application Insights** (optional) for APM telemetry. Provide the connection string directly or reference an AzureApplicationInsights Infra Component via ValueFromRef.
 - **A VNet Subnet** (optional) delegated to `Microsoft.Web/serverFarms` for VNet integration. Not supported on Consumption plans.
 
 ## Deploy
@@ -64,7 +64,7 @@ spec:
 planton apply -f function-app.yaml
 ```
 
-This creates a Python 3.12 Function App on the specified Service Plan with HTTPS enforcement, TLS 1.2, and FTPS disabled -- no VNet integration, no managed identity, no Application Insights. A Stack Job tracks the provisioning in real time.
+This creates a Python 3.12 Function App on the specified Service Plan with HTTPS enforcement, TLS 1.2, and FTPS disabled -- no VNet integration, no managed identity, no Application Insights. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -112,7 +112,7 @@ These are the most important decisions when configuring a Function App. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -123,9 +123,9 @@ These are the most important decisions when configuring a Function App. Explore 
 | **AzureSubnet** (optional) | `virtualNetworkSubnetId` | `status.outputs.subnet_id` |
 | **AzureUserAssignedIdentity** (optional) | `keyVaultReferenceIdentityId` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -151,9 +151,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the Function App is created
-- [**Azure Service Plan**](/cloud-catalog/azure-service-plan) -- provides the compute tier and scaling behavior
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- provides runtime state storage for triggers and logs
-- [**Azure Application Insights**](/cloud-catalog/azure-application-insights) -- provides APM telemetry for monitoring and diagnostics
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- provides VNet integration for private resource access
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- provides credential-free access to Key Vault and other Azure services
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the Function App is created
+- [**Azure Service Plan**](/infra-catalog/azure-service-plan) -- provides the compute tier and scaling behavior
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- provides runtime state storage for triggers and logs
+- [**Azure Application Insights**](/infra-catalog/azure-application-insights) -- provides APM telemetry for monitoring and diagnostics
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- provides VNet integration for private resource access
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- provides credential-free access to Key Vault and other Azure services

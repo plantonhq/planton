@@ -15,7 +15,7 @@ import (
 // used as a deployed E2E prerequisite (e.g. for AwsSubnet) and confirmed live. A
 // deleted VPC returns the typed InvalidVpcID.NotFound error (the "absent" signal).
 //
-// When the stack outputs report secondary CIDR associations (the
+// When the outputs report secondary CIDR associations (the
 // secondary_ipv4/ipv6_cidr_association_ids maps, keyed by the module's
 // for_each keys), existence asserts each association id is present AND
 // "associated" in the VPC's own CidrBlockAssociationSet -- an association can

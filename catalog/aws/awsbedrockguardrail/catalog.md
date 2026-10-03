@@ -4,7 +4,7 @@ Deploys an Amazon Bedrock guardrail — content-safety policies evaluated on eve
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Bedrock Guardrail** — the guardrail with every policy family you declare: content filters, denied topics, the managed profanity list and custom words, PII entities and regex patterns, and grounding/relevance thresholds, plus the required blocked-input and blocked-output messages
 - **Published Versions** — created only when `versions` entries exist: one immutable numbered version per entry, published AFTER the draft update in the same deploy so each capture includes the current edit; AWS assigns the numbers, exported in `version_numbers` keyed by your entry names
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Bedrock guardrail permissions (`bedrock:CreateGuardrail`, `bedrock:CreateGuardrailVersion`, and their read/update/delete siblings). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Bedrock guardrail permissions (`bedrock:CreateGuardrail`, `bedrock:CreateGuardrailVersion`, and their read/update/delete siblings). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -59,7 +59,7 @@ spec:
 planton apply -f guardrail.yaml
 ```
 
-This creates a guardrail that blocks hate content at high strength, masks email addresses, and publishes version 1 under the `prod` entry for consumers to pin. A Stack Job tracks the provisioning in real time.
+This creates a guardrail that blocks hate content at high strength, masks email addresses, and publishes version 1 under the `prod` entry for consumers to pin. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -106,15 +106,15 @@ These are the most important decisions when configuring a guardrail. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsKmsKey** | `kmsKeyArn` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -136,6 +136,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Bedrock Agent**](/cloud-catalog/aws-bedrock-agent) — attaches this guardrail (at a pinned version) to every model input and output the agent produces
-- [**AWS Bedrock Flow**](/cloud-catalog/aws-bedrock-flow) — pins this guardrail onto prompt and knowledge-base nodes
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption of the guardrail definition via `kmsKeyArn`
+- [**AWS Bedrock Agent**](/infra-catalog/aws-bedrock-agent) — attaches this guardrail (at a pinned version) to every model input and output the agent produces
+- [**AWS Bedrock Flow**](/infra-catalog/aws-bedrock-flow) — pins this guardrail onto prompt and knowledge-base nodes
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption of the guardrail definition via `kmsKeyArn`

@@ -12,11 +12,11 @@ import (
 // create_namespace flag. Returns the created namespace resource (or nil when
 // create_namespace is false).
 func namespace(ctx *pulumi.Context,
-	stackInput *kubernetestempov1alpha1.KubernetesTempoStackInput,
+	iacInput *kubernetestempov1alpha1.KubernetesTempoIacInput,
 	locals *Locals,
 	kubernetesProvider pulumi.ProviderResource,
 ) (*kubernetescorev1.Namespace, error) {
-	if !stackInput.Target.Spec.CreateNamespace {
+	if !iacInput.Target.Spec.CreateNamespace {
 		return nil, nil
 	}
 

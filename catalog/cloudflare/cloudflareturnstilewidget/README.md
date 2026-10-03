@@ -3,7 +3,7 @@
 Provision a Cloudflare Turnstile widget — a privacy-preserving CAPTCHA
 alternative. The widget yields a public **site key** (embedded in your page) and
 a **secret key** (used server-side to verify tokens). The secret is exported as a
-sensitive stack output so a Worker or backend can reference it.
+sensitive output so a Worker or backend can reference it.
 
 ## When to use
 
@@ -55,7 +55,7 @@ The `secret` output is exported as a sensitive value. Downstream, resolve it as 
 managed-secret reference (e.g. into a `CloudflareWorker` `secret_text` binding)
 rather than embedding it in plaintext.
 
-## Related components
+## Related kinds
 
 - `CloudflareWorker` — a Worker that validates Turnstile tokens server-side using
   the `secret` output.

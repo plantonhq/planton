@@ -18,7 +18,7 @@ func shippingRate(spec *StripeShippingRateSpec) *StripeShippingRate {
 	return &StripeShippingRate{
 		ApiVersion: "stripe.planton.dev/v1alpha1",
 		Kind:       "StripeShippingRate",
-		Metadata:   &shared.CloudResourceMetadata{Name: "standard-shipping"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "standard-shipping"},
 		Spec:       spec,
 	}
 }

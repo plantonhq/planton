@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsebssnapshot
 spec:
@@ -57,4 +57,4 @@ spec:
     - fast snapshot restore bills per DSU-hour per zone from enable to disable, one-hour minimum
     - a customer-managed KMS key on the copy or import arm bills its monthly fee and per-request charges on the referenced AwsKmsKey component
     - sharing via share_with_account_ids is itself free -- volumes grantees create from the snapshot bill in THEIR accounts
-  notes: "Incremental economics cut both ways: routine snapshots of a slowly-changing volume are cheap because only changed blocks store, but deleting a mid-chain snapshot only saves the blocks no OTHER snapshot references -- AWS re-parents shared blocks, so the bill often barely moves. Archive semantics differ: every archived snapshot is a full copy at the cheaper rate with a 90-day minimum. This component is always_on -- the meter starts at creation and deleting the snapshot is the only off switch -- but every committed dollar is source-determined, which is why the derivation refuses estimates instead of inventing sizes."
+  notes: "Incremental economics cut both ways: routine snapshots of a slowly-changing volume are cheap because only changed blocks store, but deleting a mid-chain snapshot only saves the blocks no OTHER snapshot references -- AWS re-parents shared blocks, so the bill often barely moves. Archive semantics differ: every archived snapshot is a full copy at the cheaper rate with a 90-day minimum. This kind is always_on -- the meter starts at creation and deleting the snapshot is the only off switch -- but every committed dollar is source-determined, which is why the derivation refuses estimates instead of inventing sizes."

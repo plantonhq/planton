@@ -131,7 +131,7 @@ folded into the update rule's IaC scenario.
 - Release-equivalent Go builds of all five Pulumi programs + `make build-cli`;
   Bazel build of all touched targets after `bazel-mod-tidy` + gazelle.
 - All presets, hack manifests, and E2E scenarios CLI-validated.
-- Site catalog regenerated (420 components, incl. the two new kind pages).
+- Site catalog regenerated (420 kinds, incl. the two new kind pages).
 
 ## Impact
 

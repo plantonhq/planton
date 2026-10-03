@@ -97,11 +97,11 @@ var queryStringCachingBehaviorStrings = map[azurefrontdoorrulesetv1alpha1.AzureF
 	azurefrontdoorrulesetv1alpha1.AzureFrontDoorRuleQueryStringCachingBehavior_INCLUDE_SPECIFIED_QUERY_STRINGS: "IncludeSpecifiedQueryStrings",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurefrontdoorrulesetv1alpha1.AzureFrontDoorRuleSetStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurefrontdoorrulesetv1alpha1.AzureFrontDoorRuleSetIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureFrontDoorRuleSet = stackInput.Target
-	locals.ProfileId = stackInput.Target.Spec.ProfileId.GetValue()
+	locals.AzureFrontDoorRuleSet = iacInput.Target
+	locals.ProfileId = iacInput.Target.Spec.ProfileId.GetValue()
 
 	// No Azure tags: ARM does not support tags on Front Door rule sets
 	// or rules, so the platform's identity tags live on the profile.

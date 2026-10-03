@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.auth0.auth0emailprovider.v1alpha1;
 
-// Auth0EmailProviderStackOutputs contains the email provider as applied.
+// Auth0EmailProviderOutputs contains the email provider as applied.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/email_provider#attributes-reference
-message Auth0EmailProviderStackOutputs {
+message Auth0EmailProviderOutputs {
   // name is the service the tenant sends through, as Auth0 names it (for
   // example "smtp", "ses", "sendgrid").
   string name = 1;

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsecsservice.v1alpha1;
 
-// AwsEcsServiceStackOutputs captures the observable outputs of a
+// AwsEcsServiceOutputs captures the observable outputs of a
 // provisioned ECS service.
-message AwsEcsServiceStackOutputs {
+message AwsEcsServiceOutputs {
   // The ARN of the service (e.g. "arn:aws:ecs:us-west-2:123456789012:
   // service/my-cluster/api"). The primary handle for IAM policies, audit
   // tooling, and imports; it encodes both the cluster and service names.

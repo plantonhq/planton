@@ -1,5 +1,5 @@
 # Auth0Connection Outputs
-# These outputs match the Auth0ConnectionStackOutputs protobuf message
+# These outputs match the Auth0ConnectionOutputs protobuf message
 
 output "id" {
   description = "The unique identifier of the Auth0 connection"

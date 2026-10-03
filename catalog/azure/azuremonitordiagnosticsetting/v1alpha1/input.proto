@@ -5,10 +5,10 @@ package dev.planton.azure.azuremonitordiagnosticsetting.v1alpha1;
 import "catalog/azure/azuremonitordiagnosticsetting/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureMonitorDiagnosticSettingStackInput is the input to the IaC module.
+// AzureMonitorDiagnosticSettingIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-message AzureMonitorDiagnosticSettingStackInput {
-  // target cloud-resource to be deployed
+message AzureMonitorDiagnosticSettingIacInput {
+  // target infra-component to be deployed
   AzureMonitorDiagnosticSetting target = 1;
   // provider-config for Azure authentication
   dev.planton.azure.AzureProviderConfig provider_config = 2;

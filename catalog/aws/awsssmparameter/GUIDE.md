@@ -1,4 +1,4 @@
-# AwsSsmParameter — Component Guide
+# AwsSsmParameter — Kind Guide
 
 Authored operational judgment for the parameter component: the design
 decisions behind the spec's shape, and what to know before operating
@@ -47,7 +47,7 @@ parameters in production.
 - **Standard parameters are free**; Advanced bills per parameter-hour
   and unlocks 8KB values plus parameter policies (expiration,
   no-change notification) — policies are an Advanced-only, out-of-band
-  surface this component does not manage today.
+  surface this kind does not manage today.
 
 ---
 

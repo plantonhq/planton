@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: azurevirtualnetworkgateway
 spec:
@@ -74,7 +74,7 @@ spec:
       evidence:
         type: spec_default
         reference: The AZ tiers -- the only creatable VpnGw SKUs since Azure retired non-AZ creates -- deploy the gateway's instances zone-redundant in regions with availability zones (regional pairs elsewhere); BASIC never does. The SKU choice is explicit by spec contract, so zone redundancy is a deliberate selection, not an accident.
-      notes: All three presets pin AZ SKUs. active_active layers instance-level redundancy on top -- two always-live instances, each with its own public IP, at the same SKU rate. The zones themselves attach on the referenced public IPs, which must carry zones for AZ SKUs (ARM's VmssVpnGatewayPublicIpsMustHaveZonesConfigured contract) -- a cross-resource requirement governed on the AzurePublicIp component.
+      notes: All three presets pin AZ SKUs. active_active layers instance-level redundancy on top -- two always-live instances, each with its own public IP, at the same SKU rate. The zones themselves attach on the referenced public IPs, which must carry zones for AZ SKUs (ARM's VmssVpnGatewayPublicIpsMustHaveZonesConfigured contract) -- a cross-resource requirement governed on the AzurePublicIp kind.
     - control_id: deletion-protection
       status: not_applicable
       notes: Neither the virtualNetworkGateways API nor this spec offers a deletion-protection flag; Azure resource locks are subscription-side governance outside the manifest. ARM does refuse to delete a gateway that still has connections -- an ordering constraint the runner's reverse teardown handles, not a protection toggle.

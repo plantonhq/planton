@@ -5,10 +5,10 @@ package dev.planton.azure.azureprivateendpoint.v1alpha1;
 import "catalog/azure/azureprivateendpoint/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzurePrivateEndpointStackInput is the input to the IaC module.
+// AzurePrivateEndpointIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-message AzurePrivateEndpointStackInput {
-  // target cloud-resource to be deployed
+message AzurePrivateEndpointIacInput {
+  // target infra-component to be deployed
   AzurePrivateEndpoint target = 1;
   // provider-config for Azure authentication
   dev.planton.azure.AzureProviderConfig provider_config = 2;

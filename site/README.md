@@ -81,7 +81,7 @@ Decks run on one engine, `src/components/deck/` (hash navigation, keyboard, touc
 3. **Numbers come from `platform-stats.ts` and prices from `pricing.ts`.** A literal in prose is a defect.
 4. **Colors come from the palette.** Role classes only; no hex in a component; semantic hues only where they carry meaning.
 5. **Every page is registered.** A new route goes into `site-pages.ts` (or `retired-routes.ts`) or the build fails.
-6. **Every new top-level path is three declarations**: the registry, the router's website list (`site_roots` in planton-platform's `infrastructure/desktop/Infra.foundation.InfraProject.foundation-apex-router.yaml`, applied before the page merges), and the platform's reserved handles. The apex guard names what is missing.
+6. **Every new top-level path is three declarations**: the registry, the router's website list (`site_roots` in planton-platform's `infrastructure/desktop/Infra.foundation.InfraStack.foundation-apex-router.yaml`, applied before the page merges), and the platform's reserved handles. The apex guard names what is missing.
 7. **A retired route is whole.** Every retired path has an eight-line stub, forwards to a live registered page (never to another retired path), and nothing in the export links to it: the forward exists for the outside world, our own links point at the live page. The link gate enforces all three.
 8. **Nothing merges without the founder.** Build, lint, typecheck, the guards, the screenshot compare for a zero-visual-change commit, and a design review that reads the page as the visitor and as a copywriter.
 

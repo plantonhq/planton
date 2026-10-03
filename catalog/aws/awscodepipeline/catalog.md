@@ -4,7 +4,7 @@ Deploys a continuous delivery pipeline on AWS CodePipeline with configurable sta
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **CodePipeline Pipeline** -- an ordered sequence of stages, each containing one or more actions that fetch source code, run builds, execute tests, request approvals, or deploy to target environments
 - **Artifact Stores** -- one or more S3 bucket bindings for storing pipeline artifacts between stages; supports cross-region artifact stores for multi-region pipelines
@@ -16,14 +16,14 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **An IAM role** with permissions for S3 artifact access, source provider interaction (CodeStar Connections, S3, ECR, CodeCommit), and every action provider used in the pipeline (CodeBuild, ECS, Lambda, CloudFormation, etc.). Provide the ARN directly or reference an AwsIamRole Cloud Resource via ValueFromRef.
-- **An S3 bucket** for pipeline artifact storage. Each artifact store requires a bucket. For cross-region pipelines, provide one bucket per region. Provide the bucket name directly or reference an AwsS3Bucket Cloud Resource.
-- **A KMS key** (optional) -- for encrypting pipeline artifacts with a customer-managed key. Provide the ARN directly or reference an AwsKmsKey Cloud Resource.
+- **An IAM role** with permissions for S3 artifact access, source provider interaction (CodeStar Connections, S3, ECR, CodeCommit), and every action provider used in the pipeline (CodeBuild, ECS, Lambda, CloudFormation, etc.). Provide the ARN directly or reference an AwsIamRole Infra Component via ValueFromRef.
+- **An S3 bucket** for pipeline artifact storage. Each artifact store requires a bucket. For cross-region pipelines, provide one bucket per region. Provide the bucket name directly or reference an AwsS3Bucket Infra Component.
+- **A KMS key** (optional) -- for encrypting pipeline artifacts with a customer-managed key. Provide the ARN directly or reference an AwsKmsKey Infra Component.
 - **A CodeStar Connection** (optional) -- required when using git-based triggers or CodeStarSourceConnection source actions for GitHub, Bitbucket, or GitLab repositories.
 
 ## Deploy
@@ -81,7 +81,7 @@ spec:
 planton apply -f codepipeline.yaml
 ```
 
-This creates a V2 pipeline with a GitHub source stage and a CodeBuild build stage. No triggers, variables, or cross-region artifact stores are configured. A Stack Job tracks the provisioning and streams progress in real time.
+This creates a V2 pipeline with a GitHub source stage and a CodeBuild build stage. No triggers, variables, or cross-region artifact stores are configured. An Infra Job tracks the provisioning and streams progress in real time.
 
 ### InfraChart
 
@@ -125,7 +125,7 @@ These are the most important decisions when configuring a CodePipeline. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -135,9 +135,9 @@ These are the most important decisions when configuring a CodePipeline. Explore 
 | **AwsIamRole** (optional) | `stages[].actions[].roleArn` | `status.outputs.role_arn` |
 | **AwsIamRole** (optional) | `stages[].{beforeEntry,onSuccess,onFailure.condition}.rules[].roleArn` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -156,7 +156,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS CodeBuild Project**](/cloud-catalog/aws-code-build-project) -- provides the build and test stages the pipeline's CodeBuild actions invoke by project name
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- provides the pipeline service role and optional per-action cross-account roles
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) -- provides artifact storage between pipeline stages
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for artifact encryption
+- [**AWS CodeBuild Project**](/infra-catalog/aws-code-build-project) -- provides the build and test stages the pipeline's CodeBuild actions invoke by project name
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- provides the pipeline service role and optional per-action cross-account roles
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) -- provides artifact storage between pipeline stages
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for artifact encryption

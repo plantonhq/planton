@@ -9,11 +9,11 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/internal/manifest"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/e2e/profile"
 	"github.com/plantonhq/planton/pkg/manifestgraph"
-	componentv1 "github.com/plantonhq/planton/qa/componente2eprofile/v1"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	kindv1 "github.com/plantonhq/planton/qa/catalogkinde2eprofile/v1"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // This file is the OFFLINE half of the reference-resolution contract that
@@ -66,8 +66,8 @@ func (f FixtureIntegrityFinding) String() string {
 // Findings are defects to fix in the manifests (or the kind's registry
 // prerequisites); the returned error is reserved for I/O-level failures of
 // the checker itself.
-func CheckScenarioFixtureIntegrity(repoRoot, componentProvider, component, scenarioPath string) ([]FixtureIntegrityFinding, error) {
-	deps, err := ResolveDependencies(repoRoot, componentProvider, component, scenarioPath)
+func CheckScenarioFixtureIntegrity(repoRoot, kindProvider, kindDir, scenarioPath string) ([]FixtureIntegrityFinding, error) {
+	deps, err := ResolveDependencies(repoRoot, kindProvider, kindDir, scenarioPath)
 	if err != nil {
 		// A chain that cannot even resolve (missing install manifest, unknown
 		// annotation kind, cycle) is the first thing a live run would die on.
@@ -82,7 +82,7 @@ func CheckScenarioFixtureIntegrity(repoRoot, componentProvider, component, scena
 	// mirroring the `accumulated` outputs map in DeployDependencies: an
 	// install manifest's references resolve only against instances deployed
 	// before it; the scenario's resolve against the whole chain.
-	deployed := make(map[cloudresourcekind.CloudResourceKind]map[string]bool)
+	deployed := make(map[catalogkind.CatalogKind]map[string]bool)
 	var findings []FixtureIntegrityFinding
 
 	for _, dep := range deps {
@@ -95,7 +95,7 @@ func CheckScenarioFixtureIntegrity(repoRoot, componentProvider, component, scena
 			})
 			continue
 		}
-		kind := crkreflect.KindFromString(dep.KindSlug)
+		kind := catalogkindreflect.KindFromString(dep.KindSlug)
 		for _, docPath := range docPaths {
 			findings = append(findings, manifestRefFindings(scenarioPath, dep.ManifestPath, docPath, deployed)...)
 
@@ -123,7 +123,7 @@ func CheckScenarioFixtureIntegrity(repoRoot, componentProvider, component, scena
 // reference in its spec against the instances deployed so far. reportPath is
 // the on-disk file to name in findings (docPath may be a temp per-document
 // split of a multi-document profile).
-func manifestRefFindings(scenarioPath, reportPath, docPath string, deployed map[cloudresourcekind.CloudResourceKind]map[string]bool) []FixtureIntegrityFinding {
+func manifestRefFindings(scenarioPath, reportPath, docPath string, deployed map[catalogkind.CatalogKind]map[string]bool) []FixtureIntegrityFinding {
 	loadPath, err := withRunClockExpanded(docPath)
 	if err != nil {
 		return []FixtureIntegrityFinding{{
@@ -160,9 +160,9 @@ func manifestRefFindings(scenarioPath, reportPath, docPath string, deployed map[
 // Returns nil when the reference will resolve. The finding's Field keeps the
 // BARE field name -- it is a segment of the baseline's stable key shape, and
 // renaming it would stale every committed entry at once.
-func checkRefResolvable(use manifestgraph.RefUse, deployed map[cloudresourcekind.CloudResourceKind]map[string]bool) *FixtureIntegrityFinding {
+func checkRefResolvable(use manifestgraph.RefUse, deployed map[catalogkind.CatalogKind]map[string]bool) *FixtureIntegrityFinding {
 	kind := manifestgraph.EffectiveKind(use)
-	if kind == cloudresourcekind.CloudResourceKind_unspecified {
+	if kind == catalogkind.CatalogKind_unspecified {
 		return &FixtureIntegrityFinding{
 			Field:   string(use.Field.Name()),
 			RefName: use.Ref.GetName(),
@@ -178,7 +178,7 @@ func checkRefResolvable(use manifestgraph.RefUse, deployed map[cloudresourcekind
 			RefKind: kind.String(),
 			RefName: use.Ref.GetName(),
 			Reason: "the prerequisite chain deploys no instance of this kind before this manifest -- the reference " +
-				"can never resolve; add the kind to the component's registry prerequisites or the scenario's " +
+				"can never resolve; add the kind to the kind's registry prerequisites or the scenario's " +
 				"planton.dev/e2e-prerequisites annotation",
 		}
 	}
@@ -200,11 +200,11 @@ func checkRefResolvable(use manifestgraph.RefUse, deployed map[cloudresourcekind
 	}
 }
 
-// CheckCatalogFixtureIntegrity runs the scenario check across every component
+// CheckCatalogFixtureIntegrity runs the scenario check across every kind
 // scenario in the repository's catalog and returns all findings, keeping one
-// component's defect from hiding another's.
+// kind's defect from hiding another's.
 //
-// Components whose E2E profile records `status: deferred` are skipped: a
+// Kinds whose E2E profile records `status: deferred` are skipped: a
 // deferral is the kind's own record that its lanes cannot run (a wall-class
 // prerequisite may be structurally unshippable — e.g. a fixture that would
 // mutate the shared account irreversibly), so demanding a deployable fixture
@@ -225,18 +225,18 @@ func CheckCatalogFixtureIntegrity(repoRoot string) ([]FixtureIntegrityFinding, e
 			continue
 		}
 		providerDir := filepath.Join(catalogDir, provider.Name())
-		components, err := os.ReadDir(providerDir)
+		kindDirs, err := os.ReadDir(providerDir)
 		if err != nil {
 			return nil, errors.Wrapf(err, "failed to read provider dir %s", providerDir)
 		}
-		for _, component := range components {
-			if !component.IsDir() {
+		for _, kindDir := range kindDirs {
+			if !kindDir.IsDir() {
 				continue
 			}
-			if componentProfileDeferred(repoRoot, provider.Name(), component.Name()) {
+			if kindProfileDeferred(repoRoot, provider.Name(), kindDir.Name()) {
 				continue
 			}
-			scenariosDir := filepath.Join(providerDir, component.Name(), "e2e", "scenarios")
+			scenariosDir := filepath.Join(providerDir, kindDir.Name(), "e2e", "scenarios")
 			scenarios, err := os.ReadDir(scenariosDir)
 			if err != nil {
 				continue // no scenarios -- nothing to check
@@ -246,7 +246,7 @@ func CheckCatalogFixtureIntegrity(repoRoot string) ([]FixtureIntegrityFinding, e
 					continue
 				}
 				scenarioPath := filepath.Join(scenariosDir, scenario.Name())
-				scenarioFindings, err := CheckScenarioFixtureIntegrity(repoRoot, provider.Name(), component.Name(), scenarioPath)
+				scenarioFindings, err := CheckScenarioFixtureIntegrity(repoRoot, provider.Name(), kindDir.Name(), scenarioPath)
 				if err != nil {
 					return nil, errors.Wrapf(err, "fixture integrity check failed for %s", scenarioPath)
 				}
@@ -257,16 +257,16 @@ func CheckCatalogFixtureIntegrity(repoRoot string) ([]FixtureIntegrityFinding, e
 	return findings, nil
 }
 
-// componentProfileDeferred reports whether a component's E2E profile records
+// kindProfileDeferred reports whether a kind's E2E profile records
 // `status: deferred`. Any load failure (no profile, unreadable, unregistered
-// directory name) returns false so the gate still checks the component --
+// directory name) returns false so the gate still checks the kind --
 // only an explicit deferral record earns the skip.
-func componentProfileDeferred(repoRoot, provider, component string) bool {
-	p, err := profile.LoadComponentProfile(repoRoot, provider, component)
+func kindProfileDeferred(repoRoot, provider, kindDir string) bool {
+	p, err := profile.LoadKindProfile(repoRoot, provider, kindDir)
 	if err != nil {
 		return false
 	}
-	return p.GetSpec().GetStatus() == componentv1.ComponentE2EProfileSpec_deferred
+	return p.GetSpec().GetStatus() == kindv1.CatalogKindE2EProfileSpec_deferred
 }
 
 // withRunClockExpanded returns a manifest whose run-clock tokens hold timestamps, as a lane expands

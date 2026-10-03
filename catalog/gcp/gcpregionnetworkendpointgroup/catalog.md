@@ -4,7 +4,7 @@ Deploys a regional network endpoint group (NEG) — the bridge that lets a load 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute Engine API enablement** -- the module enables `compute.googleapis.com` in the target project first, so a fresh project works on the first deploy (never disabled on destroy)
 - **Regional Network Endpoint Group** -- scoped to one region, holding endpoints of the selected type
@@ -14,12 +14,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the NEG will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef. The module enables the Compute Engine API itself — no manual API setup is needed.
+- **A GCP project** where the NEG will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef. The module enables the Compute Engine API itself — no manual API setup is needed.
 - **The fronted workload's region** -- a serverless NEG must live in the SAME region as the Cloud Run/Functions/App Engine workload it fronts (the workload itself need not exist yet — GCP resolves endpoints at serving time).
 
 ## Deploy
@@ -52,7 +52,7 @@ spec:
 planton apply -f region-neg.yaml
 ```
 
-This creates a serverless NEG fronting the `orders-api` Cloud Run service — ready to be referenced by a backend service. A Stack Job tracks the provisioning in real time.
+This creates a serverless NEG fronting the `orders-api` Cloud Run service — ready to be referenced by a backend service. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,7 +85,7 @@ These are the most important decisions when configuring a regional NEG. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -95,9 +95,9 @@ These are the most important decisions when configuring a regional NEG. Explore 
 | **GcpCloudRun** (serverless NEGs) | `cloudRun.service` | `status.outputs.service_name` |
 | **GcpCloudFunction** (serverless NEGs) | `cloudFunction.function` | `status.outputs.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -117,9 +117,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the NEG is created
-- [**GCP Cloud Run**](/cloud-catalog/gcp-cloud-run) -- the service a serverless NEG fronts
-- [**GCP Cloud Function**](/cloud-catalog/gcp-cloud-function) -- the function a serverless NEG fronts
-- [**GCP Backend Service**](/cloud-catalog/gcp-backend-service) -- consumes the NEG's `self_link` in its `backends[].group`
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- the network for PSC, internet, and portmap NEGs
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- the subnetwork for PSC and portmap NEGs
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the NEG is created
+- [**GCP Cloud Run**](/infra-catalog/gcp-cloud-run) -- the service a serverless NEG fronts
+- [**GCP Cloud Function**](/infra-catalog/gcp-cloud-function) -- the function a serverless NEG fronts
+- [**GCP Backend Service**](/infra-catalog/gcp-backend-service) -- consumes the NEG's `self_link` in its `backends[].group`
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- the network for PSC, internet, and portmap NEGs
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- the subnetwork for PSC and portmap NEGs

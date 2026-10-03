@@ -5,9 +5,9 @@ package dev.planton.aws.awsmanagedprometheusscraper.v1alpha1;
 import "catalog/aws/awsmanagedprometheusscraper/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsManagedPrometheusScraperStackInput is the input for the IaC
+// AwsManagedPrometheusScraperIacInput is the input for the IaC
 // modules that manage an AMP scraper.
-message AwsManagedPrometheusScraperStackInput {
+message AwsManagedPrometheusScraperIacInput {
   // target is the AwsManagedPrometheusScraper resource to deploy.
   AwsManagedPrometheusScraper target = 1;
   // provider_config contains the AWS provider credentials and configuration.

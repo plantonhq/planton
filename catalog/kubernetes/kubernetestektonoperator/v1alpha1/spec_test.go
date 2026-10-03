@@ -22,7 +22,7 @@ var _ = ginkgo.Describe("KubernetesTektonOperator Validation Tests", func() {
 		input = &KubernetesTektonOperator{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesTektonOperator",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "tekton-operator",
 			},
 			Spec: &KubernetesTektonOperatorSpec{},

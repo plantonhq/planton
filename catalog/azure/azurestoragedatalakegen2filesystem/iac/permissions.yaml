@@ -2,9 +2,9 @@
 # provision, update, and destroy this component with the official modules.
 # Every entry is `derived` (static analysis of the module sources, cited in
 # notes) until the live capture lane upgrades it to `proven`. Schema:
-# iac/componentpermissions/v1.
+# iac/catalogkindpermissions/v1.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: azurestoragedatalakegen2filesystem
 spec:
@@ -15,4 +15,4 @@ spec:
           - Microsoft.Storage/storageAccounts/read
           - Microsoft.Storage/storageAccounts/listkeys/action
         provenance: derived
-        notes: "Covers azurerm_storage_data_lake_gen2_filesystem / storage.NewDataLakeGen2Filesystem on both engines -- the filesystem is a pure DATA-PLANE resource: the provider talks to the account's dfs endpoint with the account's shared key (fetched via listkeys; the account read resolves properties and endpoints) for create, refresh, root owner/group/ACL and properties updates, and destroy. No ARM child-resource call exists -- the filesystem_id stack output (the blobServices/default/containers/... container-proxy ARM ID that data-plane role assignments scope to) is CONSTRUCTED client-side, not read back. Shared key bypasses Azure RBAC data actions, so no dataActions are declared. Two operational consequences: the parent account must keep shared-key authorization enabled, and the account's data-plane firewall must admit the runner -- a network rule that blocks it blocks the create even though ARM would allow it. POSIX ACL fields additionally require hierarchical namespace on the ACCOUNT; Azure rejects them on flat-namespace accounts at apply time."
+        notes: "Covers azurerm_storage_data_lake_gen2_filesystem / storage.NewDataLakeGen2Filesystem on both engines -- the filesystem is a pure DATA-PLANE resource: the provider talks to the account's dfs endpoint with the account's shared key (fetched via listkeys; the account read resolves properties and endpoints) for create, refresh, root owner/group/ACL and properties updates, and destroy. No ARM child-resource call exists -- the filesystem_id output (the blobServices/default/containers/... container-proxy ARM ID that data-plane role assignments scope to) is CONSTRUCTED client-side, not read back. Shared key bypasses Azure RBAC data actions, so no dataActions are declared. Two operational consequences: the parent account must keep shared-key authorization enabled, and the account's data-plane firewall must admit the runner -- a network rule that blocks it blocks the create even though ARM would allow it. POSIX ACL fields additionally require hierarchical namespace on the ACCOUNT; Azure rejects them on flat-namespace accounts at apply time."

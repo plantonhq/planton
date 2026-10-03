@@ -31,7 +31,7 @@ const siteRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'
 const exportDir = path.join(siteRoot, 'out');
 
 /** Paths the console serves on the shared domain; a link to them is not a dead link. */
-const CONSOLE_PATHS = new Set(['/signup', '/login', '/logout', '/dashboard', '/cloud-catalog', '/license/buy', '/license/buy#evaluation']);
+const CONSOLE_PATHS = new Set(['/signup', '/login', '/logout', '/dashboard', '/infra-catalog', '/license/buy', '/license/buy#evaluation']);
 
 function fail(message) {
   console.error(`\u2717 ${GATE}: ${message}`);

@@ -577,7 +577,7 @@ message GcpDatastreamStreamBlmtConfig {
   // The BigQuery connection whose service account writes the bucket -- a
   // GcpBigQueryConnection reference (its name output, which the modules
   // convert to Google's {project}.{location}.{connection_id} form) or a
-  // literal in the dotted form. Use a cloud_resource connection and grant
+  // literal in the dotted form. Use an infra_component connection and grant
   // its service account storage access on the bucket.
   dev.planton.shared.foreignkey.v1.StringValueOrRef connection_name = 3 [
     (buf.validate.field).required = true,

@@ -1,13 +1,13 @@
 # Kubernetes passthrough pair rebuilt: raw manifests and Helm releases at full depth on both engines
 
 **Date**: 2026-07-22
-**Scope**: `apis/dev/planton/provider/kubernetes` (kubernetesmanifest, kuberneteshelmrelease — both rebuilt), `aa_import`, `aa_e2e/verify`, `e2e` (incl. `framework/runner/import_roundtrip.go`), `pkg/outputs`, `pkg/iac/importmap`, `pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider`, Makefile E2E tiers, site catalog, `_rules/deployment-component/update`, `go.mod` (helm.sh/helm/v3 for strvals)
+**Scope**: `apis/dev/planton/provider/kubernetes` (kubernetesmanifest, kuberneteshelmrelease — both rebuilt), `aa_import`, `aa_e2e/verify`, `e2e` (incl. `framework/runner/import_roundtrip.go`), `pkg/outputs`, `pkg/iac/importmap`, `pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider`, Makefile E2E tiers, site catalog, `_rules/catalog-kind/update`, `go.mod` (helm.sh/helm/v3 for strvals)
 
 ## What changed
 
 The catalog's two escape-hatch kinds — deploy any raw Kubernetes YAML, and
 install any upstream Helm chart — rebuilt to the same bar as every typed
-component, with dual-engine parity and live E2E on both engines.
+kind, with dual-engine parity and live E2E on both engines.
 
 ### KubernetesManifest (rebuilt)
 
@@ -60,7 +60,7 @@ component, with dual-engine parity and live E2E on both engines.
   read from what Helm actually recorded, both engines.
 - **Import recipes shipped and proven**: `helm_release` catalog entry
   (`{namespace}/{name}` id; install-time attributes declared config-only —
-  Helm does not persist how a release was installed), component import map,
+  Helm does not persist how a release was installed), catalog kind import map,
   blind round-trip green on all three scenarios.
 
 ### Framework and satellites
@@ -75,14 +75,14 @@ component, with dual-engine parity and live E2E on both engines.
   provider with a scope-aware default namespace) for modules applying
   user-authored manifests.
 - Both kinds: settled module anatomy (per-kind Pulumi project names,
-  stack-input.yaml entrypoints, hack manifests at `iac/hack/` exercising
+  iac-input.yaml entrypoints, hack manifests at `iac/hack/` exercising
   the full surface — the HelmRelease hack manifest previously failed its
   own spec validation), `planton.ai/*` identity labels, three presets each
   (machine-validated), rewritten docs/README/catalog pages leading with
   when-NOT-to-use-this boundary language, outputs conformance cases,
   E2E registration (HelmRelease joins Tier 1; profile un-deferred), site
   catalog regenerated.
-- E2E verifier: `kuberneteshelmrelease` dispatches to the Helm component
+- E2E verifier: `kuberneteshelmrelease` dispatches to the Helm kind
   verifier (namespace + running pods + service).
 - Update rule amended (timeless): the loud-failure discipline for
   engine-inexpressible fields now covers the Pulumi-side direction, with

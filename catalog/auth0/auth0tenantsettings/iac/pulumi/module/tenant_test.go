@@ -13,17 +13,17 @@ import (
 	"google.golang.org/protobuf/proto"
 )
 
-func stackInput(spec *auth0tenantsettingsv1alpha1.Auth0TenantSettingsSpec) *auth0tenantsettingsv1alpha1.Auth0TenantSettingsStackInput {
-	return &auth0tenantsettingsv1alpha1.Auth0TenantSettingsStackInput{
+func iacInput(spec *auth0tenantsettingsv1alpha1.Auth0TenantSettingsSpec) *auth0tenantsettingsv1alpha1.Auth0TenantSettingsIacInput {
+	return &auth0tenantsettingsv1alpha1.Auth0TenantSettingsIacInput{
 		Target: &auth0tenantsettingsv1alpha1.Auth0TenantSettings{
-			Metadata: &shared.CloudResourceMetadata{Name: "tenant-settings"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "tenant-settings"},
 			Spec:     spec,
 		},
 	}
 }
 
 func argsFor(spec *auth0tenantsettingsv1alpha1.Auth0TenantSettingsSpec) *auth0.TenantArgs {
-	return tenantArgs(initializeLocals(stackInput(spec)))
+	return tenantArgs(initializeLocals(iacInput(spec)))
 }
 
 // setArgs lists the names of the struct's fields that are not nil -- the

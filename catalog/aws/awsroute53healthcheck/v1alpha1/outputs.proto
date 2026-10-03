@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package dev.planton.aws.awsroute53healthcheck.v1alpha1;
 
-// AwsRoute53HealthCheckStackOutputs captures observable identifiers from a
+// AwsRoute53HealthCheckOutputs captures observable identifiers from a
 // provisioned Route 53 health check.
 //
 // The primary output is `health_check_id` — the value an AwsRoute53DnsRecord
 // references (via spec.health_check_id) to gate its DNS answers on this
 // check, and the value CALCULATED parent checks aggregate as children.
-message AwsRoute53HealthCheckStackOutputs {
+message AwsRoute53HealthCheckOutputs {
   // The health check ID (a UUID, e.g.
   // "abcdef11-2222-3333-4444-555555fedcba"). The identifier DNS records and
   // calculated parent checks reference.

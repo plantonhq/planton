@@ -8,7 +8,7 @@ This Pulumi module creates and manages a Kubernetes Secret with type-safe data v
 
 ```
 iac/pulumi/
-├── main.go          # Entrypoint: loads stack input, calls module
+├── main.go          # Entrypoint: loads IaC input, calls module
 ├── Pulumi.yaml      # Pulumi project configuration
 ├── Makefile         # Make targets for preview/up/down/refresh
 └── module/
@@ -20,7 +20,7 @@ iac/pulumi/
 
 ## How It Works
 
-1. **Stack Input Loading**: The entrypoint loads `KubernetesSecretStackInput` from Pulumi config
+1. **IaC Input Loading**: The entrypoint loads `KubernetesSecretIacInput` from Pulumi config
 2. **Locals Initialization**: `locals.go` computes:
    - Standard Planton labels merged with user labels
    - User annotations
@@ -28,7 +28,7 @@ iac/pulumi/
    - Secret data map with correctly-keyed entries per type
 3. **Provider Creation**: Kubernetes provider is initialized from `provider_config`
 4. **Secret Creation**: A single `kubernetes.core.v1.Secret` is created with the computed type, data, labels, annotations, and immutability flag
-5. **Output Export**: Secret name, namespace, and type are exported as stack outputs
+5. **Output Export**: Secret name, namespace, and type are exported as outputs
 
 ## Type Mapping
 

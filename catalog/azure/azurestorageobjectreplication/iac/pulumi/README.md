@@ -22,7 +22,7 @@ storage.ObjectReplication (single resource -- the two-sided policy pair)
   `filterOutBlobsWithPrefixes`** -- the spec uses ARM's own name
   because these are INCLUDE filters despite the provider attribute's
   "filter out" wording.
-- **`copy_blobs_created_after` is presence-guarded** -- stack inputs do
+- **`copy_blobs_created_after` is presence-guarded** -- IaC inputs do
   not materialize proto defaults, so unset falls through to the
   provider's own OnlyNewObjects default on both engines.
 - **`metrics_enabled` is a recorded skip** -- pulumi-azure v6.38 has
@@ -35,6 +35,6 @@ storage.ObjectReplication (single resource -- the two-sided policy pair)
 ## Provider
 
 The Azure provider is built by the shared
-`pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)` builder, which
+`pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)` builder, which
 dispatches static client-secret, keyless web-identity (OIDC), and
 ambient credential chains. Never construct a provider inline.

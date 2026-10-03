@@ -1,17 +1,17 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceanvolume
 spec:
   # The volume's identity is its API UUID, which the module exports as the
-  # volume_id stack output -- zero user input when state is present. The
+  # volume_id output -- zero user input when state is present. The
   # create-only initialization arguments (snapshot_id, initial_filesystem_type,
   # initial_filesystem_label) are never returned by the API and stay empty on
   # import (recorded as config-only tolerances in the provider import catalog).
   values:
     - name: volume_id
       derivations:
-        - from_stack_output: volume_id
+        - from_output: volume_id
       where_to_find: >-
         DigitalOcean control panel -> Volumes -> the UUID in the volume's
         page URL, or `doctl compute volume list` (the ID column).

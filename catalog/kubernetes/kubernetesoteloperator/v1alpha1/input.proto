@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesoteloperator.v1alpha1;
 import "catalog/kubernetes/kubernetesoteloperator/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//otel-operator-kubernetes stack-input
-message KubernetesOtelOperatorStackInput {
-  //target cloud-resource
+//otel-operator-kubernetes iac-input
+message KubernetesOtelOperatorIacInput {
+  //target infra-component
   KubernetesOtelOperator target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

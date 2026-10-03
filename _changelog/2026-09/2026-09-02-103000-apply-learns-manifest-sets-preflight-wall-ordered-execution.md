@@ -8,7 +8,7 @@
   several resources — apply becomes the orchestrated lane: one preflight
   report, then the resources deploy sequentially in dependency order derived
   from their own `valueFrom` references, `metadata.relationships`, and
-  literal namespace placement, with each node's captured stack outputs
+  literal namespace placement, with each node's captured outputs
   resolving the next nodes' references to literals before handoff. One
   manifest behaves exactly as before, byte for byte. This replaces the
   loud multi-document refusal that previously guarded the silent-truncation
@@ -70,7 +70,7 @@
 
 - **Single-resource flags refuse set input with the fix named** (`--set`,
   `--module-dir`, `--local-module`, `--stack`, `--backend-key`,
-  `--stack-input`, `--clipboard`); set-wide flags stay legal
+  `--iac-input`, `--clipboard`); set-wide flags stay legal
   (`--backend-type/bucket/region/endpoint`, `--backend-url`,
   `--module-version`, `--kube-context`, `--auto-approve`/`--yes`). Approval
   is ONE decision per set: `--auto-approve` (or `--yes`) in CI, one
@@ -117,11 +117,11 @@ like this (abridged; exit code 2):
   ✔ Manifests load and validate
      ✔ 2 of 2 documents load as known kinds and pass schema validation
   ✖ References resolve inside this set
-     ✖ manifests/02-service.yaml: spec.annotated_ref: references TestCloudResourceGeneric "missing-resource" outside this set; the set does not deploy it — the value must come from a resource that already exists — no backend exists here to discover it; add its manifest to this set, or deploy connected
+     ✖ manifests/02-service.yaml: spec.annotated_ref: references TestCatalogKindGeneric "missing-resource" outside this set; the set does not deploy it — the value must come from a resource that already exists — no backend exists here to discover it; add its manifest to this set, or deploy connected
   ✖ No values require a Planton backend
      ✖ manifests/01-cache.yaml: spec.sensitive_string carries a $secret reference, which resolves only through a Planton backend — for runtime secrets use provider-native secret references (`planton secret snippet`), or deploy connected
   ✔ Dependencies form a deployable order
-     ✔ deploy order: TestCloudResourceGeneric/cache@prod -> TestCloudResourceGeneric/service@prod
+     ✔ deploy order: TestCatalogKindGeneric/cache@prod -> TestCatalogKindGeneric/service@prod
 
 ✖ preflight refused the deploy: 2 problems named above — nothing was handed to an IaC engine
 ```

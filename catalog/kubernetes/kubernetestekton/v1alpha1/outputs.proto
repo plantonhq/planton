@@ -6,7 +6,7 @@ package dev.planton.kubernetes.kubernetestekton.v1alpha1;
  * Outputs exported after the Tekton installation converges — the
  * handles downstream resources and humans compose against.
  */
-message KubernetesTektonStackOutputs {
+message KubernetesTektonOutputs {
   /**
    * Namespace the Tekton components run in (the TektonConfig
    * targetNamespace — `tekton-pipelines` unless overridden).

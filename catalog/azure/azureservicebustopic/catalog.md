@@ -4,7 +4,7 @@ Deploys a topic inside an Azure Service Bus namespace -- the publish-subscribe p
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Service Bus Topic** -- on the referenced namespace, with your chosen size, message-size, partitioning, TTL, ordering, duplicate-detection, express, and batching dials
 - **The administrative gate** -- when `status` is set: the topic deploys Active or Disabled (publishes rejected; subscriptions retained)
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -52,7 +52,7 @@ spec:
 planton apply -f topic.yaml
 ```
 
-This creates the `order-events` topic on the `order-bus` namespace with a 14-day TTL ceiling; unset dials keep Azure's defaults (tier-default size, 256 KB messages, no ordering guarantee, batching on), and subscriptions arrive as their own kind afterward, referencing this topic. A Stack Job tracks the provisioning in real time.
+This creates the `order-events` topic on the `order-bus` namespace with a 14-day TTL ceiling; unset dials keep Azure's defaults (tier-default size, 256 KB messages, no ordering guarantee, batching on), and subscriptions arrive as their own kind afterward, referencing this topic. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,15 +87,15 @@ These are the most important decisions when configuring a Service Bus topic. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureServiceBusNamespace** | `namespaceId` | `status.outputs.namespace_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -115,7 +115,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Service Bus Namespace**](/cloud-catalog/azure-service-bus-namespace) -- the parent namespace every topic references
-- [**Azure Service Bus Subscription**](/cloud-catalog/azure-service-bus-subscription) -- the consumer-side satellite; each one is an independent, filtered view of this topic
-- [**Azure Service Bus Queue**](/cloud-catalog/azure-service-bus-queue) -- the point-to-point sibling; subscriptions commonly forward matches into one
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- keyless data-plane grants scoped to `topic_id`
+- [**Azure Service Bus Namespace**](/infra-catalog/azure-service-bus-namespace) -- the parent namespace every topic references
+- [**Azure Service Bus Subscription**](/infra-catalog/azure-service-bus-subscription) -- the consumer-side satellite; each one is an independent, filtered view of this topic
+- [**Azure Service Bus Queue**](/infra-catalog/azure-service-bus-queue) -- the point-to-point sibling; subscriptions commonly forward matches into one
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- keyless data-plane grants scoped to `topic_id`

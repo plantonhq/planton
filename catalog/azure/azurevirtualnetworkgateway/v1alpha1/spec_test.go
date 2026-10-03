@@ -46,7 +46,7 @@ func validResource() *AzureVirtualNetworkGateway {
 	return &AzureVirtualNetworkGateway{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureVirtualNetworkGateway",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-vng",
 		},
 		Spec: &AzureVirtualNetworkGatewaySpec{

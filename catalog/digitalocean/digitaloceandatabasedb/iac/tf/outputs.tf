@@ -1,4 +1,4 @@
-# Stack outputs — exactly the DigitalOceanDatabaseDbStackOutputs contract,
+# Outputs — exactly the DigitalOceanDatabaseDbOutputs contract,
 # identical across both provisioners. The (cluster, name) pair is the
 # logical database's API identity; DigitalOcean mints no standalone id.
 

@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceanreservedip.v1alpha1;
 
-// DigitalOceanReservedIpStackOutputs captures the key outputs after
+// DigitalOceanReservedIpOutputs captures the key outputs after
 // reserving an IP address. The address itself is the resource's API
 // identity (there is no separate reserved-IP id).
-message DigitalOceanReservedIpStackOutputs {
+message DigitalOceanReservedIpOutputs {
   // The reserved IP address (IPv4 or IPv6 per the spec's ip_version). This
   // IS the resource identity: imports, lookups, and assignments all address
   // the reservation by this value.

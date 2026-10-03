@@ -9,12 +9,12 @@ import (
 
 // Resources orchestrates creation of the patch baseline with its
 // folded patch groups and default designation, and exports outputs.
-func Resources(ctx *pulumi.Context, stackInput *awsssmpatchbaselinev1alpha1.AwsSsmPatchBaselineStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsssmpatchbaselinev1alpha1.AwsSsmPatchBaselineIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which resolves
+	// Build the AWS provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static keys, keyless web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.Target.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.Target.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

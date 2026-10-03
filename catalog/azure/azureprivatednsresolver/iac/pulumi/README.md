@@ -10,7 +10,7 @@ Creates an Azure DNS Private Resolver -- the managed DNS proxy that resolves nam
 - `privatedns.ResolverInboundEndpoint` -- one per `spec.inbound_endpoints` entry
 - `privatedns.ResolverOutboundEndpoint` -- one per `spec.outbound_endpoints` entry
 
-## Stack Outputs
+## Outputs
 
 - `dns_resolver_id` -- the resolver's ARM resource ID
 - `dns_resolver_name` -- the resolver's name

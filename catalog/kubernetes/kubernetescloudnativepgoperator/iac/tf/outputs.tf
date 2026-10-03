@@ -1,4 +1,4 @@
-# Stack outputs — flattened onto KubernetesCloudNativePgOperatorStackOutputs
+# Outputs — flattened onto KubernetesCloudNativePgOperatorOutputs
 # by the platform. Keep in lockstep with the Pulumi module's exports.
 
 output "namespace" {

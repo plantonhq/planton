@@ -35,7 +35,7 @@ func validResource() *AzureMachineLearningBatchEndpoint {
 	return &AzureMachineLearningBatchEndpoint{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureMachineLearningBatchEndpoint",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-ml-batch-endpoint",
 		},
 		Spec: &AzureMachineLearningBatchEndpointSpec{

@@ -4,7 +4,7 @@ Sets one Google Cloud organization policy — the rules for one constraint at on
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Organization policy** -- the `org_policy_policy` named `{scope}/policies/{constraint}`, with its enforced rule set (`policy`) and, when given, its audit-only rule set (`dryRunPolicy`)
 
@@ -79,7 +79,7 @@ With no `scope`, the policy applies to the project the credentials are configure
 - **`parameters`** is a JSON object (`{...}`).
 - **`deletionPolicy`**: `DELETE`, `PREVENT`, or `ABANDON`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -107,7 +107,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpOrgPolicyCustomConstraint](/docs/catalog/gcp/gcporgpolicycustomconstraint) — the organization's own rule this policy enforces
 - [GcpFolder](/docs/catalog/gcp/gcpfolder) — the folder scope

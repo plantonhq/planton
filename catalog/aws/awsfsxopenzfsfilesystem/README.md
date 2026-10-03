@@ -99,7 +99,7 @@ Use FSx for OpenZFS when you need:
 |-------|------|---------|-------------|
 | `weekly_maintenance_start_time` | string | — | d:HH:MM UTC (1=Mon, 7=Sun) |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

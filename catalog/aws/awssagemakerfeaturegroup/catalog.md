@@ -4,7 +4,7 @@ Deploys an Amazon SageMaker Feature Store feature group — a declared schema of
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SageMaker Feature Group** — named from `metadata.name`, carrying the feature schema (scalars, or List / Set / Vector collections with a dimension), the online and/or offline store configuration, and the throughput mode. The offline store's Glue table is auto-created by AWS in the `sagemaker_featurestore` database unless `disableGlueTableCreation` opts out.
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with SageMaker Feature Store control-plane permissions (`sagemaker:CreateFeatureGroup` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with SageMaker Feature Store control-plane permissions (`sagemaker:CreateFeatureGroup` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -67,7 +67,7 @@ spec:
 planton apply -f feature-group.yaml
 ```
 
-This creates a dual-store group: four features served online with 30-day record expiry, every write also landing in S3 under an auto-created Glue table. A Stack Job tracks the provisioning in real time.
+This creates a dual-store group: four features served online with 30-day record expiry, every write also landing in S3 under an auto-created Glue table. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -112,16 +112,16 @@ These are the most important decisions when configuring a feature group. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsIamRole** | `roleArn` | `status.outputs.role_arn` |
 | **AwsKmsKey** | `onlineStore.kmsKeyArn`, `offlineStore.kmsKeyArn` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -138,7 +138,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the role SageMaker assumes to persist offline-store data, wired via `roleArn`
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption for either store's data at rest
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — the offline store's landing bucket, referenced by URI in `s3Uri`
-- [**AWS SageMaker Pipeline**](/cloud-catalog/aws-sagemaker-pipeline) — pipelines that ingest into or build training datasets from the group
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the role SageMaker assumes to persist offline-store data, wired via `roleArn`
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption for either store's data at rest
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — the offline store's landing bucket, referenced by URI in `s3Uri`
+- [**AWS SageMaker Pipeline**](/infra-catalog/aws-sagemaker-pipeline) — pipelines that ingest into or build training datasets from the group

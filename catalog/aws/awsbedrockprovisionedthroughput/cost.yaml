@@ -7,9 +7,9 @@
 # rate dimension per model (Titan, Nova, and so on) -- and this manifest
 # only names a reference to the model, never its identity, so a dollar
 # figure here would be a guess wearing a dollar sign.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsbedrockprovisionedthroughput
 spec:

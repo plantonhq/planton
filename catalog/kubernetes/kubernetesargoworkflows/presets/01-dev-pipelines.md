@@ -2,7 +2,7 @@
 
 The smallest useful Argo Workflows: the engine, the UI, and a runner
 identity — submit a Workflow CR (or use the UI over a port-forward;
-the command lands in the stack outputs) and it runs. The server's
+the command lands in the outputs) and it runs. The server's
 `client` auth mode means everyone acts with their own Kubernetes
 permissions from day one, which is the right default even in dev:
 there is no anonymous power to unlearn later.

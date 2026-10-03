@@ -1,10 +1,10 @@
 # Kubernetes NetworkPolicy
 
-Deploys a Kubernetes NetworkPolicy — the in-cluster firewall. The policy selects pods with a label selector and ALLOWS the traffic its rules describe; everything not allowed by some policy is denied once a pod is selected in that direction. Manages network isolation declaratively, with the full audit trail and versioning every Cloud Resource carries.
+Deploys a Kubernetes NetworkPolicy — the in-cluster firewall. The policy selects pods with a label selector and ALLOWS the traffic its rules describe; everything not allowed by some policy is denied once a pod is selected in that direction. Manages network isolation declaratively, with the full audit trail and versioning every Infra Component carries.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes NetworkPolicy** -- a networking/v1 NetworkPolicy in the specified namespace carrying the pod selector, governed directions, and the ingress/egress allow rules (selectors, namespace selectors, and CIDR blocks with carve-outs)
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -52,11 +52,11 @@ spec:
 planton apply -f networkpolicy.yaml
 ```
 
-This denies ALL traffic to and from every pod in `backend-services` — the lockdown baseline that targeted allow policies then open back up. A Stack Job tracks the provisioning in real time.
+This denies ALL traffic to and from every pod in `backend-services` — the lockdown baseline that targeted allow policies then open back up. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the policy to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the policy to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -90,7 +90,7 @@ These are the most important decisions when configuring a Kubernetes NetworkPoli
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -98,9 +98,9 @@ These are the most important decisions when configuring a Kubernetes NetworkPoli
 
 An omitted `namespace` means the cluster's `default` namespace.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -122,6 +122,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- reference the namespace so infra charts create it and this policy in dependency order
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) -- its `app` label is the selection contract; its `selector_labels` output carries the full set
-- [**Cilium**](/cloud-catalog/kubernetes-cilium) -- a CNI that enforces these policies (and extends them with its own richer policy language)
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference the namespace so infra charts create it and this policy in dependency order
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- its `app` label is the selection contract; its `selector_labels` output carries the full set
+- [**Cilium**](/infra-catalog/kubernetes-cilium) -- a CNI that enforces these policies (and extends them with its own richer policy language)

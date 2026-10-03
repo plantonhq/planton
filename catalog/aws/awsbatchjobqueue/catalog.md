@@ -4,26 +4,26 @@ Deploys an AWS Batch job queue: the place jobs are submitted to, and the routing
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Batch Job Queue** -- with the configured priority, accept/drain state, and the ordered compute-environment mapping
-- **Fair-share attachment** -- when `schedulingPolicy` references an [AWS Batch Scheduling Policy](/cloud-catalog/aws-batch-scheduling-policy), jobs are ordered by share identifier instead of first-in-first-out
+- **Fair-share attachment** -- when `schedulingPolicy` references an [AWS Batch Scheduling Policy](/infra-catalog/aws-batch-scheduling-policy), jobs are ordered by share identifier instead of first-in-first-out
 - **Stuck-job fuses** -- optional `jobStateTimeLimitActions` that automatically CANCEL jobs stuck at the head of the queue in RUNNABLE past a threshold
 - **AWS Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically for tracking and governance
 
-Jobs themselves are submitted against the queue at runtime (SubmitJob) using an [AWS Batch Job Definition](/cloud-catalog/aws-batch-job-definition); the queue holds them until a mapped environment has capacity.
+Jobs themselves are submitted against the queue at runtime (SubmitJob) using an [AWS Batch Job Definition](/infra-catalog/aws-batch-job-definition); the queue holds them until a mapped environment has capacity.
 
 ## Before You Deploy
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **At least one Batch compute environment** in the same region, in the VALID state. Reference an AwsBatchComputeEnvironment Cloud Resource or provide a literal ARN.
-- **A scheduling policy** (optional) for fair-share ordering. Reference an AwsBatchSchedulingPolicy Cloud Resource or provide a literal ARN — and note that once attached, a policy can be replaced but never removed.
+- **At least one Batch compute environment** in the same region, in the VALID state. Reference an AwsBatchComputeEnvironment Infra Component or provide a literal ARN.
+- **A scheduling policy** (optional) for fair-share ordering. Reference an AwsBatchSchedulingPolicy Infra Component or provide a literal ARN — and note that once attached, a policy can be replaced but never removed.
 
 ## Deploy
 
@@ -63,7 +63,7 @@ spec:
 planton apply -f batch-job-queue.yaml
 ```
 
-This creates a queue mapped onto one compute environment with a stuck-job fuse: jobs whose resource requirements the environment can never satisfy are cancelled after an hour. A Stack Job tracks the provisioning in real time.
+This creates a queue mapped onto one compute environment with a stuck-job fuse: jobs whose resource requirements the environment can never satisfy are cancelled after an hour. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -109,16 +109,16 @@ These are the most important decisions when configuring a job queue. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsBatchComputeEnvironment** (1-3) | `computeEnvironmentOrder[].computeEnvironment` | `status.outputs.compute_environment_arn` |
 | **AwsBatchSchedulingPolicy** (optional) | `schedulingPolicy` | `status.outputs.scheduling_policy_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -137,6 +137,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Batch Compute Environment**](/cloud-catalog/aws-batch-compute-environment) -- the capacity this queue dispatches onto, in preference order
-- [**AWS Batch Job Definition**](/cloud-catalog/aws-batch-job-definition) -- the container blueprint jobs are submitted from at runtime
-- [**AWS Batch Scheduling Policy**](/cloud-catalog/aws-batch-scheduling-policy) -- fair-share ordering within this queue (replaceable, never removable)
+- [**AWS Batch Compute Environment**](/infra-catalog/aws-batch-compute-environment) -- the capacity this queue dispatches onto, in preference order
+- [**AWS Batch Job Definition**](/infra-catalog/aws-batch-job-definition) -- the container blueprint jobs are submitted from at runtime
+- [**AWS Batch Scheduling Policy**](/infra-catalog/aws-batch-scheduling-policy) -- fair-share ordering within this queue (replaceable, never removable)

@@ -4,7 +4,7 @@ Starts an Amazon Bedrock model-customization job — fine-tuning, continued pre-
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Model Customization Job** — the training run itself, on the base model named by `baseModelArn`, reading `trainingDataS3Uri` and writing metrics and logs to `outputDataS3Uri`; validation datasets and VPC-scoped data access are configured only when `validationDataS3Uris` / `vpcConfig` are set
 - **Custom Model** — the trained model the job produces on completion, encrypted under your KMS key when `customModelKmsKeyArn` is set (a Bedrock-managed key otherwise), exported as `custom_model_arn`
@@ -15,7 +15,7 @@ The kind IS the job: destroying this component deletes the model and the job rec
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Bedrock model-customization permissions (`bedrock:CreateModelCustomizationJob` and its read/stop/delete siblings, plus `iam:PassRole` on the job role). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Bedrock model-customization permissions (`bedrock:CreateModelCustomizationJob` and its read/stop/delete siblings, plus `iam:PassRole` on the job role). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -58,7 +58,7 @@ spec:
 planton apply -f custom-model.yaml
 ```
 
-This starts a one-epoch fine-tuning job on Titan Text Lite; the deploy returns while training continues and `job_status` reports its progress. A Stack Job tracks the provisioning in real time.
+This starts a one-epoch fine-tuning job on Titan Text Lite; the deploy returns while training continues and `job_status` reports its progress. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -103,7 +103,7 @@ These are the most important decisions when configuring a custom model. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -112,9 +112,9 @@ These are the most important decisions when configuring a custom model. Explore 
 | **AwsSubnet** | `vpcConfig.subnetIds[]` | `status.outputs.subnet_id` |
 | **AwsSecurityGroup** | `vpcConfig.securityGroupIds[]` | `status.outputs.security_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -135,9 +135,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the job role Bedrock assumes, wired via `roleArn`
-- [**AWS Bedrock Provisioned Throughput**](/cloud-catalog/aws-bedrock-provisioned-throughput) — buys serving capacity for the finished model via `custom_model_arn`
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — holds the training, validation, and output data the S3 URIs point at
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption of the resulting model via `customModelKmsKeyArn`
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) — VPC placement for private-data jobs via `vpcConfig.subnetIds`
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) — network rules on those interfaces via `vpcConfig.securityGroupIds`
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the job role Bedrock assumes, wired via `roleArn`
+- [**AWS Bedrock Provisioned Throughput**](/infra-catalog/aws-bedrock-provisioned-throughput) — buys serving capacity for the finished model via `custom_model_arn`
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — holds the training, validation, and output data the S3 URIs point at
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption of the resulting model via `customModelKmsKeyArn`
+- [**AWS Subnet**](/infra-catalog/aws-subnet) — VPC placement for private-data jobs via `vpcConfig.subnetIds`
+- [**AWS Security Group**](/infra-catalog/aws-security-group) — network rules on those interfaces via `vpcConfig.securityGroupIds`

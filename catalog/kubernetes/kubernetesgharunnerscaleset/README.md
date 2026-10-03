@@ -7,7 +7,7 @@ self-hosted GitHub Actions runners registered against one repository,
 organization or enterprise. Each runner pod executes exactly one job
 and is replaced.
 
-Not the right component when:
+Not the right kind when:
 
 - **The controller is missing** —
   `KubernetesGhaRunnerScaleSetController` is the registry prerequisite;

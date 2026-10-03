@@ -4,7 +4,7 @@ A reusable certificate shape in Certificate Authority Service -- a TLS server le
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `privateca.googleapis.com` on the project (never disabled on destroy)
 - **Certificate template** -- a `privateca_certificate_template` with its predefined values, identity constraints, passthrough extensions, and maximum lifetime
@@ -74,7 +74,7 @@ planton apply -f certificate-template.yaml
 - `knownExtensions` entries are `BASE_KEY_USAGE`, `EXTENDED_KEY_USAGE`, `CA_OPTIONS`, `POLICY_IDS`, `AIA_OCSP_SERVERS`, or `NAME_CONSTRAINTS`.
 - Durations are seconds with an `s` suffix; OIDs have at least one non-negative arc.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -101,7 +101,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpPrivateCaCertificate** -- certificates issued with the template
 - **GcpPrivateCaPool** -- the pools whose policies the template must agree with

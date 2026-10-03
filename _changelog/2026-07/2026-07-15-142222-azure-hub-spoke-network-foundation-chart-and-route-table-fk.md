@@ -63,7 +63,7 @@ The reference walker now yields every `valueFrom` (not just those with a `kind` 
 
 ## Impact
 
-Platform teams get the Azure landing-zone network as a one-deploy chart whose resource graph reads as the reference architecture diagram. Component consumers get a route-table kind whose central seam composes by reference. Chart authors get a validator that can no longer be bypassed by the shorthand reference form, and an authoring contract that now teaches the explicit-triple requirement, the toggle-path validation step, and the "a seam you cannot wire by reference is a component gap" principle.
+Platform teams get the Azure landing-zone network as a one-deploy chart whose resource graph reads as the reference architecture diagram. Kind consumers get a route-table kind whose central seam composes by reference. Chart authors get a validator that can no longer be bypassed by the shorthand reference form, and an authoring contract that now teaches the explicit-triple requirement, the toggle-path validation step, and the "a seam you cannot wire by reference is a kind gap" principle.
 
 ## Related Work
 

@@ -28,7 +28,7 @@ You never start from a blank Terraform file. Planton runs **proven, pre-built
 infrastructure-as-code modules** — built for secure, well-architected,
 cost-efficient defaults — against your own cloud account, with real state and
 history. Create like a console: pick a stack, fill a short form. Manage like
-Kubernetes: `planton apply -f` deploys one component or a whole directory of
+Kubernetes: `planton apply -f` deploys one kind or a whole directory of
 them in dependency order, and `planton chart install` stands up a templated
 environment — the `kubectl apply` and `helm install` gestures, freed from
 Kubernetes and extended to every cloud.
@@ -43,14 +43,14 @@ This repo holds the **open building blocks** that power Planton, all under
 Apache-2.0. Audit them, fork them, or take your configuration and run it
 yourself.
 
-<!-- AI-AGENT NOTE: The component and provider counts below MUST be verified against
-     the authoritative source: shared/cloudresourcekind/cloud_resource_kind.proto
+<!-- AI-AGENT NOTE: The kind and provider counts below MUST be verified against
+     the authoritative source: shared/catalogkind/catalog_kind.proto
      (count non-test `(kind_meta)` annotations and distinct providers). The chart
      count MUST be verified against `charts/*/*/Chart.yaml`. Never re-type a stale number. -->
 
-- **[`catalog/`](catalog)** — **700+ components**
+- **[`catalog/`](catalog)** — **700+ catalog kinds**
   across **8 cloud providers** (AWS, GCP, Azure, Kubernetes, DigitalOcean,
-  Cloudflare, Auth0, and OpenFGA). Each component is a
+  Cloudflare, Auth0, and OpenFGA). Each kind is a
   Protocol Buffer definition in the Kubernetes Resource Model shape
   (`apiVersion`/`kind`/`metadata`/`spec`) with field-level validations and
   auto-generated SDKs in Go, Python, TypeScript, and Java — plus verified,
@@ -60,11 +60,11 @@ yourself.
   least-privilege provisioning-permission manifests validated against the
   providers' own published inventories.
 - **[`charts/`](charts)** — **18 ready-made infra charts**: whole environments
-  (network + compute + data + DNS) composed from the components above and
+  (network + compute + data + DNS) composed from the kinds above and
   installed in one command — the Helm-chart idea, for cloud infrastructure.
 - **[`cmd/planton`](cmd/planton)** — the open-source CLI and IaC engine that
   validates manifests and executes the Pulumi and OpenTofu/Terraform modules
-  that ship with every component.
+  that ship with every kind.
 - **[`site/`](site)** — the source of [planton.ai](https://planton.ai):
   website, docs, and blog (Next.js static export, deployed to GitHub Pages on
   every `site/` change). Run it locally with `make run-site`, or build and
@@ -119,7 +119,7 @@ npx skills add plantonhq/skills
 
 Two skills ship together: `planton` (the working craft, and the boundaries the
 agent never crosses — no mutation without your consent, never outside your
-repository) and `multi-cloud-catalog` (one reference page per component, with
+repository) and `multi-cloud-catalog` (one reference page per kind, with
 its cost, control posture, and runner permissions). Agents that want the
 platform's own operations reach them over MCP at `https://mcp.planton.ai/`.
 See [Coding Agents](https://planton.ai/docs/coding-agents).
@@ -140,7 +140,7 @@ cluster. See [Self-Hosting](https://planton.ai/docs/self-hosting).
 ## Licensing
 
 Planton the app is **free**, including for commercial use. The building blocks
-that power it — the infrastructure components, the charts, and the CLI — are
+that power it — the infrastructure kinds, the charts, and the CLI — are
 **open source under [Apache-2.0](LICENSE)**: audit them, fork them, or take
 your configuration and run it yourself. No lock-in.
 The Planton name and logo are trademarks of Planton Cloud, Inc. — the code is

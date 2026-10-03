@@ -2,18 +2,18 @@
 
 **Date**: January 20, 2026
 **Type**: Fix / Refactor
-**Components**: Stack Input Processing, Provider Environment Variables
+**Components**: IaC Input Processing, Provider Environment Variables
 
 ## Summary
 
-Refactored provider configuration loading to be IaC-agnostic by creating a new `pkg/iac/stackinput/providerenvvars` package. This fixes a critical bug where OpenFGA provider config was incorrectly being loaded as Azure provider config, and establishes a clean architectural pattern for provider detection based on the target resource's `api_version`.
+Refactored provider configuration loading to be IaC-agnostic by creating a new `pkg/iac/iacinput/providerenvvars` package. This fixes a critical bug where OpenFGA provider config was incorrectly being loaded as Azure provider config, and establishes a clean architectural pattern for provider detection based on the target resource's `api_version`.
 
 ## Problem Statement / Motivation
 
 When deploying an OpenFGA store using `--provisioner tofu`, the IaC runner failed with:
 
 ```
-failed to add Azure provider config: failed to get provider config from stack-input content: 
+failed to add Azure provider config: failed to get provider config from iac-input content: 
 failed to load yaml bytes into provider config: proto: (line 1:2): unknown field "api_url"
 ```
 
@@ -21,11 +21,11 @@ failed to load yaml bytes into provider config: proto: (line 1:2): unknown field
 
 The Terraform/Tofu provider config loading code in `pkg/iac/tofu/tofumodule/providers.go` had a fundamental design flaw:
 
-1. **Sequential Provider Checking**: The code called ALL provider config handlers (`AddAzureProviderConfigEnvVars`, `AddGcpProviderConfigEnvVars`, etc.) sequentially for every stack input
+1. **Sequential Provider Checking**: The code called ALL provider config handlers (`AddAzureProviderConfigEnvVars`, `AddGcpProviderConfigEnvVars`, etc.) sequentially for every IaC input
 2. **Shared Config Key**: All providers used `"provider_config"` as the YAML key
 3. **Strict Proto Unmarshaling**: `protojson.Unmarshal` rejects unknown fields by default
 
-When an OpenFGA stack input with `provider_config.api_url` was processed:
+When an OpenFGA IaC input with `provider_config.api_url` was processed:
 1. Azure handler ran first
 2. Found `provider_config` key
 3. Tried to unmarshal into `AzureProviderConfig`
@@ -36,14 +36,14 @@ When an OpenFGA stack input with `provider_config.api_url` was processed:
 This bug was latent because:
 - All existing deployments (AWS, GCP, Kubernetes, Cloudflare, Auth0) used **Pulumi**
 - Pulumi uses typed deserialization within each module, not sequential checking
-- OpenFGA was the **first Terraform-only** deployment component, exposing this Tofu-specific bug
+- OpenFGA was the **first Terraform-only** catalog kind, exposing this Tofu-specific bug
 
 ## Solution / What's New
 
 Created an IaC-agnostic provider configuration loading system that:
 
-1. **Determines provider from target**: Uses `target.api_version` and `target.kind` to identify the `CloudResourceKind`
-2. **Leverages crkreflect**: Uses existing `crkreflect.ExtractKindFromYaml()` and `crkreflect.GetProvider()` utilities
+1. **Determines provider from target**: Uses `target.api_version` and `target.kind` to identify the `CatalogKind`
+2. **Leverages catalogkindreflect**: Uses existing `catalogkindreflect.ExtractKindFromYaml()` and `catalogkindreflect.GetProvider()` utilities
 3. **Loads correct proto**: Only unmarshals `provider_config` into the correct proto type for that provider
 
 ### Architecture
@@ -51,7 +51,7 @@ Created an IaC-agnostic provider configuration loading system that:
 ```mermaid
 flowchart TB
     subgraph Before["Before: Sequential Checking (Broken)"]
-        A[Stack Input YAML] --> B[Azure Handler]
+        A[IaC Input YAML] --> B[Azure Handler]
         B -->|"Try unmarshal"| C{Success?}
         C -->|"No - unknown field"| D[❌ FAIL]
         C -->|"Yes"| E[GCP Handler]
@@ -59,10 +59,10 @@ flowchart TB
     end
     
     subgraph After["After: Provider-Aware Loading (Fixed)"]
-        G[Stack Input YAML] --> H["Extract target YAML"]
-        H --> I["crkreflect.ExtractKindFromYaml()"]
-        I --> J["crkreflect.GetProvider()"]
-        J --> K{"CloudResourceProvider?"}
+        G[IaC Input YAML] --> H["Extract target YAML"]
+        H --> I["catalogkindreflect.ExtractKindFromYaml()"]
+        I --> J["catalogkindreflect.GetProvider()"]
+        J --> K{"CatalogProvider?"}
         K -->|"OpenFGA"| L["loadOpenFgaEnvVars()"]
         K -->|"Azure"| M["loadAzureEnvVars()"]
         K -->|"GCP"| N["loadGcpEnvVars()"]
@@ -77,7 +77,7 @@ flowchart TB
 ### New Package Structure
 
 ```
-pkg/iac/stackinput/providerenvvars/
+pkg/iac/iacinput/providerenvvars/
 ├── loader.go          # Main entry point: GetEnvVars(), GetEnvVarsWithOptions()
 ├── proto_loader.go    # Shared utility: loadProviderConfigProto()
 ├── openfga.go         # OpenFGA env var generation
@@ -95,10 +95,10 @@ pkg/iac/stackinput/providerenvvars/
 
 ```go
 // Simple usage
-envVars, err := providerenvvars.GetEnvVars(stackInputYaml)
+envVars, err := providerenvvars.GetEnvVars(iacInputYaml)
 
 // With options (for Kubernetes kubeconfig file)
-envVars, err := providerenvvars.GetEnvVarsWithOptions(stackInputYaml, providerenvvars.Options{
+envVars, err := providerenvvars.GetEnvVarsWithOptions(iacInputYaml, providerenvvars.Options{
     FileCacheLoc: "/tmp/cache",
 })
 ```
@@ -107,10 +107,10 @@ envVars, err := providerenvvars.GetEnvVarsWithOptions(stackInputYaml, provideren
 
 ### Loader Flow
 
-1. Parse stack input YAML into map
+1. Parse IaC input YAML into map
 2. Extract `target` section and marshal to YAML bytes
-3. Call `crkreflect.ExtractKindFromYaml()` to get `CloudResourceKind`
-4. Call `crkreflect.GetProvider()` to get `CloudResourceProvider`
+3. Call `catalogkindreflect.ExtractKindFromYaml()` to get `CatalogKind`
+4. Call `catalogkindreflect.GetProvider()` to get `CatalogProvider`
 5. Extract `provider_config` section
 6. Call provider-specific handler (e.g., `loadOpenFgaEnvVars()`)
 7. Return environment variables map
@@ -139,12 +139,12 @@ func loadOpenFgaEnvVars(providerConfigYaml []byte) (map[string]string, error) {
 The old Tofu `providers.go` is now a thin wrapper:
 
 ```go
-func GetProviderConfigEnvVars(stackInputYaml, fileCacheLoc, kubeContext string) ([]string, error) {
-    providerConfigEnvVars, err := providerenvvars.GetEnvVarsWithOptions(stackInputYaml, providerenvvars.Options{
+func GetProviderConfigEnvVars(iacInputYaml, fileCacheLoc, kubeContext string) ([]string, error) {
+    providerConfigEnvVars, err := providerenvvars.GetEnvVarsWithOptions(iacInputYaml, providerenvvars.Options{
         FileCacheLoc: fileCacheLoc,
     })
     if err != nil {
-        return nil, errors.Wrap(err, "failed to get provider env vars from stack input")
+        return nil, errors.Wrap(err, "failed to get provider env vars from IaC input")
     }
     
     if kubeContext != "" {
@@ -159,7 +159,7 @@ func GetProviderConfigEnvVars(stackInputYaml, fileCacheLoc, kubeContext string) 
 
 | Category | Action | Files |
 |----------|--------|-------|
-| New Package | Created | `pkg/iac/stackinput/providerenvvars/*.go` (10 files) |
+| New Package | Created | `pkg/iac/iacinput/providerenvvars/*.go` (10 files) |
 | Integration | Updated | `pkg/iac/tofu/tofumodule/providers.go` |
 | Cleanup | Deleted | `pkg/iac/tofu/tofumodule/providerconfig/*.go` (10 files) |
 
@@ -181,7 +181,7 @@ func GetProviderConfigEnvVars(stackInputYaml, fileCacheLoc, kubeContext string) 
 ### For Architecture
 
 - **IaC-Agnostic**: Core logic works for both Pulumi and Terraform
-- **Leverages Existing Code**: Uses crkreflect instead of maintaining duplicate mappings
+- **Leverages Existing Code**: Uses catalogkindreflect instead of maintaining duplicate mappings
 - **Extensible**: Adding a new provider = adding one file
 
 ## Risk Assessment
@@ -200,15 +200,15 @@ func GetProviderConfigEnvVars(stackInputYaml, fileCacheLoc, kubeContext string) 
 
 ## Testing
 
-1. **Build Verification**: `bazelw build //pkg/iac/stackinput/providerenvvars:all` ✅
+1. **Build Verification**: `bazelw build //pkg/iac/iacinput/providerenvvars:all` ✅
 2. **Integration**: `bazelw build //pkg/iac/tofu/tofumodule:all` ✅
 3. **Manual Test**: Deploy OpenFGA store with `--provisioner tofu` (pending)
 
 ## Related Work
 
 - Builds on OpenFGA provider integration (2026-01-17-075626-openfga-provider-integration.md)
-- OpenFgaStore component (2026-01-17-085733-openfgastore-deployment-component.md)
-- Uses crkreflect package for provider detection
+- OpenFgaStore kind (2026-01-17-085733-openfgastore-catalog-kind.md)
+- Uses catalogkindreflect package for provider detection
 
 ---
 

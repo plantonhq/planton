@@ -15,7 +15,7 @@ import (
 )
 
 const baselineHeader = `# Catalog-page baseline -- the accepted backlog of pages below the ONE catalog
-# page standard (_rules/docs/write-planton-component-catalog-md.mdc): pages that
+# page standard (_rules/docs/write-catalog-kind-catalog-md.mdc): pages that
 # predate the standard and have not been brought to the bar yet. The upgrade
 # sweep burns this list down provider by provider; it trends to 0 and never
 # grows.

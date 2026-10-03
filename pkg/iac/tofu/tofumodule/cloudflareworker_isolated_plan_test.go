@@ -16,17 +16,17 @@ import (
 	cloudflareworkerv1alpha1 "github.com/plantonhq/planton/catalog/cloudflare/cloudflareworker/v1alpha1"
 	"github.com/plantonhq/planton/internal/manifest"
 	"github.com/plantonhq/planton/pkg/fileutil"
-	"github.com/plantonhq/planton/pkg/iac/stackinput"
-	"github.com/plantonhq/planton/pkg/iac/stackinput/stackinputproviderconfig"
+	"github.com/plantonhq/planton/pkg/iac/iacinput"
+	"github.com/plantonhq/planton/pkg/iac/iacinput/iacinputproviderconfig"
 	"github.com/plantonhq/planton/pkg/iac/tofu/generators"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 )
 
 // Credential-isolated plans of the CloudflareWorker OpenTofu module, driven through the same
-// seam the CLI and the platform runner use: a stack input built from a manifest and a provider
+// seam the CLI and the platform runner use: an IaC input built from a manifest and a provider
 // config, handed to GetProviderConfigEnvVars, then `init` + `plan` with ONLY those variables and
 // PATH in the environment -- no AWS_*, an empty HOME, no ~/.aws. `tofu validate` never configures
 // a provider, so a module that configures a provider it does not use on the default path (and
@@ -142,32 +142,32 @@ func isolatedWorkerModule(t *testing.T, root string) string {
 
 // writeCloudflareProviderConfig writes the provider config a Cloudflare connection resolves to:
 // the API token, plus the given extra YAML (the R2 block).
-func writeCloudflareProviderConfig(t *testing.T, extra string) *stackinputproviderconfig.ProviderConfig {
+func writeCloudflareProviderConfig(t *testing.T, extra string) *iacinputproviderconfig.ProviderConfig {
 	t.Helper()
 	path := filepath.Join(t.TempDir(), "cloudflare-provider-config.yaml")
 	content := fmt.Sprintf("authScheme: api_token\napiToken: %s\n%s", isolatedPlanToken, extra)
 	if err := os.WriteFile(path, []byte(content), 0o600); err != nil {
 		t.Fatalf("write provider config: %v", err)
 	}
-	return &stackinputproviderconfig.ProviderConfig{
+	return &iacinputproviderconfig.ProviderConfig{
 		Path:     path,
-		Provider: cloudresourcekind.CloudResourceProvider_cloudflare,
+		Provider: catalogkind.CatalogProvider_cloudflare,
 	}
 }
 
 // isolatedPlan renders the tfvars, derives the provider environment exactly as a deploy does,
 // and runs init + plan with that environment and nothing else of the machine's.
 func isolatedPlan(t *testing.T, binary, workDir string, manifestObject proto.Message,
-	providerConfig *stackinputproviderconfig.ProviderConfig, planArgs ...string) (string, error) {
+	providerConfig *iacinputproviderconfig.ProviderConfig, planArgs ...string) (string, error) {
 	t.Helper()
 	if err := generators.WriteVarFile(manifestObject, filepath.Join(workDir, "terraform.tfvars")); err != nil {
 		t.Fatalf("render tfvars: %v", err)
 	}
-	stackInputYaml, err := stackinput.BuildStackInputYaml(manifestObject, providerConfig)
+	iacInputYaml, err := iacinput.BuildIacInputYaml(manifestObject, providerConfig)
 	if err != nil {
-		t.Fatalf("build stack input: %v", err)
+		t.Fatalf("build IaC input: %v", err)
 	}
-	providerEnv, err := GetProviderConfigEnvVars(stackInputYaml, workDir, "")
+	providerEnv, err := GetProviderConfigEnvVars(iacInputYaml, workDir, "")
 	if err != nil {
 		t.Fatalf("derive provider env: %v", err)
 	}
@@ -239,7 +239,7 @@ func bundleWorker() *cloudflareworkerv1alpha1.CloudflareWorker {
 	return &cloudflareworkerv1alpha1.CloudflareWorker{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareWorker",
-		Metadata:   &shared.CloudResourceMetadata{Name: "bundled-api"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "bundled-api"},
 		Spec: &cloudflareworkerv1alpha1.CloudflareWorkerSpec{
 			AccountId:         isolatedPlanAccountID,
 			WorkerName:        "bundled-api",

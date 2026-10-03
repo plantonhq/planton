@@ -12,7 +12,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awseventbridgebus
+    e2e-catalog-kind: awseventbridgebus
   annotations:
     planton.dev/e2e: "true"
   tags:

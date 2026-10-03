@@ -9,9 +9,9 @@ import (
 
 // Resources is the main entry point for the Pulumi module.
 // It orchestrates the creation of a Kubernetes Secret with the appropriate type, data, and metadata.
-func Resources(ctx *pulumi.Context, stackInput *kubernetessecretv1alpha1.KubernetesSecretStackInput) error {
+func Resources(ctx *pulumi.Context, iacInput *kubernetessecretv1alpha1.KubernetesSecretIacInput) error {
 	// Initialize locals with derived values
-	locals, err := initializeLocals(ctx, stackInput)
+	locals, err := initializeLocals(ctx, iacInput)
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize locals")
 	}
@@ -19,7 +19,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetessecretv1alpha1.Kuberne
 	// Create Kubernetes provider from credentials
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
 		ctx,
-		stackInput.ProviderConfig,
+		iacInput.ProviderConfig,
 		"kubernetes",
 	)
 	if err != nil {

@@ -43,7 +43,7 @@ export default function S08AITeammates(_props: SlideComponentProps) {
               {
                 icon: '🔒',
                 title: 'Deterministic Execution',
-                description: 'Every action is backed by the cloud catalog. No hallucinated Terraform.',
+                description: 'Every action is backed by the infra catalog. No hallucinated Terraform.',
               },
               {
                 icon: '📱',

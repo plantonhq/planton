@@ -4,7 +4,7 @@ Deploys a managed disk snapshot -- a point-in-time copy of a disk used for backu
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Disk snapshot** -- the point-in-time copy, with its creation mode and source, incremental mode, optional size override, network access posture, and optional legacy ADE encryption settings
 - **Azure Tags** -- Planton-derived metadata tags merged with your `tags` map (your values win on key conflicts)
@@ -15,7 +15,7 @@ Both engines deliberately ignore in-place edits to the source fields (`sourceRes
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -56,7 +56,7 @@ spec:
 planton apply -f disk-snapshot.yaml
 ```
 
-This creates an incremental point-in-time copy of the `orders-db-data` disk in `acme-prod-rg`, storing only the delta on standard storage. A Stack Job tracks the provisioning in real time.
+This creates an incremental point-in-time copy of the `orders-db-data` disk in `acme-prod-rg`, storing only the delta on standard storage. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -96,7 +96,7 @@ These are the most important decisions when configuring a disk snapshot. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -107,9 +107,9 @@ These are the most important decisions when configuring a disk snapshot. Explore
 
 `diskAccessId` accepts only a plain ARM ID -- disk-access resources are not modeled as a Planton kind.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -130,9 +130,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the snapshot lives in
-- [**Azure Managed Disk**](/cloud-catalog/azure-managed-disk) -- the Copy-mode source, and the consumer that clones new disks from this snapshot's `snapshot_id`
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- holds the VHD blob and carries the read grant for Import mode
-- [**Azure Compute Gallery Image**](/cloud-catalog/azure-compute-gallery-image) -- builds image versions from this snapshot's `snapshot_id`
-- [**Azure Key Vault**](/cloud-catalog/azure-key-vault) -- holds the ADE secrets referenced by `encryptionSettings` for legacy-encrypted sources
-- [**Azure Backup Policy (VM)**](/cloud-catalog/azure-backup-policy-vm) -- the scheduled, retention-managed alternative when one deliberate copy is not what you wanted
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the snapshot lives in
+- [**Azure Managed Disk**](/infra-catalog/azure-managed-disk) -- the Copy-mode source, and the consumer that clones new disks from this snapshot's `snapshot_id`
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- holds the VHD blob and carries the read grant for Import mode
+- [**Azure Compute Gallery Image**](/infra-catalog/azure-compute-gallery-image) -- builds image versions from this snapshot's `snapshot_id`
+- [**Azure Key Vault**](/infra-catalog/azure-key-vault) -- holds the ADE secrets referenced by `encryptionSettings` for legacy-encrypted sources
+- [**Azure Backup Policy (VM)**](/infra-catalog/azure-backup-policy-vm) -- the scheduled, retention-managed alternative when one deliberate copy is not what you wanted

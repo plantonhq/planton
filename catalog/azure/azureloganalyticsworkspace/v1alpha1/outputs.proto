@@ -4,7 +4,7 @@ package dev.planton.azure.azureloganalyticsworkspace.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureLogAnalyticsWorkspaceStackOutputs** captures the outputs of provisioning
+// **AzureLogAnalyticsWorkspaceOutputs** captures the outputs of provisioning
 // an Azure Log Analytics Workspace.
 //
 // The `workspace_id` output (the ARM resource ID) is the composition seam:
@@ -12,7 +12,7 @@ import "shared/options/options.proto";
 // AzureMonitorDiagnosticSetting, and AzureMonitorScheduledQueryAlert all
 // reference the workspace by its ARM ID. The customer ID (a GUID Azure agents
 // authenticate against) is exported separately as `workspace_customer_id`.
-message AzureLogAnalyticsWorkspaceStackOutputs {
+message AzureLogAnalyticsWorkspaceOutputs {
   // The Azure Resource Manager ID of the Log Analytics Workspace.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.OperationalInsights/workspaces/{name}
   // This is what downstream resources reference: Application Insights

@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcppubsubsubscription.v1alpha1;
 
 // Outputs produced after provisioning a GCP Pub/Sub subscription.
-message GcpPubSubSubscriptionStackOutputs {
+message GcpPubSubSubscriptionOutputs {
   // The fully qualified subscription ID.
   // Format: projects/{project}/subscriptions/{name}
   // This is the value downstream resources use to reference this subscription.

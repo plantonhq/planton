@@ -29,7 +29,7 @@ iac/pulumi/
     ├── main.go       # Module coordinator
     ├── firewall.go   # Firewall resource creation
     ├── locals.go     # Local values and labels
-    └── outputs.go    # Stack output constants
+    └── outputs.go    # Output constants
 ```
 
 ## Quick Start
@@ -43,7 +43,7 @@ pulumi stack init dev
 
 ### 2. Create Input File
 
-Provide a `stack-input.yaml` with the firewall rule specification:
+Provide a `iac-input.yaml` with the firewall rule specification:
 
 ```yaml
 target:

@@ -39,7 +39,7 @@ func validResource() *AzureAiFoundry {
 	return &AzureAiFoundry{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureAiFoundry",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-ai-foundry",
 		},
 		Spec: &AzureAiFoundrySpec{

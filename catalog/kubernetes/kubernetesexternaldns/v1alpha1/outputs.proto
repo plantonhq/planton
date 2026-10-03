@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesexternaldns.v1alpha1;
 
-// KubernetesExternalDnsStackOutputs captures observable outputs after the
+// KubernetesExternalDnsOutputs captures observable outputs after the
 // ExternalDNS installation completes.
-message KubernetesExternalDnsStackOutputs {
+message KubernetesExternalDnsOutputs {
   // Namespace ExternalDNS is installed in.
   string namespace = 1;
 

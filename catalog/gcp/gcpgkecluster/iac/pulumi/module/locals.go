@@ -6,7 +6,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpgkeclusterv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgkecluster/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -23,9 +23,9 @@ type Locals struct {
 	ReleaseChannel string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpgkeclusterv1alpha1.GcpGkeClusterStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpgkeclusterv1alpha1.GcpGkeClusterIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpGkeCluster = stackInput.Target
+	locals.GcpGkeCluster = iacInput.Target
 
 	locals.ClusterName = locals.GcpGkeCluster.Spec.ClusterName
 	if locals.ClusterName == "" {
@@ -55,7 +55,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpgkeclusterv1alpha1.GcpGk
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = locals.ClusterName
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpGkeCluster.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpGkeCluster.String())
 
 	if locals.GcpGkeCluster.Metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = locals.GcpGkeCluster.Metadata.Org
@@ -67,6 +67,6 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpgkeclusterv1alpha1.GcpGk
 		locals.GcpLabels[gcplabelkeys.ResourceId] = locals.GcpGkeCluster.Metadata.Id
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

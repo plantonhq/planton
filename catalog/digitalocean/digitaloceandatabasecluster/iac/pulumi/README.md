@@ -1,20 +1,20 @@
 # DigitalOcean Database Cluster -- Pulumi Module
 
-Deploys a `digitalocean:index/databaseCluster:DatabaseCluster` from a `DigitalOceanDatabaseCluster` stack input: every engine DigitalOcean offers, node topology, VPC placement, custom storage (the provider's bare-MiB string, converted from the spec's GiB), maintenance window, backup-restore provisioning, engine-conditional tuning, project placement, and tags. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`.
+Deploys a `digitalocean:index/databaseCluster:DatabaseCluster` from a `DigitalOceanDatabaseCluster` IaC input: every engine DigitalOcean offers, node topology, VPC placement, custom storage (the provider's bare-MiB string, converted from the spec's GiB), maintenance window, backup-restore provisioning, engine-conditional tuning, project placement, and tags. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`.
 
 Users, logical databases, connection pools, replicas, firewall rules, and per-engine config parameters are separate DigitalOcean resources, not part of this module.
 
 ## Module structure
 
-- `main.go` -- Pulumi program entry point reading the stack input
+- `main.go` -- Pulumi program entry point reading the IaC input
 - `module/main.go` -- `Resources()`: locals, provider, cluster
-- `module/locals.go` -- stack-input references and the standard Planton label map
-- `module/database_cluster.go` -- the cluster resource and stack-output exports
+- `module/locals.go` -- iac-input references and the standard Planton label map
+- `module/database_cluster.go` -- the cluster resource and output exports
 - `module/outputs.go` -- output key constants (the kind's outputs.proto contract)
 
 ## Outputs
 
-Exactly the kind's stack-output contract, identical to the Terraform module: `cluster_id`, `connection_uri`, `host`, `port`, `database_user`, `database_password`, `private_host`, `private_uri`, `database_name`, and the OpenSearch-only `ui_host` / `ui_port` / `ui_uri` / `ui_database` / `ui_user` / `ui_password`. The URI and password outputs are Pulumi secret outputs.
+Exactly the kind's output contract, identical to the Terraform module: `cluster_id`, `connection_uri`, `host`, `port`, `database_user`, `database_password`, `private_host`, `private_uri`, `database_name`, and the OpenSearch-only `ui_host` / `ui_port` / `ui_uri` / `ui_database` / `ui_user` / `ui_password`. The URI and password outputs are Pulumi secret outputs.
 
 ## Behavior notes
 

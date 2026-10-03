@@ -5,9 +5,9 @@
 # generator replays the catalog presets through these rules to emit
 # ../estimates/azurerediscache.yaml; a server-side estimator evaluates
 # the same rules against live manifests.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: azurerediscache
 spec:
@@ -65,12 +65,12 @@ spec:
         - field_path: redis_configuration.rdb_backup_enabled
           op: equals
           value: "true"
-      text: RDB snapshot storage and transactions bill on the persistence storage account's own component
+      text: RDB snapshot storage and transactions bill on the persistence storage account's own kind
     - applies_when:
         - field_path: redis_configuration.aof_backup_enabled
           op: equals
           value: "true"
-      text: AOF write-log storage and transactions bill on the persistence storage accounts' own components
+      text: AOF write-log storage and transactions bill on the persistence storage accounts' own kinds
     - applies_when:
         - field_path: zones
           op: is_set

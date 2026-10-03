@@ -7,7 +7,7 @@ engine implementing Google-Zanzibar-style relationship-based access
 control, from the official `openfga` chart (0.3.x = OpenFGA 1.18+),
 on a datastore you pick.
 
-Not the right component when:
+Not the right kind when:
 
 - **You want roles and permissions inside your identity provider** —
   that is `KubernetesKeycloak` territory. OpenFGA answers "is user U

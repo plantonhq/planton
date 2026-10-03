@@ -4,7 +4,7 @@ Registers an enhanced fan-out consumer for an Amazon Kinesis Data Stream, provid
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kinesis Stream Consumer** -- a registered enhanced fan-out consumer on the specified stream, with dedicated 2 MB/s per shard via SubscribeToShard (HTTP/2 push delivery with ~70ms propagation delay)
 - **AWS Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically
@@ -13,12 +13,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **A Kinesis Data Stream** -- the consumer registers with an existing stream. Provide the stream ARN directly or reference an AwsKinesisStream Cloud Resource via ValueFromRef.
+- **A Kinesis Data Stream** -- the consumer registers with an existing stream. Provide the stream ARN directly or reference an AwsKinesisStream Infra Component via ValueFromRef.
 - **IAM permissions** -- the deploying role needs `kinesis:RegisterStreamConsumer` and `kinesis:DeregisterStreamConsumer` on the target stream.
 
 ## Deploy
@@ -48,7 +48,7 @@ spec:
 planton apply -f kinesis-consumer.yaml
 ```
 
-This registers an enhanced fan-out consumer with the specified Kinesis stream. The consumer gets dedicated 2 MB/s read throughput per shard. No additional configuration is needed -- AWS manages all internals. A Stack Job tracks the provisioning in real time.
+This registers an enhanced fan-out consumer with the specified Kinesis stream. The consumer gets dedicated 2 MB/s read throughput per shard. No additional configuration is needed -- AWS manages all internals. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -77,15 +77,15 @@ These are the most important decisions when configuring a Kinesis stream consume
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsKinesisStream** | `streamArn` | `status.outputs.stream_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -104,4 +104,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Kinesis Data Stream**](/cloud-catalog/aws-kinesis-stream) -- provides the parent stream this consumer registers with for dedicated throughput
+- [**AWS Kinesis Data Stream**](/infra-catalog/aws-kinesis-stream) -- provides the parent stream this consumer registers with for dedicated throughput

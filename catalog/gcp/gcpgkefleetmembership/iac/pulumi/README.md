@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for an explicit fleet membersh
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `membership` |
-| `module/locals.go` | Stack input, attribution labels, the label merge |
+| `module/locals.go` | IaC input, attribution labels, the label merge |
 | `module/membership.go` | API enablement, the membership, the resource-link helper, the outputs |
 | `module/outputs.go` | Output key constants (`name`, `membership_id`, `location`) |
 

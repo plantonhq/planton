@@ -16,7 +16,7 @@ Generated `variables.tf` mirrors the `DigitalOceanReservedIpSpec` proto: optiona
 
 ## Outputs
 
-Exactly the `DigitalOceanReservedIpStackOutputs` contract: `reserved_ip_address`, `urn` -- sourced from whichever family was created.
+Exactly the `DigitalOceanReservedIpOutputs` contract: `reserved_ip_address`, `urn` -- sourced from whichever family was created.
 
 ## Behavior notes
 

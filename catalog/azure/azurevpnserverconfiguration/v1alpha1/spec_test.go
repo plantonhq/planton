@@ -32,7 +32,7 @@ func validResource() *AzureVpnServerConfiguration {
 	return &AzureVpnServerConfiguration{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureVpnServerConfiguration",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-vpn-server-configuration",
 		},
 		Spec: &AzureVpnServerConfigurationSpec{

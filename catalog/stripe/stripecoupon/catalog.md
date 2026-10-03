@@ -1,10 +1,10 @@
 # Stripe Coupon
 
-Declares a discount -- 25% off for three months, 10 dollars off a first order, a free month forever -- that customers redeem with a promotion code or your application applies. One Cloud Resource per coupon.
+Declares a discount -- 25% off for three months, 10 dollars off a first order, a free month forever -- that customers redeem with a promotion code or your application applies. One Infra Component per coupon.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the OpenTofu module creates one coupon in the Stripe account your Stripe connection's key belongs to:
+When you deploy this Infra Component, the OpenTofu module creates one coupon in the Stripe account your Stripe connection's key belongs to:
 
 - **The discount** -- a percentage, or an amount in one or more currencies
 - **How long it lasts** -- the first invoice, some months, or every invoice
@@ -50,7 +50,7 @@ spec:
 planton apply -f stripe-coupon.yaml
 ```
 
-A Stack Job tracks the change in real time.
+An Infra Job tracks the change in real time.
 
 ### InfraChart
 
@@ -79,13 +79,13 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Field | Kind | Output |
 |-------|------|--------|
 | `appliesToProducts` | Stripe Product | `status.outputs.id` |
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -104,6 +104,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Stripe Promotion Code**](/cloud-catalog/stripe-promotion-code) -- the code customers type to redeem the coupon.
-- [**Stripe Product**](/cloud-catalog/stripe-product) -- the products the coupon discounts.
-- [**Stripe Payment Link**](/cloud-catalog/stripe-payment-link) -- a hosted page that accepts promotion codes.
+- [**Stripe Promotion Code**](/infra-catalog/stripe-promotion-code) -- the code customers type to redeem the coupon.
+- [**Stripe Product**](/infra-catalog/stripe-product) -- the products the coupon discounts.
+- [**Stripe Payment Link**](/infra-catalog/stripe-payment-link) -- a hosted page that accepts promotion codes.

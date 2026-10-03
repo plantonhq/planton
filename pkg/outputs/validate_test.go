@@ -7,11 +7,11 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 func TestValidateOverride_GenericNoSamples(t *testing.T) {
-	kind := cloudresourcekind.CloudResourceKind_Auth0ResourceServer
+	kind := catalogkind.CatalogKind_Auth0ResourceServer
 	dir := filepath.Join("testdata", "modules", "empty")
 
 	result, err := ValidateOverride(kind, dir, nil)
@@ -30,7 +30,7 @@ func TestValidateOverride_GenericNoSamples(t *testing.T) {
 }
 
 func TestValidateOverride_ValidMapping(t *testing.T) {
-	kind := cloudresourcekind.CloudResourceKind_Auth0ResourceServer
+	kind := catalogkind.CatalogKind_Auth0ResourceServer
 	dir := filepath.Join("testdata", "modules", "with-mapping")
 
 	result, err := ValidateOverride(kind, dir, nil)
@@ -41,7 +41,7 @@ func TestValidateOverride_ValidMapping(t *testing.T) {
 		t.Errorf("expected OverrideMapping, got %s", result.OverrideType)
 	}
 	// "custom_endpoint" maps to "endpoint" which is not a field on
-	// Auth0ResourceServerStackOutputs, so we expect a schema error.
+	// Auth0ResourceServerOutputs, so we expect a schema error.
 	foundEndpointError := false
 	for _, e := range result.SchemaErrors {
 		if containsSubstring(e, "endpoint") {
@@ -54,7 +54,7 @@ func TestValidateOverride_ValidMapping(t *testing.T) {
 }
 
 func TestValidateOverride_BadMapping(t *testing.T) {
-	kind := cloudresourcekind.CloudResourceKind_Auth0ResourceServer
+	kind := catalogkind.CatalogKind_Auth0ResourceServer
 	dir := filepath.Join("testdata", "modules", "bad-mapping")
 
 	result, err := ValidateOverride(kind, dir, nil)
@@ -67,7 +67,7 @@ func TestValidateOverride_BadMapping(t *testing.T) {
 }
 
 func TestValidateOverride_Executable(t *testing.T) {
-	kind := cloudresourcekind.CloudResourceKind_Auth0ResourceServer
+	kind := catalogkind.CatalogKind_Auth0ResourceServer
 	dir := filepath.Join("testdata", "modules", "with-executable")
 
 	result, err := ValidateOverride(kind, dir, nil)
@@ -83,7 +83,7 @@ func TestValidateOverride_Executable(t *testing.T) {
 }
 
 func TestValidateOverride_DryRunGeneric(t *testing.T) {
-	kind := cloudresourcekind.CloudResourceKind_Auth0ResourceServer
+	kind := catalogkind.CatalogKind_Auth0ResourceServer
 	dir := filepath.Join("testdata", "modules", "empty")
 	samples := map[string]interface{}{
 		"id":   "rs-001",
@@ -106,7 +106,7 @@ func TestValidateOverride_DryRunGeneric(t *testing.T) {
 }
 
 func TestValidateOverride_DryRunWithMapping(t *testing.T) {
-	kind := cloudresourcekind.CloudResourceKind_Auth0ResourceServer
+	kind := catalogkind.CatalogKind_Auth0ResourceServer
 	dir := filepath.Join("testdata", "modules", "with-mapping")
 	samples := map[string]interface{}{
 		"custom_id":      "mapped-001",
@@ -128,7 +128,7 @@ func TestValidateOverride_DryRunWithMapping(t *testing.T) {
 }
 
 func TestValidateOverride_DryRunWithExecutable(t *testing.T) {
-	kind := cloudresourcekind.CloudResourceKind_Auth0ResourceServer
+	kind := catalogkind.CatalogKind_Auth0ResourceServer
 	dir := filepath.Join("testdata", "modules", "with-executable")
 	samples := map[string]interface{}{
 		"custom_id": "exec-001",

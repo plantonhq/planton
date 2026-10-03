@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsconfigrule.v1alpha1;
 
-// AwsConfigRuleStackOutputs captures the observable state of the
+// AwsConfigRuleOutputs captures the observable state of the
 // Config rule after apply.
-message AwsConfigRuleStackOutputs {
+message AwsConfigRuleOutputs {
   // The rule's ARN. For organization rules this is the organization
   // rule ARN.
   string rule_arn = 1;

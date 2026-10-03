@@ -4,7 +4,7 @@ Creates backups of a Cloud Spanner database on a cron cadence and retains each b
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Spanner Backup Schedule** -- a `google_spanner_backup_schedule` on the target database that creates backups at the configured cron cadence (evaluated in UTC) and retains each backup for `retentionDuration`; `backupType` selects `FULL` (the default — every backup is a complete, self-contained copy) or `INCREMENTAL` (chains storing only changes since the previous backup — cheaper storage at identical restore semantics, requiring an ENTERPRISE or ENTERPRISE_PLUS instance)
 - **Backup Encryption configuration** -- created only when `encryptionConfig` is set. Omitted entirely, backups inherit the database's own posture (a CMEK database gets CMEK backups). `CUSTOMER_MANAGED_ENCRYPTION` takes exactly one key shape: `kmsKeyName` (regional instance configurations) or `kmsKeyNames` (one key per region of a multi-region configuration)
@@ -14,12 +14,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **An existing Spanner instance and database** to attach the schedule to. Reference GcpSpannerInstance and GcpSpannerDatabase Cloud Resources via ValueFromRef, or provide the names directly.
+- **An existing Spanner instance and database** to attach the schedule to. Reference GcpSpannerInstance and GcpSpannerDatabase Infra Components via ValueFromRef, or provide the names directly.
 - **ENTERPRISE edition or above** on the instance when using `INCREMENTAL` backups.
 - **Cloud KMS key(s)** (if using CMEK) -- each key must live in the location its region requires, and the Spanner service account needs `roles/cloudkms.cryptoKeyEncrypterDecrypter` on every key.
 
@@ -53,7 +53,7 @@ spec:
 planton apply -f spanner-backup-schedule.yaml
 ```
 
-This creates a schedule taking a full backup daily at 02:00 UTC, keeping each backup for 31 days, with backups inheriting the database's encryption posture. A Stack Job tracks the provisioning in real time.
+This creates a schedule taking a full backup daily at 02:00 UTC, keeping each backup for 31 days, with backups inheriting the database's encryption posture. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -91,7 +91,7 @@ These are the most important decisions when configuring a backup schedule. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -100,9 +100,9 @@ These are the most important decisions when configuring a backup schedule. Explo
 | **GcpSpannerDatabase** | `database` | `status.outputs.database_name` |
 | **GcpKmsKey** (optional) | `encryptionConfig.kmsKeyName` / `encryptionConfig.kmsKeyNames` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -121,6 +121,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Spanner Instance**](/cloud-catalog/gcp-spanner-instance) -- hosts the database and gates incremental backups by edition
-- [**GCP Spanner Database**](/cloud-catalog/gcp-spanner-database) -- the database this schedule protects
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- provides customer-managed keys for backup-level CMEK encryption
+- [**GCP Spanner Instance**](/infra-catalog/gcp-spanner-instance) -- hosts the database and gates incremental backups by edition
+- [**GCP Spanner Database**](/infra-catalog/gcp-spanner-database) -- the database this schedule protects
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- provides customer-managed keys for backup-level CMEK encryption

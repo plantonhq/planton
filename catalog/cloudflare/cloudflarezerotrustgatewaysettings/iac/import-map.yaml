@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarezerotrustgatewaysettings
 spec:
@@ -19,9 +19,9 @@ spec:
     # id derives blind.
     - name: pacfile_id
       derivations:
-        - from_stack_output_keyed_by_address: pacfile_ids
+        - from_output_keyed_by_address: pacfile_ids
       where_to_find: >-
-        A prior deploy's stack outputs carry the ids in the pacfile_ids map,
+        A prior deploy's outputs carry the ids in the pacfile_ids map,
         keyed by the PAC file's name. For fresh adoption without outputs:
         `GET /accounts/<account_id>/gateway/pacfiles` on the Cloudflare v4
         API (the id field of the file whose name/slug matches the spec row).

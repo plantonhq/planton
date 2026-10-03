@@ -11,7 +11,7 @@ Use `GcpVertexAiIndex` when you need:
 - Near-real-time vector upserts (`STREAM_UPDATE`) or bulk rebuilds from Cloud Storage (`BATCH_UPDATE`)
 - Infrastructure-as-code management of the index lifecycle and its search geometry
 
-## What This Component Creates
+## What This Kind Creates
 
 This component provisions a single Vector Search index. Loading vectors (beyond the optional initial `contentsDeltaUri`), deploying the index to an endpoint, and querying it are separate steps -- deployment is modeled by `GcpVertexAiDeployedIndex`.
 

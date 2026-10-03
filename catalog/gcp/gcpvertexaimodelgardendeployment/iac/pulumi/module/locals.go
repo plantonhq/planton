@@ -11,13 +11,13 @@ type Locals struct {
 	GcpVertexAiModelGardenDeployment *gcpvertexaimodelgardendeploymentv1alpha1.GcpVertexAiModelGardenDeployment
 }
 
-// initializeLocals carries the stack input through. Google's one-step
+// initializeLocals carries the IaC input through. Google's one-step
 // deployment resource carries no labels of its own (the endpoint and model
 // it creates are Google-named), so there is no derived name and no label
 // set here.
-func initializeLocals(_ *pulumi.Context, stackInput *gcpvertexaimodelgardendeploymentv1alpha1.GcpVertexAiModelGardenDeploymentStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpvertexaimodelgardendeploymentv1alpha1.GcpVertexAiModelGardenDeploymentIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpVertexAiModelGardenDeployment = stackInput.Target
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpVertexAiModelGardenDeployment = iacInput.Target
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

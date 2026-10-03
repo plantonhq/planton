@@ -180,14 +180,14 @@ The policy is namespace-local by upstream rule: cross-namespace targetRefs
 and CA references are invalid, so create the policy in the namespace of the
 backend Services it secures.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `policy_name` | Name of the created BackendTLSPolicy (equals `metadata.name`). |
 | `namespace` | Namespace the BackendTLSPolicy was created in. |
 
-## Related Components
+## Related Kinds
 
 - [Kubernetes Gateway](../kubernetesgateway)
 - [Kubernetes HTTP Route](../kuberneteshttproute)

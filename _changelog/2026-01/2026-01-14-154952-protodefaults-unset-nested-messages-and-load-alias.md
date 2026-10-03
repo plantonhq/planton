@@ -199,7 +199,7 @@ spec:
 ## Related Work
 
 - **Proto Field Defaults Framework**: `2026-01-14-113510-default-field-option-semantics-rule-and-forge-updates.md`
-- **KubernetesGhaRunnerScaleSet**: Component where this issue was discovered during testing
+- **KubernetesGhaRunnerScaleSet**: Kind where this issue was discovered during testing
 
 ---
 

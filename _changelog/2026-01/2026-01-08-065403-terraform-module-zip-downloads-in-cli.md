@@ -33,7 +33,7 @@ flowchart TB
     A["tofu apply"] --> B{moduleDir provided?}
     B -->|Yes| C[Use provided directory]
     B -->|No| D{Release version available?}
-    D -->|Yes| E[Download terraform-component.zip]
+    D -->|Yes| E[Download terraform-kind.zip]
     D -->|No/dev| F[Fallback: clone repo]
     E --> G["Cache in ~/.planton/terraform/modules/"]
     E -->|Fail| H["⚠️ Warning + Fallback"]
@@ -45,7 +45,7 @@ flowchart TB
 
 ### Key Features
 
-1. **Automatic zip download**: Downloads component-specific zips from GitHub releases
+1. **Automatic zip download**: Downloads kind-specific zips from GitHub releases
 2. **Smart caching**: Modules cached at `~/.planton/terraform/modules/{version}/`
 3. **Graceful fallback**: Falls back to staging/clone if zip unavailable
 4. **Module version support**: Works with `--module-version` for specific releases
@@ -100,7 +100,7 @@ Unlike Pulumi binaries which are platform-specific, Terraform modules are platfo
 
 | Pulumi | Terraform |
 |--------|-----------|
-| `pulumi-{component}_{os}_{arch}.gz` | `terraform-{component}.zip` |
+| `pulumi-{kind}_{os}_{arch}.gz` | `terraform-{kind}.zip` |
 | Requires `runtime.GOOS/GOARCH` | No platform detection |
 | Executable binary | Folder with `.tf` files |
 

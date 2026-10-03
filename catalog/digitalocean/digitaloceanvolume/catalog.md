@@ -4,7 +4,7 @@ Deploys a DigitalOcean block storage volume with configurable size, region, and 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Block Storage Volume** -- a `digitalocean_volume` resource in the specified region with the given size, optional filesystem formatting (with an optional filesystem label), optional description, and tags
 - **DigitalOcean Tags** -- tags from the spec, merged with the standard Planton labels, applied directly to the volume resource for organizational tracking and cost allocation
@@ -15,7 +15,7 @@ The volume is created in a detached state. Attach it from the Droplet side: the 
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### DigitalOcean Account
@@ -51,7 +51,7 @@ spec:
 planton apply -f do-volume.yaml
 ```
 
-This creates a 50 GiB unformatted block storage volume in DigitalOcean's NYC1 region, detached and ready for a Droplet's `volumeIds` list to claim it. A Stack Job tracks the provisioning in real time.
+This creates a 50 GiB unformatted block storage volume in DigitalOcean's NYC1 region, detached and ready for a Droplet's `volumeIds` list to claim it. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -71,13 +71,13 @@ These are the most important decisions when configuring a DigitalOcean storage v
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies.
+This kind has no foreign key dependencies.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -94,4 +94,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Droplet**](/cloud-catalog/digital-ocean-droplet) -- attaches this volume via its `volumeIds` list consuming the `volume_id` output
+- [**DigitalOcean Droplet**](/infra-catalog/digital-ocean-droplet) -- attaches this volume via its `volumeIds` list consuming the `volume_id` output

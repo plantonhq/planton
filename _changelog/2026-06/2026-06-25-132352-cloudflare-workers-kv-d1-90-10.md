@@ -82,7 +82,7 @@ the project's `coding-guidelines/0004-engine-parity-and-no-proto-reserved.md`.
 ## Validation
 
 `make protos` (incl. the Java compile gate) green; `go build ./...`; all five
-component spec tests pass; `pkg/outputs` conformance extended and green (the parity
+kind spec tests pass; `pkg/outputs` conformance extended and green (the parity
 guard); `pkg/secretcoverage` gate green (new sensitive fields covered, stale
 `CloudflareWorker:spec.env.secrets` baseline entry removed); `tofu validate` on all
 five modules against the real v5 provider; all five Pulumi entrypoints build the
@@ -99,6 +99,6 @@ the restored attributes, and a live `tofu apply`/`destroy` of a D1 database with
 - A live `tofu apply` for `CloudflareHyperdriveConfig` needs a reachable origin
   database (Hyperdrive verifies connectivity at create); the module is
   `tofu validate`-clean and plan-ready.
-- The deep `docs/README.md` research essays for the worker/KV/D1 components retain
+- The deep `docs/README.md` research essays for the worker/KV/D1 kinds retain
   some pre-rewrite field names; the user-facing `README.md` and `catalog-page.md`
   are current.

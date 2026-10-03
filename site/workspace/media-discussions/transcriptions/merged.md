@@ -62,7 +62,7 @@ Suresh Attaluri  26:44
 like that. So let's keep the prompt. User will ask, I need a Eks cluster, and that will trigger a Stackdriver will show the
 
 Swarup Donepudi  26:54  
-Okay, we'll try it out. I don't know. Again, limitations of what can Sameer put there within those technical exercise limitations. So the story that we want to say is even, yeah, stack job again. I think we you and I have been so close to this product. We think multi cloud deployments is the only thing in the product so far, and I think we are still stuck there. The very first thing that comes to mind is, again, deploy something and then stack job. I'm just critical questioning here. I'm pushing beyond which is, is that DevOps? Is that, will that truly represent,
+Okay, we'll try it out. I don't know. Again, limitations of what can Sameer put there within those technical exercise limitations. So the story that we want to say is even, yeah, infra job again. I think we you and I have been so close to this product. We think multi cloud deployments is the only thing in the product so far, and I think we are still stuck there. The very first thing that comes to mind is, again, deploy something and then infra job. I'm just critical questioning here. I'm pushing beyond which is, is that DevOps? Is that, will that truly represent,
 
 Unknown Speaker  27:39  
 yeah, the DevOps perspective.
@@ -71,7 +71,7 @@ Swarup Donepudi  27:42
 So this is from insider perspective, right? That is what we feel like showing, because we feel like that's the that's like 80% of time we spent, and that's like 80% of the core of the product. So we want to show that, but that doesn't mean that is DevOps, right? So that is where I'm questioning, like I won't deploy something, and then showing a pulumi stack within the chat, okay? It seems like divorce, again, just critical question, yes or no, yeah, even I am on the same page as you, because we both are, like, so close to the product, right? I can't even, I can't think of anything, anything. So maybe we'll try with Samir,
 
 Suresh Attaluri  28:30  
-or forget about stack job blocks. We can just show that AKs cluster a message is sent to plant, or they create an Eks cluster. Next response that you get is, Eks cluster has been created, yeah, if possible, we can. We can. Another view is the AWS side of it being created.
+or forget about infra job blocks. We can just show that AKs cluster a message is sent to plant, or they create an Eks cluster. Next response that you get is, Eks cluster has been created, yeah, if possible, we can. We can. Another view is the AWS side of it being created.
 
 Swarup Donepudi  28:58  
 Yeah, I think that all of that is not necessary. This is what I kind of got stuck in for a very long time, which is you want to tell as big of a story as possible all the time, like the complete stories, but understand that there is more, right? So we have more. So in that case, it is not necessary that it the story need to be told here and the user is going to show the page.
@@ -327,7 +327,7 @@ Swarup Donepudi  12:01
 is self service, yeah, and then service hub, service, that is where, like you can see all the services, etc. So, okay, are we telling it in that story is discover, is what I think it's hard for us to probably put it in
 
 Speaker 1  12:26  
-integrated ISC workflows. Well, when you say integrated IAC workflows, are those stack jobs,
+integrated ISC workflows. Well, when you say integrated IAC workflows, are those infra jobs,
 
 Swarup Donepudi  12:31  
 right? Yeah, like meaning you make a configuration change or you want to deploy something, something you workflow automatically kicks kicks off. So, yeah. So
@@ -787,7 +787,7 @@ Suresh Attaluri  31:27
 in case of like columi modules, yeah, managing pulumi modules or TerraForm modules with plant and cloud, if they register, it is easy to search for devs. It will be. But the journey without private cloud would be a GitHub account or some other place where they need to rely on the keyword search.
 
 Swarup Donepudi  31:55  
-Or, again, this diagram doesn't have to represent all of that, because we cannot tell the entire story here. We have the opportunity to do those things at several places on the website. Meaning, so you said, I multi cloud, right? IAC workflows that has a pulumi registry deployment component sections, or even the IAC workflows itself. The hero section can have in its own illustration or a video where we can do an iPad explanation also. But
+Or, again, this diagram doesn't have to represent all of that, because we cannot tell the entire story here. We have the opportunity to do those things at several places on the website. Meaning, so you said, I multi cloud, right? IAC workflows that has a pulumi registry catalog kind sections, or even the IAC workflows itself. The hero section can have in its own illustration or a video where we can do an iPad explanation also. But
 
 Suresh Attaluri  32:27  
 the message we can put here is, with plaid and code, you can rely on one app, but without Plato, you need to go,
@@ -867,7 +867,7 @@ Suresh Attaluri  5:24
 that is, how one can build
 
 Suresh Attaluri  5:26  
-through chat, someone can deploy and all those stuff, right? So, recordings are already there. Here we can put some nice chat image, an existing chart. We can take a screenshot, yeah, along with stack jobs or logs, or with or without it? Yeah.
+through chat, someone can deploy and all those stuff, right? So, recordings are already there. Here we can put some nice chat image, an existing chart. We can take a screenshot, yeah, along with infra jobs or logs, or with or without it? Yeah.
 
 Swarup Donepudi  5:45  
 And we can also create a simple GIF by like, doing the typing. So we'll have a chat that we want to show, and we'll do the chat and create a GIF out of it and put it here. It's not a video.
@@ -988,7 +988,7 @@ Yeah, right, yes,
 Swarup Donepudi  0:57  
 what I think you had this field.
 
-Alright? So let's continue the discussion of the landing page sections. So I think we went until we got past the product definition section. We agreed that this is going to have the illustration with before, without and with plan down cloud, with platform engineers, developers and senior engineers creating cookie cutter templates, etc. And we agreed that these text sections will not have any media and and then we moved on to the Features section for plant Ara. We agreed that we'll have one GIF or multiple screenshots showing multiple chats. And and I think we also dive, dive somewhat deep into like, what should that content be? What should those screenshots be like? I think I don't remember we discussing it, but I think we ended up agreeing that we create a loom recording explaining plant aura features or capabilities, and add a link alongside discover to watch video. We'll make sure the video watch video pops up, because that helps the visitors get more understanding. And we also talked about the script for the video itself, where we can begin with deploying genes database on Kubernetes and show the stack job progress and then update it and show the version diff and also, finally, probably destroyed, maybe during the demo. Or we can also do a couple cloud resources to make sure that it's not just for Kubernetes, because there is so many products that are being just Kubernetes, but our capabilities are that we can demonstrate multi cloud. It's easy to create a ngcs bucket. It's easy to create a route 53 zone. These are all like resources that can be created very quickly. So I think the script for this video can be like to demonstrate the wild capabilities. It can begin with inviting a user, saying that we can invite users which has nothing to do with deployments or anything, and then we can move on to talking about deploying. We should begin with deploying something on AWS and then GCP, okay, these are the only two clouds we currently support. So I think we can deploy, I think route 53 zone and a GCS bucket. These two are like lightweight resources, and we can probably, maybe, in fact, instead of Route 53 we can actually deploy a VPC. We'll
+Alright? So let's continue the discussion of the landing page sections. So I think we went until we got past the product definition section. We agreed that this is going to have the illustration with before, without and with plan down cloud, with platform engineers, developers and senior engineers creating cookie cutter templates, etc. And we agreed that these text sections will not have any media and and then we moved on to the Features section for plant Ara. We agreed that we'll have one GIF or multiple screenshots showing multiple chats. And and I think we also dive, dive somewhat deep into like, what should that content be? What should those screenshots be like? I think I don't remember we discussing it, but I think we ended up agreeing that we create a loom recording explaining plant aura features or capabilities, and add a link alongside discover to watch video. We'll make sure the video watch video pops up, because that helps the visitors get more understanding. And we also talked about the script for the video itself, where we can begin with deploying genes database on Kubernetes and show the infra job progress and then update it and show the version diff and also, finally, probably destroyed, maybe during the demo. Or we can also do a couple infra components to make sure that it's not just for Kubernetes, because there is so many products that are being just Kubernetes, but our capabilities are that we can demonstrate multi cloud. It's easy to create a ngcs bucket. It's easy to create a route 53 zone. These are all like resources that can be created very quickly. So I think the script for this video can be like to demonstrate the wild capabilities. It can begin with inviting a user, saying that we can invite users which has nothing to do with deployments or anything, and then we can move on to talking about deploying. We should begin with deploying something on AWS and then GCP, okay, these are the only two clouds we currently support. So I think we can deploy, I think route 53 zone and a GCS bucket. These two are like lightweight resources, and we can probably, maybe, in fact, instead of Route 53 we can actually deploy a VPC. We'll
 
 Suresh Attaluri  4:26  
 do a test, because we haven't discussed about the video script yet. That is what I decided to write down. We decided we'll do that when we discuss about the feature complete feature page, okay, okay. And this one we thought, we thought of having few screenshots of plant and plant
@@ -1051,7 +1051,7 @@ Speaker 2  10:19
 registry, development, deployment, store, and there
 
 Swarup Donepudi  10:22  
-is a source code templates library which shows cookie cutter templates, GitHub actions and workflows all in one place. So that is for service part, and this library right and deployment component, store and programming module existing for like the infrastructure modules, like provisioning part,
+is a source code templates library which shows cookie cutter templates, GitHub actions and workflows all in one place. So that is for service part, and this library right and catalog kind, store and programming module existing for like the infrastructure modules, like provisioning part,
 
 Suresh Attaluri  10:44  
 yeah. So that part side of the product, yeah.
@@ -1069,7 +1069,7 @@ Suresh Attaluri  11:29
 publishing how, how, even without plant and clone, that self service can be done right? Like they can still have GitHub and all those other tools, yeah, but what how plant and clone is enabling it is using columi registries. Yeah, that the frames,
 
 Swarup Donepudi  11:47  
-it's hard to again, represent all of that information in that image, so, but now that all of this conversation is being captured. But I get your point. And I think it's valuable if we can, like, right, if we can find people who can help us create a visualization that that conveys the message that without plant on Cloud, enabling self service is is a lot more work. There is no central place where developers and platform engineers come and collaborate. There are multiple tools, and there is a lot of documentation that is that would be required to make that self service happen. So it's it's not, it's substandard. There is so the success rate of adopting that self, like all the Self Service intended work will not be, will not reach its target customers, and the productivity gains will be lost because of because of the fact that all of this self service automation is splintered across very like a wide number of tools plant over is bringing all of that to one place where we are providing module to history, deployment component store for both pulumi and TerraForm modules. It can we are doing a registry, and we are providing source code templates library where they can publish GitHub actions, GitHub workflows, GitLab, that is Jenkins, any reusable CICD or service template bootstrapping is all in one place. So I think, yeah, I think you got that nice point where when we talk about what we build, it's important to clearly articulate why we built those, right? So I think the biggest reason is definitely the fact that today, to enable the same self service, there are multiple tools that developers or self service providers or self service consumers need to jump around, which reduces the overall like value that gets delivered with that self service. And we are particularly solving that problem by creating these centralized repositories, like deployment store pulumi module, sorry, in IAC module Registry, or which contains both TerraForm and pulumi modules that are offered maintained by Platinum cloud or the organizations can bring their own and also source code template libraries, again, containing GitHub workflows or cookie cutter templates or GitHub workflows, again, both maintain there. You'll find a lot of the registered ones maintained by plant upload or the organization can bring their own. So yeah, we are creating or making that consuming and providing self service very easy. So it's not, we are not the creators of self service. It's it's a wrong claim to say that we are the first ones to enable self service. We simplified the self service, and we are making the success, increasing the success rate of the intended goal for those self service initiatives, and making the improving the overall quality of life. People call this as quality of life improvements, because it's hard to measure it right then, yeah. Also,
+it's hard to again, represent all of that information in that image, so, but now that all of this conversation is being captured. But I get your point. And I think it's valuable if we can, like, right, if we can find people who can help us create a visualization that that conveys the message that without plant on Cloud, enabling self service is is a lot more work. There is no central place where developers and platform engineers come and collaborate. There are multiple tools, and there is a lot of documentation that is that would be required to make that self service happen. So it's it's not, it's substandard. There is so the success rate of adopting that self, like all the Self Service intended work will not be, will not reach its target customers, and the productivity gains will be lost because of because of the fact that all of this self service automation is splintered across very like a wide number of tools plant over is bringing all of that to one place where we are providing module to history, catalog kind store for both pulumi and TerraForm modules. It can we are doing a registry, and we are providing source code templates library where they can publish GitHub actions, GitHub workflows, GitLab, that is Jenkins, any reusable CICD or service template bootstrapping is all in one place. So I think, yeah, I think you got that nice point where when we talk about what we build, it's important to clearly articulate why we built those, right? So I think the biggest reason is definitely the fact that today, to enable the same self service, there are multiple tools that developers or self service providers or self service consumers need to jump around, which reduces the overall like value that gets delivered with that self service. And we are particularly solving that problem by creating these centralized repositories, like deployment store pulumi module, sorry, in IAC module Registry, or which contains both TerraForm and pulumi modules that are offered maintained by Platinum cloud or the organizations can bring their own and also source code template libraries, again, containing GitHub workflows or cookie cutter templates or GitHub workflows, again, both maintain there. You'll find a lot of the registered ones maintained by plant upload or the organization can bring their own. So yeah, we are creating or making that consuming and providing self service very easy. So it's not, we are not the creators of self service. It's it's a wrong claim to say that we are the first ones to enable self service. We simplified the self service, and we are making the success, increasing the success rate of the intended goal for those self service initiatives, and making the improving the overall quality of life. People call this as quality of life improvements, because it's hard to measure it right then, yeah. Also,
 
 Suresh Attaluri  15:07  
 I would like to highlight that there is very low status Q to adapt to this our platform, because we still have those GitHub report like, yeah, talking about.
@@ -1120,7 +1120,7 @@ Suresh Attaluri  19:25
 So what do you think the media should be for media? Oh, this
 
 Swarup Donepudi  19:31  
-one, this one. This one begins with the bootstrapping a new micro service from a template that is where. So when we showed self service DevOps, we won't dive into how to create template, how to publish the template, etc. We'll simply include that small portion in the self service DevOps narrative, because from it, from the lens of self serviceness, like engineers can publish, developers can consume. We won't zoom into what those templates are, how the those are consumed, etc. But here we can directly open service, click on Bootstrap and choose one of the templates, and then add cacd to that, and then deploy it as a micro service, or a fargate service, or a ECS service or a lambda service. Show that and how it relates to stack jobs. So relating it to stack jobs is not the important part. We just have to demonstrate that this platform is capable of helping developers, onboarding developers fairly quickly by helping them discover all the registry of services, of previously created services. And it can also help them understand quickly like create a new service and then get going quickly. So bootstrapping to production or lower environments is much quicker. Again, we are not claiming that we are the ones who put it first, etc.
+one, this one. This one begins with the bootstrapping a new micro service from a template that is where. So when we showed self service DevOps, we won't dive into how to create template, how to publish the template, etc. We'll simply include that small portion in the self service DevOps narrative, because from it, from the lens of self serviceness, like engineers can publish, developers can consume. We won't zoom into what those templates are, how the those are consumed, etc. But here we can directly open service, click on Bootstrap and choose one of the templates, and then add cacd to that, and then deploy it as a micro service, or a fargate service, or a ECS service or a lambda service. Show that and how it relates to infra jobs. So relating it to infra jobs is not the important part. We just have to demonstrate that this platform is capable of helping developers, onboarding developers fairly quickly by helping them discover all the registry of services, of previously created services. And it can also help them understand quickly like create a new service and then get going quickly. So bootstrapping to production or lower environments is much quicker. Again, we are not claiming that we are the ones who put it first, etc.
 
 Suresh Attaluri  20:55  
 So at a high level, we'll go through the journey of bootstrapping, building and deploying, yeah, or operate as well, yeah,
@@ -1168,7 +1168,7 @@ Speaker 2  24:21
 So what, which part of the product are we going
 
 Swarup Donepudi  24:26  
-to so this is all about. So here we just like the way I said, in service of, I will begin my journey with showing service of, service of Bootstrap, bootstrap cell phone, of the cookie cutter templates create the repository, add GitHub action, and then deploy by adding it customized micro service, and then operate by so that completes the slide. This when, when we talk about integrated IAC workflows, we are going to explain that we begin our journey with the deployment store. Okay, okay, these are all the things for which ISC modules have been already created, and you can either choose to run pulumi or TerraForm. Let's say we let's imagine that TerraForm is already ready by then, and then, if it is not ready, we say pulumi is already there. TerraForm integration is coming soon, and what you can do is you can click on that, and here are all the attributes, and when you click on it, instantly, pulumi preview apply is created, and the stack jobs history is there, and every change is captured as version history. All the configuration changes. And here is the pulumi module registry. And if you want customizations, you can create your own pulumi module registers here, and we will show stack job settings where you can configure either at organization level. We'll talk about how to configure pulumi back and and, yeah, all of that. So basically, so there is a lot to tell here, and the scope is, how do you do IAC with random code? And we maybe you can also apply the same philosophy of with and without, like, how would you achieve the same thing without? Maybe we can talk briefly about that, or do a whiteboard in the same recording, explaining, if, let's imagine a life where you don't have anything like plant and cloud, then your developers would sorry, platform engineers would publish these on GitHub and document it on, say, Confluence and and your developers will search on Confluence as if there is a module, etc. If there is, then how do you they consume it is, they create a repository, and they set up their own cacd. And all of those steps are now condensed into much simpler self service developer experience, where they can explore what is available in the store and and they can. They don't have to do any customer like CICD setup. They can. We are not abstracting anything. They can still do that. We have created GitHub actions to create film like CICD for these also like, you can put your configuration in a git repository and add a GitHub action so that whenever you make the configuration change, if you like that workflow, Git workflow, you make a configuration change commit, but you'll have to add, like, the CICD for it, or there is one available in the this template, so on, so forth. Yeah.
+to so this is all about. So here we just like the way I said, in service of, I will begin my journey with showing service of, service of Bootstrap, bootstrap cell phone, of the cookie cutter templates create the repository, add GitHub action, and then deploy by adding it customized micro service, and then operate by so that completes the slide. This when, when we talk about integrated IAC workflows, we are going to explain that we begin our journey with the deployment store. Okay, okay, these are all the things for which ISC modules have been already created, and you can either choose to run pulumi or TerraForm. Let's say we let's imagine that TerraForm is already ready by then, and then, if it is not ready, we say pulumi is already there. TerraForm integration is coming soon, and what you can do is you can click on that, and here are all the attributes, and when you click on it, instantly, pulumi preview apply is created, and the infra jobs history is there, and every change is captured as version history. All the configuration changes. And here is the pulumi module registry. And if you want customizations, you can create your own pulumi module registers here, and we will show infra job settings where you can configure either at organization level. We'll talk about how to configure pulumi back and and, yeah, all of that. So basically, so there is a lot to tell here, and the scope is, how do you do IAC with random code? And we maybe you can also apply the same philosophy of with and without, like, how would you achieve the same thing without? Maybe we can talk briefly about that, or do a whiteboard in the same recording, explaining, if, let's imagine a life where you don't have anything like plant and cloud, then your developers would sorry, platform engineers would publish these on GitHub and document it on, say, Confluence and and your developers will search on Confluence as if there is a module, etc. If there is, then how do you they consume it is, they create a repository, and they set up their own cacd. And all of those steps are now condensed into much simpler self service developer experience, where they can explore what is available in the store and and they can. They don't have to do any customer like CICD setup. They can. We are not abstracting anything. They can still do that. We have created GitHub actions to create film like CICD for these also like, you can put your configuration in a git repository and add a GitHub action so that whenever you make the configuration change, if you like that workflow, Git workflow, you make a configuration change commit, but you'll have to add, like, the CICD for it, or there is one available in the this template, so on, so forth. Yeah.
 
 Suresh Attaluri  27:28  
 So by integrated ISC workflows, you're saying that you give us some config and that will automatically trigger a workflow, yeah. So that workflow is nothing, but we deploy something for
@@ -1177,10 +1177,10 @@ Swarup Donepudi  27:41
 us is the preview apply the
 
 Suresh Attaluri  27:45  
-steps of stack job. Stack job will be started. So, yeah, same thing in GitHub. You need to modify the configs, which is now changed to a form.
+steps of infra job. Infra job will be started. So, yeah, same thing in GitHub. You need to modify the configs, which is now changed to a form.
 
 Swarup Donepudi  27:56  
-Again, that's what we so this is a an alternative, but they can still achieve the same thing via GitHub also, yeah, like they can put the Redis configuration in a GitHub repository. They make the change from saying 3.5 G to 4.4 G as the disk size, and they get commit, push, and action gets triggered that does not apply with hyphen T for following the stack job progress. And this is the stack job progressing. So we are not taking away that ability if you if that is what you are into, we still like provide value, because whatever is being deployed from any git repository surfaces as history here, so auditing and all those capabilities are still valuable.
+Again, that's what we so this is a an alternative, but they can still achieve the same thing via GitHub also, yeah, like they can put the Redis configuration in a GitHub repository. They make the change from saying 3.5 G to 4.4 G as the disk size, and they get commit, push, and action gets triggered that does not apply with hyphen T for following the infra job progress. And this is the infra job progressing. So we are not taking away that ability if you if that is what you are into, we still like provide value, because whatever is being deployed from any git repository surfaces as history here, so auditing and all those capabilities are still valuable.
 
 Suresh Attaluri  28:41  
 So the only change is if, without plant and cloud, they need to figure out the module TerraForm or coronavi module that they have to apply to this configuration that they are providing, or they have to figure out what is
@@ -1367,10 +1367,10 @@ Speaker 1  27:01
 yeah, we don't know. We need to highlight that.
 
 Swarup Donepudi  27:04  
-We want to highlight we want to highlight that. And we also want to also show that. Notice that, as well as the stack job is created, and you created this from this thing on second half of the screen, you should refresh the dashboard and show that. Notice that as new stack job is running, you created it. And here is the resource detail of the etc, etc. Okay,
+We want to highlight we want to highlight that. And we also want to also show that. Notice that, as well as the infra job is created, and you created this from this thing on second half of the screen, you should refresh the dashboard and show that. Notice that as new infra job is running, you created it. And here is the resource detail of the etc, etc. Okay,
 
 Suresh Attaluri  27:26  
-we jump from Stack chat to the stack job. We will
+we jump from Stack chat to the infra job. We will
 
 Swarup Donepudi  27:29  
 have both. We'll have two half screens, okay, where one is the plant over chat, and the second half is the dashboard itself, where we are showing the chat at the same time we are showing that also,
@@ -1388,7 +1388,7 @@ Swarup Donepudi  28:33
 fact, instead of s3 bucket, we can also do a DynamoDB, because that is also quick, yeah,
 
 Suresh Attaluri  28:38  
-and yeah. And we show this nice comparison, that here the stack job is has started, and here the resources are, yeah, and we can do the same thing for the GCP also, yeah. I believe Yeah.
+and yeah. And we show this nice comparison, that here the infra job is has started, and here the resources are, yeah, and we can do the same thing for the GCP also, yeah. I believe Yeah.
 
 Swarup Donepudi  28:53  
 It's not Yeah. We can simply say it's not very common to see organizations using multiple clouds, but it's there for you if you need it. So let's, let's say I now want to deploy, create a new GC storage bucket on Google Cloud, instead of s3 bucket. So I say I need an GCS bucket, it, transfer it, and we open Google Cloud, and there is that. And then maybe, as a conclusion, at the end, at the very end, we can say, so all of what we have done in the chat is now there 14 to like see, will go to Canvas, will show the resources have not created. And we
@@ -1403,7 +1403,7 @@ Unknown Speaker  29:46
 will have
 
 Swarup Donepudi  29:48  
-other automation. Is where that needs to be emphasized, right? So I think, yeah, we should not show everything in every video. Yeah, let's keep it. Short, keep it short and demonstrate the capabilities of conversational power, guided resource creation, embedded stack jobs,
+other automation. Is where that needs to be emphasized, right? So I think, yeah, we should not show everything in every video. Yeah, let's keep it. Short, keep it short and demonstrate the capabilities of conversational power, guided resource creation, embedded infra jobs,
 
 Suresh Attaluri  30:10  
 ability to request something and ability to see the effect. So that's what we need to convey in this video. And
@@ -1463,7 +1463,7 @@ Speaker 1  33:48
 try out three multi cloud, multi cloud part. No, we have
 
 Swarup Donepudi  33:54  
-the creation part. You can create resources and create multi cloud resources and then
+the creation part. You can create resources and create multi infra components and then
 
 Speaker 1  33:59  
 finally update them as well. That's what you want to
@@ -1574,7 +1574,7 @@ Swarup Donepudi  41:22
 this is, I think I am trying to add there, I told you, right? So I'm asking I'm adding to the board for the stuff that we are claiming on the website to create content. So I think we didn't do anything here, like the either environment this thing or granting a team member a role is, is? Is what this was meant for. Yeah,
 
 Suresh Attaluri  41:50  
-we'll get to that. So basically, till now, we have already discussed provisioning. Part of provisioning has this is not a simple task. It has this guided experience thing. It has this benefit of stack job initiation and all those things. So that's when it got spilled over or split into these two parts. But simplified permission and access management is straightforward, straight forward, and
+we'll get to that. So basically, till now, we have already discussed provisioning. Part of provisioning has this is not a simple task. It has this guided experience thing. It has this benefit of infra job initiation and all those things. So that's when it got spilled over or split into these two parts. But simplified permission and access management is straightforward, straight forward, and
 
 Swarup Donepudi  42:25  
 we are also trying to break off the maybe, maybe we might be creating an impression. Candora can only do DevOps automation, but instead we are like saying that no ask for stuff outside the automation and plant over. Can help you.
@@ -1714,7 +1714,7 @@ Suresh Attaluri  2:20
 Right? I think we can talk about the journey, like, before showing it on the platform, okay, we ended up building that feature, like, Why? Why? Is a problem that we faced? Yeah. And maybe we
 
 Swarup Donepudi  2:33  
-should also talk about the feature that we already planned but haven't implemented it yet, which is the stack job summary, it's not it's right on the board. It's like, we want to leverage the same APA resource chats to also do stack job summary and have the provide the ability. So we dive into those duties. And just trying to remind that, because I just thought about it. So we started off this discussion, we only talked about sharing chats and ABA resources level chats, but stack job summaries and ability to converse on the stack job failures right within the chat is something that we plan in the pipeline. So we'll also talk about it. So yeah, where do you want to begin? Like, what? Why do you what prompted us to, okay,
+should also talk about the feature that we already planned but haven't implemented it yet, which is the infra job summary, it's not it's right on the board. It's like, we want to leverage the same APA resource chats to also do infra job summary and have the provide the ability. So we dive into those duties. And just trying to remind that, because I just thought about it. So we started off this discussion, we only talked about sharing chats and ABA resources level chats, but infra job summaries and ability to converse on the infra job failures right within the chat is something that we plan in the pipeline. So we'll also talk about it. So yeah, where do you want to begin? Like, what? Why do you what prompted us to, okay,
 
 Suresh Attaluri  3:23  
 so those things, so we will our plant, the Chatbot, the Chatbot, yeah, and we're doing things at different levels, like we're provisioning resources, we're Testing and all we're doing all those stuff, but those charts, in a way, are isolated and only limited to the person who has requested the or created those charts. Yeah, and there's no aspect of collaborating with other team members, yeah, and we felt that collaboration is a thing that is needed, yeah, so that multiple peoples can put on their request in a single chat. Yeah, that's the whole intent. And
@@ -1729,7 +1729,7 @@ Swarup Donepudi  5:26
 yeah. So when you say resource, you're talking about any multi cloud deployment,
 
 Suresh Attaluri  5:30  
-deployment. AP, yeah, deployment component, any deployed resource, yeah, yeah, will have a chat associated with it, okay? And any, anything, any request put over there will be communicated or will be shown to sorry.
+deployment. AP, yeah, catalog kind, any deployed resource, yeah, yeah, will have a chat associated with it, okay? And any, anything, any request put over there will be communicated or will be shown to sorry.
 
 Swarup Donepudi  5:53  
 Everyone can access conversation. It's not intentionally, anyone sharing anything, the very default nature of those conversations, they begin right close to where the deployment configuration can be found on the console app, and the conversation is going to live there, so anyone who has access to that configuration can also Explore historical conversation that happened on that resource. Right? So
@@ -1786,13 +1786,13 @@ Suresh Attaluri  12:57
 yeah, you're getting Satish email id recommendation is because they belong to this. Yeah.
 
 Swarup Donepudi  13:03  
-Also, we forgot about the teams aspect, yes. So you can share the chat with the entire team without having to invite each so this is very powerful feature to me, like if you want to collaborate with and bring everyone on your team. So that's, again, very powerful addition to the mix. So yeah, that's, that's, that's, that's good. So let's now go to the resource level chat. So I am on an AWS DynamoDB table that I deployed yesterday. And yeah, I can do ask plantora, and I can go back to the history of this conversation. And as you can see, I already made a few changes. Not even made a few changes. I started by asking, Why is the last time job failing? I saw that, and it says, I need the stack job ID. I said, Can you look it up from the details? And it says, I currently do not have the capability to look up in saddle. I said, the stack job ID is in straighter section of the API resource. And it did look it up and and then I said, Okay, now that you know, I asked, Did you find it out? By the way, it says, Please hold on for a moment. And I was, I was surprised that it would come back with another message. But that doesn't happen,
+Also, we forgot about the teams aspect, yes. So you can share the chat with the entire team without having to invite each so this is very powerful feature to me, like if you want to collaborate with and bring everyone on your team. So that's, again, very powerful addition to the mix. So yeah, that's, that's, that's, that's good. So let's now go to the resource level chat. So I am on an AWS DynamoDB table that I deployed yesterday. And yeah, I can do ask plantora, and I can go back to the history of this conversation. And as you can see, I already made a few changes. Not even made a few changes. I started by asking, Why is the last time job failing? I saw that, and it says, I need the infra job ID. I said, Can you look it up from the details? And it says, I currently do not have the capability to look up in saddle. I said, the infra job ID is in straighter section of the API resource. And it did look it up and and then I said, Okay, now that you know, I asked, Did you find it out? By the way, it says, Please hold on for a moment. And I was, I was surprised that it would come back with another message. But that doesn't happen,
 
 Suresh Attaluri  14:31  
 right? Oh, that doesn't happen. I don't know why it is asking, yeah, did you find out?
 
 Swarup Donepudi  14:39  
-And yeah, I just waited for a couple seconds, and I asked you to find out, and then it actually came back by looking up the details of that stack job ID and figured out from the error messages that, oh, this is what is causing the failure, and here is how you can fix it. So overall, as like, what we are trying to discuss here is the advantage of resource level chance, and anyone who has access, which can be discovered by going to the permissions management and we say, Show inherited permissions, and yeah, like All these different people have access to this resource, yeah, so the
+And yeah, I just waited for a couple seconds, and I asked you to find out, and then it actually came back by looking up the details of that infra job ID and figured out from the error messages that, oh, this is what is causing the failure, and here is how you can fix it. So overall, as like, what we are trying to discuss here is the advantage of resource level chance, and anyone who has access, which can be discovered by going to the permissions management and we say, Show inherited permissions, and yeah, like All these different people have access to this resource, yeah, so the
 
 Suresh Attaluri  15:23  
 organization level? Yeah, that is where we they can, since they have a organization, but they can see that, yeah, this
@@ -1804,25 +1804,25 @@ Suresh Attaluri  16:22
 The beauty of this individual charts is now I can continue the chart where you have left, like, figure out the root cause. Now I it's not required for me to start the whole chart from the beginning, yeah. I can start where it was left, and I can try to fix this issue, right? Yeah,
 
 Swarup Donepudi  16:41  
-yeah. This is definitely another powerful feature. So now we move on to the third aspect of this discussion that we wanted to talk, which was, Okay, interesting I'm unable to navigate to the that's a Bucha. Okay, so another area where we have already planned and we haven't actually rolled out this additional collaboration aspect of these chats is as soon as whether a pulumi or a telephone stack execution is completed, our system will automatically do a summary of what happened as part of that Stackdriver, and make that as a summary for here and the developers, or anyone who is who is a stakeholder of that particular deployment, they can start conversations on the summary itself, and we, we are, those are that is also essentially an API resource level chat, the APA resource here being the stack job itself,
+yeah. This is definitely another powerful feature. So now we move on to the third aspect of this discussion that we wanted to talk, which was, Okay, interesting I'm unable to navigate to the that's a Bucha. Okay, so another area where we have already planned and we haven't actually rolled out this additional collaboration aspect of these chats is as soon as whether a pulumi or a telephone stack execution is completed, our system will automatically do a summary of what happened as part of that Stackdriver, and make that as a summary for here and the developers, or anyone who is who is a stakeholder of that particular deployment, they can start conversations on the summary itself, and we, we are, those are that is also essentially an API resource level chat, the APA resource here being the infra job itself,
 
 Suresh Attaluri  17:53  
 yeah. But this has to be handled somewhat different, yeah.
 
 Swarup Donepudi  17:58  
-Experience is going to be different, as opposed to having a conversational deployed resource versus this, these are not at resource level. These are at the stack job level. We are the scope. The chart is only scoped for that particular stand job. Yes.
+Experience is going to be different, as opposed to having a conversational deployed resource versus this, these are not at resource level. These are at the infra job level. We are the scope. The chart is only scoped for that particular stand job. Yes.
 
 Suresh Attaluri  18:15  
-So initially, the only difference that I see is initially, when we create a chart for AWS DynamoDB resource as as a platform, we are doing nothing, nothing, yeah, but when we talk about stack job, yeah, so we are triggering some analysis
+So initially, the only difference that I see is initially, when we create a chart for AWS DynamoDB resource as as a platform, we are doing nothing, nothing, yeah, but when we talk about infra job, yeah, so we are triggering some analysis
 
 Swarup Donepudi  18:32  
-to follow up on your thought of like, who, when is that conversation on an API resource or a deployed component begins is when the first message is like, the developer will start. The conversation will always begin when a developer wants to have a conversation, whereas with stack job, it's a asynchronous,
+to follow up on your thought of like, who, when is that conversation on an API resource or a deployed component begins is when the first message is like, the developer will start. The conversation will always begin when a developer wants to have a conversation, whereas with infra job, it's a asynchronous,
 
 Suresh Attaluri  18:57  
 the initial conversation will be started by the platform
 
 Swarup Donepudi  19:01  
-plan control the back end, and then the developers can continue that conversation by asking more questions around the summary itself. Yes, and we want to make these tag job summaries and the follow up conversations to be far more effective by making or by enabling the chat bot, or by providing chat bot with all the necessary context to provide as much relevant response as possible. And when I say more context, I'm talking about all the input that was used to run the stack job and the pulumi or TerraForm code that was used to execute that stack job as input, the system has all of that information, but we need to enable the bot. We need to build that capability into the bot to bring all of this information so that the bot can provide will have more context. For example, if it is an error, then bot will look at the input. Bot will look at the COVID or TerraForm code, and it has a better chance of identifying what could have caused that failure. Yes, so I believe that is another huge value that we can provide to the developers, because deployment values are one of the biggest frustration causing areas, and we have an opportunity to solve it very effectively. So I think that definitely concludes
+plan control the back end, and then the developers can continue that conversation by asking more questions around the summary itself. Yes, and we want to make these tag job summaries and the follow up conversations to be far more effective by making or by enabling the chat bot, or by providing chat bot with all the necessary context to provide as much relevant response as possible. And when I say more context, I'm talking about all the input that was used to run the infra job and the pulumi or TerraForm code that was used to execute that infra job as input, the system has all of that information, but we need to enable the bot. We need to build that capability into the bot to bring all of this information so that the bot can provide will have more context. For example, if it is an error, then bot will look at the input. Bot will look at the COVID or TerraForm code, and it has a better chance of identifying what could have caused that failure. Yes, so I believe that is another huge value that we can provide to the developers, because deployment values are one of the biggest frustration causing areas, and we have an opportunity to solve it very effectively. So I think that definitely concludes
 
 Suresh Attaluri  20:35  
 our I think this feature also comes under that operate part, because I'm trying to deploy something.
@@ -1864,7 +1864,7 @@ Unknown Speaker  25:50
 Yeah, third video for collaboration, collaboration. And
 
 Swarup Donepudi  25:53  
-do you think we should add a fourth video talking about the value for deployments assistance, like stack job insights or that's also collaboration in a way, but it also has the added benefit, which is not
+do you think we should add a fourth video talking about the value for deployments assistance, like infra job insights or that's also collaboration in a way, but it also has the added benefit, which is not
 
 Suresh Attaluri  26:09  
 applied To API resources like we discussed earlier, also true. It falls under the category, yeah,
@@ -1966,10 +1966,10 @@ Suresh Attaluri  32:47
 the user too. Yeah, with whom the chat was shared, they will. Yeah, I think
 
 Swarup Donepudi  32:54  
-we'll see that doesn't matter. I guess whatever we are already showing is definitely a step improvement. So people, as long as they understand the overall collaboration, they it makes sense that they can, we can only say that the now they can collaborate too. So it's okay to, like, not show everything you skip the stack jobs, collaboration here. What do you think? Yes, yeah, it's not. Collaboration is not the key, right there is it's going to be around the developer doing something to resolve his own deployment. But as per, the team has access to the chat, but it doesn't. I think we can sell a stack
+we'll see that doesn't matter. I guess whatever we are already showing is definitely a step improvement. So people, as long as they understand the overall collaboration, they it makes sense that they can, we can only say that the now they can collaborate too. So it's okay to, like, not show everything you skip the infra jobs, collaboration here. What do you think? Yes, yeah, it's not. Collaboration is not the key, right there is it's going to be around the developer doing something to resolve his own deployment. But as per, the team has access to the chat, but it doesn't. I think we can sell a stack
 
 Suresh Attaluri  33:36  
-job level. It's less of a collaboration resource is stack job is life of charge less, right? Because a new stack job, we can be triggered and the a PhD resource state gets changed. So I believe stack job charts will have less conversations over there. Yeah, but more of analysis, friend,
+job level. It's less of a collaboration resource is infra job is life of charge less, right? Because a new infra job, we can be triggered and the a PhD resource state gets changed. So I believe infra job charts will have less conversations over there. Yeah, but more of analysis, friend,
 
 Swarup Donepudi  34:02  
 explain. Successful. Nobody even looks at what happened,
@@ -2340,7 +2340,7 @@ Suresh Attaluri  19:23
 optional, but we can mention and then, yeah, we have this ability of by giving, because that's the when we talk about self service, that is, that's what we want to set up,
 
 Swarup Donepudi  19:41  
-the component for which you are trying to do and provide a description the clone URL branch. And all of these are mostly optional, and if it is pulling your project,
+the kind for which you are trying to do and provide a description the clone URL branch. And all of these are mostly optional, and if it is pulling your project,
 
 Suresh Attaluri  19:57  
 okay, I think few other things will come up for TerraForm, I will believe, and also that commit SHA, is it possible we take a tag and then
@@ -2372,7 +2372,7 @@ yeah,
 so morning, we added creators dashboard thing also to chat. Similarly, if we get this option ready, we can demo it from the chart itself, where user entering. I think
 
 Swarup Donepudi  22:08  
-I may have to also make a note for my own self, which is, you need to start doing more engineering falling behind all of these, which is, right now, the stack job config, which can be defined at all, env level, right, right now this one doesn't have a deployment depth, comp to Module map, meaning if, for example, switches the organization and they defined a custom module for deploying s3 buckets, and the platform engineer wants to make this s3 bucket as the default SD bucket for all s3 buckets deployed in swiggy all the SJC config doesn't have this map right now. It's easy to add. I need to make it so like you add a pulumi module for chat, but then configuring that pulumi module to be the default module for all s3 buckets is not something that's available right now. However, what is possible now is at resource level. So there are three levels where SDSC can be defined, okay, so at SJC level, resource level, we do so, but that needs to be defined by default. You don't have nobody has to define SJC resource level
+I may have to also make a note for my own self, which is, you need to start doing more engineering falling behind all of these, which is, right now, the infra job config, which can be defined at all, env level, right, right now this one doesn't have a deployment depth, comp to Module map, meaning if, for example, switches the organization and they defined a custom module for deploying s3 buckets, and the platform engineer wants to make this s3 bucket as the default SD bucket for all s3 buckets deployed in swiggy all the SJC config doesn't have this map right now. It's easy to add. I need to make it so like you add a pulumi module for chat, but then configuring that pulumi module to be the default module for all s3 buckets is not something that's available right now. However, what is possible now is at resource level. So there are three levels where SDSC can be defined, okay, so at SJC level, resource level, we do so, but that needs to be defined by default. You don't have nobody has to define SJC resource level
 
 Suresh Attaluri  23:33  
 while creating you won't be able to by creating a resource, yeah, you won't be able to choose SJC Yeah, stack joke, yeah, that because
@@ -2390,7 +2390,7 @@ Suresh Attaluri  24:45
 about organization, yeah. Do you think people will create multiple modules for one particular resource, versions of module? Yeah,
 
 Swarup Donepudi  24:59  
-but for in our design model, I can't think of a way to support multiple at any point. It can only be one. But is it in a real life scenario? Yeah, I haven't seen that practically either. People are they washing it meaning, and they handle utils conditions and stuff like that. But one module for deploying s3 that itself is a lot of work in organization. So maintaining multiple is like next level expectation. Nobody supports it. Even having one well defined module per the popular components itself is rarely seen the it's not as streamlined, contrary to expectation, it's all over the place, in many places. So yeah, so summarizing that is a while. This is an action item for you, for me, adding a deployment component module map to organization and environment level is, yeah,
+but for in our design model, I can't think of a way to support multiple at any point. It can only be one. But is it in a real life scenario? Yeah, I haven't seen that practically either. People are they washing it meaning, and they handle utils conditions and stuff like that. But one module for deploying s3 that itself is a lot of work in organization. So maintaining multiple is like next level expectation. Nobody supports it. Even having one well defined module per the popular kinds itself is rarely seen the it's not as streamlined, contrary to expectation, it's all over the place, in many places. So yeah, so summarizing that is a while. This is an action item for you, for me, adding a catalog kind module map to organization and environment level is, yeah,
 
 Suresh Attaluri  26:01  
 see, the reason I'm saying that we will add it to the chart is to make our demos more, yeah, reachable or more, as I said, easy to understand.
@@ -2408,7 +2408,7 @@ Suresh Attaluri  26:37
 we'll give the intent through form or through the chat, and that will create, register the module, register the module, and we'll open another chart for user two, or a form like earlier. That's what we discussed, is that the developer has to use that module which got registered. So other, another chart will make another, this thing request of deploying.
 
 Swarup Donepudi  27:08  
-So I think for for configuring stack job, this is where they'll have to edit so right now they are able to configure credentials at organization level, but I need to report this to Satish. I
+So I think for for configuring infra job, this is where they'll have to edit so right now they are able to configure credentials at organization level, but I need to report this to Satish. I
 
 Suresh Attaluri  27:51  
 How do you know that is a Create Form,
@@ -2443,40 +2443,40 @@ Swarup Donepudi  29:04
 Such big deal. But yeah, smoothing edges. Okay, so
 
 Suresh Attaluri  29:09  
-yeah, so we'll have these options on chat so there are platform engineer sent will clearly show resting a pulumi module and setting that as to environment. Now the developer will log in, they put some intent of deploying something, and that will get deployed. But how will we show that the same stack, job, config, has been used by the devil in the while deploying the resource, I mean, whatever you, the developer, has requested, then we need to go back and open that stack, job, resource, Details page, and open the stack config, right thing, right? We can still do that. Yeah. Or you can even add intent to get stack job config for API resource,
+yeah, so we'll have these options on chat so there are platform engineer sent will clearly show resting a pulumi module and setting that as to environment. Now the developer will log in, they put some intent of deploying something, and that will get deployed. But how will we show that the same stack, job, config, has been used by the devil in the while deploying the resource, I mean, whatever you, the developer, has requested, then we need to go back and open that stack, job, resource, Details page, and open the stack config, right thing, right? We can still do that. Yeah. Or you can even add intent to get infra job config for API resource,
 
 Swarup Donepudi  30:17  
 Yeah, but how about
 
 Suresh Attaluri  30:18  
-this thing? I uh, user, I I always try to do this deployment right? I'm clueless which stack job config is being used. How about we add intent of, if I give an environment, I'll get the stack job config of it,
+this thing? I uh, user, I I always try to do this deployment right? I'm clueless which infra job config is being used. How about we add intent of, if I give an environment, I'll get the infra job config of it,
 
 Swarup Donepudi  30:41  
-okay, any, give you any resource you want a stack job config back,
+okay, any, give you any resource you want an infra job config back,
 
 Suresh Attaluri  30:45  
 yeah, any resource, if it is created, but if I'm about to create a resource as well, I would like to know, right,
 
 Swarup Donepudi  30:52  
-yeah, any resource as an environment is a resource in the context of stack job config, organization is the resource ID as input, yeah? So I think that will be an RPC first. So I need to add RPC hierarchically.
+yeah, any resource as an environment is a resource in the context of infra job config, organization is the resource ID as input, yeah? So I think that will be an RPC first. So I need to add RPC hierarchically.
 
 Suresh Attaluri  31:14  
 I think we should try for the chart demo only. Okay. There are so many things like, like Stackdriver, configs, pulumi module registry, GitHub is involved here and another users perspective, there are two personas from engineering and developers. So as a demo standpoint, it would be better if we have less number of screens to switch, to tell nice nice to tell a nice story, agreed. And also we need to show the pulumi registry, the registry page where the user can search. And
 
 Swarup Donepudi  32:01  
-I'm thinking one other, another way for us to show that is that logs itself, like the stack job blocks that we are showing, right, that can show information about the module that is being used, always
+I'm thinking one other, another way for us to show that is that logs itself, like the infra job blocks that we are showing, right, that can show information about the module that is being used, always
 
 Suresh Attaluri  32:19  
-stack job logs, yeah. So what do you mean by stack job? So when,
+infra job logs, yeah. So what do you mean by infra job? So when,
 
 Swarup Donepudi  32:23  
-when a stack job gets executed, we are showing this in this one only, right, okay, so here we can show that information as a first step.
+when an infra job gets executed, we are showing this in this one only, right, okay, so here we can show that information as a first step.
 
 Suresh Attaluri  32:37  
 Okay, how will, how will we show that? Do we have it? It will have any name you need to show the module. We are
 
 Swarup Donepudi  32:44  
-fully in control of what is being displayed here, right? So we can, I can include that data in the snapshot as a separate object, like, for example, okay, this is a pulumi Refresh operation object which contains summary map and this. So these are all three type objects. It should be put you have one other object type. It's not a stack job progress. It is stack job info or something module info, where within this stack job you will have that info, and that will be displayed maybe in a separate section.
+fully in control of what is being displayed here, right? So we can, I can include that data in the snapshot as a separate object, like, for example, okay, this is a pulumi Refresh operation object which contains summary map and this. So these are all three type objects. It should be put you have one other object type. It's not an infra job progress. It is infra job info or something module info, where within this infra job you will have that info, and that will be displayed maybe in a separate section.
 
 Suresh Attaluri  33:19  
 How about putting it here, like in pulumi registry. Just, we thought it's okay, yeah, if
@@ -2488,7 +2488,7 @@ Suresh Attaluri  33:39
 thing. Chat, also, okay, okay, or we can add a section. Oh, somehow, yeah, we'll see the
 
 Swarup Donepudi  33:47  
-instead of making it a separate thing. I think this is a good place, right? When you look up the stack job details, it should tell you all the story. What
+instead of making it a separate thing. I think this is a good place, right? When you look up the infra job details, it should tell you all the story. What
 
 Suresh Attaluri  33:57  
 is the module, what
@@ -2497,7 +2497,7 @@ Swarup Donepudi  33:58
 was used, and what are the credential IDs used? Etc, etc.
 
 Suresh Attaluri  34:03  
-But getting a stack job config by resource ID is still relevant, I believe, meaning you on the on the chart, someone, I mean, the reason that we proposing that option is to check this module that is going to be used before the job is being
+But getting an infra job config by resource ID is still relevant, I believe, meaning you on the on the chart, someone, I mean, the reason that we proposing that option is to check this module that is going to be used before the job is being
 
 Swarup Donepudi  34:26  
 skeptical and critical, don't get me wrong, which is, we don't want to create our own requirements. Okay, same thing, like, I know these are all functions that will make a nice user experience. I want to hear justification of like, what's the problem that it may solve, etc.
@@ -2509,7 +2509,7 @@ Swarup Donepudi  34:53
 we know in the demo that it will work right
 
 Suresh Attaluri  34:56  
-now, now, after adding it on the stack job page. No,
+now, now, after adding it on the infra job page. No,
 
 Swarup Donepudi  35:00  
 it's not about showing the user whether what what was used, but we know that it will work, which is, you register a module, you update organization stack, job config to use this module as the default one. Okay, now the next challenge is how to show that information to the user?
@@ -2518,7 +2518,7 @@ Suresh Attaluri  35:20
 Yeah, that's where we will improvise the
 
 Swarup Donepudi  35:23  
-stack job information to include that info as well. Yeah, but that additional RPC to get that hierarchical like resolution of stack job config, given an RPC, or given a resource ID or whatever, okay, that is what I was questioning, like, Will users even have a use case to ask them?
+infra job information to include that info as well. Yeah, but that additional RPC to get that hierarchical like resolution of infra job config, given an RPC, or given a resource ID or whatever, okay, that is what I was questioning, like, Will users even have a use case to ask them?
 
 Suresh Attaluri  35:46  
 No, the only use case is demo, and you're saying that we'll put it on Stackdriver.
@@ -2526,7 +2526,7 @@ No, the only use case is demo, and you're saying that we'll put it on Stackdrive
 Swarup Donepudi  35:50  
 But I think regardless of the demo, that information is useful here for sure, showing which module executed this right now, there is no idea, right? You can tell, you can tell, by this guy, but that also should, doesn't. We will not show you the get to repo information, etc, like plankton get
 
-so in the stack job itself, you will be able to see which module was used, but that's just modulate. Then you will have to do that again. So this is where you get the web URL, yeah, we can
+so in the infra job itself, you will be able to see which module was used, but that's just modulate. Then you will have to do that again. So this is where you get the web URL, yeah, we can
 
 Suresh Attaluri  36:41  
 do that, right? So, you mean, like, what we are doing with Version History we call a separate RPC, I think somewhere, somewhat,
@@ -2544,7 +2544,7 @@ Suresh Attaluri  37:22
 the URLs is not a right way to do right can be changed.
 
 Swarup Donepudi  37:28  
-That's, that's the important part, which stack job, and somebody upgraded pooling module URL, again, a requirement that I'm creating. So persisting the URL for the repo for which the stack job ran at that point in time is more relevant. And I think that that was the reason why we were actually persisting these also. These can also be derived at runtime, but we were taking trying to take a snapshot of what was used at that point. But yeah, for now, we can ask Satish to simply update. This will first get your shot online, update this info. Same thing will be shown even in the chat, saying info, and that is derived from lookup the ID, make a call, get the info, display that info,
+That's, that's the important part, which infra job, and somebody upgraded pooling module URL, again, a requirement that I'm creating. So persisting the URL for the repo for which the infra job ran at that point in time is more relevant. And I think that that was the reason why we were actually persisting these also. These can also be derived at runtime, but we were taking trying to take a snapshot of what was used at that point. But yeah, for now, we can ask Satish to simply update. This will first get your shot online, update this info. Same thing will be shown even in the chat, saying info, and that is derived from lookup the ID, make a call, get the info, display that info,
 
 Suresh Attaluri  38:25  
 okay, yeah, I think that's it. Calls for the video script, right?
@@ -2635,7 +2635,7 @@ Suresh Attaluri  7:06
 this was made, there was not be a clear definition of self service DevOps. And I believe the other video which you saw, yeah, I
 
 Swarup Donepudi  7:15  
-think I asked chatgpt, I'm going to tell you all about the product, you can tell me, or you can create sections from self service doors, because, again, there was no clear definition there. So I'll redo this page only with minimal sections, IAC modules, cookie cutter templates and CAC templates. And for each of them, we'll just put screenshots of the pulumi registry and deployment component screenshots. IAC cookie cutter template, screenshots, GitHub actions and get
+think I asked chatgpt, I'm going to tell you all about the product, you can tell me, or you can create sections from self service doors, because, again, there was no clear definition there. So I'll redo this page only with minimal sections, IAC modules, cookie cutter templates and CAC templates. And for each of them, we'll just put screenshots of the pulumi registry and catalog kind screenshots. IAC cookie cutter template, screenshots, GitHub actions and get
 
 Suresh Attaluri  7:44  
 a workflow screenshot. We have those
@@ -2727,7 +2727,7 @@ Suresh Attaluri  9:31
 yeah, I see your point. Like people expect service to know that on which environments the service got deployed, and what is the commit that got deployed, and all such information. Right now we have micro service instances, but,
 
 Swarup Donepudi  9:49  
-but that is not more from an ISU oriented person perspective. What is the configuration that is needed to deploy something on to what platform, platform, but that that specification is not to define service, yes, just one infrastructure component. So we are extracting some of the information from that specification and then building that service definition as a construct. So if billing is the name of the repository, and if the repository ran like, we'd have action executed and the service got deployed to Kubernetes. We take billing as the name of the service, because the repository name is billing, yeah. And we can probably provide a way for users to, like, do some different mapping. I don't know how, but, and if the service gets deployed to another environment, we add those environments to this parent definition, yeah, and in the design, if the user is here, if he clicks on. So right now, this has been pulled from search. So we are not update. We are not doing such indexing for the environment deployment map. That's why we're not displaying it here, if not, if the user clicks on this, we provide which environments it is deployed to and what so
+but that is not more from an ISU oriented person perspective. What is the configuration that is needed to deploy something on to what platform, platform, but that that specification is not to define service, yes, just one infrastructure kind. So we are extracting some of the information from that specification and then building that service definition as a construct. So if billing is the name of the repository, and if the repository ran like, we'd have action executed and the service got deployed to Kubernetes. We take billing as the name of the service, because the repository name is billing, yeah. And we can probably provide a way for users to, like, do some different mapping. I don't know how, but, and if the service gets deployed to another environment, we add those environments to this parent definition, yeah, and in the design, if the user is here, if he clicks on. So right now, this has been pulled from search. So we are not update. We are not doing such indexing for the environment deployment map. That's why we're not displaying it here, if not, if the user clicks on this, we provide which environments it is deployed to and what so
 
 Suresh Attaluri  11:18  
 the purpose of service hub is to manage services. Right now the ability, as part of managing we have the ability to add environments to a service so that they can be deployed to multiple environments. And
@@ -2757,7 +2757,7 @@ Suresh Attaluri  12:48
 one aspect of it, and which programming language, who is the owner of this service, so that if certain credentials, or if a developer, a newly onboarded developer to the team wants to set up a service on his local machine, they would need certain information, like which programming language, or they can still look at the readme file and all but or whom to reach out to, like the owner of the service so that setup can be done locally. So that's one thing that I'm looking I
 
 Swarup Donepudi  13:26  
-feel like I want to scope out the product in such a way. So far, we have had success in building the product based on our own requirements. I think most of the product evolved from that perspective, yeah, which is, why did we add Redis? Why did we add a success? Why did we have even add micro service to the deployment component? It's all driven by our own requirements. Mostly, yes, the rest of the components which are not fully implemented, all of that is to expand that concept and to make it more presentable and help others get the context. When it comes to service hub, I want to do the same exact thing. Why do we not have Why did we not have service hub in the first place? While we were we have already been developing services because we took it easy, meaning we were not using our own platform to take care of like, bootstrapping. We never used our platform to bootstrap. We never used our platform to configure CICD. We are doing it from like local. So we are avoiding those problems altogether, and that is the reason why we don't have that like, how many services do we have? We are going and exploring, like the micro service Kubernetes as a alternative to it. Why that should have been this place? Okay,
+feel like I want to scope out the product in such a way. So far, we have had success in building the product based on our own requirements. I think most of the product evolved from that perspective, yeah, which is, why did we add Redis? Why did we add a success? Why did we have even add micro service to the catalog kind? It's all driven by our own requirements. Mostly, yes, the rest of the kinds which are not fully implemented, all of that is to expand that concept and to make it more presentable and help others get the context. When it comes to service hub, I want to do the same exact thing. Why do we not have Why did we not have service hub in the first place? While we were we have already been developing services because we took it easy, meaning we were not using our own platform to take care of like, bootstrapping. We never used our platform to bootstrap. We never used our platform to configure CICD. We are doing it from like local. So we are avoiding those problems altogether, and that is the reason why we don't have that like, how many services do we have? We are going and exploring, like the micro service Kubernetes as a alternative to it. Why that should have been this place? Okay,
 
 Suresh Attaluri  14:50  
 so do you think exploring has that much of value? I'm not like just knowing the information that in a in my or in an organization, that these are the services that we have to just list those services.
@@ -2769,7 +2769,7 @@ Suresh Attaluri  15:11
 Okay, which programming language, if
 
 Swarup Donepudi  15:14  
-you see the full feature set, some of the features don't are not really useful for one, one man startup, like, for example, Washington and historical jobs, right? He knows everything. And similarly, some of the features are not applicable for like, 10 member organization, because there is very few services. Everybody knows about those. So any information that is captured now go beyond and do a 50 member company, that's when people start asking, Hey, who owns the service? Who owns that service? Yeah, okay, so that, in fact, that is the reason why we didn't do much of service, because these problems are not as significant for one man startup or 10 episode, but it is expected to be a good component within internal developer platform. So I am mostly calling out the requirements from what is expected in an internal developer platform versus what we know today. Okay, because we don't know much, like even in your experience, right? You didn't spend much time dealing with any services you always I gave you, like make release you, even I did that, I created the wrong practice, I guess. But we wanted to move fast, and that is what most young startups do. They want to move fast. They want to just follow. So maybe if we start to become more disciplined and take service up seriously for the purpose of the product itself, because we are like selling the product and is expected. So if we start taking we will starting now. Will not push a commit, and if you push a commit, it has to be deployed by gate of actions from the drawer, we will remove, like access for all of us, direct Kubernetes cluster access should be removed, but see,
+you see the full feature set, some of the features don't are not really useful for one, one man startup, like, for example, Washington and historical jobs, right? He knows everything. And similarly, some of the features are not applicable for like, 10 member organization, because there is very few services. Everybody knows about those. So any information that is captured now go beyond and do a 50 member company, that's when people start asking, Hey, who owns the service? Who owns that service? Yeah, okay, so that, in fact, that is the reason why we didn't do much of service, because these problems are not as significant for one man startup or 10 episode, but it is expected to be a good kind within internal developer platform. So I am mostly calling out the requirements from what is expected in an internal developer platform versus what we know today. Okay, because we don't know much, like even in your experience, right? You didn't spend much time dealing with any services you always I gave you, like make release you, even I did that, I created the wrong practice, I guess. But we wanted to move fast, and that is what most young startups do. They want to move fast. They want to just follow. So maybe if we start to become more disciplined and take service up seriously for the purpose of the product itself, because we are like selling the product and is expected. So if we start taking we will starting now. Will not push a commit, and if you push a commit, it has to be deployed by gate of actions from the drawer, we will remove, like access for all of us, direct Kubernetes cluster access should be removed, but see,
 
 Suresh Attaluri  17:02  
 that's a gap. I mean, lack of consider it as my ignorance when you say we'll push micro service through GitHub actions. How is that related to this service hub on plant and cloud platform. I mean, if we, even if we make that practice of GitHub, I mean deploying services through GitHub actions. How is it connected to the service hub that we service a feature that we have on plant and cloud? How are these two things? Those are CICD pipelines, right? That's how I'm that runner on GitHub, runners, I'm not able to understand how these two parts are connected. What's my question? Or
@@ -3140,13 +3140,13 @@ Swarup Donepudi  3:05
 okay, so the title can be better, but subtitle is okay. Subtitle is okay. And here it's going to be a video.
 
 Suresh Attaluri  3:13  
-So when we talk about video, my question is, what is that part we when we say IAC workflows, what is the part of plant and plot? We are calling it as Ise workflows. And my understanding correct me if I'm wrong, the stack job creation on when a API resource is modified or any cloud operation made on a deployment component API resource of available on brand and cloud platform. If some modification is done, then that automatically triggers a creates a stack job. This whole behavior of creating stack job for each modification, is what we are calling it as IAC workflow.
+So when we talk about video, my question is, what is that part we when we say IAC workflows, what is the part of plant and plot? We are calling it as Ise workflows. And my understanding correct me if I'm wrong, the infra job creation on when a API resource is modified or any cloud operation made on a catalog kind API resource of available on brand and cloud platform. If some modification is done, then that automatically triggers a creates an infra job. This whole behavior of creating infra job for each modification, is what we are calling it as IAC workflow.
 
 Swarup Donepudi  4:05  
 Yes, right, yeah. And
 
 Suresh Attaluri  4:07  
-when we when, if you want to draw parallels with GitHub, GitHub also has IAC workflows, but the how GitHub operates is someone pushes a commit to GitHub project, it initiates, it triggers a GitHub action, or that's what we are calling it as. That's what ISC workflow at GitHub level. Similar in our case, it's a stack job, stack job.
+when we when, if you want to draw parallels with GitHub, GitHub also has IAC workflows, but the how GitHub operates is someone pushes a commit to GitHub project, it initiates, it triggers a GitHub action, or that's what we are calling it as. That's what ISC workflow at GitHub level. Similar in our case, it's an infra job, infra job.
 
 Swarup Donepudi  4:39  
 The key difference is a GitHub by default doesn't come with any IAC workflow at all. Okay? Is you as an organization who is using GitHub, you need to find somebody who can set those things up for you, meaning, it needs to be like GitHub action and then also create experience. It's not integrated into GitHub,
@@ -3161,7 +3161,7 @@ Suresh Attaluri  5:26
 saying, I'm talking about IAC workflows. You said there won't be any predefined IAC workflows at GitHub level, yeah. But when we are saying that there will we have an effect on plant and cloud with predefined ASU workflow setup, right? They get triggered. How is that possible? Is because there are certain the platform itself provides some pulumi module modules,
 
 Swarup Donepudi  5:55  
-and the important part for the Integrated workflows is not about the pulumi modules that we created, they play an important role. However, we build the system in such a way that every modification to configuration will automatically trigger a refresh, followed by a preview and followed by an apply or update step. So whether it is TerraForm or pulumi, according to stack job configuration, the automatic triggering of that without you having to do anything. And also the workflow is, it is these workflows are very well aware of the infrastructure as code tooling, meaning there is refresh, there is preview, and there is apply or update. Nobody needs to learn anything new. Nobody needs to configure anything new, right? So the integrated IC IAC workflows like GitHub has, it has a like a automate all solution in the form of actions. So there is no first class support for like these preview so you won't see them nicely lined up unless you do something there. And there is state backing that is, again, you need to set something up there that comes out of the box. And there is nice integrations that we provided, like you connect your pumi or your TerraForm those back ends, and the application, the platform that we have built has first class support for all of these. We recognize pulling the back end as a thing. We allow the users to configure it, or we provide one out of the box, and provider credentials is a first class citizen on our system. So all these, what do
+and the important part for the Integrated workflows is not about the pulumi modules that we created, they play an important role. However, we build the system in such a way that every modification to configuration will automatically trigger a refresh, followed by a preview and followed by an apply or update step. So whether it is TerraForm or pulumi, according to infra job configuration, the automatic triggering of that without you having to do anything. And also the workflow is, it is these workflows are very well aware of the infrastructure as code tooling, meaning there is refresh, there is preview, and there is apply or update. Nobody needs to learn anything new. Nobody needs to configure anything new, right? So the integrated IC IAC workflows like GitHub has, it has a like a automate all solution in the form of actions. So there is no first class support for like these preview so you won't see them nicely lined up unless you do something there. And there is state backing that is, again, you need to set something up there that comes out of the box. And there is nice integrations that we provided, like you connect your pumi or your TerraForm those back ends, and the application, the platform that we have built has first class support for all of these. We recognize pulling the back end as a thing. We allow the users to configure it, or we provide one out of the box, and provider credentials is a first class citizen on our system. So all these, what do
 
 Suresh Attaluri  7:39  
 you think that we need to put all those things here, we should have a separate, connect specific feature, or, I don't know, those adding from
@@ -3191,7 +3191,7 @@ Suresh Attaluri  9:59
 Do we need? Do you think we need to also mention about the pulumi module and the resources that are being created here? That
 
 Swarup Donepudi  10:05  
-is the next step, which is for without what would have what would you have done without this experience is you would set up something on your computer like you would configure a machine to with pulumi state backend. These are all things that you need in order for this to work, TerraForm state backend, store. TerraForm state you need TerraForm module to run, and you need a central server to run the TerraForm these steps. All of that is done for you. The TerraForm state backend is already provided. TerraForm. What is it? What is it? I said, three things, state backend, the runner. I said, the second. Module, module, yeah. So you're getting the state back and out of the box. Your, there are default modules for everything, and your the stack job runner is also provided for so don't do anything. All of that comes out of the box. And also, yeah,
+is the next step, which is for without what would have what would you have done without this experience is you would set up something on your computer like you would configure a machine to with pulumi state backend. These are all things that you need in order for this to work, TerraForm state backend, store. TerraForm state you need TerraForm module to run, and you need a central server to run the TerraForm these steps. All of that is done for you. The TerraForm state backend is already provided. TerraForm. What is it? What is it? I said, three things, state backend, the runner. I said, the second. Module, module, yeah. So you're getting the state back and out of the box. Your, there are default modules for everything, and your the infra job runner is also provided for so don't do anything. All of that comes out of the box. And also, yeah,
 
 Suresh Attaluri  11:14  
 but do you think you need to? We need to show the we need to. How will you demo it? We verbally saying that this at the back end. These three are, or again, or we jump, or we only choose to show the pulumi module. I don't know if we can show the back, pulumi back and as in, in visible form. So these
@@ -3203,19 +3203,19 @@ Suresh Attaluri  11:43
 can go into the thing, right? You need to set up this so we can consider
 
 Swarup Donepudi  11:48  
-so it's very easy to do something like, for example, if I open a video, yesterday's video, and I say, explainer, right? So if you watch this video, you will see I've done something to show things. You see this while I'm explaining this, right, while I while I'm on the console app, talking about saying to achieve the same exact thing you would need plumi back and pulumi module. I can do a white like iPad explanation as a side creation. Then we can include that here. We can play that video here as well. Yeah, as we speak, we can say you need pulumi module. You would need a stack job runner as
+so it's very easy to do something like, for example, if I open a video, yesterday's video, and I say, explainer, right? So if you watch this video, you will see I've done something to show things. You see this while I'm explaining this, right, while I while I'm on the console app, talking about saying to achieve the same exact thing you would need plumi back and pulumi module. I can do a white like iPad explanation as a side creation. Then we can include that here. We can play that video here as well. Yeah, as we speak, we can say you need pulumi module. You would need an infra job runner as
 
 Suresh Attaluri  12:42  
-a computer. The whole point is this part that you need all these things to be set up will fall under the problem section of it. I don't think it will be coming into this video, the main hero section video, we only show the user putting the intent on the chart and its stack job being triggered, the stack job will have the link of pulumi module, like that's the feature that we are planning to implement.
+a computer. The whole point is this part that you need all these things to be set up will fall under the problem section of it. I don't think it will be coming into this video, the main hero section video, we only show the user putting the intent on the chart and its infra job being triggered, the infra job will have the link of pulumi module, like that's the feature that we are planning to implement.
 
 Swarup Donepudi  13:13  
-Yeah, the as as you update the configuration, it got deferred, and you are able to see the live progress and control the history the deployment component store. This is all you can deploy using these Ise workflows. And here is the module registry. I think we can simply just show the whole thing, instead of being like, Yeah, I like the aspect that you brought up, which is, don't go into like, what would happen if you don't have these and that you'll simply show what we have in the platform. That is the easiest way for us to do it, right, like,
+Yeah, the as as you update the configuration, it got deferred, and you are able to see the live progress and control the history the catalog kind store. This is all you can deploy using these Ise workflows. And here is the module registry. I think we can simply just show the whole thing, instead of being like, Yeah, I like the aspect that you brought up, which is, don't go into like, what would happen if you don't have these and that you'll simply show what we have in the platform. That is the easiest way for us to do it, right, like,
 
 Suresh Attaluri  13:43  
 or even we can end it using giving the intent and,
 
 Swarup Donepudi  13:48  
-yeah, this is okay. I just deployed the table. But here is all the stuff that your developers can deploy by showing deployment component, store, no, no that comes
+yeah, this is okay. I just deployed the table. But here is all the stuff that your developers can deploy by showing catalog kind, store, no, no that comes
 
 Suresh Attaluri  13:58  
 under the service, service, self service thing, right? Let's not mix. The only point is keep as precise as possible and as targeted.
@@ -3224,16 +3224,16 @@ Swarup Donepudi  14:08
 Integrated IAC workflows only showing as soon as I did something, the workflow is already integrated. It's triggering. It's
 
 Suresh Attaluri  14:16  
-triggering. You have the refresh. You see the refresh says that it has some back end state back end, and you're getting the these things, and you we have the other things. And we can make a choice of modifying, okay, we can do this refresh. We can do two things. We create a DynamoDB, modify it, and we can show that the Refresh is now changed in a way that talks about the back end as well, right? Yeah, stay back. And it's not, it's not a stateless thing that's being done. And, yeah, we'll explain. We'll talk about the resources that are there on the stack job blocks.
+triggering. You have the refresh. You see the refresh says that it has some back end state back end, and you're getting the these things, and you we have the other things. And we can make a choice of modifying, okay, we can do this refresh. We can do two things. We create a DynamoDB, modify it, and we can show that the Refresh is now changed in a way that talks about the back end as well, right? Yeah, stay back. And it's not, it's not a stateless thing that's being done. And, yeah, we'll explain. We'll talk about the resources that are there on the infra job blocks.
 
 Swarup Donepudi  14:59  
 Are we good? Yeah, yeah, this is the video, and it says, built in IAC workflow. It just works. And we'll have, we'll have
 
 Suresh Attaluri  15:09  
-stack job screenshot, job lock, screenshot,
+infra job screenshot, job lock, screenshot,
 
 Swarup Donepudi  15:12  
-screenshot here, stack job bundles, columi operations, again, I think this is good enough.
+screenshot here, infra job bundles, columi operations, again, I think this is good enough.
 
 Suresh Attaluri  15:19  
 Yeah. Number here, it would be, instead of using pulumi, we can use pulumi slash TerraForm operation, so something of that. Yeah,
@@ -3287,10 +3287,10 @@ Suresh Attaluri  18:32
 Let's have a generated summaries, and we'll have
 
 Swarup Donepudi  18:35  
-a generated summaries as the section, yeah, and this is a generated summary, complex logs into understandable, yeah, jump straight will be removed. This is copy pasted from somewhere. Multi cloud varies. I think it is also from copy paste from somewhere we remove that enhanced control with custom stack job runners. So this will be like, the will show connections page with,
+a generated summaries as the section, yeah, and this is a generated summary, complex logs into understandable, yeah, jump straight will be removed. This is copy pasted from somewhere. Multi cloud varies. I think it is also from copy paste from somewhere we remove that enhanced control with custom infra job runners. So this will be like, the will show connections page with,
 
 Suresh Attaluri  19:06  
-okay, instance to control custom stack job runners, okay, so Ise runners, right? That's what we meant. Okay,
+okay, instance to control custom infra job runners, okay, so Ise runners, right? That's what we meant. Okay,
 
 Swarup Donepudi  19:17  
 I'll simply put a connections screenshot, yes, yes. And highlight,
@@ -3302,7 +3302,7 @@ Swarup Donepudi  19:35
 and flexible credential management, manage provider credentials, and pull me straight back and securely communicate various levels. Various levels. And this one again, connection management,
 
 Suresh Attaluri  19:50  
-okay, but does this fall under ISC, both the stack job thing, also of stack job? Yeah, it is, in a way, connected the this part credential management.
+okay, but does this fall under ISC, both the infra job thing, also of infra job? Yeah, it is, in a way, connected the this part credential management.
 
 Swarup Donepudi  20:09  
 Okay, we'll remove it,
@@ -3620,16 +3620,16 @@ Swarup Donepudi  0:02
 Okay, floor to use,
 
 Suresh Attaluri  0:04  
-okay, so this is about altable intelligence as a feature on plant and cloud platform. So, so the feature even, yeah, I'm not sure about what exactly auditable intelligence as a feature is, but when I just look at the name, it might refer to the modifications that we make on our API resources and the stack jobs that it gets triggered. Okay, we'll discuss what is the feature is all about. But coming to all the title and subtitle part which already have, which we already have. It on figma, it says, achieve full transparency with auditable intelligence. That's the title of the feature, and the subtitle section says it's simplify compliance and collaboration with auditable intelligence from planned and code. Okay, so let's discuss how this thing or how this auditability is achieved in the platform. Anything that you want to highlight here, Swarup as part of auditability,
+okay, so this is about altable intelligence as a feature on plant and cloud platform. So, so the feature even, yeah, I'm not sure about what exactly auditable intelligence as a feature is, but when I just look at the name, it might refer to the modifications that we make on our API resources and the infra jobs that it gets triggered. Okay, we'll discuss what is the feature is all about. But coming to all the title and subtitle part which already have, which we already have. It on figma, it says, achieve full transparency with auditable intelligence. That's the title of the feature, and the subtitle section says it's simplify compliance and collaboration with auditable intelligence from planned and code. Okay, so let's discuss how this thing or how this auditability is achieved in the platform. Anything that you want to highlight here, Swarup as part of auditability,
 
 Swarup Donepudi  1:28  
 we'll keep it simple. We'll simply say developers can deploy various
 
 Suresh Attaluri  1:39  
-components
+kinds
 
 Swarup Donepudi  1:41  
-and across any cloud provider, okay? And each component has a lot of configuration associated with it. Yes, change. Changing the configuration has a direct impact on the availability of services or the systems, okay? So it's important for organizations to be able to quickly understand what are those configuration changes, and that is one of the biggest reasons why every organization will prefer IAC infrastructure as code, as opposed to allowing developers to modify resources on AWS, because there is no centralized view on on that versioning, like when you do IAC, you're doing it in the form of code. When you're writing code, you have the power of Git, which so you can leverage the ecosystem, Git ecosystem, via GitHub and stuff where there is commits and all that diff view, etc, right? So that is why there is a lot of push towards using IAC versus this. So for the same exact reasons, we made sure that, for those reasons, for the same reasons, that organizations will prefer IAC over using web interfaces. Yeah, at the heart of that is definitely the auditability. What, and what is the impact of those changes on the infrastructure, so
+and across any cloud provider, okay? And each kind has a lot of configuration associated with it. Yes, change. Changing the configuration has a direct impact on the availability of services or the systems, okay? So it's important for organizations to be able to quickly understand what are those configuration changes, and that is one of the biggest reasons why every organization will prefer IAC infrastructure as code, as opposed to allowing developers to modify resources on AWS, because there is no centralized view on on that versioning, like when you do IAC, you're doing it in the form of code. When you're writing code, you have the power of Git, which so you can leverage the ecosystem, Git ecosystem, via GitHub and stuff where there is commits and all that diff view, etc, right? So that is why there is a lot of push towards using IAC versus this. So for the same exact reasons, we made sure that, for those reasons, for the same reasons, that organizations will prefer IAC over using web interfaces. Yeah, at the heart of that is definitely the auditability. What, and what is the impact of those changes on the infrastructure, so
 
 Suresh Attaluri  3:08  
 users who would like to know who made the modification, when they have made the modification, and what is the modification, it's all about. But saying all that GitHub, already has those features if you put your infrastructure as code on to as a as a GitHub repository. But since we are bringing the configuration to to an API. We are moving from a GitHub file, we are bringing
@@ -3668,7 +3668,7 @@ Swarup Donepudi  7:04
 Start with the chat conversation. Okay, we can say demodb, table, hash key, no,
 
 Suresh Attaluri  7:11  
-but which part of it is considered as or as auditable, like IAC workflows, we show stack job blocks,
+but which part of it is considered as or as auditable, like IAC workflows, we show infra job blocks,
 
 Swarup Donepudi  7:21  
 so we start with stack the chat. Let me deploy something which is a DNA, more DB table, okay? And we update the hash key name from X to Y, okay, okay. And we go back to the dashboard and look up that resource, go to its version history and show that, okay, so see how the changes are being captured, and also see that every change has an associated
@@ -3677,7 +3677,7 @@ Suresh Attaluri  7:46
 job. And you know that this change has deployed or not, yeah, you by correlating with
 
 Swarup Donepudi  7:54  
-within that stack job. And then I'll show you a quick example of that, which is AWS, VI, N,
+within that infra job. And then I'll show you a quick example of that, which is AWS, VI, N,
 
 demo table. Okay, so I changed the update hash key from lock, ID to lock, no,
 
@@ -3706,7 +3706,7 @@ Swarup Donepudi  9:56
 with, say, I would like to look up the configuration for an existing DynamoDB. And then I want to change the lock key from so and so so. So this is a known change that that is capturing more meaning. It definitely shows a diff in the infra. Also, I'm choosing the hash key rename, yeah, yeah. So
 
 Suresh Attaluri  10:15  
-we'll mention the intent of modifying it. Will modify it, and we'll jump from chart to the dashboard or the this thing Quick Search, where we search for that resource ID will open version history. We show the that there's a new commit that has been added, or version that has been added will go through the diff in Version History, and from Version History, we'll move to, we'll click on the stack Job Status icon that will move to, that will redirect us to a new page. There, we talk about the diff available in stack job blocks, and we show the difference that the provider
+we'll mention the intent of modifying it. Will modify it, and we'll jump from chart to the dashboard or the this thing Quick Search, where we search for that resource ID will open version history. We show the that there's a new commit that has been added, or version that has been added will go through the diff in Version History, and from Version History, we'll move to, we'll click on the infra job Status icon that will move to, that will redirect us to a new page. There, we talk about the diff available in infra job blocks, and we show the difference that the provider
 
 Swarup Donepudi  11:03  
 end, yeah, so that will be the video. That will be the video. And here in this section, we'll simply show the screenshot of the big diff. And the pulumi diff has two screenshots. Okay, random image.
@@ -3730,7 +3730,7 @@ Swarup Donepudi  11:31
 So here we have two screenshots. So maybe we'll show the chat part here, because the chat will also show unified diff, right? So we'll simply show that chat screen just from the recording where we demo we'll take a screenshot of that, or we'll take it later. But we are simply showing the video from the chat full chat context.
 
 Suresh Attaluri  11:57  
-We can add those lists right views of version history that's better stack job, list of stack jobs and list of versions better here, yeah, list of stack jobs and list of this thing will have a nice format
+We can add those lists right views of version history that's better infra job, list of infra jobs and list of versions better here, yeah, list of infra jobs and list of this thing will have a nice format
 
 Swarup Donepudi  12:11  
 here. We can show that you diff in to like both chat and the actual unified
@@ -3739,19 +3739,19 @@ Suresh Attaluri  12:19
 git di format for clarity. Yeah, that sounds good. Here we can put the pull images, yeah,
 
 Swarup Donepudi  12:28  
-and audit trace wherever you are. I don't know if this is required, okay, we'll remove that. Real Time Tracking. We can remove this also stack jobs for every change is, again, is probably redundant. Oh, no, you highlighted this multiple times. Every configuration change,
+and audit trace wherever you are. I don't know if this is required, okay, we'll remove that. Real Time Tracking. We can remove this also infra jobs for every change is, again, is probably redundant. Oh, no, you highlighted this multiple times. Every configuration change,
 
 Suresh Attaluri  12:53  
 I think we have, we not this will be covered in that part,
 
 Swarup Donepudi  13:00  
-the things that I learned from GitHub and prompted chat GPT to say, yeah, it's okay to be returned the information in different places from different lenses. Yeah. Stack jobs here is in the context of visibility, like documenting deployment jobs, yeah. So here again, it's okay. We'll simply show again, stack jobs list. That's fine, yeah? But that's fine, as long as it's not wrong, right? Now, the goal is to make this, I think, just less wrong,
+the things that I learned from GitHub and prompted chat GPT to say, yeah, it's okay to be returned the information in different places from different lenses. Yeah. Infra jobs here is in the context of visibility, like documenting deployment jobs, yeah. So here again, it's okay. We'll simply show again, infra jobs list. That's fine, yeah? But that's fine, as long as it's not wrong, right? Now, the goal is to make this, I think, just less wrong,
 
 Suresh Attaluri  13:32  
-yeah, putting the stack job list itself talks about it, right, like it has that nature of Russian history of Yeah,
+yeah, putting the infra job list itself talks about it, right, like it has that nature of Russian history of Yeah,
 
 Swarup Donepudi  13:41  
-for that, for these stack jobs history, we want to actually create a list of stack jobs for one of the resources. Instead of like creating something on that, yeah, they will just do a bunch of modifications and take screen that is far more easier than getting something on figma, right? Yes, empower your team and secure with developers and organizations again, as long as we don't need images, we will not make modifications here. So it's just okay interact through deployment changes tracking, yeah, we'll simply Yeah, even
+for that, for these infra jobs history, we want to actually create a list of infra jobs for one of the resources. Instead of like creating something on that, yeah, they will just do a bunch of modifications and take screen that is far more easier than getting something on figma, right? Yes, empower your team and secure with developers and organizations again, as long as we don't need images, we will not make modifications here. So it's just okay interact through deployment changes tracking, yeah, we'll simply Yeah, even
 
 Speaker 1  14:20  
 disrespect you. I think

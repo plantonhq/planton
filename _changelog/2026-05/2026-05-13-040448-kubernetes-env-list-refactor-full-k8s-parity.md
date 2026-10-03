@@ -90,7 +90,7 @@ Added `optional` field (field 4) to allow graceful handling when the referenced 
 
 ## Impact
 
-- **API consumers**: All downstream consumers of `spec.container.app.env` (Deployment, StatefulSet, DaemonSet) and `spec.env` (Job, CronJob) receive the new list-based structure. Planton's Java code (`KubernetesDeploymentStackInputCustomizer`, `CloudResourceEnvVarExtractor`) will need corresponding updates when consuming the new stubs.
+- **API consumers**: All downstream consumers of `spec.container.app.env` (Deployment, StatefulSet, DaemonSet) and `spec.env` (Job, CronJob) receive the new list-based structure. Planton's Java code (`KubernetesDeploymentIacInputCustomizer`, `InfraComponentEnvVarExtractor`) will need corresponding updates when consuming the new stubs.
 - **YAML authors**: Manifests, presets, and e2e scenarios updated to list format. All documentation rewritten for the list structure.
 - **IaC modules**: Both Pulumi (Go) and Terraform implementations updated across all 5 kinds.
 

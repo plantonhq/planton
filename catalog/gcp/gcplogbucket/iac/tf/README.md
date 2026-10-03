@@ -21,7 +21,7 @@ This directory contains the Terraform/OpenTofu implementation for deploying a Cl
 | `variables.tf` | GENERATED from the proto spec (`planton tofu generate-variables GcpLogBucket`) — never hand-edited |
 | `locals.tf` | Scope gating, defaults, bucket-name derivation, count-gated client-config fallback |
 | `main.tf` | The four count-gated bucket variants + views + linked dataset + settings |
-| `outputs.tf` | Stack outputs |
+| `outputs.tf` | Outputs |
 | `provider.tf` | google provider pin (`~> 8.3`) |
 | `backend.tf` | Local state backend (the runner injects the real backend) |
 

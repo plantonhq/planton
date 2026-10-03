@@ -19,7 +19,7 @@ const ROWS = [
   { label: 'resource', value: 'S3 bucket · billing-exports · existing' },
   { label: 'state', value: 'adopted, not yet deployed' },
   { label: 'import', value: 'verified · live state matches the manifest · 0 changes planned' },
-  { label: 'record', value: 'from here on, every change is a stack job' },
+  { label: 'record', value: 'from here on, every change is an infra job' },
 ];
 
 export const BringWhatYouHave: FC = () => (

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added foreign key reference support to Auth0Connection's `enabled_clients` field, enabling declarative linking between Auth0Connection and Auth0Client deployment components. Users can now reference managed Auth0Client resources by name instead of hardcoding client IDs, with automatic resolution of the client ID from the referenced component's outputs.
+Added foreign key reference support to Auth0Connection's `enabled_clients` field, enabling declarative linking between Auth0Connection and Auth0Client catalog kinds. Users can now reference managed Auth0Client resources by name instead of hardcoding client IDs, with automatic resolution of the client ID from the referenced kind's outputs.
 
 ## Problem Statement / Motivation
 
@@ -24,7 +24,7 @@ Auth0 connections require a list of client IDs to specify which applications can
 Changed the `enabled_clients` field from `repeated string` to `repeated StringValueOrRef`, leveraging Planton's foreign key reference system. This allows users to either:
 
 1. **Direct Value**: Specify client IDs directly using `{value: "client-id"}`
-2. **Foreign Key Reference**: Reference an Auth0Client component using `{value_from: {kind: Auth0Client, name: "my-app"}}`
+2. **Foreign Key Reference**: Reference an Auth0Client kind using `{value_from: {kind: Auth0Client, name: "my-app"}}`
 
 When using foreign key references, the client ID is automatically resolved from the Auth0Client's `status.outputs.client_id` field at deployment time.
 
@@ -226,7 +226,7 @@ enabled_clients:
 
 ## Related Work
 
-- **Auth0Client Component**: Created in previous session (2025-12-30-070305)
+- **Auth0Client Kind**: Created in previous session (2025-12-30-070305)
 - **Foreign Key System**: Uses `StringValueOrRef` from `shared/foreignkey/v1`
 - **Similar Patterns**: GCP VPC `project_id`, Civo Database `network_id`
 

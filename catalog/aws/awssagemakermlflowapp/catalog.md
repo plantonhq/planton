@@ -4,7 +4,7 @@ Deploys an Amazon SageMaker serverless MLflow app — the MLflow 3.x successor t
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SageMaker MLflow App** — a serverless MLflow 3.x deployment named from `metadata.name`, wired to your S3 artifact store (`artifactStoreUri`) through the app's IAM role, with optional domain associations, account-default status, automatic model registration into the SageMaker Model Registry, and a weekly maintenance window
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with SageMaker control-plane permissions (`sagemaker:CreateMlflowApp` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with SageMaker control-plane permissions (`sagemaker:CreateMlflowApp` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f mlflow-app.yaml
 ```
 
-This creates a serverless MLflow app storing artifacts under the given S3 prefix through the referenced role — no capacity to size, no idle charge. A Stack Job tracks the provisioning in real time.
+This creates a serverless MLflow app storing artifacts under the given S3 prefix through the referenced role — no capacity to size, no idle charge. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -93,16 +93,16 @@ These are the most important decisions when configuring an MLflow app. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsIamRole** | `roleArn` | `status.outputs.role_arn` |
 | **AwsSagemakerDomain** | `defaultDomainIds[]` | `status.outputs.domain_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,7 +120,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the artifact-store access role, wired via `roleArn`
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — the artifact store behind `artifactStoreUri`
-- [**AWS SageMaker Domain**](/cloud-catalog/aws-sagemaker-domain) — domains whose Studio users default to this app, wired via `defaultDomainIds`
-- [**AWS SageMaker Model Registry**](/cloud-catalog/aws-sagemaker-model-registry) — where auto-registered models land when `modelRegistrationMode` is enabled
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the artifact-store access role, wired via `roleArn`
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — the artifact store behind `artifactStoreUri`
+- [**AWS SageMaker Domain**](/infra-catalog/aws-sagemaker-domain) — domains whose Studio users default to this app, wired via `defaultDomainIds`
+- [**AWS SageMaker Model Registry**](/infra-catalog/aws-sagemaker-model-registry) — where auto-registered models land when `modelRegistrationMode` is enabled

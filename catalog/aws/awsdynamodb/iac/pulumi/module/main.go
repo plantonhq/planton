@@ -14,13 +14,13 @@ import (
 // that receives its change data, and the S3 bucket an import seeds it
 // from all attach by reference -- this module never creates or mutates
 // a resource that deserves to be its own node.
-func Resources(ctx *pulumi.Context, stackInput *awsdynamodbv1alpha1.AwsDynamodbStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsdynamodbv1alpha1.AwsDynamodbIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared
+	// Build the AWS provider from the IaC input via the shared
 	// builder, which resolves the right credential mechanism (static
 	// keys, keyless web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsDynamodb.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsDynamodb.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

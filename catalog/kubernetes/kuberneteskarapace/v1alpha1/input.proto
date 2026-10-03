@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kuberneteskarapace.v1alpha1;
 import "catalog/kubernetes/kuberneteskarapace/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//kubernetes-karapace stack-input
-message KubernetesKarapaceStackInput {
-  //target cloud-resource
+//kubernetes-karapace iac-input
+message KubernetesKarapaceIacInput {
+  //target infra-component
   KubernetesKarapace target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

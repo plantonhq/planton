@@ -24,7 +24,7 @@ Both include:
 /src/app/(root)/hackathon/mobile-vibe-2025/page.tsx
 ```
 
-**Components Created:**
+**Kinds Created:**
 ```
 /src/components/hackathon/
 ├── index.ts
@@ -47,7 +47,7 @@ Both include:
 ### 3. Build Verification
 ✅ Build completed successfully
 - All TypeScript types validated
-- All components compiled without errors
+- All kinds compiled without errors
 - Static page generated at `/hackathon/mobile-vibe-2025`
 
 ## 🎨 Design Features
@@ -114,7 +114,7 @@ Both include:
 /src/app/(root)/hackathon/mobile-vibe-2025/page.tsx
 ```
 
-**Components:**
+**Kinds:**
 ```
 /src/components/hackathon/
   ├── hero-section.tsx

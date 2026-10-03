@@ -4,7 +4,7 @@ Creates a CLUSTER-scoped External Secrets Operator store — one backend connect
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **ClusterSecretStore** -- the cluster-scoped ESO custom resource, named after `metadata.name` (ExternalSecrets reference it by that name with kind ClusterSecretStore)
 - **Credential Secret** (only for declared static credentials) -- materialized in the secrets namespace with a deterministic name; the credential never appears inside the store resource itself. Keyless postures materialize nothing.
@@ -53,7 +53,7 @@ spec:
 planton apply -f cluster-secret-store.yaml
 ```
 
-This creates a cluster-wide connection to AWS Secrets Manager authenticating keylessly through the referenced ServiceAccount's IRSA binding. A Stack Job tracks the provisioning in real time.
+This creates a cluster-wide connection to AWS Secrets Manager authenticating keylessly through the referenced ServiceAccount's IRSA binding. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,7 +95,7 @@ These are the most important decisions when configuring the store. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -105,9 +105,9 @@ These are the most important decisions when configuring the store. Explore the f
 | **GcpProject** | `config.gcpSecretManager.projectId` | `status.outputs.project_id` |
 | **AzureKeyVault** | `config.azureKeyVault.vaultUrl` | `status.outputs.vault_uri` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -128,7 +128,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**External Secrets Operator**](/cloud-catalog/kubernetes-external-secrets-operator) -- must be on the cluster first; cluster-scoped stores reference its namespace output as their secrets home.
-- [**External Secret**](/cloud-catalog/kubernetes-external-secret) -- declares each secret to sync through this store (kind ClusterSecretStore).
-- [**Secret Store**](/cloud-catalog/kubernetes-secret-store) -- the namespaced twin, for connections that belong to one team.
-- [**Kubernetes ServiceAccount**](/cloud-catalog/kubernetes-service-account) -- carries the IRSA / Workload Identity binding the keyless postures reference as the reader identity.
+- [**External Secrets Operator**](/infra-catalog/kubernetes-external-secrets-operator) -- must be on the cluster first; cluster-scoped stores reference its namespace output as their secrets home.
+- [**External Secret**](/infra-catalog/kubernetes-external-secret) -- declares each secret to sync through this store (kind ClusterSecretStore).
+- [**Secret Store**](/infra-catalog/kubernetes-secret-store) -- the namespaced twin, for connections that belong to one team.
+- [**Kubernetes ServiceAccount**](/infra-catalog/kubernetes-service-account) -- carries the IRSA / Workload Identity binding the keyless postures reference as the reader identity.

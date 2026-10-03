@@ -27,7 +27,7 @@ iac/pulumi/
     ├── main.go       # Module coordinator
     ├── database.go   # Database resource creation
     ├── locals.go     # Local values
-    └── outputs.go    # Stack output constants
+    └── outputs.go    # Output constants
 ```
 
 ## Quick Start
@@ -41,7 +41,7 @@ pulumi stack init dev
 
 ### 2. Create Input File
 
-Provide a `stack-input.yaml` with the database specification:
+Provide a `iac-input.yaml` with the database specification:
 
 ```yaml
 target:
@@ -69,7 +69,7 @@ make up
 make destroy
 ```
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

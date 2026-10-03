@@ -4,7 +4,7 @@ Provisions a Cloudflare Origin CA certificate: a free TLS certificate that Cloud
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Origin CA Certificate** -- an edge-trusted certificate valid for the hostnames you list
 - **Private Key (optional)** -- generated and returned as a sensitive output when no CSR is supplied
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Origin CA edit access. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Origin CA edit access. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ## Deploy
@@ -45,7 +45,7 @@ spec:
 planton apply -f cloudflare-origin-ca-certificate.yaml
 ```
 
-This issues a 15-year RSA Origin CA certificate covering the apex and its subdomains. A Stack Job tracks the provisioning in real time.
+This issues a 15-year RSA Origin CA certificate covering the apex and its subdomains. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -61,13 +61,13 @@ These are the most important decisions when configuring an Origin CA certificate
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies -- it is account-scoped (there is no `zoneId`), and the covered hostnames travel as plain strings.
+This kind has no foreign key dependencies -- it is account-scoped (there is no `zoneId`), and the covered hostnames travel as plain strings.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -87,4 +87,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) -- the zone whose origin serves traffic behind this certificate
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) -- the zone whose origin serves traffic behind this certificate

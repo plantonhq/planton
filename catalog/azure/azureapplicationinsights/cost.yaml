@@ -5,9 +5,9 @@
 # telemetry in the LINKED Log Analytics workspace, so the money rides
 # THAT component's per-GB ingestion and retention meters; this spec's
 # fields are the dials that decide how many GB arrive there. Schema:
-# finops/componentcostprofile/v1.
+# finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azureapplicationinsights
 spec:
@@ -16,7 +16,7 @@ spec:
     - field_path: workspace_id
       sku_meter: analytics logs data ingestion
       pricing_unit: GB
-      impact: "Where the money rides: every GB of telemetry this resource collects bills the referenced Log Analytics workspace's ingestion meter -- \"2.30\" USD per GB at East US pay-as-you-go analytics rates -- on the AzureLogAnalyticsWorkspace component, not here. The workspace's own pricing posture (commitment tiers, a dedicated cluster) reprices this resource's telemetry wholesale."
+      impact: "Where the money rides: every GB of telemetry this resource collects bills the referenced Log Analytics workspace's ingestion meter -- \"2.30\" USD per GB at East US pay-as-you-go analytics rates -- on the AzureLogAnalyticsWorkspace kind, not here. The workspace's own pricing posture (commitment tiers, a dedicated cluster) reprices this resource's telemetry wholesale."
     - field_path: sampling_percentage
       sku_meter: analytics logs data ingestion
       pricing_unit: GB
@@ -33,7 +33,7 @@ spec:
   estimate_exclusions:
     - telemetry ingestion bills per GB on the LINKED Log Analytics workspace ("2.30" USD/GB at East US pay-as-you-go analytics rates, first 5 GB per workspace per month free) -- volume is the instrumented applications' traffic, unknowable from this manifest
     - retention beyond the 90-day Application Insights window bills "0.10" USD per GB per month on the workspace
-    - the workspace's pricing posture (commitment tiers, dedicated cluster, basic/auxiliary table plans and their per-GB-scanned query meters) reprices and re-shapes all of it on the AzureLogAnalyticsWorkspace component
+    - the workspace's pricing posture (commitment tiers, dedicated cluster, basic/auxiliary table plans and their per-GB-scanned query meters) reprices and re-shapes all of it on the AzureLogAnalyticsWorkspace kind
     - availability tests are separate billed surfaces -- standard web test executions bill "0.0005" USD per execution on Azure Monitor, and the legacy multi-step tests bill per test; both are their own components, not this spec
     - alert rules watching this telemetry bill their own Azure Monitor meters on their own components
     - the .NET Profiler and Snapshot Debugger artifacts land in Microsoft-managed storage at no charge, or in YOUR storage account (billed there) when force_customer_storage_for_profiler is set

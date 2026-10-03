@@ -6,7 +6,7 @@ import (
 
 	gcpeventarctriggerv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpeventarctrigger/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -29,8 +29,8 @@ type Locals struct {
 	GcpLabels map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpeventarctriggerv1alpha1.GcpEventarcTriggerStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcpeventarctriggerv1alpha1.GcpEventarcTriggerIacInput) *Locals {
+	target := iacInput.Target
 
 	triggerName := target.Spec.TriggerName
 	if triggerName == "" {
@@ -51,7 +51,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpeventarctriggerv1alpha1.
 	}
 	gcpLabels[gcplabelkeys.Resource] = strconv.FormatBool(true)
 	gcpLabels[gcplabelkeys.ResourceName] = target.Metadata.Name
-	gcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpEventarcTrigger.String())
+	gcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpEventarcTrigger.String())
 	if target.Metadata.Org != "" {
 		gcpLabels[gcplabelkeys.Organization] = target.Metadata.Org
 	}

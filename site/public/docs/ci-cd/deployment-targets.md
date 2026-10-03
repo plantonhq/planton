@@ -17,13 +17,13 @@ A deployment target defines where a service runs for a given environment. Servic
 
 Service Hub originally supported only Git-based deployment configuration through Kustomize directories. This approach works well for teams comfortable with GitOps workflows, but it creates a split onboarding experience: you configure the service in the web console, then switch to your terminal to create deployment manifests in Git, commit, push, and wait for the pipeline to discover any YAML errors.
 
-The insight that led to inline deployment configuration came from user feedback: the `_kustomize` directory ultimately produces cloud resource manifests — the same manifests users already create through Planton's UI for infrastructure deployment. There is no technical reason deployment configuration cannot be captured during service onboarding.
+The insight that led to inline deployment configuration came from user feedback: the `_kustomize` directory ultimately produces catalog object manifests — the same manifests users already create through Planton's UI for infrastructure deployment. There is no technical reason deployment configuration cannot be captured during service onboarding.
 
 Inline deployment targets close this gap. They enable complete service onboarding through the web console — from Git repository to deployed service — without creating any files in your repository. The choice between Git-based and inline is made per service, not per environment: pick one approach and use it consistently.
 
 ## Supported Platforms
 
-Service Hub deploys to any cloud resource type marked as service-deployable in the platform. The following targets are available through the web console creation wizard:
+Service Hub deploys to any catalog kind marked as service-deployable in the platform. The following targets are available through the web console creation wizard:
 
 | Provider | Resource Type | Description |
 |----------|--------------|-------------|
@@ -54,7 +54,7 @@ _kustomize/
       ...
 ```
 
-Each overlay directory represents an environment. During the pipeline's build stage, a kustomize-build task processes each overlay and produces cloud resource manifests. The deploy stage then provisions those manifests through Planton's infrastructure layer.
+Each overlay directory represents an environment. During the pipeline's build stage, a kustomize-build task processes each overlay and produces catalog object manifests. The deploy stage then provisions those manifests through Planton's infrastructure layer.
 
 **When to use**: Teams that prefer GitOps workflows, want deployment configuration version-controlled in Git, or need full control over resource manifests with complex per-environment customization.
 
@@ -69,7 +69,7 @@ Each target specifies:
 - **Environment**: The deployment environment name (e.g., dev, staging, production)
 - **Cloud provider**: Which provider to deploy to (Kubernetes, AWS, GCP, Cloudflare)
 - **Resource type**: The specific resource type for this provider (e.g., Deployment, ECS Service, Cloud Run)
-- **Resource configuration**: The complete cloud resource specification as a structured object
+- **Resource configuration**: The complete infra component specification as a structured object
 - **Manual approval**: Whether the pipeline should pause for approval before deploying to this environment
 
 The resource configuration supports template variables that are substituted during pipeline execution:
@@ -95,15 +95,15 @@ deployment_targets:
   - env: dev
     provider: kubernetes
     kind: KubernetesDeployment
-    cloud_object: { ... }
+    catalog_object: { ... }
   - env: staging
     provider: gcp
     kind: GcpCloudRun
-    cloud_object: { ... }
+    catalog_object: { ... }
   - env: production
     provider: aws
     kind: AwsEcsService
-    cloud_object: { ... }
+    catalog_object: { ... }
 ```
 
 This enables incremental migration between cloud providers or using cost-optimized platforms for non-production environments.

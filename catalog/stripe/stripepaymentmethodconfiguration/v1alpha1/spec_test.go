@@ -19,7 +19,7 @@ func configuration(spec *StripePaymentMethodConfigurationSpec) *StripePaymentMet
 	return &StripePaymentMethodConfiguration{
 		ApiVersion: "stripe.planton.dev/v1alpha1",
 		Kind:       "StripePaymentMethodConfiguration",
-		Metadata:   &shared.CloudResourceMetadata{Name: "checkout-methods"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "checkout-methods"},
 		Spec:       spec,
 	}
 }

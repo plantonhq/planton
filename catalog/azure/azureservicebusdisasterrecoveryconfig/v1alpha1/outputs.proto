@@ -4,14 +4,14 @@ package dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureServiceBusDisasterRecoveryConfigStackOutputs** captures the
+// **AzureServiceBusDisasterRecoveryConfigOutputs** captures the
 // outputs of provisioning a Service Bus geo-DR pairing.
 //
 // The alias connection strings are what DR-aware clients should hold:
 // they address the failover-stable alias DNS name, so a failover needs no
 // client reconfiguration. Keys come from the paired authorization rule
 // (alias_authorization_rule_id, defaulting to the namespace root rule).
-message AzureServiceBusDisasterRecoveryConfigStackOutputs {
+message AzureServiceBusDisasterRecoveryConfigOutputs {
   // The Azure Resource Manager ID of the disaster-recovery config (under
   // the primary namespace).
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.ServiceBus/namespaces/{ns}/disasterRecoveryConfigs/{alias}

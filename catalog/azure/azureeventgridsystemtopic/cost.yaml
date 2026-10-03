@@ -6,9 +6,9 @@
 # single operations meter bills the published events, delivery attempts,
 # and advanced filtering that flow THROUGH it, at volumes only the source
 # resource's activity determines.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azureeventgridsystemtopic
 spec:

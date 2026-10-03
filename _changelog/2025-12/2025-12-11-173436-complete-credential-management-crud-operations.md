@@ -6,7 +6,7 @@
 
 ## Summary
 
-Implemented complete CRUD (Create, Read, Update, Delete) operations for credential management across CLI, backend API, and frontend UI. Added three new CLI commands (`credential:get`, `credential:update`, `credential:delete`) to complement existing operations, extended backend API with corresponding RPC methods, and built a complete frontend UI for credential management. This provides full lifecycle management for cloud provider credentials across all interfaces. All components were thoroughly tested and documented.
+Implemented complete CRUD (Create, Read, Update, Delete) operations for credential management across CLI, backend API, and frontend UI. Added three new CLI commands (`credential:get`, `credential:update`, `credential:delete`) to complement existing operations, extended backend API with corresponding RPC methods, and built a complete frontend UI for credential management. This provides full lifecycle management for cloud provider credentials across all interfaces. All kinds were thoroughly tested and documented.
 
 ## Problem Statement / Motivation
 
@@ -71,7 +71,7 @@ Built complete credential management interface:
 1. **Credential List View** - Display all credentials with filtering
 2. **Credential Forms** - Provider-specific forms (GCP, AWS, Azure)
 3. **Credential Drawer** - Create/Edit modal with tabbed interface
-4. **Shared Components** - Reusable UI components for credential management
+4. **Shared Kinds** - Reusable UI components for credential management
 
 Frontend features:
 
@@ -79,7 +79,7 @@ Frontend features:
 - Tabbed interface for different providers
 - Real-time credential list updates
 - Delete confirmation dialogs
-- Form field components with help tooltips
+- Form field kinds with help tooltips
 
 ### Key Features
 

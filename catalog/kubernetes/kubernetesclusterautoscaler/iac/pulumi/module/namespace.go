@@ -14,11 +14,11 @@ import (
 // is always the case for the upstream-conventional kube-system target).
 // Terraform equivalent: kubernetes_namespace_v1 with count.
 func namespace(ctx *pulumi.Context,
-	stackInput *kubernetesclusterautoscalerv1alpha1.KubernetesClusterAutoscalerStackInput,
+	iacInput *kubernetesclusterautoscalerv1alpha1.KubernetesClusterAutoscalerIacInput,
 	locals *Locals,
 	kubernetesProvider pulumi.ProviderResource,
 ) (*kubernetescorev1.Namespace, error) {
-	if !stackInput.Target.Spec.CreateNamespace {
+	if !iacInput.Target.Spec.CreateNamespace {
 		return nil, nil
 	}
 

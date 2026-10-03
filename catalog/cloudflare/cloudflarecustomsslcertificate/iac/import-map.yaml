@@ -1,19 +1,19 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarecustomsslcertificate
 spec:
   values:
     - name: zone_id
       derivations:
-        - from_stack_output: zone_id
+        - from_output: zone_id
       where_to_find: >-
         Cloudflare dashboard -> the zone's Overview page (Zone ID in the
         right-hand API panel), or `GET /zones?name=<domain>` on the
         Cloudflare v4 API (the id field).
     - name: certificate_id
       derivations:
-        - from_stack_output: certificate_id
+        - from_output: certificate_id
       where_to_find: >-
         Cloudflare dashboard -> SSL/TLS -> Edge Certificates -> the custom
         certificate's details, or `GET /zones/<zone_id>/custom_certificates`

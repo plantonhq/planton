@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awssecretsmanagersecret
 spec:
@@ -11,7 +11,7 @@ spec:
   values:
     - name: secret_arn
       derivations:
-        - from_stack_output: secret_arn
+        - from_output: secret_arn
         - from_arn_part: arn
       where_to_find: >-
         Secrets Manager console -> Secrets -> <secret> (the Secret ARN), or
@@ -19,7 +19,7 @@ spec:
         Paste the full ARN -- it ends with a random 6-character suffix.
     - name: version_id
       derivations:
-        - from_stack_output: version_id
+        - from_output: version_id
       where_to_find: >-
         `aws secretsmanager list-secret-version-ids --secret-id <arn>` --
         the VersionId carrying the AWSCURRENT staging label.

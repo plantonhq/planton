@@ -4,7 +4,7 @@ Declares a Cloud Deploy delivery pipeline: the ordered stages a release is promo
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `clouddeploy.googleapis.com` on the pipeline's project (never disabled on destroy)
 - **Delivery pipeline** -- one `clouddeploy_delivery_pipeline` with its serial stages
@@ -107,7 +107,7 @@ planton apply -f delivery-pipeline.yaml
 - Each automation rule sets exactly one rule kind; a repair rule needs at least one repair phase, each exactly one of `retry` or `rollback`.
 - Automation IDs, phase IDs, and rule IDs are unique where Google requires it.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -136,7 +136,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpDeployTarget** -- the targets the stages deploy to
 - **GcpDeployPolicy** -- restricts rollouts on pipelines it selects (by `delivery_pipeline_id` or labels)

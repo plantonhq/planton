@@ -4,7 +4,7 @@ Deploys a Cloudflare Zero Trust device posture rule: a health check — disk enc
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Device Posture Rule** — a `cloudflare_zero_trust_device_posture_rule` carrying the check `type`, its `input` parameters, platform `match` targeting, and the `schedule`/`expiration` timing pair
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module with a Cloudflare API token carrying Account → Zero Trust → Edit. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module with a Cloudflare API token carrying Account → Zero Trust → Edit. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -55,7 +55,7 @@ spec:
 planton apply -f posture-rule.yaml
 ```
 
-This creates a rule requiring macOS devices to run at least 14.4.1, re-checked every five minutes with results trusted for an hour. A Stack Job tracks the provisioning in real time.
+This creates a rule requiring macOS devices to run at least 14.4.1, re-checked every five minutes with results trusted for an hour. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -73,13 +73,13 @@ These are the most important decisions when configuring a posture rule. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. Posture integrations (`input.connectionId`), Zero Trust lists (`input.id`), and client certificates (`input.certificateId`) are referenced as literal UUID strings because those surfaces carry no typed reference here.
+This kind has no foreign key dependencies. Posture integrations (`input.connectionId`), Zero Trust lists (`input.id`), and client certificates (`input.certificateId`) are referenced as literal UUID strings because those surfaces carry no typed reference here.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -97,7 +97,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Zero Trust Access Policy**](/cloud-catalog/cloudflare-zero-trust-access-policy) — requires posture checks in front of applications.
-- [**Cloudflare Zero Trust Gateway Policy**](/cloud-catalog/cloudflare-zero-trust-gateway-policy) — requires posture checks for network egress.
-- [**Cloudflare Zero Trust Device Default Profile**](/cloud-catalog/cloudflare-zero-trust-device-default-profile) — the WARP client the checks run under.
-- [**Cloudflare Zero Trust List**](/cloud-catalog/cloudflare-zero-trust-list) — holds the device identifiers `serial_number` and `unique_client_id` checks read via `input.id`.
+- [**Cloudflare Zero Trust Access Policy**](/infra-catalog/cloudflare-zero-trust-access-policy) — requires posture checks in front of applications.
+- [**Cloudflare Zero Trust Gateway Policy**](/infra-catalog/cloudflare-zero-trust-gateway-policy) — requires posture checks for network egress.
+- [**Cloudflare Zero Trust Device Default Profile**](/infra-catalog/cloudflare-zero-trust-device-default-profile) — the WARP client the checks run under.
+- [**Cloudflare Zero Trust List**](/infra-catalog/cloudflare-zero-trust-list) — holds the device identifiers `serial_number` and `unique_client_id` checks read via `input.id`.

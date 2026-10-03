@@ -16,7 +16,7 @@ message GcpSpannerBackupSchedule {
   string kind = 2 [(buf.validate.field).string.const = 'GcpSpannerBackupSchedule'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   GcpSpannerBackupScheduleSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,6 +27,6 @@ message GcpSpannerBackupSchedule {
 
 //gcp-spanner-backup-schedule status
 message GcpSpannerBackupScheduleStatus {
-  //stack-outputs
-  GcpSpannerBackupScheduleStackOutputs outputs = 1;
+  //outputs
+  GcpSpannerBackupScheduleOutputs outputs = 1;
 }

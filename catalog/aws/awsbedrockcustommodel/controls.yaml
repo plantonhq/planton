@@ -1,5 +1,5 @@
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awsbedrockcustommodel
 spec:
@@ -31,7 +31,7 @@ spec:
         reference: vpc_config places the job's data-access network interfaces inside your VPC behind your security groups (preset 02's posture) -- the fit for training data reachable only through private networking. Omitted, the job reads S3 over Bedrock's managed networking.
     - control_id: edge-protection
       status: not_applicable
-      notes: No request-serving surface exists -- serving traffic happens on the Provisioned Throughput or deployment component, not here.
+      notes: No request-serving surface exists -- serving traffic happens on the Provisioned Throughput or catalog kind, not here.
     - control_id: rbac
       status: enforced_by_default
       evidence:

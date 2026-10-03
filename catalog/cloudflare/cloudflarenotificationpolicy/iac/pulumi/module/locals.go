@@ -12,10 +12,10 @@ type Locals struct {
 	CloudflareNotificationPolicy *cloudflarenotificationpolicyv1alpha1.CloudflareNotificationPolicy
 }
 
-// initializeLocals copies stack-input fields into the Locals struct.
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflarenotificationpolicyv1alpha1.CloudflareNotificationPolicyStackInput) *Locals {
+// initializeLocals copies iac-input fields into the Locals struct.
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflarenotificationpolicyv1alpha1.CloudflareNotificationPolicyIacInput) *Locals {
 	locals := &Locals{}
-	locals.CloudflareNotificationPolicy = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareNotificationPolicy = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

@@ -16,7 +16,7 @@ OpenTofu module that declares one Stripe product and the entitlement features it
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `name` (required); `description`, `active`, `type` (replaces), `images`, `marketing_features`, `package_dimensions`, `shippable`, `statement_descriptor`, `tax_code`, `unit_label`, `url`, `metadata`, `features` (resolved feature ids) |
 
 ## Outputs

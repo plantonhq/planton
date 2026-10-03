@@ -78,7 +78,7 @@ This creates a private STANDARD bucket that no IAM grant can ever expose publicl
 | `managedFolders[]` | list | No | Prefix-scoped IAM anchors (UBLA buckets): `name` with trailing `/` + `forceDestroy` (server-side; objects survive) |
 | `notifications[]` | list | No | Pub/Sub event feeds: `topic` (reference a `GcpPubSubTopic`), `payloadFormat` (`JSON_API_V1`/`NONE`), `eventTypes` (empty = all), `objectNamePrefix`, `customAttributes`. Immutable — every change replaces |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

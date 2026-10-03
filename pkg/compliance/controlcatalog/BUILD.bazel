@@ -19,6 +19,6 @@ go_test(
     embed = [":controlcatalog"],
     deps = [
         "//compliance/controlcatalog/v1:controlcatalog",
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
     ],
 )

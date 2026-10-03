@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuredatafactorypipeline
 spec:
@@ -8,9 +8,9 @@ spec:
   values:
     - name: pipeline_id
       derivations:
-        - from_stack_output: pipeline_id
+        - from_output: pipeline_id
       where_to_find: >-
         Compose it from the factory's resource ID plus
         /pipelines/<pipeline-name>, or `az datafactory pipeline show
         --factory-name <factory> -g <rg> -n <name> --query id`; also
-        the component's own pipeline_id stack output.
+        the component's own pipeline_id output.

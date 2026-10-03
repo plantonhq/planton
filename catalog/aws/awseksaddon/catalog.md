@@ -4,7 +4,7 @@ Installs an EKS managed add-on — cluster software like vpc-cni, CoreDNS, kube-
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **EKS Add-on** -- the managed add-on on the target cluster, at the pinned version or AWS's default for the cluster's Kubernetes version, with the chosen conflict-resolution posture and configuration values
 - **Pod Identity Associations** -- one EKS Pod Identity association per entry in `podIdentityAssociations`, binding the add-on's Kubernetes service accounts to referenced IAM roles
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **EKS Cluster** -- the target cluster, ideally a Planton AwsEksCluster referenced by its `name` output so deploys order correctly.
 
 ### AWS Account
@@ -55,7 +55,7 @@ spec:
 planton apply -f eks-addon.yaml
 ```
 
-This installs CoreDNS as a managed add-on at AWS's default version for the cluster's Kubernetes version, adopting the self-managed CoreDNS the cluster bootstrapped. A Stack Job tracks the provisioning in real time.
+This installs CoreDNS as a managed add-on at AWS's default version for the cluster's Kubernetes version, adopting the self-managed CoreDNS the cluster bootstrapped. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -99,16 +99,16 @@ These are the most important decisions when configuring an EKS add-on. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsEksCluster** | `clusterName` | `status.outputs.name` |
 | **AwsIamRole** | `serviceAccountRoleArn`, `podIdentityAssociations[].roleArn` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -128,6 +128,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS EKS Cluster**](/cloud-catalog/aws-eks-cluster) -- the parent cluster, referenced by `clusterName`.
-- [**AWS EKS Node Group**](/cloud-catalog/aws-eks-node-group) -- add-ons schedule onto the cluster's nodes; storage drivers serve the workloads those nodes run.
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the IAM identities referenced by Pod Identity associations and IRSA.
+- [**AWS EKS Cluster**](/infra-catalog/aws-eks-cluster) -- the parent cluster, referenced by `clusterName`.
+- [**AWS EKS Node Group**](/infra-catalog/aws-eks-node-group) -- add-ons schedule onto the cluster's nodes; storage drivers serve the workloads those nodes run.
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the IAM identities referenced by Pod Identity associations and IRSA.

@@ -5,7 +5,7 @@ package dev.planton.gcp.gcpvertexainotebook.v1alpha1;
 import "catalog/gcp/gcpvertexainotebook/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-message GcpVertexAiNotebookStackInput {
+message GcpVertexAiNotebookIacInput {
   GcpVertexAiNotebook target = 1;
   dev.planton.gcp.GcpProviderConfig provider_config = 2;
 }

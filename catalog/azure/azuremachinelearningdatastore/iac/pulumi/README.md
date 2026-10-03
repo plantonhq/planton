@@ -2,7 +2,7 @@
 
 ## Overview
 
-Registers a datastore on an Azure Machine Learning workspace using the classic `pulumi-azure` (azurerm-bridged) SDK, from the kind's typed stack input. The spec's variant block selects which of the three SDK resources is created.
+Registers a datastore on an Azure Machine Learning workspace using the classic `pulumi-azure` (azurerm-bridged) SDK, from the kind's typed IaC input. The spec's variant block selects which of the three SDK resources is created.
 
 ## Design Decisions
 
@@ -13,7 +13,7 @@ Registers a datastore on an Azure Machine Learning workspace using the classic `
 
 ## Inputs
 
-The module consumes `AzureMachineLearningDatastoreStackInput`: the target resource (metadata + spec) and the Azure provider configuration. The workspace and storage-target references arrive pre-resolved; `GetValue()` returns the literal ARM ID.
+The module consumes `AzureMachineLearningDatastoreIacInput`: the target resource (metadata + spec) and the Azure provider configuration. The workspace and storage-target references arrive pre-resolved; `GetValue()` returns the literal ARM ID.
 
 ## Outputs
 

@@ -1,5 +1,5 @@
 // Package baseline is the deterministic reference proposer: it maps a
-// read-only account scan to Planton component manifests using only plain
+// read-only account scan to Planton kind manifests using only plain
 // code and the scan's own facts -- no model, no judgment. It exists for two
 // reasons, both about keeping the eval harness honest:
 //
@@ -26,7 +26,7 @@ import (
 
 	"github.com/pkg/errors"
 	proposalv1 "github.com/plantonhq/planton/iac/importmappingproposal/v1"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/envpartition"
 	"github.com/plantonhq/planton/pkg/iac/envpartition/awsscan"
 	"github.com/plantonhq/planton/pkg/iac/mappingeval"
@@ -355,7 +355,7 @@ func (b *builder) recordUnmapped() {
 func unmappedReason(r mappingeval.ScannedResource) string {
 	switch r.TypeName {
 	case typeRouteTable:
-		return "route table with no explicit subnet association (a VPC's main route table is implicitly created by AWS and not modeled as a component)"
+		return "route table with no explicit subnet association (a VPC's main route table is implicitly created by AWS and not modeled as a kind)"
 	case typeRTBAssociation:
 		return "main route table association -- implicitly created by AWS, not modeled"
 	case typeBucketPolicy:
@@ -376,7 +376,7 @@ func (b *builder) emit(kind, name string, spec map[string]any, rationale string,
 	}
 	// The apiVersion follows the kind's registry metadata, so proposals stay
 	// stamped with the version the kind actually serves.
-	apiVersion := crkreflect.GroupVersion(crkreflect.KindFromString(kind))
+	apiVersion := catalogkindreflect.GroupVersion(catalogkindreflect.KindFromString(kind))
 	if apiVersion == "" {
 		// Every kind emitted here is one of this file's own mappers' AWS
 		// kinds; an unresolvable name is a programming error.

@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: gcpvertexaiindex
 spec:
@@ -59,7 +59,7 @@ spec:
       evidence:
         type: provider_default
         reference: "Streaming indexes export stream-update metrics (request count, datapoint count, latencies -- aiplatform.googleapis.com/matching_engine/stream_update/*) to Cloud Monitoring automatically on the aiplatform.googleapis.com/Index monitored resource; no configuration exists or is needed."
-      notes: Serving-side signals (query request counts, latencies, replica and shard counts) ride the IndexEndpoint monitored resource and belong to the deployment components.
+      notes: Serving-side signals (query request counts, latencies, replica and shard counts) ride the IndexEndpoint monitored resource and belong to the catalog kinds.
     - control_id: backup-recovery
       status: not_applicable
       notes: The service exposes no backup facility for an index. The recovery path is structural instead -- the embedding files at contents_delta_uri remain in Cloud Storage as the durable source of truth, and a batch rebuild reconstructs the index from them; streaming-only corpora need the writer to retain its own source data.

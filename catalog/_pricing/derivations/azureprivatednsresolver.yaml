@@ -10,9 +10,9 @@
 # replays the catalog presets through these rules to emit
 # ../estimates/azureprivatednsresolver.yaml; a server-side estimator
 # evaluates the same rules against live manifests.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: azureprivatednsresolver
 spec:
@@ -33,6 +33,6 @@ spec:
       price_slug: dns-resolver-outbound-endpoint
       basis: one flat monthly fee per declared outbound endpoint, the same list rate as the inbound meter -- an inbound-only resolver simply has zero of these
   exclusions:
-    - text: DNS forwarding rulesets bill their own flat monthly fee on the AzurePrivateDnsResolverForwardingRuleset component that binds the outbound endpoints
+    - text: DNS forwarding rulesets bill their own flat monthly fee on the AzurePrivateDnsResolverForwardingRuleset kind that binds the outbound endpoints
     - text: the resolver adds no per-query meter -- queries answered from private zones bill those zones' per-million meter zone-side, and queries forwarded on-premises bill nothing in Azure
-    - text: the anchor virtual network and the dedicated endpoint subnets are first-class components billing on their own lines
+    - text: the anchor virtual network and the dedicated endpoint subnets are first-class kinds billing on their own lines

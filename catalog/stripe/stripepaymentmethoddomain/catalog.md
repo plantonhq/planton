@@ -1,10 +1,10 @@
 # Stripe Payment Method Domain
 
-Registers a domain where your own checkout pages may show wallet buttons -- Apple Pay, Google Pay, Link, PayPal, Amazon Pay and Klarna -- and reports, wallet by wallet, whether each can appear and why not. One Cloud Resource per domain.
+Registers a domain where your own checkout pages may show wallet buttons -- Apple Pay, Google Pay, Link, PayPal, Amazon Pay and Klarna -- and reports, wallet by wallet, whether each can appear and why not. One Infra Component per domain.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the OpenTofu module registers one domain in the Stripe account your Stripe connection's key belongs to:
+When you deploy this Infra Component, the OpenTofu module registers one domain in the Stripe account your Stripe connection's key belongs to:
 
 - **The registration** -- the hostname your checkout page is served from
 - **Each wallet's state** -- active or inactive, with Stripe's reason
@@ -46,7 +46,7 @@ spec:
 planton apply -f stripe-payment-method-domain.yaml
 ```
 
-A Stack Job tracks the change in real time.
+An Infra Job tracks the change in real time.
 
 ## Key Configuration
 
@@ -60,11 +60,11 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies.
+This kind has no foreign key dependencies.
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -84,4 +84,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Stripe Payment Method Configuration**](/cloud-catalog/stripe-payment-method-configuration) -- which methods checkout offers; wallets among them appear on registered domains.
+- [**Stripe Payment Method Configuration**](/infra-catalog/stripe-payment-method-configuration) -- which methods checkout offers; wallets among them appear on registered domains.

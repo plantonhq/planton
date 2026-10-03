@@ -10,9 +10,9 @@
 # target cluster's node count, which no manifest can know; a constant
 # binding would misread a per-node reservation as one pod. Its term
 # lives in the exclusions below instead.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kuberneteskubeprometheusstack
 spec:

@@ -4,7 +4,7 @@ Deploys an Azure Resource Group -- the foundational organizational container for
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Azure Resource Group** -- a named container in the specified Azure region that holds and organizes related Azure resources for unified lifecycle management, access control, and cost allocation. Planton-derived resource tags (organization, environment, resource kind, resource ID) are applied by the IaC module; the spec itself carries only name and region
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -45,7 +45,7 @@ spec:
 planton apply -f resource-group.yaml
 ```
 
-This creates a resource group named `acme-prod-rg` in the `eastus` region, ready to hold downstream deployments. A Stack Job tracks the provisioning in real time.
+This creates a resource group named `acme-prod-rg` in the `eastus` region, ready to hold downstream deployments. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -59,18 +59,18 @@ These are the most important decisions when configuring a resource group. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies.
+This kind has no foreign key dependencies.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
 | `resource_group_id` | Azure Resource Manager ID of the resource group (`/subscriptions/{id}/resourceGroups/{name}`) | Scope for Azure Role Assignments granting access to everything in the group |
-| `resource_group_name` | Name of the resource group | Nearly every Azure Cloud Resource references this via its `resourceGroup` field with `valueFrom` |
+| `resource_group_name` | Name of the resource group | Nearly every Azure Infra Component references this via its `resourceGroup` field with `valueFrom` |
 
 ## Common Patterns
 
@@ -82,7 +82,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Azure Virtual Network**](/cloud-catalog/azure-virtual-network) -- networking foundations deploy into a resource group and are typically the next resource created after it
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- references the resource group name for placement of storage resources
-- [**Azure Service Plan**](/cloud-catalog/azure-service-plan) -- compute plans for web apps and functions deploy into a resource group
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- grants roles scoped to the resource group using its ARM ID as the scope
+- [**Azure Virtual Network**](/infra-catalog/azure-virtual-network) -- networking foundations deploy into a resource group and are typically the next resource created after it
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- references the resource group name for placement of storage resources
+- [**Azure Service Plan**](/infra-catalog/azure-service-plan) -- compute plans for web apps and functions deploy into a resource group
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- grants roles scoped to the resource group using its ARM ID as the scope

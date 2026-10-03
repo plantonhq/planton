@@ -1,4 +1,4 @@
-// Build tag prevents compilation during codegen (uses crkreflect.NewInstance which
+// Build tag prevents compilation during codegen (uses catalogkindreflect.NewInstance which
 // depends on the generated kind_map_gen.go).
 
 //go:build !codegen
@@ -11,7 +11,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -30,7 +30,7 @@ type mergeField struct {
 }
 
 // Generate produces a kustomize-compatible OpenAPI schema JSON that declares
-// strategic merge patch directives for all cloud resource kinds that have
+// strategic merge patch directives for all catalog kinds that have
 // repeated message fields with a "name" merge key.
 //
 // Only kinds that actually contain merge-worthy fields produce entries.
@@ -39,8 +39,8 @@ type mergeField struct {
 func Generate() ([]byte, error) {
 	definitions := make(map[string]any)
 
-	for _, kind := range crkreflect.KindsList() {
-		msg, err := crkreflect.NewInstance(kind)
+	for _, kind := range catalogkindreflect.KindsList() {
+		msg, err := catalogkindreflect.NewInstance(kind)
 		if err != nil {
 			log.Debugf("skipping kind %s: %v", kind.String(), err)
 			continue
@@ -59,7 +59,7 @@ func Generate() ([]byte, error) {
 		}
 
 		kindName := kind.String()
-		groupVersion := crkreflect.GroupVersion(kind)
+		groupVersion := catalogkindreflect.GroupVersion(kind)
 		if groupVersion == "" {
 			continue
 		}
@@ -126,7 +126,7 @@ func hasNameField(md protoreflect.MessageDescriptor) bool {
 	return f != nil && f.Kind() == protoreflect.StringKind
 }
 
-// buildDefinition constructs the OpenAPI definition object for a single cloud resource kind.
+// buildDefinition constructs the OpenAPI definition object for a single catalog kind.
 func buildDefinition(group, version, kind string, fields []mergeField) map[string]any {
 	return map[string]any{
 		"x-kubernetes-group-version-kind": []map[string]string{

@@ -4,7 +4,7 @@ Deploys an AWS Budgets budget: a spend or usage threshold AWS evaluates continuo
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Budget** — the tracked type (cost, usage, or RI/Savings Plans utilization and coverage), its reset period, funding shape, filters, and threshold notifications.
 - **Budget Actions** — one per `actions` entry: a staged or automatic response bound to its own threshold, each getting an AWS-generated action ID (echoed in the `action_ids` output). Created only when `actions` is set.
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Budgets permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Budgets permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -65,7 +65,7 @@ spec:
 planton apply -f budget.yaml
 ```
 
-This creates a monthly cost budget with a fixed 1000 USD ceiling, alerting the FinOps team at 80% of actual spend and again when AWS forecasts the month will breach. A Stack Job tracks the provisioning in real time.
+This creates a monthly cost budget with a fixed 1000 USD ceiling, alerting the FinOps team at 80% of actual spend and again when AWS forecasts the month will breach. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -116,7 +116,7 @@ These are the most important decisions when configuring a budget. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -128,9 +128,9 @@ These are the most important decisions when configuring a budget. Explore the fu
 
 The IAM action arm's principal lists (`groups`, `roles`, `users`) and action subscribers also accept references to the matching IAM and SNS kinds.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -151,10 +151,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS SNS Topic**](/cloud-catalog/aws-sns-topic) — programmatic fan-out for threshold alerts and action notices
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the execution role Budgets assumes to run actions
-- [**AWS IAM Policy**](/cloud-catalog/aws-iam-policy) — the restrictive policy the IAM action arm attaches on breach
-- [**AWS Organization Policy**](/cloud-catalog/aws-organization-policy) — the SCP the SCP action arm attaches to organization targets
-- [**AWS EC2 Instance**](/cloud-catalog/aws-ec2-instance) — the instances the SSM action arm stops
-- [**AWS Cost Category**](/cloud-catalog/aws-cost-category) — team/project groupings the filter expression can scope budgets to
-- [**AWS Cost Anomaly Monitor**](/cloud-catalog/aws-cost-anomaly-monitor) — the complementary detector for unusual spend patterns a fixed threshold misses
+- [**AWS SNS Topic**](/infra-catalog/aws-sns-topic) — programmatic fan-out for threshold alerts and action notices
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the execution role Budgets assumes to run actions
+- [**AWS IAM Policy**](/infra-catalog/aws-iam-policy) — the restrictive policy the IAM action arm attaches on breach
+- [**AWS Organization Policy**](/infra-catalog/aws-organization-policy) — the SCP the SCP action arm attaches to organization targets
+- [**AWS EC2 Instance**](/infra-catalog/aws-ec2-instance) — the instances the SSM action arm stops
+- [**AWS Cost Category**](/infra-catalog/aws-cost-category) — team/project groupings the filter expression can scope budgets to
+- [**AWS Cost Anomaly Monitor**](/infra-catalog/aws-cost-anomaly-monitor) — the complementary detector for unusual spend patterns a fixed threshold misses

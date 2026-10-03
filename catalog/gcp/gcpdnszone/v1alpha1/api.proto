@@ -16,7 +16,7 @@ message GcpDnsZone {
   string kind = 2 [(buf.validate.field).string.const = 'GcpDnsZone'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   GcpDnsZoneSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,7 +27,7 @@ message GcpDnsZone {
 
 //gcp-dns-zone status
 message GcpDnsZoneStatus {
-  //stack-outputs
-  //  stack outputs
-  GcpDnsZoneStackOutputs outputs = 1;
+  //outputs
+  //  outputs
+  GcpDnsZoneOutputs outputs = 1;
 }

@@ -5,9 +5,9 @@ package dev.planton.azure.azurevirtualnetwork.v1alpha1;
 import "catalog/azure/azurevirtualnetwork/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureVirtualNetworkStackInput is the input to the IaC modules (Pulumi/Terraform).
+// AzureVirtualNetworkIacInput is the input to the IaC modules (Pulumi/Terraform).
 // It contains the target resource definition and Azure provider credentials.
-message AzureVirtualNetworkStackInput {
+message AzureVirtualNetworkIacInput {
   // The virtual network resource to deploy.
   AzureVirtualNetwork target = 1;
 

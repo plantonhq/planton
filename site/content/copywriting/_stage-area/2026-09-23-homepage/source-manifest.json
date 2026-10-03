@@ -550,24 +550,24 @@
     ]
   },
   {
-    "path": "wiki/product.infra-hub.cloud-object.md",
-    "title": "Cloud Object",
+    "path": "wiki/product.infra-hub.catalog-object.md",
+    "title": "Catalog Object",
     "sha256": "fe7953a5a42613984954d05cb65389984c87edd4cbcf08a5dd6c8ce4c38d3315",
     "classification": "Internal context; not used as a homepage claim",
-    "qualification": "Cloud Object",
+    "qualification": "Catalog Object",
     "sections": [
       "Mental Model",
       "Why a Structured Payload, Not a Union",
-      "Cloud Object versus Cloud Resource",
-      "From Cloud Object to Execution: the Stack Input",
+      "Catalog Object versus Infra Component",
+      "From Catalog Object to Execution: the IaC Input",
       "Two Paths, One Specification",
       "Future Considerations",
       "Cross-References"
     ]
   },
   {
-    "path": "wiki/product.infra-hub.cloud-resource-import.md",
-    "title": "Cloud Resource Import",
+    "path": "wiki/product.infra-hub.infra-component-import.md",
+    "title": "Infra Component Import",
     "sha256": "133f497b141a64459de9e347d094fac8393cbd723028b5ee4dc58a12669939e3",
     "classification": "Public claim source",
     "qualification": "Import is kind- and provisioner-specific; do not imply universal import.",
@@ -591,11 +591,11 @@
     ]
   },
   {
-    "path": "wiki/product.infra-hub.cloud-resource-write-path.md",
-    "title": "The Cloud-Resource Write Path",
+    "path": "wiki/product.infra-hub.infra-component-write-path.md",
+    "title": "The Infra-Component Write Path",
     "sha256": "ba250f9d071796536386b7f2e8fb8261e336d7492aee6d29eac234021ea2ef64",
     "classification": "Internal context; not used as a homepage claim",
-    "qualification": "The Cloud-Resource Write Path",
+    "qualification": "The Infra-Component Write Path",
     "sections": [
       "The Mental Model",
       "The Residue Law",
@@ -610,11 +610,11 @@
     ]
   },
   {
-    "path": "wiki/product.infra-hub.cloud-resource.md",
-    "title": "Cloud Resource",
+    "path": "wiki/product.infra-hub.infra-component.md",
+    "title": "Infra Component",
     "sha256": "efe4f44c4e452fe1178194e017202c25896cec54d9fd43079e9786142487877c",
     "classification": "Internal context; not used as a homepage claim",
-    "qualification": "Cloud Resource",
+    "qualification": "Infra Component",
     "sections": [
       "Mental Model",
       "The KRM Shape",
@@ -727,7 +727,7 @@
       "Mental Model",
       "The Three Sub-Tabs",
       "State Operation Wizards",
-      "Stack Job IaC Resources",
+      "Infra Job IaC Resources",
       "Architecture: Thin Shell and Shared Packages",
       "Future Considerations",
       "Cross-References"
@@ -756,13 +756,13 @@
     ]
   },
   {
-    "path": "wiki/product.infra-hub.infra-chart.cloud-object-manifest.md",
-    "title": "InfraChart Cloud Object Manifest",
+    "path": "wiki/product.infra-hub.infra-chart.catalog-object-manifest.md",
+    "title": "InfraChart Catalog Object Manifest",
     "sha256": "1e9c40823657f405b83d4097d7febb66327e49c43552b732afd038529d9456bd",
     "classification": "Internal context; not used as a homepage claim",
-    "qualification": "InfraChart Cloud Object Manifest",
+    "qualification": "InfraChart Catalog Object Manifest",
     "sections": [
-      "Relationship to Cloud Objects",
+      "Relationship to Catalog Objects",
       "Mental Model",
       "The Problem It Solves",
       "Proto Design",
@@ -873,8 +873,8 @@
     ]
   },
   {
-    "path": "wiki/product.infra-hub.stack-job.md",
-    "title": "Stack Job",
+    "path": "wiki/product.infra-hub.infra-job.md",
+    "title": "Infra Job",
     "sha256": "773e63d1e2e984f63f5bdac5b9e37de155a0b7724a074e467111edcb1b0d002d",
     "classification": "Public claim source",
     "qualification": "Capture immutable configuration and phase outcomes; cost coverage is explicit.",

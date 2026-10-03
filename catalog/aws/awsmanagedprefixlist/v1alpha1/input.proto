@@ -5,9 +5,9 @@ package dev.planton.aws.awsmanagedprefixlist.v1alpha1;
 import "catalog/aws/awsmanagedprefixlist/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsManagedPrefixListStackInput is the input for the IaC modules that
+// AwsManagedPrefixListIacInput is the input for the IaC modules that
 // manage a customer-managed prefix list.
-message AwsManagedPrefixListStackInput {
+message AwsManagedPrefixListIacInput {
   // target is the AwsManagedPrefixList resource to deploy.
   AwsManagedPrefixList target = 1;
   // provider_config contains the AWS provider credentials and configuration.

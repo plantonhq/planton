@@ -4,7 +4,7 @@ Deploys an Azure Network Security Group (NSG) -- the stateful firewall that filt
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Network Security Group** -- a stateful firewall resource in the specified resource group and region, with a name matching your manifest
 - **Security Rules** -- one rule per entry in the `securityRules` array, each realized as its own ARM rule resource under the group. An empty list is meaningful: Azure's implicit default rules then govern (allow VNet-internal traffic and load-balancer probes, deny all other inbound, allow all outbound)
@@ -14,12 +14,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the NSG will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the NSG will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 - **Subnet association** -- the attachment is the guarded side's declaration: a subnet's `networkSecurityGroupId` (or a NIC's security settings) references this NSG, so one group serves many subnets without listing them. This component creates the NSG and its rules, never the association.
 - **Application Security Groups (optional)** -- rules that address workloads by role reference AzureApplicationSecurityGroup resources (up to 10 per side per rule).
 
@@ -60,7 +60,7 @@ spec:
 planton apply -f nsg.yaml
 ```
 
-This creates an NSG with a single rule allowing inbound HTTPS traffic from the internet. Azure's implicit default rules (VNet-to-VNet allow, load-balancer probes allow, deny all other inbound, allow all outbound) remain in effect underneath. A Stack Job tracks the provisioning in real time.
+This creates an NSG with a single rule allowing inbound HTTPS traffic from the internet. Azure's implicit default rules (VNet-to-VNet allow, load-balancer probes allow, deny all other inbound, allow all outbound) remain in effect underneath. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -103,16 +103,16 @@ These are the most important decisions when configuring an NSG. Explore the full
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 | **AzureApplicationSecurityGroup** | rule `sourceApplicationSecurityGroupIds` / `destinationApplicationSecurityGroupIds` | `status.outputs.application_security_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -132,6 +132,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the NSG is created
-- [**Azure Application Security Group**](/cloud-catalog/azure-application-security-group) -- the workload-role addressing rules target instead of pinning CIDRs
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- declares which NSG guards it via `networkSecurityGroupId`
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the NSG is created
+- [**Azure Application Security Group**](/infra-catalog/azure-application-security-group) -- the workload-role addressing rules target instead of pinning CIDRs
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- declares which NSG guards it via `networkSecurityGroupId`

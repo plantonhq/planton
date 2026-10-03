@@ -10,16 +10,16 @@
 # bills at zero traffic; hours above it follow load and are excluded).
 # A collection with neither field set emits no lines and totals an
 # honest zero: it shares the database's budget (billed on the
-# AzureCosmosdbMongoDatabase component) or rides a serverless account's
+# AzureCosmosdbMongoDatabase kind) or rides a serverless account's
 # per-request meter. Quantities convert RU/s to the book's 100-RU/s
 # pricing unit (x 0.01 fixed; x 0.001 autoscale, folding in the 10%
 # floor). Single-region assumption stated in notes. The estimate
 # generator replays the catalog presets through these rules to emit
 # ../estimates/azurecosmosdbmongocollection.yaml; a server-side
 # estimator evaluates the same rules against live manifests.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: azurecosmosdbmongocollection
 spec:
@@ -60,7 +60,7 @@ spec:
           op: is_unset
         - field_path: autoscale_max_throughput
           op: is_unset
-      text: with neither throughput field set the collection draws on the database's shared budget (committed spend lives on the AzureCosmosdbMongoDatabase component) or, on a serverless account, the account bills consumed request units per million -- this collection then adds only storage
+      text: with neither throughput field set the collection draws on the database's shared budget (committed spend lives on the AzureCosmosdbMongoDatabase kind) or, on a serverless account, the account bills consumed request units per million -- this collection then adds only storage
     - applies_when:
         - field_path: analytical_storage_ttl
           op: is_set

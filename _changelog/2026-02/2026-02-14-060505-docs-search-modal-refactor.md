@@ -10,15 +10,15 @@ Refactored the docs site search from an inline header input with a corner-anchor
 
 ## Problem Statement / Motivation
 
-The previous search implementation was a 410-line monolith component (`SearchBar.tsx`) that combined an MUI `TextField` in the header with a `Popper` dropdown for results. This had several UX limitations:
+The previous search implementation was a 410-line monolith kind (`SearchBar.tsx`) that combined an MUI `TextField` in the header with a `Popper` dropdown for results. This had several UX limitations:
 
 ### Pain Points
 
 - The search input was `w-64` (256px) in the header, which squeezed the `⌘K` badge against the placeholder text
 - Results appeared in a narrow dropdown anchored to the top-right corner, capped at 576px wide
 - The dropdown lacked keyboard navigation through results (only focus/blur)
-- The `Popper` component required manual blur-delay hacks (`setTimeout` 200ms) to allow clicking results before the dropdown closed
-- Single-component architecture mixed presentation (trigger), logic (Pagefind integration), and state management (focus, anchor, results) in one file
+- The `Popper` kind required manual blur-delay hacks (`setTimeout` 200ms) to allow clicking results before the dropdown closed
+- Single-kind architecture mixed presentation (trigger), logic (Pagefind integration), and state management (focus, anchor, results) in one file
 
 ## Solution / What's New
 
@@ -28,7 +28,7 @@ Adopted the trigger-button-plus-modal pattern used by Tailwind CSS, Vercel, Next
 
 ```mermaid
 flowchart TB
-    subgraph before [Before: Single Component]
+    subgraph before [Before: Single Kind]
         SB["SearchBar.tsx\n410 lines\nTextField + Popper + Pagefind"]
     end
     subgraph after [After: Three Components]
@@ -83,7 +83,7 @@ flowchart TB
 ## Benefits
 
 - **Better UX**: Wide modal gives results room to breathe; keyboard navigation enables hands-on-keyboard workflow
-- **Cleaner architecture**: Three focused components instead of one monolith; each file has a single responsibility
+- **Cleaner architecture**: Three focused kinds instead of one monolith; each file has a single responsibility
 - **No blur-delay hacks**: MUI Dialog handles focus trapping and backdrop click natively — no more `setTimeout` 200ms workarounds
 - **Accessibility**: Dialog provides `role="dialog"`, focus trapping, scroll lock, and Escape-to-close out of the box
 - **Consistent with industry**: Matches the pattern users already know from Tailwind, Vercel, Next.js, Stripe, and Algolia DocSearch
@@ -91,7 +91,7 @@ flowchart TB
 ## Impact
 
 - **Users**: Search is now a first-class modal experience — wider, keyboard-navigable, visually prominent
-- **Developers**: Three small, focused files are easier to maintain than one 410-line component
+- **Developers**: Three small, focused files are easier to maintain than one 410-line kind
 - **No breaking changes**: The public API (`<SearchBar />` import) is preserved; no other files needed modification
 
 ## Related Work

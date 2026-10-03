@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azureeventgridnamespace
 spec:
@@ -7,8 +7,8 @@ spec:
   values:
     - name: namespace_id
       derivations:
-        - from_stack_output: namespace_id
+        - from_output: namespace_id
       where_to_find: >-
         `az eventgrid namespace show --name <namespace-name>
         --resource-group <rg> --query id`, or the component's own
-        namespace_id stack output.
+        namespace_id output.

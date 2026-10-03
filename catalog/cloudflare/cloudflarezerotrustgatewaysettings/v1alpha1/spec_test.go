@@ -28,7 +28,7 @@ func validSettings(spec *CloudflareZeroTrustGatewaySettingsSpec) *CloudflareZero
 	return &CloudflareZeroTrustGatewaySettings{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZeroTrustGatewaySettings",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-gateway-settings",
 		},
 		Spec: spec,

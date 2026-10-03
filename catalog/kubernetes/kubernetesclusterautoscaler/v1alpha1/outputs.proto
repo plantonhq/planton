@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesclusterautoscaler.v1alpha1;
 
-// KubernetesClusterAutoscalerStackOutputs captures observable outputs after
+// KubernetesClusterAutoscalerOutputs captures observable outputs after
 // the Cluster Autoscaler is installed on the target cluster.
-message KubernetesClusterAutoscalerStackOutputs {
+message KubernetesClusterAutoscalerOutputs {
   // Namespace the autoscaler was installed into (the resolved
   // spec.namespace).
   string namespace = 1;

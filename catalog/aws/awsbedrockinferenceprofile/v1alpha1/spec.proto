@@ -20,7 +20,7 @@ import "buf/validate/validate.proto";
 // must be updated.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 message AwsBedrockInferenceProfileSpec {
   // The AWS region where the inference profile is created.
   // Example: "us-west-2", "us-east-1"

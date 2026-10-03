@@ -4,7 +4,7 @@ Deploys a model onto an Azure AI services account -- which actual model applicat
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Model deployment** -- an ARM child of the account (`.../accounts/{account}/deployments/{name}`): the model (format/name/version), the SKU (throughput class + capacity), the version-upgrade policy, and the responsible-AI policy selection
 
@@ -56,7 +56,7 @@ spec:
 planton apply -f azure-cognitive-deployment.yaml
 ```
 
-This creates a pay-per-token GlobalStandard deployment of a mini-class chat model, rate-limited at 50K tokens per minute, callable as `chat` on the referenced account's endpoint. A Stack Job tracks the provisioning in real time.
+This creates a pay-per-token GlobalStandard deployment of a mini-class chat model, rate-limited at 50K tokens per minute, callable as `chat` on the referenced account's endpoint. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,15 +85,15 @@ These are the most important decisions when configuring the deployment. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureCognitiveAccount** | `cognitiveAccountId` | `status.outputs.cognitive_account_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -111,5 +111,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Cognitive Account**](/cloud-catalog/azure-cognitive-account) -- the parent account (endpoint, keys, perimeter)
-- [**Azure Cognitive Account Project**](/cloud-catalog/azure-cognitive-account-project) -- AI Foundry workspaces on the same account
+- [**Azure Cognitive Account**](/infra-catalog/azure-cognitive-account) -- the parent account (endpoint, keys, perimeter)
+- [**Azure Cognitive Account Project**](/infra-catalog/azure-cognitive-account-project) -- AI Foundry workspaces on the same account

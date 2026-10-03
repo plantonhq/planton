@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for a Cloud KMS Autokey key ha
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `keyHandle` |
-| `module/locals.go` | Stack input holder |
+| `module/locals.go` | IaC input holder |
 | `module/key_handle.go` | Project resolution, API enablement, the handle, the outputs |
 | `module/outputs.go` | Output key constants (`name`, `kms_key`) |
 

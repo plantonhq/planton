@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -29,7 +29,7 @@ func minimalSpec() *AzureStorageEncryptionScope {
 	return &AzureStorageEncryptionScope{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureStorageEncryptionScope",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-scope",
 		},
 		Spec: &AzureStorageEncryptionScopeSpec{
@@ -61,7 +61,7 @@ var _ = ginkgo.Describe("AzureStorageEncryptionScopeSpec Validation Tests", func
 			input.Spec.KeyVaultKeyId = &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 					ValueFrom: &foreignkeyv1.ValueFromRef{
-						Kind:      cloudresourcekind.CloudResourceKind_AzureKeyVaultKey,
+						Kind:      catalogkind.CatalogKind_AzureKeyVaultKey,
 						Name:      "tenant42-key",
 						FieldPath: "status.outputs.versionless_id",
 					},
@@ -89,7 +89,7 @@ var _ = ginkgo.Describe("AzureStorageEncryptionScopeSpec Validation Tests", func
 			input.Spec.StorageAccountId = &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 					ValueFrom: &foreignkeyv1.ValueFromRef{
-						Kind:      cloudresourcekind.CloudResourceKind_AzureStorageAccount,
+						Kind:      catalogkind.CatalogKind_AzureStorageAccount,
 						Name:      "app-storage",
 						FieldPath: "status.outputs.storage_account_id",
 					},

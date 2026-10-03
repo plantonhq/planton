@@ -7,7 +7,7 @@ import (
 	kuberneteskafkauserv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kuberneteskafkauser/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes"
 	"github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/apiextensions"
 	kubernetesmeta "github.com/pulumi/pulumi-kubernetes/sdk/v4/go/kubernetes/meta/v1"
@@ -33,12 +33,12 @@ import (
 // The spec body is the exact twin of the Terraform module's
 // local.user_manifest. No await machinery: reconciliation belongs to the
 // user operator, not to applying the resource.
-func Resources(ctx *pulumi.Context, stackInput *kuberneteskafkauserv1alpha1.KubernetesKafkaUserStackInput) error {
-	target := stackInput.Target
+func Resources(ctx *pulumi.Context, iacInput *kuberneteskafkauserv1alpha1.KubernetesKafkaUserIacInput) error {
+	target := iacInput.Target
 	spec := target.Spec
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
@@ -46,7 +46,7 @@ func Resources(ctx *pulumi.Context, stackInput *kuberneteskafkauserv1alpha1.Kube
 	labels := map[string]string{
 		kuberneteslabelkeys.Resource:     strconv.FormatBool(true),
 		kuberneteslabelkeys.ResourceName: target.Metadata.Name,
-		kuberneteslabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_KubernetesKafkaUser.String(),
+		kuberneteslabelkeys.ResourceKind: catalogkind.CatalogKind_KubernetesKafkaUser.String(),
 	}
 	if target.Metadata.Id != "" {
 		labels[kuberneteslabelkeys.ResourceId] = target.Metadata.Id

@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpserviceaccount
+    e2e-catalog-kind: gcpserviceaccount
   annotations:
     planton.dev/e2e: "true"
   tags:

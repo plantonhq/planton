@@ -6,17 +6,17 @@
 
 ## Summary
 
-Replaced the hardcoded HTML provider grid on the catalog index page with a data-driven React component that derives provider names, component counts, and icons from the docs structure at build time. Introduced a shared `ProviderIcon` component with letter-badge fallback used by both the catalog grid and the sidebar, eliminating broken icons and stale data.
+Replaced the hardcoded HTML provider grid on the catalog index page with a data-driven React component that derives provider names, kind counts, and icons from the docs structure at build time. Introduced a shared `ProviderIcon` kind with letter-badge fallback used by both the catalog grid and the sidebar, eliminating broken icons and stale data.
 
 ## Problem Statement / Motivation
 
-The catalog index page (`/docs/catalog`) contained a hardcoded HTML grid with manually maintained provider names, icon paths, and component counts embedded directly in the markdown file.
+The catalog index page (`/docs/catalog`) contained a hardcoded HTML grid with manually maintained provider names, icon paths, and kind counts embedded directly in the markdown file.
 
 ### Pain Points
 
 - **Broken icons**: Auth0, OpenFGA, and Scaleway referenced `/images/providers/default.svg` which does not exist, causing broken image placeholders visible to users
 - **Wrong icon paths**: Auth0 and Scaleway have valid SVG files on disk (`auth0.svg`, `scaleway.svg`), but the markdown pointed to a non-existent `default.svg`
-- **Stale component counts**: Any time a new component was added to a provider, the markdown count had to be manually updated — a silent drift risk
+- **Stale kind counts**: Any time a new kind was added to a provider, the markdown count had to be manually updated — a silent drift risk
 - **Duplicated icon logic**: The sidebar maintained a separate hardcoded `providerIconMap` (11 entries) that was missing 3 providers (OpenStack, OpenFGA, Scaleway), and had no `onError` fallback for provider-level icons
 - **No fallback mechanism**: The `MDXRenderer`'s `img` handler was an inline arrow function with zero error handling — broken images rendered as browser-default broken image placeholders
 
@@ -36,13 +36,13 @@ openfga      -> openfga.svg        (convention, fallback to letter badge)
 
 New providers with conventionally-named SVGs need zero code changes.
 
-### Shared ProviderIcon Component
+### Shared ProviderIcon Kind
 
-A single React component used by both the sidebar and catalog grid. Attempts to load the SVG; on error, renders a styled letter badge (first letter of the provider name) matching the existing component-icon fallback style.
+A single React component used by both the sidebar and catalog grid. Attempts to load the SVG; on error, renders a styled letter badge (first letter of the provider name) matching the existing kind-icon fallback style.
 
 ### Data-Driven Catalog Grid
 
-The catalog grid is now a React component that receives provider metadata as props from the server component at build time. Provider names, component counts, and links are derived from the docs structure tree — never stale.
+The catalog grid is now a React component that receives provider metadata as props from the server component at build time. Provider names, kind counts, and links are derived from the docs structure tree — never stale.
 
 ```mermaid
 flowchart TD
@@ -77,13 +77,13 @@ flowchart TD
 
 - **`site/src/app/docs/components/ProviderIcon.tsx`** — Client component with `useState` for error tracking. Uses `next/image` with `onError` handler. On failure, renders a `<span>` letter badge sized to match the requested icon size.
 
-- **`site/src/app/docs/components/CatalogProviderGrid.tsx`** — Client component receiving `CatalogProvider[]` as props. Renders a 2-column responsive grid of provider cards with `ProviderIcon`, display name, and component count. Preserves the existing visual design.
+- **`site/src/app/docs/components/CatalogProviderGrid.tsx`** — Client component receiving `CatalogProvider[]` as props. Renders a 2-column responsive grid of provider cards with `ProviderIcon`, display name, and kind count. Preserves the existing visual design.
 
 ### Files Modified
 
 - **`site/src/app/docs/[[...slug]]/page.tsx`** — Added `extractCatalogProviders()` function that walks the docs structure tree to find catalog directory children and count their file entries. Detects the catalog index route (`path === 'catalog'`) and passes provider data to `MDXRenderer`.
 
-- **`site/src/app/docs/components/MDXRenderer.tsx`** — Added `catalogProviders` optional prop. Renders `CatalogProviderGrid` between the markdown content and the NextArticle navigation. Extracted the inline `img` arrow function into a proper `MarkdownImage` named component with `onError` handling — detects provider icon images and shows letter-badge fallback on failure.
+- **`site/src/app/docs/components/MDXRenderer.tsx`** — Added `catalogProviders` optional prop. Renders `CatalogProviderGrid` between the markdown content and the NextArticle navigation. Extracted the inline `img` arrow function into a proper `MarkdownImage` named kind with `onError` handling — detects provider icon images and shows letter-badge fallback on failure.
 
 - **`site/public/docs/catalog/index.md`** — Stripped the entire 100-line hardcoded HTML grid. File now contains only frontmatter and the markdown header text. The grid is rendered by React.
 
@@ -92,10 +92,10 @@ flowchart TD
 ## Benefits
 
 - **Zero broken icons** — every provider gets either its SVG or a professional letter badge
-- **Zero stale data** — component counts are derived from the docs structure at build time
+- **Zero stale data** — kind counts are derived from the docs structure at build time
 - **Single source of truth** — `providerIcons.ts` is the one place that maps provider names to icon paths
 - **Zero-code-change new providers** — add an SVG named `{provider}.svg`, add catalog pages, rebuild; grid and sidebar pick it up automatically
-- **Reduced code** — removed ~130 lines of hardcoded HTML and duplicated icon maps, added ~120 lines of clean, reusable components
+- **Reduced code** — removed ~130 lines of hardcoded HTML and duplicated icon maps, added ~120 lines of clean, reusable kinds
 - **Better error resilience** — markdown images throughout the site now have `onError` handling
 
 ## Impact

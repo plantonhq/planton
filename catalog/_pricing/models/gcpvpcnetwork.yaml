@@ -1,11 +1,11 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. Presets with no quantity lines have no committed always-on
-# spend and estimate to zero. Schema: finops/componentcostestimatemodel/v1.
+# spend and estimate to zero. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: gcpvpcnetwork
 spec:
@@ -16,7 +16,7 @@ spec:
       hours_per_month: 730
       exclusions:
         - the VPC network, its routing mode, and its firewall enforcement order bill nothing at any scale
-        - the network's real spend lives in separate components deployed into it -- Cloud NAT, static addresses, load balancers, and subnetworks' flow logs
+        - the network's real spend lives in separate kinds deployed into it -- Cloud NAT, static addresses, load balancers, and subnetworks' flow logs
       notes: A VPC network is free Google Cloud infrastructure -- the estimate is zero by the provider's pricing, not by omission.
     - preset: 02-custom-mode-global
       region_assumption: us-central1
@@ -24,5 +24,5 @@ spec:
       hours_per_month: 730
       exclusions:
         - the VPC network bills nothing at any scale; GLOBAL routing changes where Cloud Routers advertise routes, and any inter-region traffic that results bills as the workloads' data transfer, not here
-        - the network's real spend lives in separate components deployed into it
+        - the network's real spend lives in separate kinds deployed into it
       notes: A VPC network is free Google Cloud infrastructure -- the estimate is zero by the provider's pricing, not by omission.

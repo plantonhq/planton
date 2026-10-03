@@ -1,10 +1,10 @@
 # Azure Cognitive Account
 
-Deploys an Azure AI services account -- the container Azure AI capabilities are provisioned and billed through: Azure OpenAI model deployments, the multi-service AI Services account behind AI Foundry, and the single-service accounts (Speech, Vision, Language, Content Safety, ...). The account owns the endpoint, the access keys, the network perimeter, and the responsible-AI policy; model deployments and AI Foundry projects are separate Cloud Resources created onto it. Deletion is a soft delete: the ghost keeps holding the account name until purged.
+Deploys an Azure AI services account -- the container Azure AI capabilities are provisioned and billed through: Azure OpenAI model deployments, the multi-service AI Services account behind AI Foundry, and the single-service accounts (Speech, Vision, Language, Content Safety, ...). The account owns the endpoint, the access keys, the network perimeter, and the responsible-AI policy; model deployments and AI Foundry projects are separate Infra Components created onto it. Deletion is a soft delete: the ghost keeps holding the account name until purged.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **AI services account** -- the endpoint, keys, kind (OpenAI / AIServices / single-service), SKU, identity, network perimeter, and encryption settings
 - **Responsible-AI blocklists** (optional) -- one ARM child per `raiBlocklists` entry, keyed by name (the `rai_blocklist_ids` output republishes each ARM ID)
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -56,7 +56,7 @@ spec:
 planton apply -f azure-cognitive-account.yaml
 ```
 
-This creates an S0 Azure OpenAI account with a custom subdomain, ready for model deployments -- the account object itself carries no idle cost for OpenAI (billing follows deployment usage). A Stack Job tracks the provisioning in real time.
+This creates an S0 Azure OpenAI account with a custom subdomain, ready for model deployments -- the account object itself carries no idle cost for OpenAI (billing follows deployment usage). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,7 +87,7 @@ These are the most important decisions when configuring the account. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -97,9 +97,9 @@ These are the most important decisions when configuring the account. Explore the
 | **AzureStorageAccount** (optional) | `storage[].storageAccountId` | `status.outputs.storage_account_id` |
 | **AzureUserAssignedIdentity** (optional) | `identity.identityIds` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -124,7 +124,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Cognitive Deployment**](/cloud-catalog/azure-cognitive-deployment) -- the model deployments applications call
-- [**Azure Cognitive Account Project**](/cloud-catalog/azure-cognitive-account-project) -- AI Foundry team workspaces on the account
-- [**Azure Key Vault Key**](/cloud-catalog/azure-key-vault-key) -- customer-managed encryption
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- network rules and agent injection
+- [**Azure Cognitive Deployment**](/infra-catalog/azure-cognitive-deployment) -- the model deployments applications call
+- [**Azure Cognitive Account Project**](/infra-catalog/azure-cognitive-account-project) -- AI Foundry team workspaces on the account
+- [**Azure Key Vault Key**](/infra-catalog/azure-key-vault-key) -- customer-managed encryption
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- network rules and agent injection

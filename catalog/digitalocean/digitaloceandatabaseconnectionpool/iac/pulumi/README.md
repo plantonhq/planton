@@ -4,11 +4,11 @@ Provisions a PgBouncer connection pool on a DigitalOcean managed PostgreSQL clus
 
 ## Layout
 
-- `main.go` -- entrypoint (`package main`), loads the stack input and calls the module
+- `main.go` -- entrypoint (`package main`), loads the IaC input and calls the module
 - `module/main.go` -- orchestration: locals, provider, resource
 - `module/connection_pool.go` -- the `DatabaseConnectionPool` resource and output exports
 - `module/locals.go` -- target handle (the resource has no tag surface, so no label set applies)
-- `module/outputs.go` -- output key constants (the `DigitalOceanDatabaseConnectionPoolStackOutputs` contract)
+- `module/outputs.go` -- output key constants (the `DigitalOceanDatabaseConnectionPoolOutputs` contract)
 
 ## Behavior notes
 

@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: gcpcloudrun
 spec:
@@ -44,7 +44,7 @@ spec:
       impact: Picks the price tier -- Tier 1 regions (us-central1, europe-west1, ...) bill the base rates; Tier 2 regions (asia-southeast1, australia-southeast1, ...) bill higher ones. Multi-region services multiply the serving footprint across every region listed.
     - field_path: vpc_access.connector
       sku_meter: Serverless VPC Access connector
-      impact: A connector's own instances bill on the GcpServerlessVpcConnector component around the clock whether or not this service sees traffic; direct VPC egress (vpc_access.network_interfaces) avoids that standing cost and bills only the VPC data transfer the service actually moves.
+      impact: A connector's own instances bill on the GcpServerlessVpcConnector kind around the clock whether or not this service sees traffic; direct VPC egress (vpc_access.network_interfaces) avoids that standing cost and bills only the VPC data transfer the service actually moves.
     - field_path: containers.env.secret_value
       sku_meter: Secret Manager active secret versions
       pricing_unit: versions per location per month

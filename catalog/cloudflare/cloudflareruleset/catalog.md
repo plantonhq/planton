@@ -1,10 +1,10 @@
 # Cloudflare Ruleset
 
-Deploys a Cloudflare Ruleset: an ordered collection of rules evaluated during one phase of Cloudflare's HTTP request pipeline — the unified engine behind WAF custom and managed rules, rate limiting, cache rules, origin rules, redirects, transforms, and configuration rules, so one component covers every phase. Each rule pairs a wirefilter match expression with an action (block, challenge, execute, redirect, rewrite, route, set cache settings, skip, and more) and that action's parameters. Rulesets live at zone scope (most common) or account scope — exactly one — and Cloudflare allows one custom ruleset per scope-and-phase pair.
+Deploys a Cloudflare Ruleset: an ordered collection of rules evaluated during one phase of Cloudflare's HTTP request pipeline — the unified engine behind WAF custom and managed rules, rate limiting, cache rules, origin rules, redirects, transforms, and configuration rules, so one kind covers every phase. Each rule pairs a wirefilter match expression with an action (block, challenge, execute, redirect, rewrite, route, set cache settings, skip, and more) and that action's parameters. Rulesets live at zone scope (most common) or account scope — exactly one — and Cloudflare allows one custom ruleset per scope-and-phase pair.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Ruleset** -- one `cloudflare_ruleset` at zone or account scope, bound to one processing phase (for example `http_request_firewall_custom` for WAF custom rules, `http_ratelimit` for rate limiting, `http_request_dynamic_redirect` for redirects) and carrying the entire ordered rule list — rate-limiting rules with their counting characteristics, WAF rules with optional exposed-credential checks and per-rule logging overrides
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that can edit the relevant zone or account rulesets. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that can edit the relevant zone or account rulesets. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -59,7 +59,7 @@ spec:
 planton apply -f ruleset.yaml
 ```
 
-This creates a zone-level WAF custom ruleset (a free-plan phase) with two ordered rules: a block on the admin panel for traffic outside the office range, then a managed challenge for user-agent-less requests. A Stack Job tracks the provisioning in real time.
+This creates a zone-level WAF custom ruleset (a free-plan phase) with two ordered rules: a block on the admin panel for traffic outside the office range, then a managed challenge for user-agent-less requests. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -96,16 +96,16 @@ These are the most important decisions when configuring a ruleset. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** | `zoneId` | `status.outputs.zone_id` |
 | **CloudflareList** | `rules[].actionParameters.fromList.name` | `status.outputs.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -132,7 +132,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) -- the zone scope for zone-level rulesets; wire `zoneId` via ValueFromRef.
-- [**Cloudflare List**](/cloud-catalog/cloudflare-list) -- backs Bulk Redirect rules via `fromList` and `$list` references in expressions.
-- [**Cloudflare List Item**](/cloud-catalog/cloudflare-list-item) -- the individual source-to-target entries inside a Bulk Redirect list.
-- [**Cloudflare Snippet Rules**](/cloud-catalog/cloudflare-snippet-rules) -- the other expression table on the zone: same Rules language, routing requests to snippets instead of taking ruleset actions.
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) -- the zone scope for zone-level rulesets; wire `zoneId` via ValueFromRef.
+- [**Cloudflare List**](/infra-catalog/cloudflare-list) -- backs Bulk Redirect rules via `fromList` and `$list` references in expressions.
+- [**Cloudflare List Item**](/infra-catalog/cloudflare-list-item) -- the individual source-to-target entries inside a Bulk Redirect list.
+- [**Cloudflare Snippet Rules**](/infra-catalog/cloudflare-snippet-rules) -- the other expression table on the zone: same Rules language, routing requests to snippets instead of taking ruleset actions.

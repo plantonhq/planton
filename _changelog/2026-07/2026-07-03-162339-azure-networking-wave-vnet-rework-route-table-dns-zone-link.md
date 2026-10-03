@@ -109,9 +109,9 @@ flowchart TD
 
 ## Implementation Details
 
-- **Rename executed end to end**: enum value (number 406 kept), component
+- **Rename executed end to end**: enum value (number 406 kept), kind
   directory, all four protos, both modules, docs, presets, and every
-  cross-reference in other components' docs and the six FK/chart seams. Final
+  cross-reference in other kinds' docs and the six FK/chart seams. Final
   `git grep -i azurevpc` sweep: zero tracked hits outside historical records.
 - **FK graph corrected**: `azuresubnet.vnet_id` and `azureprivatednszone` now
   reference `AzureVirtualNetwork`; `azureakscluster.vnet_subnet_id` and
@@ -176,7 +176,7 @@ flowchart TD
 - Builds on the Azure live E2E harness and the identity/RBAC wave (role
   assignment, role definition, federated identity credential, identity rework)
 - The `AzureSubnet` enrichment (route-table attach seam, delegation depth) and
-  `AzureVnetPeering` are the networking wave's next components
+  `AzureVnetPeering` are the networking wave's next kinds
 
 ---
 

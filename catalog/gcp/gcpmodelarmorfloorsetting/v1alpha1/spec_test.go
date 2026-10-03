@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpModelArmorFloorSettingSpec", func() {
 		return &GcpModelArmorFloorSetting{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpModelArmorFloorSetting",
-			Metadata:   &shared.CloudResourceMetadata{Name: "project-floor"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "project-floor"},
 			Spec: &GcpModelArmorFloorSettingSpec{
 				FilterConfig: &GcpModelArmorFloorSettingFilterConfig{
 					PiAndJailbreakFilterSettings: &GcpModelArmorFloorSettingPiAndJailbreakFilterSettings{FilterEnforcement: "ENABLED"},

@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesistio
 spec:
@@ -20,7 +20,7 @@ spec:
     - name: release_name
       tofu_resource_name: istiod
       derivations:
-        - from_stack_output: istiod_service_name
+        - from_output: istiod_service_name
       where_to_find: >-
         "istiod" for the default revision, "istiod-<revision>" for a named
         revision — `helm list -n <namespace>` (NAME column).
@@ -37,13 +37,13 @@ spec:
       where_to_find: Always "ztunnel" — installed in ambient mode only.
     - name: release_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `helm list -A` (NAMESPACE column); conventionally "istio-system".
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Only imported when create_namespace is true; the installation

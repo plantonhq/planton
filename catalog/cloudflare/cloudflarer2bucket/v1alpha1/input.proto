@@ -5,9 +5,9 @@ package dev.planton.cloudflare.cloudflarer2bucket.v1alpha1;
 import "catalog/cloudflare/cloudflarer2bucket/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-//cloudflare-r2-bucket stack-input
-message CloudflareR2BucketStackInput {
-  //target cloud-resource
+//cloudflare-r2-bucket iac-input
+message CloudflareR2BucketIacInput {
+  //target infra-component
   CloudflareR2Bucket target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

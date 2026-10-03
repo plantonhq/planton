@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kuberneteshttproute
 spec:
@@ -21,13 +21,13 @@ spec:
     - name: name
       derivations:
         - from_metadata_name: true
-        - from_stack_output: route_name
+        - from_output: route_name
       where_to_find: >-
         The HTTPRoute's metadata.name (equals the Planton resource name) —
         `kubectl get httproutes -A` (NAME column).
     - name: namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         The namespace the resource lives in — `kubectl get httproutes -A`

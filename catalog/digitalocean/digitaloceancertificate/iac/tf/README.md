@@ -40,4 +40,4 @@ module "certificate" {
 
 ## Outputs
 
-Exactly the kind's stack-output contract, identical to the Pulumi module: `certificate_id`, `expiry_rfc3339`.
+Exactly the kind's output contract, identical to the Pulumi module: `certificate_id`, `expiry_rfc3339`.

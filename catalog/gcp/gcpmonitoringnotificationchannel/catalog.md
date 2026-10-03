@@ -4,7 +4,7 @@ Creates a Cloud Monitoring notification channel — the delivery endpoint (email
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Notification Channel** -- a `monitoring.NotificationChannel` of the configured `type` with its type-specific configuration and credentials
 - **Monitoring API enablement** -- `monitoring.googleapis.com` enabled in the target project (never disabled on destroy)
@@ -50,7 +50,7 @@ spec:
 planton apply -f channel.yaml
 ```
 
-This creates an email channel that alert policies can reference. Email channels require verification before they deliver — check the `verification_status` output. A Stack Job tracks the provisioning in real time.
+This creates an email channel that alert policies can reference. Email channels require verification before they deliver — check the `verification_status` output. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -84,15 +84,15 @@ These are the most important decisions when configuring a notification channel. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -111,6 +111,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Monitoring Alert Policy**](/cloud-catalog/gcp-monitoring-alert-policy) -- the rule that notifies this channel when incidents open
-- [**GCP Monitoring Uptime Check**](/cloud-catalog/gcp-monitoring-uptime-check) -- the probe whose failures typically drive those policies
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the channel is created
+- [**GCP Monitoring Alert Policy**](/infra-catalog/gcp-monitoring-alert-policy) -- the rule that notifies this channel when incidents open
+- [**GCP Monitoring Uptime Check**](/infra-catalog/gcp-monitoring-uptime-check) -- the probe whose failures typically drive those policies
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the channel is created

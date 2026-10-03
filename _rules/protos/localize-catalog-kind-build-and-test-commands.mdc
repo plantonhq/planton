@@ -1,0 +1,123 @@
+---
+description: When building, testing, or validating Planton kinds (resource kinds), always run commands localized to the kind directory -- never run project-wide builds like `make build` or `make protos`. This prevents wasting time and system resources on rebuilding the entire monorepo when only one kind changed.
+globs:
+alwaysApply: false
+---
+
+# Rule: Localize Build and Test Commands to the Kind
+
+## When This Rule Applies
+
+Whenever you create a new Planton kind (resource kind) or make changes to an existing one, all build, test, and validation commands MUST be scoped to that kind's directory. This applies to:
+
+- Implementing a new resource kind (e.g., DigitalOceanVpc, DigitalOceanDroplet)
+- Modifying an existing resource kind's proto schemas, Pulumi module, or Terraform module
+- Fixing bugs in any kind
+
+## What NOT to Do
+
+**NEVER run project-wide commands to verify a single kind change:**
+
+- `make build` -- rebuilds the entire monorepo (Go cross-compile for 3 OS targets, Bazel full build, frontend build). Takes 1-2 minutes and consumes significant CPU.
+- `make protos` followed by `make build` -- regenerates ALL proto stubs and rebuilds everything.
+
+These commands are for CI/CD or release preparation, not for iterative development on a single kind.
+
+## What TO Do Instead
+
+### 1. Proto Compilation (after creating/modifying .proto files)
+
+Run `make protos` ONCE to generate stubs and Gazelle BUILD.bazel files. This is unavoidable because `buf generate` processes all protos together. But do NOT follow it with `make build`.
+
+```bash
+# From planton repo root -- run once after proto changes
+make protos
+```
+
+### 2. Go Build (verify Pulumi module compiles)
+
+Run `go build` scoped to the kind's Pulumi module directory:
+
+```bash
+# Verify Pulumi entrypoint compiles
+go build ./catalog/digitalocean/digitaloceanvpc/iac/pulumi/...
+
+# Or from inside the directory
+cd catalog/digitalocean/digitaloceanvpc/iac/pulumi
+go build ./...
+```
+
+### 3. Go Test (verify kind tests pass)
+
+Run `go test` scoped to the kind (spec tests live in the version dir, module tests under `iac/`):
+
+```bash
+go test ./catalog/digitalocean/digitaloceanvpc/...
+```
+
+### 4. Go Vet (verify code quality)
+
+```bash
+go vet ./catalog/digitalocean/digitaloceanvpc/iac/pulumi/...
+```
+
+### 5. Terraform Validate (verify TF module is syntactically valid)
+
+Run `terraform validate` inside the kind's TF directory:
+
+```bash
+cd catalog/digitalocean/digitaloceanvpc/iac/tf
+terraform init -backend=false
+terraform validate
+```
+
+### 6. Kind Map Regeneration (after creating a new resource kind)
+
+When creating a new resource kind (not when modifying an existing one), regenerate the kind map so the new kind is registered:
+
+```bash
+# From planton repo root
+make generate-catalog-kind-map
+```
+
+Then verify the new kind compiles into the map:
+
+```bash
+go build ./pkg/catalogkindreflect/...
+```
+
+## Summary of Localized Verification Workflow
+
+For a **new** kind:
+
+```bash
+make protos                                                          # generate stubs + BUILD.bazel (once)
+make generate-catalog-kind-map                                # register new kind (once)
+go build ./catalog/digitalocean/<resource>/iac/pulumi/...     # verify Go compiles
+go vet ./catalog/digitalocean/<resource>/iac/pulumi/...       # verify code quality
+go test ./catalog/digitalocean/<resource>/...                 # run tests
+cd catalog/digitalocean/<resource>/iac/tf && terraform init -backend=false && terraform validate  # verify TF
+```
+
+For **modifying** an existing kind (no proto changes):
+
+```bash
+go build ./catalog/digitalocean/<resource>/iac/pulumi/...     # verify Go compiles
+go vet ./catalog/digitalocean/<resource>/iac/pulumi/...       # verify code quality
+go test ./catalog/digitalocean/<resource>/...                 # run tests
+cd catalog/digitalocean/<resource>/iac/tf && terraform init -backend=false && terraform validate  # verify TF
+```
+
+For **modifying** an existing kind (with proto changes):
+
+```bash
+make protos                                                          # regenerate stubs (once)
+go build ./catalog/digitalocean/<resource>/iac/pulumi/...     # verify Go compiles
+go vet ./catalog/digitalocean/<resource>/iac/pulumi/...       # verify code quality
+go test ./catalog/digitalocean/<resource>/...                 # run tests
+cd catalog/digitalocean/<resource>/iac/tf && terraform init -backend=false && terraform validate  # verify TF
+```
+
+## Why This Matters
+
+The Planton monorepo contains 700+ resource kinds across more than a dozen cloud providers, a Go backend, and a Next.js frontend. Running `make build` compiles everything -- cross-compiles Go for 3 OS targets, runs Bazel with 2,800+ actions, and builds the frontend. This takes over a minute even with cache hits. When you're iterating on a single kind, there is zero reason to pay that cost.

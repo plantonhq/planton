@@ -6,7 +6,7 @@
 
 ## Summary
 
-Created the Examples and Contributing documentation sections for the Planton docs site — 4 new pages across 2 entirely new sections. The Examples section provides a manifest gallery with 10 proto-verified manifests across 7 providers. The Contributing section covers development setup, build workflows, and a comprehensive guide for adding new deployment components.
+Created the Examples and Contributing documentation sections for the Planton docs site — 4 new pages across 2 entirely new sections. The Examples section provides a manifest gallery with 10 proto-verified manifests across 7 providers. The Contributing section covers development setup, build workflows, and a comprehensive guide for adding new catalog kinds.
 
 ## Problem Statement / Motivation
 
@@ -15,9 +15,9 @@ The Planton docs site had comprehensive Concepts, CLI, Guides, and Tutorials sec
 ### Pain Points
 
 - No curated, copy-paste-ready manifest examples for users who want to start deploying quickly without following a full tutorial
-- No contributor documentation explaining how to set up a development environment, build from source, or add new deployment components
-- The `planton/examples/` directory only contained 3 YAML files (all Postgres variants), providing minimal coverage of the 198 components across 14 providers
-- The component creation workflow (19-step forge process) was documented only as internal Cursor AI rules, not as public contributor-facing documentation
+- No contributor documentation explaining how to set up a development environment, build from source, or add new catalog kinds
+- The `planton/examples/` directory only contained 3 YAML files (all Postgres variants), providing minimal coverage of the 198 kinds across 14 providers
+- The kind creation workflow (19-step forge process) was documented only as internal Cursor AI rules, not as public contributor-facing documentation
 
 ## Solution / What's New
 
@@ -25,9 +25,9 @@ The Planton docs site had comprehensive Concepts, CLI, Guides, and Tutorials sec
 
 **`examples/index.md`** — Section navigation hub explaining how to use examples (copy, customize, deploy) with links to the manifest gallery, tutorials, and catalog.
 
-**`examples/manifest-gallery.md`** — 10 curated manifests organized by provider, each verified field-by-field against the component's `spec.proto`:
+**`examples/manifest-gallery.md`** — 10 curated manifests organized by provider, each verified field-by-field against the kind's `spec.proto`:
 
-| Provider | Components | Resource Types |
+| Provider | Kinds | Resource Types |
 |----------|-----------|---------------|
 | AWS | AwsS3Bucket, AwsRdsInstance, AwsVpc | Storage, Database, Networking |
 | GCP | GcpCloudSql, GcpGkeCluster | Database, Kubernetes |
@@ -40,11 +40,11 @@ The gallery also documents the common metadata pattern for both Pulumi and OpenT
 
 ### Contributing Section (2 pages)
 
-**`contributing/index.md`** — Development environment setup covering prerequisites (Go 1.25+, Bazel, Buf, Make), building from source (`make build`, `make protos`, `make build-cli`), running tests (full suite and component-scoped), code style, naming conventions, and the PR submission workflow. Sourced from `CONTRIBUTING.md`, `Makefile`, `go.mod`, and `apis/_rules/`.
+**`contributing/index.md`** — Development environment setup covering prerequisites (Go 1.25+, Bazel, Buf, Make), building from source (`make build`, `make protos`, `make build-cli`), running tests (full suite and kind-scoped), code style, naming conventions, and the PR submission workflow. Sourced from `CONTRIBUTING.md`, `Makefile`, `go.mod`, and `apis/_rules/`.
 
-**`contributing/adding-components.md`** — Comprehensive guide for creating new deployment components, covering:
+**`contributing/adding-kinds.md`** — Comprehensive guide for creating new catalog kinds, covering:
 
-- Anatomy of a component (4 proto files + dual IaC modules + docs)
+- Anatomy of a kind (4 proto files + dual IaC modules + docs)
 - File structure with directory tree using AwsS3Bucket as reference
 - Naming conventions (folder, kind, apiVersion, proto package)
 - 6-phase creation workflow (Define API, Register Kind, Pulumi Module, Terraform Module, Documentation, Build & Test)
@@ -55,14 +55,14 @@ The gallery also documents the common metadata pattern for both Pulumi and OpenT
 
 ### Manifest Gallery Verification
 
-Each of the 10 gallery manifests was constructed by reading the component's `spec.proto` and translating proto field names to camelCase JSON serialization:
+Each of the 10 gallery manifests was constructed by reading the kind's `spec.proto` and translating proto field names to camelCase JSON serialization:
 
 - `aws_region` → `awsRegion`
 - `subnet_ids` → `subnetIds` (repeated `StringValueOrRef` with `value` wrapper)
 - `database_engine` → `databaseEngine` (enum value like `POSTGRESQL`)
 - `system_node_pool` → `systemNodePool` (nested message)
 
-Hack manifests from inside components were used as reference but not copied verbatim — several had issues (wrong kind names, snake_case fields, incomplete specs).
+Hack manifests from inside kinds were used as reference but not copied verbatim — several had issues (wrong kind names, snake_case fields, incomplete specs).
 
 ### Contributing Page Sources
 
@@ -74,14 +74,14 @@ The contributing documentation was synthesized from multiple source locations:
 - `apis/Makefile` — proto generation pipeline
 - `buf/lint/optional-linter/` — custom Buf linting plugin
 - `apis/_rules/` — development rules (localized builds, reserved words, default semantics)
-- `_rules/deployment-component/forge/` — 19-step component creation workflow (simplified to 6 phases for docs)
-- `architecture/deployment-component.md` — component anatomy and ideal state
-- AwsS3Bucket component structure — concrete reference example
+- `_rules/catalog-kind/forge/` — 19-step kind creation workflow (simplified to 6 phases for docs)
+- `architecture/catalog-kind.md` — kind anatomy and ideal state
+- AwsS3Bucket kind structure — concrete reference example
 
 ## Benefits
 
 - **Copy-paste utility**: Users can grab a working manifest and deploy immediately, then customize
-- **Contributor onboarding**: New contributors can set up a development environment and understand the component creation workflow without reverse-engineering the codebase
+- **Contributor onboarding**: New contributors can set up a development environment and understand the kind creation workflow without reverse-engineering the codebase
 - **Cross-provider coverage**: Gallery spans 7 providers showing the consistent KRM pattern across AWS, GCP, Azure, Kubernetes, Cloudflare, and Civo
 - **Source-grounded accuracy**: Every manifest verified against proto definitions, every build command verified against Makefile
 

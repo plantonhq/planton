@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarezerotrustdevicecustomprofile.v1alpha1;
 
-// CloudflareZeroTrustDeviceCustomProfileStackOutputs captures the
+// CloudflareZeroTrustDeviceCustomProfileOutputs captures the
 // observable outputs after creating the custom device profile.
-message CloudflareZeroTrustDeviceCustomProfileStackOutputs {
+message CloudflareZeroTrustDeviceCustomProfileOutputs {
   // The Cloudflare-assigned identifier of the profile (its policy ID).
   string policy_id = 1;
 

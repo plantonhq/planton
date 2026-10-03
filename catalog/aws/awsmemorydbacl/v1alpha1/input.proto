@@ -5,9 +5,9 @@ package dev.planton.aws.awsmemorydbacl.v1alpha1;
 import "catalog/aws/awsmemorydbacl/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-memorydb-acl stack-input
-message AwsMemorydbAclStackInput {
-  //target cloud-resource
+//aws-memorydb-acl iac-input
+message AwsMemorydbAclIacInput {
+  //target infra-component
   AwsMemorydbAcl target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

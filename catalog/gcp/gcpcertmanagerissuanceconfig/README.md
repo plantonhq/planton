@@ -73,7 +73,7 @@ spec:
 3. **Treat every field but labels as immutable** — changing the pool, key algorithm, lifetime, or window replaces the config; certificates already issued keep serving until their own renewal.
 4. **Set `deletionPolicy: PREVENT`** while certificates depend on the config; Google also refuses deletion while a certificate references it.
 
-## Related Components
+## Related Kinds
 
 - **GcpCertManagerCert** — names this config in `managed.issuance_config`
 - **GcpPrivateCaPool** — the pool certificates are issued from

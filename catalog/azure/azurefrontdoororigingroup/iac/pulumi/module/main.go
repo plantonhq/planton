@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurefrontdoororigingroupv1alpha1.AzureFrontDoorOriginGroupStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurefrontdoororigingroupv1alpha1.AzureFrontDoorOriginGroupIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -24,7 +24,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurefrontdoororigingroupv1alpha
 	// the block is always sent -- with the spec's values when present,
 	// otherwise Azure's own defaults (sample size 4, 3 successful samples
 	// required, 50 ms additional latency), matching what an unset spec
-	// block documents. Stack inputs never carry proto defaults, so each
+	// block documents. IaC inputs never carry proto defaults, so each
 	// field materializes its documented default here.
 	loadBalancingArgs := &cdn.FrontdoorOriginGroupLoadBalancingArgs{
 		SampleSize:                      pulumi.Int(4),
@@ -90,7 +90,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurefrontdoororigingroupv1alpha
 		return errors.Wrapf(err, "failed to create front door origin group %s", spec.OriginGroupName)
 	}
 
-	// Export stack outputs. origin_group_id is what AzureFrontDoorOrigin
+	// Export outputs. origin_group_id is what AzureFrontDoorOrigin
 	// (parent) and AzureFrontDoorRoute (destination) reference.
 	ctx.Export(OpOriginGroupId, createdOriginGroup.ID())
 	ctx.Export(OpOriginGroupName, createdOriginGroup.Name)

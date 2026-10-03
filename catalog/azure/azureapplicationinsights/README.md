@@ -7,7 +7,7 @@ Azure's Application Performance Management (APM) service. It tracks request
 rates, response times, failure rates, dependency calls, exceptions, and custom
 telemetry for any instrumented application.
 
-This component models workspace-based Application Insights only: telemetry is
+This kind models workspace-based Application Insights only: telemetry is
 stored in a referenced `AzureLogAnalyticsWorkspace`. Classic (non-workspace)
 mode was retired by Azure in February 2024, so the workspace binding is
 required here -- and once set on a resource it can be repointed but never

@@ -25,7 +25,7 @@ import "google/protobuf/struct.proto";
 // form) replaces the agreement.
 //
 // Credentials, region, and deployment workflow live outside this spec in
-// stack inputs.
+// IaC inputs.
 message AwsBedrockModelAccessSpec {
   // The AWS region whose model access this agreement grants (agreements
   // are regional; the use-case form is account-global).

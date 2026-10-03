@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpurlmap.v1alpha1;
 
 // Outputs produced after provisioning a GCP global URL map.
-message GcpUrlMapStackOutputs {
+message GcpUrlMapOutputs {
   // Self-link URI of the URL map. This is the value a target HTTP(S) proxy
   // references as its url_map — the composition handle that puts this routing
   // brain behind a load-balancer frontend.

@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for a Model Armor floor settin
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `floorSetting` |
-| `module/locals.go` | Stack input holder |
+| `module/locals.go` | IaC input holder |
 | `module/floor_setting.go` | Scope selection, API enablement for project floors, the filter configuration and service settings, the outputs |
 | `module/outputs.go` | Output key constants (`name`, `parent`) |
 

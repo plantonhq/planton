@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcptargethttpproxy.v1alpha1;
 
 // Outputs produced after provisioning a GCP target HTTP proxy.
-message GcpTargetHttpProxyStackOutputs {
+message GcpTargetHttpProxyOutputs {
   // Self-link URI of the target HTTP proxy. This is the value a
   // forwarding rule references as its target — the composition handle that
   // puts a VIP in front of this proxy.

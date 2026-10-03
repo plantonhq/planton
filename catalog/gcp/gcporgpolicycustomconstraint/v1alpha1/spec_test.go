@@ -27,7 +27,7 @@ var _ = ginkgo.Describe("GcpOrgPolicyCustomConstraintSpec", func() {
 		return &GcpOrgPolicyCustomConstraint{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpOrgPolicyCustomConstraint",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "deny-gke-auto-upgrade-off",
 			},
 			Spec: &GcpOrgPolicyCustomConstraintSpec{

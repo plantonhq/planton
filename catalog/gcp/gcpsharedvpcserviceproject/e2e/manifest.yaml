@@ -7,7 +7,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpsharedvpcserviceproject
+    e2e-catalog-kind: gcpsharedvpcserviceproject
   annotations:
     planton.dev/e2e: "true"
     # A second project under the same organization, arranged by the owner

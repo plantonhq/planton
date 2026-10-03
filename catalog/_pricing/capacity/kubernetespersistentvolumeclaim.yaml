@@ -7,9 +7,9 @@
 # VOLUMES-ONLY workload: a claim reserves no CPU or memory, so the workload
 # binding carries no resources_path -- only the volume bound to
 # storage_request, at a constant single instance (one claim, one volume).
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetespersistentvolumeclaim
 spec:

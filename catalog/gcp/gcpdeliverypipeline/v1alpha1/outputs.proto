@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpdeliverypipeline.v1alpha1;
 
-// GcpDeliveryPipelineStackOutputs carries the pipeline's identity: what
+// GcpDeliveryPipelineOutputs carries the pipeline's identity: what
 // releases are created against, and what a GcpDeployPolicy selector names.
-message GcpDeliveryPipelineStackOutputs {
+message GcpDeliveryPipelineOutputs {
   // Full resource name:
   // projects/{project}/locations/{location}/deliveryPipelines/{delivery_pipeline_id}.
   string name = 1;

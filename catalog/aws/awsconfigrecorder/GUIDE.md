@@ -1,4 +1,4 @@
-# AwsConfigRecorder — Component Guide
+# AwsConfigRecorder — Kind Guide
 
 Authored operational judgment for the Config recorder singleton: the
 design decisions behind the spec's shape, and what to know before

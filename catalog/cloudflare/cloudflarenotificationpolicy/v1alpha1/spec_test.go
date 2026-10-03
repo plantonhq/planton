@@ -27,7 +27,7 @@ func validPolicy(spec *CloudflareNotificationPolicySpec) *CloudflareNotification
 	return &CloudflareNotificationPolicy{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareNotificationPolicy",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-notification-policy",
 		},
 		Spec: spec,

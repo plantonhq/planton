@@ -41,7 +41,7 @@ spec:
 | `verified` | Verification timestamp, or empty if not yet verified |
 | `created` | Creation timestamp |
 
-## Related components
+## Related kinds
 
 - `CloudflareEmailRoutingRule` — references this address as a forwarding target.
 - `CloudflareEmailRoutingZone` — enables Email Routing and a catch-all that can

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azuretrafficmanagerprofile.v1alpha1;
 
-// **AzureTrafficManagerProfileStackOutputs** captures the outputs from
+// **AzureTrafficManagerProfileOutputs** captures the outputs from
 // provisioning a Traffic Manager profile.
-message AzureTrafficManagerProfileStackOutputs {
+message AzureTrafficManagerProfileOutputs {
   // The profile's ARM resource ID
   // (.../providers/Microsoft.Network/trafficManagerProfiles/{name}) --
   // what AzureTrafficManagerEndpoint references, and what alias DNS

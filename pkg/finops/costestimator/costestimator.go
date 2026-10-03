@@ -1,4 +1,4 @@
-// Package costestimator evaluates a component's cost derivation against
+// Package costestimator evaluates a kind's cost derivation against
 // one typed manifest. It is the execution engine of the derivation
 // standard: conditions select which rules apply to THIS configuration,
 // quantity factors multiply out the monthly consumption, and price
@@ -26,8 +26,8 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 
-	derivationv1 "github.com/plantonhq/planton/finops/componentcostderivation/v1"
-	estimatemodelv1 "github.com/plantonhq/planton/finops/componentcostestimatemodel/v1"
+	derivationv1 "github.com/plantonhq/planton/finops/catalogkindcostderivation/v1"
+	estimatemodelv1 "github.com/plantonhq/planton/finops/catalogkindcostestimatemodel/v1"
 	pricebookv1 "github.com/plantonhq/planton/finops/pricebook/v1"
 	"github.com/plantonhq/planton/pkg/finops/pricebook"
 	"github.com/plantonhq/planton/pkg/specpath"
@@ -47,11 +47,11 @@ type Refusal struct {
 // unknown slug -- the conformance gate catches these before CI ever runs
 // the engine, so errors here mean the gate was bypassed).
 //
-// entries is the component's provider price book keyed by slug (the
+// entries is the kind's provider price book keyed by slug (the
 // pricebook.Entries shape).
 func Evaluate(
 	manifest proto.Message,
-	spec *derivationv1.ComponentCostDerivationSpec,
+	spec *derivationv1.CatalogKindCostDerivationSpec,
 	entries map[string]*pricebookv1.PriceBookEntry,
 ) (*estimatemodelv1.PresetEstimateModel, *Refusal, error) {
 	specMsg, err := ManifestSpec(manifest)
@@ -110,7 +110,7 @@ func Evaluate(
 // instances collapse to one line whose quantity is the sum.
 func evaluateLines(
 	specMsg protoreflect.Message,
-	spec *derivationv1.ComponentCostDerivationSpec,
+	spec *derivationv1.CatalogKindCostDerivationSpec,
 	entries map[string]*pricebookv1.PriceBookEntry,
 	region string,
 ) ([]*estimatemodelv1.QuantityLine, *Refusal, error) {
@@ -259,7 +259,7 @@ func resolvePrice(
 		// fields already.
 		if entry.GetCurrency() != currency {
 			return "", &Refusal{Reason: fmt.Sprintf(
-				"the pinned price for %s is in %s but this component prices in %s -- a number across currencies would be a guess",
+				"the pinned price for %s is in %s but this kind prices in %s -- a number across currencies would be a guess",
 				rule.GetSkuMeter(), entry.GetCurrency(), currency)}, nil
 		}
 		if entry.GetRegion() != pricebook.GlobalRegion && entry.GetRegion() != region {
@@ -378,7 +378,7 @@ func bindingOrAssumption(path, value string, binding *derivationv1.AttributeBind
 // evaluateQuantity multiplies out a rule's factors.
 func evaluateQuantity(
 	specMsg protoreflect.Message,
-	spec *derivationv1.ComponentCostDerivationSpec,
+	spec *derivationv1.CatalogKindCostDerivationSpec,
 	rule *derivationv1.LineRule,
 ) (*big.Rat, error) {
 	factors := rule.GetQuantity()
@@ -399,7 +399,7 @@ func evaluateQuantity(
 // factorValue evaluates one quantity factor.
 func factorValue(
 	specMsg protoreflect.Message,
-	spec *derivationv1.ComponentCostDerivationSpec,
+	spec *derivationv1.CatalogKindCostDerivationSpec,
 	rule *derivationv1.LineRule,
 	factor *derivationv1.QuantityFactor,
 ) (*big.Rat, error) {

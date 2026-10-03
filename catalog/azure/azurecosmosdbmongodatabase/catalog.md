@@ -4,7 +4,7 @@ Deploys a MongoDB API database inside an Azure Cosmos DB account — the namespa
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cosmos DB Mongo Database** -- a named database inside the referenced Cosmos DB account (which must be a MONGO_DB-kind account with the ENABLE_MONGO capability)
 - **Shared Throughput** (optional) -- fixed RU/s or an autoscale ceiling that every collection in the database shares, when either is declared; omit both to let each collection bring its own dedicated throughput (or on serverless accounts, where provisioned throughput is rejected)
@@ -13,12 +13,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **A Cosmos DB account** speaking the MongoDB API (kind MONGO_DB with the ENABLE_MONGO capability). Reference an AzureCosmosdbAccount Cloud Resource via ValueFromRef, or provide the account's ARM ID directly.
+- **A Cosmos DB account** speaking the MongoDB API (kind MONGO_DB with the ENABLE_MONGO capability). Reference an AzureCosmosdbAccount Infra Component via ValueFromRef, or provide the account's ARM ID directly.
 
 ## Deploy
 
@@ -50,7 +50,7 @@ spec:
 planton apply -f cosmosdb-mongo-database.yaml
 ```
 
-This creates a database with no shared throughput — each collection brings its own. Add `throughput` (fixed RU/s) or `autoscaleMaxThroughput` (a ceiling) for the shared model. A Stack Job tracks the provisioning in real time.
+This creates a database with no shared throughput — each collection brings its own. Add `throughput` (fixed RU/s) or `autoscaleMaxThroughput` (a ceiling) for the shared model. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -66,15 +66,15 @@ These are the most important decisions when configuring a Mongo database. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | AzureCosmosdbAccount | `cosmosdbAccountId` | `status.outputs.cosmosdb_account_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -94,5 +94,5 @@ There are deliberately no endpoint or credential outputs here: connectivity and 
 
 ## Works With
 
-- [**Azure Cosmos DB Account**](/cloud-catalog/azure-cosmosdb-account) — the MONGO_DB account (with the ENABLE_MONGO capability) this database lives in, referenced via `cosmosdb_account_id`
-- [**Azure Cosmos DB Mongo Collection**](/cloud-catalog/azure-cosmosdb-mongo-collection) — the collections inside, referencing this database's `mongo_database_id` output
+- [**Azure Cosmos DB Account**](/infra-catalog/azure-cosmosdb-account) — the MONGO_DB account (with the ENABLE_MONGO capability) this database lives in, referenced via `cosmosdb_account_id`
+- [**Azure Cosmos DB Mongo Collection**](/infra-catalog/azure-cosmosdb-mongo-collection) — the collections inside, referencing this database's `mongo_database_id` output

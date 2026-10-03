@@ -18,7 +18,7 @@ func customText(spec *Auth0PromptCustomTextSpec) *Auth0PromptCustomText {
 	return &Auth0PromptCustomText{
 		ApiVersion: "auth0.planton.dev/v1alpha1",
 		Kind:       "Auth0PromptCustomText",
-		Metadata:   &shared.CloudResourceMetadata{Name: "login-en"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "login-en"},
 		Spec:       spec,
 	}
 }

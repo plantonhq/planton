@@ -8,7 +8,7 @@ Stores a secret in an Azure Key Vault -- a versioned data-plane object the vault
 
 - `keyvault.Secret` -- the secret
 
-## Stack Outputs
+## Outputs
 
 - `secret_id` -- the versioned data-plane ID (pins consumers to this version)
 - `versionless_id` -- the versionless data-plane ID (the reference consumers should use; value updates propagate automatically)

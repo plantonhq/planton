@@ -1,5 +1,5 @@
 // Package pulumigoogleprovider is the single, convergent place where every GCP pulumi module
-// builds its gcp.Provider from the stack input's GcpProviderConfig. Every GCP module already
+// builds its gcp.Provider from the IaC input's GcpProviderConfig. Every GCP module already
 // routes through Get, so extending the credential dispatch here extends it for all of them at
 // once. It mirrors the sibling per-cloud builders (e.g. pulumiazureprovider,
 // pulumiazurenativeprovider, pulumiawsprovider) so a coding agent can learn the GCP

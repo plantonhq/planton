@@ -14,7 +14,7 @@
 # in canonical e2e manifests. Static, no network.
 #
 # The Azure step holds both engines to the same identity tag keys AND values:
-# resource_kind is the kind's CloudResourceKind enum name lowercased, and
+# resource_kind is the kind's CatalogKind enum name lowercased, and
 # resource_id is written only when the resource has an id (no name fallback).
 #
 # See hack/guards/ensure_cross_engine_tag_keys.sh and
@@ -30,7 +30,7 @@ on:
       - 'catalog/**/e2e/manifest.yaml'
       - 'hack/guards/ensure_cross_engine_tag_keys.sh'
       - 'hack/guards/ensure_cross_engine_azure_tag_values.sh'
-      - 'shared/cloudresourcekind/cloud_resource_kind.proto'
+      - 'shared/catalogkind/catalog_kind.proto'
       - '.github/workflows/lint.cross-engine-tags.yaml'
   push:
     branches:
@@ -40,7 +40,7 @@ on:
       - 'catalog/**/e2e/manifest.yaml'
       - 'hack/guards/ensure_cross_engine_tag_keys.sh'
       - 'hack/guards/ensure_cross_engine_azure_tag_values.sh'
-      - 'shared/cloudresourcekind/cloud_resource_kind.proto'
+      - 'shared/catalogkind/catalog_kind.proto'
       - '.github/workflows/lint.cross-engine-tags.yaml'
   workflow_dispatch: {}
 

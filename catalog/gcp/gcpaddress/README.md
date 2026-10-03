@@ -80,7 +80,7 @@ This reserves a static external IPv4 address in `us-central1` that you can attac
 - **GCE_ENDPOINT / DNS_RESOLVER requires subnetwork** — the `subnetwork` field is required for these purposes.
 - **SHARED_LOADBALANCER_VIP requires INTERNAL** — this purpose is only valid with `addressType: INTERNAL`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -102,10 +102,10 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 ## Important Notes
 
 - **ForceNew**: All fields except labels are ForceNew. Any change destroys and recreates the address — a recreated EXTERNAL address gets a new IP.
-- **Regional vs global**: This component models `google_compute_address` (regional). For global-scope addresses (HTTP(S) LB frontends, global VPC peering ranges, PSC), use [GcpGlobalAddress](/docs/catalog/gcp/gcpglobaladdress).
+- **Regional vs global**: This kind models `google_compute_address` (regional). For global-scope addresses (HTTP(S) LB frontends, global VPC peering ranges, PSC), use [GcpGlobalAddress](/docs/catalog/gcp/gcpglobaladdress).
 - **PRIVATE_SERVICE_CONNECT is global-only**: use GcpGlobalAddress for PSC endpoints.
 
-## Related Components
+## Related Kinds
 
 - [GcpGlobalAddress](/docs/catalog/gcp/gcpglobaladdress) — global-scope static IPs and VPC peering ranges
 - [GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork) — provides the VPC network for INTERNAL addresses

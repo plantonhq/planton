@@ -10,29 +10,29 @@ import "testing"
 
 func TestBuildTerraformDownloadURL(t *testing.T) {
 	tests := []struct {
-		name      string
-		component string
-		release   string
-		want      string
+		name    string
+		kindDir string
+		release string
+		want    string
 	}{
 		{
-			name:      "canonical component",
-			component: "AwsEcsService",
-			release:   "v0.3.50",
-			want:      "https://downloads.planton.dev/releases/v0.3.50/modules/terraform/awsecsservice/module.zip",
+			name:    "canonical kind",
+			kindDir: "AwsEcsService",
+			release: "v0.3.50",
+			want:    "https://downloads.planton.dev/releases/v0.3.50/modules/terraform/awsecsservice/module.zip",
 		},
 		{
-			// One live module set per component: the key stays identical when
+			// One live module set per kind: the key stays identical when
 			// a kind graduates API versions -- pin that invariance.
-			name:      "key carries no API version segment",
-			component: "AwsS3Bucket",
-			release:   "v0.4.0",
-			want:      "https://downloads.planton.dev/releases/v0.4.0/modules/terraform/awss3bucket/module.zip",
+			name:    "key carries no API version segment",
+			kindDir: "AwsS3Bucket",
+			release: "v0.4.0",
+			want:    "https://downloads.planton.dev/releases/v0.4.0/modules/terraform/awss3bucket/module.zip",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := BuildTerraformDownloadURL(tt.component, tt.release); got != tt.want {
+			if got := BuildTerraformDownloadURL(tt.kindDir, tt.release); got != tt.want {
 				t.Errorf("BuildTerraformDownloadURL() = %q, want %q", got, tt.want)
 			}
 		})
@@ -41,49 +41,49 @@ func TestBuildTerraformDownloadURL(t *testing.T) {
 
 func TestBuildPulumiDownloadURL(t *testing.T) {
 	tests := []struct {
-		name      string
-		component string
-		release   string
-		platform  string
-		want      string
+		name     string
+		kindDir  string
+		release  string
+		platform string
+		want     string
 	}{
 		{
-			name:      "darwin arm64",
-			component: "AwsEcsService",
-			release:   "v0.3.50",
-			platform:  "darwin_arm64",
-			want:      "https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awsecsservice/darwin_arm64.gz",
+			name:     "darwin arm64",
+			kindDir:  "AwsEcsService",
+			release:  "v0.3.50",
+			platform: "darwin_arm64",
+			want:     "https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awsecsservice/darwin_arm64.gz",
 		},
 		{
-			name:      "linux amd64",
-			component: "AwsS3Bucket",
-			release:   "v0.3.50",
-			platform:  "linux_amd64",
-			want:      "https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awss3bucket/linux_amd64.gz",
+			name:     "linux amd64",
+			kindDir:  "AwsS3Bucket",
+			release:  "v0.3.50",
+			platform: "linux_amd64",
+			want:     "https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awss3bucket/linux_amd64.gz",
 		},
 		{
 			// Every ARM runner the platform ships (Graviton, kind on an Apple
 			// Silicon Mac) asks for this shape.
-			name:      "linux arm64",
-			component: "KubernetesDeployment",
-			release:   "v0.3.50",
-			platform:  "linux_arm64",
-			want:      "https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/kubernetesdeployment/linux_arm64.gz",
+			name:     "linux arm64",
+			kindDir:  "KubernetesDeployment",
+			release:  "v0.3.50",
+			platform: "linux_arm64",
+			want:     "https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/kubernetesdeployment/linux_arm64.gz",
 		},
 		{
-			// The release lane gzips "{component}.exe" on windows, so the
+			// The release lane gzips "{kind}.exe" on windows, so the
 			// remote artifact carries ".exe.gz" — pin it so the windows fast
 			// path cannot regress to the extensionless shape.
-			name:      "windows carries the executable suffix",
-			component: "AwsEcsService",
-			release:   "v0.3.50",
-			platform:  "windows_amd64",
-			want:      "https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awsecsservice/windows_amd64.exe.gz",
+			name:     "windows carries the executable suffix",
+			kindDir:  "AwsEcsService",
+			release:  "v0.3.50",
+			platform: "windows_amd64",
+			want:     "https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awsecsservice/windows_amd64.exe.gz",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := BuildPulumiDownloadURL(tt.component, tt.release, tt.platform); got != tt.want {
+			if got := BuildPulumiDownloadURL(tt.kindDir, tt.release, tt.platform); got != tt.want {
 				t.Errorf("BuildPulumiDownloadURL() = %q, want %q", got, tt.want)
 			}
 		})
@@ -92,29 +92,29 @@ func TestBuildPulumiDownloadURL(t *testing.T) {
 
 func TestBuildPulumiSourceDownloadURL(t *testing.T) {
 	tests := []struct {
-		name      string
-		component string
-		release   string
-		want      string
+		name    string
+		kindDir string
+		release string
+		want    string
 	}{
 		{
-			name:      "canonical component",
-			component: "AwsEcsService",
-			release:   "v0.3.50",
-			want:      "https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awsecsservice/source.zip",
+			name:    "canonical kind",
+			kindDir: "AwsEcsService",
+			release: "v0.3.50",
+			want:    "https://downloads.planton.dev/releases/v0.3.50/modules/pulumi/awsecsservice/source.zip",
 		},
 		{
 			// Source is platform-independent -- pin that the key carries no
 			// platform segment (the binary key beside it does).
-			name:      "key carries no platform segment",
-			component: "AwsS3Bucket",
-			release:   "v0.4.0",
-			want:      "https://downloads.planton.dev/releases/v0.4.0/modules/pulumi/awss3bucket/source.zip",
+			name:    "key carries no platform segment",
+			kindDir: "AwsS3Bucket",
+			release: "v0.4.0",
+			want:    "https://downloads.planton.dev/releases/v0.4.0/modules/pulumi/awss3bucket/source.zip",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := BuildPulumiSourceDownloadURL(tt.component, tt.release); got != tt.want {
+			if got := BuildPulumiSourceDownloadURL(tt.kindDir, tt.release); got != tt.want {
 				t.Errorf("BuildPulumiSourceDownloadURL() = %q, want %q", got, tt.want)
 			}
 		})

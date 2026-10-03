@@ -10,7 +10,7 @@ import (
 // kafkaTopicVerifier verifies a DigitalOceanDatabaseKafkaTopic via
 // GET /v2/databases/{cluster_id}/topics/{name}. The API has no standalone
 // topic id -- the (cluster, topic name) pair is the identity -- so the
-// verifier reads both from the stack outputs.
+// verifier reads both from the outputs.
 type kafkaTopicVerifier struct{}
 
 func (*kafkaTopicVerifier) IDOutputKey() string { return "topic_name" }

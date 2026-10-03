@@ -8,9 +8,9 @@
 # and a replica_count of zero emits nothing. The price lookup binds
 # node_type with no fallback: a manifest that leaves node_type to GCP's
 # default refuses rather than guessing which rate GCP would pick.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: gcpmemorystoreinstance
 spec:

@@ -37,7 +37,7 @@ func validResource() *AzureUserAssignedIdentity {
 	return &AzureUserAssignedIdentity{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureUserAssignedIdentity",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-identity",
 		},
 		Spec: &AzureUserAssignedIdentitySpec{

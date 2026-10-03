@@ -4,7 +4,7 @@ Puts a safety screen in front of your AI application. A Model Armor template is 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `modelarmor.googleapis.com` on the project
 - **Template** -- a `modelarmor.Template` with the filters, optional metadata, and labels
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Model Armor admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Model Armor admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ## Deploy
@@ -49,7 +49,7 @@ spec:
 planton apply -f model-armor-template.yaml
 ```
 
-This creates a template that reports prompt-injection attempts and malicious links without blocking yet. A Stack Job tracks the provisioning in real time.
+This creates a template that reports prompt-injection attempts and malicious links without blocking yet. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -69,15 +69,15 @@ These are the most important decisions when configuring a template. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -95,6 +95,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Model Armor Floor Setting**](/cloud-catalog/gcp-model-armor-floor-setting) -- the minimum every template must meet, and enforcement on Vertex AI traffic
-- [**GCP Vertex AI Search Engine**](/cloud-catalog/gcp-vertex-ai-search-engine) -- assistants screen prompts and responses through templates
-- [**GCP Vertex AI Agent Engine**](/cloud-catalog/gcp-vertex-ai-agent-engine) -- agents that screen their input
+- [**GCP Model Armor Floor Setting**](/infra-catalog/gcp-model-armor-floor-setting) -- the minimum every template must meet, and enforcement on Vertex AI traffic
+- [**GCP Vertex AI Search Engine**](/infra-catalog/gcp-vertex-ai-search-engine) -- assistants screen prompts and responses through templates
+- [**GCP Vertex AI Agent Engine**](/infra-catalog/gcp-vertex-ai-agent-engine) -- agents that screen their input

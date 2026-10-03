@@ -12,12 +12,12 @@ type Locals struct {
 	CloudflareDnsRecord      *cloudflarednsrecordv1alpha1.CloudflareDnsRecord
 }
 
-// initializeLocals copies fields from the stack input into Locals.
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflarednsrecordv1alpha1.CloudflareDnsRecordStackInput) *Locals {
+// initializeLocals copies fields from the IaC input into Locals.
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflarednsrecordv1alpha1.CloudflareDnsRecordIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.CloudflareDnsRecord = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareDnsRecord = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 
 	return locals
 }

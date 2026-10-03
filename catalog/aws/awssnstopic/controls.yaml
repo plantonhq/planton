@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awssnstopic
 spec:
@@ -27,7 +27,7 @@ spec:
       evidence:
         type: provider_default
         reference: Publishes and management calls are HTTPS-only SigV4 requests; SNS exposes no plaintext publish path.
-      notes: Delivery-leg security to subscriber endpoints (an https:// vs http:// subscription URL) is governed on the AwsSnsSubscription component.
+      notes: Delivery-leg security to subscriber endpoints (an https:// vs http:// subscription URL) is governed on the AwsSnsSubscription kind.
     - control_id: no-public-access
       status: enforced_by_default
       evidence:

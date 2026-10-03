@@ -25,7 +25,7 @@ var _ = ginkgo.Describe("AwsCloudFront", func() {
 		input = &AwsCloudFront{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsCloudFront",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-cdn",
 			},
 			Spec: &AwsCloudFrontSpec{

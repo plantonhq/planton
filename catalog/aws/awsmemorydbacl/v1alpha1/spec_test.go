@@ -21,7 +21,7 @@ func applicationAcl() *AwsMemorydbAcl {
 	return &AwsMemorydbAcl{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsMemorydbAcl",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "payments-env-acl",
 		},
 		Spec: &AwsMemorydbAclSpec{

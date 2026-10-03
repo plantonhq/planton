@@ -4,17 +4,17 @@ Serves an Auth0 tenant's sign-in on a domain you own, such as `id.example.com`, 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module creates:
+When you deploy this Infra Component, the IaC module creates:
 
 - **A custom domain** in the tenant your Auth0 connection's credential belongs to, with its certificate type, TLS policy, client-IP header, metadata, and passkey relying party
-- **The DNS record to publish** -- returned in the outputs, ready for a DNS record Cloud Resource to read
+- **The DNS record to publish** -- returned in the outputs, ready for a DNS record Infra Component to read
 
 ## Before You Deploy
 
 ### Planton Setup
 
-- **Auth0 Provider Connection** -- an active connection in the Connect module with the tenant's domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
-- **A DNS Cloud Resource for the record** -- for example a Cloudflare DNS Record in the zone that serves the domain, reading this domain's outputs.
+- **Auth0 Provider Connection** -- an active connection in the Connect module with the tenant's domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **A DNS Infra Component for the record** -- for example a Cloudflare DNS Record in the zone that serves the domain, reading this domain's outputs.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Auth0 Account
@@ -48,7 +48,7 @@ spec:
 planton apply -f auth0-custom-domain.yaml
 ```
 
-The domain is created in `pending_verification`, and its outputs carry the CNAME to publish. A Stack Job tracks the change in real time.
+The domain is created in `pending_verification`, and its outputs carry the CNAME to publish. An Infra Job tracks the change in real time.
 
 ## Key Configuration
 
@@ -64,11 +64,11 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. The tenant is the one the Auth0 connection's credential belongs to.
+This kind has no foreign key dependencies. The tenant is the one the Auth0 connection's credential belongs to.
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -94,6 +94,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Auth0 Custom Domain Verification**](/cloud-catalog/auth0-custom-domain-verification) -- waits until the domain is verified and serving.
-- [**Cloudflare DNS Record**](/cloud-catalog/cloudflare-dns-record) -- publishes the record that proves control of the domain.
-- [**Auth0 Tenant Settings**](/cloud-catalog/auth0-tenant-settings) -- makes the domain the tenant's default, so email links use it.
+- [**Auth0 Custom Domain Verification**](/infra-catalog/auth0-custom-domain-verification) -- waits until the domain is verified and serving.
+- [**Cloudflare DNS Record**](/infra-catalog/cloudflare-dns-record) -- publishes the record that proves control of the domain.
+- [**Auth0 Tenant Settings**](/infra-catalog/auth0-tenant-settings) -- makes the domain the tenant's default, so email links use it.

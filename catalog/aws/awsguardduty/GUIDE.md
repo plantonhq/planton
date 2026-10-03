@@ -1,4 +1,4 @@
-# AwsGuardDuty — Component Guide
+# AwsGuardDuty — Kind Guide
 
 Authored operational judgment for the GuardDuty component: the design
 decisions behind the spec's shape, and what to know before operating

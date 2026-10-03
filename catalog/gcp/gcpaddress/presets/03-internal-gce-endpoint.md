@@ -30,7 +30,7 @@ This preset reserves a regional internal IP address with the `GCE_ENDPOINT` purp
 - **01-external-nat-ip** — External static IP for Cloud NAT
 - **02-internal-lb-vip** — Internal shared load balancer VIP
 
-## Related Components
+## Related Kinds
 
 - [GcpSubnetwork](/docs/catalog/gcp/gcpsubnetwork) — provides the subnetwork referenced by `subnetwork`
 - [GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork) — parent network for the subnetwork

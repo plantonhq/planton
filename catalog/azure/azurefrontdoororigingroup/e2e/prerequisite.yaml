@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurefrontdoororigingroup
+    e2e-catalog-kind: azurefrontdoororigingroup
   annotations:
     planton.dev/e2e: "true"
   tags:

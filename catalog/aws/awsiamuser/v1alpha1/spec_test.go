@@ -27,7 +27,7 @@ func minimalValidUser() *AwsIamUser {
 	return &AwsIamUser{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsIamUser",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-iam-user",
 		},
 		Spec: &AwsIamUserSpec{

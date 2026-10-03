@@ -4,9 +4,9 @@ package dev.planton.cloudflare.cloudflareaccountapitoken.v1alpha1;
 
 import "shared/options/options.proto";
 
-// CloudflareAccountApiTokenStackOutputs captures the observable outputs
+// CloudflareAccountApiTokenOutputs captures the observable outputs
 // after creating the token.
-message CloudflareAccountApiTokenStackOutputs {
+message CloudflareAccountApiTokenOutputs {
   // The Cloudflare-assigned token ID (the token's identity for management
   // calls -- NOT the credential itself).
   string token_id = 1;

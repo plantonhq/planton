@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarecustomsslcertificate.v1alpha1;
 
-// CloudflareCustomSslCertificateStackOutputs captures the observable outputs
+// CloudflareCustomSslCertificateOutputs captures the observable outputs
 // after uploading a custom SSL certificate.
-message CloudflareCustomSslCertificateStackOutputs {
+message CloudflareCustomSslCertificateOutputs {
   // The ID of the uploaded certificate.
   string certificate_id = 1;
 
@@ -16,7 +16,7 @@ message CloudflareCustomSslCertificateStackOutputs {
 
   // Field 4 (status) was removed: deployment is asynchronous (a fresh
   // upload reports a pending state before turning active), so a
-  // point-in-time phase can never be a stable stack output -- it flips on
+  // point-in-time phase can never be a stable output -- it flips on
   // the first refresh after the transition and re-plans forever (the class
   // was measured live 2026-08-28 on the sibling Authenticated Origin Pulls
   // certificate). Read deployment status from the Cloudflare API or

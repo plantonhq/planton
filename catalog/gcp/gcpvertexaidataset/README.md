@@ -4,7 +4,7 @@ A Vertex AI managed dataset -- the registered container that Vertex AI training,
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project (never disabled on destroy)
 - **Dataset** -- a `vertex_ai_dataset` with the chosen metadata schema, display name, labels, and optional CMEK
@@ -63,7 +63,7 @@ planton apply -f vertex-ai-dataset.yaml
 - `metadataSchemaUri` is a `gs://` path to a YAML file.
 - `displayName` is at most 128 characters.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -91,7 +91,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpKmsKey** -- customer-managed encryption for the dataset
 - **GcpGcsBucket** -- the bucket image, text, and video items are imported from

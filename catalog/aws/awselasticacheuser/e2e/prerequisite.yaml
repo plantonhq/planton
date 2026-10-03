@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awselasticacheuser
+    e2e-catalog-kind: awselasticacheuser
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -35,7 +35,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awselasticacheuser
+    e2e-catalog-kind: awselasticacheuser
   annotations:
     planton.dev/e2e: "true"
   tags:

@@ -20,7 +20,7 @@ func validWorker() *CloudflareWorker {
 	return &CloudflareWorker{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareWorker",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-worker"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-worker"},
 		Spec: &CloudflareWorkerSpec{
 			AccountId:  validAccountID,
 			WorkerName: "test-worker",

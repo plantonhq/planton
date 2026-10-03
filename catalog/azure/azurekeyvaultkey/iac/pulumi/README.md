@@ -20,7 +20,7 @@ re-encrypts through the new key on its next unwrap.
 
 ## Inputs
 
-The module receives an `AzureKeyVaultKeyStackInput` containing:
+The module receives an `AzureKeyVaultKeyIacInput` containing:
 
 - `target.spec.name` -- 1-127 letters/digits/hyphens, unique among the vault's keys
 - `target.spec.key_vault_id` -- the vault's ARM ID (resolved from an AzureKeyVault reference by the platform)

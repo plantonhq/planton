@@ -1,10 +1,10 @@
 # Auth0 Prompt Custom Text
 
-Sets the words one Universal Login prompt shows in one language -- every title, description, button and error message on its screens -- in place of Auth0's defaults. One Cloud Resource per prompt and language.
+Sets the words one Universal Login prompt shows in one language -- every title, description, button and error message on its screens -- in place of Auth0's defaults. One Infra Component per prompt and language.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module sets the custom text of one prompt in one language on the tenant your Auth0 connection's credential belongs to:
+When you deploy this Infra Component, the IaC module sets the custom text of one prompt in one language on the tenant your Auth0 connection's credential belongs to:
 
 - **The words of each screen you declare** -- rendered into the one document Auth0 stores for the prompt and language
 - **Auth0's defaults everywhere else** -- a screen or key you leave out shows Auth0's words
@@ -13,13 +13,13 @@ When you deploy this Cloud Resource, the IaC module sets the custom text of one 
 
 ### Planton Setup
 
-- **Auth0 Provider Connection** -- an active connection in the Connect module with the tenant's domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Auth0 Provider Connection** -- an active connection in the Connect module with the tenant's domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Auth0 Account
 
 - **The connection's Machine-to-Machine application** must hold `read:prompts` and `update:prompts` on the tenant's Management API (Auth0 dashboard: Applications, APIs, Auth0 Management API, Machine To Machine Applications).
-- **The Universal Login experience "new"** on the tenant (the Auth0 Prompt Cloud Resource); the Classic pages never show custom text.
+- **The Universal Login experience "new"** on the tenant (the Auth0 Prompt Infra Component); the Classic pages never show custom text.
 - **The language enabled** on the tenant (Auth0 dashboard: Settings, Languages), for Universal Login to show it.
 
 ## Deploy
@@ -53,7 +53,7 @@ spec:
 planton apply -f auth0-prompt-custom-text.yaml
 ```
 
-The login page reads "Welcome back" and your sentence. A Stack Job tracks the change in real time.
+The login page reads "Welcome back" and your sentence. An Infra Job tracks the change in real time.
 
 ## Key Configuration
 
@@ -65,17 +65,17 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 **Prompt and language are fixed** -- They are the custom text's identity. Declare another resource for another prompt or language.
 
-**Destroy returns the defaults** -- Destroying the Cloud Resource returns the prompt to Auth0's default words in that language.
+**Destroy returns the defaults** -- Destroying the Infra Component returns the prompt to Auth0's default words in that language.
 
 **Identifier-first tenants use other prompts** -- With identifier-first login, people sign in on the `login-id` and `login-password` prompts and sign up on `signup-id` and `signup-password`, not on `login` and `signup`.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. The tenant is the one the Auth0 connection's credential belongs to.
+This kind has no foreign key dependencies. The tenant is the one the Auth0 connection's credential belongs to.
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -97,7 +97,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Auth0 Prompt**](/cloud-catalog/auth0-prompt) -- the Universal Login experience custom text needs, and the identifier-first flow that decides which prompts people see.
-- [**Auth0 Tenant Settings**](/cloud-catalog/auth0-tenant-settings) -- the friendly name `${companyName}` reads.
-- [**Auth0 Client (Application)**](/cloud-catalog/auth0-client) -- the application name `${clientName}` reads.
-- [**Auth0 Prompt Screen Partials**](/cloud-catalog/auth0-prompt-screen-partials) -- extra fields whose labels read `var-<name>` keys defined here.
+- [**Auth0 Prompt**](/infra-catalog/auth0-prompt) -- the Universal Login experience custom text needs, and the identifier-first flow that decides which prompts people see.
+- [**Auth0 Tenant Settings**](/infra-catalog/auth0-tenant-settings) -- the friendly name `${companyName}` reads.
+- [**Auth0 Client (Application)**](/infra-catalog/auth0-client) -- the application name `${clientName}` reads.
+- [**Auth0 Prompt Screen Partials**](/infra-catalog/auth0-prompt-screen-partials) -- extra fields whose labels read `var-<name>` keys defined here.

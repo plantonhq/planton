@@ -4,7 +4,7 @@ Deploys a DigitalOcean Load Balancer with regional or global routing, configurab
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **DigitalOcean Load Balancer** -- a regional or global balancer with the configured forwarding rules or global-routing settings
 - **Health Check** -- probes backends on the specified port, protocol, and path; when `healthCheck` is omitted DigitalOcean still creates its default TCP check against the first forwarding rule's target port
@@ -16,7 +16,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### DigitalOcean Account
@@ -57,7 +57,7 @@ spec:
 planton apply -f do-load-balancer.yaml
 ```
 
-This creates an lb-small HTTP balancer in the region's default VPC, forwarding port 80 to port 8080 on every Droplet tagged `web`, with DigitalOcean's default TCP health check against the target port. A Stack Job tracks the provisioning in real time.
+This creates an lb-small HTTP balancer in the region's default VPC, forwarding port 80 to port 8080 on every Droplet tagged `web`, with DigitalOcean's default TCP health check against the target port. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -107,7 +107,7 @@ These are the most important decisions when configuring a load balancer. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -117,9 +117,9 @@ These are the most important decisions when configuring a load balancer. Explore
 | **DigitalOceanLoadBalancer** (optional) | `targetLoadBalancerIds` | `status.outputs.load_balancer_id` |
 | **DigitalOceanProject** (optional) | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -138,7 +138,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean VPC**](/cloud-catalog/digital-ocean-vpc) -- provides the VPC network for load balancer placement
-- [**DigitalOcean Droplet**](/cloud-catalog/digital-ocean-droplet) -- provides backend compute instances for traffic routing
-- [**DigitalOcean Certificate**](/cloud-catalog/digital-ocean-certificate) -- provides the TLS certificate for HTTPS termination
-- [**DigitalOcean Cloud Firewall**](/cloud-catalog/digital-ocean-firewall) -- rule-level sources so backends accept traffic only from this balancer
+- [**DigitalOcean VPC**](/infra-catalog/digital-ocean-vpc) -- provides the VPC network for load balancer placement
+- [**DigitalOcean Droplet**](/infra-catalog/digital-ocean-droplet) -- provides backend compute instances for traffic routing
+- [**DigitalOcean Certificate**](/infra-catalog/digital-ocean-certificate) -- provides the TLS certificate for HTTPS termination
+- [**DigitalOcean Cloud Firewall**](/infra-catalog/digital-ocean-firewall) -- rule-level sources so backends accept traffic only from this balancer

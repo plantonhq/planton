@@ -32,7 +32,7 @@ const facts = [
   {
     title: 'Compliance Posture',
     description:
-      'Per-component controls mapped to HIPAA, SOC 2, FedRAMP, and CIS requirements, with evidence for what is enforced. Stated plainly, never as a certification.',
+      'Per-kind controls mapped to HIPAA, SOC 2, FedRAMP, and CIS requirements, with evidence for what is enforced. Stated plainly, never as a certification.',
   },
 ];
 

@@ -6,8 +6,8 @@ import "catalog/kubernetes/kubernetesmetricsserver/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
 //input for kubernetes-metrics-server stack
-message KubernetesMetricsServerStackInput {
-  //target cloud-resource
+message KubernetesMetricsServerIacInput {
+  //target infra-component
   KubernetesMetricsServer target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

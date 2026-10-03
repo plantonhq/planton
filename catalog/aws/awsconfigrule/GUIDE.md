@@ -1,4 +1,4 @@
-# AwsConfigRule — Component Guide
+# AwsConfigRule — Kind Guide
 
 Authored operational judgment for the Config rule component: the
 design decisions behind the spec's shape, and what to know before

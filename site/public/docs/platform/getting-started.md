@@ -11,7 +11,7 @@ tags:
 
 # Getting Started
 
-This guide walks through the first steps on Planton: creating an account, setting up an organization and environment, connecting a cloud provider, and deploying a cloud resource. By the end, you will have working infrastructure deployed to your own cloud account.
+This guide walks through the first steps on Planton: creating an account, setting up an organization and environment, connecting a cloud provider, and deploying an infra component. By the end, you will have working infrastructure deployed to your own cloud account.
 
 ## Prerequisites
 
@@ -117,34 +117,34 @@ The connection now appears in the **Connected Providers** list and is ready for 
 
 **Why environment authorization matters:** A connection exists at the organization level, but it must be explicitly authorized for each environment where it can be used. This prevents a production AWS account from being accidentally used during development. See [Environment Mappings](/docs/connections/environment-mappings) for details.
 
-## Step 5: Deploy Your First Cloud Resource
+## Step 5: Deploy Your First Infra Component
 
 With a cloud provider connected and authorized, you can deploy infrastructure.
 
-1. Open the **Deployment Component Store** — click the store icon in the header (right side)
-2. Browse or search for a component (e.g., search "VPC" and filter by your cloud provider)
+1. Open the **Catalog Kind Store** — click the store icon in the header (right side)
+2. Browse or search for a kind (e.g., search "VPC" and filter by your cloud provider)
 3. Click on the component to see its details
 4. Click **Deploy**
 5. Fill in the configuration form with your desired settings
 6. Click **Deploy**
 
-<!-- SCREENSHOT: Deployment Component Store
+<!-- SCREENSHOT: Catalog Kind Store
   Page: /platform/deployment-store
-  Action: Show the component catalog with provider filter active
-  Focus: The component grid with deploy buttons
-  Alt: Deployment Component Store showing infrastructure components filterable by cloud provider
+  Action: Show the kind catalog with provider filter active
+  Focus: The kind grid with deploy buttons
+  Alt: Catalog Kind Store showing infrastructure kinds filterable by cloud provider
 -->
 
-A Stack Job is created automatically. Stack Jobs are the execution units that run Pulumi, Terraform, or OpenTofu to provision your infrastructure. You can watch the deployment progress in real-time as each operation (init, refresh, plan, apply) completes.
+An Infra Job is created automatically. Infra Jobs are the execution units that run Pulumi, Terraform, or OpenTofu to provision your infrastructure. You can watch the deployment progress in real-time as each operation (init, refresh, plan, apply) completes.
 
-<!-- SCREENSHOT: Stack Job progress
-  Page: /orgs/{org}/cloud-resources/{id} (Stack Jobs tab)
-  Action: Show a Stack Job in progress with real-time log output
-  Focus: The Stack Job progress panel with operation status
-  Alt: Stack Job execution showing real-time progress through init, refresh, plan, and apply stages
+<!-- SCREENSHOT: Infra Job progress
+  Page: /orgs/{org}/infra-components/{id} (Infra Jobs tab)
+  Action: Show an Infra Job in progress with real-time log output
+  Focus: The Infra Job progress panel with operation status
+  Alt: Infra Job execution showing real-time progress through init, refresh, plan, and apply stages
 -->
 
-Once the Stack Job completes, your cloud resource is live. Navigate to **Infra Hub** in the sidebar and click **Cloud Resources** to see it listed with its current status.
+Once the Infra Job completes, your infra component is live. Navigate to **Infra Hub** in the sidebar and click **Infra Components** to see it listed with its current status.
 
 ## Step 6: Complete the Onboarding Checklist
 
@@ -155,7 +155,7 @@ The dashboard includes a getting-started checklist that tracks your progress thr
 - Create an environment
 
 **Infrastructure**
-- Deploy your first cloud resource
+- Deploy your first infra component
 - Deploy an Infra Chart stack
 
 **Applications**
@@ -172,7 +172,7 @@ You can complete these tasks in any order, and dismiss the checklist at any time
 
 With your first resource deployed, here are the natural next steps:
 
-- **Deploy more resources** — return to the Deployment Component Store and deploy a database, Kubernetes cluster, or storage bucket. See [Infrastructure](/docs/infrastructure).
+- **Deploy more resources** — return to the Catalog Kind Store and deploy a database, Kubernetes cluster, or storage bucket. See [Infrastructure](/docs/infrastructure).
 - **Deploy an Infra Chart** — instead of individual resources, deploy a coordinated set of resources (e.g., VPC + ECS Cluster + ALB) as a single Infra Chart. See [Infra Charts](/docs/infrastructure/infra-charts).
 - **Deploy an application** — connect GitHub, create a Service, and push code to trigger an automated build and deployment pipeline. See [CI/CD](/docs/ci-cd).
 - **Invite your team** — go to **Settings > Manage Members** to invite colleagues and assign roles. See [Teams and Access](/docs/teams-and-access).

@@ -12,11 +12,11 @@ import (
 	"strings"
 	"testing"
 
-	permissionsv1 "github.com/plantonhq/planton/iac/componentpermissions/v1"
+	permissionsv1 "github.com/plantonhq/planton/iac/catalogkindpermissions/v1"
 )
 
 // This file reads an official Pulumi module's Go source for the Kubernetes
-// objects it creates, so the conformance gate can hold the component's
+// objects it creates, so the conformance gate can hold the kind's
 // manifest to what the provider reads while it waits for them
 // (pulumikubernetes.go). It reads constructor calls, not names that happen
 // to appear: a call is resolved through the file's own imports, so an alias
@@ -35,14 +35,14 @@ const crd2pulumiPrefix = "github.com/plantonhq/planton/pkg/kubernetes/kubernetes
 const modulePrefix = "github.com/plantonhq/planton/"
 
 // keptCRDsPackage applies a chart's CustomResourceDefinitions through one
-// ConfigGroup each, retained on delete while the component keeps them on
+// ConfigGroup each, retained on delete while the kind keeps them on
 // uninstall (keptcrds.go). The gate models its calls directly: every CRD it
 // applies is a cluster-scoped CustomResourceDefinition.
 const keptCRDsPackage = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/keptcrds"
 
 // manifestCRPackage applies a Kubernetes manifest projection kind's one
 // custom resource (manifestcr.go). Its group and kind are not in the call:
-// they are the component's kubernetes_manifest_projection in the kind
+// they are the kind's kubernetes_manifest_projection in the kind
 // registry, which the gate reads to model each Apply as that custom resource.
 const manifestCRPackage = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/manifestcr"
 
@@ -54,7 +54,7 @@ const manifestCRPackage = "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimod
 var helperPackages = map[string]string{
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider": "it constructs only the Kubernetes provider itself, a Pulumi resource that is not a cluster object",
 	keptCRDsPackage:   "its CRD ConfigGroups are modelled as the CustomResourceDefinitions they apply (keptCRDsPackage)",
-	manifestCRPackage: "its one custom resource is modelled as the component's kubernetes_manifest_projection from the kind registry (manifestCRPackage)",
+	manifestCRPackage: "its one custom resource is modelled as the kind's kubernetes_manifest_projection from the kind registry (manifestCRPackage)",
 }
 
 const (
@@ -88,13 +88,13 @@ type yamlCall struct {
 	retain    bool // pulumi.RetainOnDelete(true) rides the call or a transformation
 }
 
-// moduleScan is everything the gate learns from one component's module.
+// moduleScan is everything the gate learns from one kind's module.
 type moduleScan struct {
 	objects   []createdObject
 	yamlCalls []yamlCall
 	keptCRDs  []string // keptcrds.Apply calls
 	// projectionApplies are manifestcr.Apply calls; their group and kind are
-	// the component's projection, resolved where the component is known.
+	// the kind's projection, resolved where the kind is known.
 	projectionApplies []createdObject
 	delegated         map[string]bool // delegated constructors used (keys of PulumiKubernetesDelegated)
 	problems          []string        // what the gate cannot resolve -- each fails the gate

@@ -6,7 +6,7 @@
 
 ## Summary
 
-The OpenTofu/Terraform AWS path is now keyless. The runtime performs the STS `AssumeRoleWithWebIdentity` exchange (single hop for `oidc`, web-identity + chained `AssumeRole` for `cross_account_trust`) and injects the resulting short-lived credentials as environment variables, so an `aws-s3-bucket` (and every other AWS kind) can provision over tofu via an `oidc` connection with no static keys anywhere. All 66 AWS tofu modules converge on a single, empty `provider "aws" {}` block whose region and credentials both flow from stack-input injection. This brings the tofu engine to credential parity with the pulumi engine (which gained keyless web identity earlier) and adds no Planton coupling — the technique is issuer-agnostic.
+The OpenTofu/Terraform AWS path is now keyless. The runtime performs the STS `AssumeRoleWithWebIdentity` exchange (single hop for `oidc`, web-identity + chained `AssumeRole` for `cross_account_trust`) and injects the resulting short-lived credentials as environment variables, so an `aws-s3-bucket` (and every other AWS kind) can provision over tofu via an `oidc` connection with no static keys anywhere. All 66 AWS tofu modules converge on a single, empty `provider "aws" {}` block whose region and credentials both flow from iac-input injection. This brings the tofu engine to credential parity with the pulumi engine (which gained keyless web identity earlier) and adds no Planton coupling — the technique is issuer-agnostic.
 
 ## Problem Statement / Motivation
 
@@ -25,7 +25,7 @@ Region is a **resource** property; credentials are a **connection** property. Th
 
 ```mermaid
 flowchart TB
-  Inject["Runner injects provider_config (web_identity) into the stack input (already existed)"]
+  Inject["Runner injects provider_config (web_identity) into the IaC input (already existed)"]
   Wrapper["tofumodule.GetProviderConfigEnvVars (ResolveAwsWebIdentity = true)"]
   Loader["providerenvvars: AWS_REGION from target.spec.region (always)"]
   Exchange["awswebidentity.ResolveCredentials: AssumeRoleWithWebIdentity (+ chained AssumeRole)"]
@@ -47,8 +47,8 @@ flowchart LR
 ## Implementation Details
 
 - **`pkg/iac/provider/aws/awswebidentity/exchange.go`** (new): `ResolveCredentials` (single-hop web identity + chained `AssumeRole`), `Validate`, and an injectable `CredentialResolver` seam for tests. Extracted verbatim from `pulumiawsnativeprovider`, which now imports it.
-- **`pkg/iac/stackinput/providerenvvars/loader.go`**: AWS is dispatched here (not in the generic `loadProviderEnvVars`) so `AWS_REGION` is emitted from `target.spec.region` even when `provider_config` is absent (the standalone-CLI ambient case). A new `Options.ResolveAwsWebIdentity` field (backward-compatible) gates the exchange.
-- **`pkg/iac/stackinput/providerenvvars/aws.go`**: the rewritten `loadAwsEnvVars` — region-always; web-identity → STS exchange → temp creds; static → keys + `AWS_SESSION_TOKEN`; never emits empty credential keys. A bounded `context.Background()` keeps the exchange wholly within planton (no public-signature churn that would ripple into the runner).
+- **`pkg/iac/iacinput/providerenvvars/loader.go`**: AWS is dispatched here (not in the generic `loadProviderEnvVars`) so `AWS_REGION` is emitted from `target.spec.region` even when `provider_config` is absent (the standalone-CLI ambient case). A new `Options.ResolveAwsWebIdentity` field (backward-compatible) gates the exchange.
+- **`pkg/iac/iacinput/providerenvvars/aws.go`**: the rewritten `loadAwsEnvVars` — region-always; web-identity → STS exchange → temp creds; static → keys + `AWS_SESSION_TOKEN`; never emits empty credential keys. A bounded `context.Background()` keeps the exchange wholly within planton (no public-signature churn that would ripple into the runner).
 - **`pkg/iac/tofu/tofumodule/providers.go`**: the tofu/terraform boundary sets `ResolveAwsWebIdentity: true`; the pulumi path calls `GetEnvVarsWithOptions` directly and leaves it false (its in-program builder owns the exchange; resolving here would be a wasteful, shadowed STS call).
 - **All 66 `apis/dev/planton/provider/aws/*/v1/iac/tf/provider.tf`** converged to the canonical empty block; the dead `provider_config`/credential/region `variable` declarations were pruned from the 17 divergent `variables.tf` files.
 

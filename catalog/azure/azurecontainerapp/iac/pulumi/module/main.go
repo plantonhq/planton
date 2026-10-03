@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurecontainerappv1alpha1.AzureContainerAppStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurecontainerappv1alpha1.AzureContainerAppIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -22,7 +22,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecontainerappv1alpha1.AzureC
 
 	// The template is the revision unit: every change to it creates a new
 	// revision. Replica bounds and the scaler dials carry documented
-	// defaults the platform does not materialize into the stack input, so
+	// defaults the platform does not materialize into the IaC input, so
 	// each is sent value-or-default (presence-guarded).
 	templateArgs := &containerapp.AppTemplateArgs{
 		Containers:  buildContainers(spec.Containers),
@@ -116,7 +116,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecontainerappv1alpha1.AzureC
 		return errors.Wrapf(err, "failed to create Container App %s", spec.ContainerAppName)
 	}
 
-	// Export stack outputs.
+	// Export outputs.
 	ctx.Export(OpContainerAppId, createdApp.ID())
 	ctx.Export(OpContainerAppName, createdApp.Name)
 	ctx.Export(OpLatestRevisionName, createdApp.LatestRevisionName)
@@ -145,7 +145,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecontainerappv1alpha1.AzureC
 	return nil
 }
 
-// intOrDefault presence-guards an optional int32 field: stack inputs never
+// intOrDefault presence-guards an optional int32 field: IaC inputs never
 // materialize proto defaults, so an unset field must deploy the spec's
 // documented default, not the Go zero value.
 func intOrDefault(value *int32, defaultValue int) int {

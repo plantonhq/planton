@@ -64,7 +64,7 @@ flowchart TB
 | Workflow | Trigger | Purpose |
 |----------|---------|---------|
 | `auto-tag.yaml` | Push to main with path changes | Detects changes, creates and pushes tags |
-| `auto-release.yaml` | Tags: `v*+cli.*`, `v*+app.*`, `v*+website.*`, `v*+pulumi.*`, `v*+terraform.*` | Builds and releases auto-release components |
+| `auto-release.yaml` | Tags: `v*+cli.*`, `v*+app.*`, `v*+website.*`, `v*+pulumi.*`, `v*+terraform.*` | Builds and releases auto-release kinds |
 | `release.yaml` | Tags: `v[0-9]+.[0-9]+.[0-9]+` (strict semver) | Builds and releases semantic versions |
 
 ### Strict Semver Pattern
@@ -101,7 +101,7 @@ This ensures:
 
 | File | Changes |
 |------|---------|
-| `.github/workflows/auto-release.yaml` | Changed trigger from branch to tag patterns; parses tag to dispatch to component workflows |
+| `.github/workflows/auto-release.yaml` | Changed trigger from branch to tag patterns; parses tag to dispatch to kind workflows |
 | `.github/workflows/release.yaml` | Changed to strict semver pattern |
 | `.github/workflows/auto-release.cli.yaml` | Removed tag creation step |
 | `.github/workflows/auto-release.app.yaml` | Removed tag creation step |
@@ -111,14 +111,14 @@ This ensures:
 
 ### Tag Parsing in auto-release.yaml
 
-The new auto-release.yaml parses the tag to determine component type:
+The new auto-release.yaml parses the tag to determine kind:
 
 ```yaml
-# Extract component from tag: v0.3.2+cli.20260108.0 → cli
-COMPONENT=$(echo "${TAG}" | sed 's/v[0-9]*\.[0-9]*\.[0-9]*+\([^.]*\)\..*/\1/')
+# Extract kind from tag: v0.3.2+cli.20260108.0 → cli
+KIND=$(echo "${TAG}" | sed 's/v[0-9]*\.[0-9]*\.[0-9]*+\([^.]*\)\..*/\1/')
 ```
 
-Then dispatches to the appropriate reusable workflow based on component.
+Then dispatches to the appropriate reusable workflow based on kind.
 
 ## Benefits
 
@@ -127,7 +127,7 @@ Then dispatches to the appropriate reusable workflow based on component.
 When looking at the Actions tab:
 - **`auto-tag` running** → Changes detected, tags being created
 - **`auto-release` running** → Something is being released (clear signal)
-- **Only `auto-tag` ran** → Changes detected but no releasable components
+- **Only `auto-tag` ran** → Changes detected but no releasable kinds
 
 ### Consistency
 

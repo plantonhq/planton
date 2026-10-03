@@ -1,11 +1,11 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. Presets with no quantity lines have no committed always-on
-# spend and estimate to zero. Schema: finops/componentcostestimatemodel/v1.
+# spend and estimate to zero. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: gcpcloudfunction
 spec:
@@ -47,7 +47,7 @@ spec:
       exclusions:
         - every second the warm instance actually serves swaps the $0.0000025 idle vCPU rate for the $0.000024 active rate (and idle memory for active at the same $0.0000025), so real traffic bills above this floor; instances scaled past the floor (up to maxInstanceCount 20) bill active rates only
         - invocations bill $0.40 per million beyond the free 2 million per month
-        - the referenced GcpServerlessVpcConnector bills its own instances around the clock on that component -- the standing cost of the VPC path lives there, not here
+        - the referenced GcpServerlessVpcConnector bills its own instances around the clock on that kind -- the standing cost of the VPC path lives there, not here
         - the referenced GcpServiceAccount is free; Secret Manager access operations for the DATABASE_PASSWORD reference bill on the secret's project
         - each deploy's Cloud Build build and Artifact Registry image storage bill on those services
       notes: "The committed floor is the one warm instance's idle allocation: 438,876 vCPU-seconds x $0.0000025 = $1.09719 plus 657,000 GiB-seconds x $0.0000025 = $1.6425, about $2.74 a month at list before any request arrives. The vCPU half rides the labeled 0.167-vCPU assumption above; the memory half is exact."

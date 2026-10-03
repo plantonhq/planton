@@ -1,4 +1,4 @@
-# Stack outputs, exactly the DigitalOceanDropletStackOutputs contract.
+# Outputs, exactly the DigitalOceanDropletOutputs contract.
 # Live state (status, locked) is deliberately not exported: apply-time
 # snapshots go stale, and verification reads the live API.
 

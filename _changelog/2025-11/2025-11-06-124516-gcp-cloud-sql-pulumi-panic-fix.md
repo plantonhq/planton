@@ -127,7 +127,7 @@ Both IaC implementations now use the same straightforward pattern.
 ### Users
 - GCP Cloud SQL resources can now be successfully deployed via `planton pulumi up`
 - Preview operations (`planton pulumi preview`) work without panicking
-- Stack outputs correctly expose both public and private IP addresses
+- Outputs correctly expose both public and private IP addresses
 
 ### Developers
 - No need to debug complex type assertion issues in the future
@@ -164,7 +164,7 @@ apiVersion: gcp.planton.dev/v1
 kind: GcpCloudSql
 metadata:
   env: dev
-  id: cr_gcpsql_01k9bx9k75nq5fgvfqhdy97mfz
+  id: ic_gcpsql_01k9bx9k75nq5fgvfqhdy97mfz
   name: odwen-dev-postgres
   org: odwen
   slug: odwen-dev-postgres

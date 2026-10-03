@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azureeventhubconsumergroup.v1alpha1;
 
-// **AzureEventHubConsumerGroupStackOutputs** captures the outputs of
+// **AzureEventHubConsumerGroupOutputs** captures the outputs of
 // provisioning a consumer group.
-message AzureEventHubConsumerGroupStackOutputs {
+message AzureEventHubConsumerGroupOutputs {
   // The Azure Resource Manager ID of the consumer group.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.EventHub/namespaces/{ns}/eventhubs/{hub}/consumergroups/{name}
   string consumer_group_id = 1;

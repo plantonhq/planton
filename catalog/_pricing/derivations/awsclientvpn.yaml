@@ -3,9 +3,9 @@
 # estimate generator replays the catalog presets through these rules to
 # emit ../estimates/awsclientvpn.yaml; a server-side estimator evaluates
 # the same rules against live manifests. Prices live in the provider's
-# price book (../pricebook/). Schema: finops/componentcostderivation/v1.
+# price book (../pricebook/). Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsclientvpn
 spec:
@@ -28,12 +28,12 @@ spec:
       basis: one hourly endpoint association per associated subnet x 730 hours, billed whether or not anyone is connected
   exclusions:
     - text: client connection hours bill per concurrently connected client every hour a session stays up -- entirely workforce-dependent (session_timeout_hours and disconnect_on_session_timeout are the levers on lingering sessions)
-    - text: data transfer out of the VPC (internet, cross-AZ, on-premises) bills at the network components that carry it
+    - text: data transfer out of the VPC (internet, cross-AZ, on-premises) bills at the network kinds that carry it
     - applies_when:
         - field_path: split_tunnel
           op: equals
           value: "false"
-      text: full tunnel routes ALL client internet traffic into the VPC, so egress rides the NAT gateway's data-processing and data-transfer meters on the NAT-ed subnet's own components
+      text: full tunnel routes ALL client internet traffic into the VPC, so egress rides the NAT gateway's data-processing and data-transfer meters on the NAT-ed subnet's own kinds
     - applies_when:
         - field_path: connection_log
           op: is_set

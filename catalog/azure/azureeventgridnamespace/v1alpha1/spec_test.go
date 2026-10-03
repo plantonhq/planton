@@ -34,7 +34,7 @@ func validResource() *AzureEventgridNamespace {
 	return &AzureEventgridNamespace{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureEventgridNamespace",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-egns",
 		},
 		Spec: &AzureEventgridNamespaceSpec{

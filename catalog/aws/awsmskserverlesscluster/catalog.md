@@ -4,7 +4,7 @@ Deploys an Amazon MSK Serverless cluster — Apache Kafka with every capacity de
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **MSK Serverless Cluster** -- an AWS-managed Kafka fleet with automatic throughput and partition scaling, SASL/IAM authentication always on
 - **VPC Network Interfaces** -- ENIs in every declared VPC placement's subnets, through which that VPC's clients reach the bootstrap endpoint
@@ -14,12 +14,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
-- **Subnets in at least two AZs** (production) within the target VPC — clients in an AZ with no cluster interface cross AZs on every fetch. Reference AwsSubnet Cloud Resources or provide subnet IDs directly.
-- **Security groups with TCP-9098 ingress** (up to 5) from your producer/consumer security groups. The ingress rules live on the referenced [AWS Security Group](/cloud-catalog/aws-security-group) resources — decide them BEFORE creating the cluster; the set is immutable and empty falls back to the VPC's default group.
+- **Subnets in at least two AZs** (production) within the target VPC — clients in an AZ with no cluster interface cross AZs on every fetch. Reference AwsSubnet Infra Components or provide subnet IDs directly.
+- **Security groups with TCP-9098 ingress** (up to 5) from your producer/consumer security groups. The ingress rules live on the referenced [AWS Security Group](/infra-catalog/aws-security-group) resources — decide them BEFORE creating the cluster; the set is immutable and empty falls back to the VPC's default group.
 - **IAM permissions for clients** -- every producer/consumer needs `kafka-cluster:Connect` plus topic-level `kafka-cluster:*` actions on the cluster ARN; network reachability alone is not enough.
 
 ## Deploy
@@ -53,7 +53,7 @@ spec:
 planton apply -f msk-serverless.yaml
 ```
 
-This creates a serverless Kafka cluster reachable through two AZs, gated by one security group, with SASL/IAM authentication on port 9098. A Stack Job tracks the provisioning in real time.
+This creates a serverless Kafka cluster reachable through two AZs, gated by one security group, with SASL/IAM authentication on port 9098. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,20 +92,20 @@ These are the only decisions an MSK Serverless cluster asks for — everything e
 
 **Security groups** -- up to 5 per placement, gating network access to the bootstrap endpoint from that VPC. The TCP-9098 ingress rules are composed on first-class AwsSecurityGroup resources, never embedded here. Empty attaches the VPC's default group — attach a purpose-made group at create time; it cannot be added later.
 
-**What is deliberately absent** -- no broker/storage/version fields (AWS manages capacity), no auth fields (SASL/IAM is the only scheme and is always on), no ingress rules (composed on security groups). If a workload needs steady multi-MB/s throughput, SCRAM/mTLS auth, or version pinning, the provisioned [AWS MSK Cluster](/cloud-catalog/aws-msk-cluster) is the right kind.
+**What is deliberately absent** -- no broker/storage/version fields (AWS manages capacity), no auth fields (SASL/IAM is the only scheme and is always on), no ingress rules (composed on security groups). If a workload needs steady multi-MB/s throughput, SCRAM/mTLS auth, or version pinning, the provisioned [AWS MSK Cluster](/infra-catalog/aws-msk-cluster) is the right kind.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsSubnet** | `vpcConfigs[].subnetIds` | `status.outputs.subnet_id` |
 | **AwsSecurityGroup** (optional) | `vpcConfigs[].securityGroupIds` | `status.outputs.security_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -126,7 +126,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- provides the VPC placement for the cluster's network interfaces
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- carries the TCP-9098 ingress rules gating client access
-- [**AWS Lambda Event Source Mapping**](/cloud-catalog/aws-lambda-event-source-mapping) -- consumes topics from this cluster via the exported cluster ARN
-- [**AWS MSK Cluster**](/cloud-catalog/aws-msk-cluster) -- the provisioned sibling for steady high-throughput or non-IAM auth workloads
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- provides the VPC placement for the cluster's network interfaces
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- carries the TCP-9098 ingress rules gating client access
+- [**AWS Lambda Event Source Mapping**](/infra-catalog/aws-lambda-event-source-mapping) -- consumes topics from this cluster via the exported cluster ARN
+- [**AWS MSK Cluster**](/infra-catalog/aws-msk-cluster) -- the provisioned sibling for steady high-throughput or non-IAM auth workloads

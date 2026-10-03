@@ -2,11 +2,11 @@
 
 Built for 100% parity with the Terraform DigitalOcean provider's `digitalocean_database_kafka_schema_registry` resource at the pinned provider version.
 
-## What this component models
+## What this kind models
 
 One schema subject registered in a DigitalOcean managed Kafka cluster's schema registry: the subject's name, its definition language (Avro, JSON Schema, or Protobuf), and the definition itself.
 
-The component covers the provider's full argument surface:
+The kind covers the provider's full argument surface:
 
 - `cluster` -- the owning Kafka cluster, wired by reference (or a literal cluster UUID)
 - `subject_name` -- the registry subject (create-only)

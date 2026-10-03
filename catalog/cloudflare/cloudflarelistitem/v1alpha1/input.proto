@@ -5,9 +5,9 @@ package dev.planton.cloudflare.cloudflarelistitem.v1alpha1;
 import "catalog/cloudflare/cloudflarelistitem/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-//cloudflare-list-item stack-input
-message CloudflareListItemStackInput {
-  //target cloud-resource
+//cloudflare-list-item iac-input
+message CloudflareListItemIacInput {
+  //target infra-component
   CloudflareListItem target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

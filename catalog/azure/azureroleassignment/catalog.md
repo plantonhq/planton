@@ -1,10 +1,10 @@
 # Azure Role Assignment
 
-Deploys an Azure RBAC role assignment: the grant of a role to a principal at a scope. A role assignment is the atomic unit of authorization in Azure — everything a user, group, service principal, or managed identity is allowed to do is the sum of the role assignments that target it. Because grants are the most-repeated pattern in any Azure environment, this component models them as first-class, composable nodes: one assignment per resource, referenceable in InfraCharts, with an independent lifecycle from both the principal and the scope it binds.
+Deploys an Azure RBAC role assignment: the grant of a role to a principal at a scope. A role assignment is the atomic unit of authorization in Azure — everything a user, group, service principal, or managed identity is allowed to do is the sum of the role assignments that target it. Because grants are the most-repeated pattern in any Azure environment, this kind models them as first-class, composable nodes: one assignment per resource, referenceable in InfraCharts, with an independent lifecycle from both the principal and the scope it binds.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Role Assignment** -- one grant record binding a role to a principal at a scope, visible in the portal's IAM blade
 
@@ -20,7 +20,7 @@ Azure role assignments are immutable: changing any field replaces the assignment
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -64,7 +64,7 @@ spec:
 planton apply -f grant.yaml
 ```
 
-This grants the built-in `AcrPull` role to the `ci-deployer` managed identity across everything in the `registry-rg` resource group -- the `skipServicePrincipalAadCheck` flag lets the grant deploy in the same pipeline run that creates the identity, since Entra replicates new principals asynchronously and an assignment racing that replication would otherwise fail with "PrincipalNotFound". A Stack Job tracks the provisioning in real time.
+This grants the built-in `AcrPull` role to the `ci-deployer` managed identity across everything in the `registry-rg` resource group -- the `skipServicePrincipalAadCheck` flag lets the grant deploy in the same pipeline run that creates the identity, since Entra replicates new principals asynchronously and an assignment racing that replication would otherwise fail with "PrincipalNotFound". An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,7 +102,7 @@ These are the most important decisions when configuring a role assignment. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -111,9 +111,9 @@ These are the most important decisions when configuring a role assignment. Explo
 | **AzureUserAssignedIdentity** (default principal) | `principalId` | `status.outputs.principal_id` |
 | **AzureRoleDefinition** (custom roles) | `roleDefinitionId` | `status.outputs.role_definition_id` (copy the resolved ID) |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -121,7 +121,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `role_definition_id` | The definition Azure actually bound -- resolved to an ID even when the spec named a built-in role | Knowing exactly which definition matched a case-insensitive role name |
 | `principal_type` | The principal type Azure recorded (User, Group, ServicePrincipal) | Confirming what the directory inferred when the spec omitted `principalType` |
 
-The remaining outputs (`name`, `scope`, `principal_id`) echo the grant's coordinates as recorded at deploy time so audit tooling can reason about the assignment without re-reading the spec; they are not typically wired into other Cloud Resources.
+The remaining outputs (`name`, `scope`, `principal_id`) echo the grant's coordinates as recorded at deploy time so audit tooling can reason about the assignment without re-reading the spec; they are not typically wired into other Infra Components.
 
 ## Common Patterns
 
@@ -135,7 +135,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- the principal most grants target, via `principal_id`
-- [**Azure Role Definition**](/cloud-catalog/azure-role-definition) -- custom roles bound by `role_definition_id`
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- the most common grant boundary
-- [**Azure Key Vault**](/cloud-catalog/azure-key-vault) -- the classic narrow-scope grant target for CMK and secret consumers
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- the principal most grants target, via `principal_id`
+- [**Azure Role Definition**](/infra-catalog/azure-role-definition) -- custom roles bound by `role_definition_id`
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- the most common grant boundary
+- [**Azure Key Vault**](/infra-catalog/azure-key-vault) -- the classic narrow-scope grant target for CMK and secret consumers

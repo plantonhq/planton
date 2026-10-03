@@ -16,7 +16,7 @@ spec:
   # Every lane re-plans after apply and fails on any pending change (the
   # IDEMPOTENCY phase): a dirty second plan is the send-omitted-value /
   # Optional+Computed echo defect class users otherwise meet as a
-  # perpetual diff on every re-apply. The gate binds the component under
+  # perpetual diff on every re-apply. The gate binds the kind under
   # test only; kinds proven before it was armed re-prove under it
   # whenever their lanes next run.
   assert_apply_idempotency: true

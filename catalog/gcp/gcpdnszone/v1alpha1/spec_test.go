@@ -51,7 +51,7 @@ var _ = ginkgo.Describe("GcpDnsZoneSpec", func() {
 		return &GcpDnsZone{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpDnsZone",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "example.com",
 			},
 			Spec: &GcpDnsZoneSpec{

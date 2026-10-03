@@ -63,7 +63,7 @@ Best for **variable or unpredictable workloads**. You pay per GB of data written
 | `enforce_consumer_deletion` | bool | No | false | Auto-deregister consumers on stream deletion |
 | `resource_policy` | Struct | No | — | Resource-based access policy — cross-account producer/consumer grants without role assumption |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

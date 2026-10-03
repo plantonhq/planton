@@ -4,7 +4,7 @@ Deploys a run-to-completion batch workload on Google Cloud Run v2: a task templa
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cloud Run v2 Job** -- a job definition in the specified GCP project and region with the provided task template and execution model
 - **Task Template** -- the containers every task runs (images, env vars, resources), with sidecar startup ordering and volume mounts
@@ -18,12 +18,12 @@ The resource owns the job DEFINITION, not individual runs — trigger executions
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the job will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
+- **A GCP project** where the job will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
 - **Artifact Registry or container registry** with the task image pushed and accessible to the Cloud Run service agent.
 - **Cloud Run Admin API** enabled in the target project.
 - **VPC network and subnetwork** (if using Direct VPC Egress) -- the subnetwork must be in the job's region with address headroom for `parallelism` concurrent tasks.
@@ -65,7 +65,7 @@ spec:
 planton apply -f cloud-run-job.yaml
 ```
 
-This creates a job whose executions run 20 tasks (5 at a time), each with 2 vCPU / 4Gi and a one-hour per-attempt budget. A Stack Job tracks the provisioning in real time. Trigger a run:
+This creates a job whose executions run 20 tasks (5 at a time), each with 2 vCPU / 4Gi and a one-hour per-attempt budget. An Infra Job tracks the provisioning in real time. Trigger a run:
 
 ```shell
 gcloud run jobs execute nightly-etl --region us-central1
@@ -118,7 +118,7 @@ These are the most important decisions when configuring a Cloud Run job. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -131,9 +131,9 @@ These are the most important decisions when configuring a Cloud Run job. Explore
 | **GcpVpcNetwork** (optional) | `template.vpcAccess.networkInterfaces[].network` | `status.outputs.network_name` |
 | **GcpSubnetwork** (optional) | `template.vpcAccess.networkInterfaces[].subnetwork` | `status.outputs.subnetwork_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -154,10 +154,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the job is created
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- provides the least-privilege runtime identity
-- [**GCP Cloud SQL**](/cloud-catalog/gcp-cloud-sql) -- exposes databases as managed Unix sockets via the Cloud SQL volume
-- [**GCP GCS Bucket**](/cloud-catalog/gcp-gcs-bucket) -- mounts input/output object storage via Cloud Storage FUSE
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- provides the VPC for Direct VPC Egress connectivity
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- provides the subnetwork tasks draw IPs from
-- [**GCP Cloud Run**](/cloud-catalog/gcp-cloud-run) -- the request-serving sibling for HTTP APIs and websites
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the job is created
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- provides the least-privilege runtime identity
+- [**GCP Cloud SQL**](/infra-catalog/gcp-cloud-sql) -- exposes databases as managed Unix sockets via the Cloud SQL volume
+- [**GCP GCS Bucket**](/infra-catalog/gcp-gcs-bucket) -- mounts input/output object storage via Cloud Storage FUSE
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- provides the VPC for Direct VPC Egress connectivity
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- provides the subnetwork tasks draw IPs from
+- [**GCP Cloud Run**](/infra-catalog/gcp-cloud-run) -- the request-serving sibling for HTTP APIs and websites

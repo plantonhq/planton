@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesserviceentry.v1alpha1;
 
-// KubernetesServiceEntryStackOutputs captures observable outputs after the ServiceEntry is
+// KubernetesServiceEntryOutputs captures observable outputs after the ServiceEntry is
 // created on the target cluster. A ServiceEntry is a registry entry consumed by istiod (it
 // has no controller-reconciled status subresource useful to surface here), so only the
 // resource identity is exported.
-message KubernetesServiceEntryStackOutputs {
+message KubernetesServiceEntryOutputs {
   // Name of the created ServiceEntry (equals metadata.name).
   string service_entry_name = 1;
 

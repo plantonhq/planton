@@ -2,7 +2,7 @@
 
 ## Overview
 
-**KubernetesNamespace** is a Planton component that implements a "Namespace-as-a-Service" pattern for creating and managing production-ready Kubernetes namespaces. Rather than creating a bare namespace, this component provisions a complete, secure, multi-tenant environment with resource quotas, network policies, access controls, and optional service mesh integration pre-configured according to best practices.
+**KubernetesNamespace** is a catalog kind that implements a "Namespace-as-a-Service" pattern for creating and managing production-ready Kubernetes namespaces. Rather than creating a bare namespace, this component provisions a complete, secure, multi-tenant environment with resource quotas, network policies, access controls, and optional service mesh integration pre-configured according to best practices.
 
 ## Purpose
 
@@ -75,7 +75,7 @@ Enforce Kubernetes-native security policies:
 - **`spec.labels`**: Additional labels for cost allocation and governance
 - **`spec.annotations`**: Annotations for mesh injection, TTL, node selection
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -91,7 +91,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Create the Kubernetes Namespace resource
 2. Apply ResourceQuota objects based on the selected profile

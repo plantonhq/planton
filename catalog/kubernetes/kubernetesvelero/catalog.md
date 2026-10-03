@@ -4,7 +4,7 @@ Installs Velero — cluster backup and disaster recovery — from the official H
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm Release** (`velero`) -- the Velero server Deployment with the backend's provider plugin as an init container, the default BackupStorageLocation (named `default`), the default VolumeSnapshotLocation (unless snapshots are disabled), and any declared Schedule resources
 - **CRDs** -- Backup, Restore, Schedule, and companions — surviving uninstall by Helm's own contract for `crds/`-directory CRDs, so backup records outlive the release
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Kubernetes Cluster
 
@@ -62,7 +62,7 @@ spec:
 planton apply -f velero.yaml
 ```
 
-This installs the Velero server with the AWS plugin, a default BackupStorageLocation in the `acme-cluster-backups` bucket under the `prod-cluster` prefix (keyless via IRSA), and a nightly schedule whose backups are garbage-collected after 30 days. A Stack Job tracks the provisioning in real time.
+This installs the Velero server with the AWS plugin, a default BackupStorageLocation in the `acme-cluster-backups` bucket under the `prod-cluster` prefix (keyless via IRSA), and a nightly schedule whose backups are garbage-collected after 30 days. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -109,7 +109,7 @@ These are the most important decisions when configuring Velero. Explore the full
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |---|---|---|
@@ -120,9 +120,9 @@ These are the most important decisions when configuring Velero. Explore the full
 
 Each credential reference is also the deploy-ordering edge: the identity (and the grants riding it) exists before Velero starts. Literal values cover identities created outside Planton.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -143,9 +143,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the placement target; also the unit most restores operate on.
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the IRSA role behind keyless S3 backups (`irsaRoleArn`).
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the Workload Identity subject behind keyless GCS backups.
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- the federated identity behind keyless Azure Blob backups.
-- [**Kubernetes StatefulSet**](/cloud-catalog/kubernetes-stateful-set) -- the stateful workloads whose volume data CSI snapshots or file-system backup capture.
-- [**kube-prometheus-stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) -- provides the Prometheus operator CRDs the ServiceMonitor needs and turns backup health into alerts.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the placement target; also the unit most restores operate on.
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the IRSA role behind keyless S3 backups (`irsaRoleArn`).
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the Workload Identity subject behind keyless GCS backups.
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- the federated identity behind keyless Azure Blob backups.
+- [**Kubernetes StatefulSet**](/infra-catalog/kubernetes-stateful-set) -- the stateful workloads whose volume data CSI snapshots or file-system backup capture.
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) -- provides the Prometheus operator CRDs the ServiceMonitor needs and turns backup health into alerts.

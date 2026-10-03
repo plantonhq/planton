@@ -4,7 +4,7 @@
 
 ## What changed about the workflow
 
-The copy for these pages is not in a draft file and not in components. It is data: `src/data/story.ts` (the thirteen chapters, each with claim, proof, and never-say), `src/data/trust.ts` (each Trust page's lede, proof points, illustrated record, honesty statements, doors), `src/data/personas.ts`, `src/data/testimonials.ts`, `src/data/platform-stats.ts`, and `src/data/pricing.ts`. The canonical narrative these mirror is `company/marketing/positioning/the-planton-story.md` in the company repository. A copy change is a data edit; the sections re-render.
+The copy for these pages is not in a draft file and not in kinds. It is data: `src/data/story.ts` (the thirteen chapters, each with claim, proof, and never-say), `src/data/trust.ts` (each Trust page's lede, proof points, illustrated record, honesty statements, doors), `src/data/personas.ts`, `src/data/testimonials.ts`, `src/data/platform-stats.ts`, and `src/data/pricing.ts`. The canonical narrative these mirror is `company/marketing/positioning/the-planton-story.md` in the company repository. A copy change is a data edit; the sections re-render.
 
 The same session wrote the data and the sections, so the rendered page was the preview. No `draft-N.md` or `preview-N.html` was produced.
 
@@ -20,7 +20,7 @@ The page is the story in order. The headline is chapter 1's first sentence (the 
 
 ## Must not claim
 
-Any dollar-savings figure; "compliant" of any component; retention as "forever" or "immutable" without the record page backing it; an analogy for the whole product; a customer quote without written approval on record (four exist); real product captures where none exist (every record window says it is an illustration).
+Any dollar-savings figure; "compliant" of any kind; retention as "forever" or "immutable" without the record page backing it; an analogy for the whole product; a customer quote without written approval on record (four exist); real product captures where none exist (every record window says it is an illustration).
 
 ## Verification
 

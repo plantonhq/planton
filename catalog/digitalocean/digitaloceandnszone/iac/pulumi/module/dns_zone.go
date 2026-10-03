@@ -9,7 +9,7 @@ import (
 )
 
 // dnsZone provisions the DigitalOcean domain plus its managed DNS records and
-// exports stack outputs.
+// exports outputs.
 func dnsZone(
 	ctx *pulumi.Context,
 	locals *Locals,

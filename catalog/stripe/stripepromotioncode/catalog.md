@@ -1,10 +1,10 @@
 # Stripe Promotion Code
 
-Declares a code customers type to redeem a coupon -- `LAUNCH25` for first-time customers, `WELCOME50` on orders over 50 dollars -- with its own limits. One Cloud Resource per code.
+Declares a code customers type to redeem a coupon -- `LAUNCH25` for first-time customers, `WELCOME50` on orders over 50 dollars -- with its own limits. One Infra Component per code.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the OpenTofu module creates one promotion code on the coupon it names, in the Stripe account your Stripe connection's key belongs to:
+When you deploy this Infra Component, the OpenTofu module creates one promotion code on the coupon it names, in the Stripe account your Stripe connection's key belongs to:
 
 - **The code** -- what customers type, or one Stripe generates
 - **Its limits** -- first-time customers, a minimum order, one customer, a cap, an expiry
@@ -19,7 +19,7 @@ When you deploy this Cloud Resource, the OpenTofu module creates one promotion c
 ### Stripe Account
 
 - **The connection's restricted key** needs **Promotion Codes: Write** (Stripe Dashboard: Developers, API keys, the key's permissions).
-- **The coupon** -- a Stripe Coupon Cloud Resource, or an existing coupon's id.
+- **The coupon** -- a Stripe Coupon Infra Component, or an existing coupon's id.
 - **One owner**: declare a code here only if your application and the Dashboard do not also manage it.
 
 ## Deploy
@@ -51,7 +51,7 @@ spec:
 planton apply -f stripe-promotion-code.yaml
 ```
 
-A Stack Job tracks the change in real time.
+An Infra Job tracks the change in real time.
 
 ### InfraChart
 
@@ -80,13 +80,13 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Field | Kind | Output |
 |-------|------|--------|
 | `coupon` | Stripe Coupon | `status.outputs.id` |
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -106,6 +106,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Stripe Coupon**](/cloud-catalog/stripe-coupon) -- the discount the code redeems.
-- [**Stripe Payment Link**](/cloud-catalog/stripe-payment-link) -- a hosted page where customers enter it.
-- [**Stripe Billing Portal Configuration**](/cloud-catalog/stripe-billing-portal-configuration) -- lets customers apply codes to subscriptions.
+- [**Stripe Coupon**](/infra-catalog/stripe-coupon) -- the discount the code redeems.
+- [**Stripe Payment Link**](/infra-catalog/stripe-payment-link) -- a hosted page where customers enter it.
+- [**Stripe Billing Portal Configuration**](/infra-catalog/stripe-billing-portal-configuration) -- lets customers apply codes to subscriptions.

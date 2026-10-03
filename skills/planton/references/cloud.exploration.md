@@ -35,7 +35,7 @@ login needs to exist where you run:
 - **Cloud reads**: the VPC/subnet/security-group/cluster listing tools and
   the Kubernetes object reads (tools named `list_*`, `get_*`, `find_*`)
   cover the exploration above through the org's stored connections.
-- **Platform lookups**: charts, projects, pipelines, stack jobs, and
+- **Platform lookups**: charts, projects, pipelines, infra jobs, and
   connections each have list/get tools mirroring the `planton` commands in
   `planton-cli.md` — the same four-step failed-deploy diagnosis works
   tool-for-command.

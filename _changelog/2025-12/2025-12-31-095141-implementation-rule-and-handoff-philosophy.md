@@ -17,7 +17,7 @@ The initial two-LLM workflow design included handoff documents with detailed cod
 **Original handoff template included**:
 - Code snippets showing exact changes
 - Line numbers to modify
-- Specific component names to use
+- Specific kind names to use
 - Implementation step-by-step instructions
 - TypeScript type definitions
 - JSX code examples
@@ -36,9 +36,9 @@ The initial two-LLM workflow design included handoff documents with detailed cod
    - May prescribe outdated patterns
 
 3. **Brittle handoffs**:
-   - Code examples become outdated if components refactored
+   - Code examples become outdated if kinds refactored
    - Line numbers change frequently
-   - Prescribed components may not be optimal
+   - Prescribed kinds may not be optimal
    - Reduces flexibility for implementation improvements
 
 4. **Wasted effort**:
@@ -53,7 +53,7 @@ The initial two-LLM workflow design included handoff documents with detailed cod
 **Senior developer doesn't need**:
 - Code examples
 - Step-by-step instructions
-- Prescribed components
+- Prescribed kinds
 - Technical hand-holding
 
 **Senior developer DOES need**:
@@ -77,7 +77,7 @@ Comprehensive rule for the implementation-focused LLM that emphasizes its expert
 - **Analyze existing codebase** to understand structure
 
 **Phase 2: Planning**
-- **YOUR analysis** of component structure
+- **YOUR analysis** of kind structure
 - **YOUR determination** of implementation approach
 - **YOUR strategy** for applying changes
 - Present plan to user for approval
@@ -100,14 +100,14 @@ Added prominent section: **"🎯 CRITICAL REMINDER: Handoff Document Philosophy"
 - Historical context (feedback source, materials analyzed)
 - Iteration journey (draft-1 → draft-2 → approved)
 - References to approved content (draft-N.md, preview-N.html)
-- Component mapping (file paths only)
+- Kind mapping (file paths only)
 - Business objectives and user impact
 - Content guidance (key messages, tone, priorities)
 
 **What NOT to Include** (❌):
 - Code snippets or examples
 - Implementation details or prescriptions
-- Specific components to use
+- Specific kinds to use
 - Technical architecture decisions
 - Line numbers or specific changes
 
@@ -120,7 +120,7 @@ Added prominent section: **"🎯 CRITICAL REMINDER: Handoff Document Philosophy"
    <SectionTitle>Old</SectionTitle>
    To:
    <SectionTitle>New</SectionTitle>
-3. Add Badge component from shared.tsx
+3. Add Badge kind from shared.tsx
 ```
 
 **✅ Right (Context and Guidance)**:
@@ -135,7 +135,7 @@ Business goal: Attract healthcare prospects
 
 Visual: See preview-3.html for layout
 
-Implementation: Analyze existing component and apply approved content using patterns you find
+Implementation: Analyze existing kind and apply approved content using patterns you find
 ```
 
 ### 3. Updated Documentation
@@ -191,7 +191,7 @@ Implementation: Analyze existing component and apply approved content using patt
 
 ## What Was Approved
 - References to draft-N.md and preview-N.html
-- Component mapping (paths only)
+- Kind mapping (paths only)
 - Content guidance (not code)
 
 ## Business Objectives
@@ -225,12 +225,12 @@ Implementation: Analyze existing component and apply approved content using patt
    - Read handoff for context
    - **Read draft-N.md for approved content**
    - **Read preview-N.html for visual guide**
-   - **Analyze existing src/ components**
+   - **Analyze existing src/ kinds**
    - Emphasizes: "Handoff doesn't prescribe, you analyze and decide"
 
 3. **Phase 2: Planning**:
    - "This is YOUR phase as implementation expert"
-   - Analyze component structure
+   - Analyze kind structure
    - Read approved content
    - **Determine implementation approach** (your decision)
    - Create plan based on YOUR analysis
@@ -312,7 +312,7 @@ flowchart TD
 **More Accurate**:
 - Implementation based on actual code analysis
 - No risk of outdated prescriptions
-- Adapts to refactored components
+- Adapts to refactored kinds
 - Uses best patterns available
 
 **More Flexible**:
@@ -331,7 +331,7 @@ flowchart TD
 
 **Before** (Prescriptive approach):
 - 800-1200 lines with code examples
-- Brittle (line numbers, specific components)
+- Brittle (line numbers, specific kinds)
 - Risk of incorrect technical suggestions
 - Copywriting LLM spending time on code
 
@@ -453,7 +453,7 @@ map over array to render badges..."
 
 **Visual Guide**: See `preview-2.html` for layout and hierarchy
 
-**Component to Update**: `src/components/landing-page-v2/HeroSection.tsx`
+**Kind to Update**: `src/components/landing-page-v2/HeroSection.tsx`
 
 **Key Changes**:
 - Headline emphasizes security and compliance
@@ -477,7 +477,7 @@ map over array to render badges..."
 
 **Your Task**: Analyze HeroSection.tsx and apply approved content from draft-2.md
 
-**Approach**: Determine optimal way to add security emphasis based on existing component structure
+**Approach**: Determine optimal way to add security emphasis based on existing kind structure
 
 **References**:
 - Approved copy: `draft-2.md`
@@ -549,7 +549,7 @@ instructions for a junior.
 - Historical Context (feedback source, materials, insights)
 - Iteration Journey (draft evolution)
 - What Was Approved (references to draft-N.md)
-- Component Mapping (file paths only)
+- Kind Mapping (file paths only)
 - Business Objectives (why it matters)
 - Implementation Guidance (context, not code)
 
@@ -557,7 +557,7 @@ instructions for a junior.
 - All code snippets
 - Implementation step-by-step
 - Technical prescriptions
-- Specific component usage
+- Specific kind usage
 - TypeScript examples
 
 ### Implementation Rule Structure
@@ -622,7 +622,7 @@ instructions for a junior.
 - Analyze current code state (not rely on descriptions)
 - Use best patterns available (not prescribed patterns)
 - Improve code while updating content (flexibility)
-- Adapt to component refactorings
+- Adapt to kind refactorings
 
 **Results**:
 - Higher code quality

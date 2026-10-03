@@ -1,10 +1,10 @@
 # GCP DNS Zone
 
-Deploys a Cloud DNS managed zone — the authoritative container for one domain. Public zones answer the internet once the domain is delegated to the assigned nameservers; private zones answer only inside the VPC networks and GKE clusters you attach, and can alternatively forward queries to upstream resolvers or peer with another VPC's Cloud DNS. The zone owns the shell only: DNS records are separate GcpDnsRecord Cloud Resources referencing this zone by name, so records deploy, change, and destroy independently of the zone.
+Deploys a Cloud DNS managed zone — the authoritative container for one domain. Public zones answer the internet once the domain is delegated to the assigned nameservers; private zones answer only inside the VPC networks and GKE clusters you attach, and can alternatively forward queries to upstream resolvers or peer with another VPC's Cloud DNS. The zone owns the shell only: DNS records are separate GcpDnsRecord Infra Components referencing this zone by name, so records deploy, change, and destroy independently of the zone.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cloud DNS API enablement** -- `dns.googleapis.com` is enabled in the target project (never disabled on destroy, so tearing down one zone cannot break the rest of the project)
 - **Cloud DNS Managed Zone** -- public (internet-facing) or private (VPC-scoped), for the domain in `dnsName` (trailing dot required; when omitted, derived from the resource metadata name plus a dot)
@@ -19,12 +19,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the managed zone will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef; the module enables the Cloud DNS API itself.
+- **A GCP project** where the managed zone will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef; the module enables the Cloud DNS API itself.
 - **Domain registrar access** (only for public zones) to update nameserver (NS) records for the domain after zone creation.
 - **VPC networks or GKE clusters** (only for private zones) that the zone will be visible to — reference GcpVpcNetwork / GcpGkeCluster resources or supply their URLs.
 
@@ -56,7 +56,7 @@ spec:
 planton apply -f dns-zone.yaml
 ```
 
-This creates a public managed zone for `example.com.` with GCP-assigned nameservers and no DNSSEC; update your domain registrar's NS records with the nameservers from the outputs to delegate the domain. A Stack Job tracks the provisioning in real time.
+This creates a public managed zone for `example.com.` with GCP-assigned nameservers and no DNSSEC; update your domain registrar's NS records with the nameservers from the outputs to delegate the domain. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -98,7 +98,7 @@ These are the most important decisions when configuring a DNS zone. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -107,9 +107,9 @@ These are the most important decisions when configuring a DNS zone. Explore the 
 | **GcpGkeCluster** (private zones) | `privateVisibilityConfig.gkeClusters[].gkeClusterName` | `status.outputs.cluster_id` |
 | **GcpVpcNetwork** (peering zones) | `peeringConfig.targetNetwork` | `status.outputs.network_self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -129,8 +129,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the managed zone is created
-- [**GCP DNS Record**](/cloud-catalog/gcp-dns-record) -- the record sets served from this zone, referencing its `zone_name` output
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- visibility targets for private zones and peering producers
-- [**GCP GKE Cluster**](/cloud-catalog/gcp-gke-cluster) -- narrows a private zone's visibility to a single cluster
-- [**GCP Cert Manager DNS Authorization**](/cloud-catalog/gcp-cert-manager-dns-authorization) -- exports the validation record a GcpDnsRecord serves in this zone
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the managed zone is created
+- [**GCP DNS Record**](/infra-catalog/gcp-dns-record) -- the record sets served from this zone, referencing its `zone_name` output
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- visibility targets for private zones and peering producers
+- [**GCP GKE Cluster**](/infra-catalog/gcp-gke-cluster) -- narrows a private zone's visibility to a single cluster
+- [**GCP Cert Manager DNS Authorization**](/infra-catalog/gcp-cert-manager-dns-authorization) -- exports the validation record a GcpDnsRecord serves in this zone

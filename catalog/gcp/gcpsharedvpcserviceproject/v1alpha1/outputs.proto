@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpsharedvpcserviceproject.v1alpha1;
 
-// GcpSharedVpcServiceProjectStackOutputs captures the attachment's two
+// GcpSharedVpcServiceProjectOutputs captures the attachment's two
 // ends after provisioning.
-message GcpSharedVpcServiceProjectStackOutputs {
+message GcpSharedVpcServiceProjectOutputs {
   // The project ID now attached as a service project.
   string service_project_id = 1;
 

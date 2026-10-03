@@ -60,7 +60,7 @@ func GetStackWorkspaceDir(stackFqdn string) (string, error) {
 // SetupBinaryWorkspace creates a minimal workspace directory for binary execution.
 // It generates a Pulumi.yaml that references the pre-built binary.
 // Returns the workspace path that can be used with pulumi CLI.
-func SetupBinaryWorkspace(binaryPath, stackFqdn, componentName string) (*WorkspaceResult, error) {
+func SetupBinaryWorkspace(binaryPath, stackFqdn, kindName string) (*WorkspaceResult, error) {
 	// Get workspace directory for this stack
 	workspacePath, err := GetStackWorkspaceDir(stackFqdn)
 	if err != nil {
@@ -74,11 +74,11 @@ func SetupBinaryWorkspace(binaryPath, stackFqdn, componentName string) (*Workspa
 		}
 	}
 
-	// Generate project name from component
-	projectName := strings.ToLower(componentName)
+	// Generate project name from kind
+	projectName := strings.ToLower(kindName)
 
 	// Generate Pulumi.yaml content
-	pulumiYamlContent := GeneratePulumiYaml(binaryPath, projectName, componentName)
+	pulumiYamlContent := GeneratePulumiYaml(binaryPath, projectName, kindName)
 
 	// Write Pulumi.yaml
 	pulumiYamlPath := filepath.Join(workspacePath, "Pulumi.yaml")
@@ -100,8 +100,8 @@ func SetupBinaryWorkspace(binaryPath, stackFqdn, componentName string) (*Workspa
 }
 
 // GeneratePulumiYaml generates the content for Pulumi.yaml with binary option
-func GeneratePulumiYaml(binaryPath, projectName, componentName string) string {
-	return fmt.Sprintf(PulumiYamlTemplate, projectName, binaryPath, componentName)
+func GeneratePulumiYaml(binaryPath, projectName, kindName string) string {
+	return fmt.Sprintf(PulumiYamlTemplate, projectName, binaryPath, kindName)
 }
 
 // CleanupWorkspace removes a workspace directory

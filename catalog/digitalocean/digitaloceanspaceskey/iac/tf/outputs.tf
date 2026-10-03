@@ -1,4 +1,4 @@
-# Stack outputs — exactly the DigitalOceanSpacesKeyStackOutputs contract,
+# Outputs — exactly the DigitalOceanSpacesKeyOutputs contract,
 # identical across both provisioners.
 
 output "access_key" {

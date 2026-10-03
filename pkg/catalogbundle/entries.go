@@ -10,17 +10,17 @@ import (
 
 	"sigs.k8s.io/yaml"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // Catalog entries are the bundle's display-and-deploy-coordinates cargo: one
 // document per user-facing kind (entries/<provider>/<kind>.yaml) carrying the
-// component's title, description, URL slug, logo, contract links, and the
+// kind's title, description, URL slug, logo, contract links, and the
 // official IaC module directories the release ships for it. Every field is a
 // projection of the release's own tree -- the catalog page's H1 and intro,
 // the iac/ directories that actually exist -- authored once beside the
-// component and never restated by hand, so consumers render and deploy the
+// kind and never restated by hand, so consumers render and deploy the
 // catalog from data without re-deriving any of it.
 //
 // Entries carry only facts the release owns. Anything a consuming surface
@@ -48,48 +48,48 @@ type CatalogEntry struct {
 	// Kind is the PascalCase kind name -- the entry's identity, unique across
 	// the catalog and constant across the kind's versions.
 	Kind string `json:"kind"`
-	// Title is the component's display name, authored as its catalog page's H1.
+	// Title is the kind's display name, authored as its catalog page's H1.
 	Title string `json:"title"`
 	// Description is the first sentence of the catalog page's intro paragraph.
 	Description string `json:"description"`
-	// Slug is the kebab-case URL segment consoles address the component by
+	// Slug is the kebab-case URL segment consoles address the kind by
 	// (AwsS3Bucket -> aws-s3-bucket). Derived uniformly from the kind name
 	// with the provider kept atomic; unique across the catalog.
 	Slug string `json:"slug"`
-	// ServiceGroup is the provider-console service group the component is
+	// ServiceGroup is the provider-console service group the kind is
 	// browsed under, as the registry's enum value name (e.g. "aws_compute");
 	// display labels resolve from the group's own metadata. Absent when the
 	// kind's provider has no service taxonomy (managed-service providers) --
 	// an honest absence mirroring the registry, never a guess.
 	ServiceGroup string `json:"serviceGroup,omitempty"`
-	// LogoUrl is the component's own logo at the versionless key the release
+	// LogoUrl is the kind's own logo at the versionless key the release
 	// lane publishes it to.
 	LogoUrl string `json:"logoUrl"`
-	// WebLinks point at the component's versioned API contract.
+	// WebLinks point at the kind's versioned API contract.
 	WebLinks CatalogEntryWebLinks `json:"webLinks"`
 	// IacModules names the official module directories the release ships.
 	IacModules CatalogEntryIacModules `json:"iacModules"`
-	// CostSummary is the component's cost anatomy at a glance, projected
+	// CostSummary is the kind's cost anatomy at a glance, projected
 	// from its cost profile and generated preset estimates (the costs/ and
-	// estimates/ cargo). Absent when the component ships no fact-sheets --
+	// estimates/ cargo). Absent when the kind ships no fact-sheets --
 	// absence means "not yet covered", never "free".
 	CostSummary *CatalogEntryCostSummary `json:"costSummary,omitempty"`
-	// ControlSummary counts the component's posture across the central
+	// ControlSummary counts the kind's posture across the central
 	// control catalog, projected from its control profile (the controls/
-	// cargo). Absent when the component ships no fact-sheets.
+	// cargo). Absent when the kind ships no fact-sheets.
 	ControlSummary *CatalogEntryControlSummary `json:"controlSummary,omitempty"`
-	// PermissionsProvenance says how the component's permission manifest
+	// PermissionsProvenance says how the kind's permission manifest
 	// (the permissions/ cargo) was established: "derived" (static analysis
 	// of the official modules), "proven" (observed from live provisioning),
 	// or "mixed". Presence signals a downloadable least-privilege manifest
 	// exists; the value carries the trust distinction. Absent when the
-	// component ships no fact-sheets.
+	// kind ships no fact-sheets.
 	PermissionsProvenance string `json:"permissionsProvenance,omitempty"`
 }
 
 // CatalogEntryCostSummary is the price-tag projection: enough for a card
 // chip ("~$18-140/mo"), with the full story (per-preset line items, sources,
-// exclusions) in the estimates/ cargo. The range spans the component's
+// exclusions) in the estimates/ cargo. The range spans the kind's
 // priced preset estimates at published list prices; the bounds echo the
 // estimate documents' own decimal strings.
 type CatalogEntryCostSummary struct {
@@ -101,14 +101,14 @@ type CatalogEntryCostSummary struct {
 	// components state no dollar figure -- an honest absence, never 0).
 	Currency string `json:"currency,omitempty"`
 	// MonthlyMin and MonthlyMax bound the monthly totals across the
-	// component's priced preset estimates, as decimal strings. A genuine
+	// kind's priced preset estimates, as decimal strings. A genuine
 	// zero-committed preset yields "0.00" -- that is a verified number, not
 	// a missing one.
 	MonthlyMin string `json:"monthlyMin,omitempty"`
 	MonthlyMax string `json:"monthlyMax,omitempty"`
 }
 
-// CatalogEntryControlSummary counts the component's stance per control
+// CatalogEntryControlSummary counts the kind's stance per control
 // status across the ENTIRE central control catalog -- the control-profile
 // gate guarantees every catalog control is examined, so these counts always
 // sum to the catalog's size and "examined" is never in question.
@@ -118,12 +118,12 @@ type CatalogEntryControlSummary struct {
 	EnforcedByDefault int `json:"enforcedByDefault"`
 	// Configurable counts controls exposed as spec choices.
 	Configurable int `json:"configurable"`
-	// NotApplicable counts controls with no meaning for this component
+	// NotApplicable counts controls with no meaning for this kind
 	// class.
 	NotApplicable int `json:"notApplicable"`
 }
 
-// CatalogEntryWebLinks point at the component's API contract, as source and
+// CatalogEntryWebLinks point at the kind's API contract, as source and
 // as rendered documentation.
 type CatalogEntryWebLinks struct {
 	SourceCode    CatalogEntryContractLinks `json:"sourceCode"`
@@ -131,19 +131,19 @@ type CatalogEntryWebLinks struct {
 }
 
 // CatalogEntryContractLinks address the contract's parts: the version
-// directory as a whole plus the spec, stack-input, and stack-outputs protos.
+// directory as a whole plus the spec, iac-input, and outputs protos.
 type CatalogEntryContractLinks struct {
-	Root         string `json:"root"`
-	Spec         string `json:"spec"`
-	StackInput   string `json:"stackInput"`
-	StackOutputs string `json:"stackOutputs"`
+	Root     string `json:"root"`
+	Spec     string `json:"spec"`
+	IacInput string `json:"iacInput"`
+	Outputs  string `json:"outputs"`
 }
 
 // CatalogEntryIacModules names the official module directories the release
-// ships for a component. An engine whose directory is absent from the tree
+// ships for a kind. An engine whose directory is absent from the tree
 // stays empty here, and deploy paths refuse that engine for the kind --
 // presence is truth from the release's own tree, never an assumption. A
-// component ships one engine's module only when its kind declares that
+// kind ships one engine's module only when its kind declares that
 // (kind_meta.provisioners), and the anatomy gate holds the tree to the
 // declaration, so this projection and the declaration always agree.
 type CatalogEntryIacModules struct {
@@ -158,43 +158,43 @@ type CatalogEntryIacModules struct {
 
 // projectEntries derives every user-facing kind's entry from the catalog
 // tree plus the compiled kind registry. The projection is total and proven:
-// a registry kind without a component directory, an iac/ directory without
+// a registry kind without a kind directory, an iac/ directory without
 // its engine's entry point, or a tree yielding zero entries fails the build
 // with the exact list -- stale or guessed deploy coordinates are unshippable
-// by construction. Components with fact-sheet cargo additionally carry
+// by construction. Kinds with fact-sheet cargo additionally carry
 // cost/controls/permissions summaries, computed from the same parsed
 // documents the cargo packs.
-func projectEntries(catalogDir string, cargo map[string]*componentCargo) (map[string][]byte, error) {
+func projectEntries(catalogDir string, cargo map[string]*kindCargo) (map[string][]byte, error) {
 	entries := map[string][]byte{}
 	var missing, liveness []string
 
-	for _, kind := range crkreflect.KindsList() {
-		provider := crkreflect.GetProvider(kind)
+	for _, kind := range catalogkindreflect.KindsList() {
+		provider := catalogkindreflect.GetProvider(kind)
 		if provider.String() == testProviderName {
 			continue
 		}
 		providerDir := strings.ReplaceAll(provider.String(), "_", "")
-		kindName := crkreflect.ExtractKindNameByKind(kind)
+		kindName := catalogkindreflect.ExtractKindNameByKind(kind)
 		kindDir := strings.ToLower(kindName)
-		componentDir := filepath.Join(catalogDir, providerDir, kindDir)
-		if _, err := os.Stat(componentDir); err != nil {
+		kindPath := filepath.Join(catalogDir, providerDir, kindDir)
+		if _, err := os.Stat(kindPath); err != nil {
 			missing = append(missing, fmt.Sprintf("%s/%s (kind %s)", providerDir, kindDir, kindName))
 			continue
 		}
-		versionDir, err := crkreflect.KindVersion(kind)
+		versionDir, err := catalogkindreflect.KindVersion(kind)
 		if err != nil {
 			missing = append(missing, fmt.Sprintf("%s/%s: no version in registry", providerDir, kindDir))
 			continue
 		}
 
-		title, description := readCatalogPage(filepath.Join(componentDir, "catalog.md"), kindName)
+		title, description := readCatalogPage(filepath.Join(kindPath, "catalog.md"), kindName)
 		entry := buildCatalogEntry(kindName, providerDir, kindDir, versionDir, title, description)
 
-		serviceGroup, err := crkreflect.ServiceGroup(kind)
+		serviceGroup, err := catalogkindreflect.ServiceGroup(kind)
 		if err != nil {
 			return nil, fmt.Errorf("resolving the %s service group: %w", kindName, err)
 		}
-		if serviceGroup != cloudresourcekind.CloudProviderServiceGroup_cloud_provider_service_group_unspecified {
+		if serviceGroup != catalogkind.CatalogProviderServiceGroup_catalog_provider_service_group_unspecified {
 			entry.ServiceGroup = serviceGroup.String()
 		}
 
@@ -214,7 +214,7 @@ func projectEntries(catalogDir string, cargo map[string]*componentCargo) (map[st
 			{"pulumi", "main.go", "Pulumi", &entry.IacModules.PulumiModuleDir},
 			{"tf", "*.tf", "Terraform", &entry.IacModules.TerraformModuleDir},
 		} {
-			engineDir := filepath.Join(componentDir, "iac", engine.dir)
+			engineDir := filepath.Join(kindPath, "iac", engine.dir)
 			if _, err := os.Stat(engineDir); err != nil {
 				continue
 			}
@@ -237,7 +237,7 @@ func projectEntries(catalogDir string, cargo map[string]*componentCargo) (map[st
 	if len(missing) > 0 {
 		sort.Strings(missing)
 		return nil, fmt.Errorf(
-			"%d registry kind(s) have no component directory in the catalog tree -- the registry and the tree must agree:\n  %s",
+			"%d registry kind(s) have no kind directory in the catalog tree -- the registry and the tree must agree:\n  %s",
 			len(missing), strings.Join(missing, "\n  "))
 	}
 	if len(liveness) > 0 {
@@ -267,23 +267,23 @@ func buildCatalogEntry(kindName, providerDir, kindDir, versionDir, title, descri
 	// names, so the package appears in both the page path and the fragment.
 	pkg := fmt.Sprintf("dev.planton.%s.%s.%s", providerDir, kindDir, versionDir)
 	entry.WebLinks.SourceCode = CatalogEntryContractLinks{
-		Root:         fmt.Sprintf("%s/tree/main/%s", ossRepoURL, contractBase),
-		Spec:         fmt.Sprintf("%s/%s/spec.proto", ossRawURL, contractBase),
-		StackInput:   fmt.Sprintf("%s/%s/input.proto", ossRawURL, contractBase),
-		StackOutputs: fmt.Sprintf("%s/%s/outputs.proto", ossRawURL, contractBase),
+		Root:     fmt.Sprintf("%s/tree/main/%s", ossRepoURL, contractBase),
+		Spec:     fmt.Sprintf("%s/%s/spec.proto", ossRawURL, contractBase),
+		IacInput: fmt.Sprintf("%s/%s/input.proto", ossRawURL, contractBase),
+		Outputs:  fmt.Sprintf("%s/%s/outputs.proto", ossRawURL, contractBase),
 	}
 	entry.WebLinks.Documentation = CatalogEntryContractLinks{
-		Root:         fmt.Sprintf("%s:%s", bsrDocsURL, pkg),
-		Spec:         fmt.Sprintf("%s:%s#%s.%sSpec", bsrDocsURL, pkg, pkg, kindName),
-		StackInput:   fmt.Sprintf("%s:%s#%s.%sStackInput", bsrDocsURL, pkg, pkg, kindName),
-		StackOutputs: fmt.Sprintf("%s:%s#%s.%sStackOutputs", bsrDocsURL, pkg, pkg, kindName),
+		Root:     fmt.Sprintf("%s:%s", bsrDocsURL, pkg),
+		Spec:     fmt.Sprintf("%s:%s#%s.%sSpec", bsrDocsURL, pkg, pkg, kindName),
+		IacInput: fmt.Sprintf("%s:%s#%s.%sIacInput", bsrDocsURL, pkg, pkg, kindName),
+		Outputs:  fmt.Sprintf("%s:%s#%s.%sOutputs", bsrDocsURL, pkg, pkg, kindName),
 	}
 	return entry
 }
 
-// readCatalogPage extracts the component's canonical display name (the H1)
+// readCatalogPage extracts the kind's canonical display name (the H1)
 // and its one-line description (the first sentence of the intro paragraph)
-// from the kind-root catalog page. A component without a page falls back to
+// from the kind-root catalog page. A kind without a page falls back to
 // its kind name -- the anatomy lint owns page presence, not the bundle.
 func readCatalogPage(path, kindName string) (title, description string) {
 	title = kindName
@@ -316,7 +316,7 @@ func readCatalogPage(path, kindName string) (title, description string) {
 	return title, description
 }
 
-// entrySlug derives a component's URL slug: the provider directory name kept
+// entrySlug derives a kind's URL slug: the provider directory name kept
 // as one atomic word, then the kind name's remaining words kebab-cased
 // (DigitalOceanDroplet -> digitalocean-droplet, AwsS3Bucket -> aws-s3-bucket).
 // A kind whose name does not start with its provider kebabs whole. One rule

@@ -5,7 +5,7 @@ import (
 
 	azurevirtualmachinev1alpha1 "github.com/plantonhq/planton/catalog/azure/azurevirtualmachine/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -61,11 +61,11 @@ func cachingToArm(caching azurevirtualmachinev1alpha1.AzureVirtualMachineDiskCac
 	return ""
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurevirtualmachinev1alpha1.AzureVirtualMachineStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurevirtualmachinev1alpha1.AzureVirtualMachineIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureVirtualMachine = stackInput.Target
-	target := stackInput.Target
+	locals.AzureVirtualMachine = iacInput.Target
+	target := iacInput.Target
 	spec := target.Spec
 
 	locals.ResourceGroupName = spec.ResourceGroup.GetValue()
@@ -195,7 +195,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurevirtualmachinev1alph
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureVirtualMachine.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureVirtualMachine.String()),
 	}
 
 	if target.Metadata.Id != "" {

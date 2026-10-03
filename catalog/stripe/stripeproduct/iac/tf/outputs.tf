@@ -1,5 +1,5 @@
 # StripeProduct Outputs
-# Maps to the StripeProductStackOutputs protobuf message.
+# Maps to the StripeProductOutputs protobuf message.
 
 output "id" {
   description = "The product's Stripe id (prod_...), the value a StripePrice's product references"

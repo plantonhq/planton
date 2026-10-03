@@ -1,5 +1,5 @@
 # StripeBillingMeter Outputs
-# Maps to the StripeBillingMeterStackOutputs protobuf message.
+# Maps to the StripeBillingMeterOutputs protobuf message.
 
 output "id" {
   description = "The meter's Stripe id (mtr_...); it changes when the meter is replaced"

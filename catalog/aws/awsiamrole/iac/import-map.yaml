@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsiamrole
 spec:
@@ -13,7 +13,7 @@ spec:
     - name: role_name
       derivations:
         - from_metadata_name: true
-        - from_stack_output: role_name
+        - from_output: role_name
       where_to_find: >-
         IAM console -> Roles (the role name), or `aws iam list-roles`
         (RoleName). The name only -- not the path or ARN.

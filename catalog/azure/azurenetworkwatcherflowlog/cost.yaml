@@ -5,9 +5,9 @@
 # logs written, Traffic Analytics bills per GB processed (its price
 # absorbs the Log Analytics workspace cost -- Microsoft's own pricing
 # footnote), and the raw files rest in the storage account on ITS
-# meters. Schema: finops/componentcostprofile/v1.
+# meters. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurenetworkwatcherflowlog
 spec:
@@ -28,7 +28,7 @@ spec:
     - field_path: retention_policy.days
       sku_meter: blob storage capacity
       pricing_unit: GB-month
-      impact: "Sets how many days of flow-log files accumulate in the storage account before Azure prunes them -- steady collection times retention days is the standing GB the account bills at its blob capacity rates (on the AzureStorageAccount component). Retention disabled keeps files forever, and the meter with them."
+      impact: "Sets how many days of flow-log files accumulate in the storage account before Azure prunes them -- steady collection times retention days is the standing GB the account bills at its blob capacity rates (on the AzureStorageAccount kind). Retention disabled keeps files forever, and the meter with them."
     - field_path: enabled
       sku_meter: virtual network flow logs collected
       pricing_unit: ""
@@ -37,7 +37,7 @@ spec:
   estimate_exclusions:
     - collection bills "0.50" USD per GB of flow logs written after the first 5 GB each month (East US) -- volume is the target network's traffic shape, unknowable from the manifest
     - Traffic Analytics (preset-dependent) bills "2.30" USD per GB processed at the 60-minute cadence or "3.50" at 10 minutes (East US); the Log Analytics workspace cost for the enriched records is absorbed in this meter per Microsoft's pricing footnote
-    - the raw log files bill the storage account's blob capacity (GB-months, shaped by retention_policy.days) and transactions on the AzureStorageAccount component
+    - the raw log files bill the storage account's blob capacity (GB-months, shaped by retention_policy.days) and transactions on the AzureStorageAccount kind
     - reading or exporting the stored logs bills the storage account's read/egress meters; cross-region flows to a workspace in another region ride bandwidth rates
     - Traffic Analytics creates NWTA-prefixed data collection rule and endpoint resources beside the workspace -- Azure Monitor plumbing that carries no standing meter of its own
   notes: "The recorder is free; the recording is the bill. Three meters stack per gigabyte -- collection (always), Traffic Analytics processing (when configured), and storage (until retention prunes) -- so the same traffic costs very differently depending on scope and enrichment: a vnet-wide, 10-minute-analyzed flow log bills 0.50 + 3.50 per GB plus storage, while a subnet-scoped raw log bills 0.50 plus storage on a fraction of the volume. One side effect worth respecting: creating a flow log OVERWRITES the storage account's lifecycle-management rules (documented on the spec), so its retention pruning wins over hand-managed policies. Rates verified live from the Retail Prices API (serviceName 'Network Watcher', eastus) and Microsoft's Network Watcher pricing page (including footnote 5 on workspace-cost absorption) on 2026-08-18."

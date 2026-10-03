@@ -5,7 +5,7 @@ package dev.planton.openfga.openfgarelationshiptuple.v1alpha1;
 import "catalog/openfga/openfgarelationshiptuple/v1alpha1/api.proto";
 import "catalog/openfga/provider.proto";
 
-// OpenFgaRelationshipTupleStackInput is the input message for the OpenFGA Relationship Tuple IaC modules.
+// OpenFgaRelationshipTupleIacInput is the input message for the OpenFGA Relationship Tuple IaC modules.
 //
 // This message aggregates all information needed to deploy an OpenFGA Relationship Tuple:
 // - The target OpenFgaRelationshipTuple resource specification
@@ -16,7 +16,7 @@ import "catalog/openfga/provider.proto";
 //
 // The Terraform module receives this as input and uses it to create
 // the relationship tuple via the OpenFGA API.
-message OpenFgaRelationshipTupleStackInput {
+message OpenFgaRelationshipTupleIacInput {
   // target is the OpenFgaRelationshipTuple resource to deploy.
   // Contains the complete specification of the desired tuple configuration.
   OpenFgaRelationshipTuple target = 1;

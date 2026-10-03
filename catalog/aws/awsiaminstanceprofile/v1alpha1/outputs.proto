@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awsiaminstanceprofile.v1alpha1;
 
-// AwsIamInstanceProfileStackOutputs captures the observable outputs of a
+// AwsIamInstanceProfileOutputs captures the observable outputs of a
 // provisioned IAM instance profile, for EC2-shaped resources (instances,
 // launch templates, Auto Scaling groups) to reference.
-message AwsIamInstanceProfileStackOutputs {
+message AwsIamInstanceProfileOutputs {
   // The ARN of the instance profile (e.g.
   // "arn:aws:iam::123456789012:instance-profile/web-server"). What an EC2
   // instance's iam_instance_profile_arn references via

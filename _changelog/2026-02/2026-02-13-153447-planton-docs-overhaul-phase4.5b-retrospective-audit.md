@@ -20,7 +20,7 @@ Six documentation pages written in the project's early sessions (Sessions 1-3) c
 ### Pain Points
 
 - `infra-charts.md` exposed `InfraChartParam`, `ValueFromRef`, and `ApiResourceSelector` in user-facing prose
-- `infra-projects.md` had field name tables that mirrored protobuf message definitions
+- `infra-stacks.md` had field name tables that mirrored protobuf message definitions
 - `what-is-a-service.md` listed protobuf field names as table column headers
 - `build-methods.md` referenced internal image construction patterns
 - `monorepo-support.md` named protobuf message types directly in section headers
@@ -32,7 +32,7 @@ Six documentation pages written in the project's early sessions (Sessions 1-3) c
 
 **infra-hub/infra-charts.md** — Rewritten from scratch with a three-problem motivation opening (repetitive patterns, hidden dependencies, no standardization), real-world AWS ECS chart example, and CLI commands verified against Go source.
 
-**infra-hub/infra-projects.md** — Rewritten from scratch with persistent-record motivation, simplified lifecycle operations, and corrected CLI paths (install lives under `chart`, not `infra-project`).
+**infra-hub/infra-stacks.md** — Rewritten from scratch with persistent-record motivation, simplified lifecycle operations, and corrected CLI paths (install lives under `chart`, not `infra-stack`).
 
 ### Targeted Rewrites (4 pages)
 

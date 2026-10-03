@@ -23,4 +23,4 @@ This is the most common pattern — a STANDARD class log group that retains log 
 - **Ingestion**: billed per GB written — the dominant line for most log groups
 - **Storage**: billed per GB-month for the 30 days events are retained, then automatically deleted
 
-The verified figure for this preset lives in the component's generated estimate at `catalog/_pricing/estimates/awscloudwatchloggroup.yaml` — computed from the pinned price book, never hand-typed here.
+The verified figure for this preset lives in the kind's generated estimate at `catalog/_pricing/estimates/awscloudwatchloggroup.yaml` — computed from the pinned price book, never hand-typed here.

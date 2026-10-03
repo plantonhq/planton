@@ -13,9 +13,9 @@ wisdom.
 Offer exactly once per distinct lesson, right after the moment that taught
 it:
 
-- A failure or surprise in this session that a component's `GUIDE.md` never
+- A failure or surprise in this session that a kind's `GUIDE.md` never
   warned about.
-- A choose-between-components judgment you had to work out yourself because
+- A choose-between-kinds judgment you had to work out yourself because
   no guide or pattern owns the comparison.
 - A generated page whose facts disagree with observed behavior, or whose
   field docs are too thin to act on.
@@ -31,11 +31,11 @@ your evidence).
 
 | What you learned | Where it goes | How it travels |
 |---|---|---|
-| Judgment about one component | That kind's `GUIDE.md`, beside its `reference.md` | This workflow -- the chat-friendly lane |
-| Multi-component composition wisdom | A pattern under `_patterns/` | This workflow |
+| Judgment about one kind | That kind's `GUIDE.md`, beside its `reference.md` | This workflow -- the chat-friendly lane |
+| Multi-kind composition wisdom | A pattern under `_patterns/` | This workflow |
 | Catalog-wide wisdom (alternatives, conventions) | The catalog root `GUIDE.md` | This workflow |
 | A wrong or thin FACT (field docs, defaults, validation) | The proto comment or rule it derives from -- generated pages are never hand-edited | Needs the repo toolchain; without one, file it as a GitHub issue with the full evidence instead |
-| An operational truth the module enforces or prints (a name budget, the pod state a waiting job shows, a recovery loop, a TLS name a job needs) | The proto comment of the field it belongs to -- it is a fact about what the component does, and only `reference.md`, `GUIDE.md`, and `_patterns/` reach an installed agent (see `pack-layout.md`, "What the pack does not carry") | Same as a fact: repo toolchain or a GitHub issue |
+| An operational truth the module enforces or prints (a name budget, the pod state a waiting job shows, a recovery loop, a TLS name a job needs) | The proto comment of the field it belongs to -- it is a fact about what the kind does, and only `reference.md`, `GUIDE.md`, and `_patterns/` reach an installed agent (see `pack-layout.md`, "What the pack does not carry") | Same as a fact: repo toolchain or a GitHub issue |
 
 One boundary is mechanical, so learn it once: **editing an existing guide
 or pattern changes no generated file** -- CI passes as-is. **Adding a NEW
@@ -48,7 +48,7 @@ check will hold the PR until someone does, which is correct.
 ## The drafting bar
 
 With a repo checkout, the authoring standards are
-`_rules/docs/write-planton-component-guide.mdc` and
+`_rules/docs/write-catalog-kind-guide.mdc` and
 `write-planton-architecture-pattern.mdc` -- follow them. Without a checkout,
 this digest is the bar:
 
@@ -59,7 +59,7 @@ this digest is the bar:
    wrong" -- with the concrete failure named. Never feature lists; the
    generated page already enumerates the spec.
 3. **Diagram consequence.** When a choice affects composition, say what it
-   renders as: a dedicated component is a visible node; a buried flag is
+   renders as: a dedicated kind is a visible node; a buried flag is
    nothing.
 4. **Ground every claim** in what this session actually observed or read.
    Short and true beats long and plausible.

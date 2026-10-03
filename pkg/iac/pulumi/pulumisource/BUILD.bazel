@@ -8,7 +8,7 @@ go_library(
     deps = [
         "//internal/cli/cliprint",
         "//internal/cli/version",
-        "//pkg/crkreflect",
+        "//pkg/catalogkindreflect",
         "//pkg/downloads",
         "//pkg/fileutil",
         "//pkg/iac/pulumi/pulumibinary",

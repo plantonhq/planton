@@ -6,7 +6,7 @@
 
 ## Summary
 
-The component and chart authoring workflows now teach the inbound licensing
+The kind and chart authoring workflows now teach the inbound licensing
 rule they previously assumed: provider source is read for facts, its code
 text is never copied. And the canonical license footer became a
 creation-time guarantee — the deterministic README writer appends it when a
@@ -19,26 +19,26 @@ correctly forged work.
 Two gaps between what the repo enforces and what its rules teach:
 
 1. The forge, update, and architecture documents direct agents to derive
-   component design from cloned Terraform provider source — the authoritative
+   kind design from cloned Terraform provider source — the authoritative
    reference. Those repos are **MPL-2.0** (file-level copyleft that must not
    be mixed into this Apache-2.0 work), and HashiCorp's Terraform core is
    **BUSL** (not open source). Nothing said what must NOT be taken from
    them. One pasted snippet by a well-meaning agent would contaminate an
    Apache-2.0 module.
-2. The license-footer lint enforces the footer on every component and chart
-   README, but nothing *created* the footer: a freshly forged component or
+2. The license-footer lint enforces the footer on every kind and chart
+   README, but nothing *created* the footer: a freshly forged kind or
    chart would fail CI unless the author remembered to add it by hand.
 
 ## Solution / What's New
 
 ### Read for facts, never copy (three homes, one message)
 
-- `_rules/deployment-component/forge/forge-planton-component.mdc` — new
+- `_rules/catalog-kind/forge/forge-catalog-kind.mdc` — new
   Design Philosophy bullet directly after the one that sends agents into the
   provider clones.
-- `_rules/deployment-component/update/update-planton-component.mdc` — the
+- `_rules/catalog-kind/update/update-catalog-kind.mdc` — the
   same rule where its Design Philosophy names the clone.
-- `architecture/deployment-component.md` — one sentence extending "Schema as
+- `architecture/catalog-kind.md` — one sentence extending "Schema as
   the Floor".
 
 The line is drawn precisely: field sets, defaults, validation bounds, and
@@ -50,12 +50,12 @@ incompatible-licensed repos, nothing more.
 
 ### Footer by default
 
-- `_rules/deployment-component/_scripts/docs_write.py` — the deterministic
-  component-README writer appends the canonical footer when the drafted
+- `_rules/catalog-kind/_scripts/docs_write.py` — the deterministic
+  kind-README writer appends the canonical footer when the drafted
   content does not already end with it (exactly one footer in all cases).
   The tool that writes the file owns the invariant; `lint.license-footers`
   remains the independent CI check.
-- `_rules/deployment-component/forge/flow/007-docs.mdc` — documents the
+- `_rules/catalog-kind/forge/flow/007-docs.mdc` — documents the
   guarantee.
 - `_rules/charts/forge-planton-infra-chart.mdc` — the footer is now item 6
   of the README structure: charts are in the lint's scope but have no

@@ -1,7 +1,7 @@
 package module
 
 // Output key constants exported by this Pulumi module. These mirror
-// AwsEfsAccessPointStackOutputs field names one-to-one.
+// AwsEfsAccessPointOutputs field names one-to-one.
 const (
 	OpAccessPointId  = "access_point_id"
 	OpAccessPointArn = "access_point_arn"

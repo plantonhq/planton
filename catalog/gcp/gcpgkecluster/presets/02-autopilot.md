@@ -31,7 +31,7 @@ This preset creates a private Autopilot cluster: GKE provisions and manages the 
 - **01-private-standard** — when you need control over node pools (machine types, GPUs, spot)
 - **03-dev-zonal** — the smallest, cheapest cluster for development
 
-## Related Components
+## Related Kinds
 
 - [GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork) — the network the cluster lives in
 - [GcpSubnetwork](/docs/catalog/gcp/gcpsubnetwork) — the subnetwork nodes and pods draw addresses from

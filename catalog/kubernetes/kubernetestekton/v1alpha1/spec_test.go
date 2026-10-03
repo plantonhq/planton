@@ -25,7 +25,7 @@ var _ = ginkgo.Describe("KubernetesTekton Validation Tests", func() {
 		input = &KubernetesTekton{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesTekton",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "tekton",
 			},
 			Spec: &KubernetesTektonSpec{},

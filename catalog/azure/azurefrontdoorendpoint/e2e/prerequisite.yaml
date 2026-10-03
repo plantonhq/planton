@@ -12,7 +12,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurefrontdoorendpoint
+    e2e-catalog-kind: azurefrontdoorendpoint
   annotations:
     planton.dev/e2e: "true"
   tags:

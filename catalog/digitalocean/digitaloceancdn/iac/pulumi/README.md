@@ -10,11 +10,11 @@ Provisions a CDN endpoint fronting a Spaces bucket -- the complete `digitalocean
 
 ## Inputs
 
-`DigitalOceanCdnStackInput`: the target `DigitalOceanCdn` resource and the DigitalOcean provider config (API token).
+`DigitalOceanCdnIacInput`: the target `DigitalOceanCdn` resource and the DigitalOcean provider config (API token).
 
 ## Outputs
 
-Exactly the `DigitalOceanCdnStackOutputs` contract: `cdn_id` (Pulumi's resource id), `endpoint`.
+Exactly the `DigitalOceanCdnOutputs` contract: `cdn_id` (Pulumi's resource id), `endpoint`.
 
 ## Behavior notes
 

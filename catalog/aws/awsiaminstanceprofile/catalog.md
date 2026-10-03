@@ -4,7 +4,7 @@ Deploys an IAM instance profile — the container that delivers an IAM role to E
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Instance Profile** -- the named container under its IAM path. The profile name comes from `metadata.name`; name and path are create-only (changing them replaces the profile)
 - **Role Attachment** -- the one role the profile carries, attached by NAME (that is what the AWS API takes). Swapping the role later detaches the old one and attaches the new one IN PLACE — every instance carrying the profile picks up the new credentials without any EC2 reference changing
@@ -13,12 +13,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **An IAM role EC2 can assume** -- the role's trust policy must allow the `ec2.amazonaws.com` service principal, or launches fail with an unauthorized error. Reference an AwsIamRole Cloud Resource (preferred — the graph deploys it first) or name a role that exists outside Planton.
+- **An IAM role EC2 can assume** -- the role's trust policy must allow the `ec2.amazonaws.com` service principal, or launches fail with an unauthorized error. Reference an AwsIamRole Infra Component (preferred — the graph deploys it first) or name a role that exists outside Planton.
 
 ## Deploy
 
@@ -50,7 +50,7 @@ spec:
 planton apply -f instance-profile.yaml
 ```
 
-This wraps the role in a profile that EC2 instances, launch templates, and Auto Scaling groups can carry. A Stack Job tracks the provisioning in real time.
+This wraps the role in a profile that EC2 instances, launch templates, and Auto Scaling groups can carry. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -82,15 +82,15 @@ These are the most important decisions when configuring an instance profile. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsIamRole** | `role` | `status.outputs.role_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -109,8 +109,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the role this profile carries and delivers to EC2
-- [**AWS IAM Policy**](/cloud-catalog/aws-iam-policy) -- the permissions attached to the carried role
-- [**AWS EC2 Instance**](/cloud-catalog/aws-ec2-instance) -- launches with this profile as its AWS identity
-- [**AWS Launch Template**](/cloud-catalog/aws-launch-template) -- bakes the profile into the fleet blueprint
-- [**AWS Auto Scaling Group**](/cloud-catalog/aws-auto-scaling-group) -- fleets whose every instance carries the profile
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the role this profile carries and delivers to EC2
+- [**AWS IAM Policy**](/infra-catalog/aws-iam-policy) -- the permissions attached to the carried role
+- [**AWS EC2 Instance**](/infra-catalog/aws-ec2-instance) -- launches with this profile as its AWS identity
+- [**AWS Launch Template**](/infra-catalog/aws-launch-template) -- bakes the profile into the fleet blueprint
+- [**AWS Auto Scaling Group**](/infra-catalog/aws-auto-scaling-group) -- fleets whose every instance carries the profile

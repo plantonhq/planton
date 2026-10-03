@@ -25,12 +25,12 @@ The tfvars generator in `pkg/iac/tofu/tfvars/tfvars.go` was outputting map keys 
 
 ```hcl
 labels = {
-    infra-hub.planton.ai/infra-project.name = "planton-gcp-dev-fga-stack"
+    infra-hub.planton.ai/infra-stack.name = "planton-gcp-dev-fga-stack"
     planton.dev/provisioner = "terraform"
 }
 ```
 
-In HCL, unquoted keys containing periods are interpreted as **variable references** (like `var.something.nested`). The parser tried to evaluate `infra-hub.planton.ai/infra-project.name` as a nested variable access, which is not allowed in tfvars context.
+In HCL, unquoted keys containing periods are interpreted as **variable references** (like `var.something.nested`). The parser tried to evaluate `infra-hub.planton.ai/infra-stack.name` as a nested variable access, which is not allowed in tfvars context.
 
 ### Why This Surfaced Now
 
@@ -50,7 +50,7 @@ Added conditional quoting for map keys based on nesting level:
 ```hcl
 metadata = {
   labels = {
-    infra-hub.planton.ai/infra-project.name = "value"
+    infra-hub.planton.ai/infra-stack.name = "value"
   }
 }
 ```
@@ -60,7 +60,7 @@ metadata = {
 ```hcl
 metadata = {
   "labels" = {
-    "infra-hub.planton.ai/infra-project.name" = "value"
+    "infra-hub.planton.ai/infra-stack.name" = "value"
   }
 }
 ```
@@ -120,7 +120,7 @@ buf.WriteString(fmt.Sprintf("%s%s = ", indent, formattedKey))
 ## Related Work
 
 - Builds on the IaC-agnostic provider config fix (2026-01-20-190320)
-- Part of OpenFGA deployment component rollout
+- Part of OpenFGA catalog kind rollout
 
 ---
 

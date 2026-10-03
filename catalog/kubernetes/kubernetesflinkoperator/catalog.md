@@ -4,7 +4,7 @@ Deploys the Apache Flink Kubernetes Operator -- the official ASF controller that
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **The flink.apache.org CRDs** -- `flinkdeployments`, `flinksessionjobs`, `flinkstatesnapshots`, and `flinkbluegreendeployments`, installed by Helm from the chart's `crds/` directory: installed once, never upgraded on chart bumps (apply the new release's CRD files manually when a bump changes them), and left on the cluster on uninstall -- removing the operator never deletes Flink declarations
@@ -21,7 +21,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -61,11 +61,11 @@ spec:
 planton apply -f flink-operator.yaml
 ```
 
-This deploys the operator with a warm standby behind leader election (configured for you) in the `flink-system` namespace, fenced to the `stream-team-a` and `stream-team-b` namespaces: the modules create both, the chart plants job RBAC in each, and the operator's RBAC AND admission webhook are scoped to exactly that list. A Stack Job tracks the provisioning in real time.
+This deploys the operator with a warm standby behind leader election (configured for you) in the `flink-system` namespace, fenced to the `stream-team-a` and `stream-team-b` namespaces: the modules create both, the chart plants job RBAC in each, and the operator's RBAC AND admission webhook are scoped to exactly that list. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the operator to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the operator to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -109,15 +109,15 @@ These are the most important decisions when configuring the Flink Operator. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -139,6 +139,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the namespace for the operator install
-- [**Cert Manager**](/cloud-catalog/kubernetes-cert-manager) -- a hard prerequisite whenever the webhook is enabled: it issues and rotates the webhook's serving certificate
-- [**Flink Deployment**](/cloud-catalog/kubernetes-flink-deployment) -- declares the Flink clusters and jobs this operator reconciles
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the namespace for the operator install
+- [**Cert Manager**](/infra-catalog/kubernetes-cert-manager) -- a hard prerequisite whenever the webhook is enabled: it issues and rotates the webhook's serving certificate
+- [**Flink Deployment**](/infra-catalog/kubernetes-flink-deployment) -- declares the Flink clusters and jobs this operator reconciles

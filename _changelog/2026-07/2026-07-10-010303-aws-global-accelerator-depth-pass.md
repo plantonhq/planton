@@ -98,12 +98,12 @@ New surface and rule fixes:
 - `forge/flow/009-pulumi-module`: nested-block args — assign the value
   `XArgs{...}` to `XPtrInput` fields directly; the `XPtr(...)` wrapper is a
   compiles-clean, panics-at-deploy trap.
-- `update/update-planton-component`: provider schema validators can be
+- `update/update-catalog-kind`: provider schema validators can be
   LOOSER than the cloud API's real contract — never loosen an existing spec
   rule to match a provider validator without a live-API proof; promote the
   API's observed rejection into the spec rule.
 
-## Deliberately deferred (recorded in the component docs)
+## Deliberately deferred (recorded in the kind docs)
 
 Custom-routing accelerator family (distinct AWS resource family, ~5%
 adoption — its own candidate kind), the cross-account attachment object

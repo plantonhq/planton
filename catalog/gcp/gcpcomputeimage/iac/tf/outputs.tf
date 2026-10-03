@@ -1,4 +1,4 @@
-# Semantic outputs mirroring GcpComputeImageStackOutputs -- names and
+# Semantic outputs mirroring GcpComputeImageOutputs -- names and
 # shapes identical to the Pulumi module's exports.
 
 output "name" {

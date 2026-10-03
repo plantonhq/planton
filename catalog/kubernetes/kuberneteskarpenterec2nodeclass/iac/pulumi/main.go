@@ -4,18 +4,18 @@ import (
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/catalog/kubernetes/kuberneteskarpenterec2nodeclass/iac/pulumi/module"
 	kuberneteskarpenterec2nodeclassv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kuberneteskarpenterec2nodeclass/v1alpha1"
-	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/stackinput"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/iacinput"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
-		stackInput := &kuberneteskarpenterec2nodeclassv1alpha1.KubernetesKarpenterEc2NodeClassStackInput{}
+		iacInput := &kuberneteskarpenterec2nodeclassv1alpha1.KubernetesKarpenterEc2NodeClassIacInput{}
 
-		if err := stackinput.LoadStackInput(ctx, stackInput); err != nil {
-			return errors.Wrap(err, "failed to load stack-input")
+		if err := iacinput.LoadIacInput(ctx, iacInput); err != nil {
+			return errors.Wrap(err, "failed to load iac-input")
 		}
 
-		return module.Resources(ctx, stackInput)
+		return module.Resources(ctx, iacInput)
 	})
 }

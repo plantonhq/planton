@@ -5,10 +5,10 @@ package dev.planton.aws.awscostanomalymonitor.v1alpha1;
 import "catalog/aws/awscostanomalymonitor/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsCostAnomalyMonitorStackInput is the input for the IaC modules
+// AwsCostAnomalyMonitorIacInput is the input for the IaC modules
 // that manage a Cost Explorer anomaly monitor and its folded alert
 // subscriptions.
-message AwsCostAnomalyMonitorStackInput {
+message AwsCostAnomalyMonitorIacInput {
   // target is the AwsCostAnomalyMonitor resource to deploy.
   AwsCostAnomalyMonitor target = 1;
   // provider_config contains the AWS provider credentials and configuration.

@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# Stack Outputs — matching AwsFsxOntapFileSystemStackOutputs
+# Outputs — matching AwsFsxOntapFileSystemOutputs
 # ---------------------------------------------------------------------------
 # Primary consumers: AwsFsxOntapStorageVirtualMachine (file_system_id),
 # AwsFsxOntapVolume (via SVM), IAM policies (file_system_arn), SnapMirror

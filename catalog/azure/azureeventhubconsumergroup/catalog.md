@@ -4,7 +4,7 @@ Deploys a consumer group on an Azure Event Hub -- an independent, named view ove
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Consumer Group** -- on the referenced event hub, with your chosen application-scoped name
 - **Ownership metadata** -- when `userMetadata` is set: a free-form note (owner, app, escalation channel) operators see wherever the group is inspected
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -52,7 +52,7 @@ spec:
 planton apply -f consumer-group.yaml
 ```
 
-This creates a consumer group named `analytics` on the `telemetry-stream` hub, carrying an ownership note operators see wherever the group is inspected. A Stack Job tracks the provisioning in real time.
+This creates a consumer group named `analytics` on the `telemetry-stream` hub, carrying an ownership note operators see wherever the group is inspected. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -83,15 +83,15 @@ These are the most important decisions when configuring a consumer group. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureEventHub** | `eventHubId` | `status.outputs.event_hub_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -108,7 +108,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Event Hub**](/cloud-catalog/azure-event-hub) -- the stream every group reads
-- [**Azure Event Hub Namespace**](/cloud-catalog/azure-event-hub-namespace) -- the namespace owning the endpoint the consumer connects to
-- [**Azure Event Hub Authorization Rule**](/cloud-catalog/azure-event-hub-authorization-rule) -- the listen-rights credential the consuming application holds
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- keyless Azure Event Hubs Data Receiver grants scoped to the hub
+- [**Azure Event Hub**](/infra-catalog/azure-event-hub) -- the stream every group reads
+- [**Azure Event Hub Namespace**](/infra-catalog/azure-event-hub-namespace) -- the namespace owning the endpoint the consumer connects to
+- [**Azure Event Hub Authorization Rule**](/infra-catalog/azure-event-hub-authorization-rule) -- the listen-rights credential the consuming application holds
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- keyless Azure Event Hubs Data Receiver grants scoped to the hub

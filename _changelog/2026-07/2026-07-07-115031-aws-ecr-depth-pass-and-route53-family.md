@@ -150,11 +150,11 @@ entrypoints; four outputs-conformance cases.
 
 ## Workflow Uplift
 
-- `forge-planton-component.mdc`: the private E2E `$TMPDIR` must be a SHORT
+- `forge-catalog-kind.mdc`: the private E2E `$TMPDIR` must be a SHORT
   path — nested temp dirs overflow macOS's 104-byte unix-socket limit and
   fail every Terraform lane at provider-schema time with the misleading
   `Unrecognized remote plugin message`.
-- `update-planton-component.mdc`: IaC updates now grep the TF module for
+- `update-catalog-kind.mdc`: IaC updates now grep the TF module for
   `.value` reads on generator-flattened fields — `try(x.value, null)` on a
   flat string silently drops the field on every apply and no offline gate
   flags it (the class behind the ECR KMS defect). A sweep of the AWS
@@ -174,10 +174,10 @@ keeps `type: A` valid).
 
 ## Files
 
-Branch `refactor/aws/bring-components-to-90-10-coverage-contd-2`: the four
-component trees (`awsecrrepo`, `awsroute53zone`, `awsroute53dnsrecord`,
+Branch `refactor/aws/bring-kinds-to-90-10-coverage-contd-2`: the four
+kind trees (`awsecrrepo`, `awsroute53zone`, `awsroute53dnsrecord`,
 `awsroute53healthcheck`), `aa_e2e/verify/` (4 new verifiers + registry),
-`cloud_resource_kind.proto`/pb.go (enum 354 + record prerequisites),
+`catalog_kind.proto`/pb.go (enum 354 + record prerequisites),
 `e2e/aws/aws_test.go`, `pkg/outputs/conformance_test.go`,
 `pkg/iac/tofu/generators/` (drift enrollment + test fixture repoint),
 `go.mod`/`go.sum` (ecr + route53 SDK clients), site catalog mirrors, and

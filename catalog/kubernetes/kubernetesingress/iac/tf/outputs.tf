@@ -1,4 +1,4 @@
-# Stack outputs — must flatten onto KubernetesIngressStackOutputs
+# Outputs — must flatten onto KubernetesIngressOutputs
 # (outputs.proto) identically to the Pulumi module's exports.
 #
 # The load-balancer handles read the object's status WITHOUT waiting for a

@@ -9,7 +9,7 @@ import "buf/validate/validate.proto";
 // =============================================================================
 //
 // This file contains shared protobuf messages for volume mounts that are used
-// across multiple Kubernetes workload components:
+// across multiple Kubernetes workload kinds:
 // - KubernetesDeployment
 // - KubernetesDaemonSet
 // - KubernetesStatefulSet

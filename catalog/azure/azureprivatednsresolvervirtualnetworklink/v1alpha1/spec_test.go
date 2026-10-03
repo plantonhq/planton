@@ -33,7 +33,7 @@ func validResource() *AzurePrivateDnsResolverVirtualNetworkLink {
 	return &AzurePrivateDnsResolverVirtualNetworkLink{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzurePrivateDnsResolverVirtualNetworkLink",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-link",
 		},
 		Spec: &AzurePrivateDnsResolverVirtualNetworkLinkSpec{

@@ -1,4 +1,4 @@
-# AwsBedrockKnowledgeBase — Component Guide
+# AwsBedrockKnowledgeBase — Kind Guide
 
 Authored operational judgment for the Bedrock knowledge base component:
 the design decisions behind the spec's shape, and what to know before

@@ -5,9 +5,9 @@
 # bills a trigger execution (Azure counts those as orchestration runs)
 # plus the full cost of the pipeline run it starts, and the event-driven
 # types additionally ride Azure Event Grid's per-operation meters.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azuredatafactorytrigger
 spec:

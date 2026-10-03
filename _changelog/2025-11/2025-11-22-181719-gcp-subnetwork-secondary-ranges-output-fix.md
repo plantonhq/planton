@@ -6,11 +6,11 @@
 
 ## Summary
 
-Fixed a critical issue where GCP Subnetwork secondary IP ranges were not appearing in stack outputs after infrastructure deployment. The Pulumi module was exporting complex objects that got JSON-serialized, which downstream output processors couldn't handle. This fix aligns the export pattern with other working providers (AWS VPC), ensuring secondary ranges populate correctly in stack outputs.
+Fixed a critical issue where GCP Subnetwork secondary IP ranges were not appearing in outputs after infrastructure deployment. The Pulumi module was exporting complex objects that got JSON-serialized, which downstream output processors couldn't handle. This fix aligns the export pattern with other working providers (AWS VPC), ensuring secondary ranges populate correctly in outputs.
 
 ## Problem Statement
 
-When deploying a GCP Subnetwork with secondary IP ranges, the infrastructure would create successfully, but the secondary ranges wouldn't appear in the stack outputs that dependent resources rely on. This broke the ability to reference secondary range information (like pod and service CIDR blocks for GKE clusters) from other resources.
+When deploying a GCP Subnetwork with secondary IP ranges, the infrastructure would create successfully, but the secondary ranges wouldn't appear in the outputs that dependent resources rely on. This broke the ability to reference secondary range information (like pod and service CIDR blocks for GKE clusters) from other resources.
 
 ### Pain Points
 
@@ -31,7 +31,7 @@ ctx.Export(OpSecondaryRanges, createdSubnetwork.SecondaryIpRanges)
 When Pulumi encounters a complex Go struct, it helpfully serializes it to JSON:
 
 ```yaml
-# Stack outputs (broken)
+# Outputs (broken)
 secondary_ranges.0: '{"ipCidrRange":"10.4.0.0/14","rangeName":"pods","reservedInternalRange":""}'
 secondary_ranges.1: '{"ipCidrRange":"10.8.0.0/20","rangeName":"services","reservedInternalRange":""}'
 ```
@@ -53,7 +53,7 @@ for publicIndex, subnet := range publicSubnets {
 
 This produces:
 ```yaml
-# Stack outputs (working)
+# Outputs (working)
 public_subnets.0.name: public-subnet-a
 public_subnets.0.id: subnet-abc123
 public_subnets.0.cidr: 10.0.0.0/24
@@ -101,7 +101,7 @@ createdSubnetwork.SecondaryIpRanges.ApplyT(func(ranges []compute.SubnetworkSecon
 
 ### Why This Works
 
-The `ApplyT` method is Pulumi's way of handling computed values (values that aren't known until after cloud resources are created). When the subnetwork is created and GCP returns the actual secondary ranges, this function:
+The `ApplyT` method is Pulumi's way of handling computed values (values that aren't known until after infra components are created). When the subnetwork is created and GCP returns the actual secondary ranges, this function:
 
 1. Iterates over each range
 2. Exports each field individually with a structured key path
@@ -111,24 +111,24 @@ The `ApplyT` method is Pulumi's way of handling computed values (values that are
 
 **Before**:
 ```yaml
-# Stack outputs - JSON strings (unusable)
+# Outputs - JSON strings (unusable)
 secondary_ranges.0: '{"ipCidrRange":"10.4.0.0/14","rangeName":"pods"...}'
 secondary_ranges.1: '{"ipCidrRange":"10.8.0.0/20","rangeName":"services"...}'
 
-# Stack outputs transformation - empty
+# Outputs transformation - empty
 outputs:
   secondaryRanges: []  # Empty!
 ```
 
 **After**:
 ```yaml
-# Stack outputs - individual fields (working)
+# Outputs - individual fields (working)
 secondary_ranges.0.range_name: pods
 secondary_ranges.0.ip_cidr_range: 10.4.0.0/14
 secondary_ranges.1.range_name: services
 secondary_ranges.1.ip_cidr_range: 10.8.0.0/20
 
-# Stack outputs transformation - populated
+# Outputs transformation - populated
 outputs:
   secondaryRanges:
   - rangeName: pods
@@ -180,7 +180,7 @@ for i, item := range items {
 ### ✅ DO: Use ApplyT for Computed Values
 
 ```go
-// When values come from cloud resources
+// When values come from infra components
 resource.OutputField.ApplyT(func(values []Type) error {
     for i, v := range values {
         ctx.Export(fmt.Sprintf("output.%d.field", i), pulumi.String(v.Field))
@@ -224,7 +224,7 @@ This pattern should be applied to any GCP or other provider resources that expor
 ### Testing Verification
 To verify the fix works:
 1. Deploy a GCP Subnetwork with secondary IP ranges
-2. Check stack outputs in execution logs - should show individual fields
+2. Check outputs in execution logs - should show individual fields
 3. Verify dependent resources (like GKE) can reference the ranges
 4. Confirm `status.outputs.secondaryRanges` is populated in the resource
 

@@ -1,16 +1,16 @@
-# OpenStack Phase 6: DNS + Container Infra Deployment Components
+# OpenStack Phase 6: DNS + Container Infra Catalog Kinds
 
 **Date**: February 9, 2026
 **Type**: Feature
-**Components**: OpenStack Provider, Deployment Components (4)
+**Components**: OpenStack Provider, Catalog Kinds (4)
 
 ## Summary
 
-Added 4 Phase 6 OpenStack deployment components -- OpenStackDnsZone (2521), OpenStackDnsRecord (2522), OpenStackContainerClusterTemplate (2523), and OpenStackContainerCluster (2524) -- completing all 27 planned OpenStack deployment components. DNS components follow the established zone-with-inline-records pattern from GCP/AWS/Azure. Container Infra components enable Kubernetes-on-OpenStack via Magnum with full kubeconfig output support. Total OpenStack components: 27 of 27 (100%).
+Added 4 Phase 6 OpenStack catalog kinds -- OpenStackDnsZone (2521), OpenStackDnsRecord (2522), OpenStackContainerClusterTemplate (2523), and OpenStackContainerCluster (2524) -- completing all 27 planned OpenStack catalog kinds. DNS kinds follow the established zone-with-inline-records pattern from GCP/AWS/Azure. Container Infra components enable Kubernetes-on-OpenStack via Magnum with full kubeconfig output support. Total OpenStack kinds: 27 of 27 (100%).
 
 ## Problem Statement / Motivation
 
-The `openstack/kubernetes-environment` InfraChart needs Magnum cluster templates and clusters for Kubernetes deployment on OpenStack. DNS zone management is needed for all three planned InfraCharts (developer-environment, kubernetes-environment, project-landing-zone). Without these components, Phani at ARM cannot:
+The `openstack/kubernetes-environment` InfraChart needs Magnum cluster templates and clusters for Kubernetes deployment on OpenStack. DNS zone management is needed for all three planned InfraCharts (developer-environment, kubernetes-environment, project-landing-zone). Without these kinds, Phani at ARM cannot:
 - Create DNS zones and records for service discovery and external access
 - Deploy Kubernetes clusters on OpenStack via Magnum
 - Retrieve kubeconfig credentials for cluster access
@@ -23,7 +23,7 @@ The `openstack/kubernetes-environment` InfraChart needs Magnum cluster templates
 
 ## Solution / What's New
 
-### 4 Components Created
+### 4 Kinds Created
 
 ```mermaid
 flowchart LR
@@ -87,7 +87,7 @@ Magnum Kubernetes cluster with sensitive kubeconfig outputs:
 
 ### Enum Registration (Batch)
 
-All 4 enums registered in `cloud_resource_kind.proto`:
+All 4 enums registered in `catalog_kind.proto`:
 
 | Kind | Enum | ID Prefix |
 |------|------|-----------|
@@ -98,7 +98,7 @@ All 4 enums registered in `cloud_resource_kind.proto`:
 
 ### DNS Pattern Alignment
 
-The DNS components follow the established cross-provider pattern:
+The DNS kinds follow the established cross-provider pattern:
 - **Zone with inline records**: Same as GcpDnsZone, AwsRoute53Zone, AzureDnsZone
 - **Standalone record**: Same as GcpDnsRecord, AwsRoute53DnsRecord
 - **Each declares its own RecordType enum**: No shared enum between zone and record
@@ -119,7 +119,7 @@ The DNS components follow the established cross-provider pattern:
 ## Benefits
 
 - **Phase 6 COMPLETE**: All 4 DNS + Container Infra components done (87 total tests)
-- **27 of 27 components**: 100% of the OpenStack component set implemented
+- **27 of 27 kinds**: 100% of the OpenStack kind set implemented
 - **DNS zone with inline records**: Same UX as GCP/AWS/Azure zones
 - **Full Kubernetes-on-OpenStack**: Template -> Cluster -> kubeconfig pipeline
 - **Sensitive credential handling**: kubeconfig outputs protected in both Pulumi and TF
@@ -128,15 +128,15 @@ The DNS components follow the established cross-provider pattern:
 ## Impact
 
 - **Phase 6 COMPLETE**: 4 of 4 DNS + Container Infra components done
-- **27 of 27 total components** (including OpenStackKeypair)
+- **27 of 27 total kinds** (including OpenStackKeypair)
 - **All 3 InfraCharts unblocked**: developer-environment, kubernetes-environment, project-landing-zone
 - **InfraChart 2 (kubernetes-environment)**: Full Magnum template -> cluster -> kubeconfig chain ready
 
 ## Related Work
 
-- OpenStack Phase 1-5 components: `_changelog/2026-02/2026-02-09-*`
+- OpenStack Phase 1-5 kinds: `_changelog/2026-02/2026-02-09-*`
 - Provider repos: terraform-provider-openstack, pulumi-openstack (cloned locally)
-- Parent project: `planton/_projects/20260209.01.openstack-planton-components/`
+- Parent project: `planton/_projects/20260209.01.openstack-planton-kinds/`
 
 ---
 

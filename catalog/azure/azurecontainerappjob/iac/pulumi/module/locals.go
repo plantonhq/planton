@@ -5,7 +5,7 @@ import (
 
 	azurecontainerappjobv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurecontainerappjob/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -39,11 +39,11 @@ var identityTypeStrings = map[azurecontainerappjobv1alpha1.AzureContainerAppJobI
 	azurecontainerappjobv1alpha1.AzureContainerAppJobIdentityType_SYSTEM_AND_USER_ASSIGNED: "SystemAssigned, UserAssigned",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurecontainerappjobv1alpha1.AzureContainerAppJobStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurecontainerappjobv1alpha1.AzureContainerAppJobIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureContainerAppJob = stackInput.Target
-	target := stackInput.Target
+	locals.AzureContainerAppJob = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -54,7 +54,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurecontainerappjobv1alp
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureContainerAppJob.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureContainerAppJob.String()),
 	}
 
 	if target.Metadata.Id != "" {

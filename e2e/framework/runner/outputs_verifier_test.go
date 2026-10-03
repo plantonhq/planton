@@ -36,9 +36,9 @@ func TestVerifyOutputTransformation_Auth0ResourceServer(t *testing.T) {
 		t.Fatal("expected non-nil flat outputs")
 	}
 
-	typed, ok := msg.(*auth0resourceserverv1alpha1.Auth0ResourceServerStackOutputs)
+	typed, ok := msg.(*auth0resourceserverv1alpha1.Auth0ResourceServerOutputs)
 	if !ok {
-		t.Fatalf("expected *Auth0ResourceServerStackOutputs, got %T", msg)
+		t.Fatalf("expected *Auth0ResourceServerOutputs, got %T", msg)
 	}
 
 	assertField(t, "id", typed.GetId(), "auth0|abc123")
@@ -53,12 +53,12 @@ func TestVerifyOutputTransformation_Auth0ResourceServer(t *testing.T) {
 	assertField(t, "is_system", typed.GetIsSystem(), "false")
 }
 
-func TestVerifyOutputTransformation_UnknownComponent(t *testing.T) {
+func TestVerifyOutputTransformation_UnknownKind(t *testing.T) {
 	rawOutputs := map[string]interface{}{"id": "test-123"}
 
-	_, _, err := VerifyOutputTransformation("nonexistent_component_xyz", rawOutputs, "")
+	_, _, err := VerifyOutputTransformation("nonexistent_kind_xyz", rawOutputs, "")
 	if err == nil {
-		t.Fatal("expected error for unknown component, got nil")
+		t.Fatal("expected error for unknown kind, got nil")
 	}
 }
 

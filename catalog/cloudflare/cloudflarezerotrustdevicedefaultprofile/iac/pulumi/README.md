@@ -5,7 +5,7 @@ Pulumi (Go) IaC module for the account's default WARP device profile.
 ## Architecture
 
 ```
-main.go                       — stack-input loading + module entry
+main.go                       — iac-input loading + module entry
 module/main.go                — provider setup + resource orchestration
 module/locals.go              — metadata/credential references
 module/default_profile.go     — ZeroTrustDeviceDefaultProfile

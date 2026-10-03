@@ -44,7 +44,7 @@
 | `alert_interval` | string | Minimum time between repeat notifications, e.g. `30m`. |
 | `filters` | object | 43 list fields narrowing which events fire; `incident_impact` and `traffic_exclusions` are enum-walled. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|
@@ -85,7 +85,7 @@ spec:
 
 Real delete. Deleting the policy stops the alerts it delivered, silently -- nothing else changes and no destination is affected.
 
-## Related Components
+## Related Kinds
 
 - [Cloudflare Notification Webhook](/docs/catalog/cloudflare/cloudflarenotificationwebhook) -- the webhook destinations referenced here
 - [Cloudflare Healthcheck](/docs/catalog/cloudflare/cloudflarehealthcheck) -- the origin probes behind health-check alerts

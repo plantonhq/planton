@@ -11,10 +11,10 @@ type Locals struct {
 	GcpTpuQueuedResource *gcptpuqueuedresourcev1alpha1.GcpTpuQueuedResource
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcptpuqueuedresourcev1alpha1.GcpTpuQueuedResourceStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcptpuqueuedresourcev1alpha1.GcpTpuQueuedResourceIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpTpuQueuedResource = stackInput.Target
+	locals.GcpTpuQueuedResource = iacInput.Target
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

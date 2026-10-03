@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesvalkey.v1alpha1;
 import "catalog/kubernetes/kubernetesvalkey/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//KubernetesValkey stack-input
-message KubernetesValkeyStackInput {
-  //target cloud-resource
+//KubernetesValkey iac-input
+message KubernetesValkeyIacInput {
+  //target infra-component
   KubernetesValkey target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

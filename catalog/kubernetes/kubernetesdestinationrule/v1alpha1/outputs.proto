@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesdestinationrule.v1alpha1;
 
-// KubernetesDestinationRuleStackOutputs captures observable outputs after the DestinationRule
+// KubernetesDestinationRuleOutputs captures observable outputs after the DestinationRule
 // is created on the target cluster. A DestinationRule is a policy resource consumed by istiod
 // (it has no controller-reconciled status subresource useful to surface here), so only the
 // resource identity is exported.
-message KubernetesDestinationRuleStackOutputs {
+message KubernetesDestinationRuleOutputs {
   // Name of the created DestinationRule (equals metadata.name).
   string destination_rule_name = 1;
 

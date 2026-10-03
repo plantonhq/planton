@@ -28,7 +28,7 @@ func buildValidQueryAlert() *AzureMonitorScheduledQueryAlert {
 	return &AzureMonitorScheduledQueryAlert{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureMonitorScheduledQueryAlert",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-query-alert",
 		},
 		Spec: &AzureMonitorScheduledQueryAlertSpec{

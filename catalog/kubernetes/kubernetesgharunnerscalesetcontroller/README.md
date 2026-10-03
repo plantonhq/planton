@@ -7,7 +7,7 @@ actions-runner-controller manager that reconciles runner scale sets
 into listeners and ephemeral runner pods. One cluster-wide controller
 is the sane default.
 
-Not the right component when:
+Not the right kind when:
 
 - **You want actual runners** — that is `KubernetesGhaRunnerScaleSet`,
   one per repository/organization/enterprise registration. This kind

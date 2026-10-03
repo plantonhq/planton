@@ -4,7 +4,7 @@ Runs a notebook or a pipeline on a timer. A schedule launches a Colab Enterprise
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project
 - **Schedule** -- a `colab.Schedule` that launches the declared notebook or pipeline run on its cron
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Vertex AI admin permissions on the project, and permission to act as the runs' service account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Vertex AI admin permissions on the project, and permission to act as the runs' service account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Optional Dependencies
@@ -65,7 +65,7 @@ spec:
 planton apply -f colab-schedule.yaml
 ```
 
-This runs the nightly notebook at 06:00 New York time as a service account and saves each executed copy to the bucket. A Stack Job tracks the provisioning in real time.
+This runs the nightly notebook at 06:00 New York time as a service account and saves each executed copy to the bucket. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,7 +87,7 @@ These are the most important decisions when configuring a schedule. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -100,9 +100,9 @@ These are the most important decisions when configuring a schedule. Explore the 
 | **GcpSubnetwork** | `notebookExecutionJob.customEnvironmentSpec.networkSpec.subnetwork` | `status.outputs.subnetwork_self_link` |
 | **GcpKmsKey** | `notebookExecutionJob.kmsKeyName`, `pipelineJob.kmsKeyName` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,6 +120,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Colab Runtime Template**](/cloud-catalog/gcp-colab-runtime-template) -- the machine notebook runs use
-- [**GCP GCS Bucket**](/cloud-catalog/gcp-gcs-bucket) -- notebook sources and outputs
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the run identity
+- [**GCP Colab Runtime Template**](/infra-catalog/gcp-colab-runtime-template) -- the machine notebook runs use
+- [**GCP GCS Bucket**](/infra-catalog/gcp-gcs-bucket) -- notebook sources and outputs
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the run identity

@@ -4,7 +4,7 @@ Deploys a WAFv2 Web ACL — the ordered rule set that decides which requests rea
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **WAFv2 Web ACL** — the named access-control list with its default action, visibility metrics, and sampled-request posture
 - **Rules** — an ordered priority list evaluated top-down; each rule carries either a match `action` or a group `override_action`, plus optional per-rule CAPTCHA/challenge immunity and custom responses
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -62,7 +62,7 @@ spec:
 planton apply -f waf-web-acl.yaml
 ```
 
-This creates a REGIONAL web ACL with the AWS Common Rule Set enforced and all other traffic allowed. A Stack Job tracks the provisioning in real time.
+This creates a REGIONAL web ACL with the AWS Common Rule Set enforced and all other traffic allowed. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -105,7 +105,7 @@ These are the most important decisions when configuring a WAF Web ACL. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -113,9 +113,9 @@ These are the most important decisions when configuring a WAF Web ACL. Explore t
 | **AwsWafRegexPatternSet** | `rules[].statement.regexPatternSetReference.arn` | `status.outputs.regex_pattern_set_arn` |
 | **CloudWatch Log Group / S3 / Firehose** | `logging.destinationArn` | literal ARN or explicit-kind reference (three destination types, so no default kind) |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -139,7 +139,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS WAF IP Set**](/cloud-catalog/aws-waf-ip-set) — allow / deny lists referenced by `ipSetReference` rules
-- [**AWS WAF Regex Pattern Set**](/cloud-catalog/aws-waf-regex-pattern-set) — reusable regex catalogs for path and header matching
-- [**AWS CloudFront**](/cloud-catalog/aws-cloud-front) — associates via `webAclArn`
-- [**AWS ALB**](/cloud-catalog/aws-alb) / API Gateway / App Runner — associate the ARN after deploy
+- [**AWS WAF IP Set**](/infra-catalog/aws-waf-ip-set) — allow / deny lists referenced by `ipSetReference` rules
+- [**AWS WAF Regex Pattern Set**](/infra-catalog/aws-waf-regex-pattern-set) — reusable regex catalogs for path and header matching
+- [**AWS CloudFront**](/infra-catalog/aws-cloud-front) — associates via `webAclArn`
+- [**AWS ALB**](/infra-catalog/aws-alb) / API Gateway / App Runner — associate the ARN after deploy

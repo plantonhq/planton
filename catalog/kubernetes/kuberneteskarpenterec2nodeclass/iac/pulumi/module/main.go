@@ -10,11 +10,11 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *kuberneteskarpenterec2nodeclassv1alpha1.KubernetesKarpenterEc2NodeClassStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kuberneteskarpenterec2nodeclassv1alpha1.KubernetesKarpenterEc2NodeClassIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubeProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}

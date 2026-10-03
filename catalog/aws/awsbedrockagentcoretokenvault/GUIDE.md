@@ -1,4 +1,4 @@
-# AwsBedrockAgentCoreTokenVault — Component Guide
+# AwsBedrockAgentCoreTokenVault — Kind Guide
 
 Authored operational judgment for the AgentCore token-vault
 singleton: the design decisions behind the spec's shape, and what to

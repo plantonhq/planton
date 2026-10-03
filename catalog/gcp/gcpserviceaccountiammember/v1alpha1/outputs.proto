@@ -6,7 +6,7 @@ package dev.planton.gcp.gcpserviceaccountiammember.v1alpha1;
 // The grant itself has no server-generated identity beyond its inputs; the
 // outputs echo the fully-resolved grant tuple so downstream tooling and audits
 // can see exactly what was applied without re-resolving references.
-message GcpServiceAccountIamMemberStackOutputs {
+message GcpServiceAccountIamMemberOutputs {
   // The fully-qualified resource name of the service account whose IAM
   // policy received the grant (projects/<project>/serviceAccounts/<email>),
   // after reference resolution.

@@ -49,7 +49,7 @@ import "shared/options/options.proto";
 //   role to be configured once per region.
 //
 // Credentials, region, and deployment workflow live outside this spec
-// in stack inputs.
+// in IaC inputs.
 message AwsRestApiGatewaySpec {
   // The AWS region where the API will be created.
   // Example: "us-west-2", "eu-west-1"

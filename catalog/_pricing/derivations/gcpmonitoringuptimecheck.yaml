@@ -2,9 +2,9 @@
 # price choices from a manifest's spec fields. Field paths are spec-relative
 # proto field names. Price slugs resolve in the GCP price book
 # (catalog/_pricing/pricebook/gcp.yaml). Schema:
-# finops/componentcostderivation/v1.
+# finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: gcpmonitoringuptimecheck
 spec:
@@ -158,7 +158,7 @@ spec:
           op: equals
           value: "true"
       text: each failed probe writes a Cloud Logging entry billed at ingestion rates -- negligible for healthy targets, real for flapping ones
-    - text: the alerting built on this check (alert policies and their notification channels) bills on those components
+    - text: the alerting built on this check (alert policies and their notification channels) bills on those kinds
   notes:
     - text: "The first 1,000,000 uptime check executions per project each month are free -- the SKU's own tiered rate, aggregated monthly at project level -- so a project's early checks pay nothing and this may be one of them. List total shown without the free allotment, which is project-wide and not visible from any single manifest."
     - applies_when:

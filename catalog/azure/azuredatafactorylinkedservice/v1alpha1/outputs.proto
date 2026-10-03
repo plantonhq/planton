@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azuredatafactorylinkedservice.v1alpha1;
 
-// **AzureDataFactoryLinkedServiceStackOutputs** captures the outputs
+// **AzureDataFactoryLinkedServiceOutputs** captures the outputs
 // from provisioning an Azure Data Factory linked service.
-message AzureDataFactoryLinkedServiceStackOutputs {
+message AzureDataFactoryLinkedServiceOutputs {
   // The linked service's Azure Resource Manager ID
   // ({factory_id}/linkedservices/{name}) -- the same ID shape for all
   // connection types.

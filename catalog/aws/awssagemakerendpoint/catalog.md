@@ -4,7 +4,7 @@ Deploys an Amazon SageMaker real-time inference endpoint together with its endpo
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SageMaker Endpoint Configuration** — the immutable capacity definition: variants, serverless or instance sizing, data capture, async inference, and KMS volume encryption. Configurations are name-suffixed (`<name>-cfg-…`) and a new one is created before the old is destroyed, so the endpoint never references a deleted configuration.
 - **SageMaker Endpoint** — the invocable resource, named from `metadata.name`. That name never changes across configuration rolls, so clients keep invoking the same identity while capacity evolves underneath. When a `deployment` policy is set, UpdateEndpoint rolls blue/green or in batches with alarm-guarded rollback.
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with SageMaker control-plane permissions (`sagemaker:CreateEndpoint`, `sagemaker:CreateEndpointConfig`, and their update/delete siblings). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with SageMaker control-plane permissions (`sagemaker:CreateEndpoint`, `sagemaker:CreateEndpointConfig`, and their update/delete siblings). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -56,7 +56,7 @@ spec:
 planton apply -f sagemaker-endpoint.yaml
 ```
 
-This creates a serverless endpoint serving the referenced model at up to 20 concurrent invocations in 2 GB environments — no instances, no idle cost. A Stack Job tracks the provisioning in real time.
+This creates a serverless endpoint serving the referenced model at up to 20 concurrent invocations in 2 GB environments — no instances, no idle cost. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -99,7 +99,7 @@ These are the most important decisions when configuring an endpoint. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -108,9 +108,9 @@ These are the most important decisions when configuring an endpoint. Explore the
 | **AwsKmsKey** | `kmsKeyArn` (also under `dataCapture`, `asyncInference`, `coreDump`) | `status.outputs.key_arn` |
 | **AwsSnsTopic** | `asyncInference.successTopicArn`, `asyncInference.errorTopicArn` | `status.outputs.topic_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -129,8 +129,8 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**AWS SageMaker Model**](/cloud-catalog/aws-sagemaker-model) — the model each variant serves, wired via the variant's `model` reference
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the execution role for inference-component endpoints whose variants omit a model
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption for ML volumes, captured data, and async outputs
-- [**AWS SNS Topic**](/cloud-catalog/aws-sns-topic) — success and error notifications for async inference
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — destinations for data capture, async responses, and core dumps, referenced by URI
+- [**AWS SageMaker Model**](/infra-catalog/aws-sagemaker-model) — the model each variant serves, wired via the variant's `model` reference
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the execution role for inference-component endpoints whose variants omit a model
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption for ML volumes, captured data, and async outputs
+- [**AWS SNS Topic**](/infra-catalog/aws-sns-topic) — success and error notifications for async inference
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — destinations for data capture, async responses, and core dumps, referenced by URI

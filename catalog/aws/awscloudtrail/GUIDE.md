@@ -1,4 +1,4 @@
-# AwsCloudTrail — Component Guide
+# AwsCloudTrail — Kind Guide
 
 Authored operational judgment for the CloudTrail component: the design
 decisions behind the spec's shape, and what to know before operating

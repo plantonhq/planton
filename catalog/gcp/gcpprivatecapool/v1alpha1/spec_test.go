@@ -42,7 +42,7 @@ var _ = ginkgo.Describe("GcpPrivateCaPoolSpec", func() {
 		return &GcpPrivateCaPool{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpPrivateCaPool",
-			Metadata:   &shared.CloudResourceMetadata{Name: "internal-tls"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "internal-tls"},
 			Spec: &GcpPrivateCaPoolSpec{
 				Location: "us-central1",
 				Tier:     "DEVOPS",

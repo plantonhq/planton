@@ -1,10 +1,10 @@
 # Cloudflare Zero Trust Tunnel
 
-Provisions a Cloudflare Tunnel (cloudflared): a secure, outbound-only connection from a private network to Cloudflare's edge. A tunnel exposes private HTTP/TCP/SSH/RDP services via public hostnames (ingress rules) and makes private IP ranges reachable to WARP clients (via `CloudflareZeroTrustTunnelRoute`) -- without opening a single inbound firewall port. The connector authenticates with the run token exported in the stack outputs.
+Provisions a Cloudflare Tunnel (cloudflared): a secure, outbound-only connection from a private network to Cloudflare's edge. A tunnel exposes private HTTP/TCP/SSH/RDP services via public hostnames (ingress rules) and makes private IP ranges reachable to WARP clients (via `CloudflareZeroTrustTunnelRoute`) -- without opening a single inbound firewall port. The connector authenticates with the run token exported in the outputs.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Tunnel** -- the cloudflared tunnel object and its run token
 - **Ingress configuration** -- created only when `configSrc` is `cloudflare`; provisioned as its own provider resource, so editing ingress never recreates the tunnel
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Cloudflare Tunnel edit access. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Cloudflare Tunnel edit access. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -52,7 +52,7 @@ spec:
 planton apply -f cloudflare-zero-trust-tunnel.yaml
 ```
 
-This exposes `app.example.com` through the tunnel to a local service on port 8080, with a catch-all 404 for everything else. A Stack Job tracks the provisioning in real time.
+This exposes `app.example.com` through the tunnel to a local service on port 8080, with a catch-all 404 for everything else. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,15 +89,15 @@ These are the most important decisions when configuring a tunnel. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareZeroTrustAccessApplication** (optional) | `originRequest.access.audTag[]` (also per-rule `ingress[].originRequest.access.audTag[]`) | `status.outputs.aud` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -119,7 +119,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Zero Trust Tunnel Route**](/cloud-catalog/cloudflare-zero-trust-tunnel-route) -- advertises private CIDRs through this tunnel
-- [**Cloudflare Zero Trust Tunnel Virtual Network**](/cloud-catalog/cloudflare-zero-trust-tunnel-virtual-network) -- the routing segment a route belongs to
-- [**Cloudflare Zero Trust Access Application**](/cloud-catalog/cloudflare-zero-trust-access-application) -- the Access apps an ingress Access block references
-- [**Cloudflare DNS Record**](/cloud-catalog/cloudflare-dns-record) -- the CNAME that points a public hostname at the tunnel
+- [**Cloudflare Zero Trust Tunnel Route**](/infra-catalog/cloudflare-zero-trust-tunnel-route) -- advertises private CIDRs through this tunnel
+- [**Cloudflare Zero Trust Tunnel Virtual Network**](/infra-catalog/cloudflare-zero-trust-tunnel-virtual-network) -- the routing segment a route belongs to
+- [**Cloudflare Zero Trust Access Application**](/infra-catalog/cloudflare-zero-trust-access-application) -- the Access apps an ingress Access block references
+- [**Cloudflare DNS Record**](/infra-catalog/cloudflare-dns-record) -- the CNAME that points a public hostname at the tunnel

@@ -30,9 +30,9 @@ Follows the established planton.ai content pattern — markdown in `public/` for
 
 ### Layout
 
-A new `BrandingContentLayout` component provides a focused single-document layout:
+A new `BrandingContentLayout` kind provides a focused single-document layout:
 - Content area with full `MDXRenderer` rendering (tables, code blocks, mermaid, syntax highlighting)
-- Sticky right-side Table of Contents sidebar (reuses existing `TableOfContents` component)
+- Sticky right-side Table of Contents sidebar (reuses existing `TableOfContents` kind)
 - No left sidebar — this is a standalone reference, not a multi-page section
 - TOC collapses on smaller screens
 

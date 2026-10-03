@@ -1,5 +1,5 @@
-# Stack outputs — must stay in lockstep with
-# AwsCloudwatchLogGroupStackOutputs. The provider trims the API's ":*" suffix
+# Outputs — must stay in lockstep with
+# AwsCloudwatchLogGroupOutputs. The provider trims the API's ":*" suffix
 # from the ARN on read, so downstream consumers that need the wildcard form
 # (e.g. Step Functions logging) append it themselves.
 output "log_group_arn" {

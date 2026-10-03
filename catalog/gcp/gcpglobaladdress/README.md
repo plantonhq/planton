@@ -88,7 +88,7 @@ This reserves a static external IPv4 address that you can attach to an HTTP(S) l
 | Redis/AlloyDB private access | INTERNAL | VPC_PEERING | /20 range for private services |
 | Private Service Connect | INTERNAL | PRIVATE_SERVICE_CONNECT | Single IP for PSC endpoint |
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -126,7 +126,7 @@ For comprehensive examples, see `e2e/manifest.yaml`, including:
 - Private Service Connect address
 - Full configuration with all fields
 
-## Related Components
+## Related Kinds
 
 - [GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork) — provides the VPC network referenced by INTERNAL addresses
 - [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project and enables the Compute Engine API

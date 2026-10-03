@@ -1,4 +1,4 @@
-# Stack outputs — exactly the DigitalOceanUptimeCheckStackOutputs contract,
+# Outputs — exactly the DigitalOceanUptimeCheckOutputs contract,
 # identical across both provisioners.
 
 output "check_id" {

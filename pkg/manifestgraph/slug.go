@@ -11,7 +11,7 @@ import (
 
 // SlugPattern is the one rule every resource slug obeys: lowercase letters
 // and digits joined by single hyphens (my-app-2). It is spelled exactly as
-// CloudResourceMetadata.slug's protovalidate rule and the platform's
+// CatalogObjectMetadata.slug's protovalidate rule and the platform's
 // ApiResourceSlugLaw.PATTERN spell it. The alphabet is the one every system a
 // slug is written into accepts: DNS labels, secret store names, cloud labels
 // and tags, and dot-delimited identities (the Pulumi stack
@@ -67,7 +67,7 @@ func GenerateSlug(name string) string {
 // ResolveSlug resolves a manifest's identity slug: an explicit metadata.slug
 // passes through untouched (it IS the platform identity when present),
 // otherwise the slug generates from metadata.name.
-func ResolveSlug(meta *shared.CloudResourceMetadata) string {
+func ResolveSlug(meta *shared.CatalogObjectMetadata) string {
 	if meta == nil {
 		return ""
 	}

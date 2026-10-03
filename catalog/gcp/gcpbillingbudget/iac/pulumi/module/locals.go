@@ -21,8 +21,8 @@ type Locals struct {
 	DisplayName string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpbillingbudgetv1alpha1.GcpBillingBudgetStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcpbillingbudgetv1alpha1.GcpBillingBudgetIacInput) *Locals {
+	target := iacInput.Target
 
 	displayName := target.Spec.DisplayName
 	if displayName == "" {

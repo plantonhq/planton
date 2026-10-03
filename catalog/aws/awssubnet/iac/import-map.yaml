@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awssubnet
 spec:
@@ -11,14 +11,14 @@ spec:
   values:
     - name: subnet_id
       derivations:
-        - from_stack_output: subnet_id
+        - from_output: subnet_id
         - from_arn_part: resource_id
       where_to_find: >-
         VPC console -> Subnets (the Subnet ID column), or
         `aws ec2 describe-subnets` (SubnetId).
     - name: route_table_id
       derivations:
-        - from_stack_output: route_table_id
+        - from_output: route_table_id
       where_to_find: >-
         VPC console -> Route tables (the Route table ID column), or
         `aws ec2 describe-route-tables

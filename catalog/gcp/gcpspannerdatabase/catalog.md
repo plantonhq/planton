@@ -4,7 +4,7 @@ Deploys a Cloud Spanner database within an existing Spanner instance, with confi
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Spanner Database** -- a managed database within the specified Spanner instance, configured with the chosen SQL dialect and version retention period
 - **Initial Schema** -- when `ddl` statements are specified, executes them atomically during database creation (tables, indexes, views)
@@ -16,13 +16,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** matching the project of the parent Spanner instance. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
-- **An existing Spanner instance** to host the database. Provide the instance name directly or reference a GcpSpannerInstance Cloud Resource via ValueFromRef.
+- **A GCP project** matching the project of the parent Spanner instance. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
+- **An existing Spanner instance** to host the database. Provide the instance name directly or reference a GcpSpannerInstance Infra Component via ValueFromRef.
 - **Cloud KMS key** (if using CMEK) -- the key must be in the same location as the Spanner instance. The Spanner service account must have `roles/cloudkms.cryptoKeyEncrypterDecrypter` on the key.
 
 ## Deploy
@@ -54,7 +54,7 @@ spec:
 planton apply -f spanner-database.yaml
 ```
 
-This creates a database with the GoogleSQL dialect, 1-hour default version retention, Google-managed encryption, and the IaC-side deletion guard on by default. Schema must be managed separately via migration tools or subsequent DDL updates. A Stack Job tracks the provisioning in real time.
+This creates a database with the GoogleSQL dialect, 1-hour default version retention, Google-managed encryption, and the IaC-side deletion guard on by default. Schema must be managed separately via migration tools or subsequent DDL updates. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -98,7 +98,7 @@ These are the most important decisions when configuring a Spanner database. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -106,9 +106,9 @@ These are the most important decisions when configuring a Spanner database. Expl
 | **GcpSpannerInstance** | `instance` | `status.outputs.instance_name` |
 | **GcpKmsKey** (optional) | `encryptionConfig.kmsKeyName` / `encryptionConfig.kmsKeyNames` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -128,6 +128,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the Spanner database is created
-- [**GCP Spanner Instance**](/cloud-catalog/gcp-spanner-instance) -- provides the Spanner instance that hosts the database
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- provides the Cloud KMS key for database-level CMEK encryption
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the Spanner database is created
+- [**GCP Spanner Instance**](/infra-catalog/gcp-spanner-instance) -- provides the Spanner instance that hosts the database
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- provides the Cloud KMS key for database-level CMEK encryption

@@ -40,7 +40,7 @@ flowchart TB
 
     subgraph phase2[Phase 2: Implementation]
         summary --> folder[Create Guest Folder]
-        folder --> slides[Create Slide Components]
+        folder --> slides[Create Slide Kinds]
         slides --> config[Create Config File]
         config --> registry[Update Registry]
     end
@@ -132,7 +132,7 @@ tools/local-dev/_rules/
 
 # Phase 2: Implementation
 - File structure creation
-- Slide component templates
+- Slide kind templates
 - Config file format
 - Registry update instructions
 

@@ -21,7 +21,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsmskcluster
+    e2e-catalog-kind: awsmskcluster
   annotations:
     planton.dev/e2e: "true"
   tags:

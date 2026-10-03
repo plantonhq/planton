@@ -36,12 +36,12 @@ import (
 //     managed identity is Azure's own stated direction, and a client
 //     secret in cluster config is exactly the credential class the
 //     platform is built to eliminate.
-func Resources(ctx *pulumi.Context, stackInput *azureaksclusterv1alpha1.AzureAksClusterStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureaksclusterv1alpha1.AzureAksClusterIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -210,7 +210,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureaksclusterv1alpha1.AzureAks
 		return errors.Wrapf(err, "failed to create aks cluster %s", spec.Name)
 	}
 
-	// Export stack outputs. cluster_id is the parent seam every standalone
+	// Export outputs. cluster_id is the parent seam every standalone
 	// AzureAksNodePool consumes; oidc_issuer_url is the trust anchor an
 	// AzureFederatedIdentityCredential binds to for workload identity.
 	ctx.Export(OpClusterId, createdCluster.ID())

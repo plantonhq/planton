@@ -30,7 +30,7 @@ var _ = ginkgo.Describe("KubernetesExternalSecret Validation Tests", func() {
 		input = &KubernetesExternalSecret{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesExternalSecret",
-			Metadata:   &shared.CloudResourceMetadata{Name: "app-db-credentials"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "app-db-credentials"},
 			Spec: &KubernetesExternalSecretSpec{
 				Namespace: literal("team-a"),
 				StoreRef: &KubernetesExternalSecretStoreRef{

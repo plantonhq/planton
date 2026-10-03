@@ -12,7 +12,7 @@ import (
 // home is server-side).
 func TestCollectBackendRefs(t *testing.T) {
 	manifestYaml := `apiVersion: _test.planton.dev/v1alpha2
-kind: TestCloudResourceGeneric
+kind: TestCatalogKindGeneric
 metadata:
   name: refs
   env: dev

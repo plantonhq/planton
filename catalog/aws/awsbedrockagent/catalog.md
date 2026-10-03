@@ -4,7 +4,7 @@ Deploys an Amazon Bedrock agent — a foundation-model-powered assistant that re
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Bedrock Agent** — the agent on the model you name (a foundation-model ID or ARN, or an inference-profile ID or ARN), with optional guardrail attachment, session-summary memory, and per-step prompt-template overrides
 - **Action Groups** — created only when `actionGroups` entries exist: Lambda-backed or return-control tools described by an OpenAPI or function schema, or reserved AWS capabilities (`AMAZON.UserInput`, `AMAZON.CodeInterpreter`, the `ANTHROPIC.*` computer-use signatures)
@@ -18,7 +18,7 @@ Every satellite change triggers an AWS prepare cycle; the deploy completes only 
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Bedrock agent permissions (`bedrock:CreateAgent` and its satellite read/update/delete siblings) plus `iam:PassRole` on the agent's role. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Bedrock agent permissions (`bedrock:CreateAgent` and its satellite read/update/delete siblings) plus `iam:PassRole` on the agent's role. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -73,7 +73,7 @@ spec:
 planton apply -f agent.yaml
 ```
 
-This creates a Nova Micro support agent with one return-control tool group and a `live` alias that snapshots the assembled draft into version 1. A Stack Job tracks the provisioning in real time.
+This creates a Nova Micro support agent with one return-control tool group and a `live` alias that snapshots the assembled draft into version 1. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -124,7 +124,7 @@ These are the most important decisions when configuring an agent. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -137,9 +137,9 @@ These are the most important decisions when configuring an agent. Explore the fu
 | **AwsBedrockAgent** | `collaborators[].collaboratorAliasArn` | `status.outputs.alias_arns.<alias-name>` |
 | **AwsBedrockProvisionedThroughput** | `aliases[].routing.provisionedThroughput` | `status.outputs.provisioned_model_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -162,12 +162,12 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the service role the agent assumes, wired via `agentResourceRoleArn`
-- [**AWS Bedrock Knowledge Base**](/cloud-catalog/aws-bedrock-knowledge-base) — retrieval sources associated through `knowledgeBaseAssociations`
-- [**AWS Bedrock Guardrail**](/cloud-catalog/aws-bedrock-guardrail) — content-safety policies attached via `guardrail`, pinned to a published version
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) — action-group executors and the optional prompt-override parser
-- [**AWS Bedrock Model Access**](/cloud-catalog/aws-bedrock-model-access) — the marketplace-model agreement that must exist before such a model can power the agent
-- [**AWS Bedrock Inference Profile**](/cloud-catalog/aws-bedrock-inference-profile) — an alternative `foundationModel` value for cost attribution or cross-region routing
-- [**AWS Bedrock Provisioned Throughput**](/cloud-catalog/aws-bedrock-provisioned-throughput) — reserved capacity an alias serves through via `routing.provisionedThroughput`
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption via `customerEncryptionKeyArn`
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — hosts OpenAPI schema documents for action groups
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the service role the agent assumes, wired via `agentResourceRoleArn`
+- [**AWS Bedrock Knowledge Base**](/infra-catalog/aws-bedrock-knowledge-base) — retrieval sources associated through `knowledgeBaseAssociations`
+- [**AWS Bedrock Guardrail**](/infra-catalog/aws-bedrock-guardrail) — content-safety policies attached via `guardrail`, pinned to a published version
+- [**AWS Lambda**](/infra-catalog/aws-lambda) — action-group executors and the optional prompt-override parser
+- [**AWS Bedrock Model Access**](/infra-catalog/aws-bedrock-model-access) — the marketplace-model agreement that must exist before such a model can power the agent
+- [**AWS Bedrock Inference Profile**](/infra-catalog/aws-bedrock-inference-profile) — an alternative `foundationModel` value for cost attribution or cross-region routing
+- [**AWS Bedrock Provisioned Throughput**](/infra-catalog/aws-bedrock-provisioned-throughput) — reserved capacity an alias serves through via `routing.provisionedThroughput`
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption via `customerEncryptionKeyArn`
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — hosts OpenAPI schema documents for action groups

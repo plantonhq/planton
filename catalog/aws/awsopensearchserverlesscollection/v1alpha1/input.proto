@@ -5,9 +5,9 @@ package dev.planton.aws.awsopensearchserverlesscollection.v1alpha1;
 import "catalog/aws/awsopensearchserverlesscollection/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsOpenSearchServerlessCollectionStackInput is the input for the IaC
+// AwsOpenSearchServerlessCollectionIacInput is the input for the IaC
 // modules that deploy the OpenSearch Serverless collection.
-message AwsOpenSearchServerlessCollectionStackInput {
+message AwsOpenSearchServerlessCollectionIacInput {
   // target is the AwsOpenSearchServerlessCollection resource to deploy.
   AwsOpenSearchServerlessCollection target = 1;
   // provider_config contains the AWS provider credentials and configuration.

@@ -5,12 +5,12 @@ package dev.planton.kubernetes.kubernetesdaemonset.v1alpha1;
 import "catalog/kubernetes/kubernetesdaemonset/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// KubernetesDaemonSetStackInput is the input for the Kubernetes DaemonSet IaC module:
+// KubernetesDaemonSetIacInput is the input for the Kubernetes DaemonSet IaC module:
 // the target resource and the provider configuration. The image-pull Secret for a
 // private registry is derived from the target's own spec
 // (`spec.pod.image_registries`), never from an input filled on the workload's behalf.
-message KubernetesDaemonSetStackInput {
-  // Target cloud-resource
+message KubernetesDaemonSetIacInput {
+  // Target infra-component
   KubernetesDaemonSet target = 1;
 
   // Provider configuration for Kubernetes

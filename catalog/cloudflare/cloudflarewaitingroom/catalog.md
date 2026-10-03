@@ -4,7 +4,7 @@ Deploys a Cloudflare waiting room: a virtual queue in front of a host and path t
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Waiting Room** — one waiting room on the zone, scoped to `host` + `path`, queueing when `newUsersPerMinute` or `totalActiveUsers` is exceeded
 - **Waiting Room Rules** — created only when `bypassRules` is non-empty; one rules list holding the room's ENTIRE bypass-rule set (the action is fixed to `bypass_waiting_room` — the module supplies it), replaced whole on every apply
@@ -13,12 +13,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Zone → Waiting Room → Edit on the target zone. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Zone → Waiting Room → Edit on the target zone. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Cloudflare Account
 
-- **A zone on the account** — `zoneId` names the zone the room protects; reference a CloudflareDnsZone Cloud Resource or pass the 32-character zone ID.
+- **A zone on the account** — `zoneId` names the zone the room protects; reference a CloudflareDnsZone Infra Component or pass the 32-character zone ID.
 - **The Waiting Rooms Advanced add-on** (only for Advanced fields) — `additionalRoutes`, `customPageHtml`, `disableSessionRenewal`, `jsonResponseEnabled`, a non-fifo `queueingMethod`, `turnstileAction: infinite_queue`, and any `turnstileMode` other than `off` all fail at apply on a plan without it.
 
 ## Deploy
@@ -52,7 +52,7 @@ spec:
 planton apply -f waiting-room.yaml
 ```
 
-This creates a queue on `shop.acme.com/checkout` at Cloudflare's 200/200 floors with fifo admission and the default queue page — no Advanced fields, so it works on any plan. A Stack Job tracks the provisioning in real time.
+This creates a queue on `shop.acme.com/checkout` at Cloudflare's 200/200 floors with fifo admission and the default queue page — no Advanced fields, so it works on any plan. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -93,15 +93,15 @@ These are the most important decisions when configuring a waiting room. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** | `zoneId` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,5 +120,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Waiting Room Event**](/cloud-catalog/cloudflare-waiting-room-event) — a scheduled window that temporarily overrides this room's rates, page, or Turnstile settings; wires `waitingRoomId` from this room's output
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) — the zone the room protects; `zoneId` references its `zone_id` output
+- [**Cloudflare Waiting Room Event**](/infra-catalog/cloudflare-waiting-room-event) — a scheduled window that temporarily overrides this room's rates, page, or Turnstile settings; wires `waitingRoomId` from this room's output
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) — the zone the room protects; `zoneId` references its `zone_id` output

@@ -7,12 +7,12 @@
 //     catalog/{provider}/aa_import/catalog.yaml): for each
 //     IaC resource type, the import-ID FORMAT the engines expect --
 //     "{bucket}", "{vpc_id}", "{bucket}:{intelligent_tiering_name}". Stable,
-//     shared by every component of the provider.
+//     shared by every kind of the provider.
 //
-//   - Component tier (ComponentImportMap, one per component at
-//     {component}/v1/iac/import-map.yaml): for each {placeholder} the formats
+//   - Kind tier (CatalogKindImportMap, one per kind at
+//     {kind}/v1/iac/import-map.yaml): for each {placeholder} the formats
 //     reference, WHERE the value comes from -- the resource's metadata.name, a
-//     spec field, a stack output, a pasted ARN's part, or the enumerated
+//     spec field, an output, a pasted ARN's part, or the enumerated
 //     address's own instance key -- plus "where to find this" guidance for the
 //     values only the user can supply.
 //

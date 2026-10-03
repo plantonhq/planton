@@ -1,6 +1,6 @@
 # OpenFgaRelationshipTuple Outputs
 # This file defines the outputs from the OpenFGA relationship tuple deployment.
-# These values are used to populate the stack outputs protobuf message.
+# These values are used to populate the outputs protobuf message.
 #
 # Note: Relationship tuples don't have a unique ID in OpenFGA. They are identified
 # by the combination of (store_id, user, relation, object).

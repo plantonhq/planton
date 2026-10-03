@@ -1,5 +1,5 @@
 variable "metadata" {
-  description = "Cloud resource metadata"
+  description = "Catalog object metadata"
   type = object({
     name        = string
     id          = optional(string, "")
@@ -94,14 +94,14 @@ variable "spec" {
     secondary_ip_range = optional(string, "")
 
     # Whether Redis AUTH is enabled. When true, clients must provide
-    # the AUTH string (exported in stack outputs) to connect.
+    # the AUTH string (exported in outputs) to connect.
     # AUTH provides an additional layer of security beyond network controls.
     auth_enabled = optional(bool, false)
 
     # TLS encryption mode for client-to-server traffic.
     # DISABLED: no encryption (default).
     # SERVER_AUTHENTICATION: clients verify the server's identity via TLS;
-    # pair with the server_ca_certs stack output, which carries the CA
+    # pair with the server_ca_certs output, which carries the CA
     # certificates clients must trust.
     # Immutable after creation.
     transit_encryption_mode = optional(string, "")

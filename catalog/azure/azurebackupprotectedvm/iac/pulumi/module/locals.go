@@ -20,11 +20,11 @@ type Locals struct {
 // The protected item carries NO tags argument on the provider (ARM
 // protected items are untagged), so this module derives no tag map.
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurebackupprotectedvmv1alpha1.AzureBackupProtectedVmStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurebackupprotectedvmv1alpha1.AzureBackupProtectedVmIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureBackupProtectedVm = stackInput.Target
-	target := stackInput.Target
+	locals.AzureBackupProtectedVm = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 	locals.RecoveryVaultName = target.Spec.RecoveryVaultName.GetValue()

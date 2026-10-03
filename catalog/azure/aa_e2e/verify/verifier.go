@@ -17,7 +17,7 @@ import (
 // Azure resource verification is subscription-scoped, so verifiers take the
 // subscription id and the ambient token credential -- not a region, unlike AWS.
 type Verifier interface {
-	// IDOutputKey is the stack-output key carrying the identifier used to verify
+	// IDOutputKey is the output key carrying the identifier used to verify
 	// the resource (e.g. "resource_group_name").
 	IDOutputKey() string
 	// VerifyExists returns an error unless the resource exists.

@@ -3,14 +3,14 @@ syntax = "proto3";
 package dev.planton.kubernetes.kuberneteskafkaconnect.v1alpha1;
 
 /**
- * **KubernetesKafkaConnectStackOutputs** — the handles a Connect
+ * **KubernetesKafkaConnectOutputs** — the handles a Connect
  * cluster exports for composition. KubernetesKafkaConnector resources
  * bind through `connect_name`; operational tooling reaches the
  * Connect REST API through the service endpoint (declarative
  * management stays with KubernetesKafkaConnector — the operator owns
  * connectors on this cluster).
  */
-message KubernetesKafkaConnectStackOutputs {
+message KubernetesKafkaConnectOutputs {
   // Namespace the Connect cluster runs in.
   string namespace = 1;
 

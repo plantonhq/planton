@@ -15,7 +15,7 @@ import (
 )
 
 func TestPopulate_StringFields(t *testing.T) {
-	msg := &auth0v1.Auth0ResourceServerStackOutputs{}
+	msg := &auth0v1.Auth0ResourceServerOutputs{}
 	outputs := map[string]string{
 		"id":         "abc123",
 		"identifier": "https://api.example.com/",
@@ -38,7 +38,7 @@ func TestPopulate_StringFields(t *testing.T) {
 }
 
 func TestPopulate_RepeatedString(t *testing.T) {
-	msg := &gcpdnsv1.GcpDnsZoneStackOutputs{}
+	msg := &gcpdnsv1.GcpDnsZoneOutputs{}
 	outputs := map[string]string{
 		"zone_id":       "zone-123",
 		"zone_name":     "example-zone",
@@ -68,7 +68,7 @@ func TestPopulate_RepeatedString(t *testing.T) {
 func TestPopulate_HyphenatedFieldNames(t *testing.T) {
 	// Field-name normalization happens per segment at lookup time; a
 	// hyphenated IaC output name still lands on its snake_case proto field.
-	msg := &gcpdnsv1.GcpDnsZoneStackOutputs{}
+	msg := &gcpdnsv1.GcpDnsZoneOutputs{}
 	outputs := map[string]string{
 		"zone-id":   "zone-123",
 		"zone-name": "example-zone",
@@ -89,7 +89,7 @@ func TestPopulate_MapEntriesFromDottedKeys(t *testing.T) {
 	// The flattener emits one dotted key per map entry
 	// ("backend_pool_ids.web" = id). Map keys are user data -- pool or
 	// rule names -- and must be preserved verbatim, hyphens included.
-	msg := &azurelbv1.AzureLoadBalancerStackOutputs{}
+	msg := &azurelbv1.AzureLoadBalancerOutputs{}
 	outputs := map[string]string{
 		"load_balancer_id":              "/subscriptions/s/resourceGroups/rg/providers/Microsoft.Network/loadBalancers/app-lb",
 		"backend_pool_ids.web":          "/subscriptions/s/.../backendAddressPools/web",
@@ -116,7 +116,7 @@ func TestPopulate_MapEntriesFromDottedKeys(t *testing.T) {
 }
 
 func TestPopulate_NestedMessageDotPath(t *testing.T) {
-	msg := &k8spgv1.KubernetesPostgresStackOutputs{}
+	msg := &k8spgv1.KubernetesPostgresOutputs{}
 	outputs := map[string]string{
 		"namespace":            "db-namespace",
 		"rw_service":           "postgres-svc-rw",
@@ -151,7 +151,7 @@ func TestPopulate_NestedMessageDotPath(t *testing.T) {
 }
 
 func TestPopulate_NestedMessageJSON(t *testing.T) {
-	msg := &k8spgv1.KubernetesPostgresStackOutputs{}
+	msg := &k8spgv1.KubernetesPostgresOutputs{}
 	outputs := map[string]string{
 		"username_secret": `{"name":"pg-secret","key":"user"}`,
 	}
@@ -174,7 +174,7 @@ func TestPopulate_NestedMessageJSON(t *testing.T) {
 }
 
 func TestPopulate_RepeatedMessageWithBracketIndex(t *testing.T) {
-	msg := &gcpsubnetworkv1alpha1.GcpSubnetworkStackOutputs{}
+	msg := &gcpsubnetworkv1alpha1.GcpSubnetworkOutputs{}
 	outputs := map[string]string{
 		"subnetwork_name":                   "my-subnet",
 		"secondary_ranges[0].range_name":    "pods",
@@ -206,7 +206,7 @@ func TestPopulate_RepeatedMessageWithBracketIndex(t *testing.T) {
 }
 
 func TestPopulate_UnknownFieldSkipped(t *testing.T) {
-	msg := &auth0v1.Auth0ResourceServerStackOutputs{}
+	msg := &auth0v1.Auth0ResourceServerOutputs{}
 	outputs := map[string]string{
 		"id":                     "abc123",
 		"nonexistent_field":      "should-be-skipped",
@@ -223,7 +223,7 @@ func TestPopulate_UnknownFieldSkipped(t *testing.T) {
 }
 
 func TestPopulate_EmptyMap(t *testing.T) {
-	msg := &auth0v1.Auth0ResourceServerStackOutputs{}
+	msg := &auth0v1.Auth0ResourceServerOutputs{}
 	err := populateMessage(msg, map[string]string{})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -234,7 +234,7 @@ func TestPopulate_EmptyMap(t *testing.T) {
 }
 
 func TestPopulate_EmptyRepeatedField(t *testing.T) {
-	msg := &gcpdnsv1.GcpDnsZoneStackOutputs{}
+	msg := &gcpdnsv1.GcpDnsZoneOutputs{}
 	outputs := map[string]string{
 		"nameservers": "",
 	}
@@ -254,7 +254,7 @@ func TestPopulate_MaskedSecretRepeatedFieldIsDiagnosed(t *testing.T) {
 	// awssesemailidentity's dkim_tokens, observed live 2026-08-12. Every
 	// sanctioned reader now unmasks; this locks the diagnosis so a reader
 	// regression names its real cause instead of "no array index provided".
-	msg := &gcpdnsv1.GcpDnsZoneStackOutputs{}
+	msg := &gcpdnsv1.GcpDnsZoneOutputs{}
 
 	err := setFieldRecursively(msg.ProtoReflect(), []string{"nameservers"}, "[secret]", 0)
 	if err == nil {
@@ -269,7 +269,7 @@ func TestPopulate_MaskedSecretRepeatedFieldIsDiagnosed(t *testing.T) {
 
 	// populateMessage stays non-fatal for the whole map: the masked field is
 	// skipped with the diagnosis, sibling fields still populate.
-	msg2 := &gcpdnsv1.GcpDnsZoneStackOutputs{}
+	msg2 := &gcpdnsv1.GcpDnsZoneOutputs{}
 	outputs := map[string]string{
 		"zone_id":     "zone-123",
 		"nameservers": "[secret]",

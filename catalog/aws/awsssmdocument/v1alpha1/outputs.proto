@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsssmdocument.v1alpha1;
 
-// AwsSsmDocumentStackOutputs captures the observable state of the
+// AwsSsmDocumentOutputs captures the observable state of the
 // document after apply.
-message AwsSsmDocumentStackOutputs {
+message AwsSsmDocumentOutputs {
   // The document's name (also the provider's import ID, and what
   // associations reference).
   string document_name = 1;

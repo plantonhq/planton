@@ -4,7 +4,7 @@ Deploys one direction of an Azure Virtual Network Peering — private, low-laten
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Virtual Network Peering** -- one direction, written as an ARM child of the LOCAL network (the module derives the resource group and network name from the local network's ARM ID — this spec carries no placement fields)
 - **Traffic posture** -- the four connectivity dials (network access, forwarded traffic, gateway transit, use remote gateways), each an explicit position or Azure's default
@@ -16,12 +16,12 @@ No tags — peerings are not tracked ARM resources. The reciprocal direction is 
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **Both virtual networks** must exist (reference AzureVirtualNetwork Cloud Resources, or pass literal ARM IDs — cross-subscription works unchanged).
+- **Both virtual networks** must exist (reference AzureVirtualNetwork Infra Components, or pass literal ARM IDs — cross-subscription works unchanged).
 - **Non-overlapping address spaces** — Azure rejects peerings between networks whose CIDR ranges overlap.
 - **For gateway transit**: the hub network needs a VPN/ExpressRoute gateway; the spoke network must have none of its own.
 
@@ -56,7 +56,7 @@ spec:
 planton apply -f peering.yaml
 ```
 
-This declares the HUB side. Apply the reciprocal manifest (local and remote swapped, `useRemoteGateways: true`) on the spoke to complete the pair. A Stack Job tracks the provisioning in real time.
+This declares the HUB side. Apply the reciprocal manifest (local and remote swapped, `useRemoteGateways: true`) on the spoke to complete the pair. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -90,23 +90,23 @@ These are the most important decisions when configuring a peering. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureVirtualNetwork** (local) | `virtualNetworkId` | `status.outputs.virtual_network_id` |
 | **AzureVirtualNetwork** (remote) | `remoteVirtualNetworkId` | `status.outputs.virtual_network_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
 | `virtual_network_name` | The LOCAL network's name, derived from its ARM ID | Chart composition without re-parsing IDs |
 | `resource_group_name` | The local network's resource group, derived from its ARM ID | Chart composition without re-parsing IDs |
 
-The peering also surfaces `peering_id` and `peering_name` -- identity echoes of the edge itself; no downstream Cloud Resource consumes them.
+The peering also surfaces `peering_id` and `peering_name` -- identity echoes of the edge itself; no downstream Infra Component consumes them.
 
 ## Common Patterns
 
@@ -120,6 +120,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Virtual Network**](/cloud-catalog/azure-virtual-network) -- both endpoints of the edge, referenced by their `virtual_network_id` outputs
-- [**Azure Firewall**](/cloud-catalog/azure-firewall) -- the hub appliance that relays spoke-to-spoke traffic (pair with `allowForwardedTraffic` on hub-to-spoke directions)
-- [**Azure Route Table**](/cloud-catalog/azure-route-table) -- steers spoke traffic through the hub appliance the peering carries it to
+- [**Azure Virtual Network**](/infra-catalog/azure-virtual-network) -- both endpoints of the edge, referenced by their `virtual_network_id` outputs
+- [**Azure Firewall**](/infra-catalog/azure-firewall) -- the hub appliance that relays spoke-to-spoke traffic (pair with `allowForwardedTraffic` on hub-to-spoke directions)
+- [**Azure Route Table**](/infra-catalog/azure-route-table) -- steers spoke traffic through the hub appliance the peering carries it to

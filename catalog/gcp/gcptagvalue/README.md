@@ -4,7 +4,7 @@ Creates a Google Cloud Resource Manager tag value — the VALUE half of a tag: `
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Tag value** -- the `tags_tag_value` under its key, with its short name and description
 
@@ -62,7 +62,7 @@ planton apply -f tag-value.yaml
 - **`shortName`** contains none of `/`, `\`, `'`, `"`; at most 256 characters.
 - **`deletionPolicy`**: `DELETE`, `PREVENT`, or `ABANDON`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -91,7 +91,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpTagKey](/docs/catalog/gcp/gcptagkey) — the key this value belongs to
 - [GcpTagBinding](/docs/catalog/gcp/gcptagbinding) — attaches this value to a resource

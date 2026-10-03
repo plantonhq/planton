@@ -1,4 +1,4 @@
-# Stack outputs — flattened onto KubernetesKafkaMirrorMaker2StackOutputs
+# Outputs — flattened onto KubernetesKafkaMirrorMaker2Outputs
 # by the platform. Keep in lockstep with the Pulumi module's exports.
 
 output "namespace" {

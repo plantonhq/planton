@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpvertexaiendpoint.v1alpha1;
 
 // Outputs produced after provisioning a GCP Vertex AI Endpoint.
-message GcpVertexAiEndpointStackOutputs {
+message GcpVertexAiEndpointOutputs {
   // Fully qualified endpoint resource path.
   // Format: projects/{project}/locations/{location}/endpoints/{name}
   string endpoint_id = 1;

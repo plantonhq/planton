@@ -6,7 +6,7 @@
 
 ## Summary
 
-Built a complete public changelog system for planton.ai featuring an inline expand/collapse timeline (inspired by the Fastlane pattern), category filtering, text search, Mermaid diagram rendering, a shareable detail page, and a `recent.json` build-time artifact for the console dashboard widget. Also wired the existing `MermaidDiagram` component into the site-wide `MDXRenderer` so docs, blog, and tutorials now render Mermaid diagrams.
+Built a complete public changelog system for planton.ai featuring an inline expand/collapse timeline (inspired by the Fastlane pattern), category filtering, text search, Mermaid diagram rendering, a shareable detail page, and a `recent.json` build-time artifact for the console dashboard widget. Also wired the existing `MermaidDiagram` kind into the site-wide `MDXRenderer` so docs, blog, and tutorials now render Mermaid diagrams.
 
 ## Problem Statement / Motivation
 
@@ -45,7 +45,7 @@ Simple centered layout for shareable links. Category badge, date, title, tags, a
 
 ### Site-wide Mermaid Rendering
 
-Wired the existing `MermaidDiagram` component into `MDXRenderer.tsx`. Now all content types (docs, blog, tutorials, changelog) render Mermaid diagrams as interactive SVGs instead of code blocks.
+Wired the existing `MermaidDiagram` kind into `MDXRenderer.tsx`. Now all content types (docs, blog, tutorials, changelog) render Mermaid diagrams as interactive SVGs instead of code blocks.
 
 ### `recent.json` for Console Dashboard
 
@@ -59,7 +59,7 @@ A pre-build Node.js script reads all changelog markdown files, parses frontmatte
 src/lib/changelog.ts              Data layer (read, parse, sort)
 src/lib/constants.tsx              +CHANGELOG_DIRECTORY
 src/lib/types-client.ts            +ChangelogEntry, ChangelogCategory
-src/lib/MDXRenderer.tsx            +Mermaid detection in pre component
+src/lib/MDXRenderer.tsx            +Mermaid detection in pre kind
 
 src/components/changelog/
   ChangelogTimeline.tsx            Client: search + filters + expand
@@ -77,7 +77,7 @@ scripts/generate-recent-changelog.mjs    Pre-build script
 ### Key Technical Decisions
 
 - **Content loading follows the `tutorials.ts` pattern**: `getAllChangelogEntries()`, `getChangelogContentBySlug()`, `getNextChangelogEntry()` -- all in one file, no functions added to `mdx.ts`
-- **Mermaid detection in `pre` component**: Inspects the HAST node for `language-mermaid` className, extracts code text, renders `MermaidDiagram` instead of `CodeBlock`
+- **Mermaid detection in `pre` kind**: Inspects the HAST node for `language-mermaid` className, extracts code text, renders `MermaidDiagram` instead of `CodeBlock`
 - **Date normalisation**: `gray-matter` parses YAML dates as JS Date objects; both `changelog.ts` and the pre-build script normalise to `YYYY-MM-DD`
 - **`recent.json` is gitignored**: Generated build artifact, not committed
 
@@ -97,7 +97,7 @@ scripts/generate-recent-changelog.mjs    Pre-build script
 
 - `src/lib/constants.tsx` -- Added `CHANGELOG_DIRECTORY`
 - `src/lib/types-client.ts` -- Added `ChangelogEntry`, `ChangelogCategory`
-- `src/lib/MDXRenderer.tsx` -- Added Mermaid rendering in `pre` component
+- `src/lib/MDXRenderer.tsx` -- Added Mermaid rendering in `pre` kind
 - `src/components/layout/header/header.tsx` -- Added "Changelog" to `menuResources` and `menuExplorer`
 - `package.json` -- Added pre-build step for `recent.json`
 - `.gitignore` -- Added `public/changelog/recent.json`
@@ -122,7 +122,7 @@ scripts/generate-recent-changelog.mjs    Pre-build script
 
 - This is T02 + T03 of the `20260215.03.public-changelog-system` project
 - T04 (Changelog Curator Cursor rule) and T05 (Console dashboard widget) are next
-- The `MermaidDiagram` component already existed in `src/components/common/`; this work wired it into the rendering pipeline
+- The `MermaidDiagram` kind already existed in `src/components/common/`; this work wired it into the rendering pipeline
 
 ---
 

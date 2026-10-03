@@ -13,22 +13,22 @@ func TestExtractMetadata(t *testing.T) {
 	tests := []struct {
 		name  string
 		input proto.Message
-		want  *shared.CloudResourceMetadata
+		want  *shared.CatalogObjectMetadata
 	}{
 		{
 			name: "when metadata is set should return the metadata from input",
 			input: &awss3bucketv1alpha1.AwsS3Bucket{
-				Metadata: &shared.CloudResourceMetadata{
+				Metadata: &shared.CatalogObjectMetadata{
 					Id: "test-id",
 				},
 			},
-			want: &shared.CloudResourceMetadata{Id: "test-id"},
+			want: &shared.CatalogObjectMetadata{Id: "test-id"},
 		}, {
 			name: "when metadata object is empty in input, should return empty metadata object",
 			input: &awss3bucketv1alpha1.AwsS3Bucket{
-				Metadata: &shared.CloudResourceMetadata{},
+				Metadata: &shared.CatalogObjectMetadata{},
 			},
-			want: &shared.CloudResourceMetadata{},
+			want: &shared.CatalogObjectMetadata{},
 		},
 	}
 

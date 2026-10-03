@@ -2,17 +2,17 @@
 
 **Date**: November 15, 2025
 **Type**: Bug Fix (Critical)
-**Components**: AWS VPC Pulumi Module, Subnet Calculation Logic, Stack Outputs
+**Components**: AWS VPC Pulumi Module, Subnet Calculation Logic, Outputs
 
 ## Summary
 
-Fixed a critical bug in the AWS VPC Pulumi module where subnet CIDR calculations were hardcoded to the `10.0.x.0/N` pattern instead of properly calculating subnet CIDRs based on the user-provided `vpc_cidr` field. This bug would have caused deployment failures for any VPC using a CIDR block outside the 10.0.0.0/16 range. Additionally enhanced stack outputs to include VPC CIDR and NAT Gateway details as specified in the proto definitions.
+Fixed a critical bug in the AWS VPC Pulumi module where subnet CIDR calculations were hardcoded to the `10.0.x.0/N` pattern instead of properly calculating subnet CIDRs based on the user-provided `vpc_cidr` field. This bug would have caused deployment failures for any VPC using a CIDR block outside the 10.0.0.0/16 range. Additionally enhanced outputs to include VPC CIDR and NAT Gateway details as specified in the proto definitions.
 
 ## Problem Statement / Motivation
 
 ### The Critical Bug
 
-The AWS VPC component's `spec.proto` allows users to specify any valid CIDR block for their VPC (e.g., `172.16.0.0/16`, `192.168.0.0/16`, `10.10.0.0/16`), but the Pulumi module implementation had a hardcoded subnet calculation that always generated subnets in the `10.0.x.0` range regardless of the specified VPC CIDR.
+The AWS VPC kind's `spec.proto` allows users to specify any valid CIDR block for their VPC (e.g., `172.16.0.0/16`, `192.168.0.0/16`, `10.10.0.0/16`), but the Pulumi module implementation had a hardcoded subnet calculation that always generated subnets in the `10.0.x.0` range regardless of the specified VPC CIDR.
 
 **Affected Code** (`apis/dev/planton/provider/aws/awsvpc/v1/iac/pulumi/module/locals.go`):
 ```go
@@ -35,13 +35,13 @@ publicSubnetCidr := fmt.Sprintf("10.0.%d.0/%d", azIndex*10+subnetIndex, awsVpc.S
 - Examples in documentation would not work as shown
 
 **Audit Report Misleading:**
-- Component audit showed 100% completion score
+- Kind audit showed 100% completion score
 - Audit checked for file existence but didn't validate implementation correctness
 - Critical logic bugs were not detected by the audit process
 
-**Missing Stack Outputs:**
-- NAT Gateway IDs and IP addresses were not being exported despite being defined in `stack_outputs.proto`
-- VPC CIDR was not being exported in stack outputs, preventing downstream components from referencing it
+**Missing Outputs:**
+- NAT Gateway IDs and IP addresses were not being exported despite being defined in `outputs.proto`
+- VPC CIDR was not being exported in outputs, preventing downstream kinds from referencing it
 - Users couldn't retrieve critical network information needed for debugging or infrastructure integration
 
 ### Impact Scope
@@ -51,7 +51,7 @@ publicSubnetCidr := fmt.Sprintf("10.0.%d.0/%d", azIndex*10+subnetIndex, awsVpc.S
 - **Common enterprise CIDR ranges**: 172.16.0.0/12, 192.168.0.0/16 completely broken
 - **Multi-VPC environments**: Impossible to deploy multiple VPCs with different CIDR blocks
 
-**Components Affected**:
+**Kinds Affected**:
 - AWS VPC Pulumi module (primary)
 - Any dependent infrastructure expecting VPC subnet information
 - Documentation examples using non-10.0.0.0 CIDR blocks
@@ -125,7 +125,7 @@ privateSubnetCidr := calculateSubnetCidr(awsVpc.Spec.VpcCidr, int(awsVpc.Spec.Su
 
 ### 3. NAT Gateway Outputs
 
-Added complete NAT Gateway information to stack outputs (`subnets.go`):
+Added complete NAT Gateway information to outputs (`subnets.go`):
 
 ```go
 // Export NAT Gateway details for each public subnet with a NAT Gateway
@@ -134,14 +134,14 @@ ctx.Export(fmt.Sprintf("%s.%d.%s", OpPublicSubnets, publicIndex-1, OpSubnetNatGa
 ctx.Export(fmt.Sprintf("%s.%d.%s", OpPublicSubnets, publicIndex-1, OpSubnetNatGatewayPublicIp), createdElasticIp.PublicIp)
 ```
 
-This matches the `AwsVpcNatGatewayStackOutputs` proto definition:
+This matches the `AwsVpcNatGatewayOutputs` proto definition:
 - `id`: NAT Gateway resource ID
 - `private_ip`: Private IP within the subnet
 - `public_ip`: Elastic IP for internet connectivity
 
 ### 4. VPC CIDR Output
 
-Added VPC CIDR to stack outputs (`main.go`):
+Added VPC CIDR to outputs (`main.go`):
 
 ```go
 ctx.Export(OpVpcCidr, pulumi.String(locals.AwsVpc.Spec.VpcCidr))
@@ -152,7 +152,7 @@ Added corresponding constant (`outputs.go`):
 OpVpcCidr = "vpc_cidr"
 ```
 
-This matches the `vpc_cidr` field in `AwsVpcStackOutputs` proto definition.
+This matches the `vpc_cidr` field in `AwsVpcOutputs` proto definition.
 
 ## Implementation Details
 
@@ -167,7 +167,7 @@ This matches the `vpc_cidr` field in `AwsVpcStackOutputs` proto definition.
 2. **`apis/dev/planton/provider/aws/awsvpc/v1/iac/pulumi/module/subnets.go`**
    - Added NAT Gateway output exports (3 lines)
    - Exports ID, private IP, and public IP for each NAT Gateway
-   - **Impact**: Stack outputs now match proto definition
+   - **Impact**: Outputs now match proto definition
 
 3. **`apis/dev/planton/provider/aws/awsvpc/v1/iac/pulumi/module/main.go`**
    - Added VPC CIDR export (1 line)
@@ -206,7 +206,7 @@ NAT Gateways are created in the first public subnet of each availability zone:
 
 ### Validation Strategy
 
-**Component Tests** (`spec_test.go`):
+**Kind Tests** (`spec_test.go`):
 - Already existing tests validate spec.proto buf.validate rules
 - Tests pass with new implementation (no validation logic changed)
 
@@ -218,7 +218,7 @@ NAT Gateways are created in the first public subnet of each availability zone:
 - Deploy VPC with `vpc_cidr: "172.16.0.0/16"`
 - Verify subnets created in correct CIDR range (172.16.x.0/24)
 - Verify NAT Gateway outputs present in Pulumi stack outputs
-- Verify VPC CIDR available in stack outputs
+- Verify VPC CIDR available in outputs
 
 ## Benefits
 
@@ -234,7 +234,7 @@ NAT Gateways are created in the first public subnet of each availability zone:
 - Properly segregate development, staging, and production networks
 - Enable VPC peering scenarios that require distinct IP ranges
 
-**Complete Stack Outputs**:
+**Complete Outputs**:
 - Retrieve NAT Gateway IDs for security group rules
 - Reference NAT Gateway public IPs for allow-listing
 - Use VPC CIDR in downstream security policies and routing configurations
@@ -265,8 +265,8 @@ NAT Gateways are created in the first public subnet of each availability zone:
 
 **Production Readiness**:
 - Bug would have blocked all production VPC deployments
-- Fix enables actual use of the component in real environments
-- Stack outputs enable integration with other infrastructure
+- Fix enables actual use of the kind in real environments
+- Outputs enable integration with other infrastructure
 
 ## Impact
 
@@ -284,19 +284,19 @@ NAT Gateways are created in the first public subnet of each availability zone:
 
 ### Long-Term
 
-**Component Reliability**:
-- Critical infrastructure component now production-ready
+**Kind Reliability**:
+- Critical infrastructure kind now production-ready
 - Users can trust VPC deployments to respect their network design
 - Reduces support burden from deployment failures
 
 **Infrastructure Composability**:
-- Complete stack outputs enable downstream resource creation
+- Complete outputs enable downstream resource creation
 - NAT Gateway IPs can be referenced in security rules
 - VPC CIDR can inform subnet planning in other regions/accounts
 
 **Reference Implementation**:
 - AWS VPC marked as 100% complete in audit (and actually is now)
-- Can serve as template for other networking components
+- Can serve as template for other networking kinds
 - Demonstrates proper subnet calculation patterns
 
 ## Testing Performed
@@ -361,7 +361,7 @@ read_lints apis/dev/planton/provider/aws/awsvpc/v1/iac/pulumi/module/
    ```
    Expected: Subnets in 192.168.x.0/24 range, no NAT Gateways, VPC CIDR in outputs
 
-3. **Verify Stack Outputs**:
+3. **Verify Outputs**:
    ```bash
    pulumi stack output vpc_cidr
    pulumi stack output "public_subnets.0.nat_gateway.id"
@@ -375,7 +375,7 @@ read_lints apis/dev/planton/provider/aws/awsvpc/v1/iac/pulumi/module/
 
 **Behavior Changes**:
 - Subnet CIDRs now calculated from VPC CIDR (was: hardcoded to 10.0.x.0)
-- Stack outputs now include VPC CIDR and NAT Gateway details (was: missing)
+- Outputs now include VPC CIDR and NAT Gateway details (was: missing)
 
 **Backward Compatibility**:
 - Deployments using `vpc_cidr: "10.0.0.0/16"` still work (but now use calculated subnets)
@@ -391,7 +391,7 @@ read_lints apis/dev/planton/provider/aws/awsvpc/v1/iac/pulumi/module/
 
 **Proto Definitions**:
 - `spec.proto` defines VPC CIDR as required field (implementation now honors it)
-- `stack_outputs.proto` defines NAT Gateway and VPC CIDR outputs (now properly exported)
+- `outputs.proto` defines NAT Gateway and VPC CIDR outputs (now properly exported)
 
 **Research Documentation**:
 - Research doc emphasizes VPC CIDR as critical 80/20 configuration
@@ -410,7 +410,7 @@ read_lints apis/dev/planton/provider/aws/awsvpc/v1/iac/pulumi/module/
 
 **Audit Improvements**:
 - Add implementation validation checks (not just file existence)
-- Verify stack outputs match proto definitions
+- Verify outputs match proto definitions
 - Test subnet calculations in audit script
 
 ## Code Metrics
@@ -429,7 +429,7 @@ read_lints apis/dev/planton/provider/aws/awsvpc/v1/iac/pulumi/module/
 - `getPublicAzSubnetMap()`: Now uses calculated CIDRs
 
 **Test Results**: 
-- Component tests: 1/1 passing
+- Kind tests: 1/1 passing
 - Build validation: ✅ Success
 - Linter checks: ✅ No errors
 
@@ -445,7 +445,7 @@ read_lints apis/dev/planton/provider/aws/awsvpc/v1/iac/pulumi/module/
 
 1. **Terraform Module**: Verify Terraform implementation also calculates subnets correctly
 2. **Audit Enhancement**: Add implementation validation to audit script
-3. **Other Components**: Check if similar bugs exist in other networking components
+3. **Other Kinds**: Check if similar bugs exist in other networking kinds
 
 ---
 

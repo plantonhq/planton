@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpmonitoringuptimecheck.v1alpha1;
 
 // Outputs produced after provisioning a Cloud Monitoring uptime check.
-message GcpMonitoringUptimeCheckStackOutputs {
+message GcpMonitoringUptimeCheckOutputs {
   // The server-assigned resource name of the uptime check.
   // Format: projects/{project}/uptimeCheckConfigs/{uptime_check_id}
   string uptime_check_name = 1;

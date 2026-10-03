@@ -2,9 +2,9 @@
 # provision, update, and destroy this component with the official modules.
 # Every entry is `derived` (static analysis of the module sources, cited in
 # notes) until the live capture lane upgrades it to `proven`. Schema:
-# iac/componentpermissions/v1.
+# iac/catalogkindpermissions/v1.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: azureeventgriddomain
 spec:
@@ -21,4 +21,4 @@ spec:
         actions:
           - Microsoft.EventGrid/domains/listKeys/action
         provenance: derived
-        notes: "Both modules export primary_access_key / secondary_access_key as stack outputs, so every refresh calls the domain's listKeys API -- a separate action from domains/read by Azure's design, and the reason read-only observers cannot see keys. Migrated from the module READMEs."
+        notes: "Both modules export primary_access_key / secondary_access_key as outputs, so every refresh calls the domain's listKeys API -- a separate action from domains/read by Azure's design, and the reason read-only observers cannot see keys. Migrated from the module READMEs."

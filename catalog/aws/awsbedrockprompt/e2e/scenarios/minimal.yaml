@@ -10,7 +10,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsbedrockprompt
+    e2e-catalog-kind: awsbedrockprompt
   annotations:
     planton.dev/e2e: "true"
   tags:

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package dev.planton.qa.catalogkinde2eprofile.v1;
+
+import "qa/catalogkinde2eprofile/v1/spec.proto";
+import "shared/metadata.proto";
+
+// CatalogKindE2EProfile declares a single kind's E2E testing readiness and configuration.
+// Follows the KRM pattern (apiVersion + kind + metadata + spec).
+// Lives at {kind}/v1/e2e/profile.yaml.
+//
+// Example:
+//   apiVersion: qa.planton.dev/v1
+//   kind: CatalogKindE2EProfile
+//   metadata:
+//     name: kubernetesvalkey
+//   spec:
+//     tier: 2
+//     status: green
+//     validated_provisioners: [pulumi, terraform]
+//     timeout_minutes: 15
+message CatalogKindE2EProfile {
+  string api_version = 1;
+  string kind = 2;
+  dev.planton.shared.CatalogObjectMetadata metadata = 3;
+  CatalogKindE2EProfileSpec spec = 4;
+}

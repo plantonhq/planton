@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarewebanalyticssite.v1alpha1;
 
-// CloudflareWebAnalyticsSiteStackOutputs captures the observable outputs
+// CloudflareWebAnalyticsSiteOutputs captures the observable outputs
 // after creating the Web Analytics site.
-message CloudflareWebAnalyticsSiteStackOutputs {
+message CloudflareWebAnalyticsSiteOutputs {
   // The Cloudflare-assigned site tag (the site's identity in every RUM API
   // path).
   string site_tag = 1;

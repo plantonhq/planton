@@ -1,5 +1,5 @@
 apiVersion: qa.planton.dev/v1
-kind: ComponentE2EProfile
+kind: CatalogKindE2EProfile
 metadata:
   name: cloudflarecustomsslcertificate
 spec:
@@ -19,7 +19,7 @@ spec:
   # asymmetry (sent as policy, read as policy_restrictions) the provider
   # normalizes; a non-empty re-plan on policy is upstream's SECENG-12729
   # class, not ours. Deployment status is asynchronous and deliberately NOT
-  # a stack output (the async-phase-output class measured live 2026-08-28
+  # an output (the async-phase-output class measured live 2026-08-28
   # on the sibling AOP certificate).
   tier: 1
   status: deferred

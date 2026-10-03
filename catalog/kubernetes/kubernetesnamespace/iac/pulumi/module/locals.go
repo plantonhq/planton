@@ -13,8 +13,8 @@ type Locals struct {
 	// Context for Pulumi operations
 	Ctx *pulumi.Context
 
-	// Stack input containing the target resource
-	StackInput *kubernetesnamespacev1alpha1.KubernetesNamespaceStackInput
+	// IaC input containing the target resource
+	IacInput *kubernetesnamespacev1alpha1.KubernetesNamespaceIacInput
 
 	// Target namespace resource
 	Target *kubernetesnamespacev1alpha1.KubernetesNamespace
@@ -92,13 +92,13 @@ type ServiceMeshConfig struct {
 }
 
 // initializeLocals creates and populates the Locals struct
-func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesnamespacev1alpha1.KubernetesNamespaceStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *kubernetesnamespacev1alpha1.KubernetesNamespaceIacInput) *Locals {
 	locals := &Locals{
 		Ctx:           ctx,
-		StackInput:    stackInput,
-		Target:        stackInput.Target,
-		Spec:          stackInput.Target.Spec,
-		NamespaceName: stackInput.Target.Spec.Name,
+		IacInput:      iacInput,
+		Target:        iacInput.Target,
+		Spec:          iacInput.Target.Spec,
+		NamespaceName: iacInput.Target.Spec.Name,
 	}
 
 	// Build labels

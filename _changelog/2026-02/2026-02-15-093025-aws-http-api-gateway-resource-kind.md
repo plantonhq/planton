@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AwsHttpApiGateway as a new cloud resource kind (R05, enum 240) in the AWS provider expansion project. This component creates AWS API Gateway HTTP APIs (v2) with bundled stage, routes with inline integrations, and optional JWT/Lambda authorizers -- the most complex AWS resource in the expansion queue to date.
+Added AwsHttpApiGateway as a new catalog kind (R05, enum 240) in the AWS provider expansion project. This kind creates AWS API Gateway HTTP APIs (v2) with bundled stage, routes with inline integrations, and optional JWT/Lambda authorizers -- the most complex AWS resource in the expansion queue to date.
 
 ## Problem Statement / Motivation
 
@@ -14,17 +14,17 @@ AWS API Gateway HTTP APIs are the front door for modern serverless and microserv
 
 ### Pain Points
 
-- No API Gateway component forced users to manage HTTP APIs outside Planton
+- No API Gateway kind forced users to manage HTTP APIs outside Planton
 - Lambda functions deployed via Planton couldn't be wired to HTTP endpoints in infra charts
-- The serverless-api infra chart pattern was blocked without this component
+- The serverless-api infra chart pattern was blocked without this kind
 
 ## Solution / What's New
 
-A clean, declarative AwsHttpApiGateway component that bundles the API, stage, routes, integrations, and authorizers into one resource with automatic integration deduplication.
+A clean, declarative AwsHttpApiGateway kind that bundles the API, stage, routes, integrations, and authorizers into one resource with automatic integration deduplication.
 
 ### Key Design Decisions
 
-1. **HTTP-only scope** -- WebSocket APIs are a fundamentally different paradigm (different routing, authorization, and integration models). A separate AwsWebSocketApiGateway component will be created later.
+1. **HTTP-only scope** -- WebSocket APIs are a fundamentally different paradigm (different routing, authorization, and integration models). A separate AwsWebSocketApiGateway kind will be created later.
 
 2. **Routes with inline integrations** -- Each route carries its own integration config. The IaC module automatically deduplicates: when multiple routes share the same backend (same type + URI + payload version), only one Integration resource is created.
 
@@ -91,7 +91,7 @@ Uses `for_each` on deduplicated integration maps, authorizer maps, and route map
 - 16 happy path scenarios (minimal, multi-route, CORS, JWT, REQUEST, production-ready)
 - 25 failure scenarios (missing routes, invalid types, broken cross-references, range violations)
 
-### Stack Outputs
+### Outputs
 
 - `api_id` -- API Gateway ID
 - `api_endpoint` -- Default execute endpoint URL
@@ -116,9 +116,9 @@ Uses `for_each` on deduplicated integration maps, authorizer maps, and route map
 ## Related Work
 
 - R01 AwsSqsQueue, R02 AwsSnsTopic, R03 AwsEventBridgeBus, R04 AwsEventBridgeRule (same expansion project)
-- Future: AwsWebSocketApiGateway (separate component for WebSocket APIs)
+- Future: AwsWebSocketApiGateway (separate kind for WebSocket APIs)
 - Future: AwsCognitoUserPool (R12, JWT issuer for API Gateway)
-- Future: serverless-api infra chart (T03, depends on this component)
+- Future: serverless-api infra chart (T03, depends on this kind)
 
 ---
 

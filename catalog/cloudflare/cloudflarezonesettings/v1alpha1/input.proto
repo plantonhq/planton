@@ -5,10 +5,10 @@ package dev.planton.cloudflare.cloudflarezonesettings.v1alpha1;
 import "catalog/cloudflare/cloudflarezonesettings/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-// CloudflareZoneSettingsStackInput is the input to the IaC module.
+// CloudflareZoneSettingsIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-message CloudflareZoneSettingsStackInput {
-  // target cloud-resource to be deployed
+message CloudflareZoneSettingsIacInput {
+  // target infra-component to be deployed
   CloudflareZoneSettings target = 1;
   // provider-config for Cloudflare authentication
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

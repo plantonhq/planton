@@ -82,7 +82,7 @@ exec entries:
 - **Pulumi path**: the kubeconfig is rendered inside the module process, which
   cannot know the host binary's path — the host advertises it via
   `PLANTON_KUBE_CREDENTIAL_COMMAND` (set in `pulumistack.Run` beside the
-  stack-input env var). If the contract is absent, the builder fails with an
+  iac-input env var). If the contract is absent, the builder fails with an
   error naming the variable — never a silently wrong binary.
 
 ### Credential handling
@@ -93,7 +93,7 @@ client-go mechanism). Static AWS keys use the SDK's standard names
 picks them up with zero plumbing; when the connection carries no static keys,
 no credential entries are emitted at all and the process's own ambient chain
 (profile, environment, instance role) signs the token — the local-desktop
-mode. The kubeconfig file is written at 0600, matching the stack-input
+mode. The kubeconfig file is written at 0600, matching the iac-input
 discipline.
 
 ## Implementation Details
@@ -104,7 +104,7 @@ discipline.
   `access_key_id`/`secret_access_key`/`session_token` with the same CEL
   format rules as `AwsProviderConfig` (skipped when empty, so ambient-chain
   configs validate).
-- `pkg/iac/stackinput/providerenvvars/kubernetes.go`: rewritten on the shared
+- `pkg/iac/iacinput/providerenvvars/kubernetes.go`: rewritten on the shared
   builder; still exports the kubeconfig under both `KUBECONFIG` (Pulumi) and
   `KUBE_CONFIG_PATH` (tofu). The DOKS arm now works on this path.
 - `pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider/provider.go`:

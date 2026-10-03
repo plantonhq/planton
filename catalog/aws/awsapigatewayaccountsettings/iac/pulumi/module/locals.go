@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 //
 // No identity-tag map here: the upstream account resource carries no
 // tags argument (a settings singleton, not a taggable object), and
@@ -15,7 +15,7 @@ type Locals struct {
 	Spec   *awsapigatewayaccountsettingsv1alpha1.AwsApiGatewayAccountSettingsSpec
 }
 
-func initializeLocals(_ *pulumi.Context, in *awsapigatewayaccountsettingsv1alpha1.AwsApiGatewayAccountSettingsStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, in *awsapigatewayaccountsettingsv1alpha1.AwsApiGatewayAccountSettingsIacInput) *Locals {
 	locals := &Locals{}
 	locals.Target = in.Target
 	locals.Spec = in.Target.Spec

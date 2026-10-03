@@ -7,8 +7,8 @@ import (
 	"regexp"
 	"testing"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // The no-new-version-without-a-bridge gate.
@@ -57,8 +57,8 @@ func TestEveryVersionPairHasATotalBridge(t *testing.T) {
 				continue
 			}
 
-			kind := crkreflect.KindFromString(kindDir.Name())
-			if kind == cloudresourcekind.CloudResourceKind_unspecified {
+			kind := catalogkindreflect.KindFromString(kindDir.Name())
+			if kind == catalogkind.CatalogKind_unspecified {
 				t.Errorf("%s/%s has version directories but is not a registered kind", provider.Name(), kindDir.Name())
 				continue
 			}
@@ -67,7 +67,7 @@ func TestEveryVersionPairHasATotalBridge(t *testing.T) {
 				t.Errorf("%s/%s: %v", provider.Name(), kindDir.Name(), err)
 				continue
 			}
-			served, err := crkreflect.KindVersion(kind)
+			served, err := catalogkindreflect.KindVersion(kind)
 			if err != nil {
 				t.Errorf("%s/%s: %v", provider.Name(), kindDir.Name(), err)
 				continue

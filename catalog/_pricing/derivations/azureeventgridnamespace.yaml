@@ -8,9 +8,9 @@
 # estimate generator replays the catalog presets through these rules to
 # emit ../estimates/azureeventgridnamespace.yaml; a server-side
 # estimator evaluates the same rules against live manifests.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: azureeventgridnamespace
 spec:
@@ -37,7 +37,7 @@ spec:
     - applies_when:
         - field_path: topic_spaces_configuration.route_topic_id
           op: is_set
-      text: routed and enriched MQTT messages bill on the event-operations meter at Microsoft's published 4-per-billable-operation accounting, and the route topic's own per-operation charges bill on the referenced AzureEventgridTopic component
+      text: routed and enriched MQTT messages bill on the event-operations meter at Microsoft's published 4-per-billable-operation accounting, and the route topic's own per-operation charges bill on the referenced AzureEventgridTopic kind
     - text: network egress follows subscriber placement
   notes:
     - text: The TU count is also the MQTT connection ceiling (10,000 concurrent clients per TU), so device-fleet growth raises this committed line even when message volume is modest.

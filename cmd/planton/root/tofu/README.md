@@ -169,7 +169,7 @@ Command-specific flags:
 ### With PKG Packages
 
 - `pkg/iac/tofu/tofumodule`: Core OpenTofu execution logic
-- `pkg/iac/stackinput/stackinputproviderconfig`: Credential extraction and injection
+- `pkg/iac/iacinput/iacinputproviderconfig`: Credential extraction and injection
 - `pkg/iac/tofu/tfvars`: Manifest-to-tfvars conversion
 - `pkg/kustomize/builder`: Kustomize manifest building
 

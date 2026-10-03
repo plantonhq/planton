@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: kuberneteskafkatopic
 spec:
   billing_model: free
   free_tier: The KafkaTopic itself -- a Strimzi custom resource the cluster's topic operator reconciles into a real Kafka topic -- never bills. Declaring, growing, or reconfiguring a topic has no metered charge of its own.
-  notes: "No field of this spec buys anything directly, but every field shapes how much of the Kafka cluster's already-provisioned capacity the topic occupies: partitions and replicas multiply how many partition replicas the brokers host, and config entries like retention.ms and cleanup.policy decide how long messages hold broker disk. That capacity -- broker pods and their persistent volumes -- bills through the KubernetesKafka component the topic binds to (via kafka_cluster), never through this resource. Deleting the resource deletes the topic AND its data via the topic operator."
+  notes: "No field of this spec buys anything directly, but every field shapes how much of the Kafka cluster's already-provisioned capacity the topic occupies: partitions and replicas multiply how many partition replicas the brokers host, and config entries like retention.ms and cleanup.policy decide how long messages hold broker disk. That capacity -- broker pods and their persistent volumes -- bills through the KubernetesKafka kind the topic binds to (via kafka_cluster), never through this resource. Deleting the resource deletes the topic AND its data via the topic operator."

@@ -10,14 +10,14 @@ import (
 // Resources is the main entry point for the Pulumi module.
 // It orchestrates the creation of a Kubernetes ConfigMap with its data, metadata,
 // and immutability flag.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesconfigmapv1alpha1.KubernetesConfigMapStackInput) error {
+func Resources(ctx *pulumi.Context, iacInput *kubernetesconfigmapv1alpha1.KubernetesConfigMapIacInput) error {
 	// Initialize locals with derived values
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// Create Kubernetes provider from credentials
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
 		ctx,
-		stackInput.ProviderConfig,
+		iacInput.ProviderConfig,
 		"kubernetes",
 	)
 	if err != nil {

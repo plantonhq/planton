@@ -20,7 +20,7 @@ func newBucket(name string, spec *CloudflareR2BucketSpec) *CloudflareR2Bucket {
 	return &CloudflareR2Bucket{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareR2Bucket",
-		Metadata:   &shared.CloudResourceMetadata{Name: name},
+		Metadata:   &shared.CatalogObjectMetadata{Name: name},
 		Spec:       spec,
 	}
 }

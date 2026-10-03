@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kuberneteskafkaui.v1alpha1;
 import "catalog/kubernetes/kuberneteskafkaui/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//kubernetes-kafka-ui stack-input
-message KubernetesKafkaUiStackInput {
-  //target cloud-resource
+//kubernetes-kafka-ui iac-input
+message KubernetesKafkaUiIacInput {
+  //target infra-component
   KubernetesKafkaUi target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

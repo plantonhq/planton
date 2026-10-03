@@ -4,7 +4,7 @@ Deploys a Vertex AI Endpoint -- a stable serving surface for deploying machine l
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Vertex AI Endpoint** -- a managed `vertex.AiEndpoint` in the specified GCP project and region, configured with the chosen networking mode and display name
 - **Encryption Configuration** -- when `kmsKeyName` is provided, configures customer-managed encryption (CMEK) for data at rest on the endpoint; otherwise uses Google-managed encryption
@@ -18,12 +18,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the endpoint will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef. The module enables the Vertex AI API itself, so the connection's principal needs permission to enable services on a fresh project.
+- **A GCP project** where the endpoint will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef. The module enables the Vertex AI API itself, so the connection's principal needs permission to enable services on a fresh project.
 - **Private Services Access** (if using VPC peering) -- the VPC network must have a private services connection configured for the `servicenetworking.googleapis.com` API.
 - **Cloud KMS key** (if using CMEK) -- a key in the same region as the endpoint, with the Vertex AI service agent granted the `cloudkms.cryptoKeyEncrypterDecrypter` role.
 
@@ -55,7 +55,7 @@ spec:
 planton apply -f vertex-ai-endpoint.yaml
 ```
 
-This creates a public Vertex AI Endpoint with Google-managed encryption and no private networking. Models are deployed to the endpoint separately via the Vertex AI API or console. A Stack Job tracks the provisioning in real time.
+This creates a public Vertex AI Endpoint with Google-managed encryption and no private networking. Models are deployed to the endpoint separately via the Vertex AI API or console. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -98,7 +98,7 @@ These are the most important decisions when configuring a Vertex AI Endpoint. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -108,9 +108,9 @@ These are the most important decisions when configuring a Vertex AI Endpoint. Ex
 | **GcpVpcNetwork** (optional, per PSC automation entry) | `privateServiceConnectConfig.pscAutomationConfigs[].network` | `status.outputs.network_self_link` |
 | **GcpProject** (optional, per PSC automation entry) | `privateServiceConnectConfig.pscAutomationConfigs[].projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -131,6 +131,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the endpoint is created
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- provides the VPC network for private endpoint access via VPC peering
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- provides the customer-managed encryption key for data at rest
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the endpoint is created
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- provides the VPC network for private endpoint access via VPC peering
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- provides the customer-managed encryption key for data at rest

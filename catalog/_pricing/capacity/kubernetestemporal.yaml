@@ -9,9 +9,9 @@
 # volumes -- every workflow's state lives in the database you declare.
 # num_history_shards is DATA partitioning baked into the schema, never a
 # pod count -- deliberately not bound.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetestemporal
 spec:
@@ -58,7 +58,7 @@ spec:
         - field_path: helm_values
           op: is_set
       text: the helm_values overlay merges last and can override any modeled value, including resources and replica counts -- this footprint states the typed spec's declaration
-    - text: the database is a separate component (nothing is bundled) -- workflow-state storage growth and connection pressure ride its own footprint -- and archival writes to external object storage
+    - text: the database is a separate kind (nothing is bundled) -- workflow-state storage growth and connection pressure ride its own footprint -- and archival writes to external object storage
   notes:
     - text: Temporal provisions no volumes -- every workflow's state lives in the database you declare, so the footprint is purely compute reservations across the four server services and the Web UI
     - text: num_history_shards is DATA partitioning baked into the schema at first install -- shard ownership distributes across the history replicas; it is never a pod count and is deliberately not bound

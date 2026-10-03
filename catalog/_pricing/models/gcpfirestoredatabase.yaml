@@ -1,11 +1,11 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. Presets with no quantity lines have no committed always-on
-# spend and estimate to zero. Schema: finops/componentcostestimatemodel/v1.
+# spend and estimate to zero. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: gcpfirestoredatabase
 spec:
@@ -33,6 +33,6 @@ spec:
       hours_per_month: 730
       exclusions:
         - ENTERPRISE bills by data-sized units -- read units per 4 KiB, write units per 1 KiB -- and stores data at the higher enterprise rate per GiB-month at nam5, with PITR adding its own storage meter
-        - the CMEK key's version storage and per-operation charges bill on the referenced GcpKmsKey component
+        - the CMEK key's version storage and per-operation charges bill on the referenced GcpKmsKey kind
         - real-time updates and change-stream events bill their own per-million-unit meters if the application enables those ENTERPRISE surfaces
       notes: Zero committed at creation -- the enterprise meter family is pricier per byte processed, but every meter still starts at the first document.

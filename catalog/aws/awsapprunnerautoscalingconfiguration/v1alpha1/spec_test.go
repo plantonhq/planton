@@ -20,7 +20,7 @@ func validEnvelope(spec *AwsAppRunnerAutoScalingConfigurationSpec) *AwsAppRunner
 	return &AwsAppRunnerAutoScalingConfiguration{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsAppRunnerAutoScalingConfiguration",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-asc"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-asc"},
 		Spec:       spec,
 	}
 }

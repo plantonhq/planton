@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: stripepaymentmethodconfiguration
 spec:
@@ -7,6 +7,6 @@ spec:
   values:
     - name: payment_method_configuration_id
       derivations:
-        - from_stack_output: id
+        - from_output: id
       where_to_find: >-
         Stripe Dashboard -> Settings -> Payment methods (the configuration's id, pmc_...), or `GET /v1/payment_method_configurations` (the id field of the entry).

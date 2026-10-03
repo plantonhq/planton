@@ -4,7 +4,7 @@ Deploys a Virtual Hub -- the managed regional router of an Azure Virtual WAN -- 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Virtual Hub** -- the regional router with its address space, tier, routing preference, and router capacity
 - **Hub Route Tables** (optional) -- one per `routeTables` entry, with inline static routes toward next-hop resources
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -56,7 +56,7 @@ spec:
 planton apply -f azure-virtual-hub.yaml
 ```
 
-This creates a Standard-tier hub with a /23 address space in the referenced WAN and no routing customization -- it routes any-to-any through its built-in default table. A Standard hub bills hourly from creation, and ARM takes 15-30 minutes to bring the hub's router to a Provisioned state. A Stack Job tracks the provisioning in real time.
+This creates a Standard-tier hub with a /23 address space in the referenced WAN and no routing customization -- it routes any-to-any through its built-in default table. A Standard hub bills hourly from creation, and ARM takes 15-30 minutes to bring the hub's router to a Provisioned state. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -93,7 +93,7 @@ These are the most important decisions when configuring a hub. Explore the full 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -102,9 +102,9 @@ These are the most important decisions when configuring a hub. Explore the full 
 | **AzureFirewall** (optional) | `routingIntent.routingPolicies[].nextHop`, route table route `nextHop` | `status.outputs.firewall_id` |
 | **AzureVirtualHubConnection** (optional) | `bgpConnections[].virtualNetworkConnectionId` | `status.outputs.virtual_hub_connection_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -115,7 +115,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `route_table_ids` | Custom route table ARM IDs, keyed by name | `status.outputs.route_table_ids.<name>` in connection routing |
 | `route_map_ids` | Route map ARM IDs, keyed by name | `status.outputs.route_map_ids.<name>` as inbound/outbound maps |
 
-The hub's remaining outputs (`virtual_hub_name`, `bgp_connection_ids`, `routing_intent_id`) echo names and child IDs back for reference; no downstream Cloud Resource consumes them.
+The hub's remaining outputs (`virtual_hub_name`, `bgp_connection_ids`, `routing_intent_id`) echo names and child IDs back for reference; no downstream Infra Component consumes them.
 
 ## Common Patterns
 
@@ -129,8 +129,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the hub is created in
-- [**Azure Virtual WAN**](/cloud-catalog/azure-virtual-wan) -- the WAN the hub belongs to
-- [**Azure Virtual Hub Connection**](/cloud-catalog/azure-virtual-hub-connection) -- attaches spoke VNets to this hub
-- [**Azure ExpressRoute Gateway**](/cloud-catalog/azure-express-route-gateway) -- brings ExpressRoute circuits into this hub
-- [**Azure Firewall**](/cloud-catalog/azure-firewall) -- the security appliance routing intent steers through
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the hub is created in
+- [**Azure Virtual WAN**](/infra-catalog/azure-virtual-wan) -- the WAN the hub belongs to
+- [**Azure Virtual Hub Connection**](/infra-catalog/azure-virtual-hub-connection) -- attaches spoke VNets to this hub
+- [**Azure ExpressRoute Gateway**](/infra-catalog/azure-express-route-gateway) -- brings ExpressRoute circuits into this hub
+- [**Azure Firewall**](/infra-catalog/azure-firewall) -- the security appliance routing intent steers through

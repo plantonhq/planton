@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for a Binary Authorization att
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `attestor` |
-| `module/locals.go` | Stack input holder |
+| `module/locals.go` | IaC input holder |
 | `module/attestor.go` | Project resolution, APIs, the note, the public keys (with the Cloud KMS reads), the attestor, the note grant, the outputs |
 | `module/outputs.go` | Output key constants |
 

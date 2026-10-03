@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -20,7 +20,7 @@ func verification(spec *Auth0CustomDomainVerificationSpec) *Auth0CustomDomainVer
 	return &Auth0CustomDomainVerification{
 		ApiVersion: "auth0.planton.dev/v1alpha1",
 		Kind:       "Auth0CustomDomainVerification",
-		Metadata:   &shared.CloudResourceMetadata{Name: "sign-in-domain-verification"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "sign-in-domain-verification"},
 		Spec:       spec,
 	}
 }
@@ -41,7 +41,7 @@ var _ = ginkgo.Describe("Auth0CustomDomainVerification Validation Tests", func()
 			err := protovalidate.Validate(verification(&Auth0CustomDomainVerificationSpec{
 				CustomDomainId: &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{ValueFrom: &foreignkeyv1.ValueFromRef{
-						Kind:      cloudresourcekind.CloudResourceKind_Auth0CustomDomain,
+						Kind:      catalogkind.CatalogKind_Auth0CustomDomain,
 						Name:      "sign-in-domain",
 						FieldPath: "status.outputs.id",
 					}},

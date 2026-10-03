@@ -9,7 +9,7 @@ provider.tf   — Cloudflare provider configuration
 variables.tf  — Input variables mirroring CloudflareCacheSettingsSpec
 locals.tf     — The cache-variants value (managed extensions only)
 main.tf       — One count-gated resource per managed setting
-outputs.tf    — Stack outputs (zone_id)
+outputs.tf    — outputs (zone_id)
 ```
 
 ## Usage

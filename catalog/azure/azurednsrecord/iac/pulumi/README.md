@@ -1,8 +1,8 @@
 # AzureDnsRecord -- Pulumi Module
 
-Creates one DNS record set in an Azure public DNS zone (pulumi-azure classic v6, `dns.*Record`). The record type is whichever typed payload the spec carries (spec validation guarantees exactly one), so exactly one branch of the module's type dispatch runs. Behaviorally identical to the Terraform module for the same stack input.
+Creates one DNS record set in an Azure public DNS zone (pulumi-azure classic v6, `dns.*Record`). The record type is whichever typed payload the spec carries (spec validation guarantees exactly one), so exactly one branch of the module's type dispatch runs. Behaviorally identical to the Terraform module for the same IaC input.
 
-The entrypoint (`main.go`) loads the stack input and delegates to `module.Resources`, which builds the Azure provider through the shared credential builder (static client secret, keyless web identity, or ambient chain).
+The entrypoint (`main.go`) loads the IaC input and delegates to `module.Resources`, which builds the Azure provider through the shared credential builder (static client secret, keyless web identity, or ambient chain).
 
 Key behaviors, documented inline in `module/main.go`:
 

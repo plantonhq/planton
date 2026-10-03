@@ -4,7 +4,7 @@ Deploys an Amazon SageMaker MLflow tracking server — the classic managed MLflo
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SageMaker MLflow Tracking Server** — a dedicated-capacity MLflow deployment named from `metadata.name`, wired to your S3 artifact store (`artifactStoreUri`) through the server's IAM role, with the chosen size, optional `mlflowVersion` pin, automatic model registration into the SageMaker Model Registry, and a weekly maintenance window
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with SageMaker control-plane permissions (`sagemaker:CreateMlflowTrackingServer` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with SageMaker control-plane permissions (`sagemaker:CreateMlflowTrackingServer` and its siblings). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f mlflow-server.yaml
 ```
 
-This creates a `Small` tracking server (up to ~25 users) storing artifacts under the given S3 prefix — hourly billing starts when it reaches Created. A Stack Job tracks the provisioning in real time.
+This creates a `Small` tracking server (up to ~25 users) storing artifacts under the given S3 prefix — hourly billing starts when it reaches Created. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,15 +89,15 @@ These are the most important decisions when configuring a tracking server. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsIamRole** | `roleArn` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -115,7 +115,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the artifact-store access role, wired via `roleArn`
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — the artifact store behind `artifactStoreUri`
-- [**AWS SageMaker MLflow App**](/cloud-catalog/aws-sagemaker-mlflow-app) — the serverless successor for intermittent tracking with no idle charge
-- [**AWS SageMaker Model Registry**](/cloud-catalog/aws-sagemaker-model-registry) — where auto-registered models land when `automaticModelRegistration` is on
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the artifact-store access role, wired via `roleArn`
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — the artifact store behind `artifactStoreUri`
+- [**AWS SageMaker MLflow App**](/infra-catalog/aws-sagemaker-mlflow-app) — the serverless successor for intermittent tracking with no idle charge
+- [**AWS SageMaker Model Registry**](/infra-catalog/aws-sagemaker-model-registry) — where auto-registered models land when `automaticModelRegistration` is on

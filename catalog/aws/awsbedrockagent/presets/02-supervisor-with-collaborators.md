@@ -9,7 +9,7 @@ questions to a specialist agent through its `live` alias, and carries
 
 - Splitting a broad assistant into focused specialist agents while
   keeping one entry point
-- Teams composing agents as chart LEGO blocks: the collaborator reference
+- Teams composing agents as chart catalog kinds: the collaborator reference
   reads the specialist's `alias_arns` output, so the chart orders the
   deployments
 

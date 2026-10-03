@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for a Cloud Build trigger from
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `trigger` |
-| `module/locals.go` | Stack input |
+| `module/locals.go` | IaC input |
 | `module/trigger.go` | API enablement, the trigger, one builder per event source and build block, the send-when-set helpers, the outputs |
 | `module/outputs.go` | Output key constants (`id`, `trigger_id`, `name`) |
 

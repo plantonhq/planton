@@ -4,7 +4,7 @@ Defines one custom organization-policy constraint — a rule the organization wr
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Custom constraint** -- the `org_policy_custom_constraint` named `custom.{constraintName}` in the organization, with its resource types, method types, condition, and action
 
@@ -83,7 +83,7 @@ planton apply -f custom-constraint.yaml
 - **`actionType`**: `ALLOW` or `DENY`.
 - **`deletionPolicy`**: `DELETE`, `PREVENT`, or `ABANDON`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -111,7 +111,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpOrgPolicy](/docs/catalog/gcp/gcporgpolicy) — enforces the constraint at a scope by reference
 - [GcpFolder](/docs/catalog/gcp/gcpfolder) — the scopes the enforcing policies typically sit on

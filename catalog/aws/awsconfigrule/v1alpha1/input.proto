@@ -5,9 +5,9 @@ package dev.planton.aws.awsconfigrule.v1alpha1;
 import "catalog/aws/awsconfigrule/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsConfigRuleStackInput is the input for the IaC modules that
+// AwsConfigRuleIacInput is the input for the IaC modules that
 // manage an AWS Config rule.
-message AwsConfigRuleStackInput {
+message AwsConfigRuleIacInput {
   // target is the AwsConfigRule resource to deploy.
   AwsConfigRule target = 1;
   // provider_config contains the AWS provider credentials and configuration.

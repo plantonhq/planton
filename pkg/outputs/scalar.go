@@ -9,7 +9,7 @@ import (
 
 // convertScalar converts a string value to a protoreflect.Value matching the
 // target field descriptor's type. This is the Go equivalent of Java's
-// StackOutputsMapToProtoLoader.convertToFieldType().
+// OutputsMapToProtoLoader.convertToFieldType().
 //
 // Supported kinds: string, bool, int32, sint32, sfixed32, int64, sint64,
 // sfixed64, uint32, fixed32, uint64, fixed64, float, double, enum.

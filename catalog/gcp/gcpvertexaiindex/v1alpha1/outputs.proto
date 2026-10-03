@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpvertexaiindex.v1alpha1;
 
 // Outputs produced after provisioning a GCP Vertex AI Vector Search index.
-message GcpVertexAiIndexStackOutputs {
+message GcpVertexAiIndexOutputs {
   // Fully qualified index resource path — the value a
   // GcpVertexAiDeployedIndex passes as its `index` reference.
   // Format: projects/{project}/locations/{location}/indexes/{indexId}

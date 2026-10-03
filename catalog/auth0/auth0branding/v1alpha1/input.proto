@@ -5,9 +5,9 @@ package dev.planton.auth0.auth0branding.v1alpha1;
 import "catalog/auth0/auth0branding/v1alpha1/api.proto";
 import "catalog/auth0/provider.proto";
 
-// Auth0BrandingStackInput is the input to the Auth0Branding IaC module.
+// Auth0BrandingIacInput is the input to the Auth0Branding IaC module.
 // It contains the target resource and the Auth0 provider configuration.
-message Auth0BrandingStackInput {
+message Auth0BrandingIacInput {
   // target is the Auth0Branding resource to be deployed.
   Auth0Branding target = 1;
 

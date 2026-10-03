@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsecrregistrysettings
+    e2e-catalog-kind: awsecrregistrysettings
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/aws/awsecrregistrysettings/e2e/prerequisites/ci-role.yaml"

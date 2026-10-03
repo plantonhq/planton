@@ -12,7 +12,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuredatafactorydataset
+    e2e-catalog-kind: azuredatafactorydataset
   annotations:
     planton.dev/e2e: "true"
     # The blob linked service instance this dataset reads through

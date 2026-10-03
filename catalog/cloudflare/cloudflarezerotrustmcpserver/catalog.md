@@ -4,7 +4,7 @@ Registers an MCP (Model Context Protocol) server with Cloudflare Access AI Contr
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **MCP Server Registration** — a `cloudflare_zero_trust_access_ai_controls_mcp_server` carrying the upstream URL, the auth posture (oauth, bearer, or unauthenticated) with its write-only credential, per-prompt/tool overrides, and the Gateway-filtering toggle. After registration, Cloudflare syncs the server's prompt/tool inventory in the background
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module with a Cloudflare API token carrying Account → Zero Trust → Edit. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module with a Cloudflare API token carrying Account → Zero Trust → Edit. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -52,7 +52,7 @@ spec:
 planton apply -f mcp-server.yaml
 ```
 
-This registers the upstream server with a bearer token resolved from a managed secret; Cloudflare then syncs its prompt/tool inventory in the background. A Stack Job tracks the provisioning in real time.
+This registers the upstream server with a bearer token resolved from a managed secret; Cloudflare then syncs its prompt/tool inventory in the background. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -72,13 +72,13 @@ These are the most important decisions when configuring an MCP server registrati
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. `authCredentials` and `clientSecret` are managed-secret references (resolved just-in-time at deploy), not references to other Cloud Resources.
+This kind has no foreign key dependencies. `authCredentials` and `clientSecret` are managed-secret references (resolved just-in-time at deploy), not references to other Infra Components.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -96,6 +96,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Zero Trust MCP Portal**](/cloud-catalog/cloudflare-zero-trust-mcp-portal) — the user-facing endpoint that publishes this registration via `servers[].serverId`.
-- [**Cloudflare Zero Trust Gateway Settings**](/cloud-catalog/cloudflare-zero-trust-gateway-settings) — the Gateway posture that filters upstream traffic when `secureWebGateway` is on.
-- [**Cloudflare Zero Trust Organization**](/cloud-catalog/cloudflare-zero-trust-organization) — the login experience users authenticate through before reaching any published server.
+- [**Cloudflare Zero Trust MCP Portal**](/infra-catalog/cloudflare-zero-trust-mcp-portal) — the user-facing endpoint that publishes this registration via `servers[].serverId`.
+- [**Cloudflare Zero Trust Gateway Settings**](/infra-catalog/cloudflare-zero-trust-gateway-settings) — the Gateway posture that filters upstream traffic when `secureWebGateway` is on.
+- [**Cloudflare Zero Trust Organization**](/infra-catalog/cloudflare-zero-trust-organization) — the login experience users authenticate through before reaching any published server.

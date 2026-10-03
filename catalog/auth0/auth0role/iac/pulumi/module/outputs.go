@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// exportOutputs exports stack outputs for the Auth0 Role.
+// exportOutputs exports outputs for the Auth0 Role.
 func exportOutputs(ctx *pulumi.Context, role *auth0.Role, locals *Locals) error {
 	ctx.Export("id", role.ID())
 	ctx.Export("name", role.Name)

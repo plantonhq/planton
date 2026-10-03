@@ -4,7 +4,7 @@ Deploys one named event stream (domain topic) inside an Azure Event Grid domain 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Event Grid domain topic** -- a named stream under the domain (`{domain_id}/topics/{name}`), the scope event subscriptions attach to
 
@@ -14,7 +14,7 @@ The topic is pure addressing: it carries no endpoint, no keys, and no configurat
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -49,7 +49,7 @@ spec:
 planton apply -f eventgrid-domain-topic.yaml
 ```
 
-This declares the `customer-fabrikam` stream inside the `acme-tenant-events` domain -- publishers stamp exactly that name into the event's topic field. A Stack Job tracks the provisioning in real time.
+This declares the `customer-fabrikam` stream inside the `acme-tenant-events` domain -- publishers stamp exactly that name into the event's topic field. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -81,15 +81,15 @@ These are the most important decisions when configuring a domain topic. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureEventgridDomain** | `domainId` | `status.outputs.domain_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -108,6 +108,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Event Grid Domain**](/cloud-catalog/azure-eventgrid-domain) -- the shared endpoint and key pair this topic lives under; provides `domain_id`
-- [**Azure Event Grid Event Subscription**](/cloud-catalog/azure-eventgrid-event-subscription) -- attaches to this topic's `domain_topic_id` to deliver the tenant's events to queues, Functions, webhooks, and hubs
-- [**Azure Event Grid Topic**](/cloud-catalog/azure-eventgrid-topic) -- the standalone alternative when a stream needs its own endpoint, keys, and firewall
+- [**Azure Event Grid Domain**](/infra-catalog/azure-eventgrid-domain) -- the shared endpoint and key pair this topic lives under; provides `domain_id`
+- [**Azure Event Grid Event Subscription**](/infra-catalog/azure-eventgrid-event-subscription) -- attaches to this topic's `domain_topic_id` to deliver the tenant's events to queues, Functions, webhooks, and hubs
+- [**Azure Event Grid Topic**](/infra-catalog/azure-eventgrid-topic) -- the standalone alternative when a stream needs its own endpoint, keys, and firewall

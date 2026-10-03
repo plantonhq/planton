@@ -4,7 +4,7 @@ Deploys an AWS Secrets Manager secret — a named, versioned, KMS-encrypted cont
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Secret** — the named, KMS-encrypted container; up to 512 characters of alphanumeric plus `/_+=.@-`, so path-style names work.
 - **Secret Version** — created when a value arm (`stringValue` or `binaryValue`) is set, staged `AWSCURRENT` with optional custom staging labels riding alongside. Omitting both arms creates a shell secret an application or rotation function fills.
@@ -16,12 +16,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **A managed secret holding the value** — create it in Planton's secrets store and reference it as `$secret/<slug>` in `stringValue`; the platform rejects plaintext on sensitive fields.
 
 ### AWS Account
 
-- **A KMS key** (only for customer-managed encryption) — required in practice when other AWS accounts must read the secret: the AWS-managed `aws/secretsmanager` key cannot be granted cross-account. Provide the ARN directly or reference an AwsKmsKey Cloud Resource.
+- **A KMS key** (only for customer-managed encryption) — required in practice when other AWS accounts must read the secret: the AWS-managed `aws/secretsmanager` key cannot be granted cross-account. Provide the ARN directly or reference an AwsKmsKey Infra Component.
 - **A rotation Lambda** (only for self-managed rotation) — the function must implement the four rotation steps and grant Secrets Manager invoke permission (principal `secretsmanager.amazonaws.com`).
 
 ## Deploy
@@ -52,7 +52,7 @@ spec:
 planton apply -f secret.yaml
 ```
 
-This creates a secret named `prod/payments/db` (the hierarchical AWS name lives in `secretName`; omit it to name the secret after the resource) encrypted under the AWS-managed key, its JSON credential document pulled from the org secret at deploy time and staged `AWSCURRENT`. A Stack Job tracks the provisioning in real time.
+This creates a secret named `prod/payments/db` (the hierarchical AWS name lives in `secretName`; omit it to name the secret after the resource) encrypted under the AWS-managed key, its JSON credential document pulled from the org secret at deploy time and staged `AWSCURRENT`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -98,7 +98,7 @@ These are the most important decisions when configuring a secret. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -106,9 +106,9 @@ These are the most important decisions when configuring a secret. Explore the fu
 | **AwsLambda** | `rotation.rotationLambdaArn` | `status.outputs.function_arn` |
 | **AwsIamRole** | `rotation.externalRotationRoleArn` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -129,7 +129,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption for the secret and its replicas, wired via `kmsKeyId`
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) — the self-managed rotation function, wired via `rotation.rotationLambdaArn`
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the role partner-managed external rotation assumes
-- [**AWS SSM Parameter**](/cloud-catalog/aws-ssm-parameter) — the lighter alternative for encrypted values that need neither managed rotation nor replication
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption for the secret and its replicas, wired via `kmsKeyId`
+- [**AWS Lambda**](/infra-catalog/aws-lambda) — the self-managed rotation function, wired via `rotation.rotationLambdaArn`
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the role partner-managed external rotation assumes
+- [**AWS SSM Parameter**](/infra-catalog/aws-ssm-parameter) — the lighter alternative for encrypted values that need neither managed rotation nor replication

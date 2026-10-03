@@ -22,7 +22,7 @@ type Harness struct {
 	// mu guards deployedIDs which is written by VerifyDeployed
 	// and read by VerifyDestroyed.
 	mu          sync.Mutex
-	deployedIDs map[string]string // component -> resource ID
+	deployedIDs map[string]string // kind -> resource ID
 }
 
 // NewHarness creates an Auth0 test harness.
@@ -65,9 +65,9 @@ func (h *Harness) Teardown(ctx context.Context) error {
 }
 
 // VerifyDeployed checks that the deployed Auth0 resource exists via the Management API.
-// The resource ID is extracted from stack outputs and stored for VerifyDestroyed.
-func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs map[string]interface{}) error {
-	v, err := verify.GetVerifier(component)
+// The resource ID is extracted from outputs and stored for VerifyDestroyed.
+func (h *Harness) VerifyDeployed(ctx context.Context, kindDir string, outputs map[string]interface{}) error {
+	v, err := verify.GetVerifier(kindDir)
 	if err != nil {
 		return err
 	}
@@ -79,13 +79,13 @@ func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs 
 		id = extractResourceID(outputs, idOutput)
 		optional, _ := v.(verify.OptionalIDVerifier)
 		if id == "" && (optional == nil || !optional.IDOutputOptional()) {
-			return errors.Errorf("no resource ID found in outputs for %s (output %q)", component, idOutput)
+			return errors.Errorf("no resource ID found in outputs for %s (output %q)", kindDir, idOutput)
 		}
 	}
 
 	// Store for VerifyDestroyed
 	h.mu.Lock()
-	key := componentKey(ctx, component)
+	key := kindKey(ctx, kindDir)
 	h.deployedIDs[key] = id
 	h.mu.Unlock()
 
@@ -93,14 +93,14 @@ func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs 
 }
 
 // VerifyDestroyed confirms that the previously deployed Auth0 resource no longer exists.
-func (h *Harness) VerifyDestroyed(ctx context.Context, component string) error {
-	v, err := verify.GetVerifier(component)
+func (h *Harness) VerifyDestroyed(ctx context.Context, kindDir string) error {
+	v, err := verify.GetVerifier(kindDir)
 	if err != nil {
 		return err
 	}
 
 	h.mu.Lock()
-	key := componentKey(ctx, component)
+	key := kindKey(ctx, kindDir)
 	id, stored := h.deployedIDs[key]
 	h.mu.Unlock()
 
@@ -108,14 +108,14 @@ func (h *Harness) VerifyDestroyed(ctx context.Context, component string) error {
 	// id output is optional and was empty; only a missing entry means
 	// VerifyDeployed never ran.
 	if !stored && v.IDOutput() != "" {
-		return errors.Errorf("no stored resource ID for %s -- VerifyDeployed may not have run", component)
+		return errors.Errorf("no stored resource ID for %s -- VerifyDeployed may not have run", kindDir)
 	}
 
 	return v.VerifyAbsent(h.client, id)
 }
 
-// extractResourceID pulls the Auth0 resource ID from stack outputs, reading
-// the output the component's verifier names (both engines export the same
+// extractResourceID pulls the Auth0 resource ID from outputs, reading
+// the output the kind's verifier names (both engines export the same
 // output names for a kind, so one key serves both).
 func extractResourceID(outputs map[string]interface{}, idOutput string) string {
 	if outputs == nil {
@@ -132,11 +132,11 @@ func extractResourceID(outputs map[string]interface{}, idOutput string) string {
 	return ""
 }
 
-// componentKey creates a unique lookup key combining the manifest path (from context)
-// and component name, so concurrent tests for the same component type don't collide.
-func componentKey(ctx context.Context, component string) string {
+// kindKey creates a unique lookup key combining the manifest path (from context)
+// and kind name, so concurrent tests for the same kind don't collide.
+func kindKey(ctx context.Context, kindDir string) string {
 	if mp, ok := ctx.Value(provider.ManifestPathKey{}).(string); ok && mp != "" {
-		return mp + "::" + component
+		return mp + "::" + kindDir
 	}
-	return component
+	return kindDir
 }

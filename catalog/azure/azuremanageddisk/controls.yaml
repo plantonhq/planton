@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: azuremanageddisk
 spec:
@@ -20,7 +20,7 @@ spec:
       evidence:
         type: spec_default
         reference: Unset means platform-managed keys; referencing a disk encryption set encrypts the disk with a Key Vault key you own and can revoke. Confidential-VM OS disks use secure_vm_disk_encryption_set_id for the customer-key variant instead (spec validation makes the two mutually exclusive).
-      notes: None of the presets pin a disk encryption set -- customer keys are an explicit choice composed with an AzureDiskEncryptionSet component.
+      notes: None of the presets pin a disk encryption set -- customer keys are an explicit choice composed with an AzureDiskEncryptionSet kind.
     - control_id: enc-in-transit
       status: not_applicable
       notes: A disk exposes no client-facing protocol surface -- attachment I/O rides Azure's internal storage fabric between the VM host and storage, not a network connection this manifest configures. The one network surface the disk has (SAS-based export of its contents) is HTTPS-only by the service's contract.

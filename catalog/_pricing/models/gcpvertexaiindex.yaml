@@ -1,11 +1,11 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. Presets with no quantity lines have no committed always-on
-# spend and estimate to zero. Schema: finops/componentcostestimatemodel/v1.
+# spend and estimate to zero. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: gcpvertexaiindex
 spec:
@@ -26,7 +26,7 @@ spec:
       exclusions:
         - the create triggers a batch build of whatever lives at gs://ml-embeddings/catalog/ at $3.00 per GiB of data processed -- the volume is the corpus's, not the manifest's, so the charge cannot be committed here
         - every later rebuild (a contents_delta_uri change) bills the same per-GiB rate, the full corpus when is_complete_overwrite is true and only the delta files otherwise
-        - the embedding files bill as Cloud Storage on their bucket; serving node-hours start on the deployment components
+        - the embedding files bill as Cloud Storage on their bucket; serving node-hours start on the catalog kinds
       notes: Zero committed because the manifest names a directory, not a data volume -- a 768-dimension corpus stores roughly 3 KiB per vector (4 bytes per dimension), about 3 GiB per million vectors, and the bill follows what the pipeline actually puts at the URI.
     - preset: 03-brute-force-eval
       region_assumption: us-central1
@@ -35,5 +35,5 @@ spec:
       exclusions:
         - the create batch-builds the evaluation sample at gs://ml-embeddings/eval-sample/ at $3.00 per GiB of data processed -- brute-force is a geometry choice, not a separate meter, and a small eval corpus builds for cents
         - rebuilds on later data loads bill the same per-GiB rate
-        - serving this yardstick index (per node-hour, linear query cost) starts on the deployment components
+        - serving this yardstick index (per node-hour, linear query cost) starts on the catalog kinds
       notes: Zero committed for the same reason as the batch preset -- the manifest commits no data volume; an eval sample is deliberately small, but the meter is the corpus's to start.

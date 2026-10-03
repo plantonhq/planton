@@ -6,7 +6,7 @@
 
 ## Summary
 
-Integrated stack-updates functionality into the cloud resources web interface, enabling users to view and navigate stack-updates directly from the cloud resources list. Added a "Stack Updates" menu option that opens a drawer showing paginated stack-updates for a selected cloud resource, with clickable rows that navigate to detailed stack-update pages. Implemented server-side pagination in the backend ListStackUpdates API to support efficient handling of large numbers of stack-updates. Enhanced DeployCloudResource API to accept user-provided provider credentials (AWS, GCP, Azure, Atlas, Cloudflare, Confluent, Snowflake, Kubernetes) via API request, with automatic fallback to environment variables. Fixed module directory path resolution for both Pulumi and OpenTofu modules.
+Integrated stack-updates functionality into the infra components web interface, enabling users to view and navigate stack-updates directly from the infra components list. Added a "Stack Updates" menu option that opens a drawer showing paginated stack-updates for a selected infra component, with clickable rows that navigate to detailed stack-update pages. Implemented server-side pagination in the backend ListStackUpdates API to support efficient handling of large numbers of stack-updates. Enhanced DeployInfraComponent API to accept user-provided provider credentials (AWS, GCP, Azure, Atlas, Cloudflare, Confluent, Snowflake, Kubernetes) via API request, with automatic fallback to environment variables. Fixed module directory path resolution for both Pulumi and OpenTofu modules.
 
 ## Problem Statement / Motivation
 
@@ -14,12 +14,12 @@ The stack-updates feature existed in the backend but lacked a user interface for
 
 ### Missing Capabilities
 
-- **No UI access to stack-updates**: Stack jobs could only be accessed via API, with no web interface
-- **No integration with cloud resources**: No way to view stack-updates associated with a cloud resource from the cloud resources list
+- **No UI access to stack-updates**: Infra jobs could only be accessed via API, with no web interface
+- **No integration with infra components**: No way to view stack-updates associated with an infra component from the infra components list
 - **No detailed view**: No dedicated page to view complete stack-update details including output JSON
 - **No pagination support**: Backend API didn't support pagination, which would cause performance issues with large numbers of stack-updates
-- **No navigation flow**: No intuitive way to navigate from cloud resources to their associated stack-updates
-- **No user-provided credentials**: DeployCloudResource API only supported environment variables, requiring credentials to be pre-configured on the server
+- **No navigation flow**: No intuitive way to navigate from infra components to their associated stack-updates
+- **No user-provided credentials**: DeployInfraComponent API only supported environment variables, requiring credentials to be pre-configured on the server
 - **Incorrect module paths**: Module directory resolution used incorrect API path structure (`apis/dev/planton/provider` instead of `apis/project/planton/provider`)
 
 ### User Impact
@@ -27,7 +27,7 @@ The stack-updates feature existed in the backend but lacked a user interface for
 Without these improvements, users faced:
 
 - Inability to view stack-updates through the web interface
-- No way to see deployment history for cloud resources
+- No way to see deployment history for infra components
 - Performance issues when loading large numbers of stack-updates
 - No detailed view of stack-update execution results
 - Requirement to pre-configure credentials on the server before deploying resources
@@ -35,40 +35,40 @@ Without these improvements, users faced:
 
 ## Solution / What's New
 
-Implemented a complete UI integration for stack-updates with four main components:
+Implemented a complete UI integration for stack-updates with four main kinds:
 
-1. **Stack Updates Menu in Cloud Resources List**: Added "Stack Updates" action menu item that opens a drawer showing all stack-updates for the selected cloud resource
+1. **Stack Updates Menu in Infra Components List**: Added "Stack Updates" action menu item that opens a drawer showing all stack-updates for the selected infra component
 2. **Stack Updates Detail Page**: Created a dedicated page (`/stack-updates/[id]`) to view complete stack-update details including status, timestamps, and full output JSON
 3. **Backend Pagination**: Added server-side pagination support to the ListStackUpdates API with total pages calculation
-4. **User-Provided Credentials Support**: Enhanced DeployCloudResource API to accept provider credentials via API request, with automatic validation and fallback to environment variables
+4. **User-Provided Credentials Support**: Enhanced DeployInfraComponent API to accept provider credentials via API request, with automatic validation and fallback to environment variables
 
 ### Architecture
 
 **User Flow**:
 
 ```
-Cloud Resources List Page
+Infra Components List Page
     ↓ User clicks "Stack Updates" menu item
 Stack Updates Drawer (opens)
     ↓ Shows paginated list of stack-updates
     ↓ User clicks on a stack-update row
-Stack Job Detail Page (/stack-updates/[id])
+Infra Job Detail Page (/stack-updates/[id])
     ↓ Shows full stack-update details
     ↓ Can navigate back to stack-updates list via breadcrumb
 ```
 
-**Component Architecture**:
+**Kind Architecture**:
 
 ```
-Cloud Resources List Component
+Infra Components List Kind
     ├── Action Menu (View, Edit, Stack Updates, Delete)
     └── Stack Updates Drawer
-        └── Stack Updates List Component
+        └── Stack Updates List Kind
             └── Table with Pagination
                 ↓ (on row click)
-                Stack Job Detail Page
+                Infra Job Detail Page
                     ├── Breadcrumb Navigation
-                    ├── Stack Job Header
+                    ├── Infra Job Header
                     └── JSON Output Viewer
 ```
 
@@ -89,12 +89,12 @@ Response (jobs + totalPages)
 
 **1. Stack Updates Menu Integration**
 
-- Added "Stack Updates" menu item to cloud resources action menu
-- Opens drawer when clicked, showing stack-updates for the selected cloud resource
-- Drawer uses the same drawer component pattern as other features
-- Maintains state for selected cloud resource
+- Added "Stack Updates" menu item to infra components action menu
+- Opens drawer when clicked, showing stack-updates for the selected infra component
+- Drawer uses the same drawer kind pattern as other features
+- Maintains state for selected infra component
 
-**2. Stack Updates List Component**
+**2. Stack Updates List Kind**
 
 - Displays stack-updates in a paginated table
 - Shows ID (truncated), Status, Created At, Updated At columns
@@ -103,17 +103,17 @@ Response (jobs + totalPages)
 - Server-side pagination with page navigation controls
 - Empty state message when no stack-updates found
 
-**3. Stack Job Detail Page**
+**3. Infra Job Detail Page**
 
 - Dedicated route: `/stack-updates/[id]`
 - Breadcrumb navigation with clickable "Stack Updates" link
-- Stack job header showing:
+- Infra job header showing:
   - Job ID with copy-to-clipboard functionality
   - Status chip
   - Last updated timestamp
 - Full JSON output displayed with syntax highlighting
 - Loading states with skeleton placeholders
-- Can open stack-updates drawer from breadcrumb to view all jobs for the same cloud resource
+- Can open stack-updates drawer from breadcrumb to view all jobs for the same infra component
 
 **4. Backend Pagination**
 
@@ -126,7 +126,7 @@ Response (jobs + totalPages)
 
 **5. User-Provided Credentials Support**
 
-- Added `ProviderConfig` message to `DeployCloudResourceRequest` proto supporting all providers (AWS, GCP, Azure, Atlas, Cloudflare, Confluent, Snowflake, Kubernetes)
+- Added `ProviderConfig` message to `DeployInfraComponentRequest` proto supporting all providers (AWS, GCP, Azure, Atlas, Cloudflare, Confluent, Snowflake, Kubernetes)
 - Credentials priority: User-provided credentials > Environment variables
 - Automatic credential validation based on resource provider type
 - Temporary credential files created from API request (matching CLI pattern)
@@ -150,8 +150,8 @@ Added pagination fields to the ListStackUpdates API:
 ```45:61:app/backend/apis/proto/stack_update_service.proto
 // Request message for listing stack-updates.
 message ListStackUpdatesRequest {
-  // Optional filter by cloud resource ID.
-  optional string cloud_resource_id = 1;
+  // Optional filter by infra component ID.
+  optional string infra_component_id = 1;
   // Optional filter by status (success, failed, in_progress).
   optional string status = 2;
   // Pagination parameters (optional). If not provided, returns all jobs.
@@ -169,7 +169,7 @@ message ListStackUpdatesResponse {
 
 **Key design decisions**:
 
-- Reused `PageInfo` message from `cloud_resource_service.proto` for consistency
+- Reused `PageInfo` message from `infra_component_service.proto` for consistency
 - `total_pages` only set when `page_info` is provided (backward compatible)
 - Pagination is optional to maintain backward compatibility
 
@@ -178,9 +178,9 @@ message ListStackUpdatesResponse {
 Added ProviderConfig support for user-provided credentials:
 
 ```22:122:app/backend/apis/proto/stack_update_service.proto
-message DeployCloudResourceRequest {
-  // The unique identifier of the cloud resource to deploy.
-  string cloud_resource_id = 1;
+message DeployInfraComponentRequest {
+  // The unique identifier of the infra component to deploy.
+  string infra_component_id = 1;
   // Optional provider credentials. If not provided, credentials will be read from environment variables.
   optional ProviderConfig provider_config = 2;
 }
@@ -219,9 +219,9 @@ func (s *StackUpdateService) ListStackUpdates(
 ) (*connect.Response[backendv1.ListStackUpdatesResponse], error) {
 	opts := &database.StackUpdateListOptions{}
 
-	if req.Msg.CloudResourceId != nil {
-		id := *req.Msg.CloudResourceId
-		opts.CloudResourceID = &id
+	if req.Msg.InfraComponentId != nil {
+		id := *req.Msg.InfraComponentId
+		opts.InfraComponentID = &id
 	}
 
 	if req.Msg.Status != nil {
@@ -252,7 +252,7 @@ func (s *StackUpdateService) ListStackUpdates(
 	}
 
 	logrus.WithFields(logrus.Fields{
-		"cloud_resource_id": req.Msg.CloudResourceId,
+		"infra_component_id": req.Msg.InfraComponentId,
 		"status":            req.Msg.Status,
 		"page_num":          opts.PageNum,
 		"page_size":         opts.PageSize,
@@ -268,7 +268,7 @@ func (s *StackUpdateService) ListStackUpdates(
 	for _, job := range jobs {
 		protoJob := &backendv1.StackUpdate{
 			Id:              job.ID.Hex(),
-			CloudResourceId: job.CloudResourceID,
+			InfraComponentId: job.InfraComponentID,
 			Status:          job.Status,
 			Output:          job.Output,
 		}
@@ -279,7 +279,7 @@ func (s *StackUpdateService) ListStackUpdates(
 - Default pagination: page 0, size 20 if not provided
 - Calculates total pages using ceiling division
 - Returns both jobs and totalPages in response
-- Maintains all existing filter capabilities (cloud_resource_id, status)
+- Maintains all existing filter capabilities (infra_component_id, status)
 
 **File**: `app/backend/internal/service/stack_update_service.go`
 
@@ -295,20 +295,20 @@ Added user-provided credentials support with validation:
 	// Execute Pulumi deployment asynchronously
 	jobID := createdJob.ID.Hex()
 	go func() {
-		_ = s.deployWithPulumi(context.Background(), jobID, cloudResourceID, cloudResource.Manifest, userProviderConfig)
+		_ = s.deployWithPulumi(context.Background(), jobID, infraComponentID, infraComponent.Manifest, userProviderConfig)
 	}()
 
 	// ... in deployWithPulumi function ...
 
 	// Step 10: Build provider config options
 	// Priority: User-provided credentials > Environment variables
-	var providerConfigOptions stackinputproviderconfig.StackInputProviderConfigOptions
+	var providerConfigOptions iacinputproviderconfig.IacInputProviderConfigOptions
 	var cleanupProviderConfigs func()
 
 	if userProviderConfig != nil {
 		// Convert user-provided credentials to files (same pattern as CLI)
 		// ... credential conversion logic ...
-		providerConfigOptions, cleanupProviderConfigs, err = stackinputproviderconfig.BuildProviderConfigOptionsFromUserCredentials(
+		providerConfigOptions, cleanupProviderConfigs, err = iacinputproviderconfig.BuildProviderConfigOptionsFromUserCredentials(
 			awsConfig,
 			gcpConfig,
 			azureConfig,
@@ -320,7 +320,7 @@ Added user-provided credentials support with validation:
 		)
 	} else {
 		// Fallback to environment variables (existing behavior)
-		providerConfigOptions, cleanupProviderConfigs, err = stackinputproviderconfig.BuildProviderConfigOptionsFromEnv()
+		providerConfigOptions, cleanupProviderConfigs, err = iacinputproviderconfig.BuildProviderConfigOptionsFromEnv()
 	}
 	defer cleanupProviderConfigs()
 
@@ -345,7 +345,7 @@ Added pagination support to repository layer:
 ```130:180:app/backend/internal/database/stack_update_repo.go
 // StackUpdateListOptions contains options for listing stack-updates.
 type StackUpdateListOptions struct {
-	CloudResourceID *string
+	InfraComponentID *string
 	Status          *string
 	PageNum         *int32
 	PageSize        *int32
@@ -356,8 +356,8 @@ func (r *StackUpdateRepository) List(ctx context.Context, opts *StackUpdateListO
 	filter := bson.M{}
 
 	if opts != nil {
-		if opts.CloudResourceID != nil && *opts.CloudResourceID != "" {
-			filter["cloud_resource_id"] = *opts.CloudResourceID
+		if opts.InfraComponentID != nil && *opts.InfraComponentID != "" {
+			filter["infra_component_id"] = *opts.InfraComponentID
 		}
 
 		if opts.Status != nil && *opts.Status != "" {
@@ -404,8 +404,8 @@ func (r *StackUpdateRepository) Count(ctx context.Context, opts *StackUpdateList
 	filter := bson.M{}
 
 	if opts != nil {
-		if opts.CloudResourceID != nil && *opts.CloudResourceID != "" {
-			filter["cloud_resource_id"] = *opts.CloudResourceID
+		if opts.InfraComponentID != nil && *opts.InfraComponentID != "" {
+			filter["infra_component_id"] = *opts.InfraComponentID
 		}
 
 		if opts.Status != nil && *opts.Status != "" {
@@ -431,7 +431,7 @@ func (r *StackUpdateRepository) Count(ctx context.Context, opts *StackUpdateList
 
 ### 3. User-Provided Credentials Implementation
 
-**File**: `pkg/iac/stackinput/stackinputproviderconfig/user_provider.go`
+**File**: `pkg/iac/iacinput/iacinputproviderconfig/user_provider.go`
 
 Created new file to handle user-provided credentials (replacing env_provider.go):
 
@@ -480,12 +480,12 @@ Fixed module path resolution:
 
 ### 4. Frontend Stack Updates Integration
 
-**File**: `app/frontend/src/components/shared/cloud-resources-list/cloud-resources-list.tsx`
+**File**: `app/frontend/src/components/shared/infra-components-list/infra-components-list.tsx`
 
-Added "Stack Updates" menu item to cloud resources action menu:
+Added "Stack Updates" menu item to infra components action menu:
 
-```237:279:app/frontend/src/components/shared/cloud-resources-list/cloud-resources-list.tsx
-  const handleOpenStackUpdates = useCallback((row: CloudResource) => {
+```237:279:app/frontend/src/components/shared/infra-components-list/infra-components-list.tsx
+  const handleOpenStackUpdates = useCallback((row: InfraComponent) => {
     setSelectedResourceForStackUpdates(row);
     setStackUpdatesDrawerOpen(true);
   }, []);
@@ -495,32 +495,32 @@ Added "Stack Updates" menu item to cloud resources action menu:
     setSelectedResourceForStackUpdates(null);
   }, []);
 
-  const tableActions: ActionMenuProps<CloudResource>[] = useMemo(
+  const tableActions: ActionMenuProps<InfraComponent>[] = useMemo(
     () => [
       {
         text: 'View',
-        handler: (row: CloudResource) => {
+        handler: (row: InfraComponent) => {
           handleOpenDrawer('view', row);
         },
         isMenuAction: true,
       },
       {
         text: 'Edit',
-        handler: (row: CloudResource) => {
+        handler: (row: InfraComponent) => {
           handleOpenDrawer('edit', row);
         },
         isMenuAction: true,
       },
       {
         text: 'Stack Updates',
-        handler: (row: CloudResource) => {
+        handler: (row: InfraComponent) => {
           handleOpenStackUpdates(row);
         },
         isMenuAction: true,
       },
       {
         text: 'Delete',
-        handler: (row: CloudResource) => {
+        handler: (row: InfraComponent) => {
           handleConfirmDelete(row);
         },
         isMenuAction: true,
@@ -532,16 +532,16 @@ Added "Stack Updates" menu item to cloud resources action menu:
 
 Added stack-updates drawer state and rendering:
 
-```96:99:app/frontend/src/components/shared/cloud-resources-list/cloud-resources-list.tsx
-  // Stack jobs drawer state
+```96:99:app/frontend/src/components/shared/infra-components-list/infra-components-list.tsx
+  // Infra jobs drawer state
   const [stackUpdatesDrawerOpen, setStackUpdatesDrawerOpen] = useState(false);
   const [selectedResourceForStackUpdates, setSelectedResourceForStackUpdates] =
-    useState<CloudResource | null>(null);
+    useState<InfraComponent | null>(null);
 ```
 
 **File**: `app/frontend/src/components/shared/stackupdate/stack-updates-drawer.tsx`
 
-Created drawer component for stack-updates list:
+Created drawer kind for stack-updates list:
 
 ```1:18:app/frontend/src/components/shared/stackupdate/stack-updates-drawer.tsx
 'use client';
@@ -550,14 +550,14 @@ import { Drawer } from '@/components/shared/drawer';
 import { StackUpdatesList } from './stack-updates-list';
 export interface StackUpdatesDrawerProps {
   open: boolean;
-  cloudResourceId: string;
+  infraComponentId: string;
   onClose: () => void;
 }
 
-export function StackUpdatesDrawer({ open, cloudResourceId, onClose }: StackUpdatesDrawerProps) {
+export function StackUpdatesDrawer({ open, infraComponentId, onClose }: StackUpdatesDrawerProps) {
   return (
     <Drawer open={open} onClose={onClose} title="Stack Updates" width={900}>
-      <StackUpdatesList cloudResourceId={cloudResourceId} />
+      <StackUpdatesList infraComponentId={infraComponentId} />
     </Drawer>
   );
 }
@@ -565,16 +565,16 @@ export function StackUpdatesDrawer({ open, cloudResourceId, onClose }: StackUpda
 
 **Key features**:
 
-- Reuses existing Drawer component
+- Reuses existing Drawer kind
 - Width set to 900px for better table visibility
-- Passes cloudResourceId to filter stack-updates
+- Passes infraComponentId to filter stack-updates
 
 **File**: `app/frontend/src/components/shared/stackupdate/stack-updates-list.tsx`
 
-Created list component with pagination:
+Created list kind with pagination:
 
 ```22:124:app/frontend/src/components/shared/stackupdate/stack-updates-list.tsx
-export function StackUpdatesList({ cloudResourceId }: StackUpdatesListProps) {
+export function StackUpdatesList({ infraComponentId }: StackUpdatesListProps) {
   const router = useRouter();
   const { query } = useStackUpdateQuery();
   const [page, setPage] = useState(0);
@@ -590,7 +590,7 @@ export function StackUpdatesList({ cloudResourceId }: StackUpdatesListProps) {
       query
         .listStackUpdates(
           create(ListStackUpdatesRequestSchema, {
-            cloudResourceId,
+            infraComponentId,
             pageInfo: create(PageInfoSchema, {
               num: page,
               size: rowsPerPage,
@@ -606,19 +606,19 @@ export function StackUpdatesList({ cloudResourceId }: StackUpdatesListProps) {
           setApiLoading(false);
         });
     }
-  }, [query, cloudResourceId, page, rowsPerPage]);
+  }, [query, infraComponentId, page, rowsPerPage]);
 
-  // Reset to first page when cloudResourceId changes
+  // Reset to first page when infraComponentId changes
   useEffect(() => {
     setPage(0);
-  }, [cloudResourceId]);
+  }, [infraComponentId]);
 
   // Auto-load on mount and when dependencies change
   useEffect(() => {
-    if (query && cloudResourceId) {
+    if (query && infraComponentId) {
       handleLoadStackUpdates();
     }
-  }, [query, cloudResourceId, handleLoadStackUpdates]);
+  }, [query, infraComponentId, handleLoadStackUpdates]);
 
   // Handle page change
   const handlePageChange = useCallback((newPage: number, newRowsPerPage: number) => {
@@ -685,10 +685,10 @@ export function StackUpdatesList({ cloudResourceId }: StackUpdatesListProps) {
 - Clickable rows navigate to detail page
 - Status displayed with color-coded chips
 - Truncated ID display (first 12 characters)
-- Resets to page 0 when cloudResourceId changes
+- Resets to page 0 when infraComponentId changes
 - Loading states handled
 
-### 5. Stack Job Detail Page
+### 5. Infra Job Detail Page
 
 **File**: `app/frontend/src/app/stack-updates/[id]/page.tsx`
 
@@ -709,10 +709,10 @@ export default function StackUpdateDetailPage() {
   }, []);
 
   const handleStackUpdatesClick = useCallback(() => {
-    if (stackUpdate?.cloudResourceId) {
+    if (stackUpdate?.infraComponentId) {
       setStackUpdatesDrawerOpen(true);
     }
-  }, [stackUpdate?.cloudResourceId]);
+  }, [stackUpdate?.infraComponentId]);
 
   const breadcrumbs: IBreadcrumbItem[] = useMemo(() => {
     const items: IBreadcrumbItem[] = [];
@@ -765,10 +765,10 @@ export default function StackUpdateDetailPage() {
         </Box>
 
         {/* Stack Updates Drawer */}
-        {stackUpdate?.cloudResourceId && (
+        {stackUpdate?.infraComponentId && (
           <StackUpdatesDrawer
             open={stackUpdatesDrawerOpen}
-            cloudResourceId={stackUpdate.cloudResourceId}
+            infraComponentId={stackUpdate.infraComponentId}
             onClose={handleCloseStackUpdates}
           />
         )}
@@ -785,11 +785,11 @@ export default function StackUpdateDetailPage() {
 - Opens stack-updates drawer when breadcrumb is clicked
 - Displays full JSON output with syntax highlighting
 - Loading states with skeleton placeholders
-- Stack job header component for key information
+- Infra job header kind for key information
 
 **File**: `app/frontend/src/components/shared/stackupdate/stack-update-header.tsx`
 
-Created header component:
+Created header kind:
 
 ```14:56:app/frontend/src/components/shared/stackupdate/stack-update-header.tsx
 export function StackUpdateHeader({ stackUpdate, updatedTime }: StackUpdateHeaderProps) {
@@ -844,11 +844,11 @@ export function StackUpdateHeader({ stackUpdate, updatedTime }: StackUpdateHeade
 - Last updated timestamp
 - Loading states with skeletons
 
-### 6. Supporting Components
+### 6. Supporting Kinds
 
 **File**: `app/frontend/src/components/shared/breadcrumb/index.tsx`
 
-Created breadcrumb component for navigation:
+Created breadcrumb kind for navigation:
 
 ```38:63:app/frontend/src/components/shared/breadcrumb/index.tsx
 export const Breadcrumb: FC<IBreadcrumb> = ({ breadcrumbs, startBreadcrumb }) => {
@@ -884,11 +884,11 @@ export const Breadcrumb: FC<IBreadcrumb> = ({ breadcrumbs, startBreadcrumb }) =>
 - Supports start breadcrumb with icon and label
 - Clickable breadcrumb items
 - Loading states with skeletons
-- Reusable component for navigation
+- Reusable kind for navigation
 
 **File**: `app/frontend/src/components/shared/syntax-highlighter/json-code.tsx`
 
-Created JSON syntax highlighter component for displaying stack-update output:
+Created JSON syntax highlighter kind for displaying stack-update output:
 
 - Displays JSON with proper formatting and syntax highlighting
 - Used in stack-update detail page to show deployment output
@@ -899,7 +899,7 @@ Created JSON syntax highlighter component for displaying stack-update output:
 
 **Accessibility**:
 
-- Stack jobs now accessible directly from cloud resources list
+- Infra jobs now accessible directly from infra components list
 - Intuitive navigation flow from resources to jobs to details
 - Easy access to deployment history
 
@@ -925,16 +925,16 @@ Created JSON syntax highlighter component for displaying stack-update output:
 
 ### For Developers
 
-**Component Reusability**:
+**Kind Reusability**:
 
-- Stack jobs components can be reused in other contexts
-- Breadcrumb component is generic and reusable
+- Infra jobs kinds can be reused in other contexts
+- Breadcrumb kind is generic and reusable
 - Drawer pattern consistent with other features
 
 **Maintainability**:
 
 - Clear separation between list and detail views
-- Consistent pagination pattern with cloud resources
+- Consistent pagination pattern with infra components
 - Type-safe implementation with TypeScript
 
 **Scalability**:
@@ -955,7 +955,7 @@ Created JSON syntax highlighter component for displaying stack-update output:
 
 **New Capabilities**:
 
-- View stack-updates from cloud resources list
+- View stack-updates from infra components list
 - Navigate to detailed stack-update pages
 - View complete deployment output with syntax highlighting
 - Paginated browsing of stack-updates
@@ -972,10 +972,10 @@ Created JSON syntax highlighter component for displaying stack-update output:
 ### Developer Experience
 
 **1 new detail page** (`/stack-updates/[id]`)
-**2 new reusable components** (StackUpdatesDrawer, StackUpdatesList)
-**1 new header component** (StackUpdateHeader)
-**1 new breadcrumb component** for navigation
-**1 new syntax highlighter component** for JSON display
+**2 new reusable kinds** (StackUpdatesDrawer, StackUpdatesList)
+**1 new header kind** (StackUpdateHeader)
+**1 new breadcrumb kind** for navigation
+**1 new syntax highlighter kind** for JSON display
 **Backend pagination** support in service and repository layers
 **1 new credential handling module** (`user_provider.go`) replacing `env_provider.go`
 **Provider credential support** for all 8 supported cloud providers
@@ -983,7 +983,7 @@ Created JSON syntax highlighter component for displaying stack-update output:
 
 ### System Capabilities
 
-**UI Integration**: Stack jobs fully integrated into web interface
+**UI Integration**: Infra jobs fully integrated into web interface
 **Navigation**: Complete navigation flow from resources to jobs to details
 **Pagination**: Scalable pagination for large datasets
 **Performance**: Efficient loading with server-side pagination
@@ -992,14 +992,14 @@ Created JSON syntax highlighter component for displaying stack-update output:
 
 ## Usage Examples
 
-### Opening Stack Updates from Cloud Resources
+### Opening Stack Updates from Infra Components
 
-1. Navigate to Cloud Resources page
-2. Click action menu (three dots) on any cloud resource
+1. Navigate to Infra Components page
+2. Click action menu (three dots) on any infra component
 3. Select "Stack Updates" from menu
 4. Drawer opens showing paginated list of stack-updates for that resource
 
-### Viewing Stack Job Details
+### Viewing Infra Job Details
 
 1. From stack-updates drawer, click on any stack-update row
 2. Navigate to `/stack-updates/[id]` detail page
@@ -1012,8 +1012,8 @@ Created JSON syntax highlighter component for displaying stack-update output:
 ### Navigating Back
 
 1. From detail page, click "Stack Updates" in breadcrumb
-2. Opens drawer showing all stack-updates for the same cloud resource
-3. Can navigate between jobs or return to cloud resources list
+2. Opens drawer showing all stack-updates for the same infra component
+3. Can navigate between jobs or return to infra components list
 
 ### Backend API with Pagination
 
@@ -1021,7 +1021,7 @@ Created JSON syntax highlighter component for displaying stack-update output:
 
 ```protobuf
 ListStackUpdatesRequest {
-  cloud_resource_id: "507f1f77bcf86cd799439011"
+  infra_component_id: "507f1f77bcf86cd799439011"
   page_info: {
     num: 0  // page number (0-indexed)
     size: 10  // items per page
@@ -1043,8 +1043,8 @@ ListStackUpdatesResponse {
 **Request**:
 
 ```protobuf
-DeployCloudResourceRequest {
-  cloud_resource_id: "507f1f77bcf86cd799439011"
+DeployInfraComponentRequest {
+  infra_component_id: "507f1f77bcf86cd799439011"
   provider_config: {
     aws: {
       account_id: "123456789012"
@@ -1070,10 +1070,10 @@ DeployCloudResourceRequest {
 
 **Modified**:
 
-- `app/backend/apis/proto/stack_update_service.proto` - Added PageInfo and total_pages to ListStackUpdates API; Added ProviderConfig support to DeployCloudResourceRequest for user-provided credentials (AWS, GCP, Azure, Atlas, Cloudflare, Confluent, Snowflake, Kubernetes)
+- `app/backend/apis/proto/stack_update_service.proto` - Added PageInfo and total_pages to ListStackUpdates API; Added ProviderConfig support to DeployInfraComponentRequest for user-provided credentials (AWS, GCP, Azure, Atlas, Cloudflare, Confluent, Snowflake, Kubernetes)
 - `app/backend/internal/service/stack_update_service.go` - Implemented pagination logic with total pages calculation; Added user-provided credentials support with fallback to environment variables; Added provider credential validation based on resource kind; Removed logrus logging
-- `app/backend/internal/service/cloud_resource_service.go` - Removed logrus logging (code cleanup)
-- `app/backend/internal/service/deployment_component_service.go` - Removed logrus logging (code cleanup)
+- `app/backend/internal/service/infra_component_service.go` - Removed logrus logging (code cleanup)
+- `app/backend/internal/service/catalog_kind_service.go` - Removed logrus logging (code cleanup)
 - `app/backend/internal/database/stack_update_repo.go` - Added pagination support with skip/limit and Count method
 
 ### Infrastructure Code
@@ -1085,42 +1085,42 @@ DeployCloudResourceRequest {
 
 **Deleted**:
 
-- `pkg/iac/stackinput/stackinputproviderconfig/env_provider.go` - Removed (functionality consolidated into user_provider.go which handles both user credentials and environment variables)
+- `pkg/iac/iacinput/iacinputproviderconfig/env_provider.go` - Removed (functionality consolidated into user_provider.go which handles both user credentials and environment variables)
 
 ### Frontend Pages
 
 **Created**:
 
-- `app/frontend/src/app/stack-updates/[id]/page.tsx` - Stack job detail page
-- `app/frontend/src/app/stack-updates/_services/index.ts` - Stack jobs service exports
-- `app/frontend/src/app/stack-updates/_services/query.ts` - Stack jobs query service
+- `app/frontend/src/app/stack-updates/[id]/page.tsx` - Infra job detail page
+- `app/frontend/src/app/stack-updates/_services/index.ts` - Infra jobs service exports
+- `app/frontend/src/app/stack-updates/_services/query.ts` - Infra jobs query service
 - `app/frontend/src/app/stack-updates/styled.ts` - Styled components for stack-updates pages
 
 ### UI Components
 
 **Created**:
 
-- `app/frontend/src/components/shared/stackupdate/index.ts` - Stack job component exports
-- `app/frontend/src/components/shared/stackupdate/stack-update-header.tsx` - Stack job header component
-- `app/frontend/src/components/shared/stackupdate/stack-updates-drawer.tsx` - Stack jobs drawer component
-- `app/frontend/src/components/shared/stackupdate/stack-updates-list.tsx` - Stack jobs list component with pagination
-- `app/frontend/src/components/shared/breadcrumb/index.tsx` - Breadcrumb navigation component
+- `app/frontend/src/components/shared/stackupdate/index.ts` - Infra job kind exports
+- `app/frontend/src/components/shared/stackupdate/stack-update-header.tsx` - Infra job header kind
+- `app/frontend/src/components/shared/stackupdate/stack-updates-drawer.tsx` - Infra jobs drawer kind
+- `app/frontend/src/components/shared/stackupdate/stack-updates-list.tsx` - Infra jobs list kind with pagination
+- `app/frontend/src/components/shared/breadcrumb/index.tsx` - Breadcrumb navigation kind
 - `app/frontend/src/components/shared/breadcrumb/styled.ts` - Breadcrumb styling
 - `app/frontend/src/components/shared/status-chip/index.ts` - Status chip exports
-- `app/frontend/src/components/shared/status-chip/status-chip.tsx` - Status chip component
+- `app/frontend/src/components/shared/status-chip/status-chip.tsx` - Status chip kind
 - `app/frontend/src/components/shared/syntax-highlighter/index.ts` - Syntax highlighter exports
-- `app/frontend/src/components/shared/syntax-highlighter/json-code.tsx` - JSON syntax highlighter component
+- `app/frontend/src/components/shared/syntax-highlighter/json-code.tsx` - JSON syntax highlighter kind
 
 **Modified**:
 
-- `app/frontend/src/components/shared/cloud-resources-list/cloud-resources-list.tsx` - Added "Stack Updates" menu item and drawer integration
-- `app/frontend/src/components/shared/cloud-resources-list/index.ts` - Updated exports
+- `app/frontend/src/components/shared/infra-components-list/infra-components-list.tsx` - Added "Stack Updates" menu item and drawer integration
+- `app/frontend/src/components/shared/infra-components-list/index.ts` - Updated exports
 - `app/frontend/src/components/layout/styled.ts` - Updated layout styling
 - `app/frontend/src/components/shared/drawer/styled.ts` - Updated drawer styling
 
 **Deleted**:
 
-- `app/frontend/src/components/shared/cloud-resources-list/styled.ts` - Removed (no longer needed)
+- `app/frontend/src/components/shared/infra-components-list/styled.ts` - Removed (no longer needed)
 
 ### Configuration
 
@@ -1132,14 +1132,14 @@ DeployCloudResourceRequest {
 ## Technical Metrics
 
 - **1 new detail page** with dynamic routing
-- **4 new reusable components** for stack-updates UI
-- **1 new breadcrumb component** for navigation
-- **1 new status chip component** for status display
-- **1 new syntax highlighter component** for JSON display
+- **4 new reusable kinds** for stack-updates UI
+- **1 new breadcrumb kind** for navigation
+- **1 new status chip kind** for status display
+- **1 new syntax highlighter kind** for JSON display
 - **Server-side pagination** implemented in backend and frontend
 - **Default page size**: 10 items per page (frontend), 20 items per page (backend default)
 - **Backward compatible**: Pagination is optional in API
-- **Full TypeScript coverage** for all new components
+- **Full TypeScript coverage** for all new kinds
 
 ## Related Work
 
@@ -1147,16 +1147,16 @@ DeployCloudResourceRequest {
 
 This work builds on:
 
-- **Pulumi CLI Stack Job API Implementation** (December 3, 2025) - Backend API foundation
-- **Cloud Resource UI Enhancements and Pagination** (December 3, 2025) - Table component and pagination patterns
-- **Cloud Resource Web UI** (December 1, 2025) - Web interface infrastructure
+- **Pulumi CLI Infra Job API Implementation** (December 3, 2025) - Backend API foundation
+- **Catalog Kind UI Enhancements and Pagination** (December 3, 2025) - Table component and pagination patterns
+- **Infra Component Web UI** (December 1, 2025) - Web interface infrastructure
 
 ### Complements
 
 This work complements:
 
-- **Cloud Resource Management** - Enables viewing deployment history for resources
-- **Stack Job API** - Provides UI for existing backend functionality
+- **Infra Component Management** - Enables viewing deployment history for resources
+- **Infra Job API** - Provides UI for existing backend functionality
 - **Pagination System** - Extends pagination pattern to stack-updates
 
 ### Future Extensions
@@ -1189,7 +1189,7 @@ These limitations are intentional for the initial implementation and can be addr
 
 **Rationale**:
 
-- Consistent with cloud resources pagination pattern
+- Consistent with infra components pagination pattern
 - Scales to handle large numbers of stack-updates
 - Better performance than loading all jobs at once
 - Standard pattern for data-heavy applications
@@ -1200,11 +1200,11 @@ These limitations are intentional for the initial implementation and can be addr
 
 ### Drawer Pattern
 
-**Decision**: Use drawer component for stack-updates list instead of separate page
+**Decision**: Use drawer kind for stack-updates list instead of separate page
 
 **Rationale**:
 
-- Keeps user in context of cloud resources
+- Keeps user in context of infra components
 - Consistent with other drawer patterns (view/edit)
 - Quick access without full page navigation
 - Can still navigate to detail page from drawer
@@ -1237,7 +1237,7 @@ These limitations are intentional for the initial implementation and can be addr
 - 10 items provides good balance for drawer width
 - Backend default of 20 maintains backward compatibility
 - Frontend can request different page sizes if needed
-- Consistent with cloud resources pagination
+- Consistent with infra components pagination
 
 **Alternative considered**: Same page size for both
 
@@ -1289,8 +1289,8 @@ As part of code quality improvements, removed all logrus logging from the backen
 **Files Modified**:
 
 - `app/backend/internal/service/stack_update_service.go` - Removed all logrus calls (error, warning, and info logs)
-- `app/backend/internal/service/cloud_resource_service.go` - Removed all logrus calls
-- `app/backend/internal/service/deployment_component_service.go` - Removed all logrus calls
+- `app/backend/internal/service/infra_component_service.go` - Removed all logrus calls
+- `app/backend/internal/service/catalog_kind_service.go` - Removed all logrus calls
 
 **Impact**:
 
@@ -1304,8 +1304,8 @@ As part of code quality improvements, removed all logrus logging from the backen
 **Status**: ✅ Complete and Production Ready
 **Component**: Web Frontend - Stack Updates UI Integration, Backend API - Pagination and Credentials, Infrastructure - Module Path Fixes
 **Pages Added**: 1 detail page (`/stack-updates/[id]`)
-**Components Added**: 6 new reusable components
-**Components Modified**: 2 existing components
+**Kinds Added**: 6 new reusable kinds
+**Kinds Modified**: 2 existing kinds
 **Backend Changes**: Pagination support in service and repository; User-provided credentials support with validation
 **Infrastructure Changes**: Module path fixes for Pulumi and OpenTofu; Credential handling refactoring
-**Location**: `app/frontend/src/app/stack-updates/`, `app/frontend/src/components/shared/stackupdate/`, `app/backend/internal/service/`, `app/backend/internal/database/`, `pkg/iac/pulumi/pulumimodule/`, `pkg/iac/tofu/tofumodule/`, `pkg/iac/stackinput/stackinputproviderconfig/`
+**Location**: `app/frontend/src/app/stack-updates/`, `app/frontend/src/components/shared/stackupdate/`, `app/backend/internal/service/`, `app/backend/internal/database/`, `pkg/iac/pulumi/pulumimodule/`, `pkg/iac/tofu/tofumodule/`, `pkg/iac/iacinput/iacinputproviderconfig/`

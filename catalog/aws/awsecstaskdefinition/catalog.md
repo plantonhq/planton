@@ -4,7 +4,7 @@ Declares the immutable, versioned blueprint of an ECS workload — the container
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **ECS Task Definition** -- a new revision of the family (named from the resource metadata), with its containers, sizing, volumes, and IAM wiring
 - **CloudWatch Log Group** -- one group named `/ecs/<family>` (30-day retention unless overridden) when the default logging is left on and no existing group is referenced; each container streams under its own name
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Execution Role** -- an AwsIamRole trusting `ecs-tasks.amazonaws.com` with `AmazonECSTaskExecutionRolePolicy`, referenced by its `role_arn` output. Required in practice: the default CloudWatch wiring, private ECR images, and secret injection all need it.
 - **Task Role** (optional) -- an AwsIamRole scoped to the AWS APIs the application itself calls, referenced by its `role_arn` output.
 - **Log Group** (optional) -- an AwsCloudwatchLogGroup referenced by its name output, when several task families should share one group.
@@ -75,7 +75,7 @@ spec:
 planton apply -f task-definition.yaml
 ```
 
-This registers revision 1 of the `api` family with a health-checked container, a CloudWatch log group, and a secret injected at task start. A Stack Job tracks the provisioning in real time.
+This registers revision 1 of the `api` family with a health-checked container, a CloudWatch log group, and a secret injected at task start. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -125,7 +125,7 @@ These are the most important decisions when configuring a task definition. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -135,9 +135,9 @@ These are the most important decisions when configuring a task definition. Explo
 | **AwsEfsAccessPoint** | `volumes[].efs.accessPointId` | `status.outputs.access_point_id` |
 | **AwsS3Bucket** | `volumes[].s3files.fileSystemArn` | `status.outputs.bucket_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -162,9 +162,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS ECS Service**](/cloud-catalog/aws-ecs-service) -- runs this blueprint as a steady-state service, referencing `task_definition_arn`; the service picks up each new revision on its next deployment.
-- [**AWS ECS Cluster**](/cloud-catalog/aws-ecs-cluster) -- the compute namespace the service places tasks into.
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the execution and task roles, referenced by `executionRole` / `taskRole`.
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) -- an existing shared log group, referenced by `logging.logGroup`.
-- [**AWS Elastic File System**](/cloud-catalog/aws-elastic-file-system) and [**AWS EFS Access Point**](/cloud-catalog/aws-efs-access-point) -- durable shared volumes, referenced per volume by `volumes[].efs.fileSystemId` and (recommended) `volumes[].efs.accessPointId`.
-- [**AWS LB Target Group**](/cloud-catalog/aws-lb-target-group) -- receives traffic for the container/port a service exposes from this blueprint.
+- [**AWS ECS Service**](/infra-catalog/aws-ecs-service) -- runs this blueprint as a steady-state service, referencing `task_definition_arn`; the service picks up each new revision on its next deployment.
+- [**AWS ECS Cluster**](/infra-catalog/aws-ecs-cluster) -- the compute namespace the service places tasks into.
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the execution and task roles, referenced by `executionRole` / `taskRole`.
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) -- an existing shared log group, referenced by `logging.logGroup`.
+- [**AWS Elastic File System**](/infra-catalog/aws-elastic-file-system) and [**AWS EFS Access Point**](/infra-catalog/aws-efs-access-point) -- durable shared volumes, referenced per volume by `volumes[].efs.fileSystemId` and (recommended) `volumes[].efs.accessPointId`.
+- [**AWS LB Target Group**](/infra-catalog/aws-lb-target-group) -- receives traffic for the container/port a service exposes from this blueprint.

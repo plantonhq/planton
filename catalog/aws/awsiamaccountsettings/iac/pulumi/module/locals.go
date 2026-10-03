@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 //
 // None of IAM's account-settings resources is taggable at AWS, so this
 // module carries no tag map - the one deliberate absence against the
@@ -15,7 +15,7 @@ type Locals struct {
 	Spec   *awsiamaccountsettingsv1alpha1.AwsIamAccountSettingsSpec
 }
 
-func initializeLocals(_ *pulumi.Context, in *awsiamaccountsettingsv1alpha1.AwsIamAccountSettingsStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, in *awsiamaccountsettingsv1alpha1.AwsIamAccountSettingsIacInput) *Locals {
 	locals := &Locals{}
 	locals.Target = in.Target
 	locals.Spec = in.Target.Spec

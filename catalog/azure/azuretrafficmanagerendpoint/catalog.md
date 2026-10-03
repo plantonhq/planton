@@ -4,7 +4,7 @@ Deploys one destination of a Traffic Manager profile: a public Azure resource by
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **One Traffic Manager endpoint** of the type your spec's variant declares, inside the referenced profile -- exactly one of the three typed endpoint resources materializes, addressed as `{profile_id}/{TYPE}/{name}`
 
@@ -52,11 +52,11 @@ spec:
 planton apply -f endpoint.yaml
 ```
 
-This adds the `web-eastus-pip` Public IP as an azure-type endpoint of the profile at failover priority 10; the profile starts probing it immediately, and it enters DNS answers once probes pass. A Stack Job tracks the provisioning in real time.
+This adds the `web-eastus-pip` Public IP as an azure-type endpoint of the profile at failover priority 10; the profile starts probing it immediately, and it enters DNS answers once probes pass. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When the profile and the target are Cloud Resources in the same chart, wire both by reference:
+When the profile and the target are Infra Components in the same chart, wire both by reference:
 
 ```yaml
 spec:
@@ -95,7 +95,7 @@ These are the most important decisions when configuring an Azure Traffic Manager
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |---|---|---|
@@ -104,7 +104,7 @@ These are the most important decisions when configuring an Azure Traffic Manager
 | Azure Public IP (or any public Azure resource) | `azure.targetResourceId` | `status.outputs.public_ip_id` (kind declared explicitly) |
 | Any component with a hostname output (external targets) | `external.target` | declared explicitly per kind |
 
-### What This Component Provides
+### What This Kind Provides
 
 `status.outputs` carries the endpoint's ARM ID (`endpoint_id`) and its name within the profile (`endpoint_name`). Nothing downstream consumes an endpoint by reference -- it is a leaf destination inside its profile -- so these outputs exist for identification and import rather than composition.
 
@@ -118,5 +118,5 @@ These are the most important decisions when configuring an Azure Traffic Manager
 
 ## Works With
 
-- [**Azure Traffic Manager Profile**](/cloud-catalog/azure-traffic-manager-profile) -- the profile this endpoint belongs to, and (for nested endpoints) the child it targets.
-- [**Azure Public IP**](/cloud-catalog/azure-public-ip) -- the most common azure-variant target; reference its `public_ip_id` output (Standard tier).
+- [**Azure Traffic Manager Profile**](/infra-catalog/azure-traffic-manager-profile) -- the profile this endpoint belongs to, and (for nested endpoints) the child it targets.
+- [**Azure Public IP**](/infra-catalog/azure-public-ip) -- the most common azure-variant target; reference its `public_ip_id` output (Standard tier).

@@ -11,9 +11,9 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/kubernetes/manifestprojection"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -38,12 +38,12 @@ import (
 // The kind is passed explicitly (rather than read from msg) because callers
 // generate from an empty message instance whose `kind` field is unset; msg is
 // used only for its descriptors. Returns an error if the kind is not annotated
-// with a kubernetes_manifest_projection, or if a stack output cannot be mapped
+// with a kubernetes_manifest_projection, or if an output cannot be mapped
 // to a source field (which would otherwise silently produce a wrong module).
-func GenerateManifestModule(kind cloudresourcekind.CloudResourceKind, msg proto.Message) (map[string]string, error) {
+func GenerateManifestModule(kind catalogkind.CatalogKind, msg proto.Message) (map[string]string, error) {
 	proj := manifestProjection(kind)
 	if proj == nil {
-		return nil, errors.New("kind has no kubernetes_manifest_projection in CloudResourceKindMeta; " +
+		return nil, errors.New("kind has no kubernetes_manifest_projection in CatalogKindMeta; " +
 			"generate-module only applies to CRD-projection kinds")
 	}
 	apiVersion, crdKind := proj.GetApiVersion(), proj.GetKind()
@@ -84,8 +84,8 @@ func GenerateManifestModule(kind cloudresourcekind.CloudResourceKind, msg proto.
 	return files, nil
 }
 
-func manifestProjection(kind cloudresourcekind.CloudResourceKind) *cloudresourcekind.KubernetesManifestProjection {
-	meta, err := crkreflect.KindMeta(kind)
+func manifestProjection(kind catalogkind.CatalogKind) *catalogkind.KubernetesManifestProjection {
+	meta, err := catalogkindreflect.KindMeta(kind)
 	if err != nil {
 		return nil
 	}
@@ -166,7 +166,7 @@ func manifestVariablesTF(apiVersion, crdKind string) string {
 	b.WriteString(manifestModuleHeader(apiVersion, crdKind))
 	b.WriteString("\n")
 	b.WriteString("variable \"metadata\" {\n")
-	b.WriteString("  description = \"Cloud resource metadata (name plus the optional Planton identity attributes the module renders as labels).\"\n")
+	b.WriteString("  description = \"Catalog object metadata (name plus the optional Planton identity attributes the module renders as labels).\"\n")
 	b.WriteString("  type = object({\n")
 	b.WriteString("    name        = string\n")
 	b.WriteString("    id          = optional(string, \"\")\n")
@@ -362,7 +362,7 @@ func manifestOutputsTF(md, specMsg protoreflect.MessageDescriptor, crdKind, nsJS
 			desc = fmt.Sprintf("%s of the created %s.", humanizeFieldName(name), crdKind)
 		default:
 			// No safe mapping: fail loudly rather than emit a wrong module.
-			return "", errors.Errorf("cannot map stack output %q to a source for %s; "+
+			return "", errors.Errorf("cannot map output %q to a source for %s; "+
 				"generate-module needs an explicit rule for it", name, crdKind)
 		}
 		fmt.Fprintf(&b, "output %q {\n  description = %q\n  value       = %s\n}\n\n", name, desc, value)

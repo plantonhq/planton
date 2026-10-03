@@ -2,9 +2,9 @@
 
 Built for 100% parity with the Terraform DigitalOcean provider's `digitalocean_database_replica` resource at the pinned provider version.
 
-## What this component models
+## What this kind models
 
-A single-node read-only replica of a DigitalOcean managed database cluster (PostgreSQL and MySQL primaries support replicas), in the primary's region or a different one. The component covers the provider's full argument surface:
+A single-node read-only replica of a DigitalOcean managed database cluster (PostgreSQL and MySQL primaries support replicas), in the primary's region or a different one. The kind covers the provider's full argument surface:
 
 - `cluster` -- the primary, by literal UUID or by reference to a `DigitalOceanDatabaseCluster` (create-only)
 - `replica_name` -- the replica's API identity within the cluster (create-only)

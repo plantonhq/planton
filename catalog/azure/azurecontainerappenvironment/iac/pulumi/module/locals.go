@@ -5,7 +5,7 @@ import (
 
 	azurecontainerappenvironmentv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurecontainerappenvironment/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -58,11 +58,11 @@ var identityTypeStrings = map[azurecontainerappenvironmentv1alpha1.AzureContaine
 	azurecontainerappenvironmentv1alpha1.AzureContainerAppEnvironmentIdentityType_SYSTEM_AND_USER_ASSIGNED: "SystemAssigned, UserAssigned",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurecontainerappenvironmentv1alpha1.AzureContainerAppEnvironmentStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurecontainerappenvironmentv1alpha1.AzureContainerAppEnvironmentIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureContainerAppEnvironment = stackInput.Target
-	target := stackInput.Target
+	locals.AzureContainerAppEnvironment = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -73,7 +73,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurecontainerappenvironm
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureContainerAppEnvironment.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureContainerAppEnvironment.String()),
 	}
 
 	if target.Metadata.Id != "" {

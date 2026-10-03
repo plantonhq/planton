@@ -11,11 +11,11 @@ import "shared/metadata.proto";
 message GcpWorkloadIdentityPoolProvider {
   string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
   string kind = 2 [(buf.validate.field).string.const = 'GcpWorkloadIdentityPoolProvider'];
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
   GcpWorkloadIdentityPoolProviderSpec spec = 4 [(buf.validate.field).required = true];
   GcpWorkloadIdentityPoolProviderStatus status = 5;
 }
 
 message GcpWorkloadIdentityPoolProviderStatus {
-  GcpWorkloadIdentityPoolProviderStackOutputs outputs = 1;
+  GcpWorkloadIdentityPoolProviderOutputs outputs = 1;
 }

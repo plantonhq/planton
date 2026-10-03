@@ -17,7 +17,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurecontainerappenvironmentstorage
+    e2e-catalog-kind: azurecontainerappenvironmentstorage
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/azure/azurecontainerappenvironmentstorage/e2e/smb-account.yaml,catalog/azure/azurecontainerappenvironmentstorage/e2e/smb-share.yaml"

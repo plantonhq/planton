@@ -173,7 +173,7 @@ naming the new one explicitly.
 | `autoMinorVersionUpgrade` | `bool` | `true` | Auto-apply minor version upgrades. ForceNew. |
 | `dataTiering` | `bool` | `false` | Move cold data to SSD. db.r6gd.* node types only. ForceNew. |
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -187,7 +187,7 @@ After deployment, the following outputs are available in `status.outputs`:
 | `subnet_group_name` | `string` | Subnet group in use — module-managed, bring-your-own, or empty when the account default applies |
 | `parameter_group_name` | `string` | Parameter group in use — module-managed, bring-your-own, or empty when the family default applies |
 
-## Related Components
+## Related Kinds
 
 - [AwsMemorydbAcl](/docs/catalog/aws/memorydb-acl) — the ACL the cluster authenticates against
 - [AwsMemorydbUser](/docs/catalog/aws/memorydb-user) — per-application identities grouped into ACLs

@@ -66,7 +66,7 @@ spec:
 | `created_on` | Creation timestamp |
 | `modified_on` | Last-modified timestamp |
 
-## Related components
+## Related kinds
 
 - `CloudflareWorker` — produces to a queue via its `queues` binding; a worker
   consumer is referenced by `consumer.scriptName`.

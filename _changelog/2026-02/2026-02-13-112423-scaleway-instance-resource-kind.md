@@ -64,9 +64,9 @@ Additional volumes (`l_ssd`, `scratch`) are created as `scaleway_instance_volume
 
 **Proto schemas** (4 + 4 generated):
 - `apis/dev/planton/provider/scaleway/scalewayinstance/v1/spec.proto`
-- `apis/dev/planton/provider/scaleway/scalewayinstance/v1/stack_outputs.proto`
+- `apis/dev/planton/provider/scaleway/scalewayinstance/v1/outputs.proto`
 - `apis/dev/planton/provider/scaleway/scalewayinstance/v1/api.proto`
-- `apis/dev/planton/provider/scaleway/scalewayinstance/v1/stack_input.proto`
+- `apis/dev/planton/provider/scaleway/scalewayinstance/v1/iac_input.proto`
 
 **Pulumi Go module** (6 files):
 - `iac/pulumi/main.go` -- Entrypoint
@@ -81,10 +81,10 @@ Additional volumes (`l_ssd`, `scratch`) are created as `scaleway_instance_volume
 - `iac/tf/variables.tf` -- Input variables
 - `iac/tf/locals.tf` -- Local values + tag generation
 - `iac/tf/main.tf` -- Resources (conditional IP, for_each volumes, server)
-- `iac/tf/outputs.tf` -- Stack outputs
+- `iac/tf/outputs.tf` -- Outputs
 
 **Documentation** (2 files):
-- `README.md` -- Component overview, dependencies, outputs, instance types
+- `README.md` -- Kind overview, dependencies, outputs, instance types
 - `examples.md` -- 8 YAML examples (minimal, production, cloud-init, volumes, bastion, full, infra-chart, stopped)
 
 ### Key Design Decisions

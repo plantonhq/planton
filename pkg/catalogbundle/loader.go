@@ -122,7 +122,7 @@ func (b *Bundle) CatalogEntries() []CatalogEntry {
 	return b.catalogEntries
 }
 
-// CostProfiles returns the bundle's component cost profiles keyed by entry
+// CostProfiles returns the bundle's catalog kind cost profiles keyed by entry
 // name (costs/<provider>/<kind>.yaml), sorted. Like presets, the contents
 // are raw bytes -- consumers parse what they read, and the conformance gate
 // has already proven every document parses against its schema.
@@ -130,13 +130,13 @@ func (b *Bundle) CostProfiles() map[string][]byte {
 	return b.subtree(costsPrefix)
 }
 
-// ControlProfiles returns the bundle's component control profiles keyed by
+// ControlProfiles returns the bundle's catalog kind control profiles keyed by
 // entry name (controls/<provider>/<kind>.yaml), sorted.
 func (b *Bundle) ControlProfiles() map[string][]byte {
 	return b.subtree(controlsPrefix)
 }
 
-// Permissions returns the bundle's component permission manifests keyed by
+// Permissions returns the bundle's kind permission manifests keyed by
 // entry name (permissions/<provider>/<kind>.yaml), sorted.
 func (b *Bundle) Permissions() map[string][]byte {
 	return b.subtree(permissionsPrefix)
@@ -151,7 +151,7 @@ func (b *Bundle) CostEstimates() map[string][]byte {
 // CostDerivations returns the bundle's machine-executable cost derivations
 // keyed by entry name (derivations/<provider>/<kind>.yaml), sorted. A
 // server-side estimator evaluates these rules against live manifests with
-// the aboard price books -- zero external calls; components without a
+// the aboard price books -- zero external calls; kinds without a
 // derivation aboard are estimated at their preset ranges only.
 func (b *Bundle) CostDerivations() map[string][]byte {
 	return b.subtree(derivationsPrefix)

@@ -24,7 +24,7 @@ own build tooling — with a parallelism cap on executions.
   location, so drift on the S3 object is invisible to refresh — pin
   `versionId` to a specific object version and treat definition changes
   as manifest changes
-- Reference the bucket from an AwsS3Bucket component (`valueFrom`)
+- Reference the bucket from an AwsS3Bucket kind (`valueFrom`)
   instead of the literal name when it is managed in the same
   environment
 - Drop `parallelismMaxSteps` to remove the pipeline-level cap

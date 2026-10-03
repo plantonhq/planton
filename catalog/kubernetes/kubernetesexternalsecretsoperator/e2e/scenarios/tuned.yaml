@@ -1,5 +1,5 @@
 # Controller/webhook/cert-controller tuning surface: reconcile concurrency,
-# log level, per-component replicas and sizing — everything rendered into
+# log level, per-kind replicas and sizing — everything rendered into
 # chart values and proven by a live install. ServiceMonitor stays off (the
 # kind cluster has no Prometheus operator CRDs, and the chart fails the
 # install without them — exactly what the spec comment warns about).

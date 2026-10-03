@@ -3,14 +3,14 @@
 # modules. DigitalOcean authenticates with a bearer API token carrying
 # named scopes; every group entry is `derived` (static analysis of the
 # module sources, cited in notes) until the live capture lane upgrades it
-# to `proven`. Schema: iac/componentpermissions/v1.
+# to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # Out-of-band prerequisite, not a token scope: the github/gitlab/bitbucket
 # source variants require the DigitalOcean ACCOUNT to hold a linked source
 # connection to that provider -- deploys fail without it. The git variant
 # (public clone URL) needs no linkage.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: digitaloceanfunction
 spec:

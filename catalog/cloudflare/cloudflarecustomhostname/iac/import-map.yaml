@@ -1,23 +1,23 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarecustomhostname
 spec:
   # A custom hostname's import identity is compound: the zone it was
   # onboarded onto plus the hostname's own Cloudflare-assigned id. Both
-  # come from a prior deploy's stack outputs -- zone_id is a
+  # come from a prior deploy's outputs -- zone_id is a
   # StringValueOrRef on the spec, not a scalar leaf.
   values:
     - name: zone_id
       derivations:
-        - from_stack_output: zone_id
+        - from_output: zone_id
       where_to_find: >-
         Cloudflare dashboard -> the zone's Overview page (Zone ID in the
         right-hand API panel), or `GET /zones?name=<domain>` on the
         Cloudflare v4 API (the id field).
     - name: custom_hostname_id
       derivations:
-        - from_stack_output: custom_hostname_id
+        - from_output: custom_hostname_id
       where_to_find: >-
         Cloudflare dashboard -> the zone -> SSL/TLS -> Custom Hostnames
         (open the hostname; the id is in the URL), or

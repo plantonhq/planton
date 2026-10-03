@@ -1,5 +1,5 @@
 variable "metadata" {
-  description = "Cloud resource metadata"
+  description = "Catalog object metadata"
   type = object({
     name        = string
     id          = optional(string, "")
@@ -54,7 +54,7 @@ variable "spec" {
     # PRIVATE KEY----- / -----BEGIN RSA PRIVATE KEY----- / -----BEGIN EC
     # PRIVATE KEY-----). GCP accepts RSA-2048 (and larger) and ECDSA P-256
     # keys; the key must be unencrypted (no passphrase). Write-only in GCP —
-    # the API never returns it, and it never appears in stack outputs.
+    # the API never returns it, and it never appears in outputs.
     # Immutable. The PEM framing is taught here rather than enforced by a
     # validation rule, because sensitive fields hold a managed-secret
     # reference on consuming platforms and a content-shape rule would

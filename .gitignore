@@ -94,7 +94,7 @@ backend.tf
 /pulumi
 
 # E2E test artifacts (generated during pulumi runs)
-**/iac/pulumi/stack-input.yaml
+**/iac/pulumi/iac-input.yaml
 
 # `go build .` at the repo root produces a binary named after the package (main)
 /main

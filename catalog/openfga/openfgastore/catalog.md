@@ -4,7 +4,7 @@ Deploys an OpenFGA store -- the top-level container for authorization models and
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **OpenFGA Store** -- a single `openfga_store` resource named from `spec.name` on the connected OpenFGA server. The server generates the store ID at creation; that ID -- not the name -- is what authorization models, relationship tuples, and permission checks reference.
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **OpenFGA Provider Connection** -- an active connection in the Connect module with the OpenFGA API URL and authentication credentials: an API token, or client credentials (client ID, client secret, token issuer, and audience). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **OpenFGA Provider Connection** -- an active connection in the Connect module with the OpenFGA API URL and authentication credentials: an API token, or client credentials (client ID, client secret, token issuer, and audience). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline authentication.
 
 ### OpenFGA Server
@@ -44,7 +44,7 @@ spec:
 planton apply -f openfga-store.yaml
 ```
 
-This creates a store named `production-authz` on the connected OpenFGA server and surfaces the generated store ID in `status.outputs`. OpenFGA ships only a Terraform provider, so this component runs on OpenTofu or Terraform: set `planton.dev/provisioner: tofu` (or `terraform`), or leave it unset and the CLI asks between the two, and Pulumi is refused before anything runs. A Stack Job tracks the provisioning in real time.
+This creates a store named `production-authz` on the connected OpenFGA server and surfaces the generated store ID in `status.outputs`. OpenFGA ships only a Terraform provider, so this component runs on OpenTofu or Terraform: set `planton.dev/provisioner: tofu` (or `terraform`), or leave it unset and the CLI asks between the two, and Pulumi is refused before anything runs. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -54,19 +54,19 @@ These are the most important decisions when configuring an OpenFGA store. Explor
 
 **Isolation grain** -- The one real decision this component carries: what a store represents. Models and tuples in one store can never affect checks in another, so the store boundary IS the authorization blast radius. Choose per-environment, per-application, or per-tenant (see Common Patterns) before writing tuples -- there is no move operation between stores, so changing grain later means re-writing every tuple.
 
-**No deletion protection** -- Neither the OpenFGA API nor the Terraform provider exposes a deletion guard for stores. A destroy proceeds the moment it is issued and removes the store together with all models and tuples inside it. Where protection matters, it has to be operational -- restrict who can delete the Cloud Resource.
+**No deletion protection** -- Neither the OpenFGA API nor the Terraform provider exposes a deletion guard for stores. A destroy proceeds the moment it is issued and removes the store together with all models and tuples inside it. Where protection matters, it has to be operational -- restrict who can delete the Infra Component.
 
 **Where the data actually lives** -- The store is a logical container inside the OpenFGA server; its contents persist in the server's backing datastore (PostgreSQL, MySQL, or SQLite). Backups, encryption at rest, and availability are that datastore deployment's posture -- nothing in this spec configures them.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies -- it is the root of the OpenFGA dependency graph.
+This kind has no foreign key dependencies -- it is the root of the OpenFGA dependency graph.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -86,5 +86,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**OpenFGA Authorization Model**](/cloud-catalog/openfga-authorization-model) -- the schema of types and relations deployed into the store, referenced through the store's `id` output
-- [**OpenFGA Relationship Tuple**](/cloud-catalog/openfga-relationship-tuple) -- the authorization data written into the store, one tuple per resource
+- [**OpenFGA Authorization Model**](/infra-catalog/openfga-authorization-model) -- the schema of types and relations deployed into the store, referenced through the store's `id` output
+- [**OpenFGA Relationship Tuple**](/infra-catalog/openfga-relationship-tuple) -- the authorization data written into the store, one tuple per resource

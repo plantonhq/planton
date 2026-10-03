@@ -85,7 +85,7 @@ Monitor (account) -> Pool.monitor -> LoadBalancer.default_pools (zone)
 Origins can reference any compute resource's output (e.g. an instance public IP),
 so a pool wires backends into the resource graph.
 
-## Related components
+## Related kinds
 
 - `CloudflareLoadBalancerMonitor` — referenced by `monitor`.
 - `CloudflareLoadBalancer` — selects this pool.

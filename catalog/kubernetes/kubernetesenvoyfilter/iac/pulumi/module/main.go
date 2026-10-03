@@ -11,11 +11,11 @@ import (
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *kubernetesenvoyfilterv1alpha1.KubernetesEnvoyFilterStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesenvoyfilterv1alpha1.KubernetesEnvoyFilterIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubeProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}

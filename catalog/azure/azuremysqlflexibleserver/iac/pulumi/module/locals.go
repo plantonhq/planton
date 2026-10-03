@@ -5,7 +5,7 @@ import (
 
 	azuremysqlflexibleserverv1alpha1 "github.com/plantonhq/planton/catalog/azure/azuremysqlflexibleserver/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -41,18 +41,18 @@ var publicNetworkAccessStrings = map[azuremysqlflexibleserverv1alpha1.AzureMysql
 	azuremysqlflexibleserverv1alpha1.AzureMysqlFlexibleServerPublicNetworkAccess_DISABLED: "Disabled",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuremysqlflexibleserverv1alpha1.AzureMysqlFlexibleServerStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuremysqlflexibleserverv1alpha1.AzureMysqlFlexibleServerIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureMysqlFlexibleServer = stackInput.Target
-	target := stackInput.Target
+	locals.AzureMysqlFlexibleServer = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureMysqlFlexibleServer.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureMysqlFlexibleServer.String()),
 	}
 
 	if target.Metadata.Id != "" {

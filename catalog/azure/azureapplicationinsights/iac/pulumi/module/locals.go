@@ -5,7 +5,7 @@ import (
 
 	azureapplicationinsightsv1alpha1 "github.com/plantonhq/planton/catalog/azure/azureapplicationinsights/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -33,11 +33,11 @@ var applicationTypeStrings = map[azureapplicationinsightsv1alpha1.AzureApplicati
 	azureapplicationinsightsv1alpha1.AzureApplicationInsightsApplicationType_MOBILE_CENTER:                                           "MobileCenter",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureapplicationinsightsv1alpha1.AzureApplicationInsightsStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureapplicationinsightsv1alpha1.AzureApplicationInsightsIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureApplicationInsights = stackInput.Target
-	target := stackInput.Target
+	locals.AzureApplicationInsights = iacInput.Target
+	target := iacInput.Target
 
 	// The resource_group field is a StringValueOrRef. The platform middleware
 	// resolves valueFrom references before IaC modules run, so .GetValue()
@@ -49,7 +49,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureapplicationinsightsv
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureApplicationInsights.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureApplicationInsights.String()),
 	}
 
 	if target.Metadata.Id != "" {

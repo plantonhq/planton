@@ -2,9 +2,9 @@
 
 ## Overview
 
-**KubernetesHorizontalPodAutoscaler** is a Planton component that creates and manages Kubernetes HorizontalPodAutoscalers — automatic replica scaling driven by observed metrics — as first-class, declaratively managed resources. An HPA points at one scale target (`scale_target`) and adjusts its replica count between a floor (`min_replicas`) and a ceiling (`max_replicas`), driven by one or more metrics.
+**KubernetesHorizontalPodAutoscaler** is a catalog kind that creates and manages Kubernetes HorizontalPodAutoscalers — automatic replica scaling driven by observed metrics — as first-class, declaratively managed resources. An HPA points at one scale target (`scale_target`) and adjusts its replica count between a floor (`min_replicas`) and a ceiling (`max_replicas`), driven by one or more metrics.
 
-The component covers the complete `autoscaling/v2` surface: resource utilization metrics (CPU/memory), per-container resource metrics, custom per-pod metrics, metrics on other objects, external metrics (queue depths, cloud load balancer QPS), and fine-grained scaling behavior — per-direction velocity policies and stabilization windows. There is nothing an upstream `autoscaling/v2` HPA can express that this spec cannot.
+The kind covers the complete `autoscaling/v2` surface: resource utilization metrics (CPU/memory), per-container resource metrics, custom per-pod metrics, metrics on other objects, external metrics (queue depths, cloud load balancer QPS), and fine-grained scaling behavior — per-direction velocity policies and stabilization windows. There is nothing an upstream `autoscaling/v2` HPA can express that this spec cannot.
 
 ## Purpose
 
@@ -72,7 +72,7 @@ Planton's KubernetesDeployment carries its own `availability.horizontal_pod_auto
 - **`spec.behavior`**: Per-direction velocity and stabilization tuning
 - **`spec.labels`** / **`spec.annotations`**: Merged with standard Planton labels for tracking and governance
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -83,7 +83,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Resolve the target namespace and scale-target name (literal values or resolved references)
 2. Merge user labels and annotations with standard Planton tracking labels

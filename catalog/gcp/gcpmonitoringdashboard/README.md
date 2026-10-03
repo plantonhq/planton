@@ -4,7 +4,7 @@ Creates a Cloud Monitoring dashboard — the console page of charts, scorecards,
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Dashboard** -- a `monitoring.Dashboard` from the spec's `dashboardJson` document
 - **Monitoring API enablement** -- `monitoring.googleapis.com` enabled in the target project (never disabled on destroy)

@@ -4,7 +4,7 @@ Links Azure Managed Redis instances into an ACTIVE geo-replication group: every 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Geo-Replication Links** -- the group-wide linking operation joining the declared members (the managing instance plus 1-4 linked instances, a group of up to 5) into one active replica set. Deleting the resource unlinks all members; each keeps its own copy of the data and becomes independent. Removing a single member's ID force-unlinks just that member -- the designed region-evacuation workflow.
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -54,7 +54,7 @@ spec:
 planton apply -f geo-link.yaml
 ```
 
-This links the two members into one active group: both accept writes, Azure merges conflict-free, and each application reads and writes its local region. A Stack Job tracks the provisioning in real time.
+This links the two members into one active group: both accept writes, Azure merges conflict-free, and each application reads and writes its local region. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -88,16 +88,16 @@ These are the only two decisions -- the group's real configuration lives on the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureManagedRedis** (managing) | `managedRedisId` | `status.outputs.managed_redis_id` |
 | **AzureManagedRedis** (each member) | `linkedManagedRedisIds` | `status.outputs.managed_redis_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -113,5 +113,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Managed Redis**](/cloud-catalog/azure-managed-redis) -- the members being linked; each declares the shared group name at creation
-- [**Azure Managed Redis Access Policy Assignment**](/cloud-catalog/azure-managed-redis-access-policy-assignment) -- grants are per member; geo-replicated applications grant their identity on every member
+- [**Azure Managed Redis**](/infra-catalog/azure-managed-redis) -- the members being linked; each declares the shared group name at creation
+- [**Azure Managed Redis Access Policy Assignment**](/infra-catalog/azure-managed-redis-access-policy-assignment) -- grants are per member; geo-replicated applications grant their identity on every member

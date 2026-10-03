@@ -12,9 +12,9 @@ type Locals struct {
 	CloudflareQueue          *cloudflarequeuev1alpha1.CloudflareQueue
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflarequeuev1alpha1.CloudflareQueueStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflarequeuev1alpha1.CloudflareQueueIacInput) *Locals {
 	locals := &Locals{}
-	locals.CloudflareQueue = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareQueue = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

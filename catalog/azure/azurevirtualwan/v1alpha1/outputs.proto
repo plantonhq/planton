@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurevirtualwan.v1alpha1;
 
-// **AzureVirtualWanStackOutputs** captures the outputs of provisioning
+// **AzureVirtualWanOutputs** captures the outputs of provisioning
 // a Virtual WAN.
-message AzureVirtualWanStackOutputs {
+message AzureVirtualWanOutputs {
   // The Azure Resource Manager ID of the WAN -- what virtual hubs
   // reference as their virtual_wan_id.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualWans/{name}

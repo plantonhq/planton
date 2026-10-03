@@ -1,6 +1,6 @@
 ---
 title: How the Platform Draws What You Author
-description: The picture every Planton surface draws from a chart or a project -- the account rooms, the rooms and what nests in them, the lines, and the metadata.group trays -- which of it the platform decides on its own and the three authoring choices that genuinely change it (a reference or a literal, runs_on or another relationship, a dedicated component or a buried flag), plus how to use metadata.group well. Read when writing or reviewing manifests and you want the architecture view to read like a reference diagram, when someone asks why a resource draws where it does, when choosing between valueFrom and a literal or between relationship types, or before adding metadata.group.
+description: The picture every Planton surface draws from a chart or a project -- the account rooms, the rooms and what nests in them, the lines, and the metadata.group trays -- which of it the platform decides on its own and the three authoring choices that genuinely change it (a reference or a literal, runs_on or another relationship, a dedicated kind or a buried flag), plus how to use metadata.group well. Read when writing or reviewing manifests and you want the architecture view to read like a reference diagram, when someone asks why a resource draws where it does, when choosing between valueFrom and a literal or between relationship types, or before adding metadata.group.
 ---
 
 # How the Platform Draws What You Author
@@ -37,7 +37,7 @@ to use `metadata.group`.
   access (a function allowed into a subnet, a controller writing to a zone)
   draws a line and never nests -- the catalog marks those fields, you do
   not.
-- **Namespaces a component creates.** A Kubernetes component whose
+- **Namespaces a kind creates.** A Kubernetes kind whose
   `namespace` field holds a literal draws inside a namespace room even when
   no namespace resource exists in the chart; the platform draws the room and
   explains it on hover.
@@ -74,11 +74,11 @@ to use `metadata.group`.
    already draws inside its cluster through its connection, so its
    `runs_on` to the cluster's node group agrees with the connection and
    adds the deploy order.
-3. **A dedicated component or a buried flag.** A resource authored as its
-   own component is a card someone can see, click, and deploy on its own; a
+3. **A dedicated kind or a buried flag.** A resource authored as its
+   own kind is a card someone can see, click, and deploy on its own; a
    capability buried as a flag or an inline block inside another resource
    draws nothing. When the picture should show it, author it as its own
-   component -- when the catalog offers one.
+   kind -- when the catalog offers one.
 
 ## `metadata.group` -- trays, used well
 

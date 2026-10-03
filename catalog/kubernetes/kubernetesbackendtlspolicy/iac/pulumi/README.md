@@ -56,12 +56,12 @@ planton pulumi up --manifest ../../e2e/manifest.yaml
 
 ### Direct Pulumi usage
 
-The entrypoint loads the `KubernetesBackendTlsPolicyStackInput` from the
-`STACK_INPUT_YAML_FILE` environment variable (path to a manifest) or
-`STACK_INPUT_YAML` (inline YAML content):
+The entrypoint loads the `KubernetesBackendTlsPolicyIacInput` from the
+`IAC_INPUT_YAML_FILE` environment variable (path to a manifest) or
+`IAC_INPUT_YAML` (inline YAML content):
 
 ```bash
-export STACK_INPUT_YAML_FILE=../../e2e/manifest.yaml
+export IAC_INPUT_YAML_FILE=../../e2e/manifest.yaml
 pulumi up
 ```
 
@@ -76,21 +76,21 @@ pulumi up
 
 ```
 pulumi/
-├── main.go              # Pulumi entrypoint (loads stack input)
+├── main.go              # Pulumi entrypoint (loads IaC input)
 ├── Pulumi.yaml          # Pulumi project configuration
 ├── Makefile             # Build automation
 ├── README.md            # This file
 └── module/
     ├── main.go          # Resource creation (typed NewBackendTLSPolicy, v1); options mapped inline
     ├── locals.go        # Computed values + resolved foreign keys
-    ├── outputs.go       # Stack output constant names
+    ├── outputs.go       # Output constant names
     ├── target_refs.go   # targetRefs (same-namespace Services, optional sectionName) mapping
     └── validation.go    # Trust anchor, hostname, and SAN mapping
 ```
 
 The policy's `StringValueOrRef` foreign keys (`namespace`,
 `targetRefs[].name`, `caCertificateRefs[].name`) arrive resolved to literal
-strings in the stack input; the module reads their final values directly.
+strings in the IaC input; the module reads their final values directly.
 
 ## References
 

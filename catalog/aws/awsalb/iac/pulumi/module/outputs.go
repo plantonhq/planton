@@ -1,7 +1,7 @@
 package module
 
 // The following constants define output keys for the aws_alb module.
-// They reflect the fields in AwsAlbStackOutputs.
+// They reflect the fields in AwsAlbOutputs.
 const (
 	OpAlbArn          = "load_balancer_arn"
 	OpAlbName         = "load_balancer_name"

@@ -18,7 +18,7 @@ message CloudflareWebAnalyticsSite {
   string kind = 2 [(buf.validate.field).string.const = 'CloudflareWebAnalyticsSite'];
 
   // metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
   CloudflareWebAnalyticsSiteSpec spec = 4 [(buf.validate.field).required = true];
@@ -30,6 +30,6 @@ message CloudflareWebAnalyticsSite {
 // CloudflareWebAnalyticsSiteStatus represents the observed state of the
 // site.
 message CloudflareWebAnalyticsSiteStatus {
-  // stack-outputs from the IaC deployment
-  CloudflareWebAnalyticsSiteStackOutputs outputs = 1;
+  // outputs from the IaC deployment
+  CloudflareWebAnalyticsSiteOutputs outputs = 1;
 }

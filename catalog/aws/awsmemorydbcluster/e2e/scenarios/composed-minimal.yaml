@@ -23,7 +23,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsmemorydbcluster
+    e2e-catalog-kind: awsmemorydbcluster
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AwsMemorydbAcl"

@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -6,9 +6,9 @@
 # and its evaluations bill per resource examined -- a product of rule
 # count, fleet size, and change rate the manifest cannot see -- stated in
 # exclusions, never padded into fabricated dollars.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awsconfigconformancepack
 spec:
@@ -19,8 +19,8 @@ spec:
       hours_per_month: 730
       exclusions:
         - the template's three managed S3 rules meter the in-scope bucket fleet three times per evaluation cycle, billing per evaluation on the conformance-pack tiered schedule from the first one -- AWS Config publishes no free tier
-        - the configuration items that feed these evaluations bill on the region's AwsConfigRecorder component, and the pack refuses to deploy without a running recorder
-        - the pack's rules are created by the pack itself (not standalone AwsConfigRule components) -- deleting the pack deletes them and their spend together
+        - the configuration items that feed these evaluations bill on the region's AwsConfigRecorder kind, and the pack refuses to deploy without a running recorder
+        - the pack's rules are created by the pack itself (not standalone AwsConfigRule kinds) -- deleting the pack deletes them and their spend together
       notes: Zero committed cost -- a pack over an empty bucket fleet evaluates nothing; each bucket that exists or changes multiplies the meter by the template's three rules.
     - preset: 02-organization-baseline
       region_assumption: us-east-1

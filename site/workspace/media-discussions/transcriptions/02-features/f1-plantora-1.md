@@ -175,10 +175,10 @@ Speaker 1  27:01
 yeah, we don't know. We need to highlight that.
 
 Swarup Donepudi  27:04  
-We want to highlight we want to highlight that. And we also want to also show that. Notice that, as well as the stack job is created, and you created this from this thing on second half of the screen, you should refresh the dashboard and show that. Notice that as new stack job is running, you created it. And here is the resource detail of the etc, etc. Okay,
+We want to highlight we want to highlight that. And we also want to also show that. Notice that, as well as the infra job is created, and you created this from this thing on second half of the screen, you should refresh the dashboard and show that. Notice that as new infra job is running, you created it. And here is the resource detail of the etc, etc. Okay,
 
 Suresh Attaluri  27:26  
-we jump from Stack chat to the stack job. We will
+we jump from Stack chat to the infra job. We will
 
 Swarup Donepudi  27:29  
 have both. We'll have two half screens, okay, where one is the plant over chat, and the second half is the dashboard itself, where we are showing the chat at the same time we are showing that also,
@@ -196,7 +196,7 @@ Swarup Donepudi  28:33
 fact, instead of s3 bucket, we can also do a DynamoDB, because that is also quick, yeah,
 
 Suresh Attaluri  28:38  
-and yeah. And we show this nice comparison, that here the stack job is has started, and here the resources are, yeah, and we can do the same thing for the GCP also, yeah. I believe Yeah.
+and yeah. And we show this nice comparison, that here the infra job is has started, and here the resources are, yeah, and we can do the same thing for the GCP also, yeah. I believe Yeah.
 
 Swarup Donepudi  28:53  
 It's not Yeah. We can simply say it's not very common to see organizations using multiple clouds, but it's there for you if you need it. So let's, let's say I now want to deploy, create a new GC storage bucket on Google Cloud, instead of s3 bucket. So I say I need an GCS bucket, it, transfer it, and we open Google Cloud, and there is that. And then maybe, as a conclusion, at the end, at the very end, we can say, so all of what we have done in the chat is now there 14 to like see, will go to Canvas, will show the resources have not created. And we
@@ -211,7 +211,7 @@ Unknown Speaker  29:46
 will have
 
 Swarup Donepudi  29:48  
-other automation. Is where that needs to be emphasized, right? So I think, yeah, we should not show everything in every video. Yeah, let's keep it. Short, keep it short and demonstrate the capabilities of conversational power, guided resource creation, embedded stack jobs,
+other automation. Is where that needs to be emphasized, right? So I think, yeah, we should not show everything in every video. Yeah, let's keep it. Short, keep it short and demonstrate the capabilities of conversational power, guided resource creation, embedded infra jobs,
 
 Suresh Attaluri  30:10  
 ability to request something and ability to see the effect. So that's what we need to convey in this video. And
@@ -271,7 +271,7 @@ Speaker 1  33:48
 try out three multi cloud, multi cloud part. No, we have
 
 Swarup Donepudi  33:54  
-the creation part. You can create resources and create multi cloud resources and then
+the creation part. You can create resources and create multi infra components and then
 
 Speaker 1  33:59  
 finally update them as well. That's what you want to
@@ -382,7 +382,7 @@ Swarup Donepudi  41:22
 this is, I think I am trying to add there, I told you, right? So I'm asking I'm adding to the board for the stuff that we are claiming on the website to create content. So I think we didn't do anything here, like the either environment this thing or granting a team member a role is, is? Is what this was meant for. Yeah,
 
 Suresh Attaluri  41:50  
-we'll get to that. So basically, till now, we have already discussed provisioning. Part of provisioning has this is not a simple task. It has this guided experience thing. It has this benefit of stack job initiation and all those things. So that's when it got spilled over or split into these two parts. But simplified permission and access management is straightforward, straight forward, and
+we'll get to that. So basically, till now, we have already discussed provisioning. Part of provisioning has this is not a simple task. It has this guided experience thing. It has this benefit of infra job initiation and all those things. So that's when it got spilled over or split into these two parts. But simplified permission and access management is straightforward, straight forward, and
 
 Swarup Donepudi  42:25  
 we are also trying to break off the maybe, maybe we might be creating an impression. Candora can only do DevOps automation, but instead we are like saying that no ask for stuff outside the automation and plant over. Can help you.

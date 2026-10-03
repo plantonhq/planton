@@ -52,7 +52,7 @@ Changed from temporary workflow artifacts to permanent release assets:
 - name: Upload binary artifact
   uses: actions/upload-artifact@v4
   with:
-    name: binary-aws-${{ matrix.component }}
+    name: binary-aws-${{ matrix.kind }}
     path: binaries/
     retention-days: 7
 
@@ -62,7 +62,7 @@ Changed from temporary workflow artifacts to permanent release assets:
     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   run: |
     TAG="${GITHUB_REF#refs/tags/}"
-    BINARY_NAME="pulumi-${{ matrix.component }}"
+    BINARY_NAME="pulumi-${{ matrix.kind }}"
 
     # Wait for GoReleaser to create the release
     for i in {1..30}; do
@@ -88,7 +88,7 @@ Updated tag format to include base semantic version:
 The workflow now:
 
 1. Detects the latest `v*` tag (e.g., `v0.1.0`)
-2. Includes it in the component release tag
+2. Includes it in the kind release tag
 3. Falls back to `v0.0.0` if no semantic version exists
 
 ```bash
@@ -98,8 +98,8 @@ if [ -z "$LATEST_SEMVER" ]; then
   LATEST_SEMVER="v0.0.0"
 fi
 
-# Tag format: pulumi-{component}-{semver}-{YYYYMMDD}.{N}
-NEXT_TAG="pulumi-${COMPONENT}-${LATEST_SEMVER}-${TODAY}.${NEXT_SEQ}"
+# Tag format: pulumi-{kind}-{semver}-{YYYYMMDD}.{N}
+NEXT_TAG="pulumi-${KIND}-${LATEST_SEMVER}-${TODAY}.${NEXT_SEQ}"
 ```
 
 ### 4. Removed Concurrency Blocks
@@ -147,7 +147,7 @@ When you push changes to Pulumi modules on main:
 
 ```mermaid
 flowchart TB
-    A[Push to main with<br/>Pulumi changes] --> B[Detect changed components]
+    A[Push to main with<br/>Pulumi changes] --> B[Detect changed kinds]
     B --> C[Get latest v* tag<br/>e.g., v0.1.0]
     C --> D[Create tag<br/>pulumi-awsecsservice-v0.1.0-20260107.0]
     D --> E[Build and gzip binary]
@@ -158,7 +158,7 @@ flowchart TB
 
 ```
 .github/workflows/
-├── pulumi-module-auto-release.yaml    # Individual component releases
+├── pulumi-module-auto-release.yaml    # Individual kind releases
 ├── release.yaml                        # GoReleaser for CLI
 ├── release.pulumi-modules-atlas.yaml
 ├── release.pulumi-modules-auth0.yaml
@@ -193,7 +193,7 @@ flowchart TB
 
 ### Clear Version Lineage
 
-The new tag format `pulumi-{component}-{semver}-{date}.{seq}` provides:
+The new tag format `pulumi-{kind}-{semver}-{date}.{seq}` provides:
 
 - **Upgrade path visibility**: See which base version a patch applies to
 - **Easy filtering**: `git tag -l 'pulumi-awsecsservice-v0.1.0-*'`
@@ -225,7 +225,7 @@ The release will contain:
 
 When you push changes to a Pulumi module on main, the auto-release creates:
 
-- Tag: `pulumi-{component}-v0.1.0-{YYYYMMDD}.{N}`
+- Tag: `pulumi-{kind}-v0.1.0-{YYYYMMDD}.{N}`
 - Release: Individual release with that specific binary
 
 ### Download Pattern
@@ -245,7 +245,7 @@ chmod +x pulumi-awsecsservice
 ## Related Work
 
 - **Prior changelog**: `_changelog/2026-01/2026-01-07-155125-gzip-compression-and-shortened-release-tags.md`
-- **ADR**: `docs/adr/2026-01/2026-01-07-150453-per-component-binary-releases-for-pulumi-modules.md`
+- **ADR**: `docs/adr/2026-01/2026-01-07-150453-per-kind-binary-releases-for-pulumi-modules.md`
 - **Part of**: IaC Runner Distribution Strategy project
 
 ## Migration Notes
@@ -255,7 +255,7 @@ chmod +x pulumi-awsecsservice
 The IaC runner can now:
 
 1. Download from semantic version releases (all binaries in one release)
-2. Download from auto-releases (individual component releases)
+2. Download from auto-releases (individual kind releases)
 3. Parse component version to determine base semantic version
 
 ### For Downstream Tools

@@ -14,10 +14,10 @@ After completing the comprehensive Kubernetes naming refactoring (addon operator
 
 ### Root Cause
 
-The `DocsSidebar.tsx` component dynamically constructs icon paths based on component names:
+The `DocsSidebar.tsx` kind dynamically constructs icon paths based on kind names:
 
 ```typescript
-const componentIconPath = `/images/providers/${provider}/${component}/logo.svg`;
+const kindIconPath = `/images/providers/${provider}/${kind}/logo.svg`;
 ```
 
 When the docs referenced `catalog/kubernetes/kubernetespostgres`, it looked for `/images/providers/kubernetes/kubernetespostgres/logo.svg`, but the directory was still named `postgreskubernetes/`.
@@ -41,7 +41,7 @@ Renamed all 33 icon directories to match the new API naming convention:
 | `postgresoperatorkubernetes/` | `zalandopostgresoperator/` |
 | `solroperatorkubernetes/` | `apachesolroperator/` |
 
-### Workload Components (Suffix to Prefix)
+### Workload Kinds (Suffix to Prefix)
 
 | Old Directory Name | New Directory Name |
 |-------------------|-------------------|
@@ -94,13 +94,13 @@ const renderIcon = () => {
   const pathParts = item.path.split('/');
   if (pathParts.length === 3 && pathParts[0] === 'catalog' && item.type === 'file') {
     const provider = pathParts[1];      // e.g., 'kubernetes'
-    const component = pathParts[2];     // e.g., 'kubernetespostgres'
-    const componentIconPath = `/images/providers/${provider}/${component}/logo.svg`;
+    const kind = pathParts[2];     // e.g., 'kubernetespostgres'
+    const kindIconPath = `/images/providers/${provider}/${kind}/logo.svg`;
     
     return (
       <Image 
-        src={componentIconPath} 
-        alt={component} 
+        src={kindIconPath} 
+        alt={kind} 
         width={20}
         height={20}
         className="w-5 h-5 object-contain" 
@@ -228,14 +228,14 @@ The following icon directories were not renamed as they weren't part of the refa
 
 When users navigate to the Kubernetes catalog pages:
 - Documentation sidebar displays correct icons for all resources
-- Icon paths match the component names dynamically
+- Icon paths match the kind names dynamically
 - No broken image placeholders
 
 ## Technical Notes
 
 ### Convention-Based Icon Resolution
 
-The website uses a simple convention: `${provider}/${component}/logo.svg`
+The website uses a simple convention: `${provider}/${kind}/logo.svg`
 
 This eliminates the need for hardcoded icon mappings and automatically works for new resources following the naming convention.
 

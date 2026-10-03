@@ -42,7 +42,7 @@ func validResource() *AzureAksNodePool {
 	return &AzureAksNodePool{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureAksNodePool",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-pool",
 		},
 		Spec: &AzureAksNodePoolSpec{

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurepublicipprefix.v1alpha1;
 
-// **AzurePublicIpPrefixStackOutputs** captures the outputs of provisioning
+// **AzurePublicIpPrefixOutputs** captures the outputs of provisioning
 // an Azure Public IP Prefix.
-message AzurePublicIpPrefixStackOutputs {
+message AzurePublicIpPrefixOutputs {
   // The Azure Resource Manager ID of the prefix. Referenced by
   // AzurePublicIp (public_ip_prefix_id) to allocate addresses from the
   // range, and by AzureNatGateway (public_ip_prefix_ids) to associate the

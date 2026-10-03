@@ -57,7 +57,7 @@ Rules are managed INLINE on the group: the manifest owns the complete rule set, 
 
 A single rule may carry several sources at once (CIDRs + prefix lists + groups + self); AWS expands them into individual permissions server-side.
 
-## Stack outputs
+## Outputs
 
 | Output | Description |
 |---|---|

@@ -33,7 +33,7 @@ export const OpenSource: FC = () => (
     <Box className="text-center mb-10">
       <SectionTitle>Open Infrastructure Modules — Not a Black Box</SectionTitle>
       <SectionSubtitle className="mx-auto">
-        {PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} deployment components on
+        {PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} catalog kinds on
         GitHub, Apache-2.0. Audit them, fork them, or use them without the
         platform.
       </SectionSubtitle>

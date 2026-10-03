@@ -2,7 +2,7 @@
 
 **Date**: November 13, 2025  
 **Type**: Breaking Change / Refactoring  
-**Components**: API Definitions, Cloud Resource Registry, Package Structure, Provider Framework
+**Components**: API Definitions, Catalog Kind Registry, Package Structure, Provider Framework
 
 ## Summary
 
@@ -15,13 +15,13 @@ The Altinity ClickHouse Operator was originally structured with "kubernetes" app
 ### Pain Points
 
 - **Directory Name**: `altinityoperatorkubernetes` - unnecessarily verbose and inconsistent
-- **Package Namespace**: `dev.planton.provider.kubernetes.addon.altinityoperatorkubernetes.v1` - "kubernetes" appears twice (in `addon` path and in component name)
+- **Package Namespace**: `dev.planton.provider.kubernetes.addon.altinityoperatorkubernetes.v1` - "kubernetes" appears twice (in `addon` path and in kind name)
 - **Proto Messages**: `AltinityOperatorKubernetes`, `AltinityOperatorKubernetesSpec`, etc. - redundant suffixes
 - **API Kind**: `kind: AltinityOperatorKubernetes` - verbose in user manifests
 - **Import Paths**: Go import paths were unnecessarily long
 - **Code References**: Every reference in Go code included the redundant suffix
 
-The component's location under `provider/kubernetes/addon/` already makes it clear this is a Kubernetes component. The "kubernetes" suffix added no semantic value while significantly increasing verbosity throughout the codebase.
+The kind's location under `provider/kubernetes/addon/` already makes it clear this is a Kubernetes kind. The "kubernetes" suffix added no semantic value while significantly increasing verbosity throughout the codebase.
 
 ## Solution / What's New
 
@@ -59,16 +59,16 @@ message AltinityOperatorKubernetes { ... }
 message AltinityOperatorKubernetesSpec { ... }
 message AltinityOperatorKubernetesSpecContainer { ... }
 message AltinityOperatorKubernetesStatus { ... }
-message AltinityOperatorKubernetesStackInput { ... }
-message AltinityOperatorKubernetesStackOutputs { ... }
+message AltinityOperatorKubernetesIacInput { ... }
+message AltinityOperatorKubernetesOutputs { ... }
 
 // After
 message AltinityOperator { ... }
 message AltinityOperatorSpec { ... }
 message AltinityOperatorSpecContainer { ... }
 message AltinityOperatorStatus { ... }
-message AltinityOperatorStackInput { ... }
-message AltinityOperatorStackOutputs { ... }
+message AltinityOperatorIacInput { ... }
+message AltinityOperatorOutputs { ... }
 ```
 
 ### 4. API Kind Simplification
@@ -83,7 +83,7 @@ apiVersion: kubernetes.planton.dev/v1
 kind: AltinityOperator
 ```
 
-### 5. Cloud Resource Registry Update
+### 5. Catalog Kind Registry Update
 
 ```protobuf
 // Before
@@ -107,7 +107,7 @@ AltinityOperator = 831 [(kind_meta) = {
 
 ### Directory Rename
 
-The entire component directory was moved/renamed:
+The entire kind directory was moved/renamed:
 
 ```bash
 # Conceptual operation (actual Git operation)
@@ -132,12 +132,12 @@ syntax = "proto3";
 package dev.planton.provider.kubernetes.addon.altinityoperator.v1;
 
 import "dev/planton/provider/kubernetes/addon/altinityoperator/v1/spec.proto";
-import "dev/planton/provider/kubernetes/addon/altinityoperator/v1/stack_outputs.proto";
+import "dev/planton/provider/kubernetes/addon/altinityoperator/v1/outputs.proto";
 
 message AltinityOperator {
   string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
   string kind = 2 [(buf.validate.field).string.const = 'AltinityOperator'];
-  dev.planton.shared.CloudResourceMetadata metadata = 3;
+  dev.planton.shared.CatalogObjectMetadata metadata = 3;
   AltinityOperatorSpec spec = 4;
   AltinityOperatorStatus status = 5;
 }
@@ -159,25 +159,25 @@ message AltinityOperatorSpecContainer {
 }
 ```
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/altinityoperator/v1/stack_input.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/altinityoperator/v1/iac_input.proto`
 
 ```protobuf
 package dev.planton.provider.kubernetes.addon.altinityoperator.v1;
 
 import "dev/planton/provider/kubernetes/addon/altinityoperator/v1/api.proto";
 
-message AltinityOperatorStackInput {
+message AltinityOperatorIacInput {
   AltinityOperator target = 1;
   dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
 }
 ```
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/altinityoperator/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/altinityoperator/v1/outputs.proto`
 
 ```protobuf
 package dev.planton.provider.kubernetes.addon.altinityoperator.v1;
 
-message AltinityOperatorStackOutputs {
+message AltinityOperatorOutputs {
   string namespace = 1;
 }
 ```
@@ -190,7 +190,7 @@ import (
   altinityoperatorkubernetesv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/altinityoperatorkubernetes/v1"
 )
 
-stackInput := &altinityoperatorkubernetesv1.AltinityOperatorKubernetesStackInput{}
+iacInput := &altinityoperatorkubernetesv1.AltinityOperatorKubernetesIacInput{}
 ```
 
 **After**:
@@ -199,7 +199,7 @@ import (
   altinityoperatorv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/altinityoperator/v1"
 )
 
-stackInput := &altinityoperatorv1.AltinityOperatorStackInput{}
+iacInput := &altinityoperatorv1.AltinityOperatorIacInput{}
 ```
 
 ### Implementation Files Updated
@@ -213,17 +213,17 @@ import (
   "github.com/pkg/errors"
   altinityoperatorv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/altinityoperator/v1"
   "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/altinityoperator/v1/iac/pulumi/module"
-  "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/stackinput"
+  "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/iacinput"
   "github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 func main() {
   pulumi.Run(func(ctx *pulumi.Context) error {
-    stackInput := &altinityoperatorv1.AltinityOperatorStackInput{}
-    if err := stackinput.LoadStackInput(ctx, stackInput); err != nil {
-      return errors.Wrap(err, "failed to load stack-input")
+    iacInput := &altinityoperatorv1.AltinityOperatorIacInput{}
+    if err := iacinput.LoadIacInput(ctx, iacInput); err != nil {
+      return errors.Wrap(err, "failed to load iac-input")
     }
-    return module.Resources(ctx, stackInput)
+    return module.Resources(ctx, iacInput)
   })
 }
 ```
@@ -238,8 +238,8 @@ import (
   // ... other imports
 )
 
-func Resources(ctx *pulumi.Context, stackInput *altinityoperatorv1.AltinityOperatorStackInput) error {
-  // Implementation using stackInput.Target.Spec
+func Resources(ctx *pulumi.Context, iacInput *altinityoperatorv1.AltinityOperatorIacInput) error {
+  // Implementation using iacInput.Target.Spec
   // ...
 }
 ```
@@ -248,7 +248,7 @@ func Resources(ctx *pulumi.Context, stackInput *altinityoperatorv1.AltinityOpera
 
 All documentation files updated to reflect new paths and names:
 
-- `README.md` - Component overview and features
+- `README.md` - Kind overview and features
 - `examples.md` - YAML manifest examples with new kind
 - `iac/pulumi/README.md` - Pulumi module documentation
 - `iac/pulumi/examples.md` - Pulumi deployment examples
@@ -305,7 +305,7 @@ After:  dev.planton.provider.kubernetes.addon.altinityoperator.v1
 **Proto Message Names**:
 - `AltinityOperatorKubernetes` → `AltinityOperator` (10 chars shorter)
 - `AltinityOperatorKubernetesSpec` → `AltinityOperatorSpec` (10 chars shorter)
-- `AltinityOperatorKubernetesStackInput` → `AltinityOperatorStackInput` (10 chars shorter)
+- `AltinityOperatorKubernetesIacInput` → `AltinityOperatorIacInput` (10 chars shorter)
 
 **User Manifests**:
 ```yaml
@@ -317,10 +317,10 @@ kind: AltinityOperator  # vs. kind: AltinityOperatorKubernetes
 **Go Import Alias**:
 ```go
 // Before
-altinityoperatorkubernetesv1.AltinityOperatorKubernetesStackInput
+altinityoperatorkubernetesv1.AltinityOperatorKubernetesIacInput
 
 // After
-altinityoperatorv1.AltinityOperatorStackInput
+altinityoperatorv1.AltinityOperatorIacInput
 ```
 
 Shorter import aliases and type names make code significantly more readable.
@@ -387,7 +387,7 @@ import "dev/planton/provider/kubernetes/addon/altinityoperator/v1/api.proto";
 
 ### Non-Breaking Aspects
 
-- **Enum Value**: Still `831` in cloud_resource_kind.proto
+- **Enum Value**: Still `831` in catalog_kind.proto
 - **ID Prefix**: Still `altopk8s` for resource ID generation
 - **API Version**: Still `kubernetes.planton.dev/v1`
 - **Provider**: Still `kubernetes`
@@ -396,7 +396,7 @@ import "dev/planton/provider/kubernetes/addon/altinityoperator/v1/api.proto";
 ### Scope of Changes
 
 **Proto Definitions**: 4 files
-- api.proto, spec.proto, stack_input.proto, stack_outputs.proto
+- api.proto, spec.proto, iac_input.proto, outputs.proto
 
 **Generated Code**: 4 files
 - *.pb.go files (auto-regenerated)
@@ -414,7 +414,7 @@ import "dev/planton/provider/kubernetes/addon/altinityoperator/v1/api.proto";
 - iac/hack/manifest.yaml
 
 **Registry**: 1 file
-- cloud_resource_kind.proto
+- catalog_kind.proto
 
 **Build Files**: Multiple
 - BUILD.bazel files (auto-updated via Gazelle)
@@ -469,8 +469,8 @@ import (
 - altinityoperatorkubernetesv1.AltinityOperatorKubernetesSpec
 + altinityoperatorv1.AltinityOperatorSpec
 
-- altinityoperatorkubernetesv1.AltinityOperatorKubernetesStackInput
-+ altinityoperatorv1.AltinityOperatorStackInput
+- altinityoperatorkubernetesv1.AltinityOperatorKubernetesIacInput
++ altinityoperatorv1.AltinityOperatorIacInput
 ```
 
 **Step 3**: Update go.mod

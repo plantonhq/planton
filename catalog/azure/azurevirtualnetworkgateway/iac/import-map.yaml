@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurevirtualnetworkgateway
 spec:
@@ -9,7 +9,7 @@ spec:
   values:
     - name: virtual_network_gateway_id
       derivations:
-        - from_stack_output: virtual_network_gateway_id
+        - from_output: virtual_network_gateway_id
       where_to_find: >-
         Portal -> Virtual network gateways -> the gateway -> Properties ->
         Resource ID, or `az network vnet-gateway show -g <rg> -n <name>

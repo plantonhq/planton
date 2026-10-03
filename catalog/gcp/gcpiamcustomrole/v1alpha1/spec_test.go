@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpIamCustomRoleSpec", func() {
 		return &GcpIamCustomRole{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpIamCustomRole",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-custom-role",
 			},
 			Spec: &GcpIamCustomRoleSpec{

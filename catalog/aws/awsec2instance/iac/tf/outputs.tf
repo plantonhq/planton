@@ -1,4 +1,4 @@
-# Stack outputs flatten onto AwsEc2InstanceStackOutputs field-for-field;
+# Outputs flatten onto AwsEc2InstanceOutputs field-for-field;
 # both engines export the same names so composition never depends on the
 # engine. Address outputs are empty strings for private-only instances.
 

@@ -1,19 +1,19 @@
 # Cloudflare Custom Hostname
 
-Attaches a customer's own domain to a Cloudflare-for-SaaS zone. It extends Cloudflare's edge -- TLS termination, caching, WAF -- onto a hostname your customer owns (e.g. `support.acme.com`), with a per-customer certificate that Cloudflare provisions and auto-renews. Onboarding alone does not make the hostname live: the customer must CNAME their hostname to the SaaS zone and prove control using the ownership-verification records exported in the stack outputs, and the hostname sits in `pending` or `pending_validation` until they do.
+Attaches a customer's own domain to a Cloudflare-for-SaaS zone. It extends Cloudflare's edge -- TLS termination, caching, WAF -- onto a hostname your customer owns (e.g. `support.acme.com`), with a per-customer certificate that Cloudflare provisions and auto-renews. Onboarding alone does not make the hostname live: the customer must CNAME their hostname to the SaaS zone and prove control using the ownership-verification records exported in the outputs, and the hostname sits in `pending` or `pending_validation` until they do.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Custom Hostname** -- a customer hostname onboarded to the SaaS zone
-- **Per-hostname Certificate** -- a managed DV certificate (by default), auto-renewed by Cloudflare; Cloudflare derives the ownership-verification TXT and HTTP records the customer needs, which the module exports as stack outputs
+- **Per-hostname Certificate** -- a managed DV certificate (by default), auto-renewed by Cloudflare; Cloudflare derives the ownership-verification TXT and HTTP records the customer needs, which the module exports as outputs
 
 ## Before You Deploy
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has SSL and Certificates edit access. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has SSL and Certificates edit access. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -51,7 +51,7 @@ spec:
 planton apply -f cloudflare-custom-hostname.yaml
 ```
 
-This onboards `support.acme.com` to the SaaS zone with a managed DV certificate. The customer then CNAMEs their hostname to the zone and adds the ownership-verification record from the outputs. A Stack Job tracks the provisioning in real time.
+This onboards `support.acme.com` to the SaaS zone with a managed DV certificate. The customer then CNAMEs their hostname to the zone and adds the ownership-verification record from the outputs. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -77,7 +77,7 @@ These are the most important decisions when configuring a custom hostname. Explo
 
 **Zone and hostname (`zoneId`, `hostname`) are immutable** -- changing either replaces the resource, which restarts the customer-facing verification cycle. Everything under `ssl` and the origin override are editable in place.
 
-**Ownership proof is the customer's job** -- the stack outputs carry the TXT record (and HTTP alternative) the customer must publish on *their* DNS before the hostname activates. Build your onboarding hand-off around those outputs; nothing on your side can complete this step for them.
+**Ownership proof is the customer's job** -- the outputs carry the TXT record (and HTTP alternative) the customer must publish on *their* DNS before the hostname activates. Build your onboarding hand-off around those outputs; nothing on your side can complete this step for them.
 
 **Custom Origin Server (`customOriginServer`)** -- leave it empty and traffic routes to the zone's fallback origin, which is a per-zone singleton (`CloudflareCustomHostnameFallbackOrigin`) -- set it once for the zone, not on each hostname. Set the override only when a specific customer needs a dedicated backend. Note `customOriginSni` is not configurable when the hostname uses the fallback origin.
 
@@ -89,7 +89,7 @@ These are the most important decisions when configuring a custom hostname. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -97,9 +97,9 @@ These are the most important decisions when configuring a custom hostname. Explo
 
 `customOriginServer` is also a value-or-reference field and may point at any resource output that resolves to a backend hostname (e.g. a load balancer). When it is unset, the hostname relies on the zone's **CloudflareCustomHostnameFallbackOrigin**.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -121,6 +121,6 @@ Activation status and verification errors are deliberately not outputs — both 
 
 ## Works With
 
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) -- the SaaS zone the hostname is added to; `zoneId` references its output
-- [**Cloudflare Custom Hostname Fallback Origin**](/cloud-catalog/cloudflare-custom-hostname-fallback-origin) -- the zone-level default backend this hostname routes to when no override is set
-- [**Cloudflare Load Balancer**](/cloud-catalog/cloudflare-load-balancer) -- a common `customOriginServer` target for customers with dedicated backends
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) -- the SaaS zone the hostname is added to; `zoneId` references its output
+- [**Cloudflare Custom Hostname Fallback Origin**](/infra-catalog/cloudflare-custom-hostname-fallback-origin) -- the zone-level default backend this hostname routes to when no override is set
+- [**Cloudflare Load Balancer**](/infra-catalog/cloudflare-load-balancer) -- a common `customOriginServer` target for customers with dedicated backends

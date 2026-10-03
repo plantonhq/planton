@@ -4,7 +4,7 @@ Creates one Certificate Manager trust config — the root and intermediate CAs, 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Certificate Manager API enablement** (`certificatemanager.googleapis.com`) on the target project (never disabled on destroy)
 - **Certificate Manager Trust Config** -- a `google_certificate_manager_trust_config` holding one trust store (trust anchors and intermediate CAs) and any allowlisted certificates
@@ -53,7 +53,7 @@ spec:
 planton apply -f trust-config.yaml
 ```
 
-This creates a global trust config whose `trust_config_id` output a server TLS policy takes. A Stack Job tracks the provisioning in real time.
+This creates a global trust config whose `trust_config_id` output a server TLS policy takes. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,15 +92,15 @@ These are the most important decisions when configuring a trust config. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -118,6 +118,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Target HTTPS Proxy**](/cloud-catalog/gcp-target-https-proxy) -- attaches the server TLS policy that names this trust config
-- [**GCP Cert Manager Cert**](/cloud-catalog/gcp-cert-manager-cert) -- the server certificate the load balancer presents; the trust config validates the client side
-- [**GCP Private CA Pool**](/cloud-catalog/gcp-private-ca-pool) -- a private CA whose root certificate can be this config's trust anchor
+- [**GCP Target HTTPS Proxy**](/infra-catalog/gcp-target-https-proxy) -- attaches the server TLS policy that names this trust config
+- [**GCP Cert Manager Cert**](/infra-catalog/gcp-cert-manager-cert) -- the server certificate the load balancer presents; the trust config validates the client side
+- [**GCP Private CA Pool**](/infra-catalog/gcp-private-ca-pool) -- a private CA whose root certificate can be this config's trust anchor

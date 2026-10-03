@@ -30,7 +30,7 @@ func minimalSpec() *AzureFrontDoorEndpoint {
 	return &AzureFrontDoorEndpoint{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureFrontDoorEndpoint",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-front-door-endpoint",
 		},
 		Spec: &AzureFrontDoorEndpointSpec{

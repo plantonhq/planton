@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpsccmuteconfig.v1alpha1;
 
-// GcpSccMuteConfigStackOutputs carries the rule's identity.
-message GcpSccMuteConfigStackOutputs {
+// GcpSccMuteConfigOutputs carries the rule's identity.
+message GcpSccMuteConfigOutputs {
   // Full resource name:
   // {parent}/locations/{location}/muteConfigs/{mute_config_id}.
   string name = 1;

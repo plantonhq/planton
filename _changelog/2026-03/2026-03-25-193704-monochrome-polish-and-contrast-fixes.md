@@ -6,7 +6,7 @@
 
 ## Summary
 
-Follow-up pass after the micro-apps monochrome theme rollout to fix contrast issues, invisible buttons, and missed colored components. Resolved white-on-white artifacts from gradient neutralization, made comparison table icons subtler, neutralized the hero terminal green, and extended the monochrome treatment to the changelog, docs, and investor updates timeline — components that were not part of the original micro-apps plan.
+Follow-up pass after the micro-apps monochrome theme rollout to fix contrast issues, invisible buttons, and missed colored kinds. Resolved white-on-white artifacts from gradient neutralization, made comparison table icons subtler, neutralized the hero terminal green, and extended the monochrome treatment to the changelog, docs, and investor updates timeline — kinds that were not part of the original micro-apps plan.
 
 ## Problem Statement / Motivation
 

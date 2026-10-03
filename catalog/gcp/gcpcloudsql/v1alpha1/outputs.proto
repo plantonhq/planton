@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpcloudsql.v1alpha1;
 
-// GcpCloudSqlStackOutputs captures values returned after provisioning a Cloud
+// GcpCloudSqlOutputs captures values returned after provisioning a Cloud
 // SQL instance.
-message GcpCloudSqlStackOutputs {
+message GcpCloudSqlOutputs {
   // Name of the Cloud SQL instance. The composition key: GcpCloudSqlDatabase
   // and GcpCloudSqlUser reference an instance by this name, and a read
   // replica's master_instance_name resolves to it.

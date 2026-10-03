@@ -29,7 +29,7 @@ func validInput(spec *AzureContainerRegistrySpec) *AzureContainerRegistry {
 	return &AzureContainerRegistry{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureContainerRegistry",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-container-registry",
 		},
 		Spec: spec,

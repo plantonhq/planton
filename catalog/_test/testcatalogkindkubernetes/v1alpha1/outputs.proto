@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package dev.planton._test.testcatalogkindkubernetes.v1alpha1;
+
+// Outputs for TestCatalogKindKubernetes.
+// Mirrors the shape of real Kubernetes infra component outputs so that
+// downstream consumers can test output loading, setting, getting, and
+// state-building machinery against stable test infrastructure.
+message TestCatalogKindKubernetesOutputs {
+  string namespace = 1;
+  string service = 2;
+  string endpoint = 3;
+  string port_forward_command = 4;
+  string kube_endpoint = 5;
+  string external_hostname = 6;
+  string internal_hostname = 7;
+  repeated string tags = 8;
+}

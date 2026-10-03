@@ -21,15 +21,15 @@ type Locals struct {
 	WebhookConfiguration *auth0eventstreamv1alpha1.Auth0WebhookConfiguration
 }
 
-// initializeLocals creates and populates the Locals struct from stack input
-func initializeLocals(ctx *pulumi.Context, stackInput *auth0eventstreamv1alpha1.Auth0EventStreamStackInput) *Locals {
+// initializeLocals creates and populates the Locals struct from IaC input
+func initializeLocals(ctx *pulumi.Context, iacInput *auth0eventstreamv1alpha1.Auth0EventStreamIacInput) *Locals {
 	locals := &Locals{}
 
 	// Store the target resource
-	locals.Auth0EventStream = stackInput.Target
+	locals.Auth0EventStream = iacInput.Target
 
-	spec := stackInput.Target.Spec
-	metadata := stackInput.Target.Metadata
+	spec := iacInput.Target.Spec
+	metadata := iacInput.Target.Metadata
 
 	// Core configuration
 	locals.StreamName = metadata.Name

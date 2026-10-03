@@ -66,7 +66,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
       { title: 'Describe', text: 'Say what you need: in the console, from the CLI, or through your coding agent. Every component is a typed schema, so a wrong field fails before it touches your cloud.' },
       { title: 'Compose', text: 'Watch it compose on a live canvas: the components, how they connect, what each needs from the others.' },
       { title: 'Verify', text: 'See the monthly cost with its coverage stated, the least-privilege policy, and the controls each component enforces. Nothing exists yet.' },
-      { title: 'Deploy', text: 'One stack job, kept: the exact configuration, the cost fact, the verdicts, who approved, and what exists afterward.' },
+      { title: 'Deploy', text: 'One infra job, kept: the exact configuration, the cost fact, the verdicts, who approved, and what exists afterward.' },
       { title: 'Publish', text: 'Publish it as an Infra Chart, a template your team redeploys into the next environment. A prompt cannot be redeployed; a chart can.' },
     ],
     points: [
@@ -161,13 +161,13 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
   {
     path: '/product/cli',
     chapters: ['runs-where-you-decide', 'your-rules-hold', 'every-deployment-leaves-a-record'],
-    lede: 'Everything Planton does, from your terminal: validate a manifest before it touches your cloud, deploy one component or a whole directory in dependency order, stream the stack job as it runs, install an Infra Chart, and bring in what already exists.',
+    lede: 'Everything Planton does, from your terminal: validate a manifest before it touches your cloud, deploy one component or a whole directory in dependency order, stream the infra job as it runs, install an Infra Chart, and bring in what already exists.',
     forWhom: 'For the engineer who lives in a shell, and the pipeline that runs without one.',
     steps: [
       { title: 'Install', text: 'One Homebrew line on macOS; direct downloads for Linux and Windows.' },
       { title: 'Write the Manifest', text: 'The shape you already know: apiVersion, kind, metadata, spec. Validation catches a wrong field in seconds, before anything is created.' },
       { title: 'Apply', text: 'Deploy one manifest or a directory of them in dependency order, the way you already apply Kubernetes manifests, on every cloud.' },
-      { title: 'Watch the Record', text: 'The stack job streams as it runs. The same event stream drives the console and the audit log, so every surface tells one story.' },
+      { title: 'Watch the Record', text: 'The infra job streams as it runs. The same event stream drives the console and the audit log, so every surface tells one story.' },
     ],
     points: [
       { label: 'The Exit Path Is the Same CLI', text: runs.proof[1] },
@@ -194,7 +194,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
   {
     path: '/product/catalog',
     chapters: ['proof-it-works', 'verified-before-it-exists', 'your-rules-hold'],
-    lede: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} component kinds across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers, each a typed schema with its own fact sheet: what it costs, which controls it enforces, and the least permissions its runner needs.`,
+    lede: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} catalog kinds across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers, each a typed schema with its own fact sheet: what it costs, which controls it enforces, and the least permissions its runner needs.`,
     strip: 'providers',
     forWhom: 'For the platform engineer choosing what their organization may deploy, and the reviewer who wants the fact sheet before the deploy.',
     points: [
@@ -228,13 +228,13 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
     forWhom: 'For the team that already has an account full of infrastructure and no intention of redeploying it.',
     steps: [
       { title: 'Adopt', text: 'Register the resource in Planton without deploying anything. Nothing in your cloud is touched, and the page says so: adopted, not yet deployed.' },
-      { title: 'Import', text: 'From the resource\u2019s page or the CLI, name the cloud resource that already exists. Import only writes state; the cloud resource itself is never modified.' },
+      { title: 'Import', text: 'From the resource\u2019s page or the CLI, name the infra component that already exists. Import only writes state; the infra component itself is never modified.' },
       { title: 'Verify', text: 'A wrong import fails before it lands. Import never writes a configuration it did not apply.' },
-      { title: 'Continue', text: 'From then on the resource carries the same record as everything Planton created: every change one stack job, kept.' },
+      { title: 'Continue', text: 'From then on the resource carries the same record as everything Planton created: every change one infra job, kept.' },
     ],
     points: [
       { label: 'Proven in a Live Round Trip', text: bring.proof[2] },
-      { label: 'Nothing Is Touched Until You Say', text: 'Adopting runs no job and changes nothing. The import itself only writes state; the cloud resource is never modified.' },
+      { label: 'Nothing Is Touched Until You Say', text: 'Adopting runs no job and changes nothing. The import itself only writes state; the infra component is never modified.' },
       { label: 'From the Terminal Too', text: 'The CLI imports with the same verification, and a dry run prints the native command it would run without creating a job.' },
       { label: 'Tagged Like Everything Else', text: record.proof[3] },
     ],
@@ -246,7 +246,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
         { label: 'operation', value: 'state import \u00b7 identifier derived by recipe' },
         { label: 'verify', value: 'refresh, then preview \u00b7 0 changes pending' },
         { label: 'state', value: 'written once, only what was applied' },
-        { label: 'record', value: 'stack job kept \u00b7 queryable by resource, environment, time' },
+        { label: 'record', value: 'infra job kept \u00b7 queryable by resource, environment, time' },
       ],
       footer: illustratedFooter(),
     },
@@ -259,7 +259,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
     lede: runs.proof[1],
     forWhom: 'For the engineer who wants to read what will run in their account before it runs, and the one planning the exit before the entry.',
     points: [
-      { label: 'The Catalog', text: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} component kinds across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers, each with its Pulumi and Terraform module, its cost fact sheet, its control posture with evidence, and its least-privilege permissions, all in one repository.` },
+      { label: 'The Catalog', text: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} catalog kinds across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers, each with its Pulumi and Terraform module, its cost fact sheet, its control posture with evidence, and its least-privilege permissions, all in one repository.` },
       { label: 'The Charts', text: `${PLATFORM_STATS.INFRA_CHART_COUNT} Infra Charts: whole environments composed from those components and installed in one command.` },
       { label: 'The CLI and the Engine', text: 'The open-source CLI validates manifests and runs the modules that ship with every component. It is the same engine the platform drives.' },
       { label: 'Machine-Checked Facts', text: 'The cost data is priced from pinned price books, the control posture carries framework crosswalks, and the permission manifests are validated against the providers\u2019 own published inventories.' },
@@ -270,7 +270,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
       title: 'plantonhq/planton',
       rows: [
         { label: 'license', value: 'Apache 2.0 \u00b7 the name and logo are trademarks' },
-        { label: 'component kinds', value: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers` },
+        { label: 'catalog kinds', value: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers` },
         { label: 'infra charts', value: PLATFORM_STATS.INFRA_CHART_COUNT },
         { label: 'controls', value: `${PLATFORM_STATS.CONTROL_COUNT} in ${PLATFORM_STATS.CONTROL_CATEGORY_COUNT} categories \u00b7 ${PLATFORM_STATS.FRAMEWORK_CROSSWALK_COUNT} framework crosswalks` },
         { label: 'engines', value: 'Pulumi \u00b7 OpenTofu and Terraform' },

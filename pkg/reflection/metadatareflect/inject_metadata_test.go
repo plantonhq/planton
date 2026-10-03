@@ -13,15 +13,15 @@ func TestInjectMetadata(t *testing.T) {
 	tests := []struct {
 		name  string
 		input proto.Message
-		meta  *shared.CloudResourceMetadata
+		meta  *shared.CatalogObjectMetadata
 		want  proto.Message
 	}{
 		{
 			name:  "when metadata is injected it should appear in the output",
 			input: &awss3bucketv1alpha1.AwsS3Bucket{},
-			meta:  &shared.CloudResourceMetadata{Id: "test-id"},
+			meta:  &shared.CatalogObjectMetadata{Id: "test-id"},
 			want: &awss3bucketv1alpha1.AwsS3Bucket{
-				Metadata: &shared.CloudResourceMetadata{Id: "test-id"},
+				Metadata: &shared.CatalogObjectMetadata{Id: "test-id"},
 			},
 		},
 		{

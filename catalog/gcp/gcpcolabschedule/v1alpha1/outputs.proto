@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpcolabschedule.v1alpha1;
 
-// GcpColabScheduleStackOutputs carries the schedule's identity.
-message GcpColabScheduleStackOutputs {
+// GcpColabScheduleOutputs carries the schedule's identity.
+message GcpColabScheduleOutputs {
   // Full resource name:
   // projects/{project}/locations/{location}/schedules/{schedule_id}.
   string name = 1;

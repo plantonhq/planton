@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurevirtualnetworkgateway.v1alpha1;
 
-// **AzureVirtualNetworkGatewayStackOutputs** captures the outputs of
+// **AzureVirtualNetworkGatewayOutputs** captures the outputs of
 // provisioning a virtual network gateway.
-message AzureVirtualNetworkGatewayStackOutputs {
+message AzureVirtualNetworkGatewayOutputs {
   // The Azure Resource Manager ID of the gateway -- what connections
   // reference as virtual_network_gateway_id.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworkGateways/{name}

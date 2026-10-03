@@ -11,7 +11,7 @@ import "shared/options/options.proto";
 // caching, WAF — onto a hostname your customer owns (e.g. "support.acme.com"),
 // with a per-customer certificate that Cloudflare provisions and auto-renews. The
 // customer points their hostname at the SaaS zone via CNAME and proves control via
-// the ownership-verification records exported in the stack outputs.
+// the ownership-verification records exported in the outputs.
 //
 // Traffic for the custom hostname is routed to the zone's default origin (the
 // CloudflareCustomHostnameFallbackOrigin) unless `custom_origin_server` overrides

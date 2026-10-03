@@ -4,21 +4,21 @@ Deploys an Access service token: a machine credential — a client-ID / client-s
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Access Service Token** — one service token at the account (or zone) with the given display name and duration
-- **Client ID and Client Secret** — exported as stack outputs; the secret is marked sensitive and is never readable again except at rotation
+- **Client ID and Client Secret** — exported as outputs; the secret is marked sensitive and is never readable again except at rotation
 
 ## Before You Deploy
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Account → Access: Service Tokens → Edit. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Account → Access: Service Tokens → Edit. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Cloudflare Account
 
-- **Zero Trust enabled on the account** — the organization (team name) must already exist (a CloudflareZeroTrustOrganization Cloud Resource) or every Access create fails at the API.
+- **Zero Trust enabled on the account** — the organization (team name) must already exist (a CloudflareZeroTrustOrganization Infra Component) or every Access create fails at the API.
 - **A secret store ready to receive the credential** — `status.outputs.client_secret` cannot be recovered from Cloudflare later; capturing it is part of the deploy, not an afterthought.
 
 ## Deploy
@@ -47,7 +47,7 @@ spec:
 planton apply -f service-token.yaml
 ```
 
-This creates an account-scoped token with Cloudflare's one-year default duration — capture `status.outputs.client_id` and `status.outputs.client_secret` into your CI secret store before anything else. A Stack Job tracks the provisioning in real time.
+This creates an account-scoped token with Cloudflare's one-year default duration — capture `status.outputs.client_id` and `status.outputs.client_secret` into your CI secret store before anything else. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -81,15 +81,15 @@ These are the most important decisions when configuring a service token. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** (zone-scoped tokens) | `zoneId` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -112,7 +112,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Zero Trust Access Policy**](/cloud-catalog/cloudflare-zero-trust-access-policy) — a `service_token` include rule that lists this token's ID
-- [**Cloudflare Zero Trust Access Application**](/cloud-catalog/cloudflare-zero-trust-access-application) — the application the machine client calls
-- [**Cloudflare Zero Trust Access Identity Provider**](/cloud-catalog/cloudflare-zero-trust-access-identity-provider) — human sign-in, the other door through Access
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) — the `zoneId` foreign key for a zone-scoped token
+- [**Cloudflare Zero Trust Access Policy**](/infra-catalog/cloudflare-zero-trust-access-policy) — a `service_token` include rule that lists this token's ID
+- [**Cloudflare Zero Trust Access Application**](/infra-catalog/cloudflare-zero-trust-access-application) — the application the machine client calls
+- [**Cloudflare Zero Trust Access Identity Provider**](/infra-catalog/cloudflare-zero-trust-access-identity-provider) — human sign-in, the other door through Access
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) — the `zoneId` foreign key for a zone-scoped token

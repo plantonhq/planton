@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package dev.planton.qa.catalogkinde2eprofile.v1;
+
+import "qa/shared/cost_class.proto";
+import "shared/iac.proto";
+
+// CatalogKindE2EProfileSpec configures per-kind E2E behavior.
+message CatalogKindE2EProfileSpec {
+  // E2E readiness status for this kind.
+  enum Status {
+    status_unspecified = 0;
+    // Passes on CI and is included in scheduled runs.
+    green = 1;
+    // Known failure with a documented reason; skipped in CI.
+    deferred = 2;
+    // Intentionally excluded from E2E (e.g., requires cloud credentials not yet configured).
+    skip = 3;
+    // Module is a stub with no real deployment logic yet.
+    stub = 4;
+    // Every lane requires an externally provided real cluster (the kind
+    // cannot run on a local kind cluster at all — e.g. its controller talks
+    // to cloud APIs at startup). Skipped with deferred_reason wherever no
+    // external cluster is supplied (PLANTON_E2E_KUBECONFIG unset); runs in
+    // batched real-cluster lanes. Scenario-level cluster requirements on the
+    // manifests (the e2e-cluster-profile annotation) still gate WHICH real
+    // cluster satisfies each scenario. Deliberately distinct from `green`
+    // so CI matrices built from green kinds never schedule lanes that
+    // can only skip.
+    real_cluster = 5;
+    // Fully authored and offline-validated (specs, both engine modules,
+    // scenarios, verifiers, static gates) but the live lanes have not yet
+    // run. Skipped everywhere like `deferred`, and excluded from CI matrices,
+    // until a proving session executes the lanes and flips the profile to
+    // `green` (or to `real_cluster`/`deferred` with a reason). Deliberately
+    // distinct from `deferred`, which records a KNOWN failure — a kind
+    // awaiting its first proof has not failed anything. While a profile
+    // carries this status, validated_provisioners stays empty.
+    pending_proof = 6;
+  }
+
+  // Dependency tier within the provider (1 = simplest, higher = more dependencies).
+  // For Kubernetes: 1=native K8s, 2=Helm-based, 3=operator-dependent, 4=operators/addons.
+  int32 tier = 1;
+  Status status = 2;
+  // Human-readable explanation when status is deferred or skip.
+  string deferred_reason = 3;
+  // IaC provisioners that have been E2E-validated for this kind.
+  repeated dev.planton.shared.IacProvisioner validated_provisioners = 4;
+  // Per-kind timeout in minutes for a single E2E run.
+  int32 timeout_minutes = 5;
+  // Overrides the provider's default cost class when this kind is more expensive
+  // than typical kinds in the same provider.
+  dev.planton.qa.shared.CostClass cost_class = 6;
+  // Known limitations that affect E2E testing (e.g., "requires 4+ GB RAM").
+  repeated string limitations = 7;
+}

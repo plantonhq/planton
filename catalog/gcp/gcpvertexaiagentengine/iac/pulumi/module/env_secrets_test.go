@@ -63,7 +63,7 @@ func TestAStoredValueBecomesASecretManagerReference_neverAPlainValue(t *testing.
 
 func TestThePlacementGrantsTheAgentsIdentity(t *testing.T) {
 	spec := agentSpec()
-	resource := &gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngine{Metadata: &shared.CloudResourceMetadata{Name: "helper"}, Spec: spec}
+	resource := &gcpvertexaiagentenginev1alpha1.GcpVertexAiAgentEngine{Metadata: &shared.CatalogObjectMetadata{Name: "helper"}, Spec: spec}
 	placement := secretPlacement(&Locals{GcpVertexAiAgentEngine: resource})
 	if got := envsecrets.SecretID(placement, secretVariables(spec)[0]); got != "agentengine_us-central1_helper_OPENAI_API_KEY" {
 		t.Errorf("secret id = %q", got)

@@ -43,15 +43,15 @@ metadata:
   name: identity-and-egress
 spec:
   members:
-    - component: awsvpc
+    - kind_dir: awsvpc
       manifest_path: catalog/aws/aa_eval/suites/identity-and-egress/members/hub-vpc.yaml
-    - component: awssubnet
+    - kind_dir: awssubnet
       manifest_path: catalog/aws/aa_eval/suites/identity-and-egress/members/hub-nat-subnet.yaml
-    - component: awsnatgateway
+    - kind_dir: awsnatgateway
       manifest_path: catalog/aws/aa_eval/suites/identity-and-egress/members/hub-egress-nat.yaml
-    - component: awssubnet
+    - kind_dir: awssubnet
       manifest_path: catalog/aws/aa_eval/suites/identity-and-egress/members/hub-app-subnet.yaml
-    - component: awsiamrole
+    - kind_dir: awsiamrole
       manifest_path: catalog/aws/aa_eval/suites/identity-and-egress/members/hub-ci-deployer.yaml
   scan_scope:
     region: us-west-2

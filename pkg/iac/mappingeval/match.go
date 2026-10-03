@@ -5,7 +5,7 @@ import (
 )
 
 // InstanceMatch pairs one ground-truth instance with the proposal instance
-// that best accounts for the same cloud resources.
+// that best accounts for the same infra components.
 type InstanceMatch struct {
 	GroundTruth *GroundTruthInstance
 	Proposed    *ProposedInstance
@@ -21,7 +21,7 @@ type InstanceMatch struct {
 // at least one shared claim, and each instance matches at most once.
 //
 // Greedy is sufficient here, not a compromise: claims are near-disjoint by
-// construction (a cloud resource has one owner), so the assignment problem
+// construction (an infra component has one owner), so the assignment problem
 // degenerates -- a wrong greedy pick can only happen when instances
 // genuinely share claims, which the grouping axis then reports as the
 // duplicate-claim defect it is.

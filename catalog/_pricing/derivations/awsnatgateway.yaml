@@ -3,9 +3,9 @@
 # estimate generator replays the catalog presets through these rules to
 # emit ../estimates/awsnatgateway.yaml; a server-side estimator evaluates
 # the same rules against live manifests. Prices live in the provider's
-# price book (../pricebook/). Schema: finops/componentcostderivation/v1.
+# price book (../pricebook/). Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsnatgateway
 spec:
@@ -43,7 +43,7 @@ spec:
         - field_path: availability_mode
           op: not_equals
           value: regional
-      text: the attached Elastic IP bills as a public IPv4 address on its own AwsElasticIp component
+      text: the attached Elastic IP bills as a public IPv4 address on its own AwsElasticIp kind
     - applies_when:
         - field_path: availability_mode
           op: not_equals

@@ -26,7 +26,7 @@ func validEnvelope(spec *AwsAppRunnerVpcConnectorSpec) *AwsAppRunnerVpcConnector
 	return &AwsAppRunnerVpcConnector{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsAppRunnerVpcConnector",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-connector"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-connector"},
 		Spec:       spec,
 	}
 }

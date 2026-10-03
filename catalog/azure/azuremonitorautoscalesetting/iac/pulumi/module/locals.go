@@ -5,7 +5,7 @@ import (
 
 	azuremonitorautoscalesettingv1alpha1 "github.com/plantonhq/planton/catalog/azure/azuremonitorautoscalesetting/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -18,11 +18,11 @@ type Locals struct {
 	AzureTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuremonitorautoscalesettingv1alpha1.AzureMonitorAutoscaleSettingStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuremonitorautoscalesettingv1alpha1.AzureMonitorAutoscaleSettingIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureMonitorAutoscaleSetting = stackInput.Target
-	target := stackInput.Target
+	locals.AzureMonitorAutoscaleSetting = iacInput.Target
+	target := iacInput.Target
 
 	// Metadata-derived tags first, then the user's spec tags merged over
 	// them: user tags deliberately win so an org's governance conventions
@@ -31,7 +31,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azuremonitorautoscalesett
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureMonitorAutoscaleSetting.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureMonitorAutoscaleSetting.String()),
 	}
 
 	if target.Metadata.Id != "" {

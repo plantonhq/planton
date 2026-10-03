@@ -1,4 +1,4 @@
-# AwsConfigAggregator — Component Guide
+# AwsConfigAggregator — Kind Guide
 
 Authored operational judgment for the Config aggregation component:
 the design decisions behind the spec's shape, and what to know before

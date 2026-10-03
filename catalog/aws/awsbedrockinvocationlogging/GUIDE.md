@@ -1,4 +1,4 @@
-# AwsBedrockInvocationLogging — Component Guide
+# AwsBedrockInvocationLogging — Kind Guide
 
 Authored operational judgment for the Bedrock invocation-logging
 singleton: the design decisions behind the spec's shape, and what to

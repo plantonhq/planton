@@ -11,9 +11,9 @@
 # generator replays the catalog presets through these rules to emit
 # ../estimates/azurestorageshare.yaml; a server-side estimator evaluates
 # the same rules against live manifests.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: azurestorageshare
 spec:
@@ -83,7 +83,7 @@ spec:
           op: not_equals
           value: NFS
       text: "used capacity bills 0.06 USD/GB-month (transaction-optimized Standard LRS, eastus -- Azure's default tier on standard accounts), and transactions bill 0.015 per 10K writes and lists, 0.0015 per 10K reads and protocol operations -- all following what workloads store and do on the account's meters"
-    - text: "geo-redundant replication, data transfer, and private-endpoint hours bill on the account and networking components, not the share; snapshot-management backup fees are the AzureBackupProtectedFileshare component's"
+    - text: "geo-redundant replication, data transfer, and private-endpoint hours bill on the account and networking kinds, not the share; snapshot-management backup fees are the AzureBackupProtectedFileshare kind's"
   notes:
     - applies_when:
         - field_path: access_tier

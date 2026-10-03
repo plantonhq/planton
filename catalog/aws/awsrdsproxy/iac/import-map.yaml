@@ -1,7 +1,7 @@
 # Where each placeholder in this component's import-ID formats comes
 # from (the formats themselves live in aa_import/catalog.yaml).
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsrdsproxy
 spec:
@@ -12,7 +12,7 @@ spec:
   values:
     - name: db_proxy_name
       derivations:
-        - from_stack_output: proxy_name
+        - from_output: proxy_name
       where_to_find: >-
         RDS console -> Proxies (the name column), or
         `aws rds describe-db-proxies` (DBProxyName).
@@ -24,18 +24,18 @@ spec:
         (DBProxyEndpointName) - the spec.endpoints entry's name.
     - name: target_group_name
       derivations:
-        - from_stack_output: default_target_group_name
+        - from_output: default_target_group_name
       where_to_find: >-
         Always "default" - a proxy has exactly one target group.
     - name: target_type
       derivations:
-        - from_stack_output: target_type
+        - from_output: target_type
       where_to_find: >-
         `aws rds describe-db-proxy-targets --db-proxy-name <name>`
         (Type - RDS_INSTANCE or TRACKED_CLUSTER).
     - name: target_rds_resource_id
       derivations:
-        - from_stack_output: target_rds_resource_id
+        - from_output: target_rds_resource_id
       where_to_find: >-
         `aws rds describe-db-proxy-targets --db-proxy-name <name>`
         (RdsResourceId).

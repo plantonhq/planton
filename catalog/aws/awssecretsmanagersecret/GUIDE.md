@@ -1,4 +1,4 @@
-# AwsSecretsManagerSecret — Component Guide
+# AwsSecretsManagerSecret — Kind Guide
 
 The authored wisdom layer for this component: internal conventions, judgment
 calls, and operational judgment earned while building it. The reference for

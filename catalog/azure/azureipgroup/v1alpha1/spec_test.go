@@ -37,7 +37,7 @@ func validResource() *AzureIpGroup {
 	return &AzureIpGroup{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureIpGroup",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-ipgroup",
 		},
 		Spec: &AzureIpGroupSpec{

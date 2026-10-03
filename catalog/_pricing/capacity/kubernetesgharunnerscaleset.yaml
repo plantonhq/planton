@@ -9,9 +9,9 @@
 # min_runners warm runners holding the declared resources (and, in
 # kubernetes container mode, a work volume each). Everything above the
 # floor scales with the job queue up to max_runners.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesgharunnerscaleset
 spec:

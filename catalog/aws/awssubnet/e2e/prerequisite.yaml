@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awssubnet
+    e2e-catalog-kind: awssubnet
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -40,7 +40,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awssubnet
+    e2e-catalog-kind: awssubnet
   annotations:
     planton.dev/e2e: "true"
   tags:
@@ -64,7 +64,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awssubnet
+    e2e-catalog-kind: awssubnet
   annotations:
     planton.dev/e2e: "true"
   tags:

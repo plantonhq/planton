@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added the AwsCodeBuildProject deployment component (enum 330, id_prefix `awscb`), providing declarative infrastructure management for AWS CodeBuild projects with optional webhook triggers. The component covers the primary CI/CD build use cases: GitHub-triggered CI, Docker image builds, and CodePipeline stages.
+Added the AwsCodeBuildProject catalog kind (enum 330, id_prefix `awscb`), providing declarative infrastructure management for AWS CodeBuild projects with optional webhook triggers. The kind covers the primary CI/CD build use cases: GitHub-triggered CI, Docker image builds, and CodePipeline stages.
 
 ## Problem Statement / Motivation
 
-AWS CodeBuild is a core CI/CD service used by teams building on AWS. Without an Planton component, teams deploying CodeBuild projects alongside other managed infrastructure had to maintain separate Terraform or Pulumi code outside the declarative resource model.
+AWS CodeBuild is a core CI/CD service used by teams building on AWS. Without an Planton kind, teams deploying CodeBuild projects alongside other managed infrastructure had to maintain separate Terraform or Pulumi code outside the declarative resource model.
 
 ### Pain Points
 
@@ -21,9 +21,9 @@ AWS CodeBuild is a core CI/CD service used by teams building on AWS. Without an 
 
 ## Solution / What's New
 
-A complete AwsCodeBuildProject deployment component with full proto API, dual IaC modules (Pulumi + Terraform), comprehensive validation, and production documentation.
+A complete AwsCodeBuildProject catalog kind with full proto API, dual IaC modules (Pulumi + Terraform), comprehensive validation, and production documentation.
 
-### Component Architecture
+### Kind Architecture
 
 ```mermaid
 flowchart TB
@@ -36,7 +36,7 @@ flowchart TB
         VPC[VPC Config]
         WH[Webhook Config]
     end
-    subgraph resources [Cloud Resources]
+    subgraph resources [Infra Components]
         Project[CodeBuild Project]
         Webhook[CodeBuild Webhook]
     end
@@ -63,9 +63,9 @@ flowchart TB
 ### Proto API (4 files, 14 messages)
 
 - `spec.proto` — 14 message types covering source, environment, artifacts, cache, logs, VPC, and webhook
-- `stack_outputs.proto` — 5 outputs: project_arn, project_name, service_role_arn, webhook_url, webhook_payload_url
+- `outputs.proto` — 5 outputs: project_arn, project_name, service_role_arn, webhook_url, webhook_payload_url
 - `api.proto` — KRM wiring with `aws.planton.dev/v1` API version
-- `stack_input.proto` — Stack input with target + provider config
+- `iac_input.proto` — IaC input with target + provider config
 
 ### StringValueOrRef Cross-References (9 fields)
 

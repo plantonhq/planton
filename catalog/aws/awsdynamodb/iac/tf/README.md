@@ -20,7 +20,7 @@ planton tofu apply --manifest ../../e2e/manifest.yaml --auto-approve
 planton tofu destroy --manifest ../../e2e/manifest.yaml --auto-approve
 ```
 
-Credentials are passed via the stack input through the CLI, not in `spec`.
+Credentials are passed via the IaC input through the CLI, not in `spec`.
 
 ## Files
 
@@ -34,7 +34,7 @@ Credentials are passed via the stack input through the CLI, not in `spec`.
   contributor insights (table + per-GSI)
 - `autoscaling.tf` — Application Auto Scaling targets (both modes),
   target-tracking policies, and scheduled adjustments
-- `outputs.tf` — outputs matching `AwsDynamodbStackOutputs`
+- `outputs.tf` — outputs matching `AwsDynamodbOutputs`
 
 ## Outputs
 

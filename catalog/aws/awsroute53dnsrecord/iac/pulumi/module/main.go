@@ -13,14 +13,14 @@ import (
 // (zone, name, type, set_identifier); it is either a STANDARD record
 // (values + ttl) or an ALIAS record (alias_target) — never both
 // (CEL-enforced) — and carries at most one routing policy (a proto oneof).
-func Resources(ctx *pulumi.Context, stackInput *awsroute53dnsrecordv1alpha1.AwsRoute53DnsRecordStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsroute53dnsrecordv1alpha1.AwsRoute53DnsRecordIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 	spec := locals.AwsRoute53DnsRecord.Spec
 
-	// Build the AWS provider from the stack input via the shared builder, which
+	// Build the AWS provider from the IaC input via the shared builder, which
 	// resolves the right credential mechanism (static keys, keyless web
 	// identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

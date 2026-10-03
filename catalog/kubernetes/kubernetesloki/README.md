@@ -5,7 +5,7 @@
 **One resource is ONE Grafana Loki install** — a log-aggregation backend
 that indexes log *labels* and stores compressed chunks in object storage.
 
-Not the right component when:
+Not the right kind when:
 
 - **You need something to SHIP the logs** — Loki stores logs, it does not
   collect them. Deploy a `KubernetesOtelCollector` in daemonset mode (its
@@ -30,7 +30,7 @@ Not the right component when:
 
 The chart's microservices ("Distributed") mode and its transitional
 migration modes are deliberately not modeled — a deployment that needs
-per-component microservices deserves a dedicated operations posture.
+per-kind microservices deserves a dedicated operations posture.
 
 ## Storage
 

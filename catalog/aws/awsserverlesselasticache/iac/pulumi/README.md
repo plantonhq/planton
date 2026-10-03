@@ -5,10 +5,10 @@ Serverless caches.
 
 ## Structure
 
-- `main.go` — Pulumi program entrypoint. Loads stack input and calls the module.
+- `main.go` — Pulumi program entrypoint. Loads IaC input and calls the module.
 - `module/` — Reusable module containing the resource logic.
   - `main.go` — Orchestrates provider creation and resource creation.
-  - `locals.go` — Pre-computes tags and references from stack input.
+  - `locals.go` — Pre-computes tags and references from IaC input.
   - `outputs.go` — Defines output key constants.
   - `serverless_cache.go` — Creates the ElastiCache Serverless cache resource.
 

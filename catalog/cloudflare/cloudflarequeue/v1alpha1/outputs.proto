@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarequeue.v1alpha1;
 
-// CloudflareQueueStackOutputs captures the outputs after deploying a Cloudflare Queue.
-message CloudflareQueueStackOutputs {
+// CloudflareQueueOutputs captures the outputs after deploying a Cloudflare Queue.
+message CloudflareQueueOutputs {
   // The Cloudflare-assigned identifier of the queue. A consumer references this value.
   string queue_id = 1;
 

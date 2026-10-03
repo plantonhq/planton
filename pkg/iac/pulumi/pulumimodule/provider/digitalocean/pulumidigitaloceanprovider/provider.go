@@ -60,7 +60,7 @@ func ProviderResourceName(suffixes []string) string {
 }
 
 // PulumiOutputName produces canonical output names (e.g. "do_vpc_id") to keep
-// stack outputs predictable across modules.
+// outputs predictable across modules.
 func PulumiOutputName(r interface{}, name string, suffixes ...string) string {
 	output := fmt.Sprintf("do_%s", pulumioutput.Name(reflect.TypeOf(r), name))
 	for _, s := range suffixes {

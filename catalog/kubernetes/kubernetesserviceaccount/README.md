@@ -2,7 +2,7 @@
 
 ## Overview
 
-**KubernetesServiceAccount** is a Planton component that creates and manages Kubernetes ServiceAccounts — the in-cluster identity that pods run as. Every pod runs as exactly one ServiceAccount (the namespace's `default` one unless told otherwise), and that identity is the anchor for three distinct concerns:
+**KubernetesServiceAccount** is a catalog kind that creates and manages Kubernetes ServiceAccounts — the in-cluster identity that pods run as. Every pod runs as exactly one ServiceAccount (the namespace's `default` one unless told otherwise), and that identity is the anchor for three distinct concerns:
 
 1. **API authentication (RBAC anchor)** — pods authenticate to the kube-apiserver as the ServiceAccount, and RBAC grants (KubernetesRbac) attach permissions to it. Its fully-qualified RBAC name is `system:serviceaccount:<namespace>:<name>`.
 2. **Registry authentication** — `imagePullSecrets` attach docker-registry credentials that the kubelet presents when pulling images for pods running as this identity, freeing every pod spec from repeating `imagePullSecrets`.
@@ -18,7 +18,7 @@ A dedicated ServiceAccount per workload is the foundation of least-privilege Kub
 
 - **Typed workload identity**: instead of hand-writing `iam.gke.io/gcp-service-account` or `eks.amazonaws.com/role-arn` annotations, you set a typed field per cloud; the module emits the exact annotation the cloud's webhook expects
 - **References, not strings**: the cloud identity handle, image pull secrets, and namespace all accept references to other Planton resources, so a chart can create the namespace, the registry credential, the cloud identity, and the ServiceAccount in one run
-- **RBAC subject exported**: the `system:serviceaccount:<namespace>:<name>` string is a stack output, so cloud trust configuration never re-assembles it by hand
+- **RBAC subject exported**: the `system:serviceaccount:<namespace>:<name>` string is an output, so cloud trust configuration never re-assembles it by hand
 - **Dual IaC support**: Both Pulumi and Terraform implementations with feature parity
 
 ## Cross-Cloud Workload Identity
@@ -55,7 +55,7 @@ Because the namespace and name participate in every federation subject, renaming
 - **`spec.workloadIdentity`**: One of `gke`, `eks`, or `aks` (see above). Omit for ServiceAccounts that never leave the cluster.
 - **`spec.labels`** / **`spec.annotations`**: Merged with standard Planton labels. Cloud workload-identity annotations should be expressed through `workloadIdentity`, not written here.
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -66,7 +66,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Resolve the namespace, image pull secret names, and workload-identity handle (literal values or resolved references)
 2. Translate the selected `workloadIdentity` arm into the exact annotation set that cloud's webhook expects, merged with user annotations

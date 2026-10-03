@@ -32,7 +32,7 @@ func validResource() *AzureDataFactoryDataFlow {
 	return &AzureDataFactoryDataFlow{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureDataFactoryDataFlow",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-adf-data-flow",
 		},
 		Spec: &AzureDataFactoryDataFlowSpec{

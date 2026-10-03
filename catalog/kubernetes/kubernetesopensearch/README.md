@@ -9,13 +9,13 @@ namespaces — but an operator fenced with `watch_namespace` silently
 ignores clusters anywhere else. Deploy the operator first, clusters
 after.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want the operator itself** — installing and configuring the
   OpenSearch Kubernetes Operator is KubernetesOpenSearchOperator; this
   component is one cluster it manages.
 - **You want a managed cloud search service** — use the host cloud
-  provider's managed search kinds; this component is for running
+  provider's managed search kinds; this kind is for running
   OpenSearch ON the Kubernetes cluster itself.
 - **You expect production credentials out of the box** — without a
   custom `security.config`, the bootstrapped admin credentials are the
@@ -65,7 +65,7 @@ throwaway data.
   internal_users.yml and admin credentials — all three secrets are
   typically required), or rotate the admin password through the
   security API immediately after install. Clients read credentials
-  from the Secret named in the stack outputs; no credential ever
+  from the Secret named in the outputs; no credential ever
   appears in this spec unless you bring your own security config.
 
 **Key design points:**
@@ -160,7 +160,7 @@ rides the Service annotations and the keystore.
 | GCS snapshots, declared key | `keystore` + `snapshot_repositories` | `repository-gcs` plugin; the service-account key loaded via the keystore |
 | GCS snapshots, keyless (GKE) | `snapshot_repositories` only | Workload Identity on the nodes |
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

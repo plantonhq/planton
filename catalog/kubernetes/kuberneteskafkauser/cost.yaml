@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: kuberneteskafkauser
 spec:
   billing_model: free
   free_tier: The KafkaUser itself -- a Strimzi custom resource the cluster's user operator reconciles into a client principal, generating credentials into a Secret and applying declared ACLs -- never bills. Identity, authorization, and quota declarations have no metered charge.
-  notes: "No field of this spec buys anything: authentication picks the credential mechanism, authorization.acls grant access, and quotas CAP the user's share of broker throughput and request-handler time -- if anything, quotas bound spend rather than create it. The capacity the user's clients consume bills through the Kafka cluster's brokers and storage (the KubernetesKafka component the user binds to via kafka_cluster) and through the client workloads themselves, each with its own cost profile."
+  notes: "No field of this spec buys anything: authentication picks the credential mechanism, authorization.acls grant access, and quotas CAP the user's share of broker throughput and request-handler time -- if anything, quotas bound spend rather than create it. The capacity the user's clients consume bills through the Kafka cluster's brokers and storage (the KubernetesKafka kind the user binds to via kafka_cluster) and through the client workloads themselves, each with its own cost profile."

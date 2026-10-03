@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added support for deploying and managing the Percona Operator for MySQL on Kubernetes clusters, enabling automated deployment and management of production-ready MySQL databases. Additionally, significantly improved CLI error messaging for unsupported cloud resource kinds, providing clear, actionable guidance when users encounter compatibility issues.
+Added support for deploying and managing the Percona Operator for MySQL on Kubernetes clusters, enabling automated deployment and management of production-ready MySQL databases. Additionally, significantly improved CLI error messaging for unsupported catalog kinds, providing clear, actionable guidance when users encounter compatibility issues.
 
 ## Part 1: Percona Server MySQL Operator
 
@@ -26,7 +26,7 @@ The Percona Server for MySQL Operator provides these capabilities through Kubern
 
 #### 1. PerconaServerMysqlOperator API Resource
 
-New Kubernetes cloud resource kind for deploying the Percona MySQL operator:
+New Kubernetes catalog kind for deploying the Percona MySQL operator:
 
 ```yaml
 apiVersion: kubernetes.planton.dev/v1
@@ -54,9 +54,9 @@ spec:
 - Namespace isolation
 - Helm chart-based installation
 
-#### 2. CloudResourceKind Registration
+#### 2. CatalogKind Registration
 
-Added `PerconaServerMysqlOperator` to the cloud resource kind enum:
+Added `PerconaServerMysqlOperator` to the catalog kind enum:
 
 ```protobuf
 PerconaServerMysqlOperator = 835 [(kind_meta) = {
@@ -106,7 +106,7 @@ The Percona Server for MySQL Operator manages:
 **Key Files**:
 - `main.go` - Main Pulumi program
 - `module/percona_operator.go` - Helm release for operator
-- `module/outputs.go` - Stack outputs
+- `module/outputs.go` - Outputs
 - `module/vars.go` - Configuration variables
 
 **Helm Chart**:
@@ -185,10 +185,10 @@ kubectl get crds | grep percona
 
 ### Motivation
 
-Users encountering unsupported cloud resource kinds (often due to typos or outdated CLI versions) received cryptic error messages:
+Users encountering unsupported catalog kinds (often due to typos or outdated CLI versions) received cryptic error messages:
 
 ```
-failed to load manifest: proto message not found for unspecified cloudResourceKind
+failed to load manifest: proto message not found for unspecified catalogKind
 ```
 
 This provided no context about what went wrong or how to fix it, leading to:
@@ -205,12 +205,12 @@ When users encounter an unsupported resource kind, they now see:
 
 ```
 ╔═══════════════════════════════════════════════════════════════════════════════╗
-║                ⚠️  UNSUPPORTED CLOUD RESOURCE KIND                           ║
+║                ⚠️  UNSUPPORTED CATALOG KIND                           ║
 ╚═══════════════════════════════════════════════════════════════════════════════╝
 
 Resource Kind: PerconaServerMysqlOperators
 
-❌ This cloud resource kind is not recognized.
+❌ This catalog kind is not recognized.
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
                            🔧 HOW TO FIX
@@ -239,7 +239,7 @@ Resource Kind: PerconaServerMysqlOperators
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-💡 TIP: If you're developing a new cloud resource, ensure the proto files
+💡 TIP: If you're developing a new infra component, ensure the proto files
    are compiled and the CLI binary is rebuilt.
 ```
 
@@ -327,7 +327,7 @@ All now use `fmt.Println(err)` to preserve formatting instead of wrapping errors
 ## Breaking Changes
 
 None. Both features are additive:
-- New cloud resource kind (PerconaServerMysqlOperator) is optional
+- New catalog kind (PerconaServerMysqlOperator) is optional
 - Improved error messages are backward compatible
 - Existing workflows continue to work unchanged
 

@@ -4,7 +4,7 @@ Provisions a Cloudflare Tunnel route: it advertises a private IP range (CIDR) as
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Tunnel Route** -- a CIDR advertised through a tunnel within a virtual network
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Cloudflare Tunnel edit access. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Cloudflare Tunnel edit access. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -50,7 +50,7 @@ spec:
 planton apply -f cloudflare-zero-trust-tunnel-route.yaml
 ```
 
-This makes the `10.0.0.0/24` subnet reachable to WARP clients through the `prod-connector` tunnel. A Stack Job tracks the provisioning in real time.
+This makes the `10.0.0.0/24` subnet reachable to WARP clients through the `prod-connector` tunnel. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -86,16 +86,16 @@ These are the most important decisions when configuring a route. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareZeroTrustTunnel** | `tunnelId` | `status.outputs.tunnel_id` |
 | **CloudflareZeroTrustTunnelVirtualNetwork** (optional) | `virtualNetworkId` | `status.outputs.virtual_network_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-This component has no consumable outputs: `status.outputs` carries `route_id` and echoes the advertised `network`, but nothing downstream wires to a route -- WARP clients and other tunnels consume the advertised CIDR through Cloudflare's routing table, not through ValueFromRef.
+This kind has no consumable outputs: `status.outputs` carries `route_id` and echoes the advertised `network`, but nothing downstream wires to a route -- WARP clients and other tunnels consume the advertised CIDR through Cloudflare's routing table, not through ValueFromRef.
 
 ## Common Patterns
 
@@ -107,5 +107,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Zero Trust Tunnel**](/cloud-catalog/cloudflare-zero-trust-tunnel) -- the tunnel that serves this route's network
-- [**Cloudflare Zero Trust Tunnel Virtual Network**](/cloud-catalog/cloudflare-zero-trust-tunnel-virtual-network) -- the routing segment this route belongs to
+- [**Cloudflare Zero Trust Tunnel**](/infra-catalog/cloudflare-zero-trust-tunnel) -- the tunnel that serves this route's network
+- [**Cloudflare Zero Trust Tunnel Virtual Network**](/infra-catalog/cloudflare-zero-trust-tunnel-virtual-network) -- the routing segment this route belongs to

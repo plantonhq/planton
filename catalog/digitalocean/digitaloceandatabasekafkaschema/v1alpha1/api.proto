@@ -16,7 +16,7 @@ message DigitalOceanDatabaseKafkaSchema {
   string kind = 2 [(buf.validate.field).string.const = 'DigitalOceanDatabaseKafkaSchema'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   DigitalOceanDatabaseKafkaSchemaSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,7 +27,7 @@ message DigitalOceanDatabaseKafkaSchema {
 
 // digital-ocean-database-kafka-schema status
 message DigitalOceanDatabaseKafkaSchemaStatus {
-  //stack-outputs
-  //  digital-ocean-database-kafka-schema stack-outputs
-  DigitalOceanDatabaseKafkaSchemaStackOutputs outputs = 1;
+  //outputs
+  //  digital-ocean-database-kafka-schema outputs
+  DigitalOceanDatabaseKafkaSchemaOutputs outputs = 1;
 }

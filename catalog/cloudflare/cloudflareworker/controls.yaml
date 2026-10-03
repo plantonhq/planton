@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: cloudflareworker
 spec:
@@ -42,7 +42,7 @@ spec:
       field_path: kv_namespaces
       evidence:
         type: spec_default
-        reference: The spec's binding families -- kv_namespaces (the cited field; the same holds for r2_buckets, d1_databases, queues, services, durable_objects, hyperdrive_configs, ai, and the rest) -- give the script keyless, platform-issued access to every bound service; no static credential is ever held for a bound resource, and foreign-key references compose the bindings from other catalog components' outputs.
+        reference: The spec's binding families -- kv_namespaces (the cited field; the same holds for r2_buckets, d1_databases, queues, services, durable_objects, hyperdrive_configs, ai, and the rest) -- give the script keyless, platform-issued access to every bound service; no static credential is ever held for a bound resource, and foreign-key references compose the bindings from other catalog kinds' outputs.
       notes: Preset 01-api-with-custom-domain binds KV and D1 keylessly. The secrets list exists for external systems the binding model cannot reach; each value is a managed-secret reference resolved at deploy.
     - control_id: no-legacy-auth
       status: not_applicable

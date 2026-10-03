@@ -7,14 +7,14 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Resources creates an Auth0 Role and sets its permissions from the stack input.
-func Resources(ctx *pulumi.Context, stackInput *auth0rolev1alpha1.Auth0RoleStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+// Resources creates an Auth0 Role and sets its permissions from the IaC input.
+func Resources(ctx *pulumi.Context, iacInput *auth0rolev1alpha1.Auth0RoleIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// Setup Auth0 provider with credentials from provider config.
 	var provider *auth0.Provider
 	var err error
-	providerConfig := stackInput.ProviderConfig
+	providerConfig := iacInput.ProviderConfig
 
 	if providerConfig == nil {
 		// Use default provider (assumes credentials from environment variables).
@@ -46,6 +46,6 @@ func Resources(ctx *pulumi.Context, stackInput *auth0rolev1alpha1.Auth0RoleStack
 		return errors.Wrap(err, "failed to set Auth0 role permissions")
 	}
 
-	// Export stack outputs.
+	// Export outputs.
 	return exportOutputs(ctx, role, locals)
 }

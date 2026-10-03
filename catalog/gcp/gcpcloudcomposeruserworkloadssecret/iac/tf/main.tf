@@ -17,7 +17,7 @@ resource "google_composer_user_workloads_secret" "secret" {
 
   # Values are base64-encoded secret material (the Kubernetes Secret
   # contract). The provider marks the attribute sensitive — plans redact
-  # it — and it is never surfaced in stack outputs.
+  # it — and it is never surfaced in outputs.
   data = var.spec.data
 
   # Client-side destroy behavior: DELETE (default), PREVENT (destroy

@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpnetworkfirewallpolicy
+    e2e-catalog-kind: gcpnetworkfirewallpolicy
   annotations:
     planton.dev/e2e: "true"
     # The target service account is the GcpServiceAccount install profile,

@@ -4,7 +4,7 @@ Deploys an API Gateway usage plan with its API keys — the metering and throttl
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Usage Plan** — covering the named REST API stages, with optional quota over a calendar period and plan-wide throttle ceilings; per-method throttles tighten specific paths within a covered stage
 - **API Key** — one per `apiKeys` entry, created in AWS and attached to the plan in the same apply, so the attachment cannot be forgotten. Key values are secrets and are not exported as outputs
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with API Gateway usage-plan permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with API Gateway usage-plan permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -61,7 +61,7 @@ spec:
 planton apply -f usage-plan.yaml
 ```
 
-This creates a usage plan covering the orders API's `prod` stage with a 1,000-requests-per-day quota and one AWS-generated API key attached — the key value is read from AWS when distributing it, never from stack outputs. A Stack Job tracks the provisioning in real time.
+This creates a usage plan covering the orders API's `prod` stage with a 1,000-requests-per-day quota and one AWS-generated API key attached — the key value is read from AWS when distributing it, never from outputs. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -106,16 +106,16 @@ These are the most important decisions when configuring a usage plan. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsRestApiGateway** | `apiStages[].restApiId` | `status.outputs.rest_api_id` |
 | **AwsRestApiGateway** | `apiStages[].stageName` | `status.outputs.stage_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -137,5 +137,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS REST API Gateway**](/cloud-catalog/aws-rest-api-gateway) — the APIs and stages the plan covers; routes demand keys via `apiKeyRequired`
-- [**AWS REST API Domain**](/cloud-catalog/aws-rest-api-domain) — the custom hostname consumers call the metered stages through
+- [**AWS REST API Gateway**](/infra-catalog/aws-rest-api-gateway) — the APIs and stages the plan covers; routes demand keys via `apiKeyRequired`
+- [**AWS REST API Domain**](/infra-catalog/aws-rest-api-domain) — the custom hostname consumers call the metered stages through

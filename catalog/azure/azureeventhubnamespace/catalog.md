@@ -1,28 +1,28 @@
 # Azure Event Hub Namespace
 
-Deploys an Azure Event Hubs namespace -- the container and billing boundary for high-throughput event streaming. The namespace carries the pricing tier, throughput capacity, network posture, and authentication mode; the streaming entities (event hubs, consumer groups, SAS rules, schema groups, geo-DR pairings) are first-class Cloud Resources that reference it. The namespace name becomes the endpoint `{name}.servicebus.windows.net` and the Kafka bootstrap host on port 9093, so existing Kafka producers and consumers connect without code changes (the Basic tier has no Kafka endpoint).
+Deploys an Azure Event Hubs namespace -- the container and billing boundary for high-throughput event streaming. The namespace carries the pricing tier, throughput capacity, network posture, and authentication mode; the streaming entities (event hubs, consumer groups, SAS rules, schema groups, geo-DR pairings) are first-class Infra Components that reference it. The namespace name becomes the endpoint `{name}.servicebus.windows.net` and the Kafka bootstrap host on port 9093, so existing Kafka producers and consumers connect without code changes (the Basic tier has no Kafka endpoint).
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Event Hubs Namespace** -- a namespace in the specified region and resource group with the chosen SKU tier (Basic, Standard, or Premium), throughput or processing-unit capacity, and optional auto-inflate elastic scaling
 - **Managed Identity** -- created only when the `identity` block is configured; a system-assigned and/or user-assigned Entra identity the namespace authenticates with (capture to Storage, customer-managed keys)
 - **Namespace Firewall** -- created only when the `networkRuleSets` block is configured (Standard/Premium); a default action plus admitted IP ranges, VNet service-endpoint subnets, and the trusted-Microsoft-services bypass
 - **Azure Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically for tracking and governance, merged with any user tags
 
-The event streams themselves are separate Cloud Resources: deploy an **AzureEventHub** per stream against this namespace's outputs, an **AzureEventHubConsumerGroup** per independent reader, and an **AzureEventHubAuthorizationRule** per scoped credential.
+The event streams themselves are separate Infra Components: deploy an **AzureEventHub** per stream against this namespace's outputs, an **AzureEventHubConsumerGroup** per independent reader, and an **AzureEventHubAuthorizationRule** per scoped credential.
 
 ## Before You Deploy
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the Event Hubs namespace will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the Event Hubs namespace will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 - **A globally unique namespace name** -- the name becomes the endpoint `{name}.servicebus.windows.net` (and the Kafka bootstrap host on port 9093) and must be unique across all of Azure.
 
 ## Deploy
@@ -57,7 +57,7 @@ spec:
 planton apply -f eventhub-namespace.yaml
 ```
 
-This creates a Standard-tier namespace starting at 2 throughput units with auto-inflate growing it to at most 10 under load. A Stack Job tracks the provisioning in real time.
+This creates a Standard-tier namespace starting at 2 throughput units with auto-inflate growing it to at most 10 under load. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -90,7 +90,7 @@ These are the most important decisions when configuring an Event Hub namespace. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -99,9 +99,9 @@ These are the most important decisions when configuring an Event Hub namespace. 
 | **AzureUserAssignedIdentity** | `identity.userAssignedIdentityIds` | `status.outputs.identity_id` |
 | **AzureSubnet** | `networkRuleSets.virtualNetworkRules[].subnetId` | `status.outputs.subnet_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -127,17 +127,17 @@ With `localAuthenticationEnabled: false`, the six credential outputs still popul
 
 ## Works With
 
-The namespace is the hub of a satellite family -- each streaming entity deploys as its own Cloud Resource referencing `status.outputs.namespace_id`:
+The namespace is the hub of a satellite family -- each streaming entity deploys as its own Infra Component referencing `status.outputs.namespace_id`:
 
-- [**Azure Event Hub**](/cloud-catalog/azure-event-hub) -- the event stream: partition layout, retention, capture-to-storage
-- [**Azure Event Hub Consumer Group**](/cloud-catalog/azure-event-hub-consumer-group) -- independent read cursors per downstream system
-- [**Azure Event Hub Authorization Rule**](/cloud-catalog/azure-event-hub-authorization-rule) -- least-privilege SAS credentials scoped to the namespace or one hub
-- [**Azure Event Hub Schema Group**](/cloud-catalog/azure-event-hub-schema-group) -- the schema registry
-- [**Azure Event Hub Disaster Recovery Config**](/cloud-catalog/azure-event-hub-disaster-recovery-config) -- the geo-DR alias pairing two namespaces
-- [**Azure Event Hub Cluster**](/cloud-catalog/azure-event-hub-cluster) -- dedicated single-tenant hardware this namespace can be placed on via `dedicatedClusterId`
-- [**Azure Event Hub Namespace Customer Managed Key**](/cloud-catalog/azure-event-hub-namespace-customer-managed-key) -- BYOK encryption for namespaces on a dedicated cluster
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the namespace is created
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- pre-created identities for capture and customer-managed-key compositions
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- subnets admitted through the firewall via the Microsoft.EventHub service endpoint
-- [**Azure Private Endpoint**](/cloud-catalog/azure-private-endpoint) -- VNet-private access when the public endpoint is disabled (subresource `namespace`)
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- Entra data-plane roles (Data Owner/Sender/Receiver) for the keyless posture
+- [**Azure Event Hub**](/infra-catalog/azure-event-hub) -- the event stream: partition layout, retention, capture-to-storage
+- [**Azure Event Hub Consumer Group**](/infra-catalog/azure-event-hub-consumer-group) -- independent read cursors per downstream system
+- [**Azure Event Hub Authorization Rule**](/infra-catalog/azure-event-hub-authorization-rule) -- least-privilege SAS credentials scoped to the namespace or one hub
+- [**Azure Event Hub Schema Group**](/infra-catalog/azure-event-hub-schema-group) -- the schema registry
+- [**Azure Event Hub Disaster Recovery Config**](/infra-catalog/azure-event-hub-disaster-recovery-config) -- the geo-DR alias pairing two namespaces
+- [**Azure Event Hub Cluster**](/infra-catalog/azure-event-hub-cluster) -- dedicated single-tenant hardware this namespace can be placed on via `dedicatedClusterId`
+- [**Azure Event Hub Namespace Customer Managed Key**](/infra-catalog/azure-event-hub-namespace-customer-managed-key) -- BYOK encryption for namespaces on a dedicated cluster
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the namespace is created
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- pre-created identities for capture and customer-managed-key compositions
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- subnets admitted through the firewall via the Microsoft.EventHub service endpoint
+- [**Azure Private Endpoint**](/infra-catalog/azure-private-endpoint) -- VNet-private access when the public endpoint is disabled (subresource `namespace`)
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- Entra data-plane roles (Data Owner/Sender/Receiver) for the keyless posture

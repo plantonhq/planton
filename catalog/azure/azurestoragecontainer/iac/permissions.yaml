@@ -2,9 +2,9 @@
 # provision, update, and destroy this component with the official modules.
 # Every entry is `derived` (static analysis of the module sources, cited in
 # notes) until the live capture lane upgrades it to `proven`. Schema:
-# iac/componentpermissions/v1.
+# iac/catalogkindpermissions/v1.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: azurestoragecontainer
 spec:
@@ -16,4 +16,4 @@ spec:
           - Microsoft.Storage/storageAccounts/blobServices/containers/write
           - Microsoft.Storage/storageAccounts/blobServices/containers/delete
         provenance: derived
-        notes: "Covers azurerm_storage_container / storage.NewContainer -- both modules address the container by the parent account's ARM ID (the control-plane path; the account-name form is the provider's legacy data-plane path, removed in azurerm v5), so create, refresh, in-place metadata and access-type updates, and destroy all ride the account's blobServices/containers child endpoint. The account name in the stack outputs is parsed client-side from the resolved ARM ID -- neither module reads the account. The default_encryption_scope pairing (scope must live on the SAME account) is validated server-side by Azure at create time, not by a module call, so no encryptionScopes read is needed."
+        notes: "Covers azurerm_storage_container / storage.NewContainer -- both modules address the container by the parent account's ARM ID (the control-plane path; the account-name form is the provider's legacy data-plane path, removed in azurerm v5), so create, refresh, in-place metadata and access-type updates, and destroy all ride the account's blobServices/containers child endpoint. The account name in the outputs is parsed client-side from the resolved ARM ID -- neither module reads the account. The default_encryption_scope pairing (scope must live on the SAME account) is validated server-side by Azure at create time, not by a module call, so no encryptionScopes read is needed."

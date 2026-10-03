@@ -27,7 +27,7 @@ func minimalValidTargetGroup() *AwsLbTargetGroup {
 	return &AwsLbTargetGroup{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsLbTargetGroup",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "api",
 		},
 		Spec: &AwsLbTargetGroupSpec{

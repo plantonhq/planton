@@ -1,5 +1,5 @@
-# Stack outputs — identical names and derivations in the Pulumi module
-# (GcpPlantonRunnerStackOutputs).
+# Outputs — identical names and derivations in the Pulumi module
+# (GcpPlantonRunnerOutputs).
 
 output "service_name" {
   description = "The fully qualified Cloud Run service name (projects/{project}/locations/{region}/services/{name})."

@@ -50,7 +50,7 @@
   CRD; Terraform through a hand-authored `kubectl_manifest` twin.
 
 - **Import machinery: `from_address_key_segment`** — a new derivation arm
-  in the component import-map vocabulary for modules that apply
+  in the catalog kind import map vocabulary for modules that apply
   multi-GVK manifest bundles keyed by composed identity: each composed
   import-ID placeholder derives from one `//`-delimited segment of the
   address key (an out-of-range index resolves empty, so the namespace
@@ -71,7 +71,7 @@
 Spec tests for both kinds (every CEL rule accept+reject locked); offline
 `tofu` plan and `pulumi preview` proofs across full-surface AND minimal
 shapes for all four modules with type-fidelity and patch spot-checks;
-secret-coverage, reference, containment, import-map and stack-outputs
+secret-coverage, reference, containment, import-map and outputs
 conformance gates; repo-wide Bazel build; e2e-build/e2e-vet; license
 footers; all presets and scenario manifests CLI-validated. The offline
 gates caught and fixed in-session: three HCL conditional

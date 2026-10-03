@@ -4,7 +4,7 @@ Deploys a standalone Cloudflare health check: a scheduled probe against an origi
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Health Check** — one `cloudflare_healthcheck` on the zone, carrying the probe target, protocol, regions, thresholds, and exactly one of `http_config` or `tcp_config` depending on `type`. The unused block is never sent — both are computed upstream, and sending the wrong one reads back as drift.
 
@@ -55,7 +55,7 @@ spec:
 planton apply -f healthcheck.yaml
 ```
 
-This probes `acme.com/health` over HTTP every 60 seconds (Cloudflare's default interval) and marks the origin unhealthy after one failed probe. A Stack Job tracks the provisioning in real time.
+This probes `acme.com/health` over HTTP every 60 seconds (Cloudflare's default interval) and marks the origin unhealthy after one failed probe. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,15 +95,15 @@ These are the most important decisions when configuring a health check. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** | `zoneId` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -121,6 +121,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) — the zone the check belongs to; its plan gates create
-- [**Cloudflare Load Balancer Monitor**](/cloud-catalog/cloudflare-load-balancer-monitor) — the other health-check family, consumed by load-balancer pools to drive failover
-- [**Cloudflare Notification Policy**](/cloud-catalog/cloudflare-notification-policy) — alerting on the check's healthy/unhealthy transitions
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) — the zone the check belongs to; its plan gates create
+- [**Cloudflare Load Balancer Monitor**](/infra-catalog/cloudflare-load-balancer-monitor) — the other health-check family, consumed by load-balancer pools to drive failover
+- [**Cloudflare Notification Policy**](/infra-catalog/cloudflare-notification-policy) — alerting on the check's healthy/unhealthy transitions

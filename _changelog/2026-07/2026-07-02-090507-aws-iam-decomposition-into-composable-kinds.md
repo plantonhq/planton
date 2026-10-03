@@ -65,7 +65,7 @@ The IAM surface was the shallowest high-value corner of the AWS catalog:
 
 ### Removal
 
-- **`AwsSecretsManager`** deleted (component, catalog docs, enum 214 retired).
+- **`AwsSecretsManager`** deleted (kind, catalog docs, enum 214 retired).
   Planton Config Manager is the single secrets system; no kind referenced it
   as a foreign key and no chart used it.
 

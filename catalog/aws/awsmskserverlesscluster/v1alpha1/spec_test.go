@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -20,7 +20,7 @@ func validMinimalSpec() *AwsMskServerlessCluster {
 	return &AwsMskServerlessCluster{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsMskServerlessCluster",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-msk-serverless",
 		},
 		Spec: &AwsMskServerlessClusterSpec{
@@ -88,13 +88,13 @@ var _ = ginkgo.Describe("AwsMskServerlessClusterSpec Validation Tests", func() {
 			input.Spec.VpcConfigs[0].SubnetIds = []*foreignkeyv1.StringValueOrRef{
 				{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 					ValueFrom: &foreignkeyv1.ValueFromRef{
-						Kind: cloudresourcekind.CloudResourceKind_AwsSubnet,
+						Kind: catalogkind.CatalogKind_AwsSubnet,
 						Name: "private-subnet-a",
 					},
 				}},
 				{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 					ValueFrom: &foreignkeyv1.ValueFromRef{
-						Kind: cloudresourcekind.CloudResourceKind_AwsSubnet,
+						Kind: catalogkind.CatalogKind_AwsSubnet,
 						Name: "private-subnet-b",
 					},
 				}},
@@ -102,7 +102,7 @@ var _ = ginkgo.Describe("AwsMskServerlessClusterSpec Validation Tests", func() {
 			input.Spec.VpcConfigs[0].SecurityGroupIds = []*foreignkeyv1.StringValueOrRef{
 				{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 					ValueFrom: &foreignkeyv1.ValueFromRef{
-						Kind: cloudresourcekind.CloudResourceKind_AwsSecurityGroup,
+						Kind: catalogkind.CatalogKind_AwsSecurityGroup,
 						Name: "broker-sg",
 					},
 				}},

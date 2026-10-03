@@ -39,7 +39,7 @@ func minimalValidPolicy() *AwsIamPolicy {
 	return &AwsIamPolicy{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsIamPolicy",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "s3-read-only",
 		},
 		Spec: &AwsIamPolicySpec{
@@ -83,7 +83,7 @@ var _ = ginkgo.Describe("AwsIamPolicySpec Validation Tests", func() {
 
 			ginkgo.It("should not return a validation error with full metadata set", func() {
 				input := minimalValidPolicy()
-				input.Metadata = &shared.CloudResourceMetadata{
+				input.Metadata = &shared.CatalogObjectMetadata{
 					Name:   "s3-read-only",
 					Org:    "acme-corp",
 					Env:    "production",
@@ -123,7 +123,7 @@ var _ = ginkgo.Describe("AwsIamPolicySpec Validation Tests", func() {
 				input := &AwsIamPolicy{
 					ApiVersion: "aws.planton.dev/v1alpha1",
 					Kind:       "AwsIamPolicy",
-					Metadata:   &shared.CloudResourceMetadata{Name: "s3-read-only"},
+					Metadata:   &shared.CatalogObjectMetadata{Name: "s3-read-only"},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).ToNot(gomega.BeNil())

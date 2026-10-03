@@ -56,7 +56,7 @@ Events live on their own cadence -- created and deleted per launch while the roo
 | `turnstile_action` | string | Override: `log` or `infinite_queue`. |
 | `turnstile_mode` | string | Override: `off`, `invisible`, `visible_non_interactive`, `visible_managed`. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

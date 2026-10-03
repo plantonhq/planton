@@ -100,7 +100,7 @@ planton apply --manifest relationship-tuple.yaml \
 | `name` | string | Yes | Name of the condition (must be defined in the model) |
 | `contextJson` | string | No | Partial context in JSON format |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

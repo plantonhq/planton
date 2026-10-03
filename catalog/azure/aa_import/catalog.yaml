@@ -5,8 +5,8 @@ metadata:
 spec:
   # Import-ID formats per Azure resource type, as documented by the upstream
   # terraform-provider-azurerm / pulumi-azure providers. The FORMAT lives
-  # here (provider knowledge, shared by every component); which concrete
-  # value fills each {placeholder} lives in the owning component's
+  # here (provider knowledge, shared by every kind); which concrete
+  # value fills each {placeholder} lives in the owning kind's
   # import-map.yaml. Correctness is machine-proven by the E2E import
   # round-trip (deploy a fixture, set state aside, re-import blind, plan
   # must show zero diff) -- never by review alone.
@@ -14,8 +14,8 @@ spec:
   # Azure's uniformity is the catalog's shape: azurerm imports virtually
   # every resource by its FULL ARM resource ID (the
   # /subscriptions/{sub}/resourceGroups/{rg}/providers/... path), so most
-  # formats are a single placeholder filled from the component's own id
-  # stack output. Child resources nested under a parent's ARM path (a
+  # formats are a single placeholder filled from the kind's own id
+  # output. Child resources nested under a parent's ARM path (a
   # gateway's NAT rules) compose the parent's id with the child segment.
   resource_types:
     # --- Raw ARM (azapi) ---------------------------------------------------
@@ -24,7 +24,7 @@ spec:
     # suffix (the suffix keeps the import GET on the exact contract the
     # module writes; without it the provider guesses among recent
     # api-versions). Each kind's import-map derives {arm_resource_id} from
-    # its own stack output and pins {azapi_api_version} as a literal -- the
+    # its own output and pins {azapi_api_version} as a literal -- the
     # api-version is a property of the module, not of any one resource.
     #
     # pulumi_type is deliberately empty: azapi kinds' Pulumi modules use
@@ -321,7 +321,7 @@ spec:
       id_format: "{backup_protected_file_share_id}"
       # The item segment carries the share's SYSTEM name
       # (AzureFileShare;{system-name}), not its friendly name -- the id
-      # comes from the stack output or `az backup item list`, never
+      # comes from the output or `az backup item list`, never
       # composed by hand; quoted on import (semicolons).
     # --- Modern Azure Backup (Data Protection) -----------------------------
     - terraform_type: azurerm_data_protection_backup_vault
@@ -481,7 +481,7 @@ spec:
       id_format: "{data_collection_rule_id}"
     # The association's ARM id is scoped under the TARGET machine
     # ({target_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/{name});
-    # the component's id output carries the full scoped id, so one value
+    # the kind's id output carries the full scoped id, so one value
     # serves the import.
     - terraform_type: azurerm_monitor_data_collection_rule_association
       pulumi_type: azure:monitoring/dataCollectionRuleAssociation:DataCollectionRuleAssociation
@@ -495,7 +495,7 @@ spec:
       pulumi_type: azure:eventgrid/domain:Domain
       id_format: "{domain_id}"
     # The domain topic's ARM id is scoped under its parent domain
-    # ({domain_id}/topics/{name}); the component's id output carries the
+    # ({domain_id}/topics/{name}); the kind's id output carries the
     # full scoped id, so one value serves the import.
     - terraform_type: azurerm_eventgrid_domain_topic
       pulumi_type: azure:eventgrid/domainTopic:DomainTopic
@@ -516,7 +516,7 @@ spec:
       pulumi_type: azure:eventgrid/namespace:Namespace
       id_format: "{namespace_id}"
     # The namespace topic's ARM id is scoped under its parent namespace
-    # ({namespace_id}/topics/{name}); the component's id output carries
+    # ({namespace_id}/topics/{name}); the kind's id output carries
     # the full scoped id, so one value serves the import.
     - terraform_type: azurerm_eventgrid_namespace_topic
       pulumi_type: azure:eventgrid/namespaceTopic:NamespaceTopic
@@ -553,7 +553,7 @@ spec:
       pulumi_type: azure:mongocluster/firewallRule:FirewallRule
       id_format: "{mongo_cluster_id}/firewallRules/{firewall_rule_name}"
     # The grant's ARM name IS the principal's object id
-    # ({cluster_id}/users/{object_id}); the component's id output
+    # ({cluster_id}/users/{object_id}); the kind's id output
     # carries the full scoped id, so one value serves the import.
     - terraform_type: azurerm_mongo_cluster_user
       pulumi_type: azure:mongocluster/user:User
@@ -579,7 +579,7 @@ spec:
       pulumi_type: azure:datafactory/managedPrivateEndpoint:ManagedPrivateEndpoint
       id_format: "{data_factory_id}/managedVirtualNetworks/default/managedPrivateEndpoints/{managed_private_endpoint_name}"
     # The pipeline's ARM id is scoped under its parent factory
-    # ({factory_id}/pipelines/{name}); the component's id output carries
+    # ({factory_id}/pipelines/{name}); the kind's id output carries
     # the full scoped id, so one value serves the import.
     - terraform_type: azurerm_data_factory_pipeline
       pulumi_type: azure:datafactory/pipeline:Pipeline

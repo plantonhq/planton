@@ -9,7 +9,7 @@ the chart's `app.kubernetes.io/name: planton-operator` +
 one, naming the remedy in its log. The Helm release name is therefore
 fixed to `planton-operator` and never derives from `metadata.name`.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want a Planton platform** — this component installs and
   configures the MANAGER. The platforms themselves are declared with

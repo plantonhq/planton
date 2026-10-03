@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsrdscluster.v1alpha1;
 
-// AwsRdsClusterStackOutputs captures the observable identifiers and
+// AwsRdsClusterOutputs captures the observable identifiers and
 // connection endpoints of the RDS cluster after deployment.
-message AwsRdsClusterStackOutputs {
+message AwsRdsClusterOutputs {
   // The cluster identifier (e.g. "orders-db").
   string cluster_identifier = 1;
 

@@ -153,7 +153,7 @@ func defaultProfile(
 	// provider proposes a phantom no-op update on every preview against
 	// stored state (measured live 2026-08-27; the value never actually
 	// changes). Ignoring it is safe -- the attribute is never sent, and the
-	// stack output still reads the real value after apply.
+	// output still reads the real value after apply.
 	createdProfile, err := cloudflare.NewZeroTrustDeviceDefaultProfile(
 		ctx,
 		"default_profile",

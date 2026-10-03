@@ -5,10 +5,10 @@ package dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1;
 import "catalog/azure/azurenetworkwatcherflowlog/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureNetworkWatcherFlowLogStackInput is the input to the IaC modules
+// AzureNetworkWatcherFlowLogIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureNetworkWatcherFlowLogStackInput {
+message AzureNetworkWatcherFlowLogIacInput {
   // The Network Watcher flow log resource to deploy.
   AzureNetworkWatcherFlowLog target = 1;
 

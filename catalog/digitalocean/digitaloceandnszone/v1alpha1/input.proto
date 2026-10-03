@@ -5,9 +5,9 @@ package dev.planton.digitalocean.digitaloceandnszone.v1alpha1;
 import "catalog/digitalocean/digitaloceandnszone/v1alpha1/api.proto";
 import "catalog/digitalocean/provider.proto";
 
-//digital-ocean-dns-zone stack-input
-message DigitalOceanDnsZoneStackInput {
-  //target cloud-resource
+//digital-ocean-dns-zone iac-input
+message DigitalOceanDnsZoneIacInput {
+  //target infra-component
   DigitalOceanDnsZone target = 1;
   //provider-config
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;

@@ -27,7 +27,7 @@ func validPolicy(spec *CloudflareZeroTrustGatewayPolicySpec) *CloudflareZeroTrus
 	return &CloudflareZeroTrustGatewayPolicy{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZeroTrustGatewayPolicy",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-gateway-policy",
 		},
 		Spec: spec,

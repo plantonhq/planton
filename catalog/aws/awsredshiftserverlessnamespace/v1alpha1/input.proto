@@ -5,9 +5,9 @@ package dev.planton.aws.awsredshiftserverlessnamespace.v1alpha1;
 import "catalog/aws/awsredshiftserverlessnamespace/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// aws-redshift-serverless-namespace stack-input
-message AwsRedshiftServerlessNamespaceStackInput {
-  // target cloud-resource
+// aws-redshift-serverless-namespace iac-input
+message AwsRedshiftServerlessNamespaceIacInput {
+  // target infra-component
   AwsRedshiftServerlessNamespace target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

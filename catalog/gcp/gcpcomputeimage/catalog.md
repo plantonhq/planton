@@ -4,7 +4,7 @@ Builds a golden VM image once and reuses it everywhere: an operating system hard
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- the Compute Engine API on the project
 - **Image** -- one custom image
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with permission to create images in the project and read the source. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with permission to create images in the project and read the source. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ## Deploy
@@ -46,7 +46,7 @@ spec:
 planton apply -f compute-image.yaml
 ```
 
-This captures the configured build disk as the newest image in the `web-base` family. A Stack Job tracks the provisioning in real time.
+This captures the configured build disk as the newest image in the `web-base` family. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -64,7 +64,7 @@ These are the most important decisions when configuring an image. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -74,9 +74,9 @@ These are the most important decisions when configuring an image. Explore the fu
 | **GcpKmsKey** | `kmsKey`, source encryption keys | `status.outputs.key_id` |
 | **GcpKmsKeyHandle** | `kmsKey` | `status.outputs.kms_key` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -98,6 +98,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Compute Disk**](/cloud-catalog/gcp-compute-disk) -- the build disk and the boot disks
-- [**GCP Compute Instance**](/cloud-catalog/gcp-compute-instance) -- VMs that boot the image
-- [**GCP KMS Key Handle**](/cloud-catalog/gcp-kms-key-handle) -- Autokey encryption
+- [**GCP Compute Disk**](/infra-catalog/gcp-compute-disk) -- the build disk and the boot disks
+- [**GCP Compute Instance**](/infra-catalog/gcp-compute-instance) -- VMs that boot the image
+- [**GCP KMS Key Handle**](/infra-catalog/gcp-kms-key-handle) -- Autokey encryption

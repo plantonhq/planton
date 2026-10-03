@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1;
 import "catalog/kubernetes/kubernetesgatekeeper/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// KubernetesGatekeeperStackInput defines the inputs required for the IaC modules.
-message KubernetesGatekeeperStackInput {
-  // target cloud-resource
+// KubernetesGatekeeperIacInput defines the inputs required for the IaC modules.
+message KubernetesGatekeeperIacInput {
+  // target infra-component
   KubernetesGatekeeper target = 1;
   // provider-config for Kubernetes
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

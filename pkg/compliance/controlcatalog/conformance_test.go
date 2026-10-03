@@ -9,11 +9,11 @@ import (
 	"testing"
 
 	controlcatalogv1 "github.com/plantonhq/planton/compliance/controlcatalog/v1"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // controlIDPattern is the stable, OSCAL-compatible id shape: lowercase
-// dashed tokens ("enc-at-rest"). Ids are referenced by every component
+// dashed tokens ("enc-at-rest"). Ids are referenced by every kind
 // profile and crosswalk, so the shape is enforced at the source.
 var controlIDPattern = regexp.MustCompile(`^[a-z0-9]+(-[a-z0-9]+)*$`)
 
@@ -98,12 +98,12 @@ func TestControlCatalogConformance(t *testing.T) {
 			// cannot express -- no meaningless values, no duplicates.
 			// (An EMPTY list is the provider-neutral statement and is
 			// always legal.)
-			seenProviders := map[cloudresourcekind.CloudResourceProvider]bool{}
+			seenProviders := map[catalogkind.CatalogProvider]bool{}
 			for _, provider := range crosswalk.GetSpec().GetProviders() {
 				switch provider {
-				case cloudresourcekind.CloudResourceProvider_cloud_resource_provider_unspecified:
+				case catalogkind.CatalogProvider_catalog_provider_unspecified:
 					t.Error("providers lists the unspecified value -- provider-neutral is stated by an EMPTY list, never by unspecified")
-				case cloudresourcekind.CloudResourceProvider__test:
+				case catalogkind.CatalogProvider__test:
 					t.Error("providers lists the synthetic _test provider, which must never reach a user-facing surface")
 				}
 				if seenProviders[provider] {

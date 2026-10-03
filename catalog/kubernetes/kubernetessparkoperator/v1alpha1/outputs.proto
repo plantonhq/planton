@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetessparkoperator.v1alpha1;
 
-//spark-operator-kubernetes stack outputs
-message KubernetesSparkOperatorStackOutputs {
+//spark-operator-kubernetes outputs
+message KubernetesSparkOperatorOutputs {
   //namespace the operator runs in.
   string namespace = 1;
 

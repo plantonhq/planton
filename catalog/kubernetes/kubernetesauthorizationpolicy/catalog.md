@@ -4,7 +4,7 @@ Defines an Istio AuthorizationPolicy: a namespaced resource that enforces reques
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **An AuthorizationPolicy** -- a namespaced Istio policy that applies an action (Allow, Deny, Audit, or Custom) to the requests matched by its rules, scoped to selected workloads or to the whole namespace.
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking.
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -60,11 +60,11 @@ spec:
 planton apply -f authorization-policy.yaml
 ```
 
-This allows only the `frontend` service account to call `GET`/`POST` on `/api/*` of the `api` workloads in `prod-apps`; everything else to those workloads is denied. A Stack Job tracks the provisioning in real time.
+This allows only the `frontend` service account to call `GET`/`POST` on `/api/*` of the `api` workloads in `prod-apps`; everything else to those workloads is denied. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire the namespace to a resource managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, wire the namespace to a resource managed by another Infra Component:
 
 ```yaml
 spec:
@@ -96,15 +96,15 @@ These are the most important decisions when configuring an authorization policy.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|-----------------------|
@@ -121,8 +121,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Istio Base CRDs**](/cloud-catalog/kubernetes-istio-base-crds) -- the CRD prerequisite; the policy kind must exist before this resource can be applied.
-- [**Istio**](/cloud-catalog/kubernetes-istio) -- the control plane that enforces the policy; nothing is enforced where istiod is not active.
-- [**Istio Request Authentication**](/cloud-catalog/kubernetes-request-authentication) -- validates JWTs so rules can match `requestPrincipals` and JWT-claim conditions.
-- [**Istio Peer Authentication**](/cloud-catalog/kubernetes-peer-authentication) -- enforces mTLS so rules can match peer `principals` and `namespaces`.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the placement target the policy is registered in.
+- [**Istio Base CRDs**](/infra-catalog/kubernetes-istio-base-crds) -- the CRD prerequisite; the policy kind must exist before this resource can be applied.
+- [**Istio**](/infra-catalog/kubernetes-istio) -- the control plane that enforces the policy; nothing is enforced where istiod is not active.
+- [**Istio Request Authentication**](/infra-catalog/kubernetes-request-authentication) -- validates JWTs so rules can match `requestPrincipals` and JWT-claim conditions.
+- [**Istio Peer Authentication**](/infra-catalog/kubernetes-peer-authentication) -- enforces mTLS so rules can match peer `principals` and `namespaces`.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the placement target the policy is registered in.

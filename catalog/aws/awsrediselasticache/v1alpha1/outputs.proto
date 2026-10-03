@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awsrediselasticache.v1alpha1;
 
-// AwsRedisElasticacheStackOutputs captures observable identifiers and endpoints
+// AwsRedisElasticacheOutputs captures observable identifiers and endpoints
 // from a provisioned ElastiCache Redis/Valkey replication group. These outputs
 // are used by downstream resources to wire dependencies via StringValueOrRef.
-message AwsRedisElasticacheStackOutputs {
+message AwsRedisElasticacheOutputs {
   // The identifier of the replication group. Used in AWS CLI/API calls and
   // as a reference in other ElastiCache operations.
   string replication_group_id = 1;

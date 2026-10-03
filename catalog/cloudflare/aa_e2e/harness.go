@@ -36,7 +36,7 @@ type Harness struct {
 	// mu guards deployedOutputs, written by VerifyDeployed and read by
 	// VerifyDestroyed.
 	mu sync.Mutex
-	// deployedOutputs stores each component's full string-ified stack
+	// deployedOutputs stores each kind's full string-ified stack
 	// outputs rather than a single ID: Cloudflare identities are compound
 	// (zone_id + the resource's own id), and VerifyDestroyed receives no
 	// outputs of its own.
@@ -74,26 +74,26 @@ func (h *Harness) Setup(ctx context.Context) error {
 }
 
 // Teardown is a no-op for Cloudflare (no test infrastructure to destroy;
-// resource cleanup is the DESTROY phase's job, verified per component).
+// resource cleanup is the DESTROY phase's job, verified per kind).
 func (h *Harness) Teardown(ctx context.Context) error {
 	return nil
 }
 
 // VerifyDeployed checks that the deployed Cloudflare resource exists via the
 // REST API. The full output map is stored for VerifyDestroyed.
-func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs map[string]interface{}) error {
-	v, err := verify.GetVerifier(component)
+func (h *Harness) VerifyDeployed(ctx context.Context, kindDir string, outputs map[string]interface{}) error {
+	v, err := verify.GetVerifier(kindDir)
 	if err != nil {
 		return err
 	}
 
 	stringOutputs := stringifyOutputs(outputs)
 	if stringOutputs[v.IDOutputKey()] == "" {
-		return errors.Errorf("no %q found in outputs for %s", v.IDOutputKey(), component)
+		return errors.Errorf("no %q found in outputs for %s", v.IDOutputKey(), kindDir)
 	}
 
 	h.mu.Lock()
-	h.deployedOutputs[componentKey(ctx, component)] = stringOutputs
+	h.deployedOutputs[kindKey(ctx, kindDir)] = stringOutputs
 	h.mu.Unlock()
 
 	return v.VerifyExists(ctx, h.client, stringOutputs)
@@ -101,24 +101,24 @@ func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs 
 
 // VerifyDestroyed confirms that the previously deployed Cloudflare resource
 // no longer exists.
-func (h *Harness) VerifyDestroyed(ctx context.Context, component string) error {
-	v, err := verify.GetVerifier(component)
+func (h *Harness) VerifyDestroyed(ctx context.Context, kindDir string) error {
+	v, err := verify.GetVerifier(kindDir)
 	if err != nil {
 		return err
 	}
 
 	h.mu.Lock()
-	stringOutputs := h.deployedOutputs[componentKey(ctx, component)]
+	stringOutputs := h.deployedOutputs[kindKey(ctx, kindDir)]
 	h.mu.Unlock()
 
 	if stringOutputs == nil {
-		return errors.Errorf("no stored outputs for %s -- VerifyDeployed may not have run", component)
+		return errors.Errorf("no stored outputs for %s -- VerifyDeployed may not have run", kindDir)
 	}
 
 	return v.VerifyAbsent(ctx, h.client, stringOutputs)
 }
 
-// stringifyOutputs flattens raw stack outputs to strings, which is what the
+// stringifyOutputs flattens raw outputs to strings, which is what the
 // path-template verifiers consume.
 func stringifyOutputs(outputs map[string]interface{}) map[string]string {
 	result := make(map[string]string, len(outputs))
@@ -135,12 +135,12 @@ func stringifyOutputs(outputs map[string]interface{}) map[string]string {
 	return result
 }
 
-// componentKey creates a unique lookup key combining the manifest path (from
-// context) and component name, so concurrent tests for the same component
+// kindKey creates a unique lookup key combining the manifest path (from
+// context) and kind name, so concurrent tests for the same kind
 // type don't collide.
-func componentKey(ctx context.Context, component string) string {
+func kindKey(ctx context.Context, kindDir string) string {
 	if mp, ok := ctx.Value(provider.ManifestPathKey{}).(string); ok && mp != "" {
-		return mp + "::" + component
+		return mp + "::" + kindDir
 	}
-	return component
+	return kindDir
 }

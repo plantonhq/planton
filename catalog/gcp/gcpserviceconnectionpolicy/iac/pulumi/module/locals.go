@@ -5,7 +5,7 @@ import (
 
 	gcpserviceconnectionpolicyv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpserviceconnectionpolicy/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -26,9 +26,9 @@ type Locals struct {
 	PolicyName string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpserviceconnectionpolicyv1alpha1.GcpServiceConnectionPolicyStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpserviceconnectionpolicyv1alpha1.GcpServiceConnectionPolicyIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpServiceConnectionPolicy = stackInput.Target
+	locals.GcpServiceConnectionPolicy = iacInput.Target
 
 	locals.PolicyName = locals.GcpServiceConnectionPolicy.Spec.PolicyName
 	if locals.PolicyName == "" {
@@ -43,7 +43,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpserviceconnectionpolicyv
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = locals.PolicyName
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpServiceConnectionPolicy.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpServiceConnectionPolicy.String())
 
 	if locals.GcpServiceConnectionPolicy.Metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = locals.GcpServiceConnectionPolicy.Metadata.Org

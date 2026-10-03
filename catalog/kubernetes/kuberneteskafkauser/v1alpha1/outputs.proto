@@ -3,12 +3,12 @@ syntax = "proto3";
 package dev.planton.kubernetes.kuberneteskafkauser.v1alpha1;
 
 /**
- * **KubernetesKafkaUserStackOutputs** — the handles a declared Kafka
+ * **KubernetesKafkaUserOutputs** — the handles a declared Kafka
  * user exports for composition. Workloads mount or env-reference the
  * credentials Secret; the bootstrap endpoint comes from the
  * KubernetesKafka resource's own outputs.
  */
-message KubernetesKafkaUserStackOutputs {
+message KubernetesKafkaUserOutputs {
   // Namespace the KafkaUser resource lives in (the Kafka cluster's
   // namespace).
   string namespace = 1;

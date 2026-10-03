@@ -1,4 +1,4 @@
-// Package discovery scans the planton repository to find testable components
+// Package discovery scans the planton repository to find testable kinds
 // and their associated IaC modules and test manifests.
 package discovery
 
@@ -8,19 +8,19 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 )
 
-// Component represents a discovered Planton component that can be E2E tested.
-type Component struct {
-	// Name is the component name in lowercase (e.g., "kubernetesnamespace").
+// Kind represents a discovered Planton kind that can be E2E tested.
+type Kind struct {
+	// Name is the kind name in lowercase (e.g., "kubernetesnamespace").
 	Name string
 
 	// Provider is the cloud provider (e.g., "kubernetes", "aws", "gcp").
 	Provider string
 
-	// ManifestPath is the absolute path to the component's base test manifest
-	// (e2e/manifest.yaml at the component root).
+	// ManifestPath is the absolute path to the kind's base test manifest
+	// (e2e/manifest.yaml at the kind root).
 	ManifestPath string
 
 	// PulumiDir is the absolute path to iac/pulumi/ (empty if not present).
@@ -30,12 +30,12 @@ type Component struct {
 	TerraformDir string
 }
 
-// DiscoverComponents scans the catalog tree to find all components
+// DiscoverKinds scans the catalog tree to find all kinds
 // that have an e2e/manifest.yaml file (meaning they're testable).
-func DiscoverComponents(repoRoot string) ([]Component, error) {
+func DiscoverKinds(repoRoot string) ([]Kind, error) {
 	catalogDir := filepath.Join(repoRoot, "catalog")
 
-	var components []Component
+	var kindDirs []Kind
 
 	providerDirs, err := os.ReadDir(catalogDir)
 	if err != nil {
@@ -49,35 +49,35 @@ func DiscoverComponents(repoRoot string) ([]Component, error) {
 		providerName := providerEntry.Name()
 		providerPath := filepath.Join(catalogDir, providerName)
 
-		componentDirs, err := os.ReadDir(providerPath)
+		kindEntries, err := os.ReadDir(providerPath)
 		if err != nil {
 			continue
 		}
 
-		for _, componentEntry := range componentDirs {
-			if !componentEntry.IsDir() {
+		for _, kindEntry := range kindEntries {
+			if !kindEntry.IsDir() {
 				continue
 			}
-			componentName := componentEntry.Name()
+			kindName := kindEntry.Name()
 
 			// A directory that does not resolve to a registered kind is not
-			// a component (e.g. a provider's aa_e2e/ folder) — skip it,
+			// a kind (e.g. a provider's aa_e2e/ folder) — skip it,
 			// exactly as a directory without a test manifest is skipped.
-			if _, err := crkreflect.ComponentVersionDir(componentName); err != nil {
+			if _, err := catalogkindreflect.KindVersionDir(kindName); err != nil {
 				continue
 			}
 
-			// The living component sits at the component root:
+			// The living kind sits at the kind root:
 			// iac/ modules beside the e2e/ assets, no version segment.
-			iacBase := filepath.Join(providerPath, componentName, "iac")
-			manifestPath := filepath.Join(providerPath, componentName, "e2e", "manifest.yaml")
+			iacBase := filepath.Join(providerPath, kindName, "iac")
+			manifestPath := filepath.Join(providerPath, kindName, "e2e", "manifest.yaml")
 
 			if _, err := os.Stat(manifestPath); err != nil {
 				continue
 			}
 
-			comp := Component{
-				Name:         componentName,
+			comp := Kind{
+				Name:         kindName,
 				Provider:     providerName,
 				ManifestPath: manifestPath,
 			}
@@ -92,21 +92,21 @@ func DiscoverComponents(repoRoot string) ([]Component, error) {
 				comp.TerraformDir = tfDir
 			}
 
-			components = append(components, comp)
+			kindDirs = append(kindDirs, comp)
 		}
 	}
 
-	return components, nil
+	return kindDirs, nil
 }
 
-// DiscoverByProvider filters discovered components to a single provider.
-func DiscoverByProvider(repoRoot, providerName string) ([]Component, error) {
-	all, err := DiscoverComponents(repoRoot)
+// DiscoverByProvider filters discovered kinds to a single provider.
+func DiscoverByProvider(repoRoot, providerName string) ([]Kind, error) {
+	all, err := DiscoverKinds(repoRoot)
 	if err != nil {
 		return nil, err
 	}
 
-	var filtered []Component
+	var filtered []Kind
 	for _, c := range all {
 		if strings.EqualFold(c.Provider, providerName) {
 			filtered = append(filtered, c)
@@ -115,22 +115,22 @@ func DiscoverByProvider(repoRoot, providerName string) ([]Component, error) {
 	return filtered, nil
 }
 
-// DiscoverByName finds a single component by name (case-insensitive).
-func DiscoverByName(repoRoot, componentName string) (*Component, error) {
-	all, err := DiscoverComponents(repoRoot)
+// DiscoverByName finds a single kind by name (case-insensitive).
+func DiscoverByName(repoRoot, kindName string) (*Kind, error) {
+	all, err := DiscoverKinds(repoRoot)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, c := range all {
-		if strings.EqualFold(c.Name, componentName) {
+		if strings.EqualFold(c.Name, kindName) {
 			return &c, nil
 		}
 	}
-	return nil, errors.Errorf("component %q not found", componentName)
+	return nil, errors.Errorf("kind %q not found", kindName)
 }
 
-// TestScenario represents one test manifest for a component under e2e/testdata/.
+// TestScenario represents one test manifest for a kind under e2e/testdata/.
 type TestScenario struct {
 	// Name is the scenario name derived from the filename (e.g., "minimal", "with-hpa").
 	Name string
@@ -138,19 +138,19 @@ type TestScenario struct {
 	// ManifestPath is the absolute path to the test manifest YAML.
 	ManifestPath string
 
-	// Component is the component name (e.g., "kubernetesnamespace").
-	Component string
+	// Kind is the kind name (e.g., "kubernetesnamespace").
+	Kind string
 
 	// Provider is the provider name (e.g., "kubernetes").
 	Provider string
 }
 
-// ModuleDir returns a component's IaC module directory for the given engine
-// ("pulumi" or "terraform"). Modules live at the component root — the path is
-// fully derivable from provider and component; the registry check only guards
+// ModuleDir returns a kind's IaC module directory for the given engine
+// ("pulumi" or "terraform"). Modules live at the kind root — the path is
+// fully derivable from provider and kind; the registry check only guards
 // against unregistered names.
-func ModuleDir(repoRoot, provider, component, engine string) (string, error) {
-	if _, err := crkreflect.ComponentVersionDir(component); err != nil {
+func ModuleDir(repoRoot, provider, kindDir, engine string) (string, error) {
+	if _, err := catalogkindreflect.KindVersionDir(kindDir); err != nil {
 		return "", err
 	}
 	var engineDir string
@@ -162,7 +162,7 @@ func ModuleDir(repoRoot, provider, component, engine string) (string, error) {
 	default:
 		return "", errors.Errorf("unsupported engine %q: want pulumi or terraform", engine)
 	}
-	return filepath.Join(repoRoot, "catalog", provider, component, "iac", engineDir), nil
+	return filepath.Join(repoRoot, "catalog", provider, kindDir, "iac", engineDir), nil
 }
 
 // SecondActAnnotation marks a manifest in e2e/scenarios/ that is NOT a
@@ -187,13 +187,13 @@ func isSecondActManifest(path string) bool {
 	return strings.Contains(string(data), SecondActAnnotation+":")
 }
 
-// DiscoverTestScenarios scans the component's colocated e2e/scenarios/ directory for YAML manifests.
-// Path: catalog/{provider}/{component}/e2e/scenarios/
-func DiscoverTestScenarios(repoRoot, provider, component string) ([]TestScenario, error) {
-	if _, err := crkreflect.ComponentVersionDir(component); err != nil {
+// DiscoverTestScenarios scans the kind's colocated e2e/scenarios/ directory for YAML manifests.
+// Path: catalog/{provider}/{kind}/e2e/scenarios/
+func DiscoverTestScenarios(repoRoot, provider, kindDir string) ([]TestScenario, error) {
+	if _, err := catalogkindreflect.KindVersionDir(kindDir); err != nil {
 		return nil, err
 	}
-	scenarioDir := filepath.Join(repoRoot, "catalog", provider, component, "e2e", "scenarios")
+	scenarioDir := filepath.Join(repoRoot, "catalog", provider, kindDir, "e2e", "scenarios")
 
 	entries, err := os.ReadDir(scenarioDir)
 	if err != nil {
@@ -221,7 +221,7 @@ func DiscoverTestScenarios(repoRoot, provider, component string) ([]TestScenario
 		scenarios = append(scenarios, TestScenario{
 			Name:         scenarioName,
 			ManifestPath: filepath.Join(scenarioDir, name),
-			Component:    component,
+			Kind:         kindDir,
 			Provider:     provider,
 		})
 	}
@@ -229,7 +229,7 @@ func DiscoverTestScenarios(repoRoot, provider, component string) ([]TestScenario
 	return scenarios, nil
 }
 
-// DiscoverAllTestScenarios scans all components under a provider for colocated e2e/ directories.
+// DiscoverAllTestScenarios scans all kinds under a provider for colocated e2e/ directories.
 func DiscoverAllTestScenarios(repoRoot, provider string) (map[string][]TestScenario, error) {
 	providerDir := filepath.Join(repoRoot, "catalog", provider)
 
@@ -246,13 +246,13 @@ func DiscoverAllTestScenarios(repoRoot, provider string) (map[string][]TestScena
 		if !entry.IsDir() {
 			continue
 		}
-		component := entry.Name()
-		scenarios, err := DiscoverTestScenarios(repoRoot, provider, component)
+		kindDir := entry.Name()
+		scenarios, err := DiscoverTestScenarios(repoRoot, provider, kindDir)
 		if err != nil {
 			return nil, err
 		}
 		if len(scenarios) > 0 {
-			result[component] = scenarios
+			result[kindDir] = scenarios
 		}
 	}
 

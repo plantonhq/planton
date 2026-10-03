@@ -8,7 +8,7 @@ This Pulumi module creates and manages a Kubernetes `networking/v1` Ingress. It 
 
 ```
 iac/pulumi/
-├── main.go          # Entrypoint: loads stack input, calls module
+├── main.go          # Entrypoint: loads IaC input, calls module
 ├── Pulumi.yaml      # Pulumi project configuration
 ├── Makefile         # Make targets for preview/up/down/refresh
 └── module/
@@ -20,7 +20,7 @@ iac/pulumi/
 
 ## How It Works
 
-1. **Stack Input Loading**: The entrypoint loads `KubernetesIngressStackInput` from Pulumi config
+1. **IaC Input Loading**: The entrypoint loads `KubernetesIngressIacInput` from Pulumi config
 2. **Locals Initialization**: `locals.go` computes:
    - Standard Planton labels merged with user labels (identity keys cannot be overridden)
    - User annotations (controller-specific behavior: rewrites, cert-manager issuers, ...)
@@ -28,7 +28,7 @@ iac/pulumi/
    - The first host declared in the rules, for the `first_host` output
 3. **Provider Creation**: Kubernetes provider is initialized from `provider_config`
 4. **Ingress Creation**: A single `kubernetes.networking.v1.Ingress` is created with the class, default backend, TLS blocks, and rules. `StringValueOrRef` fields (backend `service_name`, TLS `secret_name`) arrive resolved to literal names
-5. **Output Export**: Name, namespace, load-balancer handles, and first host are exported as stack outputs
+5. **Output Export**: Name, namespace, load-balancer handles, and first host are exported as outputs
 
 ## Non-Blocking Creation (skipAwait)
 

@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1;
 import "catalog/kubernetes/kuberneteskeycloakoperator/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// KubernetesKeycloakOperatorStackInput defines the inputs required for the Keycloak Operator IaC modules.
-message KubernetesKeycloakOperatorStackInput {
-  // target cloud-resource
+// KubernetesKeycloakOperatorIacInput defines the inputs required for the Keycloak Operator IaC modules.
+message KubernetesKeycloakOperatorIacInput {
+  // target infra-component
   KubernetesKeycloakOperator target = 1;
   // provider-config for Kubernetes
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

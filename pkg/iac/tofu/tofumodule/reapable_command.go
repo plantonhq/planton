@@ -16,7 +16,7 @@ const reapGraceWaitDelay = 10 * time.Second
 // newReapableCommand builds an exec.Cmd bound to ctx whose ENTIRE process group is
 // terminated when ctx is cancelled.
 //
-// Why this exists: a stack job that is cancelled/superseded (e.g. an undeploy
+// Why this exists: an infra job that is cancelled/superseded (e.g. an undeploy
 // supersedes a deploy whose tofu is still polling ACM cert validation) must not
 // leave an orphaned tofu behind. On the local backend that orphan keeps holding
 // the state flock and wedges the next operation; on remote backends it holds the

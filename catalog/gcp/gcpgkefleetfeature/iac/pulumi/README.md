@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for a GKE fleet feature from t
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `feature` |
-| `module/locals.go` | Stack input, attribution labels, the label merge |
+| `module/locals.go` | IaC input, attribution labels, the label merge |
 | `module/feature.go` | The feature-to-API table, the feature, the spec and member-default builders, the per-cluster entries, the outputs |
 | `module/outputs.go` | Output key constant (`name`) |
 

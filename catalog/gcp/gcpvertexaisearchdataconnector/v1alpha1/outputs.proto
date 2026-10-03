@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpvertexaisearchdataconnector.v1alpha1;
 
-// GcpVertexAiSearchDataConnectorStackOutputs captures what the connector
+// GcpVertexAiSearchDataConnectorOutputs captures what the connector
 // and the collection it created resolved to.
-message GcpVertexAiSearchDataConnectorStackOutputs {
+message GcpVertexAiSearchDataConnectorOutputs {
   // Full resource name of the connector:
   // projects/{project}/locations/{location}/collections/{collection_id}/dataConnector.
   string name = 1;

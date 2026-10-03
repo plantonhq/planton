@@ -38,7 +38,7 @@ flowchart LR
 - `planton tofu apply --manifest <file> --auto-approve` from an empty directory: downloads the published module and runs (previously exit 1, silent). `planton init --manifest <file> --stack ... --backend-url file://...`: reaches Pulumi (previously exit 1, silent).
 - `planton apply -f <flagger manifest>` with only `KUBECONFIG` set, provisioner `tofu`: namespace, three kept CRDs stamped `1.44.0`, release Available; `planton destroy` removed the workload and kept the CRDs. The same through `pulumi` (13 resources; the same CRDs re-adopted).
 - With neither `KUBECONFIG` nor `~/.kube/config`: the three-part refusal names both places and the two remedies, before OpenTofu starts; no footer about engine output.
-- `go test` for `cmd/planton/root`, `internal/cli/...`, `pkg/failure`, `pkg/kubernetes/kubeconfig`, `pkg/kubernetes/helmcrds`, `pkg/iac/stackinput/providerenvvars`, `pkg/iac/tofu/tofumodule`, `pkg/iac/pulumi/pulumistack`, `pkg/infrachart`, `e2e/framework/runner`; `bazel build` of every changed target and `//:planton`; the `KubernetesHelmRelease` Terraform lane on Kind with the harness forwarding removed.
+- `go test` for `cmd/planton/root`, `internal/cli/...`, `pkg/failure`, `pkg/kubernetes/kubeconfig`, `pkg/kubernetes/helmcrds`, `pkg/iac/iacinput/providerenvvars`, `pkg/iac/tofu/tofumodule`, `pkg/iac/pulumi/pulumistack`, `pkg/infrachart`, `e2e/framework/runner`; `bazel build` of every changed target and `//:planton`; the `KubernetesHelmRelease` Terraform lane on Kind with the harness forwarding removed.
 
 ## What comes next
 

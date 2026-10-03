@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azuredatafactory.v1alpha1;
 
-// **AzureDataFactoryStackOutputs** captures the outputs from
+// **AzureDataFactoryOutputs** captures the outputs from
 // provisioning an Azure Data Factory.
-message AzureDataFactoryStackOutputs {
+message AzureDataFactoryOutputs {
   // The factory's Azure Resource Manager ID -- the target an
   // AzureDataFactoryPipeline's data_factory_id references.
   string data_factory_id = 1;

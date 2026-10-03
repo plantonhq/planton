@@ -1,5 +1,5 @@
 # Estimate model: the authored capacity footprints of this cluster-capacity
-# component's presets. A hand model instead of a capacity derivation because
+# kind's presets. A hand model instead of a capacity derivation because
 # the spec's HPA semantics switch the instance multiplier: when
 # server.autoscaling or repo_server.autoscaling is enabled the `replicas`
 # field is IGNORED (the module renders the HPA and drops replicas -- the HPA
@@ -7,11 +7,11 @@
 # resources, not replicas x resources. The derivation grammar cannot express
 # a conditional instance count, and a mechanical "replicas x ..." basis
 # understates any preset that autoscales above 1 -- so each preset's
-# footprint is stated by hand at its true floor. Cluster-capacity components
+# footprint is stated by hand at its true floor. Cluster-capacity kinds
 # carry no priced lines -- the dollar value of the reservation is the target
-# cluster's node economics. Schema: finops/componentcostestimatemodel/v1.
+# cluster's node economics. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: kubernetesargocd
 spec:
@@ -19,7 +19,7 @@ spec:
   # and this chart ships no default requests or limits, so their manifests
   # state no reservation -- they are honestly omitted (the same shape the
   # generator produces for a no-reservation preset), with the situation
-  # disclosed in the component's cost profile.
+  # disclosed in the kind's cost profile.
   presets:
     - preset: 03-scaled-platform
       capacity_footprint:
@@ -31,6 +31,6 @@ spec:
         - the server and repo server scale on HPAs -- this footprint states their min_replicas floors (2 each); runtime scaling can reach 5 server and 6 repo-server replicas, each new replica adding its full declared resources
         - the redis.ha arm replaces the bundled Redis pod with the redis-ha subchart -- a Sentinel cluster of 3 Redis replicas plus HAProxy pods at chart-default sizing this spec does not model, with a REQUIRED anti-affinity needing 3+ schedulable worker nodes
         - the ApplicationSet controller, notifications controller and Dex run unsized at chart defaults -- the chart ships no default requests or limits, so those pods schedule unbounded and reserve nothing
-        - "helm_values merges LAST over the typed rendering and can override modeled values, including per-component resources and replicas -- this footprint describes the spec's declaration"
+        - "helm_values merges LAST over the typed rendering and can override modeled values, including per-kind resources and replicas -- this footprint describes the spec's declaration"
         - the dollar value of this capacity is the target cluster's node economics
       notes: controller replicas are SHARDS across target clusters, not load-balanced copies -- this preset runs one, sized for the whole reconciliation load.

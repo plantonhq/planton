@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"github.com/plantonhq/planton/internal/cli/ui/validateoutputs"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/outputs"
 	"github.com/spf13/cobra"
 )
@@ -37,7 +37,7 @@ Dry-run validation (when --sample-outputs is provided):
 }
 
 func init() {
-	ValidateOutputs.Flags().String("kind", "", "CloudResourceKind name (e.g., AwsVpc, Auth0ResourceServer)")
+	ValidateOutputs.Flags().String("kind", "", "CatalogKind name (e.g., AwsVpc, Auth0ResourceServer)")
 	ValidateOutputs.Flags().String("module-dir", "", "Path to the IaC module directory containing overrides")
 	ValidateOutputs.Flags().String("sample-outputs", "", "Path to a JSON file with sample raw outputs for dry-run")
 
@@ -50,7 +50,7 @@ func validateOutputsHandler(cmd *cobra.Command, args []string) {
 	moduleDir, _ := cmd.Flags().GetString("module-dir")
 	samplePath, _ := cmd.Flags().GetString("sample-outputs")
 
-	kind := crkreflect.KindFromString(kindName)
+	kind := catalogkindreflect.KindFromString(kindName)
 	if kind == 0 {
 		validateoutputs.RenderUnknownKind(kindName)
 		os.Exit(1)

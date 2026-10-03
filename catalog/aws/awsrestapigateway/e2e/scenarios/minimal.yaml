@@ -9,7 +9,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsrestapigateway
+    e2e-catalog-kind: awsrestapigateway
   annotations:
     planton.dev/e2e: "true"
   tags:

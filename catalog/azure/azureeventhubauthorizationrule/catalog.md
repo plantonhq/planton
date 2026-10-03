@@ -4,7 +4,7 @@ Deploys a shared-access authorization rule for Azure Event Hubs -- a named SAS c
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Authorization Rule** -- namespace-scoped or hub-scoped per which reference the spec carries, with your chosen rights
 - **Two keys and their connection strings** -- primary and secondary, surfaced as sensitive outputs for zero-downtime rotation; hub-scoped connection strings carry EntityPath so clients connect straight to the stream
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -52,7 +52,7 @@ spec:
 planton apply -f auth-rule.yaml
 ```
 
-This creates a send-only SAS rule named `telemetry-producer` scoped to the `telemetry-stream` hub, with its keys and connection strings surfaced as sensitive outputs. A Stack Job tracks the provisioning in real time.
+This creates a send-only SAS rule named `telemetry-producer` scoped to the `telemetry-stream` hub, with its keys and connection strings surfaced as sensitive outputs. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -83,16 +83,16 @@ These are the most important decisions when configuring an authorization rule. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureEventHubNamespace** | `namespaceId` | `status.outputs.namespace_id` |
 | **AzureEventHub** | `eventHubId` | `status.outputs.event_hub_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -112,7 +112,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Event Hub**](/cloud-catalog/azure-event-hub) -- the single-stream scope for application credentials
-- [**Azure Event Hub Namespace**](/cloud-catalog/azure-event-hub-namespace) -- the namespace-wide scope for tooling; its root rule's keys are its own outputs
-- [**Azure Event Hub Consumer Group**](/cloud-catalog/azure-event-hub-consumer-group) -- the cursor a listen-rights holder reads through
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- the keyless alternative: Entra data-plane roles scoped to the hub or namespace
+- [**Azure Event Hub**](/infra-catalog/azure-event-hub) -- the single-stream scope for application credentials
+- [**Azure Event Hub Namespace**](/infra-catalog/azure-event-hub-namespace) -- the namespace-wide scope for tooling; its root rule's keys are its own outputs
+- [**Azure Event Hub Consumer Group**](/infra-catalog/azure-event-hub-consumer-group) -- the cursor a listen-rights holder reads through
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- the keyless alternative: Entra data-plane roles scoped to the hub or namespace

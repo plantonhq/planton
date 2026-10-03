@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: kubernetesmysql
 spec:
@@ -31,4 +31,4 @@ spec:
   estimate_exclusions:
     - the price of reserved CPU, memory, and volume storage is the target cluster's node and storage-class economics, which this catalog cannot know
     - object-store bytes for base backups and PITR binlog uploads grow with database churn and retention
-  notes: "This component creates no cloud SKU of its own -- its cost is the share of the cluster it reserves, realized on the cluster's bill. An honest manifest-time statement is the capacity footprint: instances x (requests + data volume) plus the proxy replicas. The reconciling Percona operator's own controller capacity rides the KubernetesPerconaMysqlOperator component, not this one."
+  notes: "This component creates no cloud SKU of its own -- its cost is the share of the cluster it reserves, realized on the cluster's bill. An honest manifest-time statement is the capacity footprint: instances x (requests + data volume) plus the proxy replicas. The reconciling Percona operator's own controller capacity rides the KubernetesPerconaMysqlOperator kind, not this one."

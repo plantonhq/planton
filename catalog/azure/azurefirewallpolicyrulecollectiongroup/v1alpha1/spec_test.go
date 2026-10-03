@@ -61,7 +61,7 @@ func validResource() *AzureFirewallPolicyRuleCollectionGroup {
 	return &AzureFirewallPolicyRuleCollectionGroup{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureFirewallPolicyRuleCollectionGroup",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-rcg",
 		},
 		Spec: &AzureFirewallPolicyRuleCollectionGroupSpec{

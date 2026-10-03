@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: azurevpngatewayconnection
 spec:
@@ -23,7 +23,7 @@ spec:
       notes: The 02-pinned-ipsec-connection preset pins AES256/SHA256 with DH group 14 and PFS 2048 end to end.
     - control_id: no-public-access
       status: not_applicable
-      notes: The connection is not an endpoint -- it is the binding between a gateway and a branch. The internet-facing termination points are the gateway's instance public IPs, governed on the AzureVpnGateway component.
+      notes: The connection is not an endpoint -- it is the binding between a gateway and a branch. The internet-facing termination points are the gateway's instance public IPs, governed on the AzureVpnGateway kind.
     - control_id: restricted-ingress
       status: enforced_by_default
       evidence:
@@ -80,4 +80,4 @@ spec:
       notes: Neither the vpnConnections API nor this spec offers a deletion-protection flag; Azure resource locks are subscription-side governance outside the manifest. Replacement is cheap by design -- the tunnels renegotiate, the gateway stays.
     - control_id: managed-patching
       status: not_applicable
-      notes: A connection is configuration on the managed gateway -- it has no software surface of its own to patch; the gateway appliance's patching is Microsoft-managed and examined on the AzureVpnGateway component.
+      notes: A connection is configuration on the managed gateway -- it has no software surface of its own to patch; the gateway appliance's patching is Microsoft-managed and examined on the AzureVpnGateway kind.

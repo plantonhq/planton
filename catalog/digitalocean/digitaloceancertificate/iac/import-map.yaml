@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceancertificate
 spec:
@@ -13,7 +13,7 @@ spec:
   values:
     - name: certificate_name
       derivations:
-        - from_stack_output: certificate_id
+        - from_output: certificate_id
       where_to_find: >-
         DigitalOcean control panel -> Settings -> Security -> Certificates
         (the certificate's name), or `doctl compute certificate list` (the

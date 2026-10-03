@@ -4,9 +4,9 @@
 # bring-your-own-manifest escape hatch -- raw YAML applied as written -- so
 # nearly every posture belongs to the MANIFEST AUTHOR's documents, and this
 # profile says so honestly rather than claiming stances the spec cannot
-# enforce. Schema: compliance/componentcontrolprofile/v1.
+# enforce. Schema: compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: kubernetesmanifest
 spec:

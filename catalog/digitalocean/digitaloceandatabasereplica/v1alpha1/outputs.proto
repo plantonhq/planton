@@ -4,7 +4,7 @@ package dev.planton.digitalocean.digitaloceandatabasereplica.v1alpha1;
 
 import "shared/options/options.proto";
 
-// DigitalOceanDatabaseReplicaStackOutputs captures the key outputs after
+// DigitalOceanDatabaseReplicaOutputs captures the key outputs after
 // provisioning a read-only replica of a DigitalOcean database cluster. The
 // primary's cluster id and the replica name are echoed so consumers (and
 // verification tooling) can address the replica -- DigitalOcean's replica
@@ -14,7 +14,7 @@ import "shared/options/options.proto";
 // The connection URIs are assembled by the provisioners from the replica's
 // live connection details and embed credentials, so equality across
 // engines is asserted on host/port, never on the full URI.
-message DigitalOceanDatabaseReplicaStackOutputs {
+message DigitalOceanDatabaseReplicaOutputs {
   // UUID of the replica itself.
   string replica_id = 1;
 

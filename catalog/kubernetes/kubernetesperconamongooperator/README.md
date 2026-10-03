@@ -8,7 +8,7 @@ Percona Operator for MongoDB — the controller that reconciles
 sharded clusters. To get an actual MongoDB database, deploy this first,
 then declare a KubernetesMongodb.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want a MongoDB database** — that is KubernetesMongodb; this
   component is the operator it requires.

@@ -6,7 +6,7 @@
 
 ## Summary
 
-`RunOperation` and `Init` now take a `context.Context` and run the `tofu`/`terraform` child in its own process group, terminating the WHOLE group when the context is cancelled. Previously these used a context-less `exec.Command`, so a caller that cancelled its context (e.g. a cancelled/superseded Temporal stack job in the Planton runner) could not stop the child -- the `tofu` process was orphaned and kept holding the state lock, wedging the next operation on the same state.
+`RunOperation` and `Init` now take a `context.Context` and run the `tofu`/`terraform` child in its own process group, terminating the WHOLE group when the context is cancelled. Previously these used a context-less `exec.Command`, so a caller that cancelled its context (e.g. a cancelled/superseded Temporal infra job in the Planton runner) could not stop the child -- the `tofu` process was orphaned and kept holding the state lock, wedging the next operation on the same state.
 
 ## Problem Statement / Motivation
 
@@ -54,7 +54,7 @@ flowchart LR
 
 ## Impact
 
-- **API change (breaking for direct callers)**: `RunOperation` and `Init` gain a leading `ctx context.Context` parameter. All in-repo callers are updated; downstream consumers (the Planton runner) must pass their operation context. This is the change that lets the Planton control plane reap a cancelled stack job's tofu and unblock undeploys.
+- **API change (breaking for direct callers)**: `RunOperation` and `Init` gain a leading `ctx context.Context` parameter. All in-repo callers are updated; downstream consumers (the Planton runner) must pass their operation context. This is the change that lets the Planton control plane reap a cancelled infra job's tofu and unblock undeploys.
 
 ## Testing Strategy
 
@@ -63,7 +63,7 @@ flowchart LR
 
 ## Related Work
 
-- Consumed by the Planton runner's stack-job cancellation reaping (activity heartbeat + `WAIT_CANCELLATION_COMPLETED`), which together stop a cancelled deploy from wedging a later undeploy on the local backend.
+- Consumed by the Planton runner's infra-job cancellation reaping (activity heartbeat + `WAIT_CANCELLATION_COMPLETED`), which together stop a cancelled deploy from wedging a later undeploy on the local backend.
 
 ---
 

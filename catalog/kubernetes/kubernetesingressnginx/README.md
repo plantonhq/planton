@@ -2,7 +2,7 @@
 
 ## When NOT to Use This
 
-**This component is the controller only — the machinery that answers
+**This kind is the controller only — the machinery that answers
 traffic, not the routing rules.** Routing rules are separate first-class
 resources: create KubernetesIngress objects that reference this controller's
 `ingress_class_name` output. TLS certificates come from cert-manager
@@ -118,7 +118,7 @@ daemon_set`) on such clusters.
 - **`spec.helm_values`**: escape hatch for chart values beyond the typed
   fields — never the primary interface
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

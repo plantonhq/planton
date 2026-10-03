@@ -80,7 +80,7 @@ spec:
 | `saas_client_id` / `saas_client_secret` | OIDC client credentials (SaaS) |
 | `saas_public_key` / `saas_sso_endpoint` / `saas_idp_entity_id` | SAML SSO material |
 
-## Related components
+## Related kinds
 
 - `CloudflareZeroTrustAccessPolicy` — the decisions attached here.
 - `CloudflareZeroTrustAccessGroup` — reusable rule bundles referenced by policies.

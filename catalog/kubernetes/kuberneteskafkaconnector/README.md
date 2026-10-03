@@ -10,7 +10,7 @@ or naming a Connect cluster that does not exist there, is accepted by
 the API server and then silently never reconciled. Set `namespace` to
 the Connect cluster's own namespace.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want the worker fleet itself** — replicas, plugin delivery,
   the Kafka connection: that is KubernetesKafkaConnect; this
@@ -96,7 +96,7 @@ to its cluster, together with the shared namespace.
   for the annotation-triggered offset verbs
 - **`spec.version`**: plugin version pin when workers carry several
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

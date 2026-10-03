@@ -4,7 +4,7 @@ Creates the S3-style credential workloads use against Spaces, DigitalOcean's obj
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Spaces Access Key** -- the access-key/secret-key pair carrying the grant rows you declare; both engines mark the secret sensitive in state
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 - **Buckets (optional)** -- DigitalOceanBucket resources for per-bucket grants; a fullaccess grant names none.
 
@@ -49,7 +49,7 @@ spec:
 planton apply -f do-spaces-key.yaml
 ```
 
-This mints a key pair that can read and write exactly one bucket and touch nothing else in the account; the pair lands in `status.outputs`, with the secret held as a sensitive value. A Stack Job tracks the provisioning in real time.
+This mints a key pair that can read and write exactly one bucket and touch nothing else in the account; the pair lands in `status.outputs`, with the secret held as a sensitive value. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,15 +85,15 @@ These are the most important decisions when configuring a Spaces access key. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **DigitalOceanBucket** (optional, per grant) | `grants[].bucket` | `status.outputs.bucket_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -112,5 +112,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Spaces Bucket**](/cloud-catalog/digital-ocean-bucket) -- the buckets grants scope to; workloads use this key against the bucket's regional Spaces endpoint
-- [**DigitalOcean App Platform App**](/cloud-catalog/digital-ocean-app) -- app services consume the key pair as environment variables for S3-style access to Spaces
+- [**DigitalOcean Spaces Bucket**](/infra-catalog/digital-ocean-bucket) -- the buckets grants scope to; workloads use this key against the bucket's regional Spaces endpoint
+- [**DigitalOcean App Platform App**](/infra-catalog/digital-ocean-app) -- app services consume the key pair as environment variables for S3-style access to Spaces

@@ -1,4 +1,4 @@
 order:
-    - TestCloudResourceKubernetes/workload@dev
+    - TestCatalogKindKubernetes/workload@dev
 derived:
     - KubernetesNamespace/apps@dev

@@ -8,8 +8,8 @@ import (
 	"strings"
 	"testing"
 
-	estimatemodelv1 "github.com/plantonhq/planton/finops/componentcostestimatemodel/v1"
-	costprofilev1 "github.com/plantonhq/planton/finops/componentcostprofile/v1"
+	estimatemodelv1 "github.com/plantonhq/planton/finops/catalogkindcostestimatemodel/v1"
+	costprofilev1 "github.com/plantonhq/planton/finops/catalogkindcostprofile/v1"
 	"github.com/plantonhq/planton/pkg/finops/costprofile"
 )
 
@@ -18,12 +18,12 @@ var decimalPattern = regexp.MustCompile(`^[0-9]+(\.[0-9]+)?$`)
 // TestEstimateModelConformance holds every estimate model to its contract,
 // offline:
 //
-//  1. The document parses strictly, names its component (metadata.name
-//     equals the filename), and the component ships a cost profile -- a
+//  1. The document parses strictly, names its kind (metadata.name
+//     equals the filename), and the kind ships a cost profile -- a
 //     model without a cost anatomy to stand on is unreviewable.
 //  2. Every preset key resolves to an actual preset file, exactly once.
 //  3. Every quantity line names a declared meter (a baseline charge or
-//     cost driver sku_meter in the component's cost.yaml), a price-book
+//     cost driver sku_meter in the kind's cost.yaml), a price-book
 //     entry reference, a plain-decimal quantity, and its quantity_basis
 //     prose -- the audit trail back to the preset's values.
 //  4. Cluster-capacity components state a capacity footprint and no
@@ -39,33 +39,33 @@ func TestEstimateModelConformance(t *testing.T) {
 		t.Skip("catalog source tree not present (bazel sandbox); runs under go test and the lint.catalog-data lane")
 	}
 
-	components, err := Discover(root)
+	kindDirs, err := Discover(root)
 	if err != nil {
 		t.Fatalf("discovering estimate models: %v", err)
 	}
-	if len(components) == 0 {
+	if len(kindDirs) == 0 {
 		t.Skip("no estimate models authored yet")
 	}
 
-	for _, component := range components {
-		component := component
-		t.Run(component, func(t *testing.T) {
-			model, err := Load(root, component)
+	for _, kindDir := range kindDirs {
+		kindDir := kindDir
+		t.Run(kindDir, func(t *testing.T) {
+			model, err := Load(root, kindDir)
 			if err != nil {
 				t.Fatalf("estimate model: %v", err)
 			}
-			if model.GetKind() != "ComponentCostEstimateModel" {
-				t.Fatalf("kind is %q, want ComponentCostEstimateModel", model.GetKind())
+			if model.GetKind() != "CatalogKindCostEstimateModel" {
+				t.Fatalf("kind is %q, want CatalogKindCostEstimateModel", model.GetKind())
 			}
-			if model.GetMetadata().GetName() != component {
-				t.Errorf("metadata.name is %q, want %q (the filename is the component's identity)",
-					model.GetMetadata().GetName(), component)
+			if model.GetMetadata().GetName() != kindDir {
+				t.Errorf("metadata.name is %q, want %q (the filename is the kind's identity)",
+					model.GetMetadata().GetName(), kindDir)
 			}
 
-			provider := componentProvider(t, root, component)
-			profile, err := costprofile.Load(root, provider, component)
+			provider := kindProvider(t, root, kindDir)
+			profile, err := costprofile.Load(root, provider, kindDir)
 			if err != nil {
-				t.Fatalf("the modeled component must ship a cost profile: %v", err)
+				t.Fatalf("the modeled kind must ship a cost profile: %v", err)
 			}
 			meters := declaredMeters(profile)
 			clusterCapacity := profile.GetSpec().GetBillingModel() == costprofilev1.BillingModel_cluster_capacity
@@ -82,7 +82,7 @@ func TestEstimateModelConformance(t *testing.T) {
 				}
 				seen[key] = true
 				t.Run(key, func(t *testing.T) {
-					presetPath := filepath.Join(root, "catalog", provider, component, "presets", key+".yaml")
+					presetPath := filepath.Join(root, "catalog", provider, kindDir, "presets", key+".yaml")
 					if _, err := os.Stat(presetPath); err != nil {
 						t.Fatalf("preset key %q resolves to no preset file (%s)", key, presetPath)
 					}
@@ -107,7 +107,7 @@ func TestEstimateModelConformance(t *testing.T) {
 func checkMonetaryPreset(t *testing.T, preset *estimatemodelv1.PresetEstimateModel, meters map[string]bool) {
 	t.Helper()
 	if preset.GetCapacityFootprint() != nil {
-		t.Error("capacity_footprint is for cluster-capacity components; priced presets carry quantity lines")
+		t.Error("capacity_footprint is for cluster-capacity kinds; priced presets carry quantity lines")
 	}
 	if strings.TrimSpace(preset.GetRegionAssumption()) == "" {
 		t.Error("region_assumption is empty -- list prices vary by region, so an unpinned estimate is not reproducible")
@@ -123,7 +123,7 @@ func checkMonetaryPreset(t *testing.T, preset *estimatemodelv1.PresetEstimateMod
 		if meter == "" {
 			t.Error("quantity line has no sku_meter")
 		} else if !meters[meter] {
-			t.Errorf("sku_meter %q is not declared by the component's cost.yaml (baseline charges and cost drivers) -- a model cannot price an undeclared meter", meter)
+			t.Errorf("sku_meter %q is not declared by the kind's cost.yaml (baseline charges and cost drivers) -- a model cannot price an undeclared meter", meter)
 		}
 		if strings.TrimSpace(line.GetPrice()) == "" {
 			t.Errorf("line %q has no price reference -- name the price-book entry that prices it", meter)
@@ -143,7 +143,7 @@ func checkMonetaryPreset(t *testing.T, preset *estimatemodelv1.PresetEstimateMod
 func checkCapacityPreset(t *testing.T, preset *estimatemodelv1.PresetEstimateModel) {
 	t.Helper()
 	if len(preset.GetQuantityLines()) > 0 {
-		t.Error("cluster-capacity components carry no quantity lines -- their price is the target cluster's economics")
+		t.Error("cluster-capacity kinds carry no quantity lines -- their price is the target cluster's economics")
 	}
 	if preset.GetRegionAssumption() != "" || preset.GetCurrency() != "" || preset.GetHoursPerMonth() != 0 {
 		t.Error("cluster-capacity presets price nothing regional -- drop region_assumption, currency, and hours_per_month")
@@ -162,9 +162,9 @@ func checkCapacityPreset(t *testing.T, preset *estimatemodelv1.PresetEstimateMod
 	}
 }
 
-// declaredMeters collects the sku_meter vocabulary a component's cost
+// declaredMeters collects the sku_meter vocabulary a kind's cost
 // profile declares across baseline charges and cost drivers.
-func declaredMeters(profile *costprofilev1.ComponentCostProfile) map[string]bool {
+func declaredMeters(profile *costprofilev1.CatalogKindCostProfile) map[string]bool {
 	meters := map[string]bool{}
 	for _, charge := range profile.GetSpec().GetBaselineCharges() {
 		meters[strings.TrimSpace(charge.GetSkuMeter())] = true
@@ -175,15 +175,15 @@ func declaredMeters(profile *costprofilev1.ComponentCostProfile) map[string]bool
 	return meters
 }
 
-// componentProvider locates the provider directory a component lives under.
-func componentProvider(t *testing.T, repoRoot, component string) string {
+// kindProvider locates the provider directory a kind lives under.
+func kindProvider(t *testing.T, repoRoot, kindDir string) string {
 	t.Helper()
-	matches, err := filepath.Glob(filepath.Join(repoRoot, "catalog", "*", component))
+	matches, err := filepath.Glob(filepath.Join(repoRoot, "catalog", "*", kindDir))
 	if err != nil || len(matches) == 0 {
-		t.Fatalf("estimate model names component %q, which exists nowhere under catalog/", component)
+		t.Fatalf("estimate model names kind %q, which exists nowhere under catalog/", kindDir)
 	}
 	if len(matches) > 1 {
-		t.Fatalf("component %q exists under multiple providers: %v", component, matches)
+		t.Fatalf("kind %q exists under multiple providers: %v", kindDir, matches)
 	}
 	return filepath.Base(filepath.Dir(matches[0]))
 }

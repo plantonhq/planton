@@ -9,7 +9,7 @@ tags:
   - "kubernetes"
   - "redis"
   - "cache"
-  - "cloud-catalog"
+  - "infra-catalog"
 category: "kubernetes"
 excerpt: "Deploy a persistent Redis instance on any Kubernetes cluster using a single YAML manifest and the Planton CLI."
 ---
@@ -19,13 +19,13 @@ excerpt: "Deploy a persistent Redis instance on any Kubernetes cluster using a s
 This tutorial walks you through deploying a Redis instance on a Kubernetes cluster through Planton. You will write a YAML manifest describing the Redis configuration you want, deploy it with a single CLI command, and verify the outputs you need to connect your applications. By the end, you will have a running Redis instance with persistence, an auto-generated password, and the connection details your services need.
 
 > **Note**: The Planton web console provides a guided creation wizard for Redis
-> and other Cloud Resources. This tutorial uses the CLI/YAML approach for stability
+> and other Infra Components. This tutorial uses the CLI/YAML approach for stability
 > and reproducibility. The console UI evolves frequently — always check it for the
 > latest experience.
 
 ## What You Will Learn
 
-- How Kubernetes Cloud Resources differ from cloud-provider Cloud Resources
+- How Kubernetes Infra Components differ from cloud-provider Infra Components
 - How to write a `KubernetesRedis` manifest that deploys Redis to any connected cluster
 - How to deploy with `planton apply` and monitor progress in real time
 - How to retrieve deployment outputs (service endpoint, password secret) for application use
@@ -38,9 +38,9 @@ This tutorial walks you through deploying a Redis instance on a Kubernetes clust
 - [ ] A Planton organization and at least one environment created
 - [ ] The `planton` CLI installed and authenticated (`planton auth login`)
 
-## What Is a Kubernetes Cloud Resource?
+## What Is a Kubernetes Infra Component?
 
-A Kubernetes Cloud Resource deploys open-source software (like Redis, PostgreSQL, or Kafka) onto an existing Kubernetes cluster using Helm charts, managed through the same `planton apply` workflow as cloud-managed resources. Unlike provider-managed Cloud Resources (like GCP Cloud SQL), these deploy directly into a namespace on your cluster. For more details, see the [Cloud Resources documentation](/docs/infrastructure/cloud-resources).
+A Kubernetes Infra Component deploys open-source software (like Redis, PostgreSQL, or Kafka) onto an existing Kubernetes cluster using Helm charts, managed through the same `planton apply` workflow as cloud-managed resources. Unlike provider-managed Infra Components (like GCP Cloud SQL), these deploy directly into a namespace on your cluster. For more details, see the [Infra Components documentation](/docs/infrastructure/infra-components).
 
 ## Step 1: Write the Redis Manifest
 
@@ -80,7 +80,7 @@ Here is what each section of the spec configures.
 
 ### Namespace
 
-The `namespace` field uses a nested `value` key because it supports two modes: a literal string (shown here) or a reference to another Cloud Resource's outputs using `valueFrom`. For this tutorial, a literal value is all you need.
+The `namespace` field uses a nested `value` key because it supports two modes: a literal string (shown here) or a reference to another Infra Component's outputs using `valueFrom`. For this tutorial, a literal value is all you need.
 
 When `createNamespace` is `true`, Planton creates the namespace if it does not already exist. Set this to `false` if the namespace is managed separately or already exists on your cluster.
 
@@ -124,12 +124,12 @@ planton apply -f redis.yaml
 The CLI prints the deployment job ID immediately. You can check on it later with:
 
 ```bash
-planton follow <stack-job-id>
+planton follow <infra-job-id>
 ```
 
 ## Step 3: Verify the Deployment
 
-After the deployment completes, retrieve the Cloud Resource to see its status and outputs:
+After the deployment completes, retrieve the Infra Component to see its status and outputs:
 
 ```bash
 planton get KubernetesRedis app-cache -o yaml
@@ -150,10 +150,10 @@ The `status.outputs` section contains the values you need to connect your applic
 To list all deployment jobs for this resource:
 
 ```bash
-planton stack-job list <cloud-resource-id>
+planton infra-job list <infra-component-id>
 ```
 
-The cloud resource ID is in the `metadata.id` field of the `planton get` output.
+The infra component ID is in the `metadata.id` field of the `planton get` output.
 
 ## Step 4: Connect to Redis from Your Application
 
@@ -308,7 +308,7 @@ planton apply -f redis-dev.yaml -t
 
 ### Standalone architecture
 
-The current `KubernetesRedis` implementation deploys Redis in standalone mode -- a single master instance. This is appropriate for caching workloads, session stores, and applications that can tolerate brief unavailability during pod restarts. If your use case requires Redis Sentinel (automatic failover with read replicas) or Redis Cluster (data sharding across nodes), consider deploying a self-managed Helm release using the `KubernetesHelmRelease` Cloud Resource type, which gives you full control over the Helm chart values.
+The current `KubernetesRedis` implementation deploys Redis in standalone mode -- a single master instance. This is appropriate for caching workloads, session stores, and applications that can tolerate brief unavailability during pod restarts. If your use case requires Redis Sentinel (automatic failover with read replicas) or Redis Cluster (data sharding across nodes), consider deploying a self-managed Helm release using the `KubernetesHelmRelease` catalog kind, which gives you full control over the Helm chart values.
 
 ### Persistence sizing
 
@@ -330,5 +330,5 @@ The derived resource names (Services, Secrets) use the `metadata.name` as a pref
 Your Redis instance is running on Kubernetes. From here:
 
 - **Connect a backend service** to Redis. If you have not deployed a service yet, see [How to Deploy Your First Service with Zero-Config CI/CD](/tutorials/how-to-deploy-your-first-service-with-zero-config-cicd) -- the environment variable and Secret mounting patterns from Step 4 above apply directly to services deployed through Planton.
-- **Explore other Kubernetes Cloud Resources** in the Cloud Catalog. The same `planton apply` workflow works for PostgreSQL, Kafka, MongoDB, Elasticsearch, and dozens of other open-source tools that can be deployed onto your Kubernetes clusters.
-- **Consider managed alternatives** for production-critical workloads. Planton's Cloud Catalog also includes managed Redis options like GCP Memorystore (`GcpRedisInstance`), AWS ElastiCache (`AwsRedisElasticache`), and AWS Serverless ElastiCache (`AwsServerlessElasticache`). These trade the flexibility of running on your own cluster for fully managed operations, automated patching, and SLA-backed availability.
+- **Explore other Kubernetes Infra Components** in the Infra Catalog. The same `planton apply` workflow works for PostgreSQL, Kafka, MongoDB, Elasticsearch, and dozens of other open-source tools that can be deployed onto your Kubernetes clusters.
+- **Consider managed alternatives** for production-critical workloads. Planton's Infra Catalog also includes managed Redis options like GCP Memorystore (`GcpRedisInstance`), AWS ElastiCache (`AwsRedisElasticache`), and AWS Serverless ElastiCache (`AwsServerlessElasticache`). These trade the flexibility of running on your own cluster for fully managed operations, automated patching, and SLA-backed availability.

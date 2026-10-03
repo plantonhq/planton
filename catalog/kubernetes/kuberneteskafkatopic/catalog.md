@@ -4,7 +4,7 @@ Declares ONE Kafka topic on a Strimzi-managed cluster. The declaration renders a
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **KafkaTopic** -- the Strimzi custom resource declaring the topic (partitions, replication factor, topic-level configuration), labeled `strimzi.io/cluster: <kafka_cluster>`
 - **Kafka topic** (created by the cluster's topic operator, not the module) -- the real topic producers and consumers use, named `topic_name` when set, otherwise this resource's name
@@ -55,7 +55,7 @@ spec:
 planton apply -f kafka-topic.yaml
 ```
 
-This declares a 6-partition, replication-factor-3 event topic retained for 7 days — durable through one broker loss for producers using acks=all. A Stack Job tracks the provisioning in real time.
+This declares a 6-partition, replication-factor-3 event topic retained for 7 days — durable through one broker loss for producers using acks=all. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -97,16 +97,16 @@ These are the most important decisions when configuring the topic. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 | **KubernetesKafka** | `kafkaCluster` | `status.outputs.cluster_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -125,6 +125,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Apache Kafka**](/cloud-catalog/kubernetes-kafka) -- the cluster this topic belongs to; its topic operator does the reconciling, and its outputs carry the bootstrap endpoint clients connect to
-- [**Kafka User**](/cloud-catalog/kubernetes-kafka-user) -- authenticated principals with ACLs on this topic; declared the same way and reconciled by the same cluster's user operator
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) -- producers and consumers; reference this resource's `topic_name` output instead of hardcoding the name (the same wiring applies to StatefulSets and CronJobs)
+- [**Apache Kafka**](/infra-catalog/kubernetes-kafka) -- the cluster this topic belongs to; its topic operator does the reconciling, and its outputs carry the bootstrap endpoint clients connect to
+- [**Kafka User**](/infra-catalog/kubernetes-kafka-user) -- authenticated principals with ACLs on this topic; declared the same way and reconciled by the same cluster's user operator
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- producers and consumers; reference this resource's `topic_name` output instead of hardcoding the name (the same wiring applies to StatefulSets and CronJobs)

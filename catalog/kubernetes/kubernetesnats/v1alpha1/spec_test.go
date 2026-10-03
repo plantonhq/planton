@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/gomega"
 	kubernetes "github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -27,7 +27,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -50,7 +50,7 @@ var _ = ginkgo.Describe("KubernetesNats Validation Tests", func() {
 		input = &KubernetesNats{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesNats",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "messaging",
 			},
 			Spec: &KubernetesNatsSpec{
@@ -65,7 +65,7 @@ var _ = ginkgo.Describe("KubernetesNats Validation Tests", func() {
 		})
 
 		ginkgo.It("namespace as a reference should be valid", func() {
-			input.Spec.Namespace = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "nats", "spec.name")
+			input.Spec.Namespace = valueFrom(catalogkind.CatalogKind_KubernetesNamespace, "nats", "spec.name")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -77,7 +77,7 @@ var _ = ginkgo.Describe("KubernetesNats Validation Tests", func() {
 		ginkgo.It("jetstream sizing with a storage-class reference should be valid", func() {
 			input.Spec.JetStream = &KubernetesNatsJetStream{
 				DiskSize:           strPtr("20Gi"),
-				StorageClass:       valueFrom(cloudresourcekind.CloudResourceKind_KubernetesStorageClass, "fast-ssd", "metadata.name"),
+				StorageClass:       valueFrom(catalogkind.CatalogKind_KubernetesStorageClass, "fast-ssd", "metadata.name"),
 				MaxFileStore:       strPtr("18Gi"),
 				MemoryStoreMaxSize: strPtr("1Gi"),
 			}
@@ -130,7 +130,7 @@ var _ = ginkgo.Describe("KubernetesNats Validation Tests", func() {
 
 		ginkgo.It("tls with a certificate reference should be valid", func() {
 			input.Spec.Tls = &KubernetesNatsTls{
-				SecretName:    valueFrom(cloudresourcekind.CloudResourceKind_KubernetesCertificate, "nats-cert", "status.outputs.secret_name"),
+				SecretName:    valueFrom(catalogkind.CatalogKind_KubernetesCertificate, "nats-cert", "status.outputs.secret_name"),
 				VerifyClients: true,
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())

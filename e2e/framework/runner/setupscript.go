@@ -16,7 +16,7 @@ import (
 
 // SetupScriptAnnotation names a repo-committed bash script the runner
 // executes as the SETUP phase -- after the dependency chain is deployed and
-// the scenario's references are resolved, before the component under test
+// the scenario's references are resolved, before the kind under test
 // deploys. Its value is a repo-root-relative path.
 //
 // The phase exists for DATA-PLANE seeding: assets a scenario needs that no
@@ -34,7 +34,7 @@ import (
 //   - It inherits the process environment (cloud CLI logins, ARM_* exports)
 //     plus E2E_RUN_ID (engine-scoped), E2E_SCENARIO, and E2E_SETUP_OUTPUT
 //     (see below).
-//   - A non-zero exit fails the lane BEFORE the component deploys; the
+//   - A non-zero exit fails the lane BEFORE the kind deploys; the
 //     dependency chain still tears down.
 //   - It must be IDEMPOTENT per lane (an in-lane retry may re-run it) and
 //     must seed ONLY into fixture-owned resources, so DEPENDENCIES-DOWN
@@ -42,7 +42,7 @@ import (
 //     No teardown pair exists by design.
 //
 // Publishing values to the manifest under test: some seeded facts exist only
-// AFTER seeding and are exactly what the component must declare -- the
+// AFTER seeding and are exactly what the kind must declare -- the
 // storage path of a backup the script just took, the id of a snapshot it
 // cut, a name a fixture's controller generated. The script publishes them as
 // `NAME=value` lines (one per line, NAME matching [A-Z][A-Z0-9_]*) into the
@@ -70,7 +70,7 @@ var setupTokenPattern = regexp.MustCompile(`\$\{E2E_SETUP:([A-Z][A-Z0-9_]*)\}`)
 // (keeping the scenario's basename -- verifier dispatch keys off it). The
 // caller resolves the annotation; an empty scriptRel is the caller's bug,
 // not a skip.
-func runSetupScript(tc *provider.ComponentTestContext, scriptRel, engineScopedRunID string) (string, error) {
+func runSetupScript(tc *provider.KindTestContext, scriptRel, engineScopedRunID string) (string, error) {
 	scriptPath := filepath.Join(tc.RepoRoot, scriptRel)
 	if _, err := os.Stat(scriptPath); err != nil {
 		return "", errors.Wrapf(err, "setup script %s (from the %s annotation) is not readable", scriptRel, SetupScriptAnnotation)

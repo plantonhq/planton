@@ -11,13 +11,13 @@ type Locals struct {
 	GcpPubSubSchema   *gcppubsubschemav1alpha1.GcpPubSubSchema
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcppubsubschemav1alpha1.GcpPubSubSchemaStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcppubsubschemav1alpha1.GcpPubSubSchemaIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpPubSubSchema = stackInput.Target
+	locals.GcpPubSubSchema = iacInput.Target
 
 	// The schema resource has no labels surface in the Pub/Sub API — no
 	// platform attribution labels are stamped, identically on both engines.
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

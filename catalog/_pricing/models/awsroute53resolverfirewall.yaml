@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -8,9 +8,9 @@
 # dns_threat_protection (which flips every VPC association onto the
 # Advanced hourly meter) -- conditions and counts the derivation grammar
 # cannot traverse. Each preset's quantities are read and defended by
-# hand. Schema: finops/componentcostestimatemodel/v1.
+# hand. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awsroute53resolverfirewall
 spec:
@@ -39,5 +39,5 @@ spec:
           quantity_basis: both rules match by dns_threat_protection (DGA and DNS_TUNNELING), making this a DNS Firewall Advanced group -- its single app-vpc association bills every hour of the month; a second associated VPC would add another 730 hours
       exclusions:
         - the group owns no domain lists and its threat rules carry no per-query inspection meter in the offer -- but adding any list-based rule later would start the per-domain storage and per-query inspection charges
-        - ALERT matches surface through Resolver Query Logging, a separate resource whose log destinations bill their own components
+        - ALERT matches surface through Resolver Query Logging, a separate resource whose log destinations bill their own kinds
       notes: "The Advanced fee follows the ASSOCIATION, not the rule count: one threat rule or ten, each associated VPC bills the same $0.16/hour (~$116.80 a month). Both rules alert at HIGH confidence -- tightening to LOW/MEDIUM changes detection sensitivity, never the price."

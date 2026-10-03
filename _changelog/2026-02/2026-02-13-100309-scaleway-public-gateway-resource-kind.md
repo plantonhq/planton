@@ -58,16 +58,16 @@ privateNetworkId:
 ### Proto Schemas (4 files)
 
 - `spec.proto` -- ScalewayPublicGatewaySpec with nested `Bastion` and `PatRule` messages
-- `stack_outputs.proto` -- Exports `gateway_id`, `public_ip_address`, `public_ip_id`, `gateway_network_id`
+- `outputs.proto` -- Exports `gateway_id`, `public_ip_address`, `public_ip_id`, `gateway_network_id`
 - `api.proto` -- Standard Planton resource envelope
-- `stack_input.proto` -- Stack input with target and provider config
+- `iac_input.proto` -- IaC input with target and provider config
 
 ### Pulumi Go Module (5 files)
 
 - **`gateway.go`** -- Composite resource creation: IP -> Gateway -> GatewayNetwork -> optional PAT rules
 - **`locals.go`** -- Resolves `StringValueOrRef` for `private_network_id`, builds tag slice
 - **`main.go`** -- Module entry point, creates Scaleway provider, delegates to `gateway()`
-- **`outputs.go`** -- Stack output constant names
+- **`outputs.go`** -- Output constant names
 
 ### Terraform HCL Module (5 files)
 
@@ -79,12 +79,12 @@ privateNetworkId:
 
 ### Documentation (2 files)
 
-- **`README.md`** -- Component overview, bundled resource table, constraints, use cases
+- **`README.md`** -- Kind overview, bundled resource table, constraints, use cases
 - **`examples.md`** -- 6 examples covering minimal NAT, bastion, valueFrom, PAT rules, full Kapsule stack, and email gateway
 
 ## Benefits
 
-- **Single declaration** creates 3+ correctly-wired cloud resources
+- **Single declaration** creates 3+ correctly-wired infra components
 - **Infra-chart ready** -- `StringValueOrRef` on `private_network_id` enables DAG-based composition
 - **Composite pattern established** -- Sets the template for LoadBalancer, Instance, RdbInstance, and other composite Scaleway kinds
 - **Zonal resource handling** -- First resource to use `zone` instead of `region`, extending Planton's Scaleway coverage model

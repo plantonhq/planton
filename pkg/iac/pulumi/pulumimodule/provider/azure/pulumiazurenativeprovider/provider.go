@@ -1,5 +1,5 @@
 // Package pulumiazurenativeprovider is the convergent place where Azure pulumi-azure-native
-// modules build their azurenative.Provider from the stack input's AzureProviderConfig. It mirrors
+// modules build their azurenative.Provider from the IaC input's AzureProviderConfig. It mirrors
 // pulumiazureprovider (the pulumi-azure "classic" builder) so a coding agent can learn both Azure
 // credential-resolution paths from one shape.
 //

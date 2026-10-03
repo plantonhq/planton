@@ -6,9 +6,9 @@
 # catalog presets through these rules to emit
 # ../estimates/azureakscluster.yaml; a server-side estimator evaluates
 # the same rules against live manifests.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: azureakscluster
 spec:

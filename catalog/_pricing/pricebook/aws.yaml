@@ -783,7 +783,7 @@ spec:
       price_source: https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonMWAA/20260420214526/us-east-1/index.json
       retrieved_on: "2026-08-16"
       attributes:
-        component: environment
+        kind: environment
         environment_class: mw1.large
       aws_selector:
         offer_code: AmazonMWAA
@@ -798,7 +798,7 @@ spec:
       price_source: https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonMWAA/20260420214526/us-east-1/index.json
       retrieved_on: "2026-08-16"
       attributes:
-        component: environment
+        kind: environment
         environment_class: mw1.medium
       aws_selector:
         offer_code: AmazonMWAA
@@ -813,7 +813,7 @@ spec:
       price_source: https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonMWAA/20260420214526/us-east-1/index.json
       retrieved_on: "2026-08-16"
       attributes:
-        component: environment
+        kind: environment
         environment_class: mw1.small
       aws_selector:
         offer_code: AmazonMWAA
@@ -828,7 +828,7 @@ spec:
       price_source: https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonMWAA/20260420214526/us-east-1/index.json
       retrieved_on: "2026-08-16"
       attributes:
-        component: scheduler
+        kind: scheduler
         environment_class: mw1.large
       aws_selector:
         offer_code: AmazonMWAA
@@ -843,7 +843,7 @@ spec:
       price_source: https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonMWAA/20260420214526/us-east-1/index.json
       retrieved_on: "2026-08-16"
       attributes:
-        component: scheduler
+        kind: scheduler
         environment_class: mw1.medium
       aws_selector:
         offer_code: AmazonMWAA
@@ -858,7 +858,7 @@ spec:
       price_source: https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonMWAA/20260420214526/us-east-1/index.json
       retrieved_on: "2026-08-16"
       attributes:
-        component: worker
+        kind: worker
         environment_class: mw1.medium
       aws_selector:
         offer_code: AmazonMWAA
@@ -1448,7 +1448,7 @@ spec:
       price_source: https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonSageMaker/20260815025356/us-west-2/index.json
       retrieved_on: "2026-08-16"
       attributes:
-        component: notebook
+        kind: notebook
         instance_type: ml.t3.medium
       aws_selector:
         offer_code: AmazonSageMaker
@@ -1464,7 +1464,7 @@ spec:
       price_source: https://pricing.us-east-1.amazonaws.com/offers/v1.0/aws/AmazonSageMaker/20260815025356/us-west-2/index.json
       retrieved_on: "2026-08-16"
       attributes:
-        component: notebook
+        kind: notebook
         instance_type: ml.g4dn.xlarge
       aws_selector:
         offer_code: AmazonSageMaker

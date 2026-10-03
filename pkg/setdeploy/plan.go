@@ -4,7 +4,7 @@ import (
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
 	"github.com/plantonhq/planton/pkg/iac/tofu/backendconfig"
 	"github.com/plantonhq/planton/pkg/manifestgraph"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // Flags carries the set-wide inputs a caller may legally supply for a whole
@@ -54,7 +54,7 @@ type NodePlan struct {
 
 	// Provider is the cloud provider the kind belongs to, driving the
 	// credential check.
-	Provider cloudresourcekind.CloudResourceProvider
+	Provider catalogkind.CatalogProvider
 
 	// TofuBackend is the node's merged state backend configuration
 	// (tofu/terraform nodes only).

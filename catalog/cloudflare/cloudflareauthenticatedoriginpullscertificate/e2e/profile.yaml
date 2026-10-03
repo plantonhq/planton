@@ -1,5 +1,5 @@
 apiVersion: qa.planton.dev/v1
-kind: ComponentE2EProfile
+kind: CatalogKindE2EProfile
 metadata:
   name: cloudflareauthenticatedoriginpullscertificate
 spec:
@@ -21,7 +21,7 @@ spec:
   # import's only reconcile is a replace -- the round-trip is
   # scenario-skipped with the reason (measured live 2026-08-28; the
   # adoption recipe lives on the import catalog row). Deployment status is
-  # asynchronous and deliberately NOT a stack output (it flips
+  # asynchronous and deliberately NOT an output (it flips
   # pending_deployment -> active on the first refresh and would re-plan
   # forever -- measured live 2026-08-28).
   tier: 1

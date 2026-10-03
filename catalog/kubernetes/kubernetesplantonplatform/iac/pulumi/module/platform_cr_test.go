@@ -30,9 +30,9 @@ func localsFor(spec *kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatform
 	spec.Namespace = literal("planton")
 	spec.CreateNamespace = true
 	spec.Version = "v0.0.62"
-	return initializeLocals(nil, &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformStackInput{
+	return initializeLocals(nil, &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatformIacInput{
 		Target: &kubernetesplantonplatformv1alpha1.KubernetesPlantonPlatform{
-			Metadata: &shared.CloudResourceMetadata{Name: "acme"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "acme"},
 			Spec:     spec,
 		},
 	})

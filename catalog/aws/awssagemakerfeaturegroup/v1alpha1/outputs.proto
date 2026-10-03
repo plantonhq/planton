@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awssagemakerfeaturegroup.v1alpha1;
 
-// AwsSagemakerFeatureGroupStackOutputs captures observable identifiers
+// AwsSagemakerFeatureGroupOutputs captures observable identifiers
 // from a provisioned feature group.
-message AwsSagemakerFeatureGroupStackOutputs {
+message AwsSagemakerFeatureGroupOutputs {
   // The feature group name (the AWS identity ingestion and serving
   // calls use).
   string feature_group_name = 1;

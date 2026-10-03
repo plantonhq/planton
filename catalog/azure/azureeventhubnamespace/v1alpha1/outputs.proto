@@ -4,7 +4,7 @@ package dev.planton.azure.azureeventhubnamespace.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureEventHubNamespaceStackOutputs** captures the outputs of
+// **AzureEventHubNamespaceOutputs** captures the outputs of
 // provisioning an Azure Event Hubs namespace.
 //
 // `namespace_id` is the ARM identity every child kind references
@@ -20,7 +20,7 @@ import "shared/options/options.proto";
 // AzureEventHubAuthorizationRule, or go keyless
 // (local_authentication_enabled false + Entra data-plane roles), which
 // makes these keys unusable.
-message AzureEventHubNamespaceStackOutputs {
+message AzureEventHubNamespaceOutputs {
   // The Azure Resource Manager ID of the namespace.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.EventHub/namespaces/{name}
   //

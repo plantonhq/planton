@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpredisinstance.v1alpha1;
 import "catalog/gcp/gcpredisinstance/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-redis-instance stack-input
-message GcpRedisInstanceStackInput {
-  //target cloud-resource
+//gcp-redis-instance iac-input
+message GcpRedisInstanceIacInput {
+  //target infra-component
   GcpRedisInstance target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

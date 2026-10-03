@@ -5,9 +5,9 @@ package dev.planton.aws.awslaunchtemplate.v1alpha1;
 import "catalog/aws/awslaunchtemplate/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-launch-template stack-input
-message AwsLaunchTemplateStackInput {
-  //target cloud-resource
+//aws-launch-template iac-input
+message AwsLaunchTemplateIacInput {
+  //target infra-component
   AwsLaunchTemplate target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

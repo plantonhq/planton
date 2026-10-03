@@ -16,7 +16,7 @@ message AzureKeyVaultCertificate {
   string kind = 2 [(buf.validate.field).string.const = 'AzureKeyVaultCertificate'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   AzureKeyVaultCertificateSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,7 +27,7 @@ message AzureKeyVaultCertificate {
 
 // azure-key-vault-certificate status
 message AzureKeyVaultCertificateStatus {
-  //stack-outputs
-  //  azure-key-vault-certificate stack-outputs
-  AzureKeyVaultCertificateStackOutputs outputs = 1;
+  //outputs
+  //  azure-key-vault-certificate outputs
+  AzureKeyVaultCertificateOutputs outputs = 1;
 }

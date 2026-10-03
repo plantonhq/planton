@@ -18,12 +18,12 @@ import (
 var indexPattern = regexp.MustCompile(`^(.+)\[(\d+)]$`)
 
 // pulumiSecretMask is the literal placeholder Pulumi substitutes for a
-// secret-marked output when stack outputs are fetched WITHOUT secrets shown
+// secret-marked output when outputs are fetched WITHOUT secrets shown
 // (`pulumi stack output` without --show-secrets). A masked value carries no
 // data to populate from — for a repeated field it arrives on the bare key
 // (no indexes to flatten), so the whole list is unrecoverable at this layer.
 // Every sanctioned reader unmasks (the E2E runner passes --show-secrets; the
-// Automation API's StackOutputs fetches secrets shown), so seeing this value
+// Automation API's Outputs fetches secrets shown), so seeing this value
 // here means a reader regressed — the error names that contract.
 const pulumiSecretMask = "[secret]"
 
@@ -31,7 +31,7 @@ const pulumiSecretMask = "[secret]"
 // key-value pairs. Keys are dot-separated field paths that may include array
 // indices (field[0] or field.0 notation).
 //
-// This is the Go equivalent of Java's StackOutputsMapToProtoLoader.load().
+// This is the Go equivalent of Java's OutputsMapToProtoLoader.load().
 //
 // Unknown fields are logged as warnings and skipped rather than causing errors,
 // because IaC modules may export outputs that have no corresponding proto field.
@@ -55,7 +55,7 @@ func populateMessage(msg proto.Message, outputs map[string]string) error {
 // on the proto message. Handles scalar fields, repeated fields (both primitives
 // and messages), map fields, and nested message fields.
 //
-// The function mirrors Java's StackOutputsMapToProtoLoader.setFieldRecursively()
+// The function mirrors Java's OutputsMapToProtoLoader.setFieldRecursively()
 // with Go-specific protoreflect APIs.
 func setFieldRecursively(
 	msg protoreflect.Message,
@@ -126,7 +126,7 @@ func setFieldRecursively(
 }
 
 // handleRepeatedField handles both repeated primitives (e.g., repeated string)
-// and repeated messages (e.g., repeated SubnetStackOutputs).
+// and repeated messages (e.g., repeated SubnetOutputs).
 //
 // Supports two index notations:
 //   - Bracket: field[0] — index is in the same path segment
@@ -153,7 +153,7 @@ func handleRepeatedField(
 			}
 			if value == pulumiSecretMask {
 				return fmt.Errorf(
-					"repeated field %q arrived as Pulumi's masked %q -- the reader fetched stack outputs without secrets shown, so the list's real values never reached this layer; fix the reader to fetch with secrets (the pulumi CLI's --show-secrets flag, or the Automation API's StackOutputs which unmasks by design)",
+					"repeated field %q arrived as Pulumi's masked %q -- the reader fetched outputs without secrets shown, so the list's real values never reached this layer; fix the reader to fetch with secrets (the pulumi CLI's --show-secrets flag, or the Automation API's Outputs which unmasks by design)",
 					fieldName, pulumiSecretMask)
 			}
 			return fmt.Errorf("repeated field %q: no array index provided", fieldName)

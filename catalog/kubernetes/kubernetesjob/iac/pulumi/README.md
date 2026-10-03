@@ -17,8 +17,8 @@ The module creates the following Kubernetes resources:
 ### Standalone Usage
 
 ```bash
-# Set the stack input (base64 encoded manifest)
-export STACK_INPUT=$(cat manifest.yaml | base64)
+# Set the IaC input (base64 encoded manifest)
+export IAC_INPUT=$(cat manifest.yaml | base64)
 
 # Initialize and deploy
 pulumi stack init dev
@@ -39,9 +39,9 @@ planton pulumi up --manifest job.yaml
 
 | Variable | Description |
 |----------|-------------|
-| `STACK_INPUT` | Base64-encoded KubernetesJobStackInput |
+| `IAC_INPUT` | Base64-encoded KubernetesJobIacInput |
 
-The stack input includes:
+The IaC input includes:
 - `target` - The KubernetesJob resource definition
 - `provider_config` - Kubernetes provider configuration (kubeconfig, context)
 - `kubernetes_namespace` - Resolved namespace name
@@ -69,7 +69,7 @@ pulumi/
 └── module/
     ├── main.go           # Resource orchestrator
     ├── locals.go         # Local variables and configuration
-    ├── outputs.go        # Stack output exports
+    ├── outputs.go        # Output exports
     ├── vars.go           # Output variable names
     ├── namespace.go      # Namespace creation
     ├── secret.go         # Secret management

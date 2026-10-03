@@ -1,5 +1,5 @@
-# Stack outputs — identical names and derivations in the Pulumi module's
-# outputs.go / main.go exports (KubernetesMysqlStackOutputs).
+# Outputs — identical names and derivations in the Pulumi module's
+# outputs.go / main.go exports (KubernetesMysqlOutputs).
 
 output "namespace" {
   description = "Namespace the cluster runs in"

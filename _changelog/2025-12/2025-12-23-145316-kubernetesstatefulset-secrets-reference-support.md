@@ -568,7 +568,7 @@ After making changes, run:
 # 1. Regenerate proto stubs
 make protos
 
-# 2. Run component-specific tests
+# 2. Run kind-specific tests
 go test ./apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/...
 
 # 3. Full build
@@ -591,7 +591,7 @@ make test
 
 When this pattern is adopted, the Planton web console (`planton` repo) will need updates:
 
-### Form Components
+### Form Kinds
 
 1. **Create Form**: Add UI for selecting between `value` and `secretRef`
 2. **Edit Modal**: Support editing both value types
@@ -623,7 +623,7 @@ After `make update-deps` in web console:
 - **GitOps friendly**: Manifests can be safely committed to version control without exposing credentials
 - **Easier rotation**: Password changes only require updating the Kubernetes Secret, not the manifest
 - **Follows proto patterns**: Uses `oneof` pattern consistent with existing `ValueOrRef` in the codebase
-- **Reusable type**: `KubernetesSensitiveValue` is shared across components
+- **Reusable type**: `KubernetesSensitiveValue` is shared across kinds
 - **Backward compatible API structure**: Both Pulumi and Terraform modules handle both value types seamlessly
 
 ## Impact
@@ -634,26 +634,26 @@ After `make update-deps` in web console:
 - Clear documentation with examples for both approaches
 
 ### Developers
-- Pattern established for handling secrets across the Kubernetes provider components
+- Pattern established for handling secrets across the Kubernetes provider kinds
 - All tests updated and passing
 - Reusable `KubernetesSensitiveValue` type for other sensitive fields
 
-## Applying to Other Components
+## Applying to Other Kinds
 
-This same change should be applied to these additional components that have the same `env.secrets` pattern:
+This same change should be applied to these additional kinds that have the same `env.secrets` pattern:
 
-### Components Already Updated
+### Kinds Already Updated
 1. **KubernetesDeployment** - `apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/` (see prior changelog)
 2. **KubernetesStatefulset** - `apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/` (this changelog)
 
-### Components Still Pending
+### Kinds Still Pending
 1. **KubernetesDaemonset** - `apis/dev/planton/provider/kubernetes/kubernetesdaemonset/v1/`
 2. **KubernetesCronjob** - `apis/dev/planton/provider/kubernetes/kubernetescronjob/v1/`
 
-**For each component**:
+**For each kind**:
 1. Check if `spec.proto` has the same `Container.App.Env.Secrets` pattern
 2. Apply the same changes to all files listed in the table above
-3. Run tests for that component
+3. Run tests for that kind
 4. Update examples
 
 ## Related Work

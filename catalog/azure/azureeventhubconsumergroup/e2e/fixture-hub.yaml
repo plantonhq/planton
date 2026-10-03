@@ -9,7 +9,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureeventhub
+    e2e-catalog-kind: azureeventhub
   annotations:
     planton.dev/e2e: "true"
   tags:

@@ -5,10 +5,10 @@ package dev.planton.azure.azurebackupprotectedfileshare.v1alpha1;
 import "catalog/azure/azurebackupprotectedfileshare/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureBackupProtectedFileShareStackInput is the input to the IaC
+// AzureBackupProtectedFileShareIacInput is the input to the IaC
 // modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-message AzureBackupProtectedFileShareStackInput {
+message AzureBackupProtectedFileShareIacInput {
   // The protected file share resource to deploy.
   AzureBackupProtectedFileShare target = 1;
 

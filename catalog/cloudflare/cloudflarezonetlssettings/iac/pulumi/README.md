@@ -5,18 +5,18 @@ Pulumi (Go) IaC module for managing a Cloudflare zone's edge TLS posture — Uni
 ## Architecture
 
 ```
-main.go             — Entrypoint loading the stack input
+main.go             — Entrypoint loading the IaC input
 module/main.go      — Resources(): provider setup, settings, outputs
 module/locals.go    — Locals initialization
 module/tls_settings.go — Singletons + the per-(setting, hostname) override fan-out
-module/outputs.go   — Stack output keys (zone_id)
+module/outputs.go   — output keys (zone_id)
 ```
 
 ## Behavior
 
 An unset spec field is NOT MANAGED: the module never sends it. Universal SSL, Total TLS, auto origin key exchange, and CA hostname associations have no delete at Cloudflare — destroy drops state and abandons the live values. Per-hostname overrides and origin TLS compliance modes have real deletes. Disabling Universal SSL can make proxied hostnames unreachable over HTTPS unless other certificates cover them — only disable it deliberately.
 
-Each hostname row's set attributes become separate `HostnameTlsSetting` resources keyed by (setting id, hostname), and each CA association row manages either the zone's managed-CA list (no certificate id) or one mTLS certificate's hostname list. The module mirrors the Terraform module's contract exactly, including the `zone_id` stack output.
+Each hostname row's set attributes become separate `HostnameTlsSetting` resources keyed by (setting id, hostname), and each CA association row manages either the zone's managed-CA list (no certificate id) or one mTLS certificate's hostname list. The module mirrors the Terraform module's contract exactly, including the `zone_id` output.
 
 ## Outputs
 

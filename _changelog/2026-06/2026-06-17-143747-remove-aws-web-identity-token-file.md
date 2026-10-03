@@ -15,10 +15,10 @@ and has zero consumers, so there is no deployed state to protect against number/
 
 ## Motivation
 
-The file-based token source was added (in the prior change) to let a long-running stack job
+The file-based token source was added (in the prior change) to let a long-running infra job
 refresh credentials by having the pulumi-aws "classic" provider re-read the token file. The
 consuming runner has since adopted a simpler, uniform approach: it **re-mints a fresh inline
-JWT before each pulumi operation**. Because a stack job's pulumi operations (`refresh`,
+JWT before each pulumi operation**. Because an infra job's pulumi operations (`refresh`,
 `update`, ...) each re-run the program and re-exchange the token within a single runner
 process, re-minting per operation removes any dependency on a single token's TTL -- without a
 token ever touching disk.

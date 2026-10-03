@@ -4,7 +4,7 @@ Deploys a Global Accelerator with static anycast IP addresses, configurable list
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Global Accelerator** -- a networking resource with two static anycast IPv4 addresses (or dual-stack) that serve as fixed entry points, with configurable flow log delivery to S3
 - **Listeners** -- one per entry in `listeners`, each accepting traffic on specified port ranges and protocol (TCP or UDP), with optional SOURCE_IP client affinity
@@ -16,13 +16,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **Endpoint resources** -- at least one ALB, NLB, Elastic IP, or EC2 instance to register as a traffic target. Provide the ARN or ID directly or reference another Cloud Resource via ValueFromRef.
-- **An S3 bucket** (optional) for flow log storage when traffic analysis is needed. Provide the bucket name directly or reference an AwsS3Bucket Cloud Resource.
+- **Endpoint resources** -- at least one ALB, NLB, Elastic IP, or EC2 instance to register as a traffic target. Provide the ARN or ID directly or reference another Infra Component via ValueFromRef.
+- **An S3 bucket** (optional) for flow log storage when traffic analysis is needed. Provide the bucket name directly or reference an AwsS3Bucket Infra Component.
 
 ## Deploy
 
@@ -60,7 +60,7 @@ spec:
 planton apply -f global-accelerator.yaml
 ```
 
-This creates a Global Accelerator with a single TCP listener on port 443 routing to one ALB endpoint. Flow logs are disabled, health checks use TCP defaults, and traffic dial is set to 100%. A Stack Job tracks the provisioning in real time.
+This creates a Global Accelerator with a single TCP listener on port 443 routing to one ALB endpoint. Flow logs are disabled, health checks use TCP defaults, and traffic dial is set to 100%. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -97,7 +97,7 @@ These are the most important decisions when configuring a Global Accelerator. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -107,9 +107,9 @@ These are the most important decisions when configuring a Global Accelerator. Ex
 | **AwsElasticIp** (optional) | `listeners[].endpointGroups[].endpoints[].endpointId` | `status.outputs.allocation_id` |
 | **AwsEc2Instance** (optional) | `listeners[].endpointGroups[].endpoints[].endpointId` | `status.outputs.instance_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -133,8 +133,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) -- provides the storage bucket for flow log delivery
-- [**AWS ALB**](/cloud-catalog/aws-alb) -- an Application Load Balancer registered as an endpoint traffic target
-- [**AWS NLB**](/cloud-catalog/aws-nlb) -- a Network Load Balancer registered as an endpoint traffic target
-- [**AWS Elastic IP**](/cloud-catalog/aws-elastic-ip) -- an Elastic IP allocation registered as an endpoint traffic target
-- [**AWS EC2 Instance**](/cloud-catalog/aws-ec2-instance) -- an EC2 instance registered as an endpoint traffic target
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) -- provides the storage bucket for flow log delivery
+- [**AWS ALB**](/infra-catalog/aws-alb) -- an Application Load Balancer registered as an endpoint traffic target
+- [**AWS NLB**](/infra-catalog/aws-nlb) -- a Network Load Balancer registered as an endpoint traffic target
+- [**AWS Elastic IP**](/infra-catalog/aws-elastic-ip) -- an Elastic IP allocation registered as an endpoint traffic target
+- [**AWS EC2 Instance**](/infra-catalog/aws-ec2-instance) -- an EC2 instance registered as an endpoint traffic target

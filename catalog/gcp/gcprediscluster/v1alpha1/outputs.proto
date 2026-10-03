@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcprediscluster.v1alpha1;
 
-// GcpRedisClusterStackOutputs captures the observable values of a
+// GcpRedisClusterOutputs captures the observable values of a
 // Memorystore for Redis Cluster after provisioning.
 //
 // A cluster is reached over Private Service Connect. With psc_configs set,
@@ -10,7 +10,7 @@ package dev.planton.gcp.gcprediscluster.v1alpha1;
 // connect to. Without psc_configs, the three *_service_attachment handles
 // are what a consumer's forwarding rules target, and GcpRedisClusterEndpointSet
 // registers those rules on the cluster.
-message GcpRedisClusterStackOutputs {
+message GcpRedisClusterOutputs {
   // Full resource path of the cluster
   // (projects/{project}/locations/{region}/clusters/{cluster}). The
   // composition key: a SECONDARY's primary_cluster reference and a

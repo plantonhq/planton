@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: cloudflarequeue
+    e2e-catalog-kind: cloudflarequeue
   annotations:
     planton.dev/e2e: "true"
     # The consumer STRUCTURALLY cannot round-trip: the upstream resource

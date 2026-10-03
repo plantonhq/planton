@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package dev.planton.aws.awsroute53zone.v1alpha1;
 
-// AwsRoute53ZoneStackOutputs captures observable identifiers from a
+// AwsRoute53ZoneOutputs captures observable identifiers from a
 // provisioned Route 53 hosted zone.
 //
 // The primary output is `zone_id` — the join key every DNS-composing resource
 // uses: AwsRoute53DnsRecord targets a zone by it, AwsCertManagerCert points
 // DNS validation at it, and AwsAlb/AwsNlb register their alias records
 // through it.
-message AwsRoute53ZoneStackOutputs {
+message AwsRoute53ZoneOutputs {
   // The hosted zone ID (e.g. "Z1D633PJN98FT9"). The identifier used by every
   // resource that composes onto this zone.
   string zone_id = 1;

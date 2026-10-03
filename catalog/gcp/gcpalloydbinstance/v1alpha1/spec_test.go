@@ -47,7 +47,7 @@ var _ = ginkgo.Describe("GcpAlloydbInstanceSpec", func() {
 		return &GcpAlloydbInstance{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpAlloydbInstance",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-read-pool",
 			},
 			Spec: &GcpAlloydbInstanceSpec{

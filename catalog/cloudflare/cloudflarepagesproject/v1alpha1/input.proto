@@ -5,9 +5,9 @@ package dev.planton.cloudflare.cloudflarepagesproject.v1alpha1;
 import "catalog/cloudflare/cloudflarepagesproject/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-//cloudflare-pages-project stack-input
-message CloudflarePagesProjectStackInput {
-  //target cloud-resource
+//cloudflare-pages-project iac-input
+message CloudflarePagesProjectIacInput {
+  //target infra-component
   CloudflarePagesProject target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

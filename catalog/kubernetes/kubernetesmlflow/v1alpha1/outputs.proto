@@ -5,12 +5,12 @@ package dev.planton.kubernetes.kubernetesmlflow.v1alpha1;
 import "catalog/kubernetes/kubernetes.proto";
 
 /**
- * **KubernetesMlflowStackOutputs** — the composition handles a
+ * **KubernetesMlflowOutputs** — the composition handles a
  * deployed MLflow exports. ML clients (`mlflow` SDKs, pipelines,
  * training jobs) point MLFLOW_TRACKING_URI at the tracking endpoint;
  * the admin credential is exported as a Secret handle.
  */
-message KubernetesMlflowStackOutputs {
+message KubernetesMlflowOutputs {
   // Namespace MLflow runs in.
   string namespace = 1;
 

@@ -76,7 +76,7 @@ message CloudflareR2BucketSpec {
 
   // Expose the bucket publicly over Cloudflare's managed `r2.dev` domain. When
   // true, a managed public domain is enabled and its URL is published as the
-  // `public_url` stack output. Custom domains (below) are the production-grade
+  // `public_url` output. Custom domains (below) are the production-grade
   // path; the r2.dev domain is rate-limited and intended for development.
   bool public_access = 4;
 

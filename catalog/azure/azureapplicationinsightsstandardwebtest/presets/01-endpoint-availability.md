@@ -27,7 +27,7 @@ metric alert on the availability metric to get paged on sustained failures.
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<resource-group-name>` | The resource group to create the test in | The resource group's `status.outputs.resource_group_name` |
-| `<application-insights>` | The AzureApplicationInsights component storing results | Your component's Planton resource name |
+| `<application-insights>` | The AzureApplicationInsights kind storing results | Your component's Planton resource name |
 | `https://www.example.com/health` | The URL to monitor | Your public endpoint |
 
 ## Downstream Wiring

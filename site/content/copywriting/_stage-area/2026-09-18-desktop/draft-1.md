@@ -1,6 +1,6 @@
 # Draft 1: the desktop landing and download pages as one record
 
-The two pages under `/desktop` were written on 2026-09-11 and reviewed then; their words are good and mostly stay. What changes is where they live: every sentence moves from a component into `src/data/desktop.ts` beside the chapter or document that backs it, and the pages render the record. This draft is the human-readable record. Sentences already in data (`positioning.ts` desktop block, `desktop-download.ts` platforms and commands, `pricing.ts` seats, `platform-stats.ts` counts) are named, not repeated.
+The two pages under `/desktop` were written on 2026-09-11 and reviewed then; their words are good and mostly stay. What changes is where they live: every sentence moves from a kind into `src/data/desktop.ts` beside the chapter or document that backs it, and the pages render the record. This draft is the human-readable record. Sentences already in data (`positioning.ts` desktop block, `desktop-download.ts` platforms and commands, `pricing.ts` seats, `platform-stats.ts` counts) are named, not repeated.
 
 Conventions: titles and labels in Title Case; everything else sentence case. Numbers carry their provenance on the page.
 
@@ -14,7 +14,7 @@ Every sentence on the two pages was read against the story (chapters 1, 2, 8, 12
 - "Postgres, Temporal, and a cache, as native processes ... downloaded once on first launch, verified": backed (the daemon supervises Postgres, Temporal, Redis, and the control-plane jar; every artifact is installed only after a SHA-256 verification). Kept.
 - "Planton honors the tofu or pulumi already on your PATH; only when nothing usable exists does it install one": backed (tools already on the PATH are used and never removed). Kept.
 - "Updates are signed by Planton and verified before they are applied": backed (the desktop's updater signs releases). Kept.
-- The measured figures (35 s, 30 s, 34 s, about 800 MiB): a measurement recorded in the component's comment, consistent with the CI/CD guide's ranges (thirty to forty-five seconds to build; about 800 MB idle). They move into the record with their provenance (the machine, the timestamps) as a field the page prints as the strip's caption.
+- The measured figures (35 s, 30 s, 34 s, about 800 MiB): a measurement recorded in the kind's comment, consistent with the CI/CD guide's ranges (thirty to forty-five seconds to build; about 800 MB idle). They move into the record with their provenance (the machine, the timestamps) as a field the page prints as the strip's caption.
 - The "Read Next" block ("Git push to production with built-in CI/CD", "portable infrastructure definitions"): 2025's sentences, retyped beside the registry's own. Replaced by the registry's descriptions through the shared page card.
 - "Download Desktop App" (the hero's button): the door vocabulary says "Download Planton Desktop". Replaced by the shared doors.
 

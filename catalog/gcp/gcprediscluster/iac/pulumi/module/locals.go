@@ -6,7 +6,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpredisclusterv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcprediscluster/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -21,9 +21,9 @@ type Locals struct {
 	ClusterName string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpredisclusterv1alpha1.GcpRedisClusterStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpredisclusterv1alpha1.GcpRedisClusterIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpRedisCluster = stackInput.Target
+	locals.GcpRedisCluster = iacInput.Target
 
 	locals.ClusterName = locals.GcpRedisCluster.Spec.ClusterName
 	if locals.ClusterName == "" {
@@ -38,7 +38,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpredisclusterv1alpha1.Gcp
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = locals.ClusterName
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpRedisCluster.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpRedisCluster.String())
 
 	if locals.GcpRedisCluster.Metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = locals.GcpRedisCluster.Metadata.Org
@@ -50,6 +50,6 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpredisclusterv1alpha1.Gcp
 		locals.GcpLabels[gcplabelkeys.ResourceId] = locals.GcpRedisCluster.Metadata.Id
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

@@ -44,7 +44,7 @@ func validResource() *AzurePointToSiteVpnGateway {
 	return &AzurePointToSiteVpnGateway{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzurePointToSiteVpnGateway",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-p2s-gateway",
 		},
 		Spec: &AzurePointToSiteVpnGatewaySpec{

@@ -60,7 +60,7 @@ var _ = ginkgo.Describe("GcpHierarchicalFirewallPolicySpec", func() {
 		return &GcpHierarchicalFirewallPolicy{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpHierarchicalFirewallPolicy",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "org-baseline",
 			},
 			Spec: &GcpHierarchicalFirewallPolicySpec{

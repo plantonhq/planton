@@ -1,5 +1,5 @@
 # Estimate model: hand-computed capacity footprints for this
-# cluster-capacity component's presets. The derivation grammar cannot
+# cluster-capacity kind's presets. The derivation grammar cannot
 # express this kind's topology -- a required head with its own resources
 # plus a repeated worker_groups list, each group with its own replicas
 # and resources -- so each preset's totals are computed by hand from its
@@ -8,12 +8,12 @@
 # catalog's only accelerator surface: a group's extra_resource_limits
 # (e.g. nvidia.com/gpu) reserves GPUs that are INVISIBLE to the
 # CPU/memory arithmetic below -- named in every affected preset's
-# exclusions. Cluster-capacity components carry no priced lines -- the
+# exclusions. Cluster-capacity kinds carry no priced lines -- the
 # dollar value of the reservation is the target cluster's node (and
 # accelerator-node) economics, which this catalog cannot know.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: kubernetesraycluster
 spec:

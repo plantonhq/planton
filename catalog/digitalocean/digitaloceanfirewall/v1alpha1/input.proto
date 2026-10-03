@@ -5,9 +5,9 @@ package dev.planton.digitalocean.digitaloceanfirewall.v1alpha1;
 import "catalog/digitalocean/digitaloceanfirewall/v1alpha1/api.proto";
 import "catalog/digitalocean/provider.proto";
 
-//digital-ocean-firewall stack-input
-message DigitalOceanFirewallStackInput {
-  //target cloud-resource
+//digital-ocean-firewall iac-input
+message DigitalOceanFirewallIacInput {
+  //target infra-component
   DigitalOceanFirewall target = 1;
   //provider-config
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;

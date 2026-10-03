@@ -4,7 +4,7 @@ Configures a project's Identity Platform — the sign-in methods (email/password
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Identity Platform Config** -- the `identity_platform_config` PROJECT SINGLETON with sign-in methods, MFA, blocking functions, quotas, and multi-tenancy settings
 - **Identity provider configs** -- one composed resource per entry in `defaultSupportedIdps` (Google, Facebook, ...), `oauthIdpConfigs` (custom OIDC), and `inboundSamlConfigs` (enterprise SSO)
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **IdP credentials** -- each provider's `clientId`/`clientSecret` comes from that provider's own developer console — consent-screen OAuth clients have no programmatic creation path. Secrets are supplied as managed secrets.
 
 ### GCP Project
@@ -53,7 +53,7 @@ spec:
 planton apply -f config.yaml
 ```
 
-This initializes Identity Platform on the project and enables email/password sign-in; the `api_key` output is what client apps initialize the sign-in SDK with. A Stack Job tracks the provisioning in real time.
+This initializes Identity Platform on the project and enables email/password sign-in; the `api_key` output is what client apps initialize the sign-in SDK with. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,16 +94,16 @@ These are the most important decisions when configuring a project's Identity Pla
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 | **GcpCloudFunction** (optional) | `blockingFunctions.triggers[].functionUri` | `status.outputs.function_url` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -123,6 +123,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Identity Platform Tenant**](/cloud-catalog/gcp-identity-platform-tenant) -- isolated per-customer user pools, gated on `multiTenant.allowTenants` here
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the billing-enabled project that gets initialized
-- [**GCP Cloud Function**](/cloud-catalog/gcp-cloud-function) -- the blocking-function endpoints invoked during sign-up/sign-in
+- [**GCP Identity Platform Tenant**](/infra-catalog/gcp-identity-platform-tenant) -- isolated per-customer user pools, gated on `multiTenant.allowTenants` here
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the billing-enabled project that gets initialized
+- [**GCP Cloud Function**](/infra-catalog/gcp-cloud-function) -- the blocking-function endpoints invoked during sign-up/sign-in

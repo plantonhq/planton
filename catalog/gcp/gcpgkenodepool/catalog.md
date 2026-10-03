@@ -4,7 +4,7 @@ Deploys a GKE node pool — a group of Compute Engine VMs with one shared config
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **GKE Node Pool** — attached to the referenced cluster, with one managed instance group per zone
 - **Sizing** — a fixed node count, cluster-autoscaler management between your bounds (per-zone or total, scale-to-zero capable), or GKE's default
@@ -18,7 +18,7 @@ Node pools apply to Standard clusters only — Autopilot clusters manage nodes t
 
 ### Planton Setup
 
-- **GCP Provider Connection** — an active connection in the Connect module with credentials for the cluster's GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** — an active connection in the Connect module with credentials for the cluster's GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
@@ -69,7 +69,7 @@ spec:
 planton apply -f gke-node-pool.yaml
 ```
 
-This creates an autoscaled pool (0-4 nodes per zone — free while idle) of n2-standard-8 nodes with auto-repair and auto-upgrade at their GKE defaults (on). A Stack Job tracks the provisioning in real time.
+This creates an autoscaled pool (0-4 nodes per zone — free while idle) of n2-standard-8 nodes with auto-repair and auto-upgrade at their GKE defaults (on). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -124,7 +124,7 @@ These are the most important decisions when configuring a node pool. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -135,9 +135,9 @@ These are the most important decisions when configuring a node pool. Explore the
 | **GcpKmsKey** | `nodeConfig.bootDiskKmsKey` | `status.outputs.key_id` |
 | **GcpComputeImage** (optional) | `nodeConfig.secondaryBootDisks[].diskImage` | `status.outputs.image_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -161,6 +161,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP GKE Cluster**](/cloud-catalog/gcp-gke-cluster) — the control plane this pool attaches to, referenced by its `name` and `location` outputs
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) — the minimal node identity for production pools
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) — CMEK encryption for node boot disks
+- [**GCP GKE Cluster**](/infra-catalog/gcp-gke-cluster) — the control plane this pool attaches to, referenced by its `name` and `location` outputs
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) — the minimal node identity for production pools
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) — CMEK encryption for node boot disks

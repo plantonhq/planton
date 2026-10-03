@@ -91,7 +91,7 @@ planton apply --manifest authorization-model.yaml \
 | `storeId` | string | Yes | The ID of the OpenFGA store where this model will be created |
 | `modelJson` | string | Yes | The authorization model definition in JSON format |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

@@ -59,7 +59,7 @@ teaches the rule **once**, never per resource.
   against prior runs. Nothing here may iterate a map without imposing order
   (tags are scanned in the rule's declared key order).
 - **Resources are partitioned; manifests aggregate.** The engine assigns
-  environments to *resources*. A proposed component manifest inherits the
+  environments to *resources*. A proposed kind manifest inherits the
   unique environment its claimed resources agree on; disagreement is a
   flagged conflict and an honest non-answer, never a guess.
 

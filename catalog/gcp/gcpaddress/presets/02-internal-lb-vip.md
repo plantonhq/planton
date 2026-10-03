@@ -29,7 +29,7 @@ This preset reserves a regional internal IP address with the `SHARED_LOADBALANCE
 - **01-external-nat-ip** — External static IP for Cloud NAT or regional external LBs
 - **03-internal-gce-endpoint** — Internal IP within a subnetwork for a VM or alias IP
 
-## Related Components
+## Related Kinds
 
 - [GcpRegionalBackendService](/docs/catalog/gcp/gcpregionalbackendservice) — backend service that the ILB routes to
 - [GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork) — provides the VPC network for internal addresses

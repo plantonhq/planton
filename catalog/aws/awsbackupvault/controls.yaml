@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awsbackupvault
 spec:
@@ -66,7 +66,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: "This component IS the backup estate's storage: the encrypted container recovery points live in. Restores are initiated from the vault's recovery points; durability of the points is AWS Backup's managed responsibility."
+        reference: "This kind IS the backup estate's storage: the encrypted container recovery points live in. Restores are initiated from the vault's recovery points; durability of the points is AWS Backup's managed responsibility."
     - control_id: backup-retention-policy
       status: configurable
       field_path: standard.lock.min_retention_days

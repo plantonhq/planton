@@ -13,7 +13,7 @@ Growing later is a `replicas` change with no migration — the new pods
 join the existing consensus. The unauthenticated posture is the part
 that must NOT outlive dev: the listeners accept any request, so this
 preset belongs strictly inside a private cluster's namespace
-boundary. In-cluster clients connect via the stack outputs — gRPC
+boundary. In-cluster clients connect via the outputs — gRPC
 6334 (what SDKs default to) or REST 6333; nothing is exposed outside
 the cluster.
 

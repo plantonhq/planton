@@ -4,7 +4,7 @@ Uploads the client certificate Cloudflare presents to your origin under Authenti
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions exactly one of:
+When you deploy this Infra Component, the IaC module provisions exactly one of:
 
 - **Zone-scoped Upload** — one `cloudflare_authenticated_origin_pulls_certificate` when `scope` is `zone` (the default). Every origin pull in the zone presents it from then on.
 - **Hostname-scoped Upload** — one `cloudflare_authenticated_origin_pulls_hostname_certificate` when `scope` is `hostname`. Nothing changes at the edge until a Cloudflare Authenticated Origin Pulls association pins a hostname to the resulting certificate ID.
@@ -15,7 +15,7 @@ Destroy is a real delete on both surfaces, settling asynchronously — the API a
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module whose API token carries **Zone → SSL and Certificates → Edit**. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module whose API token carries **Zone → SSL and Certificates → Edit**. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Cloudflare Account
@@ -56,7 +56,7 @@ spec:
 planton apply -f aop-certificate.yaml
 ```
 
-This uploads a hostname-scoped client certificate and returns its `certificate_id` — no hostname presents it until an association pins one. A Stack Job tracks the provisioning in real time.
+This uploads a hostname-scoped client certificate and returns its `certificate_id` — no hostname presents it until an association pins one. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -96,15 +96,15 @@ These are the most important decisions when configuring an Authenticated Origin 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** | `zoneId` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -112,7 +112,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `zone_id` | The zone the certificate belongs to | Confirming the upload landed in the intended zone |
 | `expires_on` | Expiry timestamp (RFC3339) | Rotation scheduling and expiry alerting |
 
-Deployment status is deliberately not a stack output: it transitions asynchronously (`pending_deployment` to `active` seconds after create), so a point-in-time phase would flip on the first refresh and re-plan forever. Read deployment status from the Cloudflare API or dashboard.
+Deployment status is deliberately not an output: it transitions asynchronously (`pending_deployment` to `active` seconds after create), so a point-in-time phase would flip on the first refresh and re-plan forever. Read deployment status from the Cloudflare API or dashboard.
 
 ## Common Patterns
 
@@ -126,6 +126,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Authenticated Origin Pulls**](/cloud-catalog/cloudflare-authenticated-origin-pulls) — the enablement whose association rows pin hostnames to this upload's `certificate_id`
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) — the zone the certificate is uploaded to; wire `zoneId` via ValueFromRef
-- [**Cloudflare mTLS Certificate**](/cloud-catalog/cloudflare-mtls-certificate) — the account-level CA side of per-hostname client-certificate validation
+- [**Cloudflare Authenticated Origin Pulls**](/infra-catalog/cloudflare-authenticated-origin-pulls) — the enablement whose association rows pin hostnames to this upload's `certificate_id`
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) — the zone the certificate is uploaded to; wire `zoneId` via ValueFromRef
+- [**Cloudflare mTLS Certificate**](/infra-catalog/cloudflare-mtls-certificate) — the account-level CA side of per-hostname client-certificate validation

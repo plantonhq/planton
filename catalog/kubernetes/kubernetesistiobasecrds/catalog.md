@@ -4,7 +4,7 @@ Installs the Istio base Custom Resource Definitions (the `istio/base` CRD bundle
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Istio CRDs** -- cluster-scoped Custom Resource Definitions applied from the official Istio release manifest. They register the Istio API types so the cluster can accept Istio resources; no pods, services, or workloads are created.
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking.
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -45,7 +45,7 @@ spec: {}
 planton apply -f istio-base-crds.yaml
 ```
 
-This installs the Istio base CRDs cluster-wide. No namespace is required since CRDs are cluster-scoped, and there are no spec fields to set. A Stack Job tracks the provisioning in real time.
+This installs the Istio base CRDs cluster-wide. No namespace is required since CRDs are cluster-scoped, and there are no spec fields to set. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -53,13 +53,13 @@ There is nothing to configure -- the spec is deliberately empty. The Istio CRD s
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies.
+This kind has no foreign key dependencies.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources and operators can reference:
+After provisioning, `status.outputs` contains values that downstream Infra Components and operators can reference:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -74,7 +74,7 @@ Browse the [Presets](#presets) tab for a ready-to-deploy configuration.
 
 ## Works With
 
-- [**Istio Destination Rule**](/cloud-catalog/kubernetes-destination-rule) and [**Istio Service Entry**](/cloud-catalog/kubernetes-service-entry) -- the traffic-management resources these CRDs unlock.
-- [**Istio Peer Authentication**](/cloud-catalog/kubernetes-peer-authentication), [**Istio Request Authentication**](/cloud-catalog/kubernetes-request-authentication), and [**Istio Authorization Policy**](/cloud-catalog/kubernetes-authorization-policy) -- the security policy resources.
-- [**Istio Telemetry**](/cloud-catalog/kubernetes-telemetry) and [**Istio Envoy Filter**](/cloud-catalog/kubernetes-envoy-filter) -- observability and extensibility.
-- [**Istio**](/cloud-catalog/kubernetes-istio) -- the full mesh (control plane and data plane); its module co-owns these CRDs, so a CRDs-only cluster upgrades with a plain redeploy.
+- [**Istio Destination Rule**](/infra-catalog/kubernetes-destination-rule) and [**Istio Service Entry**](/infra-catalog/kubernetes-service-entry) -- the traffic-management resources these CRDs unlock.
+- [**Istio Peer Authentication**](/infra-catalog/kubernetes-peer-authentication), [**Istio Request Authentication**](/infra-catalog/kubernetes-request-authentication), and [**Istio Authorization Policy**](/infra-catalog/kubernetes-authorization-policy) -- the security policy resources.
+- [**Istio Telemetry**](/infra-catalog/kubernetes-telemetry) and [**Istio Envoy Filter**](/infra-catalog/kubernetes-envoy-filter) -- observability and extensibility.
+- [**Istio**](/infra-catalog/kubernetes-istio) -- the full mesh (control plane and data plane); its module co-owns these CRDs, so a CRDs-only cluster upgrades with a plain redeploy.

@@ -70,7 +70,7 @@ Updated the pricing card grid to be fully responsive:
 }
 ```
 
-3. **PriceCard Component**: Added helper functions for dynamic button behavior:
+3. **PriceCard Kind**: Added helper functions for dynamic button behavior:
 ```typescript
 const getButtonText = () => {
   if (isFreePlan) return 'Get Started';

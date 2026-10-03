@@ -4,7 +4,7 @@ Declares a composite index on a Cloud Firestore database — the prerequisite fo
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Firestore Composite Index** -- an index on the specified collection (or collection group) with the declared fields in order; Firestore builds it in the background and appends `__name__` automatically
 - **Vector Index** -- created when a field carries `vectorConfig`; enables `find_nearest` queries against embeddings of the declared dimension (flat index type)
@@ -17,12 +17,12 @@ Single-field indexes are built by Firestore automatically and never need this re
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A Firestore database** in the target project. Leave `database` empty to target the project's `"(default)"` database, or reference a `GcpFirestoreDatabase` Cloud Resource via ValueFromRef.
+- **A Firestore database** in the target project. Leave `database` empty to target the project's `"(default)"` database, or reference a `GcpFirestoreDatabase` Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -54,7 +54,7 @@ spec:
 planton apply -f firestore-index.yaml
 ```
 
-This creates a composite index on the default database's `orders` collection serving `WHERE customerId == X ORDER BY createdAt DESC` queries. A Stack Job tracks the provisioning in real time.
+This creates a composite index on the default database's `orders` collection serving `WHERE customerId == X ORDER BY createdAt DESC` queries. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -90,16 +90,16 @@ These are the most important decisions when configuring a Firestore index. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 | **GcpFirestoreDatabase** (optional) | `database` | `status.outputs.database_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -116,6 +116,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Firestore Database**](/cloud-catalog/gcp-firestore-database) -- provides the database the index attaches to
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project when it differs from the connection default
-- [**GCP Firestore Backup Schedule**](/cloud-catalog/gcp-firestore-backup-schedule) -- the same database's protection layer, declared side by side
+- [**GCP Firestore Database**](/infra-catalog/gcp-firestore-database) -- provides the database the index attaches to
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project when it differs from the connection default
+- [**GCP Firestore Backup Schedule**](/infra-catalog/gcp-firestore-backup-schedule) -- the same database's protection layer, declared side by side

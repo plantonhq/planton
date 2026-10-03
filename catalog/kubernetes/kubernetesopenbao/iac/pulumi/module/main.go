@@ -27,8 +27,8 @@ import (
 // back) — the E2E verifier owns initialization and readiness instead.
 // The chart keeps sealed pods addressable (publishNotReadyAddresses on
 // every Service) exactly so init/unseal can reach them.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesopenbaov1alpha1.KubernetesOpenBaoStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesopenbaov1alpha1.KubernetesOpenBaoIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// NAME BUDGET (chart truth at 0.28.6): the chart truncates its
 	// fullname at 63 then APPENDS Service suffixes — `-internal` (9)
@@ -53,13 +53,13 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesopenbaov1alpha1.Kubern
 	}
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

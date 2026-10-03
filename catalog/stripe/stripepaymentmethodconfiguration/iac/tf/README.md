@@ -16,7 +16,7 @@ OpenTofu module that declares which payment methods checkout offers. Stripe kind
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `name`, `active` (default `true`), `parent` (replaces); one `{ preference }` per payment method (`card`, `apple_pay`, `google_pay`, `link`, `sepa_debit`, ... 59 in all) |
 
 ## Outputs

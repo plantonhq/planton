@@ -1,7 +1,7 @@
 # Custom Document Schedule
 
 This preset binds YOUR document — wired by reference to an
-[AWS SSM Document](/cloud-catalog/aws-ssm-document) component — to
+[AWS SSM Document](/infra-catalog/aws-ssm-document) component — to
 tagged instances on a weekly rate schedule, pinned to the document's
 default version.
 

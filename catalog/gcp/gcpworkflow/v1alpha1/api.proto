@@ -11,11 +11,11 @@ import "shared/metadata.proto";
 message GcpWorkflow {
   string api_version = 1 [(buf.validate.field).string.const = 'gcp.planton.dev/v1alpha1'];
   string kind = 2 [(buf.validate.field).string.const = 'GcpWorkflow'];
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
   GcpWorkflowSpec spec = 4 [(buf.validate.field).required = true];
   GcpWorkflowStatus status = 5;
 }
 
 message GcpWorkflowStatus {
-  GcpWorkflowStackOutputs outputs = 1;
+  GcpWorkflowOutputs outputs = 1;
 }

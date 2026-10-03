@@ -5,7 +5,7 @@ package dev.planton.kubernetes.kubernetesgharunnerscaleset.v1alpha1;
 /**
  * Outputs exported after deploying the runner scale set.
  */
-message KubernetesGhaRunnerScaleSetStackOutputs {
+message KubernetesGhaRunnerScaleSetOutputs {
   /**
    * Namespace the scale set (listener + runner pods) runs in.
    */

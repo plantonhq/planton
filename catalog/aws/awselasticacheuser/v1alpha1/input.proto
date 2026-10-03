@@ -5,9 +5,9 @@ package dev.planton.aws.awselasticacheuser.v1alpha1;
 import "catalog/aws/awselasticacheuser/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-elasticache-user stack-input
-message AwsElasticacheUserStackInput {
-  //target cloud-resource
+//aws-elasticache-user iac-input
+message AwsElasticacheUserIacInput {
+  //target infra-component
   AwsElasticacheUser target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

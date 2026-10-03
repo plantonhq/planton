@@ -1,4 +1,4 @@
-# Stack outputs — must flatten onto KubernetesResourceQuotaStackOutputs
+# Outputs — must flatten onto KubernetesResourceQuotaOutputs
 # (outputs.proto) identically to the Pulumi module's exports.
 
 output "resource_quota_name" {

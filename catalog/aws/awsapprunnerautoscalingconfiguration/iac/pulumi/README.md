@@ -14,13 +14,13 @@ module/
   outputs.go                     — Output key constants
 ```
 
-## Stack Inputs
+## IaC Inputs
 
-The module reads `AwsAppRunnerAutoScalingConfigurationStackInput` which contains:
+The module reads `AwsAppRunnerAutoScalingConfigurationIacInput` which contains:
 - `target` — The fully-specified `AwsAppRunnerAutoScalingConfiguration` resource
 - `provider_config` — AWS credentials/region resolution
 
-## Stack Outputs
+## Outputs
 
 | Key | Description |
 |-----|-------------|

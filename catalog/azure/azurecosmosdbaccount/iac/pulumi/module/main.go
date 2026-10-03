@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurecosmosdbaccountv1alpha1.AzureCosmosdbAccountStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurecosmosdbaccountv1alpha1.AzureCosmosdbAccountIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -30,7 +30,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecosmosdbaccountv1alpha1.Azu
 
 	// Unspecified consistency materializes Session -- Azure's
 	// recommended default. The staleness dials carry the proto defaults
-	// (5 / 100) when unset: stack inputs built from a manifest do NOT
+	// (5 / 100) when unset: IaC inputs built from a manifest do NOT
 	// materialize proto defaults, so bare getters would send zeros the
 	// API rejects.
 	consistencyLevel := "Session"
@@ -279,7 +279,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecosmosdbaccountv1alpha1.Azu
 		return errors.Wrapf(err, "failed to create cosmosdb account %s", spec.AccountName)
 	}
 
-	// Export stack outputs. The keys and connection strings are the
+	// Export outputs. The keys and connection strings are the
 	// credential surface (secret-bearing); databases and containers are
 	// their own kinds, so no database ids are exported here.
 	ctx.Export(OpCosmosdbAccountId, createdAccount.ID())

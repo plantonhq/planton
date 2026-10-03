@@ -4,7 +4,7 @@ Deploys an SQS queue (Standard or FIFO) with configurable delivery settings, dea
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SQS Queue** -- a Standard or FIFO queue named from your manifest's `metadata.name`, with configurable visibility timeout, message retention, delay, and long polling settings
 - **FIFO Configuration** -- created only when `fifoQueue` is `true`; enables content-based deduplication, per-message-group deduplication scope, and high-throughput mode. FIFO queue names automatically receive the `.fifo` suffix
@@ -18,13 +18,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **A KMS key** (optional) -- required only when using KMS encryption instead of SQS-managed SSE. Provide the key ID or ARN directly, or reference an AwsKmsKey Cloud Resource via ValueFromRef.
-- **A dead letter queue** (optional) -- must exist in the same AWS account and region, and be the same type (Standard or FIFO) as the source queue. Provide the ARN directly or reference another AwsSqsQueue Cloud Resource.
+- **A KMS key** (optional) -- required only when using KMS encryption instead of SQS-managed SSE. Provide the key ID or ARN directly, or reference an AwsKmsKey Infra Component via ValueFromRef.
+- **A dead letter queue** (optional) -- must exist in the same AWS account and region, and be the same type (Standard or FIFO) as the source queue. Provide the ARN directly or reference another AwsSqsQueue Infra Component.
 
 ## Deploy
 
@@ -54,7 +54,7 @@ spec:
 planton apply -f sqs-queue.yaml
 ```
 
-This creates a Standard queue with SQS-managed encryption, long polling enabled (20s wait), and a 30-second visibility timeout. No dead letter queue or FIFO settings are configured. A Stack Job tracks the provisioning in real time.
+This creates a Standard queue with SQS-managed encryption, long polling enabled (20s wait), and a 30-second visibility timeout. No dead letter queue or FIFO settings are configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -98,7 +98,7 @@ These are the most important decisions when configuring an SQS queue. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -106,9 +106,9 @@ These are the most important decisions when configuring an SQS queue. Explore th
 | **AwsSqsQueue** (optional) | `deadLetterConfig.targetArn` | `status.outputs.queue_arn` |
 | **AwsSqsQueue** (optional) | `redriveAllowPolicy.sourceQueueArns` | `status.outputs.queue_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -126,5 +126,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for KMS-based message encryption
-- [**AWS SQS Queue**](/cloud-catalog/aws-sqs-queue) -- provides a dead letter queue target for failed message routing
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for KMS-based message encryption
+- [**AWS SQS Queue**](/infra-catalog/aws-sqs-queue) -- provides a dead letter queue target for failed message routing

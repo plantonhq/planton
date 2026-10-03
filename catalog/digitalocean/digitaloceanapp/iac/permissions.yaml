@@ -3,7 +3,7 @@
 # modules. DigitalOcean authenticates with a bearer API token carrying
 # named scopes; every group entry is `derived` (static analysis of the
 # module sources, cited in notes) until the live capture lane upgrades it
-# to `proven`. Schema: iac/componentpermissions/v1.
+# to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # The app resource takes no DigitalOcean tags (no tag scope), and container
 # image sources (Docker Hub, GHCR, or DOCR references in the spec) are
@@ -11,7 +11,7 @@
 # token. Git sources authenticate through App Platform's GitHub/GitLab
 # integrations, also outside this token.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: digitaloceanapp
 spec:

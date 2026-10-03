@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azureprivatednsresolver
 spec:
@@ -8,10 +8,10 @@ spec:
   values:
     - name: dns_resolver_id
       derivations:
-        - from_stack_output: dns_resolver_id
+        - from_output: dns_resolver_id
       where_to_find: >-
         `az dns-resolver show -g <resource-group> -n <name> --query id`,
-        or the component's own dns_resolver_id stack output.
+        or the component's own dns_resolver_id output.
     - name: inbound_endpoint_name
       derivations:
         - from_address_key: true

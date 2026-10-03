@@ -4,7 +4,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Output name constants — one per KubernetesGatekeeperStackOutputs field.
+// Output name constants — one per KubernetesGatekeeperOutputs field.
 const (
 	OpNamespace             = "namespace"
 	OpReleaseName           = "release_name"

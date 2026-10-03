@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1;
 
-//kube-prometheus-stack-kubernetes stack outputs
-message KubernetesKubePrometheusStackStackOutputs {
+//kube-prometheus-stack-kubernetes outputs
+message KubernetesKubePrometheusStackOutputs {
   //namespace the stack runs in.
   string namespace = 1;
 

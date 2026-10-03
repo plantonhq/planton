@@ -41,7 +41,7 @@ var cliVersionRegex = regexp.MustCompile(`^v?(\d+)\.(\d+)\.(\d+)-cli\.(\d{8})\.(
 // semverRegex matches any semver-like version (v0.3.17, 0.3.17, v0.3.15-cli.20260113.0, etc.)
 var semverRegex = regexp.MustCompile(`^v?(\d+)\.(\d+)\.(\d+)`)
 
-// parseCliVersion parses a CLI version tag into its components
+// parseCliVersion parses a CLI version tag into its kinds
 func parseCliVersion(tag string) (*cliVersionInfo, error) {
 	matches := cliVersionRegex.FindStringSubmatch(tag)
 	if matches == nil {
@@ -163,8 +163,8 @@ func GetLatestVersion() (string, error) {
 // Non-CLI releases (excluded):
 // - App releases: v0.3.16-app.20260113.0
 // - Website releases: v0.3.16-website.20260113.0
-// - Pulumi modules: v0.3.16-pulumi.{component}.20260113.0
-// - Terraform modules: v0.3.16-terraform.{component}.20260113.0
+// - Pulumi modules: v0.3.16-pulumi.{kind}.20260113.0
+// - Terraform modules: v0.3.16-terraform.{kind}.20260113.0
 func isCliRelease(tag string) bool {
 	tagLower := strings.ToLower(tag)
 
@@ -173,7 +173,7 @@ func isCliRelease(tag string) bool {
 		return true
 	}
 
-	// Exclude all other component-specific releases
+	// Exclude all other kind-specific releases
 	excludePatterns := []string{
 		"-app.",
 		"-website.",
@@ -190,13 +190,13 @@ func isCliRelease(tag string) bool {
 	// Check if it's plain semver (v0.3.16) with no suffix
 	if _, err := parseSemver(tag); err == nil {
 		// Count hyphens - plain semver like "v0.3.16" has none
-		// "v0.3.16-beta" has one but isn't a known component type
+		// "v0.3.16-beta" has one but isn't a known kind
 		parts := strings.SplitN(tag, "-", 2)
 		if len(parts) == 1 {
 			// Pure semver like v0.3.16 - this is a unified release
 			return true
 		}
-		// Has a hyphen suffix but not a known component type
+		// Has a hyphen suffix but not a known kind
 		// Could be something like v0.3.16-beta or v0.3.16-rc1
 		// These are pre-releases that might include CLI, so include them
 		// (GitHub API marks actual pre-releases with the Prerelease field)

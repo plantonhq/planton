@@ -90,7 +90,7 @@ Grants to deleted principals (`deleted:...`) are rejected at deploy time.
 
 GCP offers three write modes for project IAM: additive member (this component), authoritative per-role binding, and authoritative whole-policy. Only the additive member is safe for composition — the authoritative modes clobber every grant they do not list, so two independent tools managing the same role would silently remove each other's access. Planton deliberately models only the additive grant.
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -119,7 +119,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 - **Conditions are part of the grant's identity**: the same role granted with and without a condition are two independent grants that do not interfere.
 - **Concurrent policy writes are serialized** per project by the provider, so many grants deploying in parallel converge safely.
 
-## Related Components
+## Related Kinds
 
 - [GcpIamCustomRole](/docs/catalog/gcp/gcpiamcustomrole) — defines the custom role this grant can reference
 - [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — the identity most commonly granted (its `member` output feeds this component)

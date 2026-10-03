@@ -37,7 +37,7 @@ Private services access must exist on the VPC before the instance is created —
 
 - **02-ha-production** — the same hardening over direct peering
 
-## Related Components
+## Related Kinds
 
 - [GcpServiceNetworkingConnection](/docs/catalog/gcp/gcpservicenetworkingconnection) — the private services access peering this preset depends on
 - [GcpGlobalAddress](/docs/catalog/gcp/gcpglobaladdress) — the reserved range the instance consumes

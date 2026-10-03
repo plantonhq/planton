@@ -3,7 +3,7 @@
 ## Security
 ## Platform Security Posture
 
-The certifications below are Auth0's own published claims about their hosted platform (verify current status on Auth0's compliance page). They describe the vendor's service — never this Planton component, and never your deployment: configuring this resource does not make your application certified, authorized, or compliant with any framework.
+The certifications below are Auth0's own published claims about their hosted platform (verify current status on Auth0's compliance page). They describe the vendor's service — never this catalog kind, and never your deployment: configuring this resource does not make your application certified, authorized, or compliant with any framework.
 
 Auth0's published certifications and security standards:
 
@@ -76,7 +76,7 @@ read:roles create:roles update:roles delete:roles read:resource_servers
 
 ## Prerequisite Scopes Must Exist
 
-The scopes referenced by a role's permissions must already be defined on their resource servers before they can be assigned. This component does not create scopes — use the `Auth0ResourceServer` component (or define scopes directly in Auth0) first. The M2M application does not need write access to resource servers to assign existing scopes to a role; `read:resource_servers` is sufficient.
+The scopes referenced by a role's permissions must already be defined on their resource servers before they can be assigned. This kind does not create scopes — use the `Auth0ResourceServer` component (or define scopes directly in Auth0) first. The M2M application does not need write access to resource servers to assign existing scopes to a role; `read:resource_servers` is sufficient.
 
 ## Compliance
 ## Regulatory Frameworks
@@ -117,7 +117,7 @@ All role CRUD operations (create, update, delete) and permission changes are rec
 
 ### Separation of Definition and Assignment
 
-This component defines roles and their permissions but does not assign roles to users. User-to-role assignment is governed separately, supporting separation-of-duties controls between infrastructure and identity administration.
+This kind defines roles and their permissions but does not assign roles to users. User-to-role assignment is governed separately, supporting separation-of-duties controls between infrastructure and identity administration.
 
 ## Cost
 ## Pricing Model

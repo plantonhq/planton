@@ -19,7 +19,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurevirtualmachine
+    e2e-catalog-kind: azurevirtualmachine
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AzureManagedDisk"

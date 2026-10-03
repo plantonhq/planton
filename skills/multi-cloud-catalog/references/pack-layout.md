@@ -2,7 +2,7 @@
 
 The reference pack is one directory tree. When this skill ships
 self-contained, the pack travels inside it and sits beside this file in
-`components/` -- no repo checkout, network fetch, or marker hunt needed.
+`kinds/` -- no repo checkout, network fetch, or marker hunt needed.
 Probe for that directory first; when it is absent, the ladder below
 resolves the pack from where you are working.
 
@@ -13,7 +13,7 @@ resolves the pack from where you are working.
 ├── _docs/
 │   ├── reference-index.md        # root index: provider table with kind,
 │   │                             # example, and guide counts (live numbers)
-│   ├── reference-commons.md      # the manifest grammar every component
+│   ├── reference-commons.md      # the manifest grammar every kind
 │   │                             # shares + the pack's search grammar
 │   ├── reference-graph.yaml      # every foreign-key edge in the catalog
 │   └── GUIDE.md                  # catalog-level wisdom: the substitution
@@ -27,7 +27,7 @@ resolves the pack from where you are working.
 │                                 # (kinddir = kind lowercased, awsalb.yaml);
 │                                 # exact decimal strings, price source URL +
 │                                 # verification date on every line -- present
-│                                 # only for covered components
+│                                 # only for covered kinds
 ├── _compliance/
 │   ├── controls-catalog.yaml     # the central control catalog: every
 │   │                             # control's id, name, and statement
@@ -44,19 +44,19 @@ resolves the pack from where you are working.
         │                         # wisdom has been written
         ├── cost.yaml             # fact-sheet: billing model, baseline
         │                         # charges, cost drivers, exclusions --
-        │                         # present only for covered components
+        │                         # present only for covered kinds
         ├── controls.yaml         # fact-sheet: posture on every catalog
         │                         # control, with evidence
         ├── iac/
         │   └── permissions.yaml  # fact-sheet: least-privilege runner
         │                         # permissions, derived/proven provenance
         └── <api-version>/
-            └── reference.md      # the component's complete reference page
+            └── reference.md      # the kind's complete reference page
 ```
 
 ## What the pack does not carry
 
-The tree above is selected by filename, so a component's `presets/`
+The tree above is selected by filename, so a kind's `presets/`
 (validated starting manifests and their explainers), its `README.md` and
 `catalog.md`, its IaC modules (other than `iac/permissions.yaml`), and its
 `e2e/` tree are NOT in the pack. A guide may name a preset by slug -- that
@@ -80,7 +80,7 @@ you. Never search the wider machine for pack files (home directories --
 to exist on the host): a pack that is not reachable inside that boundary
 is simply not reachable -- take the fallback below.
 
-1. **Your own skill mount** -- probe for `components/` in the same
+1. **Your own skill mount** -- probe for `kinds/` in the same
    directory as this skill's `SKILL.md`. On a hit it is the pack root:
    the skill and its pack are one artifact, published and versioned
    together, so it is always exactly as fresh as the skill teaching you
@@ -103,12 +103,12 @@ is simply not reachable -- take the fallback below.
 
 ## When no pack is reachable
 
-Two per-component fallbacks, in order of preference:
+Two per-kind fallbacks, in order of preference:
 
 1. **`planton explain <Kind>`** (when the CLI exists where you run) prints
-   the same schema-derived facts for one component at a time -- fields,
+   the same schema-derived facts for one kind at a time -- fields,
    validation rules, outputs, outbound references -- fully offline.
-2. **Fetch the component's pages into your workspace** (when you have
+2. **Fetch the kind's pages into your workspace** (when you have
    network but no CLI): the generated reference page and its neighbors live
    at stable public paths --
 
@@ -129,11 +129,11 @@ Two per-component fallbacks, in order of preference:
 
 A third rung exists for one question the pack itself cannot settle -- what
 a field DOES when it is applied, as opposed to what it is named and how it
-is validated: the module source. Every component ships the Terraform
+is validated: the module source. Every kind ships the Terraform
 module (`catalog/<provider>/<kind>/iac/tf/`, run by OpenTofu or
 Terraform) and the Pulumi module
 (`catalog/<provider>/<kind>/iac/pulumi/module/`) that turn its manifest
-into cloud resources -- except a kind that declares fewer engines, which
+into infra components -- except a kind that declares fewer engines, which
 ships only the modules those engines run (OpenFGA and Stripe kinds have no
 Pulumi module, and Pulumi is refused for them) -- and the runner applies
 the module published for a release. When a pack page and a live deployment disagree, or a page is
@@ -144,7 +144,7 @@ quietly from `main`, which may already describe a field the deployment
 does not have. The workflow skill's grounding reference carries the exact
 checkout commands.
 
-Be honest about what per-component fallbacks cannot give you: full-text
+Be honest about what per-kind fallbacks cannot give you: full-text
 capability search, the inbound `Referenced By` view, the catalog-wide graph,
 and the authored guides and patterns (the fetched index partially covers
 "what exists"). `planton explain` carries schema facts only -- no prices,

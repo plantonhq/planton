@@ -4,7 +4,7 @@ Deploys a local network gateway -- Azure's description of the ON-PREMISES side o
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Local Network Gateway** -- the ARM object carrying the site's endpoint, reachable prefixes, and (optionally) its BGP speaker settings
 - **Azure Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) merged with your `tags`, applied to the object
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -52,7 +52,7 @@ spec:
 planton apply -f azure-local-network-gateway.yaml
 ```
 
-This creates the address-book entry for the HQ site -- the static endpoint at 198.51.100.4 and the 192.168.0.0/16 space behind it. A Stack Job tracks the provisioning in real time.
+This creates the address-book entry for the HQ site -- the static endpoint at 198.51.100.4 and the 192.168.0.0/16 space behind it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -84,15 +84,15 @@ These are the most important decisions when configuring a site description. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -108,6 +108,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the description is created in
-- [**Azure Virtual Network Gateway**](/cloud-catalog/azure-virtual-network-gateway) -- the Azure-side appliance tunnels terminate on
-- [**Azure Virtual Network Gateway Connection**](/cloud-catalog/azure-virtual-network-gateway-connection) -- the tunnel that consumes this description
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the description is created in
+- [**Azure Virtual Network Gateway**](/infra-catalog/azure-virtual-network-gateway) -- the Azure-side appliance tunnels terminate on
+- [**Azure Virtual Network Gateway Connection**](/infra-catalog/azure-virtual-network-gateway-connection) -- the tunnel that consumes this description

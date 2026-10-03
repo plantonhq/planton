@@ -48,7 +48,7 @@ Offline gate (live E2E is closed for this phase, by design):
 ## Workflow uplift
 
 - `_rules/charts/forge-planton-infra-chart.mdc`: map-typed outputs are addressed by entry key in `valueFrom` fieldPaths (and dots in sub-resource names break dot-path addressing — name accordingly).
-- `_rules/deployment-component/forge/flow/004-stack-outputs.mdc`: export the ids of implicit sub-resources other kinds target (the diagnostic-scope class), constructed from the parent id when the provider offers no readback.
+- `_rules/catalog-kind/forge/flow/004-outputs.mdc`: export the ids of implicit sub-resources other kinds target (the diagnostic-scope class), constructed from the parent id when the provider offers no readback.
 
 ## Impact
 

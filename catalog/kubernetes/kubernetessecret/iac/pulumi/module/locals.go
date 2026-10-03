@@ -13,8 +13,8 @@ type Locals struct {
 	// Context for Pulumi operations
 	Ctx *pulumi.Context
 
-	// Stack input containing the target resource
-	StackInput *kubernetessecretv1alpha1.KubernetesSecretStackInput
+	// IaC input containing the target resource
+	IacInput *kubernetessecretv1alpha1.KubernetesSecretIacInput
 
 	// Target secret resource
 	Target *kubernetessecretv1alpha1.KubernetesSecret
@@ -48,25 +48,25 @@ type Locals struct {
 }
 
 // initializeLocals creates and populates the Locals struct
-func initializeLocals(ctx *pulumi.Context, stackInput *kubernetessecretv1alpha1.KubernetesSecretStackInput) (*Locals, error) {
+func initializeLocals(ctx *pulumi.Context, iacInput *kubernetessecretv1alpha1.KubernetesSecretIacInput) (*Locals, error) {
 	locals := &Locals{
-		Ctx:        ctx,
-		StackInput: stackInput,
-		Target:     stackInput.Target,
-		Spec:       stackInput.Target.Spec,
+		Ctx:      ctx,
+		IacInput: iacInput,
+		Target:   iacInput.Target,
+		Spec:     iacInput.Target.Spec,
 	}
 
-	locals.SecretName = stackInput.Target.Spec.Name
+	locals.SecretName = iacInput.Target.Spec.Name
 
 	// Namespace is a value-or-ref; by module execution time any reference has been
 	// resolved into the literal value. Fall back to "default" when unset, mirroring
 	// kubectl behavior without a namespace flag.
-	locals.SecretNamespace = stackInput.Target.Spec.Namespace.GetValue()
+	locals.SecretNamespace = iacInput.Target.Spec.Namespace.GetValue()
 	if locals.SecretNamespace == "" {
 		locals.SecretNamespace = "default"
 	}
 
-	locals.Immutable = stackInput.Target.Spec.Immutable
+	locals.Immutable = iacInput.Target.Spec.Immutable
 
 	// Build labels
 	locals.Labels = buildLabels(locals)

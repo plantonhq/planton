@@ -4,8 +4,8 @@ package dev.planton.aws.awsiamuser.v1alpha1;
 
 import "shared/options/options.proto";
 
-// AwsIamUserStackOutputs describes the output values after provisioning an IAM user.
-message AwsIamUserStackOutputs {
+// AwsIamUserOutputs describes the output values after provisioning an IAM user.
+message AwsIamUserOutputs {
   // user_arn is the ARN of the created IAM user.
   string user_arn = 1;
 

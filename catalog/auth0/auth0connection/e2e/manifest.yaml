@@ -10,7 +10,7 @@ metadata:
   env: development
   labels:
     purpose: testing
-    component: auth0connection
+    catalog-kind: auth0connection
 spec:
   strategy: auth0
   display_name: Test Database Connection

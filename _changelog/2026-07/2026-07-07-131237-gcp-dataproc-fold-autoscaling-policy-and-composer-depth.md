@@ -79,7 +79,7 @@ equivalence is documented on the output. Full anatomy: 44-case spec test,
 Kubernetes Secret/ConfigMap delivery into an environment's workloads
 namespace, composing against the environment by reference. The Secret's
 `data` map is `(sensitive)` — base64 contract validated pre-deploy, secret
-in Pulumi state, never in stack outputs. Full anatomy on both kinds.
+in Pulumi state, never in outputs. Full anatomy on both kinds.
 
 ### GcpFirewallRule — conformance
 
@@ -115,4 +115,4 @@ E2E verifier.
   green on BOTH engines (full create → verify → destroy; the environment
   runs ~33 minutes per engine). The Dataproc cluster's live batch runs the
   five-node chain (VPC → subnetwork → firewall → identity → policy) —
-  see the component's `e2e/` for scenarios.
+  see the kind's `e2e/` for scenarios.

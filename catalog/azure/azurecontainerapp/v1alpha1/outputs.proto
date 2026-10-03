@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azurecontainerapp.v1alpha1;
 
-// **AzureContainerAppStackOutputs** captures the outputs of provisioning
+// **AzureContainerAppOutputs** captures the outputs of provisioning
 // an Azure Container App.
 //
 // The primary user-facing outputs are `ingress_fqdn` (the app's endpoint)
@@ -18,7 +18,7 @@ package dev.planton.azure.azurecontainerapp.v1alpha1;
 // system-assigned identity; `custom_domain_verification_id` is the TXT
 // record value that proves domain ownership when binding a custom domain
 // to the app.
-message AzureContainerAppStackOutputs {
+message AzureContainerAppOutputs {
   // The Azure Resource Manager ID of the Container App.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.App/containerApps/{name}
   string container_app_id = 1;

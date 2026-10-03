@@ -13,13 +13,13 @@ import (
 // here), and the cluster role is a referenced AwsIamRole that carries its
 // own AmazonEKSClusterPolicy -- this module never modifies a role it merely
 // references.
-func Resources(ctx *pulumi.Context, stackInput *awseksclusterv1alpha1.AwsEksClusterStackInput) (err error) {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awseksclusterv1alpha1.AwsEksClusterIacInput) (err error) {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which
+	// Build the AWS provider from the IaC input via the shared builder, which
 	// resolves the right credential mechanism (static keys, keyless web identity,
 	// or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsEksCluster.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsEksCluster.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

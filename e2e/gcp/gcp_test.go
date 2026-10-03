@@ -27,7 +27,7 @@ import (
 
 	"github.com/plantonhq/planton/e2e/framework/runner"
 	"github.com/plantonhq/planton/pkg/e2e/profile"
-	componentv1 "github.com/plantonhq/planton/qa/componente2eprofile/v1"
+	kindv1 "github.com/plantonhq/planton/qa/catalogkinde2eprofile/v1"
 	gcpstorage "google.golang.org/api/storage/v1"
 )
 
@@ -91,253 +91,253 @@ func TestMain(m *testing.M) {
 // --- GCP Service Account (the identity leaf everything references) ---
 
 func TestGcpServiceAccount_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpserviceaccount", "pulumi")
+	runAllScenariosForKind(t, "gcpserviceaccount", "pulumi")
 }
 func TestGcpServiceAccount_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpserviceaccount", "terraform")
+	runAllScenariosForKind(t, "gcpserviceaccount", "terraform")
 }
 
 // --- GCP IAM Custom Role (least-privilege permission bundle) ---
 
 func TestGcpIamCustomRole_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpiamcustomrole", "pulumi")
+	runAllScenariosForKind(t, "gcpiamcustomrole", "pulumi")
 }
 func TestGcpIamCustomRole_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpiamcustomrole", "terraform")
+	runAllScenariosForKind(t, "gcpiamcustomrole", "terraform")
 }
 
 // --- GCP Project IAM Member (composed grant: deploys GcpServiceAccount + GcpIamCustomRole prerequisites) ---
 
 func TestGcpProjectIamMember_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpprojectiammember", "pulumi")
+	runAllScenariosForKind(t, "gcpprojectiammember", "pulumi")
 }
 func TestGcpProjectIamMember_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpprojectiammember", "terraform")
+	runAllScenariosForKind(t, "gcpprojectiammember", "terraform")
 }
 
 // --- GCP Service Account IAM Member (composed grant ON the account: deploys the GcpServiceAccount prerequisite) ---
 
 func TestGcpServiceAccountIamMember_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpserviceaccountiammember", "pulumi")
+	runAllScenariosForKind(t, "gcpserviceaccountiammember", "pulumi")
 }
 func TestGcpServiceAccountIamMember_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpserviceaccountiammember", "terraform")
+	runAllScenariosForKind(t, "gcpserviceaccountiammember", "terraform")
 }
 
 // --- GCP Workload Identity Pool (the keyless-auth trust boundary) ---
 
 func TestGcpWorkloadIdentityPool_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpworkloadidentitypool", "pulumi")
+	runAllScenariosForKind(t, "gcpworkloadidentitypool", "pulumi")
 }
 func TestGcpWorkloadIdentityPool_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpworkloadidentitypool", "terraform")
+	runAllScenariosForKind(t, "gcpworkloadidentitypool", "terraform")
 }
 
 // --- GCP Workload Identity Pool Provider (composed issuer: deploys a GcpWorkloadIdentityPool prerequisite) ---
 
 func TestGcpWorkloadIdentityPoolProvider_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpworkloadidentitypoolprovider", "pulumi")
+	runAllScenariosForKind(t, "gcpworkloadidentitypoolprovider", "pulumi")
 }
 func TestGcpWorkloadIdentityPoolProvider_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpworkloadidentitypoolprovider", "terraform")
+	runAllScenariosForKind(t, "gcpworkloadidentitypoolprovider", "terraform")
 }
 
 // --- GCP Health Check (the load-balancing family's leaf; global + regional scenarios) ---
 
 func TestGcpHealthCheck_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcphealthcheck", "pulumi")
+	runAllScenariosForKind(t, "gcphealthcheck", "pulumi")
 }
 func TestGcpHealthCheck_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcphealthcheck", "terraform")
+	runAllScenariosForKind(t, "gcphealthcheck", "terraform")
 }
 
 // --- GCP Backend Bucket (composed static origin: deploys a GcpGcsBucket prerequisite) ---
 
 func TestGcpBackendBucket_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbackendbucket", "pulumi")
+	runAllScenariosForKind(t, "gcpbackendbucket", "pulumi")
 }
 func TestGcpBackendBucket_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbackendbucket", "terraform")
+	runAllScenariosForKind(t, "gcpbackendbucket", "terraform")
 }
 
 // --- GCP Backend Service (composed LB hub: deploys a GcpHealthCheck prerequisite) ---
 
 func TestGcpBackendService_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbackendservice", "pulumi")
+	runAllScenariosForKind(t, "gcpbackendservice", "pulumi")
 }
 func TestGcpBackendService_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbackendservice", "terraform")
+	runAllScenariosForKind(t, "gcpbackendservice", "terraform")
 }
 
 // --- GCP Subnetwork (composed address plan: deploys a GcpVpcNetwork prerequisite) ---
 
 func TestGcpSubnetwork_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpsubnetwork", "pulumi")
+	runAllScenariosForKind(t, "gcpsubnetwork", "pulumi")
 }
 func TestGcpSubnetwork_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpsubnetwork", "terraform")
+	runAllScenariosForKind(t, "gcpsubnetwork", "terraform")
 }
 
 // --- GCP Firewall Rule (composed traffic policy: deploys a GcpVpcNetwork fixture via the scenario annotation) ---
 
 func TestGcpFirewallRule_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfirewallrule", "pulumi")
+	runAllScenariosForKind(t, "gcpfirewallrule", "pulumi")
 }
 func TestGcpFirewallRule_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfirewallrule", "terraform")
+	runAllScenariosForKind(t, "gcpfirewallrule", "terraform")
 }
 
 // --- GCP Region Network Endpoint Group (serverless NEG bridge) ---
 
 func TestGcpRegionNetworkEndpointGroup_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpregionnetworkendpointgroup", "pulumi")
+	runAllScenariosForKind(t, "gcpregionnetworkendpointgroup", "pulumi")
 }
 func TestGcpRegionNetworkEndpointGroup_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpregionnetworkendpointgroup", "terraform")
+	runAllScenariosForKind(t, "gcpregionnetworkendpointgroup", "terraform")
 }
 
 // --- GCP URL Map (composed routing: deploys GcpBackendService + GcpHealthCheck prerequisites) ---
 
 func TestGcpUrlMap_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpurlmap", "pulumi")
+	runAllScenariosForKind(t, "gcpurlmap", "pulumi")
 }
 func TestGcpUrlMap_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpurlmap", "terraform")
+	runAllScenariosForKind(t, "gcpurlmap", "terraform")
 }
 
 // --- GCP Managed SSL Certificate (global managed cert leaf) ---
 
 func TestGcpManagedSslCertificate_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmanagedsslcertificate", "pulumi")
+	runAllScenariosForKind(t, "gcpmanagedsslcertificate", "pulumi")
 }
 func TestGcpManagedSslCertificate_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmanagedsslcertificate", "terraform")
+	runAllScenariosForKind(t, "gcpmanagedsslcertificate", "terraform")
 }
 
 // --- GCP Target HTTP Proxy (composed frontend adapter: deploys the GcpUrlMap prerequisite chain) ---
 
 func TestGcpTargetHttpProxy_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcptargethttpproxy", "pulumi")
+	runAllScenariosForKind(t, "gcptargethttpproxy", "pulumi")
 }
 func TestGcpTargetHttpProxy_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcptargethttpproxy", "terraform")
+	runAllScenariosForKind(t, "gcptargethttpproxy", "terraform")
 }
 
 // --- GCP Target HTTPS Proxy (composed TLS frontend: deploys GcpUrlMap + GcpManagedSslCertificate prerequisites) ---
 
 func TestGcpTargetHttpsProxy_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcptargethttpsproxy", "pulumi")
+	runAllScenariosForKind(t, "gcptargethttpsproxy", "pulumi")
 }
 func TestGcpTargetHttpsProxy_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcptargethttpsproxy", "terraform")
+	runAllScenariosForKind(t, "gcptargethttpsproxy", "terraform")
 }
 
 // --- GCP Global Forwarding Rule (the VIP node; the deepest composed chain in the GCP harness) ---
 
 func TestGcpGlobalForwardingRule_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpglobalforwardingrule", "pulumi")
+	runAllScenariosForKind(t, "gcpglobalforwardingrule", "pulumi")
 }
 func TestGcpGlobalForwardingRule_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpglobalforwardingrule", "terraform")
+	runAllScenariosForKind(t, "gcpglobalforwardingrule", "terraform")
 }
 
 // --- GCP SSL Policy (TLS version/cipher hardening; leaf with global + regional scenarios) ---
 
 func TestGcpSslPolicy_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpsslpolicy", "pulumi")
+	runAllScenariosForKind(t, "gcpsslpolicy", "pulumi")
 }
 func TestGcpSslPolicy_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpsslpolicy", "terraform")
+	runAllScenariosForKind(t, "gcpsslpolicy", "terraform")
 }
 
 // --- GCP SSL Certificate (self-managed cert upload; leaf with a checked-in throwaway keypair) ---
 
 func TestGcpSslCertificate_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpsslcertificate", "pulumi")
+	runAllScenariosForKind(t, "gcpsslcertificate", "pulumi")
 }
 func TestGcpSslCertificate_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpsslcertificate", "terraform")
+	runAllScenariosForKind(t, "gcpsslcertificate", "terraform")
 }
 
 // --- GCP Service Networking Connection (private services access peering) ---
 
 func TestGcpServiceNetworkingConnection_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpservicenetworkingconnection", "pulumi")
+	runAllScenariosForKind(t, "gcpservicenetworkingconnection", "pulumi")
 }
 func TestGcpServiceNetworkingConnection_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpservicenetworkingconnection", "terraform")
+	runAllScenariosForKind(t, "gcpservicenetworkingconnection", "terraform")
 }
 
 // --- GCP Address (regional static IP reservation) ---
 
 func TestGcpAddress_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpaddress", "pulumi")
+	runAllScenariosForKind(t, "gcpaddress", "pulumi")
 }
 func TestGcpAddress_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpaddress", "terraform")
+	runAllScenariosForKind(t, "gcpaddress", "terraform")
 }
 
 // --- GCP Global Address (global static IP reservation; the LB VIP class) ---
 
 func TestGcpGlobalAddress_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpglobaladdress", "pulumi")
+	runAllScenariosForKind(t, "gcpglobaladdress", "pulumi")
 }
 func TestGcpGlobalAddress_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpglobaladdress", "terraform")
+	runAllScenariosForKind(t, "gcpglobaladdress", "terraform")
 }
 
 // --- GCP VPC (deep-rebuilt network; leaf scenario) ---
 
 func TestGcpVpcNetwork_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvpcnetwork", "pulumi")
+	runAllScenariosForKind(t, "gcpvpcnetwork", "pulumi")
 }
 func TestGcpVpcNetwork_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvpcnetwork", "terraform")
+	runAllScenariosForKind(t, "gcpvpcnetwork", "terraform")
 }
 
 // --- GCP Cloud SQL (composed PSA chain + public/private instance scenarios) ---
 
 func TestGcpCloudSql_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudsql", "pulumi")
+	runAllScenariosForKind(t, "gcpcloudsql", "pulumi")
 }
 func TestGcpCloudSql_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudsql", "terraform")
+	runAllScenariosForKind(t, "gcpcloudsql", "terraform")
 }
 
 // --- GCP Cloud SQL Database (composed instance prerequisite) ---
 
 func TestGcpCloudSqlDatabase_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudsqldatabase", "pulumi")
+	runAllScenariosForKind(t, "gcpcloudsqldatabase", "pulumi")
 }
 func TestGcpCloudSqlDatabase_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudsqldatabase", "terraform")
+	runAllScenariosForKind(t, "gcpcloudsqldatabase", "terraform")
 }
 
 // --- GCP Cloud SQL User (composed instance prerequisite) ---
 
 func TestGcpCloudSqlUser_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudsqluser", "pulumi")
+	runAllScenariosForKind(t, "gcpcloudsqluser", "pulumi")
 }
 func TestGcpCloudSqlUser_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudsqluser", "terraform")
+	runAllScenariosForKind(t, "gcpcloudsqluser", "terraform")
 }
 
 // GcpRedisInstance scenarios (Memorystore for Redis; the PSA scenario rides
 // the same service networking chain Cloud SQL private IP uses).
 func TestGcpRedisInstance_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpredisinstance", "pulumi")
+	runAllScenariosForKind(t, "gcpredisinstance", "pulumi")
 }
 func TestGcpRedisInstance_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpredisinstance", "terraform")
+	runAllScenariosForKind(t, "gcpredisinstance", "terraform")
 }
 
 // GcpRouterNat scenarios (Cloud Router + NAT gateway; the manual scenario
 // proves NAT IPs referencing GcpAddress reservations).
 func TestGcpRouterNat_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcprouternat", "pulumi")
+	runAllScenariosForKind(t, "gcprouternat", "pulumi")
 }
 func TestGcpRouterNat_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcprouternat", "terraform")
+	runAllScenariosForKind(t, "gcprouternat", "terraform")
 }
 
 // GcpGkeCluster scenarios (the slowest resources in the harness — creates run
@@ -345,10 +345,10 @@ func TestGcpRouterNat_Terraform(t *testing.T) {
 // scenario exercises GKE-managed pod ranges; the private regional scenario
 // exercises named secondary ranges + the private control plane.
 func TestGcpGkeCluster_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpgkecluster", "pulumi")
+	runAllScenariosForKind(t, "gcpgkecluster", "pulumi")
 }
 func TestGcpGkeCluster_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpgkecluster", "terraform")
+	runAllScenariosForKind(t, "gcpgkecluster", "terraform")
 }
 
 // GcpGkeNodePool scenarios. Every scenario deploys a full GKE cluster
@@ -358,114 +358,114 @@ func TestGcpGkeCluster_Terraform(t *testing.T) {
 // exercises scale-to-zero autoscaling, Spot capacity, taints, and kubelet
 // hardening.
 func TestGcpGkeNodePool_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpgkenodepool", "pulumi")
+	runAllScenariosForKind(t, "gcpgkenodepool", "pulumi")
 }
 func TestGcpGkeNodePool_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpgkenodepool", "terraform")
+	runAllScenariosForKind(t, "gcpgkenodepool", "terraform")
 }
 
 // GcpCloudRun scenarios. The minimal scenario is a public hello-service leaf
 // (~3-5 minutes). Direct VPC egress has no live scenario: GCP holds a
 // serverless address reservation in the subnetwork for 1-2 hours after the
 // service is destroyed, which no ephemeral teardown can wait out (recorded
-// exclusion in the component's e2e/profile.yaml).
+// exclusion in the kind's e2e/profile.yaml).
 func TestGcpCloudRun_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudrun", "pulumi")
+	runAllScenariosForKind(t, "gcpcloudrun", "pulumi")
 }
 func TestGcpCloudRun_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudrun", "terraform")
+	runAllScenariosForKind(t, "gcpcloudrun", "terraform")
 }
 
 // GcpAlloydbCluster scenarios (PSA chain + primary cluster; ~10–20 minutes
 // each). Batch runs need -timeout >= 120m.
 func TestGcpAlloydbCluster_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpalloydbcluster", "pulumi")
+	runAllScenariosForKind(t, "gcpalloydbcluster", "pulumi")
 }
 func TestGcpAlloydbCluster_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpalloydbcluster", "terraform")
+	runAllScenariosForKind(t, "gcpalloydbcluster", "terraform")
 }
 
 // GcpAlloydbInstance scenarios (cluster prerequisite + read pool instance).
 func TestGcpAlloydbInstance_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpalloydbinstance", "pulumi")
+	runAllScenariosForKind(t, "gcpalloydbinstance", "pulumi")
 }
 func TestGcpAlloydbInstance_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpalloydbinstance", "terraform")
+	runAllScenariosForKind(t, "gcpalloydbinstance", "terraform")
 }
 
 // GcpAlloydbUser scenarios (cluster prerequisite + BUILT_IN user).
 func TestGcpAlloydbUser_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpalloydbuser", "pulumi")
+	runAllScenariosForKind(t, "gcpalloydbuser", "pulumi")
 }
 func TestGcpAlloydbUser_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpalloydbuser", "terraform")
+	runAllScenariosForKind(t, "gcpalloydbuser", "terraform")
 }
 
 // GcpDnsZone scenarios (public and private managed zones).
 func TestGcpDnsZone_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdnszone", "pulumi")
+	runAllScenariosForKind(t, "gcpdnszone", "pulumi")
 }
 func TestGcpDnsZone_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdnszone", "terraform")
+	runAllScenariosForKind(t, "gcpdnszone", "terraform")
 }
 
 // GcpCloudRunJob scenarios (minimal single-task batch job).
 func TestGcpCloudRunJob_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudrunjob", "pulumi")
+	runAllScenariosForKind(t, "gcpcloudrunjob", "pulumi")
 }
 func TestGcpCloudRunJob_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudrunjob", "terraform")
+	runAllScenariosForKind(t, "gcpcloudrunjob", "terraform")
 }
 
 // GcpSpannerInstance scenarios (100-PU minimal + autoscaling; ~1-2 minutes each).
 func TestGcpSpannerInstance_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpspannerinstance", "pulumi")
+	runAllScenariosForKind(t, "gcpspannerinstance", "pulumi")
 }
 func TestGcpSpannerInstance_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpspannerinstance", "terraform")
+	runAllScenariosForKind(t, "gcpspannerinstance", "terraform")
 }
 
 // GcpSpannerDatabase scenarios (instance prerequisite + database with DDL).
 func TestGcpSpannerDatabase_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpspannerdatabase", "pulumi")
+	runAllScenariosForKind(t, "gcpspannerdatabase", "pulumi")
 }
 func TestGcpSpannerDatabase_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpspannerdatabase", "terraform")
+	runAllScenariosForKind(t, "gcpspannerdatabase", "terraform")
 }
 
 // GcpSpannerBackupSchedule scenarios (instance + database prerequisites +
 // daily full-backup schedule).
 func TestGcpSpannerBackupSchedule_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpspannerbackupschedule", "pulumi")
+	runAllScenariosForKind(t, "gcpspannerbackupschedule", "pulumi")
 }
 func TestGcpSpannerBackupSchedule_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpspannerbackupschedule", "terraform")
+	runAllScenariosForKind(t, "gcpspannerbackupschedule", "terraform")
 }
 
 // GcpBigQueryDataset scenarios (minimal US dataset + explicit access ACL).
 func TestGcpBigQueryDataset_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbigquerydataset", "pulumi")
+	runAllScenariosForKind(t, "gcpbigquerydataset", "pulumi")
 }
 func TestGcpBigQueryDataset_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbigquerydataset", "terraform")
+	runAllScenariosForKind(t, "gcpbigquerydataset", "terraform")
 }
 
 // GcpBigQueryTable scenarios (dataset prerequisite + partitioned native table
 // + literal-SELECT view).
 func TestGcpBigQueryTable_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbigquerytable", "pulumi")
+	runAllScenariosForKind(t, "gcpbigquerytable", "pulumi")
 }
 func TestGcpBigQueryTable_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbigquerytable", "terraform")
+	runAllScenariosForKind(t, "gcpbigquerytable", "terraform")
 }
 
 // GcpServerlessVpcConnector scenarios (network-placement /28 carve +
 // subnet-placement against a dedicated /28 subnetwork prerequisite).
 func TestGcpServerlessVpcConnector_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpserverlessvpcconnector", "pulumi")
+	runAllScenariosForKind(t, "gcpserverlessvpcconnector", "pulumi")
 }
 func TestGcpServerlessVpcConnector_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpserverlessvpcconnector", "terraform")
+	runAllScenariosForKind(t, "gcpserverlessvpcconnector", "terraform")
 }
 
 // GcpCloudFunction scenarios (public HTTP function + connector-egress
@@ -475,531 +475,531 @@ func TestGcpServerlessVpcConnector_Terraform(t *testing.T) {
 // stageCloudFunctionSource).
 func TestGcpCloudFunction_Pulumi(t *testing.T) {
 	stageCloudFunctionSource(t, "pulumi")
-	runAllScenariosForComponent(t, "gcpcloudfunction", "pulumi")
+	runAllScenariosForKind(t, "gcpcloudfunction", "pulumi")
 }
 func TestGcpCloudFunction_Terraform(t *testing.T) {
 	stageCloudFunctionSource(t, "terraform")
-	runAllScenariosForComponent(t, "gcpcloudfunction", "terraform")
+	runAllScenariosForKind(t, "gcpcloudfunction", "terraform")
 }
 
 func TestGcpServiceConnectionPolicy_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpserviceconnectionpolicy", "pulumi")
+	runAllScenariosForKind(t, "gcpserviceconnectionpolicy", "pulumi")
 }
 func TestGcpServiceConnectionPolicy_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpserviceconnectionpolicy", "terraform")
+	runAllScenariosForKind(t, "gcpserviceconnectionpolicy", "terraform")
 }
 
 func TestGcpMemorystoreInstance_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmemorystoreinstance", "pulumi")
+	runAllScenariosForKind(t, "gcpmemorystoreinstance", "pulumi")
 }
 func TestGcpMemorystoreInstance_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmemorystoreinstance", "terraform")
+	runAllScenariosForKind(t, "gcpmemorystoreinstance", "terraform")
 }
 
 func TestGcpBigtableInstance_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbigtableinstance", "pulumi")
+	runAllScenariosForKind(t, "gcpbigtableinstance", "pulumi")
 }
 func TestGcpBigtableInstance_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbigtableinstance", "terraform")
+	runAllScenariosForKind(t, "gcpbigtableinstance", "terraform")
 }
 
 func TestGcpBigtableTable_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbigtabletable", "pulumi")
+	runAllScenariosForKind(t, "gcpbigtabletable", "pulumi")
 }
 func TestGcpBigtableTable_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbigtabletable", "terraform")
+	runAllScenariosForKind(t, "gcpbigtabletable", "terraform")
 }
 
 func TestGcpFirestoreDatabase_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfirestoredatabase", "pulumi")
+	runAllScenariosForKind(t, "gcpfirestoredatabase", "pulumi")
 }
 func TestGcpFirestoreDatabase_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfirestoredatabase", "terraform")
+	runAllScenariosForKind(t, "gcpfirestoredatabase", "terraform")
 }
 
 func TestGcpFirestoreBackupSchedule_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfirestorebackupschedule", "pulumi")
+	runAllScenariosForKind(t, "gcpfirestorebackupschedule", "pulumi")
 }
 func TestGcpFirestoreBackupSchedule_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfirestorebackupschedule", "terraform")
+	runAllScenariosForKind(t, "gcpfirestorebackupschedule", "terraform")
 }
 
 func TestGcpFirestoreIndex_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfirestoreindex", "pulumi")
+	runAllScenariosForKind(t, "gcpfirestoreindex", "pulumi")
 }
 func TestGcpFirestoreIndex_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfirestoreindex", "terraform")
+	runAllScenariosForKind(t, "gcpfirestoreindex", "terraform")
 }
 
 // --- GCP Dataproc Autoscaling Policy (the shareable scaling contract clusters attach by reference) ---
 
 func TestGcpDataprocAutoscalingPolicy_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdataprocautoscalingpolicy", "pulumi")
+	runAllScenariosForKind(t, "gcpdataprocautoscalingpolicy", "pulumi")
 }
 func TestGcpDataprocAutoscalingPolicy_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdataprocautoscalingpolicy", "terraform")
+	runAllScenariosForKind(t, "gcpdataprocautoscalingpolicy", "terraform")
 }
 
 // --- GCP Dataproc Cluster (composed: VPC -> subnetwork -> autoscaling policy chain; ~2-4m per create) ---
 
 func TestGcpDataprocCluster_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdataproccluster", "pulumi")
+	runAllScenariosForKind(t, "gcpdataproccluster", "pulumi")
 }
 func TestGcpDataprocCluster_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdataproccluster", "terraform")
+	runAllScenariosForKind(t, "gcpdataproccluster", "terraform")
 }
 
 // --- GCP Cloud Composer Environment (composed: VPC -> subnetwork chain; 25-45m per create — batch >=240m) ---
 
 func TestGcpCloudComposerEnvironment_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudcomposerenvironment", "pulumi")
+	runAllScenariosForKind(t, "gcpcloudcomposerenvironment", "pulumi")
 }
 func TestGcpCloudComposerEnvironment_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudcomposerenvironment", "terraform")
+	runAllScenariosForKind(t, "gcpcloudcomposerenvironment", "terraform")
 }
 
 // --- GCP Cloud Composer user workloads Secret (composed: full environment chain — batch >=240m) ---
 
 func TestGcpCloudComposerUserWorkloadsSecret_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudcomposeruserworkloadssecret", "pulumi")
+	runAllScenariosForKind(t, "gcpcloudcomposeruserworkloadssecret", "pulumi")
 }
 func TestGcpCloudComposerUserWorkloadsSecret_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudcomposeruserworkloadssecret", "terraform")
+	runAllScenariosForKind(t, "gcpcloudcomposeruserworkloadssecret", "terraform")
 }
 
 // --- GCP Cloud Composer user workloads ConfigMap (composed: full environment chain — batch >=240m) ---
 
 func TestGcpCloudComposerUserWorkloadsConfigMap_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudcomposeruserworkloadsconfigmap", "pulumi")
+	runAllScenariosForKind(t, "gcpcloudcomposeruserworkloadsconfigmap", "pulumi")
 }
 func TestGcpCloudComposerUserWorkloadsConfigMap_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudcomposeruserworkloadsconfigmap", "terraform")
+	runAllScenariosForKind(t, "gcpcloudcomposeruserworkloadsconfigmap", "terraform")
 }
 
 // --- GCP Pub/Sub Schema (the message contract topics attach by reference) ---
 
 func TestGcpPubSubSchema_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcppubsubschema", "pulumi")
+	runAllScenariosForKind(t, "gcppubsubschema", "pulumi")
 }
 func TestGcpPubSubSchema_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcppubsubschema", "terraform")
+	runAllScenariosForKind(t, "gcppubsubschema", "terraform")
 }
 
 // --- GCP Pub/Sub Topic (minimal + schema-validated on the schema prerequisite) ---
 
 func TestGcpPubSubTopic_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcppubsubtopic", "pulumi")
+	runAllScenariosForKind(t, "gcppubsubtopic", "pulumi")
 }
 func TestGcpPubSubTopic_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcppubsubtopic", "terraform")
+	runAllScenariosForKind(t, "gcppubsubtopic", "terraform")
 }
 
 // --- GCP Pub/Sub Subscription (composed: schema -> topic -> subscription chain) ---
 
 func TestGcpPubSubSubscription_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcppubsubsubscription", "pulumi")
+	runAllScenariosForKind(t, "gcppubsubsubscription", "pulumi")
 }
 func TestGcpPubSubSubscription_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcppubsubsubscription", "terraform")
+	runAllScenariosForKind(t, "gcppubsubsubscription", "terraform")
 }
 
 // --- GCP KMS Key Ring (the permanent container for crypto keys; destroy is
 // state-only by GCP design — run-scoped names keep the leftover rings inert) ---
 
 func TestGcpKmsKeyRing_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpkmskeyring", "pulumi")
+	runAllScenariosForKind(t, "gcpkmskeyring", "pulumi")
 }
 func TestGcpKmsKeyRing_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpkmskeyring", "terraform")
+	runAllScenariosForKind(t, "gcpkmskeyring", "terraform")
 }
 
 // --- GCP KMS Key (composed on the ring prerequisite; destroy destroys key
 // VERSIONS and disables rotation — the verifier asserts exactly that) ---
 
 func TestGcpKmsKey_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpkmskey", "pulumi")
+	runAllScenariosForKind(t, "gcpkmskey", "pulumi")
 }
 func TestGcpKmsKey_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpkmskey", "terraform")
+	runAllScenariosForKind(t, "gcpkmskey", "terraform")
 }
 
 // --- GCP KMS Key IAM Member (composed key-scoped grant: deploys the ring → key → service account prerequisite chain) ---
 
 func TestGcpKmsKeyIamMember_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpkmskeyiammember", "pulumi")
+	runAllScenariosForKind(t, "gcpkmskeyiammember", "pulumi")
 }
 func TestGcpKmsKeyIamMember_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpkmskeyiammember", "terraform")
+	runAllScenariosForKind(t, "gcpkmskeyiammember", "terraform")
 }
 
 // --- GCP Pub/Sub Topic IAM Member (composed topic-scoped grant: deploys the topic → logging sink / service account prerequisite chain) ---
 
 func TestGcpPubSubTopicIamMember_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcppubsubtopiciammember", "pulumi")
+	runAllScenariosForKind(t, "gcppubsubtopiciammember", "pulumi")
 }
 func TestGcpPubSubTopicIamMember_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcppubsubtopiciammember", "terraform")
+	runAllScenariosForKind(t, "gcppubsubtopiciammember", "terraform")
 }
 
 // --- GCP GCS Bucket IAM Member (composed bucket-scoped grant: deploys the bucket → logging sink prerequisite chain) ---
 
 func TestGcpGcsBucketIamMember_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpgcsbucketiammember", "pulumi")
+	runAllScenariosForKind(t, "gcpgcsbucketiammember", "pulumi")
 }
 func TestGcpGcsBucketIamMember_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpgcsbucketiammember", "terraform")
+	runAllScenariosForKind(t, "gcpgcsbucketiammember", "terraform")
 }
 
 // GcpCloudTasksQueue scenarios: minimal + http-target-oidc (SA chain).
 func TestGcpCloudTasksQueue_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudtasksqueue", "pulumi")
+	runAllScenariosForKind(t, "gcpcloudtasksqueue", "pulumi")
 }
 func TestGcpCloudTasksQueue_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudtasksqueue", "terraform")
+	runAllScenariosForKind(t, "gcpcloudtasksqueue", "terraform")
 }
 
 // GcpCloudSchedulerJob scenarios: pubsub-target (topic chain) +
 // http-target-oidc (SA chain).
 func TestGcpCloudSchedulerJob_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudschedulerjob", "pulumi")
+	runAllScenariosForKind(t, "gcpcloudschedulerjob", "pulumi")
 }
 func TestGcpCloudSchedulerJob_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudschedulerjob", "terraform")
+	runAllScenariosForKind(t, "gcpcloudschedulerjob", "terraform")
 }
 
 // --- GCP Vertex AI Endpoint (minimal + dedicated-endpoint; fast deploy) ---
 
 func TestGcpVertexAiEndpoint_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaiendpoint", "pulumi")
+	runAllScenariosForKind(t, "gcpvertexaiendpoint", "pulumi")
 }
 func TestGcpVertexAiEndpoint_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaiendpoint", "terraform")
+	runAllScenariosForKind(t, "gcpvertexaiendpoint", "terraform")
 }
 
 // --- GCP Vertex AI Index (Vector Search; empty STREAM_UPDATE index, ~10-60m per create) ---
 
 func TestGcpVertexAiIndex_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaiindex", "pulumi")
+	runAllScenariosForKind(t, "gcpvertexaiindex", "pulumi")
 }
 func TestGcpVertexAiIndex_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaiindex", "terraform")
+	runAllScenariosForKind(t, "gcpvertexaiindex", "terraform")
 }
 
 // --- GCP Vertex AI Index Endpoint (Vector Search serving surface; public arm, fast) ---
 
 func TestGcpVertexAiIndexEndpoint_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaiindexendpoint", "pulumi")
+	runAllScenariosForKind(t, "gcpvertexaiindexendpoint", "pulumi")
 }
 func TestGcpVertexAiIndexEndpoint_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaiindexendpoint", "terraform")
+	runAllScenariosForKind(t, "gcpvertexaiindexendpoint", "terraform")
 }
 
 // --- GCP Vertex AI Deployed Index (composed: index + index endpoint chain; deploy up to 45m) ---
 
 func TestGcpVertexAiDeployedIndex_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaideployedindex", "pulumi")
+	runAllScenariosForKind(t, "gcpvertexaideployedindex", "pulumi")
 }
 func TestGcpVertexAiDeployedIndex_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaideployedindex", "terraform")
+	runAllScenariosForKind(t, "gcpvertexaideployedindex", "terraform")
 }
 
 // --- GCP Vertex AI Notebook (composed: VPC -> subnetwork chain; ~5-15m per create) ---
 
 func TestGcpVertexAiNotebook_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexainotebook", "pulumi")
+	runAllScenariosForKind(t, "gcpvertexainotebook", "pulumi")
 }
 func TestGcpVertexAiNotebook_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexainotebook", "terraform")
+	runAllScenariosForKind(t, "gcpvertexainotebook", "terraform")
 }
 
 // GcpArtifactRegistryRepo scenarios: docker-standard (immutable tags +
 // both cleanup-policy arms + additive IAM member on the SA prerequisite)
 // + remote-docker-hub (the pull-through REMOTE_REPOSITORY arm).
 func TestGcpArtifactRegistryRepo_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpartifactregistryrepo", "pulumi")
+	runAllScenariosForKind(t, "gcpartifactregistryrepo", "pulumi")
 }
 func TestGcpArtifactRegistryRepo_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpartifactregistryrepo", "terraform")
+	runAllScenariosForKind(t, "gcpartifactregistryrepo", "terraform")
 }
 
 // GcpGcsBucket scenarios: minimal (private posture) + features
 // (versioning, explicit-zero lifecycle contract, autoclass, soft delete,
 // additive IAM member on the SA prerequisite).
 func TestGcpGcsBucket_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpgcsbucket", "pulumi")
+	runAllScenariosForKind(t, "gcpgcsbucket", "pulumi")
 }
 func TestGcpGcsBucket_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpgcsbucket", "terraform")
+	runAllScenariosForKind(t, "gcpgcsbucket", "terraform")
 }
 
 // GcpComputeDisk scenario: the minimal empty data volume (leaf; creates in
 // seconds). Its attachment role is proven by the compute instance chain.
 func TestGcpComputeDisk_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcomputedisk", "pulumi")
+	runAllScenariosForKind(t, "gcpcomputedisk", "pulumi")
 }
 func TestGcpComputeDisk_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcomputedisk", "terraform")
+	runAllScenariosForKind(t, "gcpcomputedisk", "terraform")
 }
 
 // GcpComputeInstance scenarios: minimal (subnetwork chain + ephemeral
 // external IP) + features (Spot + shielded + SA identity + a pre-created
 // GcpComputeDisk attached by self-link reference).
 func TestGcpComputeInstance_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcomputeinstance", "pulumi")
+	runAllScenariosForKind(t, "gcpcomputeinstance", "pulumi")
 }
 func TestGcpComputeInstance_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcomputeinstance", "terraform")
+	runAllScenariosForKind(t, "gcpcomputeinstance", "terraform")
 }
 
 // GcpFilestoreInstance scenario: BASIC_HDD share on the chained VPC via
 // DIRECT_PEERING (~5-12m per create — under the plan-only threshold).
 func TestGcpFilestoreInstance_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfilestoreinstance", "pulumi")
+	runAllScenariosForKind(t, "gcpfilestoreinstance", "pulumi")
 }
 func TestGcpFilestoreInstance_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfilestoreinstance", "terraform")
+	runAllScenariosForKind(t, "gcpfilestoreinstance", "terraform")
 }
 
 // GcpDnsRecord scenario: static A record in a chained GcpDnsZone.
 func TestGcpDnsRecord_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdnsrecord", "pulumi")
+	runAllScenariosForKind(t, "gcpdnsrecord", "pulumi")
 }
 func TestGcpDnsRecord_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdnsrecord", "terraform")
+	runAllScenariosForKind(t, "gcpdnsrecord", "terraform")
 }
 
 // GcpGkeWorkloadIdentityBinding scenario: IAM grant on a chained
 // GcpServiceAccount.
 func TestGcpGkeWorkloadIdentityBinding_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpgkeworkloadidentitybinding", "pulumi")
+	runAllScenariosForKind(t, "gcpgkeworkloadidentitybinding", "pulumi")
 }
 func TestGcpGkeWorkloadIdentityBinding_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpgkeworkloadidentitybinding", "terraform")
+	runAllScenariosForKind(t, "gcpgkeworkloadidentitybinding", "terraform")
 }
 
 // GcpCloudArmorPolicy scenario: leaf allowlist policy with explicit default deny.
 func TestGcpCloudArmorPolicy_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudarmorpolicy", "pulumi")
+	runAllScenariosForKind(t, "gcpcloudarmorpolicy", "pulumi")
 }
 func TestGcpCloudArmorPolicy_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudarmorpolicy", "terraform")
+	runAllScenariosForKind(t, "gcpcloudarmorpolicy", "terraform")
 }
 
 // GcpCertManagerDnsAuthorization scenario: DNS authorization in a chained zone.
 func TestGcpCertManagerDnsAuthorization_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcertmanagerdnsauthorization", "pulumi")
+	runAllScenariosForKind(t, "gcpcertmanagerdnsauthorization", "pulumi")
 }
 func TestGcpCertManagerDnsAuthorization_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcertmanagerdnsauthorization", "terraform")
+	runAllScenariosForKind(t, "gcpcertmanagerdnsauthorization", "terraform")
 }
 
 // --- GCP Certificate Manager Trust Config (leaf: self-signed test root as trust anchor plus one allowlisted certificate) ---
 
 func TestGcpCertManagerTrustConfig_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcertmanagertrustconfig", "pulumi")
+	runAllScenariosForKind(t, "gcpcertmanagertrustconfig", "pulumi")
 }
 func TestGcpCertManagerTrustConfig_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcertmanagertrustconfig", "terraform")
+	runAllScenariosForKind(t, "gcpcertmanagertrustconfig", "terraform")
 }
 
 // --- GCP Certificate Manager Issuance Config (composed: deploys the DevOps CA pool → self-signed root authority prerequisite chain) ---
 
 func TestGcpCertManagerIssuanceConfig_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcertmanagerissuanceconfig", "pulumi")
+	runAllScenariosForKind(t, "gcpcertmanagerissuanceconfig", "pulumi")
 }
 func TestGcpCertManagerIssuanceConfig_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcertmanagerissuanceconfig", "terraform")
+	runAllScenariosForKind(t, "gcpcertmanagerissuanceconfig", "terraform")
 }
 
 // GcpCertManagerCert scenario: managed cert composed from zone→auth→record→cert.
 func TestGcpCertManagerCert_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcertmanagercert", "pulumi")
+	runAllScenariosForKind(t, "gcpcertmanagercert", "pulumi")
 }
 func TestGcpCertManagerCert_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcertmanagercert", "terraform")
+	runAllScenariosForKind(t, "gcpcertmanagercert", "terraform")
 }
 
 // GcpProject is plan-only unless org-level Project Creator credentials are available.
 func TestGcpProject_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpproject", "pulumi")
+	runAllScenariosForKind(t, "gcpproject", "pulumi")
 }
 func TestGcpProject_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpproject", "terraform")
+	runAllScenariosForKind(t, "gcpproject", "terraform")
 }
 
 // --- GCP Monitoring Notification Channel (alerting delivery endpoint; free, second-scale) ---
 
 func TestGcpMonitoringNotificationChannel_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmonitoringnotificationchannel", "pulumi")
+	runAllScenariosForKind(t, "gcpmonitoringnotificationchannel", "pulumi")
 }
 func TestGcpMonitoringNotificationChannel_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmonitoringnotificationchannel", "terraform")
+	runAllScenariosForKind(t, "gcpmonitoringnotificationchannel", "terraform")
 }
 
 // --- GCP Monitoring Alert Policy (composes the channel prerequisite fixture) ---
 
 func TestGcpMonitoringAlertPolicy_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmonitoringalertpolicy", "pulumi")
+	runAllScenariosForKind(t, "gcpmonitoringalertpolicy", "pulumi")
 }
 func TestGcpMonitoringAlertPolicy_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmonitoringalertpolicy", "terraform")
+	runAllScenariosForKind(t, "gcpmonitoringalertpolicy", "terraform")
 }
 
 // --- GCP Monitoring Uptime Check (probes example.com; free, second-scale) ---
 
 func TestGcpMonitoringUptimeCheck_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmonitoringuptimecheck", "pulumi")
+	runAllScenariosForKind(t, "gcpmonitoringuptimecheck", "pulumi")
 }
 func TestGcpMonitoringUptimeCheck_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmonitoringuptimecheck", "terraform")
+	runAllScenariosForKind(t, "gcpmonitoringuptimecheck", "terraform")
 }
 
 // --- GCP Logging Sink (composes the GCS bucket prerequisite; pubsub arm composes a topic) ---
 
 func TestGcpLoggingSink_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcploggingsink", "pulumi")
+	runAllScenariosForKind(t, "gcploggingsink", "pulumi")
 }
 func TestGcpLoggingSink_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcploggingsink", "terraform")
+	runAllScenariosForKind(t, "gcploggingsink", "terraform")
 }
 
 // --- GCP Secret Manager Secret (composes the service-account prerequisite for the scoped grant) ---
 
 func TestGcpSecretManagerSecret_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpsecretmanagersecret", "pulumi")
+	runAllScenariosForKind(t, "gcpsecretmanagersecret", "pulumi")
 }
 func TestGcpSecretManagerSecret_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpsecretmanagersecret", "terraform")
+	runAllScenariosForKind(t, "gcpsecretmanagersecret", "terraform")
 }
 
 func TestGcpIdentityPlatformConfig_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpidentityplatformconfig", "pulumi")
+	runAllScenariosForKind(t, "gcpidentityplatformconfig", "pulumi")
 }
 
 func TestGcpIdentityPlatformConfig_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpidentityplatformconfig", "terraform")
+	runAllScenariosForKind(t, "gcpidentityplatformconfig", "terraform")
 }
 
 func TestGcpIdentityPlatformTenant_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpidentityplatformtenant", "pulumi")
+	runAllScenariosForKind(t, "gcpidentityplatformtenant", "pulumi")
 }
 
 func TestGcpIdentityPlatformTenant_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpidentityplatformtenant", "terraform")
+	runAllScenariosForKind(t, "gcpidentityplatformtenant", "terraform")
 }
 
 func TestGcpIamOauthClient_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpiamoauthclient", "pulumi")
+	runAllScenariosForKind(t, "gcpiamoauthclient", "pulumi")
 }
 
 func TestGcpIamOauthClient_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpiamoauthclient", "terraform")
+	runAllScenariosForKind(t, "gcpiamoauthclient", "terraform")
 }
 
 func TestGcpIamDenyPolicy_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpiamdenypolicy", "pulumi")
+	runAllScenariosForKind(t, "gcpiamdenypolicy", "pulumi")
 }
 
 func TestGcpIamDenyPolicy_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpiamdenypolicy", "terraform")
+	runAllScenariosForKind(t, "gcpiamdenypolicy", "terraform")
 }
 
 func TestGcpCloudRunDomainMapping_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudrundomainmapping", "pulumi")
+	runAllScenariosForKind(t, "gcpcloudrundomainmapping", "pulumi")
 }
 
 func TestGcpCloudRunDomainMapping_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudrundomainmapping", "terraform")
+	runAllScenariosForKind(t, "gcpcloudrundomainmapping", "terraform")
 }
 
 func TestGcpMonitoringDashboard_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmonitoringdashboard", "pulumi")
+	runAllScenariosForKind(t, "gcpmonitoringdashboard", "pulumi")
 }
 
 func TestGcpMonitoringDashboard_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmonitoringdashboard", "terraform")
+	runAllScenariosForKind(t, "gcpmonitoringdashboard", "terraform")
 }
 
 func TestGcpMonitoringSlo_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmonitoringslo", "pulumi")
+	runAllScenariosForKind(t, "gcpmonitoringslo", "pulumi")
 }
 
 func TestGcpMonitoringSlo_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmonitoringslo", "terraform")
+	runAllScenariosForKind(t, "gcpmonitoringslo", "terraform")
 }
 
 // --- GCP Log Bucket (the views-analytics arm links a BigQuery dataset) ---
 
 func TestGcpLogBucket_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcplogbucket", "pulumi")
+	runAllScenariosForKind(t, "gcplogbucket", "pulumi")
 }
 
 func TestGcpLogBucket_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcplogbucket", "terraform")
+	runAllScenariosForKind(t, "gcplogbucket", "terraform")
 }
 
 // --- GCP Log Metric (the bucket-scoped arm composes the log-bucket prerequisite) ---
 
 func TestGcpLogMetric_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcplogmetric", "pulumi")
+	runAllScenariosForKind(t, "gcplogmetric", "pulumi")
 }
 
 func TestGcpLogMetric_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcplogmetric", "terraform")
+	runAllScenariosForKind(t, "gcplogmetric", "terraform")
 }
 
 // --- GCP Workflow (serverless orchestrator; the Eventarc destination target) ---
 
 func TestGcpWorkflow_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpworkflow", "pulumi")
+	runAllScenariosForKind(t, "gcpworkflow", "pulumi")
 }
 func TestGcpWorkflow_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpworkflow", "terraform")
+	runAllScenariosForKind(t, "gcpworkflow", "terraform")
 }
 
 // --- GCP Compute MIG (managed instance group: deploys the GcpVpcNetwork prerequisite; the regional scenario adds the GcpHealthCheck fixture) ---
 
 func TestGcpComputeMig_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcomputemig", "pulumi")
+	runAllScenariosForKind(t, "gcpcomputemig", "pulumi")
 }
 func TestGcpComputeMig_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcomputemig", "terraform")
+	runAllScenariosForKind(t, "gcpcomputemig", "terraform")
 }
 
 // --- GCP Eventarc Trigger (event routing: deploys the GcpCloudRun prerequisite) ---
 
 func TestGcpEventarcTrigger_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpeventarctrigger", "pulumi")
+	runAllScenariosForKind(t, "gcpeventarctrigger", "pulumi")
 }
 func TestGcpEventarcTrigger_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpeventarctrigger", "terraform")
+	runAllScenariosForKind(t, "gcpeventarctrigger", "terraform")
 }
 
 // --- GCP Eventarc Message Bus (Eventarc Advanced: bus + sources + pipelines + enrollments) ---
 
 func TestGcpEventarcMessageBus_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpeventarcmessagebus", "pulumi")
+	runAllScenariosForKind(t, "gcpeventarcmessagebus", "pulumi")
 }
 func TestGcpEventarcMessageBus_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpeventarcmessagebus", "terraform")
+	runAllScenariosForKind(t, "gcpeventarcmessagebus", "terraform")
 }
 
 func TestGcpPlantonRunner_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpplantonrunner", "pulumi")
+	runAllScenariosForKind(t, "gcpplantonrunner", "pulumi")
 }
 func TestGcpPlantonRunner_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpplantonrunner", "terraform")
+	runAllScenariosForKind(t, "gcpplantonrunner", "terraform")
 }
 
 // --- GCP API Key (soft-deleted for 30 days after destroy, and the key id
 // stays reserved for that window — scenarios carry the run id in key_id) ---
 
 func TestGcpApiKey_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpapikey", "pulumi")
+	runAllScenariosForKind(t, "gcpapikey", "pulumi")
 }
 
 func TestGcpApiKey_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpapikey", "terraform")
+	runAllScenariosForKind(t, "gcpapikey", "terraform")
 }
 
 // --- GCP Firebase Project (enabling Firebase is permanent by Google's
@@ -1008,11 +1008,11 @@ func TestGcpApiKey_Terraform(t *testing.T) {
 // detach contract, not absence) ---
 
 func TestGcpFirebaseProject_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfirebaseproject", "pulumi")
+	runAllScenariosForKind(t, "gcpfirebaseproject", "pulumi")
 }
 
 func TestGcpFirebaseProject_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfirebaseproject", "terraform")
+	runAllScenariosForKind(t, "gcpfirebaseproject", "terraform")
 }
 
 // --- GCP Firebase app registrations (Android, Apple, Web). Each deploys
@@ -1025,27 +1025,27 @@ func TestGcpFirebaseProject_Terraform(t *testing.T) {
 // configuration ---
 
 func TestGcpFirebaseAndroidApp_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfirebaseandroidapp", "pulumi")
+	runAllScenariosForKind(t, "gcpfirebaseandroidapp", "pulumi")
 }
 
 func TestGcpFirebaseAndroidApp_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfirebaseandroidapp", "terraform")
+	runAllScenariosForKind(t, "gcpfirebaseandroidapp", "terraform")
 }
 
 func TestGcpFirebaseAppleApp_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfirebaseappleapp", "pulumi")
+	runAllScenariosForKind(t, "gcpfirebaseappleapp", "pulumi")
 }
 
 func TestGcpFirebaseAppleApp_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfirebaseappleapp", "terraform")
+	runAllScenariosForKind(t, "gcpfirebaseappleapp", "terraform")
 }
 
 func TestGcpFirebaseWebApp_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfirebasewebapp", "pulumi")
+	runAllScenariosForKind(t, "gcpfirebasewebapp", "pulumi")
 }
 
 func TestGcpFirebaseWebApp_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfirebasewebapp", "terraform")
+	runAllScenariosForKind(t, "gcpfirebasewebapp", "terraform")
 }
 
 // --- GCP Folder (organization-level: needs roles/resourcemanager.folderAdmin
@@ -1054,11 +1054,11 @@ func TestGcpFirebaseWebApp_Terraform(t *testing.T) {
 // the run id and set deletion_protection: false so the harness can destroy) ---
 
 func TestGcpFolder_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfolder", "pulumi")
+	runAllScenariosForKind(t, "gcpfolder", "pulumi")
 }
 
 func TestGcpFolder_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpfolder", "terraform")
+	runAllScenariosForKind(t, "gcpfolder", "terraform")
 }
 
 // --- GCP Organization Policy (the project-scoped arm proves live with
@@ -1066,22 +1066,22 @@ func TestGcpFolder_Terraform(t *testing.T) {
 // arms are plan-only until the org-scoped identity exists) ---
 
 func TestGcpOrgPolicy_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcporgpolicy", "pulumi")
+	runAllScenariosForKind(t, "gcporgpolicy", "pulumi")
 }
 
 func TestGcpOrgPolicy_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcporgpolicy", "terraform")
+	runAllScenariosForKind(t, "gcporgpolicy", "terraform")
 }
 
 // --- GCP Organization Policy Custom Constraint (organization-scoped by
 // Google's design: plan-only until the org-scoped test identity exists) ---
 
 func TestGcpOrgPolicyCustomConstraint_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcporgpolicycustomconstraint", "pulumi")
+	runAllScenariosForKind(t, "gcporgpolicycustomconstraint", "pulumi")
 }
 
 func TestGcpOrgPolicyCustomConstraint_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcporgpolicycustomconstraint", "terraform")
+	runAllScenariosForKind(t, "gcporgpolicycustomconstraint", "terraform")
 }
 
 // --- GCP Tag Key / Tag Value / Tag Binding (the project-owned chain proves
@@ -1091,481 +1091,481 @@ func TestGcpOrgPolicyCustomConstraint_Terraform(t *testing.T) {
 // harness dependency order) ---
 
 func TestGcpTagKey_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcptagkey", "pulumi")
+	runAllScenariosForKind(t, "gcptagkey", "pulumi")
 }
 
 func TestGcpTagKey_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcptagkey", "terraform")
+	runAllScenariosForKind(t, "gcptagkey", "terraform")
 }
 
 func TestGcpTagValue_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcptagvalue", "pulumi")
+	runAllScenariosForKind(t, "gcptagvalue", "pulumi")
 }
 
 func TestGcpTagValue_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcptagvalue", "terraform")
+	runAllScenariosForKind(t, "gcptagvalue", "terraform")
 }
 
 func TestGcpTagBinding_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcptagbinding", "pulumi")
+	runAllScenariosForKind(t, "gcptagbinding", "pulumi")
 }
 
 func TestGcpTagBinding_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcptagbinding", "terraform")
+	runAllScenariosForKind(t, "gcptagbinding", "terraform")
 }
 
 // --- GCP networking fabric (Shared VPC, VPC peering, HA VPN) ---
 
 func TestGcpSharedVpcHost_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpsharedvpchost", "pulumi")
+	runAllScenariosForKind(t, "gcpsharedvpchost", "pulumi")
 }
 
 func TestGcpSharedVpcHost_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpsharedvpchost", "terraform")
+	runAllScenariosForKind(t, "gcpsharedvpchost", "terraform")
 }
 
 func TestGcpSharedVpcServiceProject_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpsharedvpcserviceproject", "pulumi")
+	runAllScenariosForKind(t, "gcpsharedvpcserviceproject", "pulumi")
 }
 
 func TestGcpSharedVpcServiceProject_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpsharedvpcserviceproject", "terraform")
+	runAllScenariosForKind(t, "gcpsharedvpcserviceproject", "terraform")
 }
 
 func TestGcpVpcPeering_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvpcpeering", "pulumi")
+	runAllScenariosForKind(t, "gcpvpcpeering", "pulumi")
 }
 
 func TestGcpVpcPeering_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvpcpeering", "terraform")
+	runAllScenariosForKind(t, "gcpvpcpeering", "terraform")
 }
 
 func TestGcpHaVpnGateway_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcphavpngateway", "pulumi")
+	runAllScenariosForKind(t, "gcphavpngateway", "pulumi")
 }
 
 func TestGcpHaVpnGateway_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcphavpngateway", "terraform")
+	runAllScenariosForKind(t, "gcphavpngateway", "terraform")
 }
 
 func TestGcpHaVpnConnection_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcphavpnconnection", "pulumi")
+	runAllScenariosForKind(t, "gcphavpnconnection", "pulumi")
 }
 
 func TestGcpHaVpnConnection_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcphavpnconnection", "terraform")
+	runAllScenariosForKind(t, "gcphavpnconnection", "terraform")
 }
 
 // --- GCP firewall policies (hierarchical: organization-scoped, deferred; network: both families prove in the harness project) ---
 
 func TestGcpHierarchicalFirewallPolicy_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcphierarchicalfirewallpolicy", "pulumi")
+	runAllScenariosForKind(t, "gcphierarchicalfirewallpolicy", "pulumi")
 }
 
 func TestGcpHierarchicalFirewallPolicy_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcphierarchicalfirewallpolicy", "terraform")
+	runAllScenariosForKind(t, "gcphierarchicalfirewallpolicy", "terraform")
 }
 
 func TestGcpNetworkFirewallPolicy_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpnetworkfirewallpolicy", "pulumi")
+	runAllScenariosForKind(t, "gcpnetworkfirewallpolicy", "pulumi")
 }
 
 func TestGcpNetworkFirewallPolicy_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpnetworkfirewallpolicy", "terraform")
+	runAllScenariosForKind(t, "gcpnetworkfirewallpolicy", "terraform")
 }
 
 // --- GCP Private Service Connect producer (publishes an internal passthrough load balancer fixture chain) and network endpoint groups (zonal with a VM fixture; global internet) ---
 
 func TestGcpPscServiceAttachment_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcppscserviceattachment", "pulumi")
+	runAllScenariosForKind(t, "gcppscserviceattachment", "pulumi")
 }
 
 func TestGcpPscServiceAttachment_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcppscserviceattachment", "terraform")
+	runAllScenariosForKind(t, "gcppscserviceattachment", "terraform")
 }
 
 func TestGcpRedisCluster_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcprediscluster", "pulumi")
+	runAllScenariosForKind(t, "gcprediscluster", "pulumi")
 }
 
 func TestGcpRedisCluster_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcprediscluster", "terraform")
+	runAllScenariosForKind(t, "gcprediscluster", "terraform")
 }
 
 func TestGcpRedisClusterEndpointSet_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpredisclusterendpointset", "pulumi")
+	runAllScenariosForKind(t, "gcpredisclusterendpointset", "pulumi")
 }
 
 func TestGcpRedisClusterEndpointSet_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpredisclusterendpointset", "terraform")
+	runAllScenariosForKind(t, "gcpredisclusterendpointset", "terraform")
 }
 
 func TestGcpCloudRunWorkerPool_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudrunworkerpool", "pulumi")
+	runAllScenariosForKind(t, "gcpcloudrunworkerpool", "pulumi")
 }
 
 func TestGcpCloudRunWorkerPool_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudrunworkerpool", "terraform")
+	runAllScenariosForKind(t, "gcpcloudrunworkerpool", "terraform")
 }
 
 func TestGcpVertexAiRagEngineConfig_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexairagengineconfig", "pulumi")
+	runAllScenariosForKind(t, "gcpvertexairagengineconfig", "pulumi")
 }
 
 func TestGcpVertexAiRagEngineConfig_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexairagengineconfig", "terraform")
+	runAllScenariosForKind(t, "gcpvertexairagengineconfig", "terraform")
 }
 
 func TestGcpVectorSearchCollection_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvectorsearchcollection", "pulumi")
+	runAllScenariosForKind(t, "gcpvectorsearchcollection", "pulumi")
 }
 
 func TestGcpVectorSearchCollection_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvectorsearchcollection", "terraform")
+	runAllScenariosForKind(t, "gcpvectorsearchcollection", "terraform")
 }
 
 func TestGcpVertexAiSearchDataStore_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaisearchdatastore", "pulumi")
+	runAllScenariosForKind(t, "gcpvertexaisearchdatastore", "pulumi")
 }
 
 func TestGcpVertexAiSearchDataStore_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaisearchdatastore", "terraform")
+	runAllScenariosForKind(t, "gcpvertexaisearchdatastore", "terraform")
 }
 
 func TestGcpVertexAiSearchEngine_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaisearchengine", "pulumi")
+	runAllScenariosForKind(t, "gcpvertexaisearchengine", "pulumi")
 }
 
 func TestGcpVertexAiSearchEngine_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaisearchengine", "terraform")
+	runAllScenariosForKind(t, "gcpvertexaisearchengine", "terraform")
 }
 
 func TestGcpVertexAiSearchDataConnector_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaisearchdataconnector", "pulumi")
+	runAllScenariosForKind(t, "gcpvertexaisearchdataconnector", "pulumi")
 }
 
 func TestGcpVertexAiSearchDataConnector_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaisearchdataconnector", "terraform")
+	runAllScenariosForKind(t, "gcpvertexaisearchdataconnector", "terraform")
 }
 
 func TestGcpVertexAiFeatureGroup_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaifeaturegroup", "pulumi")
+	runAllScenariosForKind(t, "gcpvertexaifeaturegroup", "pulumi")
 }
 
 func TestGcpVertexAiFeatureGroup_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaifeaturegroup", "terraform")
+	runAllScenariosForKind(t, "gcpvertexaifeaturegroup", "terraform")
 }
 
 func TestGcpVertexAiFeatureOnlineStore_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaifeatureonlinestore", "pulumi")
+	runAllScenariosForKind(t, "gcpvertexaifeatureonlinestore", "pulumi")
 }
 
 func TestGcpVertexAiFeatureOnlineStore_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaifeatureonlinestore", "terraform")
+	runAllScenariosForKind(t, "gcpvertexaifeatureonlinestore", "terraform")
 }
 
 func TestGcpVertexAiDataset_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaidataset", "pulumi")
+	runAllScenariosForKind(t, "gcpvertexaidataset", "pulumi")
 }
 
 func TestGcpVertexAiDataset_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaidataset", "terraform")
+	runAllScenariosForKind(t, "gcpvertexaidataset", "terraform")
 }
 
 func TestGcpVertexAiTensorboard_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaitensorboard", "pulumi")
+	runAllScenariosForKind(t, "gcpvertexaitensorboard", "pulumi")
 }
 
 func TestGcpVertexAiTensorboard_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaitensorboard", "terraform")
+	runAllScenariosForKind(t, "gcpvertexaitensorboard", "terraform")
 }
 
 func TestGcpModelArmorTemplate_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmodelarmortemplate", "pulumi")
+	runAllScenariosForKind(t, "gcpmodelarmortemplate", "pulumi")
 }
 
 func TestGcpModelArmorTemplate_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmodelarmortemplate", "terraform")
+	runAllScenariosForKind(t, "gcpmodelarmortemplate", "terraform")
 }
 
 func TestGcpModelArmorFloorSetting_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmodelarmorfloorsetting", "pulumi")
+	runAllScenariosForKind(t, "gcpmodelarmorfloorsetting", "pulumi")
 }
 
 func TestGcpModelArmorFloorSetting_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmodelarmorfloorsetting", "terraform")
+	runAllScenariosForKind(t, "gcpmodelarmorfloorsetting", "terraform")
 }
 
 func TestGcpDocumentAiProcessor_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdocumentaiprocessor", "pulumi")
+	runAllScenariosForKind(t, "gcpdocumentaiprocessor", "pulumi")
 }
 
 func TestGcpDocumentAiProcessor_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdocumentaiprocessor", "terraform")
+	runAllScenariosForKind(t, "gcpdocumentaiprocessor", "terraform")
 }
 
 func TestGcpColabRuntimeTemplate_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcolabruntimetemplate", "pulumi")
+	runAllScenariosForKind(t, "gcpcolabruntimetemplate", "pulumi")
 }
 
 func TestGcpColabRuntimeTemplate_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcolabruntimetemplate", "terraform")
+	runAllScenariosForKind(t, "gcpcolabruntimetemplate", "terraform")
 }
 
 func TestGcpColabRuntime_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcolabruntime", "pulumi")
+	runAllScenariosForKind(t, "gcpcolabruntime", "pulumi")
 }
 
 func TestGcpColabRuntime_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcolabruntime", "terraform")
+	runAllScenariosForKind(t, "gcpcolabruntime", "terraform")
 }
 
 func TestGcpColabSchedule_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcolabschedule", "pulumi")
+	runAllScenariosForKind(t, "gcpcolabschedule", "pulumi")
 }
 
 func TestGcpColabSchedule_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcolabschedule", "terraform")
+	runAllScenariosForKind(t, "gcpcolabschedule", "terraform")
 }
 
 func TestGcpTpuVm_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcptpuvm", "pulumi")
+	runAllScenariosForKind(t, "gcptpuvm", "pulumi")
 }
 
 func TestGcpTpuVm_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcptpuvm", "terraform")
+	runAllScenariosForKind(t, "gcptpuvm", "terraform")
 }
 
 func TestGcpTpuQueuedResource_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcptpuqueuedresource", "pulumi")
+	runAllScenariosForKind(t, "gcptpuqueuedresource", "pulumi")
 }
 
 func TestGcpTpuQueuedResource_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcptpuqueuedresource", "terraform")
+	runAllScenariosForKind(t, "gcptpuqueuedresource", "terraform")
 }
 
 func TestGcpDialogflowCxAgent_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdialogflowcxagent", "pulumi")
+	runAllScenariosForKind(t, "gcpdialogflowcxagent", "pulumi")
 }
 
 func TestGcpDialogflowCxAgent_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdialogflowcxagent", "terraform")
+	runAllScenariosForKind(t, "gcpdialogflowcxagent", "terraform")
 }
 
 func TestGcpDialogflowCxSecuritySettings_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdialogflowcxsecuritysettings", "pulumi")
+	runAllScenariosForKind(t, "gcpdialogflowcxsecuritysettings", "pulumi")
 }
 
 func TestGcpDialogflowCxSecuritySettings_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdialogflowcxsecuritysettings", "terraform")
+	runAllScenariosForKind(t, "gcpdialogflowcxsecuritysettings", "terraform")
 }
 
 func TestGcpManagedKafkaCluster_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmanagedkafkacluster", "pulumi")
+	runAllScenariosForKind(t, "gcpmanagedkafkacluster", "pulumi")
 }
 
 func TestGcpManagedKafkaCluster_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmanagedkafkacluster", "terraform")
+	runAllScenariosForKind(t, "gcpmanagedkafkacluster", "terraform")
 }
 
 func TestGcpManagedKafkaTopic_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmanagedkafkatopic", "pulumi")
+	runAllScenariosForKind(t, "gcpmanagedkafkatopic", "pulumi")
 }
 
 func TestGcpManagedKafkaTopic_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmanagedkafkatopic", "terraform")
+	runAllScenariosForKind(t, "gcpmanagedkafkatopic", "terraform")
 }
 
 func TestGcpManagedKafkaAcl_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmanagedkafkaacl", "pulumi")
+	runAllScenariosForKind(t, "gcpmanagedkafkaacl", "pulumi")
 }
 
 func TestGcpManagedKafkaAcl_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmanagedkafkaacl", "terraform")
+	runAllScenariosForKind(t, "gcpmanagedkafkaacl", "terraform")
 }
 
 func TestGcpManagedKafkaConnectCluster_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmanagedkafkaconnectcluster", "pulumi")
+	runAllScenariosForKind(t, "gcpmanagedkafkaconnectcluster", "pulumi")
 }
 
 func TestGcpManagedKafkaConnectCluster_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmanagedkafkaconnectcluster", "terraform")
+	runAllScenariosForKind(t, "gcpmanagedkafkaconnectcluster", "terraform")
 }
 
 func TestGcpManagedKafkaConnector_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmanagedkafkaconnector", "pulumi")
+	runAllScenariosForKind(t, "gcpmanagedkafkaconnector", "pulumi")
 }
 
 func TestGcpManagedKafkaConnector_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpmanagedkafkaconnector", "terraform")
+	runAllScenariosForKind(t, "gcpmanagedkafkaconnector", "terraform")
 }
 
 func TestGcpBigQueryConnection_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbigqueryconnection", "pulumi")
+	runAllScenariosForKind(t, "gcpbigqueryconnection", "pulumi")
 }
 
 func TestGcpBigQueryConnection_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbigqueryconnection", "terraform")
+	runAllScenariosForKind(t, "gcpbigqueryconnection", "terraform")
 }
 
 func TestGcpDatastreamPrivateConnection_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdatastreamprivateconnection", "pulumi")
+	runAllScenariosForKind(t, "gcpdatastreamprivateconnection", "pulumi")
 }
 
 func TestGcpDatastreamPrivateConnection_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdatastreamprivateconnection", "terraform")
+	runAllScenariosForKind(t, "gcpdatastreamprivateconnection", "terraform")
 }
 
 func TestGcpDatastreamConnectionProfile_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdatastreamconnectionprofile", "pulumi")
+	runAllScenariosForKind(t, "gcpdatastreamconnectionprofile", "pulumi")
 }
 
 func TestGcpDatastreamConnectionProfile_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdatastreamconnectionprofile", "terraform")
+	runAllScenariosForKind(t, "gcpdatastreamconnectionprofile", "terraform")
 }
 
 func TestGcpDatastreamStream_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdatastreamstream", "pulumi")
+	runAllScenariosForKind(t, "gcpdatastreamstream", "pulumi")
 }
 
 func TestGcpDatastreamStream_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdatastreamstream", "terraform")
+	runAllScenariosForKind(t, "gcpdatastreamstream", "terraform")
 }
 
 func TestGcpBigQueryReservation_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbigqueryreservation", "pulumi")
+	runAllScenariosForKind(t, "gcpbigqueryreservation", "pulumi")
 }
 
 func TestGcpBigQueryReservation_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbigqueryreservation", "terraform")
+	runAllScenariosForKind(t, "gcpbigqueryreservation", "terraform")
 }
 
 func TestGcpBigQueryCapacityCommitment_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbigquerycapacitycommitment", "pulumi")
+	runAllScenariosForKind(t, "gcpbigquerycapacitycommitment", "pulumi")
 }
 
 func TestGcpBigQueryCapacityCommitment_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbigquerycapacitycommitment", "terraform")
+	runAllScenariosForKind(t, "gcpbigquerycapacitycommitment", "terraform")
 }
 
 func TestGcpBigQueryReservationGroup_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbigqueryreservationgroup", "pulumi")
+	runAllScenariosForKind(t, "gcpbigqueryreservationgroup", "pulumi")
 }
 
 func TestGcpBigQueryReservationGroup_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbigqueryreservationgroup", "terraform")
+	runAllScenariosForKind(t, "gcpbigqueryreservationgroup", "terraform")
 }
 
 func TestGcpVertexAiPersistentResource_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaipersistentresource", "pulumi")
+	runAllScenariosForKind(t, "gcpvertexaipersistentresource", "pulumi")
 }
 
 func TestGcpVertexAiPersistentResource_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaipersistentresource", "terraform")
+	runAllScenariosForKind(t, "gcpvertexaipersistentresource", "terraform")
 }
 
 func TestGcpVertexAiModelGardenDeployment_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaimodelgardendeployment", "pulumi")
+	runAllScenariosForKind(t, "gcpvertexaimodelgardendeployment", "pulumi")
 }
 
 func TestGcpVertexAiModelGardenDeployment_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaimodelgardendeployment", "terraform")
+	runAllScenariosForKind(t, "gcpvertexaimodelgardendeployment", "terraform")
 }
 
 func TestGcpVertexAiAgentEngine_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaiagentengine", "pulumi")
+	runAllScenariosForKind(t, "gcpvertexaiagentengine", "pulumi")
 }
 
 func TestGcpVertexAiAgentEngine_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpvertexaiagentengine", "terraform")
+	runAllScenariosForKind(t, "gcpvertexaiagentengine", "terraform")
 }
 
 func TestGcpNetworkEndpointGroup_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpnetworkendpointgroup", "pulumi")
+	runAllScenariosForKind(t, "gcpnetworkendpointgroup", "pulumi")
 }
 
 func TestGcpNetworkEndpointGroup_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpnetworkendpointgroup", "terraform")
+	runAllScenariosForKind(t, "gcpnetworkendpointgroup", "terraform")
 }
 
 // --- GCP billing budget (deferred: needs a billing account the harness identity administers) and Cloud Identity group (deferred: needs a Cloud Identity customer with Groups Admin) ---
 
 func TestGcpBillingBudget_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbillingbudget", "pulumi")
+	runAllScenariosForKind(t, "gcpbillingbudget", "pulumi")
 }
 
 func TestGcpBillingBudget_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbillingbudget", "terraform")
+	runAllScenariosForKind(t, "gcpbillingbudget", "terraform")
 }
 
 func TestGcpCloudIdentityGroup_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudidentitygroup", "pulumi")
+	runAllScenariosForKind(t, "gcpcloudidentitygroup", "pulumi")
 }
 
 func TestGcpCloudIdentityGroup_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudidentitygroup", "terraform")
+	runAllScenariosForKind(t, "gcpcloudidentitygroup", "terraform")
 }
 
 // --- GCP Certificate Map (SNI routing table: deploys the GcpCertManagerCert prerequisite chain) ---
 
 func TestGcpCertificateMap_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcertificatemap", "pulumi")
+	runAllScenariosForKind(t, "gcpcertificatemap", "pulumi")
 }
 func TestGcpCertificateMap_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcertificatemap", "terraform")
+	runAllScenariosForKind(t, "gcpcertificatemap", "terraform")
 }
 
-// runAllScenariosForComponent discovers and runs all E2E scenarios for a GCP component.
-func runAllScenariosForComponent(t *testing.T, component, engine string) {
+// runAllScenariosForKind discovers and runs all E2E scenarios for a GCP kind.
+func runAllScenariosForKind(t *testing.T, kindDir, engine string) {
 	t.Helper()
 
-	if cp, err := profile.LoadComponentProfile(repoRoot, "gcp", component); err == nil && cp.Spec != nil {
+	if cp, err := profile.LoadKindProfile(repoRoot, "gcp", kindDir); err == nil && cp.Spec != nil {
 		switch cp.Spec.Status {
-		case componentv1.ComponentE2EProfileSpec_deferred,
-			componentv1.ComponentE2EProfileSpec_skip,
-			componentv1.ComponentE2EProfileSpec_stub,
+		case kindv1.CatalogKindE2EProfileSpec_deferred,
+			kindv1.CatalogKindE2EProfileSpec_skip,
+			kindv1.CatalogKindE2EProfileSpec_stub,
 			// pending_proof: fully authored, offline-validated, awaiting its
 			// first live proof. The proving session flips the profile to green
 			// immediately before executing the lanes; until then a sweep must
 			// never run it.
-			componentv1.ComponentE2EProfileSpec_pending_proof:
+			kindv1.CatalogKindE2EProfileSpec_pending_proof:
 			reason := cp.Spec.DeferredReason
 			if reason == "" {
 				reason = cp.Spec.Status.String()
 			}
-			t.Skipf("component %s E2E profile status is %s: %s", component, cp.Spec.Status, reason)
+			t.Skipf("kind %s E2E profile status is %s: %s", kindDir, cp.Spec.Status, reason)
 		}
 	}
 
-	moduleDir, err := discovery.ModuleDir(repoRoot, "gcp", component, engine)
+	moduleDir, err := discovery.ModuleDir(repoRoot, "gcp", kindDir, engine)
 	if err != nil {
-		t.Fatalf("failed to locate %s %s module: %v", component, engine, err)
+		t.Fatalf("failed to locate %s %s module: %v", kindDir, engine, err)
 	}
 
 	if !fileExists(moduleDir) {
-		t.Skipf("component %s %s module not found at %s", component, engine, moduleDir)
+		t.Skipf("kind %s %s module not found at %s", kindDir, engine, moduleDir)
 	}
 
-	scenarios, err := discovery.DiscoverTestScenarios(repoRoot, "gcp", component)
+	scenarios, err := discovery.DiscoverTestScenarios(repoRoot, "gcp", kindDir)
 	if err != nil {
-		t.Fatalf("failed to discover test scenarios for %s: %v", component, err)
+		t.Fatalf("failed to discover test scenarios for %s: %v", kindDir, err)
 	}
 
 	if len(scenarios) == 0 {
-		t.Skipf("no test scenarios found for %s", component)
+		t.Skipf("no test scenarios found for %s", kindDir)
 	}
 
-	t.Logf("Discovered %d scenarios for %s [%s]", len(scenarios), component, engine)
+	t.Logf("Discovered %d scenarios for %s [%s]", len(scenarios), kindDir, engine)
 
 	for _, scenario := range scenarios {
 		scenario := scenario
 		t.Run(scenario.Name, func(t *testing.T) {
-			runSingleScenario(t, component, moduleDir, engine, scenario)
+			runSingleScenario(t, kindDir, moduleDir, engine, scenario)
 		})
 	}
 }
 
-func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenario discovery.TestScenario) {
+func runSingleScenario(t *testing.T, kindDir, moduleDir, engine string, scenario discovery.TestScenario) {
 	t.Helper()
 
 	// Scenarios needing owner-arranged external credentials (the
@@ -1574,14 +1574,14 @@ func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenar
 	// otherwise fail expansion loudly, turning a deferral into a false
 	// failure on every lane without the tokens (CI included).
 	if missing, err := runner.ScenarioMissingRequiredEnv(scenario.ManifestPath); err != nil {
-		t.Fatalf("reading required-env declaration for scenario %s/%s: %v", component, scenario.Name, err)
+		t.Fatalf("reading required-env declaration for scenario %s/%s: %v", kindDir, scenario.Name, err)
 	} else if len(missing) > 0 {
 		t.Skipf("scenario %s/%s needs owner-arranged environment variables that are unset: %s (per %s)",
-			component, scenario.Name, strings.Join(missing, ", "), runner.ScenarioRequiredEnvAnnotation)
+			kindDir, scenario.Name, strings.Join(missing, ", "), runner.ScenarioRequiredEnvAnnotation)
 	}
 
-	tc := &provider.ComponentTestContext{
-		Component:    component,
+	tc := &provider.KindTestContext{
+		Kind:         kindDir,
 		Provider:     "gcp",
 		Engine:       engine,
 		ModuleDir:    moduleDir,
@@ -1602,11 +1602,11 @@ func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenar
 	if engine == "pulumi" {
 		// GenerateStackName enforces the length cap uniqueness-preservingly
 		// (blind truncation here would collide long kind names' scenarios).
-		tc.StackName = runner.GenerateStackName(component+"-"+scenario.Name, runID)
+		tc.StackName = runner.GenerateStackName(kindDir+"-"+scenario.Name, runID)
 	}
 
 	ctx := context.Background()
-	result := runner.RunComponentTest(ctx, tc, testHarness)
+	result := runner.RunKindTest(ctx, tc, testHarness)
 
 	for _, phase := range result.Phases {
 		status := "PASS"
@@ -1620,10 +1620,10 @@ func runSingleScenario(t *testing.T, component, moduleDir, engine string, scenar
 	}
 
 	if !result.Passed {
-		t.Fatalf("scenario %s/%s [%s] failed (total: %s)", component, scenario.Name, engine, result.Duration)
+		t.Fatalf("scenario %s/%s [%s] failed (total: %s)", kindDir, scenario.Name, engine, result.Duration)
 	}
 
-	t.Logf("scenario %s/%s [%s] passed (total: %s)", component, scenario.Name, engine, result.Duration)
+	t.Logf("scenario %s/%s [%s] passed (total: %s)", kindDir, scenario.Name, engine, result.Duration)
 }
 
 func fileExists(path string) bool {
@@ -1720,193 +1720,193 @@ func zipDirectory(dir string) ([]byte, error) {
 }
 
 func TestGcpPrivateCaPool_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpprivatecapool", "pulumi")
+	runAllScenariosForKind(t, "gcpprivatecapool", "pulumi")
 }
 
 func TestGcpPrivateCaPool_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpprivatecapool", "terraform")
+	runAllScenariosForKind(t, "gcpprivatecapool", "terraform")
 }
 
 func TestGcpPrivateCaCertificateAuthority_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpprivatecacertificateauthority", "pulumi")
+	runAllScenariosForKind(t, "gcpprivatecacertificateauthority", "pulumi")
 }
 
 func TestGcpPrivateCaCertificateAuthority_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpprivatecacertificateauthority", "terraform")
+	runAllScenariosForKind(t, "gcpprivatecacertificateauthority", "terraform")
 }
 
 func TestGcpPrivateCaCertificateTemplate_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpprivatecacertificatetemplate", "pulumi")
+	runAllScenariosForKind(t, "gcpprivatecacertificatetemplate", "pulumi")
 }
 
 func TestGcpPrivateCaCertificateTemplate_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpprivatecacertificatetemplate", "terraform")
+	runAllScenariosForKind(t, "gcpprivatecacertificatetemplate", "terraform")
 }
 
 func TestGcpPrivateCaCertificate_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpprivatecacertificate", "pulumi")
+	runAllScenariosForKind(t, "gcpprivatecacertificate", "pulumi")
 }
 
 func TestGcpPrivateCaCertificate_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpprivatecacertificate", "terraform")
+	runAllScenariosForKind(t, "gcpprivatecacertificate", "terraform")
 }
 
 func TestGcpKmsAutokeyConfig_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpkmsautokeyconfig", "pulumi")
+	runAllScenariosForKind(t, "gcpkmsautokeyconfig", "pulumi")
 }
 
 func TestGcpKmsAutokeyConfig_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpkmsautokeyconfig", "terraform")
+	runAllScenariosForKind(t, "gcpkmsautokeyconfig", "terraform")
 }
 
 func TestGcpKmsKeyHandle_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpkmskeyhandle", "pulumi")
+	runAllScenariosForKind(t, "gcpkmskeyhandle", "pulumi")
 }
 
 func TestGcpKmsKeyHandle_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpkmskeyhandle", "terraform")
+	runAllScenariosForKind(t, "gcpkmskeyhandle", "terraform")
 }
 
 func TestGcpSccNotificationConfig_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpsccnotificationconfig", "pulumi")
+	runAllScenariosForKind(t, "gcpsccnotificationconfig", "pulumi")
 }
 
 func TestGcpSccNotificationConfig_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpsccnotificationconfig", "terraform")
+	runAllScenariosForKind(t, "gcpsccnotificationconfig", "terraform")
 }
 
 func TestGcpSccMuteConfig_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpsccmuteconfig", "pulumi")
+	runAllScenariosForKind(t, "gcpsccmuteconfig", "pulumi")
 }
 
 func TestGcpSccMuteConfig_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpsccmuteconfig", "terraform")
+	runAllScenariosForKind(t, "gcpsccmuteconfig", "terraform")
 }
 
 func TestGcpSccBigQueryExport_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpsccbigqueryexport", "pulumi")
+	runAllScenariosForKind(t, "gcpsccbigqueryexport", "pulumi")
 }
 
 func TestGcpSccBigQueryExport_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpsccbigqueryexport", "terraform")
+	runAllScenariosForKind(t, "gcpsccbigqueryexport", "terraform")
 }
 
 func TestGcpBinaryAuthorizationPolicy_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbinaryauthorizationpolicy", "pulumi")
+	runAllScenariosForKind(t, "gcpbinaryauthorizationpolicy", "pulumi")
 }
 
 func TestGcpBinaryAuthorizationPolicy_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbinaryauthorizationpolicy", "terraform")
+	runAllScenariosForKind(t, "gcpbinaryauthorizationpolicy", "terraform")
 }
 
 func TestGcpBinaryAuthorizationAttestor_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbinaryauthorizationattestor", "pulumi")
+	runAllScenariosForKind(t, "gcpbinaryauthorizationattestor", "pulumi")
 }
 
 func TestGcpBinaryAuthorizationAttestor_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpbinaryauthorizationattestor", "terraform")
+	runAllScenariosForKind(t, "gcpbinaryauthorizationattestor", "terraform")
 }
 
 func TestGcpGkeFleet_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpgkefleet", "pulumi")
+	runAllScenariosForKind(t, "gcpgkefleet", "pulumi")
 }
 
 func TestGcpGkeFleet_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpgkefleet", "terraform")
+	runAllScenariosForKind(t, "gcpgkefleet", "terraform")
 }
 
 func TestGcpGkeFleetFeature_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpgkefleetfeature", "pulumi")
+	runAllScenariosForKind(t, "gcpgkefleetfeature", "pulumi")
 }
 
 func TestGcpGkeFleetFeature_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpgkefleetfeature", "terraform")
+	runAllScenariosForKind(t, "gcpgkefleetfeature", "terraform")
 }
 
 func TestGcpGkeFleetScope_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpgkefleetscope", "pulumi")
+	runAllScenariosForKind(t, "gcpgkefleetscope", "pulumi")
 }
 
 func TestGcpGkeFleetScope_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpgkefleetscope", "terraform")
+	runAllScenariosForKind(t, "gcpgkefleetscope", "terraform")
 }
 
 func TestGcpGkeFleetMembership_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpgkefleetmembership", "pulumi")
+	runAllScenariosForKind(t, "gcpgkefleetmembership", "pulumi")
 }
 
 func TestGcpGkeFleetMembership_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpgkefleetmembership", "terraform")
+	runAllScenariosForKind(t, "gcpgkefleetmembership", "terraform")
 }
 
 func TestGcpComputeImage_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcomputeimage", "pulumi")
+	runAllScenariosForKind(t, "gcpcomputeimage", "pulumi")
 }
 
 func TestGcpComputeImage_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcomputeimage", "terraform")
+	runAllScenariosForKind(t, "gcpcomputeimage", "terraform")
 }
 
 func TestGcpCloudBuildConnection_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudbuildconnection", "pulumi")
+	runAllScenariosForKind(t, "gcpcloudbuildconnection", "pulumi")
 }
 
 func TestGcpCloudBuildConnection_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudbuildconnection", "terraform")
+	runAllScenariosForKind(t, "gcpcloudbuildconnection", "terraform")
 }
 
 func TestGcpCloudBuildRepository_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudbuildrepository", "pulumi")
+	runAllScenariosForKind(t, "gcpcloudbuildrepository", "pulumi")
 }
 
 func TestGcpCloudBuildRepository_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudbuildrepository", "terraform")
+	runAllScenariosForKind(t, "gcpcloudbuildrepository", "terraform")
 }
 
 func TestGcpCloudBuildTrigger_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudbuildtrigger", "pulumi")
+	runAllScenariosForKind(t, "gcpcloudbuildtrigger", "pulumi")
 }
 
 func TestGcpCloudBuildTrigger_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudbuildtrigger", "terraform")
+	runAllScenariosForKind(t, "gcpcloudbuildtrigger", "terraform")
 }
 
 func TestGcpCloudBuildWorkerPool_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudbuildworkerpool", "pulumi")
+	runAllScenariosForKind(t, "gcpcloudbuildworkerpool", "pulumi")
 }
 
 func TestGcpCloudBuildWorkerPool_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpcloudbuildworkerpool", "terraform")
+	runAllScenariosForKind(t, "gcpcloudbuildworkerpool", "terraform")
 }
 
 func TestGcpDeliveryPipeline_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdeliverypipeline", "pulumi")
+	runAllScenariosForKind(t, "gcpdeliverypipeline", "pulumi")
 }
 
 func TestGcpDeliveryPipeline_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdeliverypipeline", "terraform")
+	runAllScenariosForKind(t, "gcpdeliverypipeline", "terraform")
 }
 
 func TestGcpDeployTarget_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdeploytarget", "pulumi")
+	runAllScenariosForKind(t, "gcpdeploytarget", "pulumi")
 }
 
 func TestGcpDeployTarget_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdeploytarget", "terraform")
+	runAllScenariosForKind(t, "gcpdeploytarget", "terraform")
 }
 
 func TestGcpDeployPolicy_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdeploypolicy", "pulumi")
+	runAllScenariosForKind(t, "gcpdeploypolicy", "pulumi")
 }
 
 func TestGcpDeployPolicy_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdeploypolicy", "terraform")
+	runAllScenariosForKind(t, "gcpdeploypolicy", "terraform")
 }
 
 func TestGcpDeployCustomTargetType_Pulumi(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdeploycustomtargettype", "pulumi")
+	runAllScenariosForKind(t, "gcpdeploycustomtargettype", "pulumi")
 }
 
 func TestGcpDeployCustomTargetType_Terraform(t *testing.T) {
-	runAllScenariosForComponent(t, "gcpdeploycustomtargettype", "terraform")
+	runAllScenariosForKind(t, "gcpdeploycustomtargettype", "terraform")
 }

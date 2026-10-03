@@ -7,7 +7,7 @@ messaging server (pub/sub, request/reply, queue groups) with JetStream
 persistence (streams, consumers, key-value and object stores) from the
 official `nats` Helm chart.
 
-Not the right component when:
+Not the right kind when:
 
 - **You want to declare the streams it carries** — streams, consumers
   and KV buckets are data-plane objects with their own lifecycle:

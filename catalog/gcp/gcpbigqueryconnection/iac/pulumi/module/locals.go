@@ -17,15 +17,15 @@ type Locals struct {
 
 // initializeLocals derives the defaulted connection id. Connections carry
 // no labels, so there is no attribution label set.
-func initializeLocals(_ *pulumi.Context, stackInput *gcpbigqueryconnectionv1alpha1.GcpBigQueryConnectionStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpbigqueryconnectionv1alpha1.GcpBigQueryConnectionIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpBigQueryConnection = stackInput.Target
+	locals.GcpBigQueryConnection = iacInput.Target
 
 	locals.ConnectionId = locals.GcpBigQueryConnection.Spec.ConnectionId
 	if locals.ConnectionId == "" {
 		locals.ConnectionId = locals.GcpBigQueryConnection.Metadata.Name
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

@@ -5,7 +5,7 @@ import (
 
 	azuremonitoractivitylogalertv1alpha1 "github.com/plantonhq/planton/catalog/azure/azuremonitoractivitylogalert/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -24,11 +24,11 @@ type Locals struct {
 	AzureTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuremonitoractivitylogalertv1alpha1.AzureMonitorActivityLogAlertStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuremonitoractivitylogalertv1alpha1.AzureMonitorActivityLogAlertIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureMonitorActivityLogAlert = stackInput.Target
-	target := stackInput.Target
+	locals.AzureMonitorActivityLogAlert = iacInput.Target
+	target := iacInput.Target
 	spec := target.Spec
 
 	locals.ResourceGroupName = spec.ResourceGroup.GetValue()
@@ -42,7 +42,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azuremonitoractivitylogal
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureMonitorActivityLogAlert.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureMonitorActivityLogAlert.String()),
 	}
 	if target.Metadata.Id != "" {
 		locals.AzureTags[azuretagkeys.ResourceId] = target.Metadata.Id

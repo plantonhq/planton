@@ -4,7 +4,7 @@
 # AWS-generated ID, and the cross-account destination (with its policy)
 # by its own name.
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awscloudwatchlogdelivery
 spec:
@@ -24,7 +24,7 @@ spec:
         describe-delivery-destinations` (name).
     - name: delivery_id
       derivations:
-        - from_stack_output_keyed_by_address: delivery_ids
+        - from_output_keyed_by_address: delivery_ids
       where_to_find: >-
         The AWS-generated delivery ID -- `aws logs describe-deliveries`
         (id; match the delivery whose deliverySourceName and

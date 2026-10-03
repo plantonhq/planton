@@ -2,9 +2,9 @@
 
 ## Overview
 
-**KubernetesPersistentVolumeClaim** is a Planton component that creates and manages Kubernetes PersistentVolumeClaims — the durable-disk primitive — as first-class, declaratively managed resources. A claim names how much storage it needs, how it will be accessed, and (optionally) which StorageClass provisions it; the cluster binds it to a PersistentVolume that satisfies the request.
+**KubernetesPersistentVolumeClaim** is a catalog kind that creates and manages Kubernetes PersistentVolumeClaims — the durable-disk primitive — as first-class, declaratively managed resources. A claim names how much storage it needs, how it will be accessed, and (optionally) which StorageClass provisions it; the cluster binds it to a PersistentVolume that satisfies the request.
 
-The component covers the complete `core/v1` PersistentVolumeClaimSpec surface: access modes, storage requests and limits, StorageClass selection (including the empty-vs-absent distinction), volume mode, static binding to a named volume, volume selectors, and data sources (clone a claim or restore a snapshot). The feature-gated `volumeAttributesClassName` and cross-namespace data sources are deliberately unmodeled until they graduate.
+The kind covers the complete `core/v1` PersistentVolumeClaimSpec surface: access modes, storage requests and limits, StorageClass selection (including the empty-vs-absent distinction), volume mode, static binding to a named volume, volume selectors, and data sources (clone a claim or restore a snapshot). The feature-gated `volumeAttributesClassName` and cross-namespace data sources are deliberately unmodeled until they graduate.
 
 ## Purpose
 
@@ -50,7 +50,7 @@ Three mutually understood shapes:
 - **`spec.data_source`**: Populates the new volume from an existing source instead of provisioning it empty — clone a `persistent_volume_claim` or restore a `volume_snapshot`, same-namespace only. Requires a CSI driver that implements the operation. **Deploys via the Pulumi engine only** — the Terraform Kubernetes provider cannot express PVC data sources, and the Terraform module rejects the field at plan time
 - **`spec.labels`** / **`spec.annotations`**: Merged with standard Planton labels for tracking and governance
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -86,7 +86,7 @@ A workload then mounts the claim by name in its volume mounts. If the default cl
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Resolve the target namespace (literal value or resolved reference; `default` when omitted)
 2. Merge user labels and annotations with standard Planton tracking labels

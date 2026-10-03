@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azureredislinkedserver.v1alpha1;
 
-// **AzureRedisLinkedServerStackOutputs** captures the outputs of linking
+// **AzureRedisLinkedServerOutputs** captures the outputs of linking
 // two Premium Redis caches into a geo-replication pair.
-message AzureRedisLinkedServerStackOutputs {
+message AzureRedisLinkedServerOutputs {
   // The Azure Resource Manager ID of the linked-server resource.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Cache/redis/{primary}/linkedServers/{secondary}
   string linked_server_id = 1;

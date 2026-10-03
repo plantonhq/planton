@@ -6,7 +6,7 @@ Every SolrCloud needs a ZooKeeper ensemble for its collection topology. The defa
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SolrCloud custom resource** — the node StatefulSet, the common Service fronting all nodes, per-node Services, and (by default) a bundled ZooKeeper ensemble, all reconciled by the operator
 - **Kubernetes Namespace** — created only when `createNamespace` is true; otherwise the namespace must already exist
@@ -66,7 +66,7 @@ spec:
 planton apply -f solr.yaml
 ```
 
-This creates the smallest declarable SolrCloud that actually serves: one Solr node, a single-member provided ZooKeeper, ephemeral storage, no authentication — the full SolrCloud API surface for development and CI. A Stack Job tracks the provisioning in real time.
+This creates the smallest declarable SolrCloud that actually serves: one Solr node, a single-member provided ZooKeeper, ephemeral storage, no authentication — the full SolrCloud API surface for development and CI. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -103,7 +103,7 @@ These are the most important decisions when configuring an Apache Solr cluster. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -113,9 +113,9 @@ These are the most important decisions when configuring an Apache Solr cluster. 
 
 The TLS keystore fields (`tls.pkcs12Secret`, `tls.keystorePasswordSecret`, truststore variants), `security.bootstrapSecurityJson`, and backup-repository credentials are name+key references to EXISTING Secrets in the install namespace — not foreign keys.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -139,9 +139,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Apache Solr Operator**](/cloud-catalog/kubernetes-solr-operator) — the engine that reconciles this cluster; deploy it first (its `mtls` block is also the prerequisite for `tls.clientAuth: Need`).
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — referenced placement; the InfraPipeline orders namespace-first.
-- [**Kubernetes StorageClass**](/cloud-catalog/kubernetes-storage-class) — SSD-backed classes for index and ensemble volumes.
-- [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) — the natural PKCS#12 keystore producer for `spec.tls` (enable its pkcs12 keystore output).
-- [**Kubernetes Secret**](/cloud-catalog/kubernetes-secret) — bring-your-own credentials, bootstrap security.json, static backup credentials.
-- [**Kubernetes Ingress**](/cloud-catalog/kubernetes-ingress) and [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) — simple HTTP exposure over the exported common service.
+- [**Apache Solr Operator**](/infra-catalog/kubernetes-solr-operator) — the engine that reconciles this cluster; deploy it first (its `mtls` block is also the prerequisite for `tls.clientAuth: Need`).
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — referenced placement; the InfraPipeline orders namespace-first.
+- [**Kubernetes StorageClass**](/infra-catalog/kubernetes-storage-class) — SSD-backed classes for index and ensemble volumes.
+- [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) — the natural PKCS#12 keystore producer for `spec.tls` (enable its pkcs12 keystore output).
+- [**Kubernetes Secret**](/infra-catalog/kubernetes-secret) — bring-your-own credentials, bootstrap security.json, static backup credentials.
+- [**Kubernetes Ingress**](/infra-catalog/kubernetes-ingress) and [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) — simple HTTP exposure over the exported common service.

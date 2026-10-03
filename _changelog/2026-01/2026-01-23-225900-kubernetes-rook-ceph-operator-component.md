@@ -1,4 +1,4 @@
-# KubernetesRookCephOperator Deployment Component
+# KubernetesRookCephOperator Catalog Kind
 
 **Date**: January 23, 2026
 **Type**: Feature
@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added a new deployment component `KubernetesRookCephOperator` for deploying the Rook Ceph Operator on Kubernetes clusters. This component enables declarative management of Ceph distributed storage through Planton, providing block, file, and object storage capabilities via Kubernetes custom resources.
+Added a new catalog kind `KubernetesRookCephOperator` for deploying the Rook Ceph Operator on Kubernetes clusters. This kind enables declarative management of Ceph distributed storage through Planton, providing block, file, and object storage capabilities via Kubernetes custom resources.
 
 ## Problem Statement / Motivation
 
@@ -14,16 +14,16 @@ Organizations running Kubernetes need reliable, scalable storage solutions. Ceph
 
 ### Pain Points
 
-- No existing Planton component for Rook Ceph storage infrastructure
+- No existing Planton kind for Rook Ceph storage infrastructure
 - Manual Rook deployment requires understanding of complex Helm values
 - CSI driver configuration is error-prone without proper abstractions
 - Lack of standardized, validated API for storage operator deployment
 
 ## Solution / What's New
 
-Created a complete deployment component following the Planton forge process, implementing all 21 steps of the ideal state checklist.
+Created a complete catalog kind following the Planton forge process, implementing all 21 steps of the ideal state checklist.
 
-### Component Architecture
+### Kind Architecture
 
 ```mermaid
 flowchart TB
@@ -35,8 +35,8 @@ flowchart TB
         B --> C[KubernetesRookCephOperator API]
         C --> D[spec.proto]
         C --> E[api.proto]
-        C --> F[stack_input.proto]
-        C --> G[stack_outputs.proto]
+        C --> F[iac_input.proto]
+        C --> G[outputs.proto]
     end
     
     subgraph "IaC Layer"
@@ -129,7 +129,7 @@ The module translates proto spec to Helm values:
 | `csi.enable_cephfs_driver` | `csi.enableCephfsDriver` |
 | `csi.provisioner_replicas` | `csi.provisionerReplicas` |
 
-### CloudResourceKind Registration
+### CatalogKind Registration
 
 Added entry #847 in the Kubernetes range (800-999):
 
@@ -173,7 +173,7 @@ KubernetesRookCephOperator = 847 [(kind_meta) = {
 
 ### Registry Update
 
-Modified `cloud_resource_kind.proto` to include the new component at enum value 847.
+Modified `catalog_kind.proto` to include the new kind at enum value 847.
 
 ## Usage Examples
 
@@ -223,14 +223,14 @@ spec:
 All validation checks passed:
 
 - ✅ `make build` - Full project builds successfully
-- ✅ `go test ./...` - 11 component tests pass
+- ✅ `go test ./...` - 11 kind tests pass
 - ✅ `terraform validate` - Terraform module validates
 - ✅ `go build` - Pulumi module compiles
 
 ## Related Work
 
 - Similar pattern to existing operators: `KubernetesSolrOperator`, `KubernetesElasticOperator`
-- Follows forge flow rules in `_rules/deployment-component/forge/flow/`
+- Follows forge flow rules in `_rules/catalog-kind/forge/flow/`
 - Reuses shared Kubernetes provider patterns from `pkg/iac/pulumi/pulumimodule/provider/kubernetes/`
 
 ---

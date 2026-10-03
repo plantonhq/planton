@@ -1,12 +1,12 @@
 # Percona Operator for MongoDB
 
-Installs the Percona Operator for MongoDB on any Kubernetes cluster from the official `psmdb-operator` Helm chart. The operator is the ENGINE: it reconciles `PerconaServerMongoDB` custom resources into highly available MongoDB deployments — replica sets with automated failover, sharded clusters, scheduled backups with point-in-time recovery via Percona Backup for MongoDB, TLS, and user management. The databases themselves are declared with [KubernetesMongodb](/cloud-catalog/kubernetes-mongodb) resources, one per MongoDB cluster.
+Installs the Percona Operator for MongoDB on any Kubernetes cluster from the official `psmdb-operator` Helm chart. The operator is the ENGINE: it reconciles `PerconaServerMongoDB` custom resources into highly available MongoDB deployments — replica sets with automated failover, sharded clusters, scheduled backups with point-in-time recovery via Percona Backup for MongoDB, TLS, and user management. The databases themselves are declared with [KubernetesMongodb](/infra-catalog/kubernetes-mongodb) resources, one per MongoDB cluster.
 
 By the upstream default the operator watches **its own namespace only** — databases live beside their operator. Widen the watch to cluster-wide, or fence it to a named namespace set, from the spec.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **Helm Release** -- installs the pinned `psmdb-operator` chart, which creates:
@@ -19,7 +19,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -55,11 +55,11 @@ spec:
 planton apply -f psmdb-operator.yaml
 ```
 
-This installs the operator into the `mongodb` namespace with the default own-namespace watch — KubernetesMongodb resources declared in `mongodb` are reconciled; databases anywhere else need a wider watch. A Stack Job tracks the provisioning in real time.
+This installs the operator into the `mongodb` namespace with the default own-namespace watch — KubernetesMongodb resources declared in `mongodb` are reconciled; databases anywhere else need a wider watch. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the operator to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the operator to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -89,15 +89,15 @@ These are the most important decisions when configuring the operator. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -116,5 +116,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the namespace for the operator deployment
-- [**MongoDB**](/cloud-catalog/kubernetes-mongodb) -- the databases this engine reconciles; declare them in a namespace the operator watches
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the namespace for the operator deployment
+- [**MongoDB**](/infra-catalog/kubernetes-mongodb) -- the databases this engine reconciles; declare them in a namespace the operator watches

@@ -2,7 +2,7 @@
 
 ## Overview
 
-**KubernetesDeployment** is a Planton component that runs a long-running, stateless application on a Kubernetes cluster as an apps/v1 Deployment, fronted by a ClusterIP Service. It is the workhorse workload kind: replicas are interchangeable, updates roll out gradually, and scaling is horizontal. For workloads needing stable identity or per-replica storage use **KubernetesStatefulSet**; for run-to-completion work use **KubernetesJob** / **KubernetesCronJob**; for one-pod-per-node agents use **KubernetesDaemonSet**.
+**KubernetesDeployment** is a catalog kind that runs a long-running, stateless application on a Kubernetes cluster as an apps/v1 Deployment, fronted by a ClusterIP Service. It is the workhorse workload kind: replicas are interchangeable, updates roll out gradually, and scaling is horizontal. For workloads needing stable identity or per-replica storage use **KubernetesStatefulSet**; for run-to-completion work use **KubernetesJob** / **KubernetesCronJob**; for one-pod-per-node agents use **KubernetesDaemonSet**.
 
 A single manifest produces:
 
@@ -18,7 +18,7 @@ A single manifest produces:
 Two things this kind deliberately does **not** create:
 
 - **Identity.** Pods run as the ServiceAccount referenced in `spec.pod.serviceAccount` — a literal name or a reference to a **KubernetesServiceAccount** resource, which owns workload-identity annotations and pull-secret attachment. Permissions attach to that identity through **KubernetesRbac** grants. The workload never creates ServiceAccounts or RBAC objects of its own, so identity and permissions are auditable resources in the graph rather than side effects of a deployment.
-- **Exposure.** No ingress configuration exists anywhere in this spec. The workload exports its Service name (`service`), in-cluster DNS endpoint (`kube_endpoint`), and pod selector labels (`selector_labels`) as stack outputs, and first-class exposure kinds — Gateway API routes like **KubernetesHttpRoute**, gateways, certificates — reference those outputs. Every piece of exposure infrastructure is a visible, independently managed node in the resource graph, and a workload's exposure can change without touching the workload.
+- **Exposure.** No ingress configuration exists anywhere in this spec. The workload exports its Service name (`service`), in-cluster DNS endpoint (`kube_endpoint`), and pod selector labels (`selector_labels`) as outputs, and first-class exposure kinds — Gateway API routes like **KubernetesHttpRoute**, gateways, certificates — reference those outputs. Every piece of exposure infrastructure is a visible, independently managed node in the resource graph, and a workload's exposure can change without touching the workload.
 
 ## Deploy-Target Contract
 
@@ -55,7 +55,7 @@ Shared by every replica: the ServiceAccount reference, `automountServiceAccountT
 - **`podDisruptionBudget`** — `minAvailable` or `maxUnavailable` (exactly one) guarding against voluntary disruptions like node drains and upgrades
 - **Rollout tuning** — `minReadySeconds` (a cheap flap detector: new pods must stay ready this long before counting as available), `revisionHistoryLimit` (rollback depth), `progressDeadlineSeconds` (when a stuck rollout is marked failed), and `paused` (batch several spec changes into one rollout)
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -148,7 +148,7 @@ To publish this service at a hostname, deploy a Gateway API route (e.g. Kubernet
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Resolve the target namespace (literal value or resolved reference) and optionally create it
 2. Create the satellite Secrets before the Deployment — pods reference them by name at startup, and a pod that starts before its env Secret exists crashes

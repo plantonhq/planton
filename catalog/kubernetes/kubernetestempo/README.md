@@ -6,7 +6,7 @@
 backend that stores whole traces in object storage and retrieves them by
 ID or TraceQL.
 
-Not the right component when:
+Not the right kind when:
 
 - **You need something to SEND the traces** — Tempo stores traces, it does
   not instrument or collect them. Applications (or a

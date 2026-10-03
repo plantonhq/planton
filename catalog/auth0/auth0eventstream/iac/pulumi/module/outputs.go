@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// exportOutputs exports the stack outputs for the Auth0 event stream
+// exportOutputs exports the outputs for the Auth0 event stream
 func exportOutputs(ctx *pulumi.Context, eventStream *auth0.EventStream, locals *Locals) error {
 	// Export core identifiers
 	ctx.Export("id", eventStream.ID())

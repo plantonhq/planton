@@ -5,7 +5,7 @@ recovery built in: a three-member replica set spread across nodes, required
 TLS, a declarative application user, nightly logical backups into a GCS
 bucket with continuous oplog archiving (point-in-time recovery), and the
 backup credential wired by reference from a `GcpServiceAccount`. This is
-the production half of the DR resource set in the component guide; the
+the production half of the DR resource set in the kind guide; the
 restore half is a second `KubernetesMongodb` declaring the same storage, a
 `restore` block, and the source's system-users Secret.
 

@@ -7,7 +7,7 @@ go_library(
     visibility = ["//visibility:public"],
     deps = [
         "//iac/importmappingproposal/v1:importmappingproposal",
-        "//pkg/crkreflect",
+        "//pkg/catalogkindreflect",
         "//pkg/iac/envpartition",
         "//pkg/iac/envpartition/awsscan",
         "//pkg/iac/mappingeval",

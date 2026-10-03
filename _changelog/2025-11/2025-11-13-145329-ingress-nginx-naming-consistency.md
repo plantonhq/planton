@@ -2,29 +2,29 @@
 
 **Date**: November 13, 2025  
 **Type**: Breaking Change / Refactoring  
-**Components**: API Definitions, Cloud Resource Registry, Provider Framework, Code Generation
+**Components**: API Definitions, Catalog Kind Registry, Provider Framework, Code Generation
 
 ## Summary
 
-Completed a comprehensive rename of the Ingress NGINX controller component, removing the redundant "Kubernetes" suffix from all layers: package namespace, proto message types (`IngressNginxKubernetes` → `IngressNginx`), and API kind name. This refactoring improves naming consistency across Planton's Kubernetes addon operators and reduces unnecessary verbosity in user manifests and code.
+Completed a comprehensive rename of the Ingress NGINX controller kind, removing the redundant "Kubernetes" suffix from all layers: package namespace, proto message types (`IngressNginxKubernetes` → `IngressNginx`), and API kind name. This refactoring improves naming consistency across Planton's Kubernetes addon operators and reduces unnecessary verbosity in user manifests and code.
 
 ## Problem Statement / Motivation
 
-The Ingress NGINX controller component had "kubernetes" appearing redundantly in multiple places, creating unnecessary verbosity and inconsistency with Planton's naming conventions.
+The Ingress NGINX controller kind had "kubernetes" appearing redundantly in multiple places, creating unnecessary verbosity and inconsistency with Planton's naming conventions.
 
 ### Pain Points
 
-- **Proto Messages**: `IngressNginxKubernetes`, `IngressNginxKubernetesSpec`, `IngressNginxKubernetesStackInput` - verbose suffixes
+- **Proto Messages**: `IngressNginxKubernetes`, `IngressNginxKubernetesSpec`, `IngressNginxKubernetesIacInput` - verbose suffixes
 - **API Kind**: `kind: IngressNginxKubernetes` - unnecessarily long in user YAML manifests
 - **Code References**: Every Go reference included the redundant suffix
-- **Package Context**: The component's location under `provider/kubernetes/addon/` already indicates it's Kubernetes-specific
+- **Package Context**: The kind's location under `provider/kubernetes/addon/` already indicates it's Kubernetes-specific
 - **Inconsistency**: Other addon operators like `CertManager`, `ExternalDns`, `ExternalSecrets` don't have the suffix
 
-The "kubernetes" suffix added no semantic value since the component's namespace path (`dev.planton.provider.kubernetes.addon.ingressnginx.v1`) already provides complete context.
+The "kubernetes" suffix added no semantic value since the kind's namespace path (`dev.planton.provider.kubernetes.addon.ingressnginx.v1`) already provides complete context.
 
 ## Solution / What's New
 
-Performed a systematic refactoring across all component layers to remove the redundant suffix while preserving backward compatibility in non-breaking elements.
+Performed a systematic refactoring across all kind layers to remove the redundant suffix while preserving backward compatibility in non-breaking elements.
 
 ### Name Changes
 
@@ -44,7 +44,7 @@ message IngressNginx {
 }
 ```
 
-### Cloud Resource Registry Update
+### Catalog Kind Registry Update
 
 ```protobuf
 // Before
@@ -79,14 +79,14 @@ package dev.planton.provider.kubernetes.addon.ingressnginx.v1;
 message IngressNginx {
   string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
   string kind = 2 [(buf.validate.field).string.const = 'IngressNginx'];
-  dev.planton.shared.CloudResourceMetadata metadata = 3;
+  dev.planton.shared.CatalogObjectMetadata metadata = 3;
   IngressNginxSpec spec = 4;
   IngressNginxStatus status = 5;
 }
 
 //ingress-nginx status.
 message IngressNginxStatus {
-  IngressNginxStackOutputs outputs = 1;
+  IngressNginxOutputs outputs = 1;
 }
 ```
 
@@ -106,21 +106,21 @@ message IngressNginxSpec {
 }
 ```
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/ingressnginx/v1/stack_input.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/ingressnginx/v1/iac_input.proto`
 
 ```protobuf
 //input for ingress-nginx stack
-message IngressNginxStackInput {
+message IngressNginxIacInput {
   IngressNginx target = 1;
   dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
 }
 ```
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/ingressnginx/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/ingressnginx/v1/outputs.proto`
 
 ```protobuf
-// IngressNginxStackOutputs defines the outputs for the Ingress Nginx stack.
-message IngressNginxStackOutputs {
+// IngressNginxOutputs defines the outputs for the Ingress Nginx stack.
+message IngressNginxOutputs {
   string namespace = 1;
   string release_name = 2;
   string service_name = 3;
@@ -139,17 +139,17 @@ import (
 	"github.com/pkg/errors"
 	ingressnginxv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/ingressnginx/v1"
 	"github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/ingressnginx/v1/iac/pulumi/module"
-	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/stackinput"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/iacinput"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
-		stackInput := &ingressnginxv1.IngressNginxStackInput{}
-		if err := stackinput.LoadStackInput(ctx, stackInput); err != nil {
-			return errors.Wrap(err, "failed to load stack-input")
+		iacInput := &ingressnginxv1.IngressNginxIacInput{}
+		if err := iacinput.LoadIacInput(ctx, iacInput); err != nil {
+			return errors.Wrap(err, "failed to load iac-input")
 		}
-		return module.Resources(ctx, stackInput)
+		return module.Resources(ctx, iacInput)
 	})
 }
 ```
@@ -159,15 +159,15 @@ func main() {
 ```go
 // Resources creates all Pulumi resources for the Ingress‑Nginx add‑on.
 func Resources(ctx *pulumi.Context,
-	stackInput *ingressnginxv1.IngressNginxStackInput) error {
+	iacInput *ingressnginxv1.IngressNginxIacInput) error {
 	
 	kubeProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
 	
-	spec := stackInput.Target.Spec
+	spec := iacInput.Target.Spec
 	// ... implementation continues
 }
 ```
@@ -180,11 +180,11 @@ func Resources(ctx *pulumi.Context,
    ```
    Regenerated all `*.pb.go` files with updated type names
 
-2. **Cloud Resource Kind Map**:
+2. **Catalog Kind Map**:
    ```bash
-   make generate-cloud-resource-kind-map
+   make generate-catalog-kind-map
    ```
-   Updated `pkg/crkreflect/kind_map_gen.go` to map `CloudResourceKind_IngressNginx` to `&ingressnginxv1.IngressNginx{}`
+   Updated `pkg/catalogkindreflect/kind_map_gen.go` to map `CatalogKind_IngressNginx` to `&ingressnginxv1.IngressNginx{}`
 
 3. **Gazelle Update**: 
    ```bash
@@ -201,7 +201,7 @@ func Resources(ctx *pulumi.Context,
 **Proto Message Names**:
 - `IngressNginxKubernetes` → `IngressNginx` (10 characters shorter)
 - `IngressNginxKubernetesSpec` → `IngressNginxSpec` (10 characters shorter)
-- `IngressNginxKubernetesStackInput` → `IngressNginxStackInput` (10 characters shorter)
+- `IngressNginxKubernetesIacInput` → `IngressNginxIacInput` (10 characters shorter)
 
 **User Manifests**:
 ```yaml
@@ -230,10 +230,10 @@ The "kubernetes" context is clear from the provider path, not from redundant suf
 **Go Type References**:
 ```go
 // Before
-stackInput := &ingressnginxv1.IngressNginxKubernetesStackInput{}
+iacInput := &ingressnginxv1.IngressNginxKubernetesIacInput{}
 
 // After
-stackInput := &ingressnginxv1.IngressNginxStackInput{}
+iacInput := &ingressnginxv1.IngressNginxIacInput{}
 ```
 
 Shorter type names make code more readable and reduce line length.
@@ -281,14 +281,14 @@ Users must update the `kind` field in all IngressNginx manifest files.
 ```go
 import ingressnginxv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/ingressnginx/v1"
 
-stackInput := &ingressnginxv1.IngressNginxKubernetesStackInput{}
+iacInput := &ingressnginxv1.IngressNginxKubernetesIacInput{}
 ```
 
 **After**:
 ```go
 import ingressnginxv1 "github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/addon/ingressnginx/v1"
 
-stackInput := &ingressnginxv1.IngressNginxStackInput{}
+iacInput := &ingressnginxv1.IngressNginxIacInput{}
 ```
 
 #### 3. Proto Import Paths
@@ -303,7 +303,7 @@ Any custom proto files importing these definitions must update type names (thoug
 
 ### Non-Breaking Aspects
 
-- **Enum Value**: Still `824` in cloud_resource_kind.proto
+- **Enum Value**: Still `824` in catalog_kind.proto
 - **ID Prefix**: Still `ngxk8s` for resource ID generation
 - **API Version**: Still `kubernetes.planton.dev/v1`
 - **Provider**: Still `kubernetes`
@@ -313,7 +313,7 @@ Any custom proto files importing these definitions must update type names (thoug
 ### Scope of Changes
 
 **Proto Definitions**: 4 files
-- api.proto, spec.proto, stack_input.proto, stack_outputs.proto
+- api.proto, spec.proto, iac_input.proto, outputs.proto
 
 **Generated Code**: 4 files
 - *.pb.go files (auto-regenerated)
@@ -323,10 +323,10 @@ Any custom proto files importing these definitions must update type names (thoug
 - iac/pulumi/module/main.go
 
 **Registry**: 1 file
-- cloud_resource_kind.proto
+- catalog_kind.proto
 
 **Code Generation**: 1 file
-- pkg/crkreflect/kind_map_gen.go (auto-regenerated)
+- pkg/catalogkindreflect/kind_map_gen.go (auto-regenerated)
 
 **Build Files**: Multiple
 - BUILD.bazel files (auto-updated via Gazelle)
@@ -362,8 +362,8 @@ planton pulumi up --manifest ingress-nginx.yaml
 
 ```go
 // Replace type names
-- stackInput := &ingressnginxv1.IngressNginxKubernetesStackInput{}
-+ stackInput := &ingressnginxv1.IngressNginxStackInput{}
+- iacInput := &ingressnginxv1.IngressNginxKubernetesIacInput{}
++ iacInput := &ingressnginxv1.IngressNginxIacInput{}
 
 - var ingress *ingressnginxv1.IngressNginxKubernetes
 + var ingress *ingressnginxv1.IngressNginx
@@ -399,7 +399,7 @@ This refactoring is part of a broader initiative to improve naming consistency a
 This change reinforces the pattern for addon operators:
 - ✅ **Package**: `dev.planton.provider.kubernetes.addon.{operatorname}.v1`
 - ✅ **Kind**: `{OperatorName}` (no "Kubernetes" suffix)
-- ✅ **Message**: `{OperatorName}`, `{OperatorName}Spec`, `{OperatorName}StackInput`, etc.
+- ✅ **Message**: `{OperatorName}`, `{OperatorName}Spec`, `{OperatorName}IacInput`, etc.
 
 ### Future Consistency
 
@@ -413,7 +413,7 @@ With this change, all Kubernetes addon operators now follow consistent naming:
 
 ### Provider-Specific Configuration Preserved
 
-The IngressNginx component supports cloud-specific configuration for GKE, EKS, and AKS. This refactoring only changed type names—all provider-specific fields remain unchanged:
+The IngressNginx kind supports cloud-specific configuration for GKE, EKS, and AKS. This refactoring only changed type names—all provider-specific fields remain unchanged:
 
 - **GKE**: `IngressNginxGkeConfig` with static IP and subnetwork configuration
 - **EKS**: `IngressNginxEksConfig` with security groups, subnets, and IRSA role

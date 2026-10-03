@@ -252,7 +252,7 @@ func service(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) error 
 		}
 
 		// Shaped key-for-key with the Terraform output so both engines
-		// flatten onto the same stack-outputs contract.
+		// flatten onto the same outputs contract.
 		records := createdAssociation.CertificateValidationRecords.ApplyT(func(recs []apprunner.CustomDomainAssociationCertificateValidationRecord) []map[string]string {
 			out := make([]map[string]string, 0, len(recs))
 			for _, r := range recs {
@@ -316,7 +316,7 @@ func service(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) error 
 		}
 
 		// Shaped key-for-key with the Terraform output so both engines
-		// flatten onto the same stack-outputs contract.
+		// flatten onto the same outputs contract.
 		ingressOutputs = append(ingressOutputs, pulumi.Map{
 			"name":        pulumi.String(conn.Name),
 			"arn":         createdConnection.Arn,
@@ -325,7 +325,7 @@ func service(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) error 
 		})
 	}
 
-	// Export outputs matching AwsAppRunnerServiceStackOutputs.
+	// Export outputs matching AwsAppRunnerServiceOutputs.
 	ctx.Export(OpServiceArn, createdService.Arn)
 	ctx.Export(OpServiceId, createdService.ServiceId)
 	ctx.Export(OpServiceUrl, createdService.ServiceUrl)

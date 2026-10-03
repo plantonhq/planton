@@ -35,7 +35,7 @@ var _ = ginkgo.Describe("GcpFolderSpec", func() {
 		return &GcpFolder{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpFolder",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "production",
 			},
 			Spec: &GcpFolderSpec{

@@ -26,7 +26,7 @@ each live as their own resource with an independent lifecycle.
 |------|-----|
 | `AzureAksCluster` | The pool attaches to an existing cluster by ARM ID |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

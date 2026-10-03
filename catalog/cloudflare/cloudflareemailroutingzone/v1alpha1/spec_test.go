@@ -18,7 +18,7 @@ func validZone() *CloudflareEmailRoutingZone {
 	return &CloudflareEmailRoutingZone{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareEmailRoutingZone",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-email-zone"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-email-zone"},
 		Spec: &CloudflareEmailRoutingZoneSpec{
 			ZoneId: value("023e105f4ecef8ad9ca31a8372d0c353"),
 		},

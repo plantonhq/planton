@@ -177,7 +177,7 @@ Repeated block, up to 4 entries (one per log type):
 | `aimlOptions` | `object` | AI/ML: `naturalLanguageQueryGenerationDesiredState`, `s3VectorsEngineEnabled`, `serverlessVectorAccelerationEnabled`. |
 | `identityCenterOptions` | `object` | IAM Identity Center API access: `enabledApiAccess`, `identityCenterInstanceArn`, `rolesKey`, `subjectKey`. |
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -192,7 +192,7 @@ After deployment, the following outputs are available in `status.outputs`:
 | `dashboard_endpoint_v2` | `string` | Dashboards endpoint on the dual-stack V2 domain endpoint |
 | `domain_endpoint_v2_hosted_zone_id` | `string` | Route 53 hosted zone ID for aliasing DNS records at the V2 endpoint |
 
-## Related Components
+## Related Kinds
 
 - [AwsVpc](/docs/catalog/aws/vpc) — provides subnets for VPC deployment
 - [AwsSecurityGroup](/docs/catalog/aws/security-group) — controls network access to the domain

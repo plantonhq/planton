@@ -10,7 +10,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsbedrockinvocationlogging
+    e2e-catalog-kind: awsbedrockinvocationlogging
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AwsCloudwatchLogGroup,AwsIamRole"

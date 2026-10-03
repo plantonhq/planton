@@ -43,7 +43,7 @@ if awsProviderConfig == nil {
 
 ```mermaid
 flowchart TB
-    Module["AWS pulumi module main.go"] --> Cfg["stackInput.ProviderConfig (AwsProviderConfig)"]
+    Module["AWS pulumi module main.go"] --> Cfg["iacInput.ProviderConfig (AwsProviderConfig)"]
     Cfg --> Classic["pulumiawsprovider.Get (classic)"]
     Cfg --> Native["pulumiawsnativeprovider.Get (aws-native)"]
     Classic -->|"web_identity set"| ProviderExchange["provider plugin does AssumeRoleWithWebIdentity"]
@@ -54,7 +54,7 @@ flowchart TB
     Native -->|"neither"| Region2["region-only (ambient chain)"]
 ```
 
-- **63 classic modules migrated** to `pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, region)`,
+- **63 classic modules migrated** to `pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, region)`,
   keeping the `classic-provider` resource name for Pulumi state continuity.
 - **New `pulumiawsnativeprovider.Get`** mirrors the classic builder but, because the aws-native
   provider cannot exchange a web-identity token itself, performs the STS exchange in the builder and
@@ -130,7 +130,7 @@ sequenceDiagram
 ## Impact
 
 - **Module authors**: build the AWS provider with one call — `pulumiawsprovider.Get(ctx,
-  stackInput.ProviderConfig, region)` (or `pulumiawsnativeprovider.Get` for aws-native) — never inline.
+  iacInput.ProviderConfig, region)` (or `pulumiawsnativeprovider.Get` for aws-native) — never inline.
 - **Operators / users**: AWS connections using keyless OIDC federation now provision across the
   migrated kinds, not just S3.
 

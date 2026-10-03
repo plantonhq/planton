@@ -398,7 +398,7 @@ docker pull satishlleftbin/planton:latest
 docker pull ghcr.io/plantonhq/planton:latest
 ```
 
-### Affected Components
+### Affected Kinds
 
 1. **GitHub Actions**: New workflow file
 2. **Docker Compose**: Image reference updated

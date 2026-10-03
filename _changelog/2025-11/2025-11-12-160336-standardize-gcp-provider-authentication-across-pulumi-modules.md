@@ -6,7 +6,7 @@
 
 ## Summary
 
-Fixed a critical authentication bug in `gcpserviceaccount` Pulumi module where resources were being created with default credentials instead of the credentials specified in the stack input. Standardized GCP provider configuration across all 17 GCP Pulumi modules, ensuring consistent authentication and fixing 3 modules that deviated from the established pattern. The refactoring also simplified code by removing custom provider logic and adopting a Terraform-like inline style.
+Fixed a critical authentication bug in `gcpserviceaccount` Pulumi module where resources were being created with default credentials instead of the credentials specified in the IaC input. Standardized GCP provider configuration across all 17 GCP Pulumi modules, ensuring consistent authentication and fixing 3 modules that deviated from the established pattern. The refactoring also simplified code by removing custom provider logic and adopting a Terraform-like inline style.
 
 ## Problem Statement / Motivation
 
@@ -20,7 +20,7 @@ Investigation revealed that the service account being used in both scenarios was
 
 ### Pain Points
 
-- **Authentication Inconsistency**: The `gcpserviceaccount` module was not configuring a provider, causing Pulumi to fall back to Application Default Credentials instead of using credentials from `stackInput.ProviderConfig`
+- **Authentication Inconsistency**: The `gcpserviceaccount` module was not configuring a provider, causing Pulumi to fall back to Application Default Credentials instead of using credentials from `iacInput.ProviderConfig`
 - **Credential Mismatch**: Different credentials being used between what the user specified and what Pulumi actually used
 - **Pattern Inconsistency**: 3 out of 17 GCP modules deviated from the standard provider pattern, creating confusion and maintenance burden
 - **Custom Provider Logic**: The `gcpcertmanagercert` module had 24 lines of custom base64 decoding and provider creation logic that duplicated functionality available in the shared helper
@@ -35,8 +35,8 @@ Established and enforced the standard GCP provider configuration pattern across 
 All GCP Pulumi modules now follow this consistent pattern:
 
 ```go
-// Setup provider with credentials from stack input
-gcpProvider, err := pulumigoogleprovider.Get(ctx, stackInput.ProviderConfig)
+// Setup provider with credentials from IaC input
+gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
 if err != nil {
     return errors.Wrap(err, "failed to setup gcp provider")
 }
@@ -103,7 +103,7 @@ import (
 )
 
 // Added provider setup
-gcpProvider, err := pulumigoogleprovider.Get(ctx, stackInput.ProviderConfig)
+gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
 if err != nil {
     return errors.Wrap(err, "failed to setup gcp provider")
 }
@@ -201,7 +201,7 @@ func iam(
 ```go
 var provider *gcp.Provider
 var err error
-gcpProviderConfig := stackInput.ProviderConfig
+gcpProviderConfig := iacInput.ProviderConfig
 
 if gcpProviderConfig == nil {
     provider, err = gcp.NewProvider(ctx, "classic-provider", &gcp.ProviderArgs{})
@@ -227,7 +227,7 @@ if gcpProviderConfig == nil {
 
 **After** (4 lines):
 ```go
-gcpProvider, err := pulumigoogleprovider.Get(ctx, stackInput.ProviderConfig)
+gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
 if err != nil {
     return errors.Wrap(err, "failed to setup gcp provider")
 }
@@ -248,7 +248,7 @@ if err != nil {
 
 ```go
 // Added import and provider setup
-gcpProvider, err := pulumigoogleprovider.Get(ctx, stackInput.ProviderConfig)
+gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
 if err != nil {
     return errors.Wrap(err, "failed to setup gcp provider")
 }
@@ -301,7 +301,7 @@ func iam(ctx *pulumi.Context, locals *Locals, createdProject *organizations.Proj
 
 ### 1. Bug Resolution
 - **Fixed Production Issue**: The 403 permission error is resolved - `gcpserviceaccount` now uses the correct credentials
-- **Consistent Authentication**: All 17 GCP modules now use credentials from `stackInput.ProviderConfig`
+- **Consistent Authentication**: All 17 GCP modules now use credentials from `iacInput.ProviderConfig`
 - **No More Credential Surprises**: Users' specified credentials are actually used, not overridden by defaults
 
 ### 2. Code Quality
@@ -424,7 +424,7 @@ spec:
   serviceAccountId: odwen-test-1
 ```
 
-**Expected Result**: Service account created successfully using credentials from `provider_config` in stack input.
+**Expected Result**: Service account created successfully using credentials from `provider_config` in IaC input.
 
 ## Design Decisions
 

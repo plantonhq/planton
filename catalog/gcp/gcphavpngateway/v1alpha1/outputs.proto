@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcphavpngateway.v1alpha1;
 
-// GcpHaVpnGatewayStackOutputs captures the gateway and router identities a
+// GcpHaVpnGatewayOutputs captures the gateway and router identities a
 // GcpHaVpnConnection references and the two public addresses the other
 // side of every tunnel is configured to reach.
-message GcpHaVpnGatewayStackOutputs {
+message GcpHaVpnGatewayOutputs {
   // The gateway's self link -- what a GcpHaVpnConnection's `gateway`
   // references (its tunnels attach here), and what another Google Cloud
   // gateway's connection names as its `peer.gcp_gateway`.

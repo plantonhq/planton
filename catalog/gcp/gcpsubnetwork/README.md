@@ -90,7 +90,7 @@ GCP reserves 4 addresses per primary range. The primary range can be **expanded*
 - GKE nodes: `/20` primary; pods commonly `/14`-`/18` secondary; services `/20` secondary
 - Proxy-only subnets: `/23` minimum (Google's recommendation)
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -126,7 +126,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 - **Flow logs cost real money at scale**: full sampling on a busy subnet generates significant Cloud Logging volume — tune `flowSampling` and `filterExpr` deliberately.
 - **Preview-surface note**: `allowSubnetCidrRoutesOverlap` is preview-stage on the current provider line; the modules select the beta provider so it is available without a retrofit.
 
-## Related Components
+## Related Kinds
 
 - [GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork) — the parent network
 - [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — consumes the subnet + secondary ranges by reference

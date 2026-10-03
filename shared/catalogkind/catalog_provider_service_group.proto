@@ -1,0 +1,337 @@
+syntax = "proto3";
+
+package dev.planton.shared.catalogkind;
+
+import "google/protobuf/descriptor.proto";
+import "shared/catalogkind/catalog_provider.proto";
+
+//enum value options for catalog-provider-service-group
+extend google.protobuf.EnumValueOptions {
+  CatalogProviderServiceGroupMeta service_group_meta = 81102;
+}
+
+//metadata for one catalog provider service group. like kind_meta and
+//provider_meta, this is compile-time data read off descriptors; the
+//catalogkindreflect registry tests enforce that every group value carries it.
+message CatalogProviderServiceGroupMeta {
+  //the provider this group belongs to. a kind's service_group must belong to
+  //the kind's own provider — the registry coherence test enforces it, so a
+  //copy-paste of the wrong provider's group is a committed-test failure.
+  CatalogProvider provider = 1;
+
+  //the group's display label, exactly as catalog surfaces render it
+  //("Networking & Content Delivery"). authored once here so OSS surfaces
+  //(CLI, docs) render labels without a console mapping; console-side label
+  //mappings mirror this value and are pinned coherent by their own tests,
+  //the same dual-home contract provider display names already use.
+  string display_name = 2;
+}
+
+//the service taxonomy each cloud provider's catalog is browsed by — the same
+//groups the provider's own console files its services under (AWS "Compute",
+//Azure "Networking", GCP "Data Analytics"). every kind of a grouped provider
+//carries EXACTLY ONE group on its kind_meta (field: service_group); grouping
+//is how explorers, docs navigation, and AI grounding organize a provider's
+//components, so each kind needs exactly one home. multi-service
+//relationships belong in the kind's documentation, never in a second
+//group.
+//
+//this is deliberately COARSER than the kind enum's family sub-bands: a
+//sub-band clusters a handful of kinds that share code and fixtures (the
+//EventBridge family, the Front Door family); a service group is the
+//browsing shelf a user scans (Application Integration, Networking). many
+//sub-bands map into one group.
+//
+//Numbering scheme: each grouped provider owns a 100-wide band mirroring the
+//kind enum's band order (aws 1000s -> 100s, azure 2000s -> 200s,
+//gcp 3000s -> 300s, kubernetes 4000s -> 400s, digital_ocean 5000s -> 500s,
+//cloudflare 7000s -> 700s). numbers are transport-only — durable stores and
+//catalog artifacts key groups by NAME.
+//
+//providers without a service taxonomy (managed services like auth0 and
+//openfga, and the _test provider) have no values here, and their kinds must
+//NOT carry a service_group — the registry tests enforce both directions.
+enum CatalogProviderServiceGroup {
+  catalog_provider_service_group_unspecified = 0;
+
+  // 100–199: AWS — mirrors the AWS Management Console's service categories.
+  aws_compute = 100 [(service_group_meta) = {
+    provider: aws
+    display_name: "Compute"
+  }];
+  aws_containers = 101 [(service_group_meta) = {
+    provider: aws
+    display_name: "Containers"
+  }];
+  aws_storage = 102 [(service_group_meta) = {
+    provider: aws
+    display_name: "Storage"
+  }];
+  aws_database = 103 [(service_group_meta) = {
+    provider: aws
+    display_name: "Database"
+  }];
+  aws_networking_content_delivery = 104 [(service_group_meta) = {
+    provider: aws
+    display_name: "Networking & Content Delivery"
+  }];
+  aws_security_identity_compliance = 105 [(service_group_meta) = {
+    provider: aws
+    display_name: "Security, Identity, & Compliance"
+  }];
+  aws_analytics = 106 [(service_group_meta) = {
+    provider: aws
+    display_name: "Analytics"
+  }];
+  aws_application_integration = 107 [(service_group_meta) = {
+    provider: aws
+    display_name: "Application Integration"
+  }];
+  aws_machine_learning = 108 [(service_group_meta) = {
+    provider: aws
+    display_name: "Machine Learning"
+  }];
+  aws_management_governance = 109 [(service_group_meta) = {
+    provider: aws
+    display_name: "Management & Governance"
+  }];
+  aws_developer_tools = 110 [(service_group_meta) = {
+    provider: aws
+    display_name: "Developer Tools"
+  }];
+  aws_cloud_financial_management = 111 [(service_group_meta) = {
+    provider: aws
+    display_name: "Cloud Financial Management"
+  }];
+
+  // 200–299: Azure — mirrors the Azure portal's service categories.
+  azure_compute = 200 [(service_group_meta) = {
+    provider: azure
+    display_name: "Compute"
+  }];
+  azure_containers = 201 [(service_group_meta) = {
+    provider: azure
+    display_name: "Containers"
+  }];
+  azure_web = 202 [(service_group_meta) = {
+    provider: azure
+    display_name: "Web & Mobile"
+  }];
+  azure_storage = 203 [(service_group_meta) = {
+    provider: azure
+    display_name: "Storage"
+  }];
+  azure_databases = 204 [(service_group_meta) = {
+    provider: azure
+    display_name: "Databases"
+  }];
+  azure_networking = 205 [(service_group_meta) = {
+    provider: azure
+    display_name: "Networking"
+  }];
+  azure_security = 206 [(service_group_meta) = {
+    provider: azure
+    display_name: "Security"
+  }];
+  azure_identity = 207 [(service_group_meta) = {
+    provider: azure
+    display_name: "Identity"
+  }];
+  azure_ai_ml = 208 [(service_group_meta) = {
+    provider: azure
+    display_name: "AI + Machine Learning"
+  }];
+  azure_analytics = 209 [(service_group_meta) = {
+    provider: azure
+    display_name: "Analytics"
+  }];
+  azure_integration = 210 [(service_group_meta) = {
+    provider: azure
+    display_name: "Integration"
+  }];
+  azure_management = 211 [(service_group_meta) = {
+    provider: azure
+    display_name: "Management & Governance"
+  }];
+  azure_backup = 212 [(service_group_meta) = {
+    provider: azure
+    display_name: "Backup & Recovery"
+  }];
+
+  // 300–399: GCP — mirrors the Google Cloud console's product categories.
+  gcp_compute = 300 [(service_group_meta) = {
+    provider: gcp
+    display_name: "Compute"
+  }];
+  gcp_containers = 301 [(service_group_meta) = {
+    provider: gcp
+    display_name: "Containers"
+  }];
+  gcp_storage = 302 [(service_group_meta) = {
+    provider: gcp
+    display_name: "Storage"
+  }];
+  gcp_databases = 303 [(service_group_meta) = {
+    provider: gcp
+    display_name: "Databases"
+  }];
+  gcp_networking = 304 [(service_group_meta) = {
+    provider: gcp
+    display_name: "Networking"
+  }];
+  gcp_data_analytics = 305 [(service_group_meta) = {
+    provider: gcp
+    display_name: "Data Analytics"
+  }];
+  gcp_ai_ml = 306 [(service_group_meta) = {
+    provider: gcp
+    display_name: "AI & Machine Learning"
+  }];
+  gcp_security = 307 [(service_group_meta) = {
+    provider: gcp
+    display_name: "Security"
+  }];
+  gcp_identity_access = 308 [(service_group_meta) = {
+    provider: gcp
+    display_name: "Identity & Access"
+  }];
+  gcp_observability = 309 [(service_group_meta) = {
+    provider: gcp
+    display_name: "Observability"
+  }];
+  gcp_developer_tools = 310 [(service_group_meta) = {
+    provider: gcp
+    display_name: "Developer Tools"
+  }];
+  gcp_integration = 311 [(service_group_meta) = {
+    provider: gcp
+    display_name: "Integration Services"
+  }];
+  gcp_serverless = 312 [(service_group_meta) = {
+    provider: gcp
+    display_name: "Serverless"
+  }];
+  // Firebase is its own product line inside Google Cloud -- the console
+  // files it under a separate top-level entry, and its kinds (project
+  // enablement, app registrations, the mobile-facing services) belong to
+  // none of the infrastructure shelves above.
+  gcp_firebase = 313 [(service_group_meta) = {
+    provider: gcp
+    display_name: "Firebase"
+  }];
+  // Resource Manager governance: the hierarchy (projects, folders), the
+  // guardrails on it (organization policies and custom constraints), and
+  // the tags policies key on. IAM roles and bindings stay under Identity &
+  // Access; a project is filed here because it is the unit governance acts
+  // on. Same label as the AWS shelf so the console groups both clouds'
+  // governance blocks under one word.
+  gcp_management_governance = 314 [(service_group_meta) = {
+    provider: gcp
+    display_name: "Management & Governance"
+  }];
+
+  // 400–499: Kubernetes — three groups: native API objects, cluster
+  // machinery, and applications deployed on the cluster.
+  kubernetes_core_workloads_apis = 400 [(service_group_meta) = {
+    provider: kubernetes
+    display_name: "Core Workloads & APIs"
+  }];
+  kubernetes_operators_controllers = 401 [(service_group_meta) = {
+    provider: kubernetes
+    display_name: "Operators & Controllers"
+  }];
+  kubernetes_open_source_software = 402 [(service_group_meta) = {
+    provider: kubernetes
+    display_name: "Open-Source Software"
+  }];
+
+  // 500–599: DigitalOcean — mirrors the DigitalOcean control panel's
+  // navigation.
+  digital_ocean_compute = 500 [(service_group_meta) = {
+    provider: digital_ocean
+    display_name: "Compute"
+  }];
+  digital_ocean_kubernetes = 501 [(service_group_meta) = {
+    provider: digital_ocean
+    display_name: "Kubernetes"
+  }];
+  digital_ocean_serverless = 502 [(service_group_meta) = {
+    provider: digital_ocean
+    display_name: "Serverless"
+  }];
+  digital_ocean_databases = 503 [(service_group_meta) = {
+    provider: digital_ocean
+    display_name: "Databases"
+  }];
+  digital_ocean_storage = 504 [(service_group_meta) = {
+    provider: digital_ocean
+    display_name: "Storage"
+  }];
+  digital_ocean_networking = 505 [(service_group_meta) = {
+    provider: digital_ocean
+    display_name: "Networking"
+  }];
+  digital_ocean_container_registry = 506 [(service_group_meta) = {
+    provider: digital_ocean
+    display_name: "Container Registry"
+  }];
+  digital_ocean_monitoring = 507 [(service_group_meta) = {
+    provider: digital_ocean
+    display_name: "Monitoring"
+  }];
+  digital_ocean_account = 508 [(service_group_meta) = {
+    provider: digital_ocean
+    display_name: "Account"
+  }];
+
+  // 700–799: Cloudflare — mirrors the Cloudflare dashboard's navigation
+  // (zone sections plus the Zero Trust and Workers dashboards).
+  cloudflare_dns = 700 [(service_group_meta) = {
+    provider: cloudflare
+    display_name: "DNS"
+  }];
+  cloudflare_tls = 701 [(service_group_meta) = {
+    provider: cloudflare
+    display_name: "SSL/TLS"
+  }];
+  cloudflare_security = 702 [(service_group_meta) = {
+    provider: cloudflare
+    display_name: "Security"
+  }];
+  cloudflare_rules = 703 [(service_group_meta) = {
+    provider: cloudflare
+    display_name: "Rules"
+  }];
+  cloudflare_performance = 704 [(service_group_meta) = {
+    provider: cloudflare
+    display_name: "Performance"
+  }];
+  cloudflare_traffic = 705 [(service_group_meta) = {
+    provider: cloudflare
+    display_name: "Traffic"
+  }];
+  cloudflare_zero_trust = 706 [(service_group_meta) = {
+    provider: cloudflare
+    display_name: "Zero Trust"
+  }];
+  cloudflare_developer_platform = 707 [(service_group_meta) = {
+    provider: cloudflare
+    display_name: "Developer Platform"
+  }];
+  cloudflare_storage = 708 [(service_group_meta) = {
+    provider: cloudflare
+    display_name: "Storage & Databases"
+  }];
+  cloudflare_ai = 709 [(service_group_meta) = {
+    provider: cloudflare
+    display_name: "AI"
+  }];
+  cloudflare_observability = 710 [(service_group_meta) = {
+    provider: cloudflare
+    display_name: "Analytics & Logs"
+  }];
+  cloudflare_account = 711 [(service_group_meta) = {
+    provider: cloudflare
+    display_name: "Account Management"
+  }];
+}

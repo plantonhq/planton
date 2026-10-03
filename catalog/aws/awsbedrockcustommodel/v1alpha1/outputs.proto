@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbedrockcustommodel.v1alpha1;
 
-// AwsBedrockCustomModelStackOutputs captures observable identifiers from a
+// AwsBedrockCustomModelOutputs captures observable identifiers from a
 // Bedrock model-customization deployment. These outputs are used by
 // downstream resources (provisioned throughput) to wire dependencies via
 // StringValueOrRef.
-message AwsBedrockCustomModelStackOutputs {
+message AwsBedrockCustomModelOutputs {
   // ARN of the resulting custom model - the value
   // AwsBedrockProvisionedThroughput references to buy serving capacity
   // for this model.

@@ -5,16 +5,16 @@ Pulumi (Go) IaC module for a reusable Zero Trust list (domains, IPs, URLs, email
 ## Architecture
 
 ```
-main.go                    — Entrypoint loading the stack input
+main.go                    — Entrypoint loading the IaC input
 module/main.go             — Resources(): provider setup, resource, outputs
 module/locals.go           — Locals initialization
 module/zero_trust_list.go  — cloudflare.ZeroTrustList
-module/outputs.go          — Stack output keys
+module/outputs.go          — output keys
 ```
 
 ## Behavior
 
-Mirrors the Terraform module's contract exactly: immutable `type`, set-semantics items, `list_id` stack output.
+Mirrors the Terraform module's contract exactly: immutable `type`, set-semantics items, `list_id` output.
 
 ## Outputs
 

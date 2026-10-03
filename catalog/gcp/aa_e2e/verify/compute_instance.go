@@ -8,7 +8,7 @@ import (
 )
 
 // computeInstanceVerifier probes a Compute Engine VM via the compute API
-// using the (project, zone, name) triple from the stack outputs. Posture
+// using the (project, zone, name) triple from the outputs. Posture
 // assertions confirm the platform attribution labels landed (the
 // cross-engine label-parity canary — the Terraform module historically
 // stamped a different label set than Pulumi, so this is a permanently

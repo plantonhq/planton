@@ -13,7 +13,7 @@ go_library(
         "//catalog/azure/azurevpngateway/v1alpha1",
         "//pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/azure/pulumiazureprovider",
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_azure_sdk_v6//go/azure/network",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",

@@ -53,7 +53,7 @@
 | `permission_group_ids` | list | Cloudflare permission-group UUIDs (at least one). |
 | `resources` | map | Resource identifier to grant: either `permission` (whole resource, normally `*`) or `subresources` (nested scoping) -- exactly one per entry. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|
@@ -97,7 +97,7 @@ spec:
 
 Real delete. The credential stops working immediately -- anything still using it starts failing authentication, so retire consumers first.
 
-## Related Components
+## Related Kinds
 
 - [Cloudflare Zero Trust Access Service Token](/docs/catalog/cloudflare/cloudflarezerotrustaccessservicetoken) -- machine credentials for Access-protected applications, a different trust domain
 - [Cloudflare Secrets Store Secret](/docs/catalog/cloudflare/cloudflaresecretsstoresecret) -- where a minted token value can be stored for Workers to consume

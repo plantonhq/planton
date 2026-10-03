@@ -8,13 +8,13 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureloganalyticsworkspacev1alpha1.AzureLogAnalyticsWorkspaceStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureloganalyticsworkspacev1alpha1.AzureLogAnalyticsWorkspaceIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder,
+	// Build the Azure provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static client secret,
 	// keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -31,8 +31,8 @@ func Resources(ctx *pulumi.Context, stackInput *azureloganalyticsworkspacev1alph
 		Location:          pulumi.String(spec.Region),
 		ResourceGroupName: pulumi.String(locals.ResourceGroupName),
 		Sku:               pulumi.String(skuStrings[spec.Sku]),
-		// Presence-guarded to the proto defaults: stack inputs built from a
-		// manifest materialize defaults, but direct stack-input paths do not.
+		// Presence-guarded to the proto defaults: IaC inputs built from a
+		// manifest materialize defaults, but direct iac-input paths do not.
 		RetentionInDays: pulumi.Int(int(spec.GetRetentionInDays())),
 		// -1 means unlimited -- the provider's own default, sent explicitly so
 		// both engines carry the same value.
@@ -95,7 +95,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureloganalyticsworkspacev1alph
 		return errors.Wrapf(err, "failed to create Log Analytics Workspace %s", spec.WorkspaceName)
 	}
 
-	// Export stack outputs. workspace_id (the ARM resource ID) is the FK
+	// Export outputs. workspace_id (the ARM resource ID) is the FK
 	// seam downstream kinds reference; the provider's WorkspaceId attribute
 	// is the CUSTOMER GUID, exported under the unambiguous name.
 	ctx.Export(OpWorkspaceId, createdWorkspace.ID())

@@ -1,0 +1,71 @@
+---
+description: Action rule to audit an existing kind GUIDE.md for groundedness, five-laws compliance, schema freshness, and formatting against the kind guide standard.
+globs: []
+alwaysApply: false
+---
+
+# Rule: Audit Kind Guide
+
+**Purpose**: Guide an AI agent through auditing an existing `GUIDE.md` for a kind. Verifies that the authored wisdom is grounded, current against the schemas, compliant with the five laws of guide content, and correctly wired into the generated layer.
+
+**Trigger**: User references this rule or asks to audit/verify/review a kind guide.
+
+**Output**: An audit report listing issues found, organized by severity (Critical, Warning, Style), with specific fixes for each issue.
+
+---
+
+## Audit Procedure
+
+### Step 1: Read Source Files
+
+1. The guide itself: `GUIDE.md` at the kind root
+2. `{version}/spec.proto` and `{version}/outputs.proto` -- the current schema truth
+3. `{version}/reference.md` -- the generated page the guide must complement, never duplicate
+4. `iac/pulumi/module/*.go` (and `iac/tf/*.tf` where present) -- deployment behavior claims
+5. The kind's `README.md` and `catalog.md` -- the durable-judgment record beside the guide (research documents are never committed; design rationale traces to these files or to the guide itself)
+
+### Step 2: Wiring Checks (Critical)
+
+- The kind's `reference.md` head carries the `**Guide**: [GUIDE.md](../GUIDE.md)` line. Missing line means `make generate-reference` was not run after the guide landed -- the guide is invisible to index readers.
+- `go test ./pkg/explain/refgen/` passes: guardrails (placement, embedded manifests, links) and the freshness gate.
+
+### Step 3: Groundedness Checks (Critical)
+
+- Every factual claim traces to a source read in Step 1. A claim about deployment behavior that the module code contradicts -- or that nothing substantiates -- is a Critical finding: authored wisdom that fabricates is worse than no wisdom.
+- Every complete embedded manifest validates; every mentioned spec field exists in the current schema with the spelling shown (camelCase for spec YAML, snake_case for `fieldPath` strings).
+- Schema freshness: the guide references no removed or renamed field, kind, or enum value. Wisdom may age gracefully; it may not be schema-wrong.
+- Pack reachability: every file the guide sends the reader to exists in the packaged skill's reference pack (`reference.md`, `GUIDE.md`, the three fact-sheet sidecars, `_patterns/`). A path under `e2e/`, `iac/`, or `presets/`, or to `README.md` / `catalog.md`, is a Critical finding: an installed agent cannot open it. Presets may be named by slug with the sentence that they ship outside the pack; a composition's complete manifest is embedded or lives in a pattern. `rg -n 'e2e/|\.\./aa_e2e|presets/[a-z0-9-]+\.' GUIDE.md` must return nothing.
+
+### Step 4: Five-Laws Compliance (Warning)
+
+1. **Internal-conventions-first** -- flag paragraphs a well-trained model could have written without repo access (generic cloud explainer content). Each is a candidate for deletion.
+2. **Diagram-awareness** -- where the guide teaches a composition judgment (kind vs flag, shared vs dedicated), it must state the diagram consequence. Silent on the diagram = Warning.
+3. **Judgment framing** -- content shaped as feature lists duplicates the reference page; judgment must name the failure mode of the wrong choice.
+4. **Living document** -- claims must be grounded today; "will support", "coming soon", and speculative content are findings.
+5. **Alias-aware substitution** -- if the kind implements software commonly asked for by another name and the guide lacks the "Substitutes for" line, flag it; also flag when the compatibility fact is absent from the spec's proto doc (route that half to a proto-comment fix, not guide prose).
+
+### Step 5: Style Checks (Style)
+
+- Marketing language (seamless, effortless, powerful, robust, cutting-edge) -- banned.
+- Facts restated from the reference page (drift risk) -- link, never duplicate.
+- Broken or absolute-when-relative-works links.
+
+---
+
+## Report Format
+
+```
+# Guide Audit: {Kind}
+
+## Critical
+- [file:line] {issue} -> {specific fix}
+
+## Warning
+- ...
+
+## Style
+- ...
+
+## Verdict
+{pass | fixes required}, {one-line rationale}
+```

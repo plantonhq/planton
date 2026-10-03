@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1;
 import "catalog/kubernetes/kuberneteskuberayoperator/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//kuberay-operator-kubernetes stack-input
-message KubernetesKubeRayOperatorStackInput {
-  //target cloud-resource
+//kuberay-operator-kubernetes iac-input
+message KubernetesKubeRayOperatorIacInput {
+  //target infra-component
   KubernetesKubeRayOperator target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

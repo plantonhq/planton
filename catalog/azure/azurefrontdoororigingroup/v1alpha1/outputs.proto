@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurefrontdoororigingroup.v1alpha1;
 
-// **AzureFrontDoorOriginGroupStackOutputs** captures the outputs of
+// **AzureFrontDoorOriginGroupOutputs** captures the outputs of
 // provisioning an Azure Front Door origin group.
-message AzureFrontDoorOriginGroupStackOutputs {
+message AzureFrontDoorOriginGroupOutputs {
   // The Azure Resource Manager ID of the origin group -- what
   // AzureFrontDoorOrigin's origin_group_id (parent) and
   // AzureFrontDoorRoute's origin_group_id (destination) reference.

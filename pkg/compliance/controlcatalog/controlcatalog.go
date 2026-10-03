@@ -1,7 +1,7 @@
 // Package controlcatalog loads the central control catalog and the
 // framework crosswalks -- the authored compliance vocabulary under
 // catalog/_compliance/. The catalog defines every technical control the
-// per-component control profiles may reference; the crosswalks map external
+// per-catalog kind control profiles may reference; the crosswalks map external
 // framework requirements (HIPAA, CIS, ...) onto those same control ids.
 // Referential integrity in both directions is enforced by this package's
 // conformance test, which CI runs on every catalog change.

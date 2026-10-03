@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azurestoragecontainer.v1alpha1;
 
-// **AzureStorageContainerStackOutputs** captures the outputs of
+// **AzureStorageContainerOutputs** captures the outputs of
 // provisioning a blob container.
 //
 // No URL output on purpose: the container's data-plane URL is the
@@ -10,7 +10,7 @@ package dev.planton.azure.azurestoragecontainer.v1alpha1;
 // knows its real endpoint (partitioned-DNS accounts use a different
 // hostname than the classic shared DNS). Compose URLs from
 // AzureStorageAccount's primary_blob_endpoint output + container_name.
-message AzureStorageContainerStackOutputs {
+message AzureStorageContainerOutputs {
   // The Azure Resource Manager ID of the container. Role assignments
   // (Storage Blob Data Reader/Contributor) scope to it for
   // container-level data access.

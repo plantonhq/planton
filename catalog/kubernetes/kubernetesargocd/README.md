@@ -5,7 +5,7 @@
 **One resource is ONE Argo CD control plane** — the declarative GitOps
 engine that keeps a cluster converged on what Git says.
 
-Not the right component when:
+Not the right kind when:
 
 - **You want to declare the apps it delivers** — Applications,
   AppProjects and ApplicationSets are plain custom resources once the

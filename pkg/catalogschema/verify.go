@@ -8,8 +8,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 const testProviderName = "_test"
@@ -62,21 +62,21 @@ func VerifyArtifact(zipPath string) error {
 	}
 
 	checked := 0
-	for _, kind := range crkreflect.KindsList() {
-		if kind == cloudresourcekind.CloudResourceKind_unspecified {
+	for _, kind := range catalogkindreflect.KindsList() {
+		if kind == catalogkind.CatalogKind_unspecified {
 			continue
 		}
-		provider := crkreflect.GetProvider(kind)
+		provider := catalogkindreflect.GetProvider(kind)
 		if provider.String() == testProviderName {
 			continue
 		}
-		version, err := crkreflect.KindVersion(kind)
+		version, err := catalogkindreflect.KindVersion(kind)
 		if err != nil {
 			problems = append(problems, fmt.Sprintf("%s: %v", kind, err))
 			continue
 		}
 		providerDir := strings.ReplaceAll(provider.String(), "_", "")
-		kindDir := strings.ToLower(crkreflect.ExtractKindNameByKind(kind))
+		kindDir := strings.ToLower(catalogkindreflect.ExtractKindNameByKind(kind))
 		for _, contract := range contractFiles {
 			path := fmt.Sprintf("catalog/%s/%s/%s/%s", providerDir, kindDir, version, contract)
 			if !present[path] {

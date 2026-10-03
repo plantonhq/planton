@@ -20,7 +20,7 @@ Beyond the container itself, this component folds in the log-group-scoped satell
 
 ## Prerequisites
 
-- An AWS account and region configured in your Planton stack input.
+- An AWS account and region configured in your Planton IaC input.
 - (Optional) A KMS key if you need customer-managed encryption — its key policy must allow the `logs.<region>.amazonaws.com` service principal.
 - (Optional) For subscription filters to Kinesis/Firehose: an IAM role trusting `logs.amazonaws.com` with put permissions on the destination.
 

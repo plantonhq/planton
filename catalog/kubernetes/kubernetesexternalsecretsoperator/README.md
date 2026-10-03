@@ -43,11 +43,11 @@ The controller ServiceAccount name is fixed to `external-secrets` and exported (
 - **`spec.concurrent`**: parallel ExternalSecret reconciliation (chart default 1; raise for clusters with hundreds of ExternalSecrets)
 - **`spec.replicas` + `spec.leader_elect`**: controller redundancy — validation enforces leader election with more than one replica
 - **`spec.workload_identity`**: the ambient-identity binding for stores without their own auth
-- **`spec.webhook` / `spec.cert_controller`**: per-component replicas and resources
+- **`spec.webhook` / `spec.cert_controller`**: per-kind replicas and resources
 - **`spec.prometheus.service_monitor`**: opt-in ServiceMonitor (requires the Prometheus operator CRDs — the release fails without them)
 - **`spec.helm_values`**: escape hatch for chart values beyond the typed fields — never the primary interface
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|
@@ -57,7 +57,7 @@ The controller ServiceAccount name is fixed to `external-secrets` and exported (
 
 ## Composing in Infra Charts
 
-The standard chart wiring: this component first, then stores (KubernetesClusterSecretStore for cluster-wide backends, KubernetesSecretStore for namespace-scoped ones), then KubernetesExternalSecret resources referencing the stores. Cloud components (an IAM role for Secrets Manager, a GCP service account for Secret Manager) deploy in the same run and flow their handles into `workload_identity` — or into the stores' own auth blocks for per-team isolation.
+The standard chart wiring: this component first, then stores (KubernetesClusterSecretStore for cluster-wide backends, KubernetesSecretStore for namespace-scoped ones), then KubernetesExternalSecret resources referencing the stores. Catalog kinds (an IAM role for Secrets Manager, a GCP service account for Secret Manager) deploy in the same run and flow their handles into `workload_identity` — or into the stores' own auth blocks for per-team isolation.
 
 ```yaml
 apiVersion: kubernetes.planton.dev/v1alpha1

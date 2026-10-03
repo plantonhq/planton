@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azureeventgrideventsubscription.v1alpha1;
 
-// **AzureEventgridEventSubscriptionStackOutputs** captures the outputs
+// **AzureEventgridEventSubscriptionOutputs** captures the outputs
 // from provisioning an Azure Event Grid event subscription.
-message AzureEventgridEventSubscriptionStackOutputs {
+message AzureEventgridEventSubscriptionOutputs {
   // The subscription's Azure Resource Manager ID. The shape follows
   // the addressing choice: scope-addressed subscriptions extend the
   // source's ID

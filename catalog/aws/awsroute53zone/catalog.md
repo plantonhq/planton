@@ -6,7 +6,7 @@ Individual DNS records are deliberately not part of the zone: each record is its
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Route53 Hosted Zone** -- a public hosted zone resolving globally on the internet, or a private hosted zone resolving only within associated VPCs
 - **VPC Associations** -- created only when `isPrivate` is `true`; each association allows the private zone to resolve DNS queries from the specified VPC (cross-region associations supported via `vpcRegion`)
@@ -18,15 +18,15 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **A VPC** (required for private zones) -- one or more VPCs with `enableDnsHostnames` and `enableDnsSupport` enabled. Provide VPC IDs directly or reference an AwsVpc Cloud Resource via ValueFromRef.
-- **A KMS key** (required for DNSSEC) -- must live in us-east-1, be an asymmetric key with key spec ECC_NIST_P256 and SIGN_VERIFY usage, and its key policy must allow the Route53 DNSSEC service principal (dnssec-route53.amazonaws.com). Reference an AwsKmsKey Cloud Resource or pass the key ARN.
-- **A CloudWatch Log Group** (required for query logging) -- must live in us-east-1 (Route53 delivers query logs there regardless of the zone's region), and an account-level CloudWatch Logs resource policy must allow the route53.amazonaws.com service principal to write. Reference an AwsCloudwatchLogGroup Cloud Resource or pass the log group ARN.
-- **Domain registrar DS record** (DNSSEC only) -- signing is half the chain of trust; after deployment, register the zone's DS record with the domain registrar to complete it. The value is exported as the `ds_record` stack output (with `key_signing_key_tag` for registrar forms that ask for it) -- no console fishing required.
+- **A VPC** (required for private zones) -- one or more VPCs with `enableDnsHostnames` and `enableDnsSupport` enabled. Provide VPC IDs directly or reference an AwsVpc Infra Component via ValueFromRef.
+- **A KMS key** (required for DNSSEC) -- must live in us-east-1, be an asymmetric key with key spec ECC_NIST_P256 and SIGN_VERIFY usage, and its key policy must allow the Route53 DNSSEC service principal (dnssec-route53.amazonaws.com). Reference an AwsKmsKey Infra Component or pass the key ARN.
+- **A CloudWatch Log Group** (required for query logging) -- must live in us-east-1 (Route53 delivers query logs there regardless of the zone's region), and an account-level CloudWatch Logs resource policy must allow the route53.amazonaws.com service principal to write. Reference an AwsCloudwatchLogGroup Infra Component or pass the log group ARN.
+- **Domain registrar DS record** (DNSSEC only) -- signing is half the chain of trust; after deployment, register the zone's DS record with the domain registrar to complete it. The value is exported as the `ds_record` output (with `key_signing_key_tag` for registrar forms that ask for it) -- no console fishing required.
 
 ## Deploy
 
@@ -55,7 +55,7 @@ spec:
 planton apply -f route53-zone.yaml
 ```
 
-This creates a public hosted zone for `example.com` with fresh Route53 name servers, no DNSSEC, and no query logging. A Stack Job tracks the provisioning in real time.
+This creates a public hosted zone for `example.com` with fresh Route53 name servers, no DNSSEC, and no query logging. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -91,7 +91,7 @@ These are the most important decisions when configuring a Route53 zone. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -99,9 +99,9 @@ These are the most important decisions when configuring a Route53 zone. Explore 
 | **AwsKmsKey** (DNSSEC) | `dnssec.kmsKeyArn` | `status.outputs.key_arn` |
 | **AwsCloudwatchLogGroup** (query logging) | `queryLogging.cloudwatchLogGroupArn` | `status.outputs.log_group_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -126,7 +126,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS VPC**](/cloud-catalog/aws-vpc) -- provides the VPC ID for private hosted zone associations
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides the asymmetric signing key for DNSSEC
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) -- receives DNS query logs
-- [**AWS Route 53 DNS Record**](/cloud-catalog/aws-route53-dns-record) -- the first-class home for this zone's records, referencing `zone_id`
+- [**AWS VPC**](/infra-catalog/aws-vpc) -- provides the VPC ID for private hosted zone associations
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides the asymmetric signing key for DNSSEC
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) -- receives DNS query logs
+- [**AWS Route 53 DNS Record**](/infra-catalog/aws-route53-dns-record) -- the first-class home for this zone's records, referencing `zone_id`

@@ -16,8 +16,8 @@ type Locals struct {
 	ShortName string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcptagvaluev1alpha1.GcpTagValueStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcptagvaluev1alpha1.GcpTagValueIacInput) *Locals {
+	target := iacInput.Target
 
 	shortName := target.Spec.ShortName
 	if shortName == "" {

@@ -119,7 +119,7 @@ spec:
 - Added `cluster_location` to test fixtures to satisfy validation
 
 **Documentation**:
-- `README.md`: Updated example stack inputs with `cluster_location`
+- `README.md`: Updated example IaC inputs with `cluster_location`
 - `overview.md`: Updated foreign key references section
 - `examples.md`: Added `cluster_location` to all 6 example manifests
 
@@ -141,7 +141,7 @@ make protos
 All validation steps passed successfully:
 
 ```bash
-# Component tests
+# Kind tests
 go test ./apis/dev/planton/provider/gcp/gcpgkenodepool/v1/
 # ok  	github.com/plantonhq/planton/apis/org/.../gcpgkenodepool/v1	0.372s
 
@@ -204,7 +204,7 @@ spec:
 ## Testing Strategy
 
 ### Unit Tests
-- Updated component tests to include `cluster_location` in fixtures
+- Updated kind tests to include `cluster_location` in fixtures
 - Validated proto validation rules work correctly
 - All buf.validate constraints passing
 

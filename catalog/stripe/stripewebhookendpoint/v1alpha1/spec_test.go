@@ -18,7 +18,7 @@ func endpoint(spec *StripeWebhookEndpointSpec) *StripeWebhookEndpoint {
 	return &StripeWebhookEndpoint{
 		ApiVersion: "stripe.planton.dev/v1alpha1",
 		Kind:       "StripeWebhookEndpoint",
-		Metadata:   &shared.CloudResourceMetadata{Name: "billing-events"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "billing-events"},
 		Spec:       spec,
 	}
 }

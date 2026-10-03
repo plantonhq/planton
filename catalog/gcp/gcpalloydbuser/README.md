@@ -39,7 +39,7 @@ spec:
 | `password` | — | BUILT_IN only; mutable (rotates in place). Secret. |
 | `databaseRoles` | — | Roles granted to the user. |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
@@ -47,7 +47,7 @@ spec:
 | `user_id` | User ID as stored by AlloyDB |
 | `cluster_id` | Cluster resource path |
 
-## Related Components
+## Related Kinds
 
 - [GcpAlloydbCluster](/docs/catalog/gcp/gcpalloydbcluster)
 - [GcpAlloydbInstance](/docs/catalog/gcp/gcpalloydbinstance)

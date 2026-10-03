@@ -6,7 +6,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpcloudcomposerenvironmentv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcloudcomposerenvironment/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -17,9 +17,9 @@ type Locals struct {
 	GcpLabels                   map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudcomposerenvironmentv1alpha1.GcpCloudComposerEnvironmentStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpcloudcomposerenvironmentv1alpha1.GcpCloudComposerEnvironmentIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpCloudComposerEnvironment = stackInput.Target
+	locals.GcpCloudComposerEnvironment = iacInput.Target
 
 	// Determine resource name for labels.
 	resourceName := locals.GcpCloudComposerEnvironment.Spec.EnvironmentName
@@ -35,7 +35,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudcomposerenvironment
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = resourceName
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpCloudComposerEnvironment.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpCloudComposerEnvironment.String())
 
 	if locals.GcpCloudComposerEnvironment.Metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = locals.GcpCloudComposerEnvironment.Metadata.Org
@@ -47,6 +47,6 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudcomposerenvironment
 		locals.GcpLabels[gcplabelkeys.ResourceId] = locals.GcpCloudComposerEnvironment.Metadata.Id
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

@@ -28,7 +28,7 @@ func validOrg(spec *CloudflareZeroTrustOrganizationSpec) *CloudflareZeroTrustOrg
 	return &CloudflareZeroTrustOrganization{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZeroTrustOrganization",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-org",
 		},
 		Spec: spec,

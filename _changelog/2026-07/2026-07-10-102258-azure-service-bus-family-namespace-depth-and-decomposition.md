@@ -6,7 +6,7 @@
 
 ## Summary
 
-The complete Azure Service Bus family lands as six first-class components:
+The complete Azure Service Bus family lands as six first-class kinds:
 `AzureServiceBusNamespace` reworked breaking to the full azurerm v4.80
 surface with its bundled queues/topics dissolved, and five new kinds --
 `AzureServiceBusQueue` (472), `AzureServiceBusTopic` (473),
@@ -19,7 +19,7 @@ builder, and 12 live dual-engine E2E lanes ran green with zero orphans.
 
 ## Problem Statement / Motivation
 
-The namespace component bundled queues and topics as inline lists -- the
+The namespace kind bundled queues and topics as inline lists -- the
 entities most teams own separately from the namespace could not be
 referenced, granted, or lifecycled independently, and the spec covered a
 fraction of the provider surface (no identity, no CMK, no network rules,
@@ -134,7 +134,7 @@ graph TB
 
 ## Related Work
 
-- Extends the per-component Pulumi shared-builder migration (54 of ~71
+- Extends the per-kind Pulumi shared-builder migration (54 of ~71
   Azure modules migrated).
 - The E2E framework's binding profile-status behavior (deferred profiles
   skip with the recorded reason) worked as designed for the geo-DR kind.

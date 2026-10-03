@@ -18,5 +18,5 @@ import "context"
 // prove what the ENGINE does with a missing object, so a delete that silently
 // failed would let a broken recovery pass.
 type OutOfBandDeleter interface {
-	DeleteOutOfBand(ctx context.Context, tc *ComponentTestContext) error
+	DeleteOutOfBand(ctx context.Context, tc *KindTestContext) error
 }

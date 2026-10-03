@@ -4,7 +4,7 @@ Deploys a Cost Explorer anomaly monitor: AWS's ML-driven watcher that learns you
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Anomaly Monitor** — the ML watcher in its chosen shape. Both shape arms are create-only: changing the shape replaces the monitor, and only `monitorName` updates in place.
 - **Alert Subscriptions** — one per `subscriptions` entry: a delivery frequency, its recipients, and an optional impact threshold, each getting its own ARN (echoed in the `subscription_arns` output).
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Cost Explorer permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Cost Explorer permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -74,7 +74,7 @@ spec:
 planton apply -f cost-anomaly-monitor.yaml
 ```
 
-This creates a CUSTOM monitor watching spend tagged `team: platform` (spelled `user:team` — Cost Explorer's canonical form for user-defined tag keys), with a daily email digest of anomalies whose absolute impact reaches 100 USD. A Stack Job tracks the provisioning in real time.
+This creates a CUSTOM monitor watching spend tagged `team: platform` (spelled `user:team` — Cost Explorer's canonical form for user-defined tag keys), with a daily email digest of anomalies whose absolute impact reaches 100 USD. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -131,15 +131,15 @@ These are the most important decisions when configuring an anomaly monitor. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsSnsTopic** | `subscriptions[].subscribers[].address` (type SNS) | `status.outputs.topic_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -159,6 +159,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS SNS Topic**](/cloud-catalog/aws-sns-topic) — the delivery channel for IMMEDIATE alerts, wired via the subscriber reference
-- [**AWS Cost Category**](/cloud-catalog/aws-cost-category) — team/project groupings a CUSTOM monitor's expression can slice by
-- [**AWS Budget**](/cloud-catalog/aws-budget) — the complementary fixed-threshold guardrail for planned spend ceilings
+- [**AWS SNS Topic**](/infra-catalog/aws-sns-topic) — the delivery channel for IMMEDIATE alerts, wired via the subscriber reference
+- [**AWS Cost Category**](/infra-catalog/aws-cost-category) — team/project groupings a CUSTOM monitor's expression can slice by
+- [**AWS Budget**](/infra-catalog/aws-budget) — the complementary fixed-threshold guardrail for planned spend ceilings

@@ -4,7 +4,7 @@ Registers a schema subject (Avro, JSON Schema, or Protobuf) in a DigitalOcean ma
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Schema Registry Subject** -- the named subject on the referenced cluster's registry, carrying your schema definition
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Kafka Database Cluster** -- a DigitalOceanDatabaseCluster running the `kafka` engine on a General Purpose (dedicated-CPU: `gd-*`, `c2-*`, `m3-*`) plan. The schema registry exists only on those plans: a Basic-plan Kafka cluster answers every registry call `412 schema registry is disabled for this cluster` and cannot turn it on (`422 schema registry not supported for current plan`).
 
 ### DigitalOcean Account
@@ -48,7 +48,7 @@ spec:
 planton apply -f kafka-schema.yaml
 ```
 
-This registers the `orders-value` subject on the referenced Kafka cluster's registry with a two-field Avro record as its founding schema. A Stack Job tracks the provisioning in real time.
+This registers the `orders-value` subject on the referenced Kafka cluster's registry with a two-field Avro record as its founding schema. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -83,7 +83,7 @@ These are the most important decisions when configuring a Kafka schema subject. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -91,9 +91,9 @@ These are the most important decisions when configuring a Kafka schema subject. 
 
 The referenced cluster must run the `kafka` engine; a literal cluster UUID is accepted in place of the reference.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` carries only the subject's identity pair -- `cluster_id` and `subject_name` -- both echoes of resolved inputs. The registry's internal numeric schema id is discarded by the provider and deliberately not exported. Producers and consumers fetch the schema by subject name through the cluster's registry endpoint, authenticating with the cluster's connection outputs and user credentials -- there is no output here for downstream Cloud Resources to wire.
+After provisioning, `status.outputs` carries only the subject's identity pair -- `cluster_id` and `subject_name` -- both echoes of resolved inputs. The registry's internal numeric schema id is discarded by the provider and deliberately not exported. Producers and consumers fetch the schema by subject name through the cluster's registry endpoint, authenticating with the cluster's connection outputs and user credentials -- there is no output here for downstream Infra Components to wire.
 
 ## Common Patterns
 
@@ -105,6 +105,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Database Cluster**](/cloud-catalog/digital-ocean-database-cluster) -- the Kafka-engine cluster whose registry holds the subject
-- [**DigitalOcean Kafka Topic**](/cloud-catalog/digital-ocean-database-kafka-topic) -- the topic whose messages the subject describes, paired through the `<topic>-value` naming convention
-- [**DigitalOcean Database User**](/cloud-catalog/digital-ocean-database-user) -- credentials producers and consumers use to reach the cluster and its registry
+- [**DigitalOcean Database Cluster**](/infra-catalog/digital-ocean-database-cluster) -- the Kafka-engine cluster whose registry holds the subject
+- [**DigitalOcean Kafka Topic**](/infra-catalog/digital-ocean-database-kafka-topic) -- the topic whose messages the subject describes, paired through the `<topic>-value` naming convention
+- [**DigitalOcean Database User**](/infra-catalog/digital-ocean-database-user) -- credentials producers and consumers use to reach the cluster and its registry

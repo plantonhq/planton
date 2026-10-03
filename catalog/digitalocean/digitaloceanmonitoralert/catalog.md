@@ -4,7 +4,7 @@ Deploys an alert policy on DigitalOcean's built-in metrics -- droplet CPU, memor
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Monitor alert policy** -- one `digitalocean_monitor_alert` resource carrying the metric, comparison, threshold, sampling window, targets, and notification channels. The typed reference lists (`dropletIds`, `loadBalancerIds`, `databaseClusterIds`) merge back into the provider's single entities argument; a tag-targeted policy sends only `tags`, and DigitalOcean resolves membership from the tag. Slack webhook URLs are accepted only as managed-secret references and encrypted in Pulumi stack state.
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Alert targets** -- the DigitalOceanDroplet, DigitalOceanLoadBalancer, or DigitalOceanDatabaseCluster resources the policy watches, referenced by name -- or a droplet tag, which needs no resource reference at all.
 
 ### DigitalOcean Account
@@ -54,7 +54,7 @@ spec:
 planton apply -f do-monitor-alert.yaml
 ```
 
-This creates a policy watching CPU across every droplet tagged `web`, mailing ops when the 10-minute average crosses 90 percent -- droplets gaining or losing the tag join and leave the alert with no manifest change. A Stack Job tracks the provisioning in real time.
+This creates a policy watching CPU across every droplet tagged `web`, mailing ops when the 10-minute average crosses 90 percent -- droplets gaining or losing the tag join and leave the alert with no manifest change. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -100,7 +100,7 @@ These are the most important decisions when configuring a monitor alert. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -108,9 +108,9 @@ These are the most important decisions when configuring a monitor alert. Explore
 | **DigitalOceanLoadBalancer** (load-balancer metrics) | `loadBalancerIds[]` | `status.outputs.load_balancer_id` |
 | **DigitalOceanDatabaseCluster** (database metrics) | `databaseClusterIds[]` | `status.outputs.cluster_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-`status.outputs` carries a single value: `alert_id`, the policy's UUID -- its API identity and its import id. No downstream Cloud Resource consumes an alert policy by reference, so there is no ValueFromRef story to teach; the manifest itself is the source of truth for recreating the policy.
+`status.outputs` carries a single value: `alert_id`, the policy's UUID -- its API identity and its import id. No downstream Infra Component consumes an alert policy by reference, so there is no ValueFromRef story to teach; the manifest itself is the source of truth for recreating the policy.
 
 ## Common Patterns
 
@@ -124,7 +124,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Droplet**](/cloud-catalog/digital-ocean-droplet) -- CPU, memory, disk, and bandwidth targets, wired by reference or by tag
-- [**DigitalOcean Load Balancer**](/cloud-catalog/digital-ocean-load-balancer) -- health and HTTP error-rate targets
-- [**DigitalOcean Database Cluster**](/cloud-catalog/digital-ocean-database-cluster) -- managed-database utilization targets
-- [**DigitalOcean Uptime Check**](/cloud-catalog/digital-ocean-uptime-check) -- the outside view: external endpoint probing that complements these inside-view metrics
+- [**DigitalOcean Droplet**](/infra-catalog/digital-ocean-droplet) -- CPU, memory, disk, and bandwidth targets, wired by reference or by tag
+- [**DigitalOcean Load Balancer**](/infra-catalog/digital-ocean-load-balancer) -- health and HTTP error-rate targets
+- [**DigitalOcean Database Cluster**](/infra-catalog/digital-ocean-database-cluster) -- managed-database utilization targets
+- [**DigitalOcean Uptime Check**](/infra-catalog/digital-ocean-uptime-check) -- the outside view: external endpoint probing that complements these inside-view metrics

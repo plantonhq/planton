@@ -30,7 +30,7 @@ var _ = ginkgo.Describe("GcpKmsKeySpec", func() {
 		return &GcpKmsKey{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpKmsKey",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-kms-key",
 			},
 			Spec: &GcpKmsKeySpec{

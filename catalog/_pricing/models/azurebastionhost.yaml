@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -8,9 +8,9 @@
 # instances and only scale units above 2 bill the additional-instance
 # meter. The derivation grammar's subtract_baseline factor can now state
 # that (scale_units - 2) arithmetic, so this model is due migration to a
-# derivation. Schema: finops/componentcostestimatemodel/v1.
+# derivation. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: azurebastionhost
 spec:
@@ -26,7 +26,7 @@ spec:
           quantity_basis: one BASIC host bills its flat hourly gateway meter around the clock (x 730); the SKU's fixed 2 instances are part of the base rate, and BASIC has no additional-instance meter to reach
       exclusions:
         - outbound data transfer through sessions bills per GB in volume tiers after the free 5 GB/month
-        - the referenced Standard public IP bills hourly on its own component
+        - the referenced Standard public IP bills hourly on its own kind
       notes: Billing runs from provisioning until deletion, sessions or no sessions -- an idle jump host costs the same as a busy one.
     - preset: 02-standard-tunneling
       region_assumption: eastus
@@ -43,7 +43,7 @@ spec:
           quantity_basis: scale_units 4 means 2 units ride the base rate and 2 bill the additional-instance meter -- 2 x 730 hours
       exclusions:
         - outbound data transfer through sessions bills per GB in volume tiers after the free 5 GB/month
-        - the referenced Standard public IP bills hourly on its own component
+        - the referenced Standard public IP bills hourly on its own kind
       notes: The feature toggles this preset enables (tunneling, file copy, IP connect) gate on the STANDARD SKU but add no meters -- capacity (scale_units) is the only dial beyond the SKU itself, adjustable in place.
     - preset: 03-developer
       region_assumption: eastus2
@@ -51,5 +51,5 @@ spec:
       hours_per_month: 730
       exclusions:
         - outbound data transfer through sessions bills per GB in volume tiers after the free 5 GB/month
-        - the target virtual machines bill on their own components
+        - the target virtual machines bill on their own kinds
       notes: "The DEVELOPER SKU is genuinely free: Azure-hosted shared infrastructure with no gateway meter at all (the Retail Prices API carries no Developer meter -- verified), no dedicated subnet, and no public IP. The estimate totals to zero because the committed spend IS zero; the real money lives in outbound data transfer and the VMs being reached. The trade is capability: one connection per user, no feature knobs, limited regions."

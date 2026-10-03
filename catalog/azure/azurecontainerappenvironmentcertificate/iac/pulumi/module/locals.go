@@ -5,7 +5,7 @@ import (
 
 	azurecontainerappenvironmentcertificatev1alpha1 "github.com/plantonhq/planton/catalog/azure/azurecontainerappenvironmentcertificate/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -15,12 +15,12 @@ type Locals struct {
 	AzureTags                               map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurecontainerappenvironmentcertificatev1alpha1.AzureContainerAppEnvironmentCertificateStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurecontainerappenvironmentcertificatev1alpha1.AzureContainerAppEnvironmentCertificateIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureContainerAppEnvironmentCertificate = stackInput.Target
+	locals.AzureContainerAppEnvironmentCertificate = iacInput.Target
 
-	target := stackInput.Target
+	target := iacInput.Target
 
 	// container_app_environment_id is a StringValueOrRef. The platform
 	// middleware resolves valueFrom references before IaC modules run, so
@@ -34,7 +34,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurecontainerappenvironm
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureContainerAppEnvironmentCertificate.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureContainerAppEnvironmentCertificate.String()),
 	}
 
 	if target.Metadata.Id != "" {

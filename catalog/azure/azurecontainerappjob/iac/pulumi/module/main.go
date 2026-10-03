@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurecontainerappjobv1alpha1.AzureContainerAppJobStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurecontainerappjobv1alpha1.AzureContainerAppJobIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -104,7 +104,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecontainerappjobv1alpha1.Azu
 		return errors.Wrapf(err, "failed to create Container App Job %s", spec.JobName)
 	}
 
-	// Export stack outputs.
+	// Export outputs.
 	ctx.Export(OpJobId, createdJob.ID())
 	ctx.Export(OpJobName, createdJob.Name)
 	ctx.Export(OpEventStreamEndpoint, createdJob.EventStreamEndpoint)
@@ -121,7 +121,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecontainerappjobv1alpha1.Azu
 	return nil
 }
 
-// intOrDefault presence-guards an optional int32 field: stack inputs never
+// intOrDefault presence-guards an optional int32 field: IaC inputs never
 // materialize proto defaults, so an unset field must deploy the spec's
 // documented default, not the Go zero value.
 func intOrDefault(value *int32, defaultValue int) int {

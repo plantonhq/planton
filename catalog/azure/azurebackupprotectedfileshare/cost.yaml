@@ -6,9 +6,9 @@
 # SIZE in the storage account -- delegated to the referenced share and
 # account components and invisible in this manifest -- so a dollar
 # figure here would be a guess wearing a dollar sign.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurebackupprotectedfileshare
 spec:

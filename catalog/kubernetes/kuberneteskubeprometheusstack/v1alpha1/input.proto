@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1;
 import "catalog/kubernetes/kuberneteskubeprometheusstack/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//kube-prometheus-stack-kubernetes stack-input
-message KubernetesKubePrometheusStackStackInput {
-  //target cloud-resource
+//kube-prometheus-stack-kubernetes iac-input
+message KubernetesKubePrometheusStackIacInput {
+  //target infra-component
   KubernetesKubePrometheusStack target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

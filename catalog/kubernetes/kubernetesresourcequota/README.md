@@ -2,9 +2,9 @@
 
 ## Overview
 
-**KubernetesResourceQuota** is a Planton component that governs resource consumption in one namespace. It manages a governance PAIR: a `core/v1` **ResourceQuota** carrying aggregate caps on what the namespace may consume in total, and — when `spec.limit_defaults` is set — a companion `core/v1` **LimitRange** applying per-object defaults and bounds to individual pods, containers, and claims. They are two Kubernetes objects but one governance story — "how much may this namespace consume, and what does a workload get when it doesn't say?" — which is why this kind manages both.
+**KubernetesResourceQuota** is a catalog kind that governs resource consumption in one namespace. It manages a governance PAIR: a `core/v1` **ResourceQuota** carrying aggregate caps on what the namespace may consume in total, and — when `spec.limit_defaults` is set — a companion `core/v1` **LimitRange** applying per-object defaults and bounds to individual pods, containers, and claims. They are two Kubernetes objects but one governance story — "how much may this namespace consume, and what does a workload get when it doesn't say?" — which is why this kind manages both.
 
-The component covers the complete `core/v1` ResourceQuotaSpec and LimitRangeSpec surfaces: compute, storage, and object-count caps; coarse scopes and fine-grained scope selectors; and per-container, per-pod, and per-claim defaults, bounds, and burst ratios.
+The kind covers the complete `core/v1` ResourceQuotaSpec and LimitRangeSpec surfaces: compute, storage, and object-count caps; coarse scopes and fine-grained scope selectors; and per-container, per-pod, and per-claim defaults, bounds, and burst ratios.
 
 ## Purpose
 
@@ -108,7 +108,7 @@ The namespace may now consume at most 10 CPUs / 20Gi of requests in aggregate, a
 - **`spec.scopes`** / **`spec.scope_selector`**: Filters on which objects the quota tracks
 - **`spec.labels`** / **`spec.annotations`**: Merged with standard Planton labels for tracking and governance; applied to both created objects
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -118,7 +118,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Resolve the target namespace (literal value or resolved reference; `default` when omitted)
 2. Merge user labels and annotations with standard Planton tracking labels

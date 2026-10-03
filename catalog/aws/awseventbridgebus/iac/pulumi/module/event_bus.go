@@ -117,7 +117,7 @@ func eventBus(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) error
 		createdArchives = append(createdArchives, createdArchive)
 	}
 
-	// Export outputs matching AwsEventBridgeBusStackOutputs.
+	// Export outputs matching AwsEventBridgeBusOutputs.
 	ctx.Export(OpBusName, bus.Name)
 	ctx.Export(OpBusArn, bus.Arn)
 

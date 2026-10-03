@@ -1,4 +1,4 @@
-# Apply captures stack outputs (masked display), pulumi state backend becomes configurable, and multi-document input refuses loudly
+# Apply captures outputs (masked display), pulumi state backend becomes configurable, and multi-document input refuses loudly
 
 ## What changed
 
@@ -6,8 +6,8 @@
   apply** — the behavior every IaC user expects from `terraform apply`,
   previously absent entirely. The engine reads outputs back while the
   module workspace is still alive (`tofu output -json` / a pulumi
-  stack-output read pair), transforms them through the kind's typed
-  StackOutputs contract (module-shipped transform overrides honored),
+  output read pair), transforms them through the kind's typed
+  Outputs contract (module-shipped transform overrides honored),
   and the CLI renders a compact summary. **Sensitive values never
   print**: tofu's per-output `sensitive` flag and a masked-vs-shown
   comparison on the pulumi side drive `(sensitive)` rendering, because
@@ -59,7 +59,7 @@
 
 ## Why
 
-Captured, typed stack outputs are the composition primitive everything
+Captured, typed outputs are the composition primitive everything
 downstream consumes — a deploy whose outputs vanish into state can only
 be composed by hand. The masked-by-default display and the loud
 multi-document refusal both close silent-failure classes: secrets in CI

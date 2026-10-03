@@ -8,7 +8,7 @@ This Pulumi module creates and manages a Kubernetes `policy/v1` PodDisruptionBud
 
 ```
 iac/pulumi/
-├── main.go                  # Entrypoint: loads stack input, calls module
+├── main.go                  # Entrypoint: loads IaC input, calls module
 ├── Pulumi.yaml              # Pulumi project configuration
 ├── Makefile                 # Make targets for preview/up/down/refresh
 └── module/
@@ -20,7 +20,7 @@ iac/pulumi/
 
 ## How It Works
 
-1. **Stack Input Loading**: The entrypoint loads `KubernetesPodDisruptionBudgetStackInput` from Pulumi config
+1. **IaC Input Loading**: The entrypoint loads `KubernetesPodDisruptionBudgetIacInput` from Pulumi config
 2. **Locals Initialization**: `locals.go` computes:
    - Standard Planton labels merged with user labels (identity keys cannot be overridden)
    - User annotations
@@ -28,7 +28,7 @@ iac/pulumi/
    - The resolved unhealthy-pod eviction policy: the API string for the spec's enum, with the server default (`IfHealthyBudget`) applied when the spec omits it
 3. **Provider Creation**: Kubernetes provider is initialized from `provider_config`
 4. **PodDisruptionBudget Creation**: A single `policy/v1` PodDisruptionBudget is created with the selector, the chosen availability bound, and the eviction policy
-5. **Output Export**: Budget name and namespace are exported as stack outputs
+5. **Output Export**: Budget name and namespace are exported as outputs
 
 ## Semantics Preserved by the Module
 

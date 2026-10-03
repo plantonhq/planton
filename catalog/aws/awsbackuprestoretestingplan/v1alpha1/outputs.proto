@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbackuprestoretestingplan.v1alpha1;
 
-// AwsBackupRestoreTestingPlanStackOutputs captures the observable
+// AwsBackupRestoreTestingPlanOutputs captures the observable
 // state of the restore testing plan after apply.
-message AwsBackupRestoreTestingPlanStackOutputs {
+message AwsBackupRestoreTestingPlanOutputs {
   // The restore testing plan's ARN. (The plan and its selections
   // import by name - the plan's name is its identity; AWS assigns no
   // separate ID.)

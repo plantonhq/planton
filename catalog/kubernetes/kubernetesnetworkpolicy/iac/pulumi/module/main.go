@@ -10,14 +10,14 @@ import (
 // Resources is the main entry point for the Pulumi module.
 // It orchestrates the creation of a Kubernetes NetworkPolicy with its pod
 // selection and allow rules.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesnetworkpolicyv1alpha1.KubernetesNetworkPolicyStackInput) error {
+func Resources(ctx *pulumi.Context, iacInput *kubernetesnetworkpolicyv1alpha1.KubernetesNetworkPolicyIacInput) error {
 	// Initialize locals with derived values
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// Create Kubernetes provider from credentials
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
 		ctx,
-		stackInput.ProviderConfig,
+		iacInput.ProviderConfig,
 		"kubernetes",
 	)
 	if err != nil {

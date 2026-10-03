@@ -10,12 +10,12 @@ import (
 // Resources is the Pulumi entry‑point invoked by Planton’s CLI.
 // It mirrors a Terraform module’s main.tf and keeps the control‑flow flat.
 func Resources(ctx *pulumi.Context,
-	stackInput *gcpgkeworkloadidentitybindingv1alpha1.GcpGkeWorkloadIdentityBindingStackInput) error {
+	iacInput *gcpgkeworkloadidentitybindingv1alpha1.GcpGkeWorkloadIdentityBindingIacInput) error {
 
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// Set up the GCP provider from the supplied credential spec.
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, stackInput.ProviderConfig)
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to set up google provider")
 	}

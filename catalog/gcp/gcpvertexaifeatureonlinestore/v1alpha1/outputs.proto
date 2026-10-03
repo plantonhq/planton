@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpvertexaifeatureonlinestore.v1alpha1;
 
-// GcpVertexAiFeatureOnlineStoreStackOutputs captures the store's identity,
+// GcpVertexAiFeatureOnlineStoreOutputs captures the store's identity,
 // where clients reach it, and the feature views it serves.
-message GcpVertexAiFeatureOnlineStoreStackOutputs {
+message GcpVertexAiFeatureOnlineStoreOutputs {
   // Full resource name:
   // projects/{project}/locations/{location}/featureOnlineStores/{feature_online_store_id}.
   string name = 1;

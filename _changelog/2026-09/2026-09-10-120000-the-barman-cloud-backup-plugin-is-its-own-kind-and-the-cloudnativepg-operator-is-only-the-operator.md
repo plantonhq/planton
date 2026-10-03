@@ -16,7 +16,7 @@ A cluster that already runs CloudNativePG (every self-hosted Planton does: the p
 ## How to check
 
 ```bash
-go test ./catalog/kubernetes/kubernetescnpgbarmancloudplugin/... ./catalog/kubernetes/kubernetescloudnativepgoperator/... ./catalog/kubernetes/kubernetespostgres/... ./pkg/crkreflect/ ./pkg/outputs/ ./pkg/iac/importmap/ ./pkg/anatomy/...
+go test ./catalog/kubernetes/kubernetescnpgbarmancloudplugin/... ./catalog/kubernetes/kubernetescloudnativepgoperator/... ./catalog/kubernetes/kubernetespostgres/... ./pkg/catalogkindreflect/ ./pkg/outputs/ ./pkg/iac/importmap/ ./pkg/anatomy/...
 bash hack/guards/ensure_e2e_tier_wiring.sh
 # Live on kind (both engines; the Terraform lanes with the blind import round-trip):
 go test -tags=e2e -run 'TestKubernetesCnpgBarmanCloudPlugin_(Pulumi|Terraform)/install' ./e2e/

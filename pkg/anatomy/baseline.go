@@ -1,5 +1,5 @@
 // Baseline of accepted anatomy gaps and the gate that compares live findings
-// against it. The baseline is a burn-down list (components that predate a
+// against it. The baseline is a burn-down list (kinds that predate a
 // requirement and have not been brought up to shape yet -- gap-fill belongs
 // to the provider parity programs); it is never a permanent exemption. The
 // shape mirrors pkg/secretcoverage's baseline so a reader who knows one
@@ -15,7 +15,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-const baselineHeader = `# Component-anatomy baseline -- the accepted backlog of anatomy gaps: components
+const baselineHeader = `# Kind-anatomy baseline -- the accepted backlog of anatomy gaps: kinds
 # that predate a requirement (spec tests, module READMEs, presets, catalog pages)
 # and have not been brought up to the canonical shape yet. Gap-fill is routed to
 # the provider parity programs; this list trends to 0 and never grows.

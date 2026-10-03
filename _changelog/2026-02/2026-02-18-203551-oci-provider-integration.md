@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added Oracle Cloud Infrastructure (OCI) as provider #26 to Planton, enabling users to manage OCI credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. OCI's multi-method authentication model (API Key, Instance Principal, Security Token, Resource Principal, OKE Workload Identity) is handled via the enum-discriminator pattern introduced by AliCloud, with sub-messages only for methods that carry credential fields.
+Added Oracle Cloud Infrastructure (OCI) as provider #26 to Planton, enabling users to manage OCI credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, IaC input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. OCI's multi-method authentication model (API Key, Instance Principal, Security Token, Resource Principal, OKE Workload Identity) is handled via the enum-discriminator pattern introduced by AliCloud, with sub-messages only for methods that carry credential fields.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ Planton had no Oracle Cloud Infrastructure support. Organizations using OCI coul
 
 ### Pain Points
 
-- No `oci` entry in the `CloudResourceProvider` enum
+- No `oci` entry in the `CatalogProvider` enum
 - No credential storage or management for OCI
 - No environment variable mapping for the Terraform OCI provider
 - No frontend UI for capturing OCI credentials
@@ -29,7 +29,7 @@ Implemented comprehensive OCI provider support covering all 5 practical authenti
 ```mermaid
 flowchart TB
     subgraph proto [Proto Layer]
-        ProviderEnum["cloud_resource_provider.proto\noci = 26"]
+        ProviderEnum["catalog_provider.proto\noci = 26"]
         ProviderConfig["provider/oci/provider.proto\nOciProviderConfig + 2 sub-messages"]
         CredentialAPI["credential/v1/api.proto\nOCI enum + oneof"]
     end
@@ -93,7 +93,7 @@ flowchart LR
 
 ### 1. Proto Definitions
 
-**Provider registration** (`cloud_resource_provider.proto`): `oci = 26`
+**Provider registration** (`catalog_provider.proto`): `oci = 26`
 
 **Provider config** (`provider/oci/provider.proto`): `OciProviderConfig` with a package-scope `AuthenticationType` enum and 2 sub-messages (`OciApiKeyAuth`, `OciSecurityTokenAuth`). The 3 ambient methods (Instance Principal, Resource Principal, OKE Workload Identity) have no credential fields and therefore no sub-messages -- the enum value plus the common `region` field is sufficient.
 
@@ -123,14 +123,14 @@ Added OCI provider page at `/docs/catalog/oci` with placeholder for future resou
 
 | Layer | New Files | Modified Files |
 |-------|-----------|----------------|
-| Proto | `provider/oci/provider.proto` | `cloud_resource_provider.proto`, `credential/v1/api.proto` |
+| Proto | `provider/oci/provider.proto` | `catalog_provider.proto`, `credential/v1/api.proto` |
 | Provider | `provider/oci/cli_help.go`, `BUILD.bazel` | -- |
-| Stack Input | `providerenvvars/oci.go` | `loader.go` |
+| IaC Input | `providerenvvars/oci.go` | `loader.go` |
 | Provider Detect | -- | `guidance.go`, `validate.go` |
 | Backend | -- | `credential.go`, `credential_repo.go`, `credential_service.go`, `credential_resolver.go` |
 | Frontend | `oci.tsx` | `types.ts`, `credential-drawer.tsx`, `index.ts`, `utils.ts` |
 | Catalog | `oci/index.md` | -- |
-| Generated | `provider.pb.go`, `provider_pb.ts` | `api.pb.go`, `api_pb.ts`, `cloud_resource_provider.pb.go`, `cloud_resource_provider_pb.ts` |
+| Generated | `provider.pb.go`, `provider_pb.ts` | `api.pb.go`, `api_pb.ts`, `catalog_provider.pb.go`, `catalog_provider_pb.ts` |
 
 **Total**: ~30 files, ~1000 insertions
 
@@ -160,7 +160,7 @@ Added OCI provider page at `/docs/catalog/oci` with placeholder for future resou
 
 ### Future Work Enabled
 
-- OCI resource kinds (CloudResourceKind range to be assigned)
+- OCI resource kinds (CatalogKind range to be assigned)
 - Compute, VCN, Block Storage, Load Balancer, and other OCI service resources
 - Terraform IaC modules wrapping the terraform-provider-oci
 

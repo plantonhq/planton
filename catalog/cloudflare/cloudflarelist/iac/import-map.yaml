@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarelist
 spec:
@@ -16,7 +16,7 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: list_id
       derivations:
-        - from_stack_output: list_id
+        - from_output: list_id
       where_to_find: >-
         Cloudflare dashboard -> Manage Account -> Configurations -> Lists
         (the list id is in the API, not always the UI), or

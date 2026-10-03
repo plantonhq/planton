@@ -4,7 +4,7 @@ Deploys an S3 bucket with its full behavioral surface folded into one document: 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **S3 Bucket** — named after the resource (bucket names are immutable and globally unique across all AWS accounts)
 - **Bucket-scoped configurations** — only the blocks the spec sets: versioning state, default encryption, public-access block, ownership controls, bucket policy, lifecycle rules, replication configuration, website configuration, logging, CORS, notifications, Object Lock default retention, Intelligent-Tiering archive configurations, acceleration, request-payer, ABAC, storage-class-analysis configurations, inventory configurations, request-metrics configurations, and the S3 Metadata tables
@@ -14,12 +14,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **A KMS key** (optional) — for SSE-KMS default encryption or replica encryption. Reference an AwsKmsKey Cloud Resource or pass a key ARN.
+- **A KMS key** (optional) — for SSE-KMS default encryption or replica encryption. Reference an AwsKmsKey Infra Component or pass a key ARN.
 - **A replication role and destination buckets** (only for replication) — an IAM role trusting `s3.amazonaws.com` with read access here and replicate permissions on every destination; versioning must be Enabled on the source and every destination.
 - **Notification targets with delivery grants** (only for eventing) — SQS/SNS/Lambda targets must permit `s3.amazonaws.com` BEFORE the notification is configured (queue/topic policy or Lambda resource permission — AwsLambda's `invoke_permissions` models the Lambda side). The EventBridge arm needs no grant.
 - **A log-delivery bucket** (only for access logging) — same region, never the bucket itself; under BucketOwnerEnforced ownership it needs a policy granting `logging.s3.amazonaws.com`.
@@ -50,7 +50,7 @@ spec:
 planton apply -f s3-bucket.yaml
 ```
 
-This creates a fully private, versioned bucket — all four public-access guards on, ACLs disabled, SSE-S3 encryption by AWS default. A Stack Job tracks the provisioning in real time.
+This creates a fully private, versioned bucket — all four public-access guards on, ACLs disabled, SSE-S3 encryption by AWS default. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -108,7 +108,7 @@ These are the most important decisions when configuring a bucket. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -125,9 +125,9 @@ These are the most important decisions when configuring a bucket. Explore the fu
 | **AwsKmsKey** (optional, per config) | `inventoryConfigurations[].destination.sseKmsKeyId` | `status.outputs.key_arn` |
 | **AwsKmsKey** (optional, per table) | `metadataConfiguration.*TableEncryption.kmsKeyArn` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -154,8 +154,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed keys for default and replica encryption
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the role S3 assumes to replicate
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) — object-event processing targets (and buckets hold Lambda code archives)
-- [**AWS SQS Queue**](/cloud-catalog/aws-sqs-queue) / [**AWS SNS Topic**](/cloud-catalog/aws-sns-topic) — event delivery targets
-- [**AWS CloudFront**](/cloud-catalog/aws-cloud-front) — the TLS/caching front for content served from private buckets
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed keys for default and replica encryption
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the role S3 assumes to replicate
+- [**AWS Lambda**](/infra-catalog/aws-lambda) — object-event processing targets (and buckets hold Lambda code archives)
+- [**AWS SQS Queue**](/infra-catalog/aws-sqs-queue) / [**AWS SNS Topic**](/infra-catalog/aws-sns-topic) — event delivery targets
+- [**AWS CloudFront**](/infra-catalog/aws-cloud-front) — the TLS/caching front for content served from private buckets

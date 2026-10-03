@@ -21,14 +21,14 @@ Planton's AWS coverage lacked a native pub/sub messaging resource. SNS is founda
 
 ## Solution / What's New
 
-A complete AwsSnsTopic deployment component following the established forge pattern:
+A complete AwsSnsTopic catalog kind following the established forge pattern:
 
 ### Proto API (4 files)
 
 - **spec.proto**: 10 top-level fields, 3 nested messages (AwsSnsTopicSubscription, AwsSnsSubscriptionRedriveConfig), 8 CEL validations across spec and subscription levels
 - **api.proto**: Kubernetes-style resource envelope (api_version, kind, metadata, spec, status)
-- **stack_input.proto**: Input envelope with target resource and AWS provider config
-- **stack_outputs.proto**: topic_arn, topic_name, subscription_arns (map<string, string>)
+- **iac_input.proto**: Input envelope with target resource and AWS provider config
+- **outputs.proto**: topic_arn, topic_name, subscription_arns (map<string, string>)
 
 ### Bundled Subscriptions
 

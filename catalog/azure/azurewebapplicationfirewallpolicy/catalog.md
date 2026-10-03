@@ -4,7 +4,7 @@ Deploys a regional Web Application Firewall (WAF) policy — the rule set an Azu
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **WAF Policy** -- the policy with its custom rules, managed rule sets and tuning, enforcement settings, and log-scrubbing rules
 - **Azure Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically and merged with the user tags
@@ -15,7 +15,7 @@ Azure REQUIRES at least one managed rule set — a WAF policy without one is rej
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -56,7 +56,7 @@ spec:
 planton apply -f waf-policy.yaml
 ```
 
-This creates OWASP 3.2 in Prevention mode (Azure's default), blocking SQL injection, XSS, RCE, LFI, and protocol violations out of the box. A Stack Job tracks the provisioning in real time.
+This creates OWASP 3.2 in Prevention mode (Azure's default), blocking SQL injection, XSS, RCE, LFI, and protocol violations out of the box. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,15 +92,15 @@ These are the most important decisions when configuring a WAF policy. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,5 +120,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the policy is created
-- [**Azure Application Gateway**](/cloud-catalog/azure-application-gateway) -- the WAF_v2 gateway that attaches this policy at up to three levels
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the policy is created
+- [**Azure Application Gateway**](/infra-catalog/azure-application-gateway) -- the WAF_v2 gateway that attaches this policy at up to three levels

@@ -5,7 +5,7 @@ import (
 
 	awsfsxwindowsfilesystemv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsfsxwindowsfilesystem/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -14,9 +14,9 @@ type Locals struct {
 	AwsTags                 map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *awsfsxwindowsfilesystemv1alpha1.AwsFsxWindowsFileSystemStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *awsfsxwindowsfilesystemv1alpha1.AwsFsxWindowsFileSystemIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsFsxWindowsFileSystem = stackInput.Target
+	locals.AwsFsxWindowsFileSystem = iacInput.Target
 
 	// Resource-identity tags follow the catalog convention. The Name tag is
 	// the resource's metadata.name — FSx has no name argument, so the console
@@ -27,7 +27,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *awsfsxwindowsfilesystemv1
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.AwsFsxWindowsFileSystem.Metadata.Org,
 		awstagkeys.Environment:  locals.AwsFsxWindowsFileSystem.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsFsxWindowsFileSystem.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsFsxWindowsFileSystem.String(),
 		awstagkeys.ResourceId:   locals.AwsFsxWindowsFileSystem.Metadata.Id,
 	}
 

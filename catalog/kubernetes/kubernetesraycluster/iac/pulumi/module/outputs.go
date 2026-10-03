@@ -4,7 +4,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Output name constants — one per KubernetesRayClusterStackOutputs field
+// Output name constants — one per KubernetesRayClusterOutputs field
 // (auth_token_secret flattens to its name/key halves, the catalog's
 // convention for message-typed outputs).
 const (

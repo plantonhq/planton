@@ -5,7 +5,7 @@ import (
 
 	azuremonitordatacollectionrulev1alpha1 "github.com/plantonhq/planton/catalog/azure/azuremonitordatacollectionrule/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -18,11 +18,11 @@ type Locals struct {
 	AzureTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuremonitordatacollectionrulev1alpha1.AzureMonitorDataCollectionRuleStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuremonitordatacollectionrulev1alpha1.AzureMonitorDataCollectionRuleIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureMonitorDataCollectionRule = stackInput.Target
-	target := stackInput.Target
+	locals.AzureMonitorDataCollectionRule = iacInput.Target
+	target := iacInput.Target
 
 	// Metadata-derived tags first, then the user's spec tags merged over
 	// them: user tags deliberately win so an org's governance conventions
@@ -31,7 +31,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azuremonitordatacollectio
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureMonitorDataCollectionRule.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureMonitorDataCollectionRule.String()),
 	}
 
 	if target.Metadata.Id != "" {

@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbedrockguardrail.v1alpha1;
 
-// AwsBedrockGuardrailStackOutputs captures observable identifiers from a
+// AwsBedrockGuardrailOutputs captures observable identifiers from a
 // provisioned Bedrock guardrail. These outputs are used by downstream
 // resources (agents, application inference configs) to wire dependencies
 // via StringValueOrRef.
-message AwsBedrockGuardrailStackOutputs {
+message AwsBedrockGuardrailOutputs {
   // The unique guardrail identifier (e.g. "gr-abc123..."). The join key
   // model invocations and agents use together with a version.
   string guardrail_id = 1;

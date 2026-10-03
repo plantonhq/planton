@@ -41,5 +41,5 @@ each application managing TLS itself.
 | `<credential-secret>` | The secret holding the client TLS certs (e.g. `db-client-cert`). |
 
 Wire the secret dependency on `metadata.relationships` (`uses` -> KubernetesSecret) so the
-infra chart creates it before this rule. See the component README's "Composing in Infra
+infra chart creates it before this rule. See the kind README's "Composing in Infra
 Charts" section.

@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: kubernetesclusterissuer
 spec:
@@ -56,7 +56,7 @@ spec:
       notes: Changes to the ClusterIssuer and its credential Secrets are Kubernetes API operations captured by the target cluster's audit policy; issuance events are visible as CertificateRequest resources owned by cert-manager, not as a provider audit log of this resource.
     - control_id: monitoring-integration
       status: not_applicable
-      notes: The issuer emits no metrics of its own; issuance and ACME metrics come from the cert-manager controller's Prometheus endpoint, owned by the KubernetesCertManager component.
+      notes: The issuer emits no metrics of its own; issuance and ACME metrics come from the cert-manager controller's Prometheus endpoint, owned by the KubernetesCertManager kind.
     - control_id: backup-recovery
       status: not_applicable
       notes: The issuer is stateless declarative configuration reproducible from its manifest; the ACME account key cert-manager stores in the cluster-resource namespace is regenerated on a fresh registration. There is no data whose loss is unrecoverable.
@@ -71,4 +71,4 @@ spec:
       notes: Neither Kubernetes nor cert-manager offers a deletion-protection flag on ClusterIssuer; protection is operational (RBAC on cluster-scoped resources, change review). Deleting the issuer stops renewals for every Certificate that references it, cluster-wide.
     - control_id: managed-patching
       status: not_applicable
-      notes: There is no software here to patch -- the resource is data. cert-manager itself is patched through the KubernetesCertManager component.
+      notes: There is no software here to patch -- the resource is data. cert-manager itself is patched through the KubernetesCertManager kind.

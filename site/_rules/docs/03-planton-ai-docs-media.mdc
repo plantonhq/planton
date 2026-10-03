@@ -26,7 +26,7 @@ Documentation images follow the path pattern `docs/{section}/{page}/{filename}`:
 ```markdown
 ![Deployment environments](https://assets.planton.ai/site/images/docs/ci-cd/deployment-environments/service-showing-deployment-environments.png)
 
-![Stack job overview](https://assets.planton.ai/site/images/docs/infrastructure/stack-jobs/stack-job-running-state.png)
+![Infra job overview](https://assets.planton.ai/site/images/docs/infrastructure/infra-jobs/infra-job-running-state.png)
 ```
 
 ### Other Content Areas
@@ -51,7 +51,7 @@ For the detailed image processing pipeline, see `site/content/assets/_rules/proc
 - Descriptive, context-rich filenames
 - Include relevant identifiers when helpful
 
-Good: `kubernetes-dashboard-overview.png`, `stack-job-running-state.png`, `service-showing-deployment-environments.png`
+Good: `kubernetes-dashboard-overview.png`, `infra-job-running-state.png`, `service-showing-deployment-environments.png`
 
 Bad: `Screenshot_2026_03_05.png`, `IMG_1234.png`, `MyDashboard.png`, `dashboard pic.png`
 

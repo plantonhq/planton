@@ -1,4 +1,4 @@
-# Stack outputs — identical names and derivations in the Pulumi module's
+# Outputs — identical names and derivations in the Pulumi module's
 # outputs.go / main.go exports.
 
 output "listener_set_name" {

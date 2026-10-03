@@ -1,5 +1,5 @@
-# Stack outputs — identical names and derivations in the Pulumi module
-# (KubernetesRayClusterStackOutputs).
+# Outputs — identical names and derivations in the Pulumi module
+# (KubernetesRayClusterOutputs).
 
 output "namespace" {
   description = "Namespace the Ray cluster runs in"

@@ -4,7 +4,7 @@ Defines an Istio EnvoyFilter: a namespaced, expert-only customization of the raw
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **EnvoyFilter** -- a namespaced `networking.istio.io/v1alpha3` policy that patches the generated Envoy configuration for the workloads it selects. istiod merges the patches into the xDS configuration it pushes to the matched proxies.
 
@@ -14,7 +14,7 @@ The resource is pure configuration: no pods, no Services. Its effect exists enti
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -62,11 +62,11 @@ spec:
 planton apply -f envoy-filter.yaml
 ```
 
-This sets a 30-second idle timeout on the outbound cluster for the `reviews` service, applied only to the `reviews` workload's sidecars in `prod-apps`. A Stack Job tracks the provisioning in real time.
+This sets a 30-second idle timeout on the outbound cluster for the `reviews` service, applied only to the `reviews` workload's sidecars in `prod-apps`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire the target reference to the gateway managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, wire the target reference to the gateway managed by another Infra Component:
 
 ```yaml
 spec:
@@ -105,14 +105,14 @@ These are the most important decisions when configuring an EnvoyFilter. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 | **KubernetesGateway** | `targetRefs[].name` | `status.outputs.gateway_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
 An EnvoyFilter is a policy resource consumed by istiod -- there is no controller status worth exporting. `status.outputs` carries only the resource identity (`envoy_filter_name`, `namespace`), both echoes of the manifest; downstream resources have nothing to consume from it.
 
@@ -128,10 +128,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Istio Base CRDs**](/cloud-catalog/kubernetes-istio-base-crds) -- the prerequisite CRDs the EnvoyFilter kind is defined by
-- [**Istio**](/cloud-catalog/kubernetes-istio) -- the control plane (istiod) that merges the patches into proxy configuration
-- [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) -- the most common `targetRefs` attachment point for gateway-level filters
-- [**Istio Service Entry**](/cloud-catalog/kubernetes-service-entry) -- an attachment target for patching egress to external hosts
-- [**Istio Destination Rule**](/cloud-catalog/kubernetes-destination-rule) -- the typed API to prefer for cluster-level tuning; reach for EnvoyFilter only for what it does not expose
-- [**Istio Telemetry**](/cloud-catalog/kubernetes-telemetry) -- the typed API to prefer for observability configuration
-- [**Istio Authorization Policy**](/cloud-catalog/kubernetes-authorization-policy) -- the typed API to prefer for access control
+- [**Istio Base CRDs**](/infra-catalog/kubernetes-istio-base-crds) -- the prerequisite CRDs the EnvoyFilter kind is defined by
+- [**Istio**](/infra-catalog/kubernetes-istio) -- the control plane (istiod) that merges the patches into proxy configuration
+- [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) -- the most common `targetRefs` attachment point for gateway-level filters
+- [**Istio Service Entry**](/infra-catalog/kubernetes-service-entry) -- an attachment target for patching egress to external hosts
+- [**Istio Destination Rule**](/infra-catalog/kubernetes-destination-rule) -- the typed API to prefer for cluster-level tuning; reach for EnvoyFilter only for what it does not expose
+- [**Istio Telemetry**](/infra-catalog/kubernetes-telemetry) -- the typed API to prefer for observability configuration
+- [**Istio Authorization Policy**](/infra-catalog/kubernetes-authorization-policy) -- the typed API to prefer for access control

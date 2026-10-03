@@ -20,7 +20,7 @@ func vpc() *DigitalOceanVpc {
 	return &DigitalOceanVpc{
 		ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 		Kind:       "DigitalOceanVpc",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-vpc",
 		},
 		Spec: &DigitalOceanVpcSpec{

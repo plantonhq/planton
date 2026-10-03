@@ -52,7 +52,7 @@ Each `ip_configuration` gains `load_balancer_backend_address_pool_ids` and `load
 
 ### Framework: outputs and E2E hardening
 
-- `pkg/outputs` populate/preprocess now handle map-typed stack outputs arriving in the flattener's dotted form (`backend_pool_ids.web`), preserving map KEYS verbatim (a pool named `ssh-admin` must not be normalized) while still normalizing hyphenated FIELD names — with unit coverage.
+- `pkg/outputs` populate/preprocess now handle map-typed outputs arriving in the flattener's dotted form (`backend_pool_ids.web`), preserving map KEYS verbatim (a pool named `ssh-admin` must not be normalized) while still normalizing hyphenated FIELD names — with unit coverage.
 - The E2E dependency runner now tracks a fixture stack for teardown even when its `pulumi up` FAILS: a failed update may have created resources, and skipping its destroy orphaned them — one leftover fixture (a load balancer holding a frontend in the fixture subnet) blocked the entire reverse teardown chain behind it.
 
 ## Implementation Details
@@ -60,7 +60,7 @@ Each `ip_configuration` gains `load_balancer_backend_address_pool_ids` and `load
 Two deploy-time defects were found and fixed during live E2E — both invisible to every offline gate:
 
 1. **Pulumi `ApplyT` typing panic**: exporting the LB's private address through a `func(addr *string)` applier on what the SDK types as a plain `StringOutput` compiles clean but panics at deploy (`applier's first input parameter must be assignable from string`). Fixed by exporting the SDK output directly.
-2. **Optional dials sent as zero**: stack inputs built directly from a manifest (the E2E path) do not materialize proto defaults, so bare getters sent `interval_in_seconds: 0` / `probe_threshold: 0`, which the provider's range validation rejects at `pulumi up`. Fixed with presence guards falling back to the proto defaults — the same values the Terraform module's `optional(number, N)` encodings carry. The same guard class was applied to the scale set's true-default booleans (`provision_vm_agent`, `overprovision`, `disable_password_authentication`, …).
+2. **Optional dials sent as zero**: IaC inputs built directly from a manifest (the E2E path) do not materialize proto defaults, so bare getters sent `interval_in_seconds: 0` / `probe_threshold: 0`, which the provider's range validation rejects at `pulumi up`. Fixed with presence guards falling back to the proto defaults — the same values the Terraform module's `optional(number, N)` encodings carry. The same guard class was applied to the scale set's true-default booleans (`provision_vm_agent`, `overprovision`, `disable_password_authentication`, …).
 
 Both lessons are folded into the Pulumi-module forge flow rule as timeless guidance; the teardown lesson is documented in `e2e/README.md`.
 

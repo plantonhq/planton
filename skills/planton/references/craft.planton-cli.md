@@ -7,17 +7,17 @@ duties need is written here exactly as it resolves.** Reach for a command's
 own `--help` only when a command FROM THIS PAGE fails, and treat that as a
 finding to report, not a license to wander. Everything here is read-only
 unless marked otherwise. `chart build` has its own contract
-(`build-contract.md`); schema grounding has `component-grounding.md`.
+(`build-contract.md`); schema grounding has `kind-grounding.md`.
 Machine-readable output: most snapshot commands take `-o json` (protobuf
 field names) or `-o yaml`.
 On the platform-tools arm (no CLI — see SKILL.md, "Know your instruments")
 every lookup below has a platform tool twin (`list_*`/`get_*` on charts,
-projects, pipelines, stack jobs, connections): same questions, same
+projects, pipelines, infra jobs, connections): same questions, same
 diagnosis order, tool-for-command.
 
 The infra commands live under one umbrella: `planton infra <noun> <verb>`
-(`infra chart`, `infra project`, `infra pipeline`, `infra stack-job`,
-`infra cloud-resource`). `planton chart …` is the one sanctioned shorthand
+(`infra chart`, `infra stack`, `infra pipeline`, `infra job`,
+`infra component`). `planton chart …` is the one sanctioned shorthand
 (same commands as `infra chart`); this page writes chart commands in the
 short form and everything else canonically.
 
@@ -36,8 +36,8 @@ inline for one-off scoping.
 
 ```
 planton chart list                        # charts in the catalog (org + official)
-planton infra project list -o json        # the org's projects (what has been deployed)
-planton infra project get <id-or-name>    # one project, full record
+planton infra stack list -o json        # the org's projects (what has been deployed)
+planton infra stack get <id-or-name>    # one project, full record
 planton env list                          # environments in the org
 planton search connections                # provider connections (which clouds/clusters)
 planton connection authorization list     # which connections which envs may use
@@ -67,9 +67,9 @@ with pull requests, refuse direct deletes, and never join promotion order —
 never propose architecture that depends on one. Their story lives in
 `references/service.preview-environments.md`.
 
-Read `infra project list` results with an eye on `env` — a project in env
+Read `infra stack list` results with an eye on `env` — a project in env
 `dev` means that chart's resources exist in dev. Caveat: the list rides the search index, so a
-project created seconds ago may briefly be missing; `infra project get`
+project created seconds ago may briefly be missing; `infra stack get`
 by id/name is the direct read.
 
 ## Checking out real files (charts and deployed projects)
@@ -80,7 +80,7 @@ What already exists on the platform is checked out, never re-typed:
 planton chart checkout <slug> --output-dir <dir>            # a published chart, ready to
                                                             # build/customize (org/<slug>
                                                             # scopes to the org's charts)
-planton infra project checkout <id-or-name> --output-dir <dir>  # a deployed project's
+planton infra stack checkout <id-or-name> --output-dir <dir>  # a deployed project's
                                                             # WORKING COPY, binding included
 ```
 
@@ -93,8 +93,8 @@ refreshes the managed files from server truth and leaves yours alone.
 
 ## The deployment chain — ids you will meet
 
-`InfraChart → InfraProject (infproj_…) → InfraPipeline (infpipe_…) → per-node
-CloudResource → stack job (sj_…)`. Diagnosis walks this chain downward
+`InfraChart → InfraStack (infproj_…) → InfraPipeline (infpipe_…) → per-node
+InfraComponent → infra job (sj_…)`. Diagnosis walks this chain downward
 (the model is explained in `deployment-model.md`).
 
 ## Diagnosing a failed deploy (the four-step workflow)
@@ -102,26 +102,26 @@ CloudResource → stack job (sj_…)`. Diagnosis walks this chain downward
 ```
 # 1. Which pipeline? (newest first)
 planton infra pipeline list <project-id-or-name>
-#    or skip the lookup: planton infra project last-pipeline <project-id>
+#    or skip the lookup: planton infra stack last-pipeline <project-id>
 
 # 2. What happened? One-shot snapshot, per-node results:
 planton infra pipeline status <infpipe_id>
-#    → table: NODE | KIND | STATUS | RESULT | STACK_JOB | REASON
-#    -o json for the full record (every node's execution, stack-job ids)
+#    → table: NODE | KIND | STATUS | RESULT | INFRA_JOB | REASON
+#    -o json for the full record (every node's execution, infra-job ids)
 
 # 3. Why did the node fail? Engine logs, one hop:
 planton infra pipeline logs <infpipe_id>              # auto-targets the failed node
 planton infra pipeline logs <infpipe_id> --node <slug> # a specific node (slug from status)
 
-# 4. Deeper: the stack job record carries the full error detail:
-planton infra stack-job list <cloud-resource-id> -o json
-planton get stack-job <sj_id> -o json
-planton infra stack-job stream-progress-events <sj_id>   # tail the engine output directly
+# 4. Deeper: the infra job record carries the full error detail:
+planton infra job list <infra-component-id> -o json
+planton get infra-job <ij_id> -o json
+planton infra job stream-progress-events <ij_id>   # tail the engine output directly
 ```
 
 Typical reading of `status` output: a `REASON` starting "Nothing ran:
 environment <env> may not use the <provider> connection <slug>" is a missing
-connection authorization — no stack job started and nothing in the cloud
+connection authorization — no infra job started and nothing in the cloud
 changed (the follow says "Refused before any resource ran"); the sentence
 carries the `planton connection auth create …` fix, a mutation to confirm.
 A node with result `failed` and a
@@ -137,14 +137,14 @@ never by delete-and-retry: read `state-import.md`.
 
 ## Large records are files, not pipes
 
-Pipeline, stack-job, and full-resource records run long. Fetch a big record
+Pipeline, infra-job, and full-resource records run long. Fetch a big record
 ONCE into a hidden scratch file inside the folder you were given, then read
 and search the FILE with your file tools:
 
 ```
 mkdir -p .scratch
 planton infra pipeline status <infpipe_id> -o yaml > .scratch/pipeline.yaml
-planton get stack-job <sj_id> -o yaml > .scratch/stack-job.yaml
+planton get infra-job <ij_id> -o yaml > .scratch/infra-job.yaml
 ```
 
 Never pipe a record through improvised scripts to slice it, and never
@@ -157,9 +157,9 @@ for tidy folders; otherwise it is harmless working memory.
 ## Reading back and comparing a manifest
 
 ```
-planton get <Kind> <name> -o yaml            # a cloud resource AS ITS MANIFEST: kind, metadata
+planton get <Kind> <name> -o yaml            # an infra component AS ITS MANIFEST: kind, metadata
                                              # (id included), spec, status.outputs; camelCase keys
-planton get <Kind> <name> -o yaml --envelope # the stored CloudResource wrapper instead
+planton get <Kind> <name> -o yaml --envelope # the stored InfraComponent wrapper instead
 planton service get <slug> [-o json]         # the service's stored record (the service.yaml shape)
 planton diff -f <manifest>                   # the local file vs what is stored for it
 planton validate -f <manifest>               # offline check; every document in the file
@@ -204,7 +204,7 @@ whole organization; `--env` narrows only when passed. Windows (`--since`,
 moment; `--area` takes `infrastructure`, `services_pipelines`,
 `connections_credentials`, `configuration_secrets` or
 `organization_members`. Each card's `spec.source` names the run behind it:
-read a failed service run's logs or a stack job from there, and a
+read a failed service run's logs or an infra job from there, and a
 configuration change's diff with `history <version-id>`. Lead a summary with
 the `--attention` cards, then the rest by area, naming people and resources.
 
@@ -223,7 +223,7 @@ rather than piecing the answer together from other commands.
 ## Watching a running deploy (humans; agents prefer snapshots)
 
 ```
-planton follow <infpipe_id|sj_id> --plain   # auto-detects by id prefix
+planton follow <infpipe_id|ij_id> --plain   # auto-detects by id prefix
 planton infra pipeline stream-status <id>   # status lines until terminal
 ```
 
@@ -267,7 +267,7 @@ front doors and `login --local` (`self-hosted.front-doors-and-the-cli.md`,
 ## Generic escape hatches
 
 Any resource, any kind: `planton get <kind> <id> -o json` (e.g.
-`get infra-pipeline`, `get cloud-resource`, `get stack-job`) and
+`get infra-pipeline`, `get infra-component`, `get infra-job`) and
 `planton search [text] --kind <kind>` (a platform kind: `service`,
-`variable`, `cloud_resource`, …) for kinds without a noun-scoped list. The
+`variable`, `infra_component`, …) for kinds without a noun-scoped list. The
 noun-scoped verbs above are the preferred, discoverable path.

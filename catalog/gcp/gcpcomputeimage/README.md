@@ -4,7 +4,7 @@ Creates a Compute Engine custom image: the golden boot image VMs, instance templ
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `compute.googleapis.com` on the project (never disabled on destroy)
 - **Image** -- one `compute_image`
@@ -70,7 +70,7 @@ planton apply -f compute-image.yaml
 - Exactly one source; a source decryption key only with its source; `kmsKeyServiceAccount` only with `kmsKey`.
 - `imageName` and `family` are 1-63 lowercase letters, digits, or hyphens, starting with a letter.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -100,7 +100,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpComputeDisk** -- the source of a golden image, and a consumer of one
 - **GcpComputeInstance**, **GcpComputeMig** -- boot from the image or its family

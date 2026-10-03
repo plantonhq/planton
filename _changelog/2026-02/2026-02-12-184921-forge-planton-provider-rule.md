@@ -6,7 +6,7 @@
 
 ## Summary
 
-Created `forge-planton-provider.mdc`, a comprehensive Cursor orchestrator rule that automates the entire process of adding a new cloud provider to Planton. The rule encodes institutional knowledge from 15 existing provider integrations into an 11-phase, interactive workflow that spans all 6 system layers -- proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms -- plus catalog documentation, build validation, and changelog generation.
+Created `forge-planton-provider.mdc`, a comprehensive Cursor orchestrator rule that automates the entire process of adding a new cloud provider to Planton. The rule encodes institutional knowledge from 15 existing provider integrations into an 11-phase, interactive workflow that spans all 6 system layers -- proto definitions, CLI guidance, IaC input / env var processing, provider detection, backend credential CRUD, and frontend credential forms -- plus catalog documentation, build validation, and changelog generation.
 
 ## Problem Statement / Motivation
 
@@ -17,7 +17,7 @@ Adding a new cloud provider to Planton requires modifying ~25-30 files across 6 
 - No codified process -- each new provider integration required re-discovering the full file set
 - Easy to miss touch points: a forgotten switch case in `credential_service.go` or `guidance.go` would surface only at runtime
 - The Terraform provider's authentication model had to be manually researched and classified (flat vs. multi-method oneof)
-- Enum number assignment for `CloudResourceProvider`, `CredentialProvider`, and the `CredentialProviderConfig` oneof required manual counting
+- Enum number assignment for `CatalogProvider`, `CredentialProvider`, and the `CredentialProviderConfig` oneof required manual counting
 - No interactive checkpoints -- developers would make assumptions about auth models or field names and discover mistakes late
 
 ## Solution / What's New
@@ -46,7 +46,7 @@ flowchart TB
     end
 
     subgraph backend_phases [Phases 4-6: Go Backend]
-        EnvVars["Phase 4: Stack Input / Env Vars\n2 files"]
+        EnvVars["Phase 4: IaC Input / Env Vars\n2 files"]
         Detect["Phase 5: Provider Detection\n2 files"]
         CRUD["Phase 6: Backend CRUD - CHECKPOINT\n4 files"]
     end
@@ -71,7 +71,7 @@ flowchart TB
 
 ### Key Design Decisions
 
-**Self-contained rule (no sub-rules):** Unlike `forge-planton-component.mdc` which orchestrates 19 sub-rules in `flow/`, the provider forge keeps all phase instructions inline. Rationale: each provider-integration phase is pattern-following (add a case here, create a file matching this template), while component forging phases are individually complex (generating Pulumi modules, Terraform HCL, research docs). A single file is easier to maintain and review.
+**Self-contained rule (no sub-rules):** Unlike `forge-catalog-kind.mdc` which orchestrates 19 sub-rules in `flow/`, the provider forge keeps all phase instructions inline. Rationale: each provider-integration phase is pattern-following (add a case here, create a file matching this template), while kind forging phases are individually complex (generating Pulumi modules, Terraform HCL, research docs). A single file is easier to maintain and review.
 
 **3 interactive checkpoints:** The rule pauses at Phase 0 (research confirmation), Phase 6 (backend model confirmation), and Phase 8 (icon/documentation). This prevents the AI from brute-forcing through assumptions on authentication models, field names, or enum numbers.
 
@@ -86,13 +86,13 @@ flowchart TB
 | Header (Purpose, Role, What Forge Creates) | ~30 | Context and deliverable checklist |
 | Usage | ~15 | Invocation syntax and argument docs |
 | Phase 0: Research | ~40 | Terraform provider study + enum discovery |
-| Phase 1: Proto Definitions | ~40 | provider.proto, cloud_resource_provider.proto, credential api.proto |
+| Phase 1: Proto Definitions | ~40 | provider.proto, catalog_provider.proto, credential api.proto |
 | Phase 2: Provider Package | ~60 | cli_help.go template + BUILD.bazel template |
 | Phase 3: Proto Generation | ~20 | `make protos` + verification |
-| Phase 4: Stack Input / Env Vars | ~30 | Env var loader + loader.go switch |
+| Phase 4: IaC Input / Env Vars | ~30 | Env var loader + loader.go switch |
 | Phase 5: Provider Detection | ~25 | guidance.go (4 switches) + validate.go |
 | Phase 6: Backend CRUD | ~70 | Model, repo, service, resolver patterns |
-| Phase 7: Frontend UI | ~100 | Form component, types, drawer, index, utils |
+| Phase 7: Frontend UI | ~100 | Form kind, types, drawer, index, utils |
 | Phase 8: Catalog Documentation | ~40 | Provider page, icon, catalog index |
 | Phase 9: Build Validation | ~25 | Go build commands + common error fixes |
 | Phase 10: Changelog | ~60 | Changelog template with mermaid diagrams |
@@ -114,14 +114,14 @@ The rule instructs the agent to produce a files-changed table matching this patt
 
 | Layer | New Files | Modified Files |
 |-------|-----------|----------------|
-| Proto | `provider/<provider>/provider.proto` | `cloud_resource_provider.proto`, `credential/v1/api.proto` |
+| Proto | `provider/<provider>/provider.proto` | `catalog_provider.proto`, `credential/v1/api.proto` |
 | Provider | `provider/<provider>/cli_help.go`, `BUILD.bazel` | -- |
-| Stack Input | `providerenvvars/<provider>.go` | `loader.go` |
+| IaC Input | `providerenvvars/<provider>.go` | `loader.go` |
 | Provider Detect | -- | `detect.go`, `guidance.go`, `validate.go` |
 | Backend | -- | `credential.go`, `credential_repo.go`, `credential_service.go`, `credential_resolver.go` |
 | Frontend | `<provider>.tsx` | `types.ts`, `credential-drawer.tsx`, `index.ts`, `utils.ts` |
 | Catalog | `<provider>/index.md`, `<provider>.svg` | `catalog/index.md` |
-| Generated | `provider.pb.go`, `provider_pb.ts` | `api.pb.go`, `api_pb.ts`, `cloud_resource_provider.pb.go`, `cloud_resource_provider_pb.ts` |
+| Generated | `provider.pb.go`, `provider_pb.ts` | `api.pb.go`, `api_pb.ts`, `catalog_provider.pb.go`, `catalog_provider_pb.ts` |
 
 ## Benefits
 
@@ -148,9 +148,9 @@ The rule instructs the agent to produce a files-changed table matching this patt
 
 ### Direct
 
-- New file: `_rules/deployment-component/forge/forge-planton-provider.mdc` (791 lines)
+- New file: `_rules/catalog-kind/forge/forge-planton-provider.mdc` (791 lines)
 - The rule is ready to use immediately for the next provider integration
-- Complements the existing `forge-planton-component.mdc` rule, completing the forge tooling for both providers and components
+- Complements the existing `forge-catalog-kind.mdc` rule, completing the forge tooling for both providers and kinds
 
 ### Future Work Enabled
 
@@ -163,7 +163,7 @@ The rule instructs the agent to produce a files-changed table matching this patt
 - [2025-12-30 Auth0 Provider Integration](2025-12-30-054629-auth0-provider-integration.md) -- First provider integration changelog, established the pattern
 - [2026-02-08 OpenStack Provider Integration](2026-02-08-215116-openstack-provider-integration.md) -- Multi-method (oneof) variant, introduced auth method complexity
 - [2026-02-12 Scaleway Provider Integration](2026-02-12-181851-scaleway-provider-integration.md) -- Most recent flat provider, served as primary pattern reference
-- `_rules/deployment-component/forge/forge-planton-component.mdc` -- Sibling rule for component forging (19 sub-rules, different scope)
+- `_rules/catalog-kind/forge/forge-catalog-kind.mdc` -- Sibling rule for kind forging (19 sub-rules, different scope)
 
 ---
 

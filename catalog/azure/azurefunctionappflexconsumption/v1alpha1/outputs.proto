@@ -4,7 +4,7 @@ package dev.planton.azure.azurefunctionappflexconsumption.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureFunctionAppFlexConsumptionStackOutputs** captures the outputs
+// **AzureFunctionAppFlexConsumptionOutputs** captures the outputs
 // of provisioning an Azure Function App on the Flex Consumption plan.
 //
 // The primary output is `function_app_id`, the ARM resource ID. The
@@ -24,7 +24,7 @@ import "shared/options/options.proto";
 // **Leaf resource**: Nothing references AzureFunctionAppFlexConsumption
 // outputs downstream. These outputs are consumed by users, infra chart
 // visibility, and external DNS/domain configuration.
-message AzureFunctionAppFlexConsumptionStackOutputs {
+message AzureFunctionAppFlexConsumptionOutputs {
   // The Azure Resource Manager ID of the Function App.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Web/sites/{name}
   string function_app_id = 1;

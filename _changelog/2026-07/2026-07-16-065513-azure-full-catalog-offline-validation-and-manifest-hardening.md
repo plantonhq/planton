@@ -93,11 +93,11 @@ All fixed with the files' own literal-wrapper helpers. `go vet` across all
 
 The gap that let 55 invalid manifests accumulate is now closed at the source:
 
-- `_rules/deployment-component/update/update-planton-component.mdc` — the
+- `_rules/catalog-kind/update/update-catalog-kind.mdc` — the
   preset-validation step now mandates mechanically running
   `planton validate-manifest` (tree-built CLI) on every preset and the hack
   manifest of a touched kind.
-- `_rules/deployment-component/forge/flow/022-presets.mdc` — the self-validate
+- `_rules/catalog-kind/forge/flow/022-presets.mdc` — the self-validate
   step now requires the same command per preset, as the authoritative check
   for its placeholder rule.
 

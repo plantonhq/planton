@@ -5,7 +5,7 @@ import (
 
 	azurerecoveryservicesvaultv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurerecoveryservicesvault/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -31,11 +31,11 @@ var identityTypeWire = map[azurerecoveryservicesvaultv1alpha1.AzureRecoveryServi
 	azurerecoveryservicesvaultv1alpha1.AzureRecoveryServicesVaultIdentityType_SYSTEM_AND_USER_ASSIGNED: "SystemAssigned, UserAssigned",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurerecoveryservicesvaultv1alpha1.AzureRecoveryServicesVaultStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurerecoveryservicesvaultv1alpha1.AzureRecoveryServicesVaultIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureRecoveryServicesVault = stackInput.Target
-	target := stackInput.Target
+	locals.AzureRecoveryServicesVault = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -46,7 +46,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurerecoveryservicesvaul
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureRecoveryServicesVault.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureRecoveryServicesVault.String()),
 	}
 
 	if target.Metadata.Id != "" {

@@ -1,5 +1,5 @@
 # Auth0CustomDomain Outputs
-# Maps to the Auth0CustomDomainStackOutputs protobuf message: the domain as
+# Maps to the Auth0CustomDomainOutputs protobuf message: the domain as
 # Auth0 created it, and the DNS record that proves control of it.
 
 output "id" {

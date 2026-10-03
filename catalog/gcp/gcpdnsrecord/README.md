@@ -105,7 +105,7 @@ planton tofu apply --manifest dns-record.yaml
    GcpDnsZone resource and internal load balancer targets at GcpAddress /
    GcpVpcNetwork resources so renames and rebuilds propagate.
 
-## Related Components
+## Related Kinds
 
 - **GcpDnsZone**: the managed zone this record lives in (zone shell only —
   records belong here).

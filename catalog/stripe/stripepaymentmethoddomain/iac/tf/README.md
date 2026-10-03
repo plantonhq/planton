@@ -15,7 +15,7 @@ OpenTofu module that registers one domain for wallet buttons. Stripe kinds run o
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `domain_name` (required, replaces); `enabled` (optional, default true) |
 
 ## Outputs

@@ -5,7 +5,7 @@ import (
 
 	gcpcertmanagertrustconfigv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcertmanagertrustconfig/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -24,8 +24,8 @@ type Locals struct {
 	Location string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpcertmanagertrustconfigv1alpha1.GcpCertManagerTrustConfigStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcpcertmanagertrustconfigv1alpha1.GcpCertManagerTrustConfigIacInput) *Locals {
+	target := iacInput.Target
 
 	locals := &Locals{
 		GcpCertManagerTrustConfig: target,
@@ -48,7 +48,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpcertmanagertrustconfigv1
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = locals.TrustConfigName
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpCertManagerTrustConfig.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpCertManagerTrustConfig.String())
 	if target.Metadata.Id != "" {
 		locals.GcpLabels[gcplabelkeys.ResourceId] = target.Metadata.Id
 	}

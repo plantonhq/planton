@@ -18,7 +18,7 @@ func emailTemplate(spec *Auth0EmailTemplateSpec) *Auth0EmailTemplate {
 	return &Auth0EmailTemplate{
 		ApiVersion: "auth0.planton.dev/v1alpha1",
 		Kind:       "Auth0EmailTemplate",
-		Metadata:   &shared.CloudResourceMetadata{Name: "verify-email"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "verify-email"},
 		Spec:       spec,
 	}
 }

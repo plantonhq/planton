@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -6,9 +6,9 @@
 # is the SUM of cpu and memory across the containers list, and derivation
 # rules cannot traverse a repeated field -- each preset's sum is computed
 # here and defended in its quantity basis. Schema:
-# finops/componentcostestimatemodel/v1.
+# finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: azurecontainerinstance
 spec:
@@ -44,7 +44,7 @@ spec:
           pricing_quantity: "1460"
           quantity_basis: the group allocates 2 GB (one container, memory 2) around the clock -- 2 x 730 hours
       exclusions:
-        - the delegated subnet and the user-assigned identity are their own components; the group's private IP is free
+        - the delegated subnet and the user-assigned identity are their own kinds; the group's private IP is free
         - image pull seconds and registry-side egress precede every start
         - network egress follows traffic and client placement
       notes: Private networking changes posture, not price -- the vCPU and memory meters read the same inside a subnet.

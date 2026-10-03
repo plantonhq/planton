@@ -12,10 +12,10 @@ import (
 
 	"google.golang.org/protobuf/reflect/protoreflect"
 
-	permissionsv1 "github.com/plantonhq/planton/iac/componentpermissions/v1"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	permissionsv1 "github.com/plantonhq/planton/iac/catalogkindpermissions/v1"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/kubernetes/manifestprojection"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 var (
@@ -93,7 +93,7 @@ var (
 // its contract, offline:
 //
 //  1. The manifest parses strictly against its proto schema and names its
-//     component (metadata.name equals the component directory).
+//     kind (metadata.name equals the kind directory).
 //  2. It declares at least one provider section -- a permissions file that
 //     grants nothing describes no module.
 //  3. Every entry is structurally sound for its provider (action spelling,
@@ -119,19 +119,19 @@ func TestPermissionsConformance(t *testing.T) {
 		t.Skip("no permissions manifests authored yet")
 	}
 
-	for provider, components := range discovered {
-		for _, component := range components {
-			component := component
-			t.Run(provider+"/"+component, func(t *testing.T) {
-				manifest, err := Load(root, provider, component)
+	for provider, kindDirs := range discovered {
+		for _, kindDir := range kindDirs {
+			kindDir := kindDir
+			t.Run(provider+"/"+kindDir, func(t *testing.T) {
+				manifest, err := Load(root, provider, kindDir)
 				if err != nil {
 					t.Fatalf("permissions manifest: %v", err)
 				}
-				if manifest.GetKind() != "ComponentPermissions" {
-					t.Fatalf("kind is %q, want ComponentPermissions", manifest.GetKind())
+				if manifest.GetKind() != "CatalogKindPermissions" {
+					t.Fatalf("kind is %q, want CatalogKindPermissions", manifest.GetKind())
 				}
-				if manifest.GetMetadata().GetName() != component {
-					t.Errorf("metadata.name is %q, want %q", manifest.GetMetadata().GetName(), component)
+				if manifest.GetMetadata().GetName() != kindDir {
+					t.Errorf("metadata.name is %q, want %q", manifest.GetMetadata().GetName(), kindDir)
 				}
 
 				spec := manifest.GetSpec()
@@ -155,31 +155,31 @@ func TestPermissionsConformance(t *testing.T) {
 				checkDigitalOcean(t, spec.GetDigitalOcean())
 				checkAuth0(t, spec.GetAuth0())
 				checkStripe(t, spec.GetStripe())
-				checkConditions(t, component, spec)
+				checkConditions(t, kindDir, spec)
 			})
 		}
 	}
 }
 
-// imageDeployingGcpComponents deploy a container image their deploying identity must be able to
+// imageDeployingGcpKinds deploy a container image their deploying identity must be able to
 // read: Google's Cloud Run deploy checks the deployer's own Artifact Registry access to the
 // image, separately from the service agent that pulls it when a revision starts.
-var imageDeployingGcpComponents = []string{"gcpcloudrun", "gcpcloudrunjob"}
+var imageDeployingGcpKinds = []string{"gcpcloudrun", "gcpcloudrunjob"}
 
 const artifactRegistryDownload = "artifactregistry.repositories.downloadArtifacts"
 
 // A customer who grants exactly what a manifest declares must be able to deploy with it. The
 // structural gate above cannot see an absent grant, so the one Google's deploy contract requires
-// of every image-deploying component is pinned here by name.
-func TestImageDeployingComponentsDeclareRegistryRead(t *testing.T) {
+// of every image-deploying kind is pinned here by name.
+func TestImageDeployingKindsDeclareRegistryRead(t *testing.T) {
 	root := repoRoot(t)
 	if _, err := os.Stat(filepath.Join(root, "catalog")); err != nil {
 		t.Skip("catalog source tree not present (bazel sandbox); runs under go test and the lint.catalog-data lane")
 	}
-	for _, component := range imageDeployingGcpComponents {
-		manifest, err := Load(root, "gcp", component)
+	for _, kindDir := range imageDeployingGcpKinds {
+		manifest, err := Load(root, "gcp", kindDir)
 		if err != nil {
-			t.Fatalf("%s permissions manifest: %v", component, err)
+			t.Fatalf("%s permissions manifest: %v", kindDir, err)
 		}
 		declared := false
 		for _, group := range manifest.GetSpec().GetGcp().GetGroups() {
@@ -190,12 +190,12 @@ func TestImageDeployingComponentsDeclareRegistryRead(t *testing.T) {
 		if !declared {
 			t.Errorf("%s deploys a container image but its manifest grants no %s -- a customer who grants "+
 				"exactly this manifest is refused at deploy when the image lives in Artifact Registry",
-				component, artifactRegistryDownload)
+				kindDir, artifactRegistryDownload)
 		}
 	}
 }
 
-// skipAwaitSetOutsideTheCall are the components that put pulumi.com/skipAwait on a kind where the
+// skipAwaitSetOutsideTheCall are the kinds that put pulumi.com/skipAwait on a kind where the
 // gate cannot see it at the constructor call -- the annotation map is built elsewhere in the
 // module and passed in. Each entry stays true only while the module still carries the
 // annotation; a module that drops it fails the gate here instead of keeping an exemption it no
@@ -205,7 +205,7 @@ var skipAwaitSetOutsideTheCall = map[string]string{
 	"kubernetespersistentvolumeclaim": "kubernetes:core/v1:PersistentVolumeClaim",
 }
 
-// yamlPartitionsOutsideSkipAwait are the components that split their YAML by kind across several
+// yamlPartitionsOutsideSkipAwait are the kinds that split their YAML by kind across several
 // yaml constructors and put the skipAwait transformation on all but the ones holding only these
 // resources (manifest_documents.go in each module: the Namespace and the CRDs apply on their own,
 // the operator's workloads under skipAwait). Neither listed kind has a readiness wait, so honouring
@@ -220,7 +220,7 @@ var yamlPartitionsOutsideSkipAwait = map[string][]string{
 // the Pulumi module, not only with OpenTofu. Pulumi's Kubernetes provider waits after every
 // create, update and delete, and every wait reads the cluster through informers that never start
 // when their list is forbidden -- the deploy then hangs with no error rather than failing
-// (pulumikubernetes.go says where, line by line). So for every Kubernetes object a component's
+// (pulumikubernetes.go says where, line by line). So for every Kubernetes object a kind's
 // Pulumi module constructs, its manifest must grant what the provider reads while it waits for
 // that object: get on the object, list and watch on its kind for the delete wait, and the
 // readiness wait's reads (pods, replicasets, endpoints, events, ...) unless the object carries
@@ -234,8 +234,8 @@ var yamlPartitionsOutsideSkipAwait = map[string][]string{
 // delete wait only where the manifest lets the module delete them (it retains them otherwise).
 //
 // Out of this gate, by construction: a Helm release -- Helm's own wait, bounded by the release's
-// timeout, reads what it reads. The component's other objects, the namespace beside the release
-// above all, are still held here. A component with no manifest publishes no role, so there is
+// timeout, reads what it reads. The kind's other objects, the namespace beside the release
+// above all, are still held here. A kind with no manifest publishes no role, so there is
 // nothing to hold.
 func TestPulumiKubernetesModulesDeclareWhatTheProviderReadsWhileItWaits(t *testing.T) {
 	root := repoRoot(t)
@@ -246,45 +246,45 @@ func TestPulumiKubernetesModulesDeclareWhatTheProviderReadsWhileItWaits(t *testi
 	if err != nil {
 		t.Fatalf("discovering permissions manifests: %v", err)
 	}
-	for _, component := range discovered["kubernetes"] {
-		moduleDir := filepath.Join(root, "catalog", "kubernetes", component, "iac", "pulumi")
+	for _, kindDir := range discovered["kubernetes"] {
+		moduleDir := filepath.Join(root, "catalog", "kubernetes", kindDir, "iac", "pulumi")
 		if _, err := os.Stat(moduleDir); err != nil {
 			continue
 		}
 		scan, err := scanPulumiModule(root, moduleDir)
 		if err != nil {
-			t.Fatalf("%s: reading the Pulumi module: %v", component, err)
+			t.Fatalf("%s: reading the Pulumi module: %v", kindDir, err)
 		}
 		for _, problem := range scan.problems {
-			t.Errorf("%s: %s", component, problem)
+			t.Errorf("%s: %s", kindDir, problem)
 		}
-		manifest, err := Load(root, "kubernetes", component)
+		manifest, err := Load(root, "kubernetes", kindDir)
 		if err != nil {
-			t.Fatalf("%s permissions manifest: %v", component, err)
+			t.Fatalf("%s permissions manifest: %v", kindDir, err)
 		}
 		rules := manifest.GetSpec().GetKubernetes().GetRules()
 
-		if exempted, ok := skipAwaitSetOutsideTheCall[component]; ok {
+		if exempted, ok := skipAwaitSetOutsideTheCall[kindDir]; ok {
 			constructs := false
 			for _, object := range scan.objects {
 				constructs = constructs || (object.kind != nil && object.kind.Token == exempted)
 			}
 			if !scan.setsSkipAwait || !constructs {
 				t.Errorf("%s is exempted from %s's readiness reads for setting pulumi.com/skipAwait, but its module no longer "+
-					"creates that kind with the annotation set to \"true\" -- remove the exemption so the gate holds the readiness reads again", component, exempted)
+					"creates that kind with the annotation set to \"true\" -- remove the exemption so the gate holds the readiness reads again", kindDir, exempted)
 			}
 		}
-		if _, ok := yamlPartitionsOutsideSkipAwait[component]; ok {
+		if _, ok := yamlPartitionsOutsideSkipAwait[kindDir]; ok {
 			some, all := false, len(scan.yamlCalls) > 0
 			for _, call := range scan.yamlCalls {
 				some, all = some || call.skipAwait, all && call.skipAwait
 			}
 			if !some || all {
-				t.Errorf("%s is listed in yamlPartitionsOutsideSkipAwait, but its yaml constructors no longer split skipAwait that way -- update or remove the entry", component)
+				t.Errorf("%s is listed in yamlPartitionsOutsideSkipAwait, but its yaml constructors no longer split skipAwait that way -- update or remove the entry", kindDir)
 			}
 		}
 
-		requirements, uncreatable := pulumiWaitRequirements(component, scan, rules)
+		requirements, uncreatable := pulumiWaitRequirements(kindDir, scan, rules)
 		missing := append([]string{}, uncreatable...)
 		for _, g := range waitGaps(rules, requirements) {
 			reasons := make([]string, 0, len(g.needs))
@@ -296,7 +296,7 @@ func TestPulumiKubernetesModulesDeclareWhatTheProviderReadsWhileItWaits(t *testi
 		if len(missing) > 0 {
 			sort.Strings(missing)
 			t.Errorf("%s: a customer who grants exactly this manifest hangs the Pulumi module -- pulumi-kubernetes %s reads, while it waits, what the manifest does not grant:\n  %s",
-				component, PulumiKubernetesProviderVersion, strings.Join(missing, "\n  "))
+				kindDir, PulumiKubernetesProviderVersion, strings.Join(missing, "\n  "))
 		}
 	}
 }
@@ -327,9 +327,9 @@ func (n waitNeed) sentence() string {
 // module creates. uncreatable names the custom resources the manifest does not even let the
 // module create -- the gate cannot say which scope their reads need, and the create is refused
 // first anyway.
-func pulumiWaitRequirements(component string, scan *moduleScan, rules []*permissionsv1.KubernetesRule) (needs []waitNeed, uncreatable []string) {
+func pulumiWaitRequirements(kindDir string, scan *moduleScan, rules []*permissionsv1.KubernetesRule) (needs []waitNeed, uncreatable []string) {
 	objects := append([]createdObject{}, scan.objects...)
-	objects = append(objects, yamlChildren(component, scan, rules)...)
+	objects = append(objects, yamlChildren(kindDir, scan, rules)...)
 	crdRow, _ := PulumiKubernetesKindByResource("apiextensions.k8s.io", "customresourcedefinitions")
 	deletesCRDs := len(uncoveredVerbs(rules, KubernetesRead{KubernetesResource: crdRow.Self, Verbs: []string{"delete"}})) == 0
 	for _, where := range scan.keptCRDs {
@@ -337,7 +337,7 @@ func pulumiWaitRequirements(component string, scan *moduleScan, rules []*permiss
 		objects = append(objects, createdObject{where: where, via: "keptcrds.Apply", kind: &row, retainDelete: !deletesCRDs})
 	}
 	for _, object := range scan.projectionApplies {
-		group, kind, ok := componentProjection(component)
+		group, kind, ok := kindProjection(kindDir)
 		if !ok {
 			uncreatable = append(uncreatable, fmt.Sprintf("%s: the module applies a custom resource through manifestcr.Apply, but the kind has no kubernetes_manifest_projection to say which", object.where))
 			continue
@@ -365,7 +365,7 @@ func pulumiWaitRequirements(component string, scan *moduleScan, rules []*permiss
 			}
 			self, what = KubernetesResource{APIGroup: object.crGroup, Resource: resource, ClusterScoped: clusterScoped}, object.crKind
 		}
-		skipAwait := object.skipAwait || skipAwaitSetOutsideTheCall[component] == what
+		skipAwait := object.skipAwait || skipAwaitSetOutsideTheCall[kindDir] == what
 		need := func(read KubernetesRead, phase string) {
 			needs = append(needs, waitNeed{read: read, phase: phase, what: what, where: object.where, via: object.via})
 		}
@@ -391,7 +391,7 @@ func pulumiWaitRequirements(component string, scan *moduleScan, rules []*permiss
 // yamlChildren is every object a module's yaml constructors may apply: each kind the manifest
 // grants create on. Subresources and the review APIs are requests, not objects, and a wildcard
 // names no kind to hold.
-func yamlChildren(component string, scan *moduleScan, rules []*permissionsv1.KubernetesRule) []createdObject {
+func yamlChildren(kindDir string, scan *moduleScan, rules []*permissionsv1.KubernetesRule) []createdObject {
 	if len(scan.yamlCalls) == 0 {
 		return nil
 	}
@@ -404,7 +404,7 @@ func yamlChildren(component string, scan *moduleScan, rules []*permissionsv1.Kub
 			vias = append(vias, call.via)
 		}
 	}
-	outsideSkip := yamlPartitionsOutsideSkipAwait[component]
+	outsideSkip := yamlPartitionsOutsideSkipAwait[kindDir]
 	seen := map[KubernetesResource]bool{}
 	var objects []createdObject
 	for _, rule := range rules {
@@ -847,26 +847,26 @@ func repoRoot(t *testing.T) string {
 }
 
 // checkConditions proves every entry's condition names a field that exists
-// in the component's own spec. A condition naming a field the spec does not
+// in the kind's own spec. A condition naming a field the spec does not
 // have would mark an entry optional forever -- no manifest could ever set
 // it -- so a typo here silently drops a required grant from every chart that
 // unions it. The walk reads the permissions schema's own descriptor (every
 // section, every repeated entry list, every entry's `condition`), so an
 // entry type added to the schema is covered the day it lands.
-func checkConditions(t *testing.T, component string, spec *permissionsv1.ComponentPermissionsSpec) {
+func checkConditions(t *testing.T, kindDir string, spec *permissionsv1.CatalogKindPermissionsSpec) {
 	t.Helper()
 	var specFields protoreflect.MessageDescriptor
 	resolveSpec := func() protoreflect.MessageDescriptor {
 		if specFields != nil {
 			return specFields
 		}
-		// The component directory's name, normalized to its kind the way the
-		// catalog locates a component's directory (crkreflect.ComponentVersionDir).
-		kind := crkreflect.KindFromString(component)
-		if kind == cloudresourcekind.CloudResourceKind_unspecified {
-			t.Fatalf("an entry carries a condition, but component %q resolves to no kind", component)
+		// The kind directory's name, normalized to its kind the way the
+		// catalog locates a kind's directory (catalogkindreflect.KindVersionDir).
+		kind := catalogkindreflect.KindFromString(kindDir)
+		if kind == catalogkind.CatalogKind_unspecified {
+			t.Fatalf("an entry carries a condition, but kind %q resolves to no kind", kindDir)
 		}
-		instance, err := crkreflect.NewInstance(kind)
+		instance, err := catalogkindreflect.NewInstance(kind)
 		if err != nil {
 			t.Fatalf("an entry carries a condition, but kind %s has no message: %v", kind, err)
 		}
@@ -949,10 +949,10 @@ func TestApiEnablingGroupsDeclareServiceList(t *testing.T) {
 	if err != nil {
 		t.Fatalf("discovering permissions manifests: %v", err)
 	}
-	for _, component := range discovered["gcp"] {
-		manifest, err := Load(root, "gcp", component)
+	for _, kindDir := range discovered["gcp"] {
+		manifest, err := Load(root, "gcp", kindDir)
 		if err != nil {
-			t.Fatalf("%s permissions manifest: %v", component, err)
+			t.Fatalf("%s permissions manifest: %v", kindDir, err)
 		}
 		for _, group := range manifest.GetSpec().GetGcp().GetGroups() {
 			enables, lists := false, false
@@ -963,21 +963,21 @@ func TestApiEnablingGroupsDeclareServiceList(t *testing.T) {
 			if enables && !lists {
 				t.Errorf("%s group %q grants %s but no %s -- Google's provider lists the project's enabled services "+
 					"before it enables one, so a customer who grants exactly this manifest is refused at the first deploy",
-					component, group.GetPurpose(), serviceUsageEnable, serviceUsageList)
+					kindDir, group.GetPurpose(), serviceUsageEnable, serviceUsageList)
 			}
 		}
 	}
 }
 
-// componentProjection returns the custom resource group and kind a
-// component's registry entry projects onto (kubernetes_manifest_projection),
-// reading the component folder name as the lowercased kind name.
-func componentProjection(component string) (group, kind string, ok bool) {
-	for name, number := range cloudresourcekind.CloudResourceKind_value {
-		if strings.ToLower(name) != component {
+// kindProjection returns the custom resource group and kind a
+// kind's registry entry projects onto (kubernetes_manifest_projection),
+// reading the kind folder name as the lowercased kind name.
+func kindProjection(kindDir string) (group, kind string, ok bool) {
+	for name, number := range catalogkind.CatalogKind_value {
+		if strings.ToLower(name) != kindDir {
 			continue
 		}
-		proj := manifestprojection.ProjectionOf(cloudresourcekind.CloudResourceKind(number))
+		proj := manifestprojection.ProjectionOf(catalogkind.CatalogKind(number))
 		if proj == nil {
 			return "", "", false
 		}

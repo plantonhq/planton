@@ -1,4 +1,4 @@
-# Stack outputs — must flatten onto KubernetesNetworkPolicyStackOutputs
+# Outputs — must flatten onto KubernetesNetworkPolicyOutputs
 # (outputs.proto) identically to the Pulumi module's exports.
 
 output "network_policy_name" {

@@ -64,7 +64,7 @@ spec:
 | `monitor_id` | The monitor ID (referenced by a pool's `monitor`) |
 | `monitor_type` | The health-check protocol |
 
-## Related components
+## Related kinds
 
 - `CloudflareLoadBalancerPool` — references this monitor via `monitor`.
 - `CloudflareLoadBalancer` — selects pools health-checked by this monitor.

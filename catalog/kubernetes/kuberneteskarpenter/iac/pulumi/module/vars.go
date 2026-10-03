@@ -29,7 +29,7 @@ var vars = struct {
 	CrdReleaseName string
 	// ServiceAccountName is the controller's service-account name — the
 	// subject IRSA trust policies and EKS Pod Identity associations are
-	// written against, so it is surfaced as a stack output. Derivation
+	// written against, so it is surfaced as an output. Derivation
 	// (verified in the served chart's _helpers.tpl + serviceaccount.yaml):
 	// serviceAccount.create defaults true and serviceAccount.name defaults
 	// to the fullname template; with no fullnameOverride and the release

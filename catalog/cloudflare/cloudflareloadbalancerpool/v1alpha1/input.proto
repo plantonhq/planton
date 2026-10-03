@@ -5,9 +5,9 @@ package dev.planton.cloudflare.cloudflareloadbalancerpool.v1alpha1;
 import "catalog/cloudflare/cloudflareloadbalancerpool/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-//cloudflare-load-balancer-pool stack-input
-message CloudflareLoadBalancerPoolStackInput {
-  //target cloud-resource
+//cloudflare-load-balancer-pool iac-input
+message CloudflareLoadBalancerPoolIacInput {
+  //target infra-component
   CloudflareLoadBalancerPool target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

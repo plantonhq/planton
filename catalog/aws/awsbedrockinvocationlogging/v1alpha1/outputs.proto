@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbedrockinvocationlogging.v1alpha1;
 
-// AwsBedrockInvocationLoggingStackOutputs captures the observable
+// AwsBedrockInvocationLoggingOutputs captures the observable
 // identity of the region's invocation logging configuration.
-message AwsBedrockInvocationLoggingStackOutputs {
+message AwsBedrockInvocationLoggingOutputs {
   // The region whose invocation logging this instance owns - the
   // singleton's identity, and the provider's import ID.
   string configured_region = 1;

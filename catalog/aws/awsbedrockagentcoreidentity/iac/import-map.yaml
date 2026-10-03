@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsbedrockagentcoreidentity
 spec:
@@ -19,14 +19,14 @@ spec:
         `list-oauth2-credential-providers` show name).
     - name: policy_engine_id
       derivations:
-        - from_stack_output: policy_engine_id
+        - from_output: policy_engine_id
       where_to_find: >-
         Bedrock AgentCore console -> Policy engines -> <engine> (the ID),
         or `aws bedrock-agentcore-control list-policy-engines`
         (policyEngineId).
     - name: policy_id
       derivations:
-        - from_stack_output_keyed_by_address: policy_ids
+        - from_output_keyed_by_address: policy_ids
       where_to_find: >-
         `aws bedrock-agentcore-control list-policies --policy-engine-id
         <id>` lists policyId per policy; match each to its

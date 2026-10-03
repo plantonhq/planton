@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarekvnamespace.v1alpha1;
 
-// CloudflareKvNamespaceStackOutputs captures the key outputs after provisioning a Cloudflare KV namespace.
-message CloudflareKvNamespaceStackOutputs {
+// CloudflareKvNamespaceOutputs captures the key outputs after provisioning a Cloudflare KV namespace.
+message CloudflareKvNamespaceOutputs {
   // The unique identifier (ID) of the created KV namespace. A Worker's
   // `kv_namespace` binding and a CloudflareWorkersKvPair both reference this.
   string namespace_id = 1;

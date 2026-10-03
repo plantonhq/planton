@@ -6,7 +6,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpvertexaiindexendpointv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvertexaiindexendpoint/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -21,10 +21,10 @@ type Locals struct {
 	Network                  string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpvertexaiindexendpointv1alpha1.GcpVertexAiIndexEndpointStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpvertexaiindexendpointv1alpha1.GcpVertexAiIndexEndpointIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpVertexAiIndexEndpoint = stackInput.Target
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpVertexAiIndexEndpoint = iacInput.Target
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 
 	// The Vertex AI API expects the RELATIVE network form
 	// projects/{project}/global/networks/{name} and rejects full compute
@@ -45,7 +45,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpvertexaiindexendpointv1a
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = strings.ToLower(locals.GcpVertexAiIndexEndpoint.Metadata.Name)
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpVertexAiIndexEndpoint.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpVertexAiIndexEndpoint.String())
 
 	if locals.GcpVertexAiIndexEndpoint.Metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = locals.GcpVertexAiIndexEndpoint.Metadata.Org

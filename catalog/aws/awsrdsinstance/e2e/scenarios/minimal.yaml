@@ -30,7 +30,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsrdsinstance
+    e2e-catalog-kind: awsrdsinstance
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AwsIamRole"

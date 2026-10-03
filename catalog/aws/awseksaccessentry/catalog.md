@@ -4,7 +4,7 @@ Grants one IAM principal (a role or user) access to an EKS cluster's Kubernetes 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **EKS Access Entry** -- the (cluster, principal) grant, with the entry type, Kubernetes group mappings, and optional username
 - **Access Policy Associations** -- one association per entry in `policyAssociations`, attaching an AWS-managed EKS access policy to the principal with cluster-wide or namespace scope
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **EKS Cluster** -- the target cluster, ideally a Planton AwsEksCluster referenced by its `name` output so deploys order correctly.
 - **IAM Principal** -- the role (or user) being granted access, ideally a Planton AwsIamRole referenced by its `role_arn` output.
 
@@ -62,7 +62,7 @@ spec:
 planton apply -f access-entry.yaml
 ```
 
-This grants the referenced role read-only access across the whole cluster through the AWS-managed view policy — no in-cluster RBAC objects, no ConfigMap edits. A Stack Job tracks the provisioning in real time.
+This grants the referenced role read-only access across the whole cluster through the AWS-managed view policy — no in-cluster RBAC objects, no ConfigMap edits. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -101,16 +101,16 @@ These are the most important decisions when configuring an EKS access entry. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsEksCluster** | `clusterName` | `status.outputs.name` |
 | **AwsIamRole** | `principalArn` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -129,6 +129,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS EKS Cluster**](/cloud-catalog/aws-eks-cluster) -- the cluster whose Kubernetes API the entry grants access to, referenced by `clusterName`. The cluster's authentication mode must include API.
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the principal being granted access, referenced by `principalArn`.
-- [**AWS EKS Node Group**](/cloud-catalog/aws-eks-node-group) and [**AWS EKS Fargate Profile**](/cloud-catalog/aws-eks-fargate-profile) -- EKS auto-creates node-type entries for their infrastructure roles; model entries only for the principals you grant yourself.
+- [**AWS EKS Cluster**](/infra-catalog/aws-eks-cluster) -- the cluster whose Kubernetes API the entry grants access to, referenced by `clusterName`. The cluster's authentication mode must include API.
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the principal being granted access, referenced by `principalArn`.
+- [**AWS EKS Node Group**](/infra-catalog/aws-eks-node-group) and [**AWS EKS Fargate Profile**](/infra-catalog/aws-eks-fargate-profile) -- EKS auto-creates node-type entries for their infrastructure roles; model entries only for the principals you grant yourself.

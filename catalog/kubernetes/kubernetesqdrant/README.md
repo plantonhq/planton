@@ -8,7 +8,7 @@ always on (the chart's default), pod 0 bootstraps the Raft consensus,
 and every further replica joins over the p2p port. Scaling the
 deployment is a `replicas` change — nothing else.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want shards or replication factor in the manifest** — those
   are collection-level properties declared per collection through the
@@ -107,7 +107,7 @@ nothing).
   (repository, tag, `use_unprivileged` for restricted Pod Security
   Standards) and the escape hatch
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

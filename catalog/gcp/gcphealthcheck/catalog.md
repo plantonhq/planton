@@ -4,7 +4,7 @@ Deploys a Compute Engine health check — the probe that decides which backends 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute Engine Health Check** -- global or regional, probing with the selected protocol at the configured cadence
 - **Probe configuration** -- the request path / banner exchange / gRPC service name, the port choice (fixed, named, or serving port), timing dials, and optional health-transition logging
@@ -14,12 +14,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the check will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
+- **A GCP project** where the check will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
 - **A firewall rule for instance-group backends** -- probes originate from Google's ranges `35.191.0.0/16` and `130.211.0.0/22`; without an allow rule every probe fails and the whole service drains. Serverless NEG backends need no firewall work.
 
 ## Deploy
@@ -52,7 +52,7 @@ spec:
 planton apply -f health-check.yaml
 ```
 
-This creates the workhorse probe: an HTTP GET of `/healthz` against whatever port each backend actually serves on — the right default for serverless NEGs and most instance groups. A Stack Job tracks the provisioning in real time.
+This creates the workhorse probe: an HTTP GET of `/healthz` against whatever port each backend actually serves on — the right default for serverless NEGs and most instance groups. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,15 +85,15 @@ These are the most important decisions when configuring a health check. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -114,7 +114,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the check is created
-- [**GCP Backend Service**](/cloud-catalog/gcp-backend-service) -- consumes the check's `self_link` in its `healthCheck` field
-- [**GCP DNS Record**](/cloud-catalog/gcp-dns-record) -- consumes the check's `self_link` for health-checked DNS routing policies
-- [**GCP Region Network Endpoint Group**](/cloud-catalog/gcp-region-network-endpoint-group) -- serverless backends behind the same backend service manage their own health; the check covers the non-serverless tiers
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the check is created
+- [**GCP Backend Service**](/infra-catalog/gcp-backend-service) -- consumes the check's `self_link` in its `healthCheck` field
+- [**GCP DNS Record**](/infra-catalog/gcp-dns-record) -- consumes the check's `self_link` for health-checked DNS routing policies
+- [**GCP Region Network Endpoint Group**](/infra-catalog/gcp-region-network-endpoint-group) -- serverless backends behind the same backend service manage their own health; the check covers the non-serverless tiers

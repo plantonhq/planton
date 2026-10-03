@@ -14,7 +14,7 @@ Generated `variables.tf` mirrors the `DigitalOceanDatabaseUserSpec` proto: `clus
 
 ## Outputs
 
-Exactly the `DigitalOceanDatabaseUserStackOutputs` contract: `cluster_id`, `user_name`, `role`, and the secrets `password`, `access_cert`, `access_key` (Kafka only).
+Exactly the `DigitalOceanDatabaseUserOutputs` contract: `cluster_id`, `user_name`, `role`, and the secrets `password`, `access_cert`, `access_key` (Kafka only).
 
 ## Behavior notes
 

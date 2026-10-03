@@ -56,7 +56,7 @@ var _ = ginkgo.Describe("GcpHaVpnConnectionSpec", func() {
 		return &GcpHaVpnConnection{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpHaVpnConnection",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "hq",
 			},
 			Spec: &GcpHaVpnConnectionSpec{
@@ -175,26 +175,26 @@ var _ = ginkgo.Describe("GcpHaVpnConnectionSpec", func() {
 		}
 		t0.Labels = map[string]string{"tunnel": "primary"}
 		t0.BgpSession = &GcpHaVpnConnectionBgpSession{
-			Name:                        "hq-session-0",
-			InterfaceIpRange:            "169.254.10.1/30",
-			IpVersion:                   proto.String("IPV4"),
-			PeerAsn:                     65001,
-			PeerIpAddress:               proto.String("169.254.10.2"),
-			AdvertisedRoutePriority:     proto.Int32(100),
-			AdvertiseMode:               "CUSTOM",
-			AdvertisedGroups:            []string{"ALL_SUBNETS"},
-			AdvertisedIpRanges:          []*GcpHaVpnConnectionBgpAdvertisedIpRange{{Range: "10.10.0.0/16", Description: "shared"}},
-			Enable:                      proto.Bool(true),
-			EnableIpv4:                  proto.Bool(true),
-			EnableIpv6:                  false,
-			CustomLearnedIpRanges:       []*GcpHaVpnConnectionBgpCustomLearnedIpRange{{Range: "192.168.50.0/24"}},
-			CustomLearnedRoutePriority:  proto.Int32(0),
-			Bfd:                         &GcpHaVpnConnectionBgpBfd{SessionInitializationMode: "ACTIVE", MinReceiveInterval: 1000, MinTransmitInterval: 1000, Multiplier: 5},
-			Md5AuthenticationKey:        &GcpHaVpnConnectionBgpMd5AuthenticationKey{Name: "hq-key-0", Key: "s3cret"},
-			ImportPolicies:              []string{"accept-hq"},
-			ExportPolicies:              []string{"export-shared"},
-			Ipv4NexthopAddress:          proto.String("169.254.10.1"),
-			PeerIpv4NexthopAddress:      proto.String("169.254.10.2"),
+			Name:                       "hq-session-0",
+			InterfaceIpRange:           "169.254.10.1/30",
+			IpVersion:                  proto.String("IPV4"),
+			PeerAsn:                    65001,
+			PeerIpAddress:              proto.String("169.254.10.2"),
+			AdvertisedRoutePriority:    proto.Int32(100),
+			AdvertiseMode:              "CUSTOM",
+			AdvertisedGroups:           []string{"ALL_SUBNETS"},
+			AdvertisedIpRanges:         []*GcpHaVpnConnectionBgpAdvertisedIpRange{{Range: "10.10.0.0/16", Description: "shared"}},
+			Enable:                     proto.Bool(true),
+			EnableIpv4:                 proto.Bool(true),
+			EnableIpv6:                 false,
+			CustomLearnedIpRanges:      []*GcpHaVpnConnectionBgpCustomLearnedIpRange{{Range: "192.168.50.0/24"}},
+			CustomLearnedRoutePriority: proto.Int32(0),
+			Bfd:                        &GcpHaVpnConnectionBgpBfd{SessionInitializationMode: "ACTIVE", MinReceiveInterval: 1000, MinTransmitInterval: 1000, Multiplier: 5},
+			Md5AuthenticationKey:       &GcpHaVpnConnectionBgpMd5AuthenticationKey{Name: "hq-key-0", Key: "s3cret"},
+			ImportPolicies:             []string{"accept-hq"},
+			ExportPolicies:             []string{"export-shared"},
+			Ipv4NexthopAddress:         proto.String("169.254.10.1"),
+			PeerIpv4NexthopAddress:     proto.String("169.254.10.2"),
 		}
 		gomega.Expect(validator.Validate(target)).To(gomega.Succeed())
 	})

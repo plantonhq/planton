@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.aws.awsekscluster.v1alpha1;
 
-// AwsEksClusterStackOutputs describes the values returned after provisioning an AWS EKS cluster.
-message AwsEksClusterStackOutputs {
+// AwsEksClusterOutputs describes the values returned after provisioning an AWS EKS cluster.
+message AwsEksClusterOutputs {
   // endpoint is the URL of the Kubernetes API server for the EKS cluster.
   string endpoint = 1;
 

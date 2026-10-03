@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpcloudrundomainmapping.v1alpha1;
 
-// GcpCloudRunDomainMappingStackOutputs captures the observable results of
+// GcpCloudRunDomainMappingOutputs captures the observable results of
 // a deployed domain mapping — above all the DNS records the domain's zone
 // must publish for the mapping to actually serve.
-message GcpCloudRunDomainMappingStackOutputs {
+message GcpCloudRunDomainMappingOutputs {
   // The mapped domain (the mapping's name in GCP) — the join key
   // consumers and verifiers address the mapping by.
   string domain = 1;

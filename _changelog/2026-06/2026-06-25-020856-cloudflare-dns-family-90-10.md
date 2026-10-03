@@ -16,7 +16,7 @@ real v5 provider.
 
 ## Problem Statement / Motivation
 
-After the v5 correctness migration, the DNS components were deployable but shallow: the record
+After the v5 correctness migration, the DNS kinds were deployable but shallow: the record
 exposed only 8 of 21 record types, no structured `data`, no `tags`/`settings`, and a mislabeled
 `hostname` output; the zone carried two fields that do not exist in the v5 zone resource
 (`plan`, `default_proxied`) and omitted `type`, vanity name servers, DNS settings, and DNSSEC.
@@ -24,7 +24,7 @@ exposed only 8 of 21 record types, no structured `data`, no `tags`/`settings`, a
 ### Pain Points
 
 - Structured record types (SRV, CAA, DS, TLSA, HTTPS, ...) could not be expressed at all.
-- The record's `hostname` stack-output field name didn't match the value it carried (v5 `name`).
+- The record's `hostname` output field name didn't match the value it carried (v5 `name`).
 - The zone spec advertised a `plan` enum that v5 treats as a deprecated/computed attribute.
 - DNSSEC — whose DS material users must copy to a registrar — had no representation.
 
@@ -93,7 +93,7 @@ These are deliberate on this pre-1.0 surface.
 ## Testing Strategy
 
 - `make protos` (incl. the Java-stub compile gate) and full `go build ./apis/...`.
-- Component spec tests for every new field/enum/CEL path on both kinds; `pkg/outputs`
+- Kind spec tests for every new field/enum/CEL path on both kinds; `pkg/outputs`
   conformance and `pkg/secretcoverage` green.
 - Live `tofu plan` against the real Cloudflare v5 provider for A, SRV, and CAA records and for a
   full zone (zone + dns_settings with SOA/nameservers + dnssec + records). Live `tofu apply` is

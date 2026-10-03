@@ -9,7 +9,7 @@ provider.tf   — Cloudflare provider configuration
 variables.tf  — Input variables mirroring CloudflareEmailRoutingAddressSpec
 locals.tf     — Resource naming
 main.tf       — cloudflare_email_routing_address resource
-outputs.tf    — Stack outputs (address_id, email, verified, created)
+outputs.tf    — outputs (address_id, email, verified, created)
 ```
 
 ## Usage

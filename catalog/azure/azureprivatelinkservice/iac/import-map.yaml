@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azureprivatelinkservice
 spec:
@@ -9,7 +9,7 @@ spec:
   values:
     - name: private_link_service_id
       derivations:
-        - from_stack_output: private_link_service_id
+        - from_output: private_link_service_id
       where_to_find: >-
         Portal -> Private Link Services -> the service -> Properties ->
         Resource ID, or `az network private-link-service show -g <rg>

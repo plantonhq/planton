@@ -12,10 +12,10 @@
 
 ## Prove it
 
-1. `make -C site build`: the pricing guard, the apex guard, lint at zero warnings, typecheck, the export, the link gate, the llms generator's coverage. Green or nothing ships. (After deleting route or component folders, `rm -rf .next/types` first; a failed build also stops before the bundle copy, so never capture after a red build.)
+1. `make -C site build`: the pricing guard, the apex guard, lint at zero warnings, typecheck, the export, the link gate, the llms generator's coverage. Green or nothing ships. (After deleting route or kind folders, `rm -rf .next/types` first; a failed build also stops before the bundle copy, so never capture after a red build.)
 2. Captures. Before touching anything, `make capture OUT=/tmp/<slice>-before` from the branch tip's build. After, `make capture OUT=/tmp/<slice>-after COMPARE=/tmp/<slice>-before`. A change meant to be zero-visual is proven by every scene identical; a change meant to be seen is proven by exactly the intended scenes differing and every other scene identical, with the diff images read.
 3. The independent design reviewer (`.cursor/agents/design-reviewer.md` in the company repository): the captures at 1280 and 1680 and on the phone, the law, the reference board (`content/design-review/reference-board/`), the page's first-glance question, and the named visitor. Rounds until PASS. Minors that stand after PASS are recorded with their owners.
-4. Grep gates on the diff: no vendor name, no savings figure, no "compliant", no hex in new components, no sentence from the story's last chapter in a page export, and none of the words the handoff says the page must not claim.
+4. Grep gates on the diff: no vendor name, no savings figure, no "compliant", no hex in new kinds, no sentence from the story's last chapter in a page export, and none of the words the handoff says the page must not claim.
 
 ## Leave the record
 

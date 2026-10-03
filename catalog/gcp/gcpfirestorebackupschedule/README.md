@@ -64,7 +64,7 @@ This schedules daily backups, keeping each for 7 days, in the provider's default
 | `projectId` | `StringValueOrRef` | provider default | GCP project owning the database. |
 | `deletionPolicy` | `string` | `DELETE` | `DELETE`, `PREVENT` (destroy fails — protects a compliance-mandated cadence), or `ABANDON` (unmanage; backups keep being taken). |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -78,7 +78,7 @@ This schedules daily backups, keeping each for 7 days, in the provider's default
 - **Backups outlive the schedule**: deleting this resource stops future backups but never deletes existing ones — they age out per their retention.
 - **No labels surface**: Firestore backup schedules do not support GCP labels — both engines skip labels identically.
 
-## Related Components
+## Related Kinds
 
 - [GcpFirestoreDatabase](/docs/catalog/gcp/gcpfirestoredatabase) — the database this schedule protects
 - [GcpProject](/docs/catalog/gcp/gcpproject) — the project the database lives in

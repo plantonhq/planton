@@ -4,7 +4,7 @@ Deploys the Apache Spark Kubernetes Operator -- the official ASF controller that
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **The spark.apache.org CRDs** -- `sparkapplications` and `sparkclusters`, installed by Helm from the chart's `crds/` directory: installed once, never upgraded on chart bumps (apply the new release's CRD files manually when a bump changes them), and left on the cluster on uninstall -- the keep-on-uninstall posture this catalog wants for workload-bearing CRDs
@@ -19,7 +19,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -61,11 +61,11 @@ spec:
 planton apply -f spark-operator.yaml
 ```
 
-This deploys the operator with a warm standby behind leader election in the `spark-operator` namespace, fenced to the `data-pipelines` and `ml-jobs` namespaces: the chart creates both, plants the `spark` service account and a namespace-scoped Role in each, and the operator watches ONLY that list. A Stack Job tracks the provisioning in real time.
+This deploys the operator with a warm standby behind leader election in the `spark-operator` namespace, fenced to the `data-pipelines` and `ml-jobs` namespaces: the chart creates both, plants the `spark` service account and a namespace-scoped Role in each, and the operator watches ONLY that list. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the operator to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the operator to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -103,15 +103,15 @@ These are the most important decisions when configuring the Spark Operator. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | Kubernetes Namespace | `spec.namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -130,6 +130,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the namespace for the operator install
-- [**Apache Airflow**](/cloud-catalog/kubernetes-airflow) -- the typical orchestrator submitting `SparkApplication` objects per pipeline run against this operator
-- [**Kubernetes Manifest**](/cloud-catalog/kubernetes-manifest) -- declares standing `SparkApplication` or `SparkCluster` objects outside an orchestrator
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the namespace for the operator install
+- [**Apache Airflow**](/infra-catalog/kubernetes-airflow) -- the typical orchestrator submitting `SparkApplication` objects per pipeline run against this operator
+- [**Kubernetes Manifest**](/infra-catalog/kubernetes-manifest) -- declares standing `SparkApplication` or `SparkCluster` objects outside an orchestrator

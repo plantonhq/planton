@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added native kustomize OpenAPI schema generation to the Planton CLI. A new `planton kustomize` command group uses proto reflection to discover all cloud resource kinds with list fields that need merge-by-name behavior, generates a universal schema JSON, and can initialize `_kustomize/` directories with the schema and `openapi:` references in overlay kustomization.yaml files.
+Added native kustomize OpenAPI schema generation to the Planton CLI. A new `planton kustomize` command group uses proto reflection to discover all catalog kinds with list fields that need merge-by-name behavior, generates a universal schema JSON, and can initialize `_kustomize/` directories with the schema and `openapi:` references in overlay kustomization.yaml files.
 
 ## Problem Statement / Motivation
 
@@ -23,7 +23,7 @@ Kustomize uses strategic merge patch for overlays. For built-in Kubernetes types
 
 ### `planton kustomize schema`
 
-Generates a single universal OpenAPI schema covering all 360+ cloud resource kinds. Only kinds with merge-worthy fields (repeated message fields with a `name` merge key) produce entries. Zero arguments -- one command, one file.
+Generates a single universal OpenAPI schema covering all 360+ catalog kinds. Only kinds with merge-worthy fields (repeated message fields with a `name` merge key) produce entries. Zero arguments -- one command, one file.
 
 ```bash
 planton kustomize schema                    # stdout
@@ -43,8 +43,8 @@ planton kustomize init --scan ./product              # scan tree
 
 ```mermaid
 flowchart TB
-    A[crkreflect.KindsList] --> B[For each kind]
-    B --> C[crkreflect.NewInstance]
+    A[catalogkindreflect.KindsList] --> B[For each kind]
+    B --> C[catalogkindreflect.NewInstance]
     C --> D[Get spec field descriptor]
     D --> E[findMergeFields recursive walk]
     E --> F{Repeated message?}
@@ -87,7 +87,7 @@ Non-Kubernetes kinds with merge fields are also included (e.g., AliCloud server 
 - **One universal schema** covering all kinds: no `--kind` flags, no kind detection in overlays, new kinds automatically covered on regeneration
 - **Only kinds with merge fields** produce entries: kinds without mergeable lists (e.g., `AwsVpc`) are naturally excluded
 - **Idempotent init**: schema always regenerated fresh, kustomization.yaml `openapi:` block only added once
-- **`//go:build !codegen` tag** on generator since it uses `crkreflect.NewInstance()` which depends on the generated `kind_map_gen.go`
+- **`//go:build !codegen` tag** on generator since it uses `catalogkindreflect.NewInstance()` which depends on the generated `kind_map_gen.go`
 
 ### Tests
 
@@ -104,7 +104,7 @@ Non-Kubernetes kinds with merge fields are also included (e.g., AliCloud server 
 
 - **Zero-argument schema generation**: `planton kustomize schema` -- no flags, no configuration
 - **One command fixes all overlays**: `planton kustomize init --scan ./product` initialized 29 services in 3 seconds
-- **Future-proof**: new cloud resource kinds automatically covered on regeneration
+- **Future-proof**: new catalog kinds automatically covered on regeneration
 - **Embeddable**: `pkg/kustomize/schema` and `pkg/kustomize/initializer` are importable Go packages (used by Planton CLI's `planton service kustomize patch-schema`)
 - **Self-documenting**: schema generated from the same proto descriptors the CLI validates against
 

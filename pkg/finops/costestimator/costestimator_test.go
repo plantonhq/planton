@@ -12,7 +12,7 @@ import (
 	rdsclusterv1 "github.com/plantonhq/planton/catalog/aws/awsrdscluster/v1alpha1"
 	rdsv1 "github.com/plantonhq/planton/catalog/aws/awsrdsinstance/v1alpha1"
 	wafv1 "github.com/plantonhq/planton/catalog/aws/awswafwebacl/v1alpha1"
-	derivationv1 "github.com/plantonhq/planton/finops/componentcostderivation/v1"
+	derivationv1 "github.com/plantonhq/planton/finops/catalogkindcostderivation/v1"
 	pricebookv1 "github.com/plantonhq/planton/finops/pricebook/v1"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
@@ -68,7 +68,7 @@ func TestStaticSlugHoursAndCounts(t *testing.T) {
 		Subnets:  []*foreignkeyv1.StringValueOrRef{{}, {}},
 		Internal: false,
 	}}
-	spec := &derivationv1.ComponentCostDerivationSpec{
+	spec := &derivationv1.CatalogKindCostDerivationSpec{
 		Currency:      "USD",
 		HoursPerMonth: 730,
 		Region:        &derivationv1.RegionBinding{FromField: "region", Assumption: "us-east-1"},
@@ -134,7 +134,7 @@ func TestSlugRegionAndCurrencyAgreement(t *testing.T) {
 		Region:   "eu-central-1",
 		Internal: true,
 	}}
-	spec := &derivationv1.ComponentCostDerivationSpec{
+	spec := &derivationv1.CatalogKindCostDerivationSpec{
 		Currency:      "USD",
 		HoursPerMonth: 730,
 		Region:        &derivationv1.RegionBinding{FromField: "region", Assumption: "us-east-1"},
@@ -208,7 +208,7 @@ func TestAttributeLookup(t *testing.T) {
 		}},
 		Basis: "one instance, billed every hour",
 	}
-	spec := &derivationv1.ComponentCostDerivationSpec{
+	spec := &derivationv1.CatalogKindCostDerivationSpec{
 		Currency:      "USD",
 		HoursPerMonth: 730,
 		Region:        &derivationv1.RegionBinding{FromField: "region"},
@@ -258,7 +258,7 @@ func TestRepeatedBindingPlurality(t *testing.T) {
 		InstanceTypes: []string{"m6i.large"},
 		Scaling:       &eksngv1.AwsEksNodeGroupScalingConfig{MinSize: 2, MaxSize: 5, DesiredSize: 2},
 	}}
-	spec := &derivationv1.ComponentCostDerivationSpec{
+	spec := &derivationv1.CatalogKindCostDerivationSpec{
 		Currency:      "USD",
 		HoursPerMonth: 730,
 		Region:        &derivationv1.RegionBinding{FromField: "region"},
@@ -301,7 +301,7 @@ func TestRepeatedBindingPlurality(t *testing.T) {
 // spot scale-to-zero shape (zero-quantity lines are omitted, honesty prose
 // still rides).
 func TestRefusalRulesAndZeroQuantity(t *testing.T) {
-	spec := &derivationv1.ComponentCostDerivationSpec{
+	spec := &derivationv1.CatalogKindCostDerivationSpec{
 		Currency:      "USD",
 		HoursPerMonth: 730,
 		Region:        &derivationv1.RegionBinding{FromField: "region", Assumption: "us-east-1"},
@@ -396,7 +396,7 @@ func TestReferencePresence(t *testing.T) {
 			ValueFrom: &foreignkeyv1.ValueFromRef{Name: "my-ec2-instance", FieldPath: "status.outputs.instance_id"},
 		},
 	}
-	spec := &derivationv1.ComponentCostDerivationSpec{
+	spec := &derivationv1.CatalogKindCostDerivationSpec{
 		Currency:      "USD",
 		HoursPerMonth: 730,
 		Region:        &derivationv1.RegionBinding{FromField: "region", Assumption: "us-east-1"},
@@ -451,7 +451,7 @@ func TestReferencePresence(t *testing.T) {
 	// A refusal rule keyed on the reference fires -- the honesty upgrade:
 	// a fact delegated to a referenced resource refuses instead of
 	// silently pricing without it.
-	refusing := &derivationv1.ComponentCostDerivationSpec{
+	refusing := &derivationv1.CatalogKindCostDerivationSpec{
 		Currency:      "USD",
 		HoursPerMonth: 730,
 		Region:        &derivationv1.RegionBinding{FromField: "region", Assumption: "us-east-1"},
@@ -474,7 +474,7 @@ func TestReferencePresence(t *testing.T) {
 // bases join) and the default_when_unset contract.
 func TestMergeAndDefaults(t *testing.T) {
 	manifest := &rdsv1.AwsRdsInstance{Spec: &rdsv1.AwsRdsInstanceSpec{Region: "us-west-2"}}
-	spec := &derivationv1.ComponentCostDerivationSpec{
+	spec := &derivationv1.CatalogKindCostDerivationSpec{
 		Currency:      "USD",
 		HoursPerMonth: 730,
 		Region:        &derivationv1.RegionBinding{FromField: "region"},
@@ -521,7 +521,7 @@ func TestMergeAndDefaults(t *testing.T) {
 // element whose class the book does not carry refuses the whole
 // estimate, and an empty list emits nothing.
 func TestExpandOverPerElementPricing(t *testing.T) {
-	spec := &derivationv1.ComponentCostDerivationSpec{
+	spec := &derivationv1.CatalogKindCostDerivationSpec{
 		Currency:      "USD",
 		HoursPerMonth: 730,
 		Region:        &derivationv1.RegionBinding{Assumption: "us-west-2"},
@@ -665,7 +665,7 @@ func TestAnyElementCondition(t *testing.T) {
 			},
 		}
 	}
-	spec := &derivationv1.ComponentCostDerivationSpec{
+	spec := &derivationv1.CatalogKindCostDerivationSpec{
 		Currency:      "USD",
 		HoursPerMonth: 730,
 		Region:        &derivationv1.RegionBinding{Assumption: "us-east-1"},
@@ -743,7 +743,7 @@ func TestSubtractBaseline(t *testing.T) {
 			SubtractBaseline: &derivationv1.SubtractBaseline{FieldPath: path, Baseline: baseline},
 		}}
 	}
-	spec := &derivationv1.ComponentCostDerivationSpec{
+	spec := &derivationv1.CatalogKindCostDerivationSpec{
 		Currency:      "USD",
 		HoursPerMonth: 730,
 		Region:        &derivationv1.RegionBinding{Assumption: "us-east-1"},
@@ -813,7 +813,7 @@ func TestSubtractBaseline(t *testing.T) {
 // composer-3.1.2 and every future patch), an unset field never matches,
 // and an empty prefix is a malformed derivation.
 func TestStartsWithCondition(t *testing.T) {
-	spec := &derivationv1.ComponentCostDerivationSpec{
+	spec := &derivationv1.CatalogKindCostDerivationSpec{
 		Currency:      "USD",
 		HoursPerMonth: 730,
 		Region:        &derivationv1.RegionBinding{Assumption: "us-west-2"},

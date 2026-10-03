@@ -4,7 +4,7 @@ Deploys an EventBridge rule with bundled targets that matches events by pattern 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **EventBridge Rule** -- an event rule attached to the specified bus (or the default bus), configured with either a JSON event pattern for event matching or a schedule expression (cron/rate) for time-based triggering
 - **EventBridge Targets** -- one target resource per entry in the `targets` list, each wired to the rule with its own ARN, optional IAM role, input transformation, retry policy, and dead letter configuration
@@ -14,15 +14,15 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **A custom event bus** (optional) -- required when attaching the rule to a custom bus rather than the default AWS event bus. Provide the bus name directly or reference an AwsEventBridgeBus Cloud Resource via ValueFromRef.
+- **A custom event bus** (optional) -- required when attaching the rule to a custom bus rather than the default AWS event bus. Provide the bus name directly or reference an AwsEventBridgeBus Infra Component via ValueFromRef.
 - **Target resources** -- at least one target (Lambda function, SQS queue, SNS topic, Step Functions state machine, etc.) must exist. Provide the target ARN directly or via ValueFromRef.
-- **An IAM role** (optional) -- required for targets where EventBridge must assume a role (Step Functions, ECS, Kinesis, Batch). Not needed for Lambda, SQS, or SNS targets that use resource-based policies. Provide the ARN directly or reference an AwsIamRole Cloud Resource via ValueFromRef.
-- **An SQS dead letter queue** (optional) -- required when configuring per-target dead letter queues. Provide the ARN directly or reference an AwsSqsQueue Cloud Resource via ValueFromRef.
+- **An IAM role** (optional) -- required for targets where EventBridge must assume a role (Step Functions, ECS, Kinesis, Batch). Not needed for Lambda, SQS, or SNS targets that use resource-based policies. Provide the ARN directly or reference an AwsIamRole Infra Component via ValueFromRef.
+- **An SQS dead letter queue** (optional) -- required when configuring per-target dead letter queues. Provide the ARN directly or reference an AwsSqsQueue Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -54,7 +54,7 @@ spec:
 planton apply -f event-rule.yaml
 ```
 
-This creates a schedule-based rule on the default event bus that triggers a Lambda function every hour. No input transformation, retry policy, or dead letter queue is configured. A Stack Job tracks the provisioning in real time.
+This creates a schedule-based rule on the default event bus that triggers a Lambda function every hour. No input transformation, retry policy, or dead letter queue is configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -100,7 +100,7 @@ These are the most important decisions when configuring an EventBridge rule. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -114,9 +114,9 @@ These are the most important decisions when configuring an EventBridge rule. Exp
 
 The target `arn` itself carries no default kind (the destination varies) — reference any resource's ARN output via `valueFrom`, e.g. an AwsLambda's `function_arn`, an AwsSqsQueue's `queue_arn`, an AwsKinesisStream's `stream_arn`, an AwsStepFunction's `state_machine_arn`, an AwsEcsCluster's `cluster_arn`, or an AwsBatchJobQueue's `job_queue_arn`.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -135,6 +135,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS EventBridge Bus**](/cloud-catalog/aws-event-bridge-bus) -- provides the custom event bus to attach the rule to
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- provides the invocation role for targets that require assumed credentials
-- [**AWS SQS Queue**](/cloud-catalog/aws-sqs-queue) -- provides dead letter queues for targets that need failed event capture
+- [**AWS EventBridge Bus**](/infra-catalog/aws-event-bridge-bus) -- provides the custom event bus to attach the rule to
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- provides the invocation role for targets that require assumed credentials
+- [**AWS SQS Queue**](/infra-catalog/aws-sqs-queue) -- provides dead letter queues for targets that need failed event capture

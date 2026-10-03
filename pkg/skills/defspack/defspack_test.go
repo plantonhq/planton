@@ -492,7 +492,7 @@ func TestExplodedLaneMirroredInReleaseWorkflow(t *testing.T) {
 // self-contained: the pack is collected from catalog/ by the frozen name
 // contract (reference pages, guides, indexes, graph, commons, patterns),
 // test fixtures are excluded, unrelated files are not swept in, and the
-// assembled entries land under components/ with catalog-relative paths.
+// assembled entries land under kinds/ with catalog-relative paths.
 func TestCatalogSkillAssemblesPack(t *testing.T) {
 	tree, err := LoadTree(writeTree(t, catalogFixtureTree()))
 	if err != nil {
@@ -513,22 +513,22 @@ func TestCatalogSkillAssemblesPack(t *testing.T) {
 	}
 
 	wantPresent := []string{
-		"components/_docs/reference-commons.md",
-		"components/_docs/reference-index.md",
-		"components/_docs/reference-graph.yaml",
-		"components/_docs/GUIDE.md",
-		"components/_patterns/observability.md",
-		"components/aws/reference-index.md",
-		"components/aws/awsvpc/v1alpha1/reference.md",
-		"components/aws/awsvpc/GUIDE.md",
-		// The fact-sheet layer: per-component sidecars by name, the
+		"kinds/_docs/reference-commons.md",
+		"kinds/_docs/reference-index.md",
+		"kinds/_docs/reference-graph.yaml",
+		"kinds/_docs/GUIDE.md",
+		"kinds/_patterns/observability.md",
+		"kinds/aws/reference-index.md",
+		"kinds/aws/awsvpc/v1alpha1/reference.md",
+		"kinds/aws/awsvpc/GUIDE.md",
+		// The fact-sheet layer: per-kind sidecars by name, the
 		// central estimates and compliance trees by path.
-		"components/aws/awsvpc/cost.yaml",
-		"components/aws/awsvpc/controls.yaml",
-		"components/aws/awsvpc/iac/permissions.yaml",
-		"components/_pricing/estimates/awsvpc.yaml",
-		"components/_compliance/controls-catalog.yaml",
-		"components/_compliance/frameworks/cis-aws.yaml",
+		"kinds/aws/awsvpc/cost.yaml",
+		"kinds/aws/awsvpc/controls.yaml",
+		"kinds/aws/awsvpc/iac/permissions.yaml",
+		"kinds/_pricing/estimates/awsvpc.yaml",
+		"kinds/_compliance/controls-catalog.yaml",
+		"kinds/_compliance/frameworks/cis-aws.yaml",
 	}
 	for _, path := range wantPresent {
 		if _, ok := catalogSkill.PackFiles[path]; !ok {
@@ -536,15 +536,15 @@ func TestCatalogSkillAssemblesPack(t *testing.T) {
 		}
 	}
 	wantAbsent := []string{
-		"components/aws/awsvpc/v1alpha1/spec.proto", // not a pack file name
-		"components/_test/fake/v1alpha1/reference.md",
-		"components/aws/awsvpc/README.md",
+		"kinds/aws/awsvpc/v1alpha1/spec.proto", // not a pack file name
+		"kinds/_test/fake/v1alpha1/reference.md",
+		"kinds/aws/awsvpc/README.md",
 		// Pricing-pipeline machinery never ships: agents read estimates,
 		// engines read models/derivations/books.
-		"components/_pricing/models/awsvpc.yaml",
-		"components/_pricing/pricebook/aws.yaml",
-		"components/_pricing/derivations/awsvpc.yaml",
-		"components/_compliance/README.md", // central trees ship .yaml documents only
+		"kinds/_pricing/models/awsvpc.yaml",
+		"kinds/_pricing/pricebook/aws.yaml",
+		"kinds/_pricing/derivations/awsvpc.yaml",
+		"kinds/_compliance/README.md", // central trees ship .yaml documents only
 	}
 	for _, path := range wantAbsent {
 		if _, ok := catalogSkill.PackFiles[path]; ok {
@@ -582,7 +582,7 @@ func TestCatalogSkillAssemblesPack(t *testing.T) {
 
 // TestStripPackFilesGatesPackaging pins the shipping gate: packaging
 // without -embed-catalog-pack (the release lanes pass it) produces a
-// catalog archive with no components/ entries, while the assembled build
+// catalog archive with no kinds/ entries, while the assembled build
 // carries them. Validation always sees the pack either way (the strip
 // happens after Validate).
 func TestStripPackFilesGatesPackaging(t *testing.T) {
@@ -650,11 +650,11 @@ func TestValidateCatchesBrokenPacks(t *testing.T) {
 			wantErr: "missing its root marker",
 		},
 		{
-			name: "no component reference pages",
+			name: "no kind reference pages",
 			mutate: func(files map[string]string) {
 				delete(files, "catalog/aws/awsvpc/v1alpha1/reference.md")
 			},
-			wantErr: "no component reference pages",
+			wantErr: "no kind reference pages",
 		},
 		{
 			name: "pack file is empty",
@@ -733,15 +733,15 @@ func validFixtureTree() map[string]string {
 
 // catalogFixtureTree is validFixtureTree plus a minimal catalog skill and
 // a miniature catalog/ tree exercising every selection rule: the _docs
-// root files, a patterns page, a provider index, a component reference
-// page with authored wisdom, the component's fact-sheet sidecars, the
+// root files, a patterns page, a provider index, a kind reference
+// page with authored wisdom, the kind's fact-sheet sidecars, the
 // central estimates and compliance documents, the pricing-machinery
 // siblings that must be ignored, a non-pack file that must be ignored,
 // and a _test fixture that must be excluded.
 func catalogFixtureTree() map[string]string {
 	files := validFixtureTree()
 	files["skills/multi-cloud-catalog/SKILL.md"] = "---\nname: multi-cloud-catalog\ndescription: Research the catalog pack.\n---\n\n# Catalog\n\nRead `references/pack-layout.md` first.\n"
-	files["skills/multi-cloud-catalog/references/pack-layout.md"] = "The pack lives in components/.\n"
+	files["skills/multi-cloud-catalog/references/pack-layout.md"] = "The pack lives in kinds/.\n"
 	files["catalog/_docs/reference-commons.md"] = "The manifest grammar.\n"
 	files["catalog/_docs/reference-index.md"] = "| provider | kinds |\n"
 	files["catalog/_docs/reference-graph.yaml"] = "edges: []\n"

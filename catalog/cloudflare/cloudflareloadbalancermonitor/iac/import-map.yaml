@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflareloadbalancermonitor
 spec:
@@ -15,7 +15,7 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: monitor_id
       derivations:
-        - from_stack_output: monitor_id
+        - from_output: monitor_id
       where_to_find: >-
         Cloudflare dashboard -> Traffic -> Load Balancing -> Monitors
         (open the monitor; the id is in the URL), or

@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetessecret
 spec:
@@ -8,13 +8,13 @@ spec:
   values:
     - name: secret_name
       derivations:
-        - from_stack_output: secret_name
+        - from_output: secret_name
         - from_spec_field: name
       where_to_find: >-
         `kubectl get secrets -A` (NAME column).
     - name: secret_namespace
       derivations:
-        - from_stack_output: secret_namespace
+        - from_output: secret_namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `kubectl get secrets -A` (NAMESPACE column); "default" when the spec

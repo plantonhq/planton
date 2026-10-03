@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsecrregistrysettings.v1alpha1;
 
-// AwsEcrRegistrySettingsStackOutputs captures the observable state of
+// AwsEcrRegistrySettingsOutputs captures the observable state of
 // the registry configuration after apply.
-message AwsEcrRegistrySettingsStackOutputs {
+message AwsEcrRegistrySettingsOutputs {
   // The registry id - the account's 12-digit id, and the import ID
   // for the policy/scanning/replication singletons.
   string registry_id = 1;

@@ -27,7 +27,7 @@ export default function S06Solution(_props: SlideComponentProps) {
         <Card className="text-center">
           <div className="text-3xl mb-2">📐</div>
           <CardTitle className="!text-sm sm:!text-base mb-1">Protobuf-Modeled</CardTitle>
-          <CardText>370+ cloud resource kinds structured with Protocol Buffers. AI excels at working with structured data.</CardText>
+          <CardText>370+ catalog kinds structured with Protocol Buffers. AI excels at working with structured data.</CardText>
         </Card>
         <Card className="text-center">
           <div className="text-3xl mb-2">🔧</div>

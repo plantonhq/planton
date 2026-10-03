@@ -53,7 +53,7 @@ The module always sends `rule_settings` (an empty object when you configure noth
 | `schedule` | message | `mon`..`sun` time-interval strings plus `time_zone`. |
 | `rule_settings` | message | Action-specific settings. Always emitted (empty object when unset). `dns_resolvers.ipv4[].vnet_id` / `ipv6[].vnet_id` reference a `CloudflareZeroTrustTunnelVirtualNetwork`. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

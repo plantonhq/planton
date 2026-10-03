@@ -17,7 +17,7 @@ Prior to this change, the Temporal Kubernetes frontend was exposed exclusively t
 - **No TLS support for HTTP**: The HTTP port on the LoadBalancer had no certificate management, requiring users to manually configure TLS or accept insecure connections
 - **Single hostname limitation**: Both gRPC and HTTP traffic shared the same DNS hostname pointing to the LoadBalancer IP, making it impossible to route them through different ingress mechanisms
 - **Limited ingress capabilities**: LoadBalancer services lack the advanced routing, header manipulation, and policy features available through Gateway API
-- **Inconsistent with UI pattern**: The Web UI already used Gateway API with proper certificate management, creating inconsistency in how different Temporal components were exposed
+- **Inconsistent with UI pattern**: The Web UI already used Gateway API with proper certificate management, creating inconsistency in how different Temporal kinds were exposed
 - **Certificate management complexity**: Users had to manually provision and rotate certificates for HTTP endpoints
 
 ## Solution / What's New
@@ -313,7 +313,7 @@ _, err = gatewayv1.NewHTTPRoute(ctx,
 Updated to provision HTTP ingress after gRPC ingress:
 
 ```go
-func Resources(ctx *pulumi.Context, stackInput *temporalkubernetesv1.TemporalKubernetesStackInput) error {
+func Resources(ctx *pulumi.Context, iacInput *temporalkubernetesv1.TemporalKubernetesIacInput) error {
     // ... namespace, secrets, helm chart ...
 
     // gRPC LoadBalancer (existing, refined)

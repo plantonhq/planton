@@ -5,9 +5,9 @@ package dev.planton.aws.awsbedrockprovisionedthroughput.v1alpha1;
 import "catalog/aws/awsbedrockprovisionedthroughput/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsBedrockProvisionedThroughputStackInput is the input for the IaC
+// AwsBedrockProvisionedThroughputIacInput is the input for the IaC
 // modules that deploy the Bedrock provisioned throughput.
-message AwsBedrockProvisionedThroughputStackInput {
+message AwsBedrockProvisionedThroughputIacInput {
   // target is the AwsBedrockProvisionedThroughput resource to deploy.
   AwsBedrockProvisionedThroughput target = 1;
   // provider_config contains the AWS provider credentials and configuration.

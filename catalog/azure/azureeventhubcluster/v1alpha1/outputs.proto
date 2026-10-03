@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azureeventhubcluster.v1alpha1;
 
-// **AzureEventHubClusterStackOutputs** captures the outputs of
+// **AzureEventHubClusterOutputs** captures the outputs of
 // provisioning a dedicated Event Hubs cluster.
-message AzureEventHubClusterStackOutputs {
+message AzureEventHubClusterOutputs {
   // The Azure Resource Manager ID of the cluster -- what an
   // AzureEventHubNamespace's dedicated_cluster_id references to place
   // the namespace on this cluster.

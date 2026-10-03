@@ -146,7 +146,7 @@ export const COMPARE: ComparePage = {
     {
       // Chapter 5
       question: 'Is it a set of operators reconciling my cluster?',
-      answer: 'No. Nothing runs in your cluster watching your resources. Every change is one stack job: it plans, pauses at the gates you set, applies from a runner in your own network, and is kept and queryable with the exact configuration embedded. A control loop cannot naturally pause between the plan and the apply; a job can, and that pause is where your approvals live. The trade is that nothing self-heals: a job runs when a person, a push, or an agent asks.',
+      answer: 'No. Nothing runs in your cluster watching your resources. Every change is one infra job: it plans, pauses at the gates you set, applies from a runner in your own network, and is kept and queryable with the exact configuration embedded. A control loop cannot naturally pause between the plan and the apply; a job can, and that pause is where your approvals live. The trade is that nothing self-heals: a job runs when a person, a push, or an agent asks.',
       readMore: '/trust/the-record',
     },
   ],

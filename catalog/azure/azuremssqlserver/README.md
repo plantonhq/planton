@@ -63,7 +63,7 @@ contract:
 `minimum_tls_version` cannot be removed once set, and the password
 cannot change while Entra-only auth is on.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

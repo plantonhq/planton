@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpplantonrunner
+    e2e-catalog-kind: gcpplantonrunner
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-required-env: PLANTON_E2E_RUNNER_TOKEN

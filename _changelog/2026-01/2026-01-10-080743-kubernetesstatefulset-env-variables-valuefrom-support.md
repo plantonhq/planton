@@ -169,7 +169,7 @@ After making changes, run:
 # 1. Regenerate proto stubs
 make protos
 
-# 2. Run component-specific tests
+# 2. Run kind-specific tests
 go test ./apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/...
 
 # 3. Full build
@@ -194,14 +194,14 @@ make test
 - No breaking changes to existing deployments
 
 ### Developers
-- Pattern consistent with `KubernetesDeployment` and AWS provider components
+- Pattern consistent with `KubernetesDeployment` and AWS provider kinds
 - All tests updated and passing
 
 ## Related Work
 
 - **KubernetesDeployment**: Same change applied (2026-01-10)
 - **Shared type**: Uses `StringValueOrRef` from `apis/dev/planton/shared/foreignkey/v1/foreign_key.proto`
-- **AWS components**: Pattern already used in `AwsAlb`, `AwsEcsService`, etc.
+- **AWS kinds**: Pattern already used in `AwsAlb`, `AwsEcsService`, etc.
 
 ---
 

@@ -86,7 +86,7 @@ src/app/(micro-apps)/invest/
 
 ### Hash Navigation
 
-The orchestrator component handles URL hash for shareable slides:
+The orchestrator kind handles URL hash for shareable slides:
 
 ```typescript
 // Get initial slide from URL hash
@@ -138,9 +138,9 @@ export const colors = {
 };
 ```
 
-### Key Components Created
+### Key Kinds Created
 
-1. **`shared.tsx`**: Full design system with `Slide`, `SlideTitle`, `Card`, `Metric`, `Badge`, `Grid`, `Callout`, `TeamMember`, `CustomerCard`, `RoadmapItem`, `FundsItem`, `ComparisonRow` components
+1. **`shared.tsx`**: Full design system with `Slide`, `SlideTitle`, `Card`, `Metric`, `Badge`, `Grid`, `Callout`, `TeamMember`, `CustomerCard`, `RoadmapItem`, `FundsItem`, `ComparisonRow` kinds
 
 2. **`SlideComparison.tsx`**: Competitive comparison table with checkmarks, warnings, and X icons for feature comparison
 
@@ -169,7 +169,7 @@ export const colors = {
 
 ### Maintainability
 - **Version history**: v1 preserved at `/invest/v1`
-- **Component reuse**: Shared design system across slides
+- **Kind reuse**: Shared design system across slides
 - **Type safety**: Full TypeScript throughout
 
 ## Impact

@@ -19,7 +19,7 @@ A record is either **simple** (its value is a presentation-format string in `con
 
 ## Prerequisites
 
-1. **Cloudflare DNS Zone**: an existing zone where records will be created (use the CloudflareDnsZone component)
+1. **Cloudflare DNS Zone**: an existing zone where records will be created (use the CloudflareDnsZone kind)
 2. **Zone ID**: the Cloudflare Zone ID (from CloudflareDnsZone outputs or the dashboard)
 3. **API Token**: a Cloudflare API token with `DNS:Edit`
 4. **Planton CLI**: install from [planton.dev](https://planton.dev)
@@ -168,7 +168,7 @@ Only A, AAAA, and CNAME records can be proxied.
 
 ## Terraform and Pulumi
 
-This component supports both Pulumi (default) and Terraform, producing identical infrastructure:
+This kind supports both Pulumi (default) and Terraform, producing identical infrastructure:
 
 - **Pulumi**: `iac/pulumi/` — Go-based implementation
 - **Terraform**: `iac/tf/` — HCL-based implementation
@@ -180,7 +180,7 @@ This component supports both Pulumi (default) and Terraform, producing identical
 
 ## License
 
-This component is part of Planton and follows the same license.
+This kind is part of Planton and follows the same license.
 
 ---
 

@@ -17,7 +17,7 @@ spec:
   # IDEMPOTENCY phase): the AWS depth waves burned down the perpetual-diff
   # classes (presence-typed sends, always-send explicit-false heals), and
   # this gate holds that re-apply-is-a-no-op contract mechanically for the
-  # component under test. It is also the standing guard for plan-time
+  # kind under test. It is also the standing guard for plan-time
   # replacement churn (e.g. re-minted marketplace offer tokens must ride an
   # ignore-changes guard or every re-apply replaces the agreement).
   assert_apply_idempotency: true

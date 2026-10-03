@@ -50,7 +50,7 @@ func flexibleLinux() *AzureVirtualMachineScaleSet {
 	return &AzureVirtualMachineScaleSet{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureVirtualMachineScaleSet",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-vmss",
 		},
 		Spec: &AzureVirtualMachineScaleSetSpec{

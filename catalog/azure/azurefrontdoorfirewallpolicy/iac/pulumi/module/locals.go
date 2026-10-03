@@ -5,7 +5,7 @@ import (
 
 	azurefrontdoorfirewallpolicyv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurefrontdoorfirewallpolicy/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -14,7 +14,7 @@ type Locals struct {
 	ResourceGroupName            string
 	AzureTags                    map[string]string
 	// SkuName is ARM's tier value, materialized from the spec enum with
-	// the documented STANDARD default (stack inputs never carry proto
+	// the documented STANDARD default (IaC inputs never carry proto
 	// defaults).
 	SkuName string
 	// IsPremium gates the Premium-only policy settings (the
@@ -150,16 +150,16 @@ var scrubbingMatchVariableStrings = map[azurefrontdoorfirewallpolicyv1alpha1.Azu
 	azurefrontdoorfirewallpolicyv1alpha1.AzureFrontDoorFirewallPolicyScrubbingMatchVariable_SCRUB_REQUEST_URI:                 "RequestUri",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurefrontdoorfirewallpolicyv1alpha1.AzureFrontDoorFirewallPolicyStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurefrontdoorfirewallpolicyv1alpha1.AzureFrontDoorFirewallPolicyIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureFrontDoorFirewallPolicy = stackInput.Target
-	target := stackInput.Target
+	locals.AzureFrontDoorFirewallPolicy = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
 	// Materialize the tier default: unspecified deploys STANDARD (the
-	// spec's documented default -- stack inputs never carry proto
+	// spec's documented default -- IaC inputs never carry proto
 	// defaults).
 	locals.SkuName = skuStrings[target.Spec.Sku]
 	if locals.SkuName == "" {
@@ -174,7 +174,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurefrontdoorfirewallpol
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureFrontDoorFirewallPolicy.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureFrontDoorFirewallPolicy.String()),
 	}
 
 	if target.Metadata.Id != "" {

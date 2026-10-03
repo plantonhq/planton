@@ -4,10 +4,10 @@ package dev.planton.stripe.stripewebhookendpoint.v1alpha1;
 
 import "shared/options/options.proto";
 
-// StripeWebhookEndpointStackOutputs identifies the endpoint and carries its signing secret.
+// StripeWebhookEndpointOutputs identifies the endpoint and carries its signing secret.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/webhook_endpoint
-message StripeWebhookEndpointStackOutputs {
+message StripeWebhookEndpointOutputs {
   // id is the endpoint's Stripe id (we_...).
   string id = 1;
 

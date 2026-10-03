@@ -4,7 +4,7 @@ Deploys a Model Garden or Hugging Face model to a Vertex AI endpoint in one step
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project (never disabled on destroy)
 - **Model, endpoint, and deployment** -- a `vertex_ai_endpoint_with_model_garden_deployment`: the uploaded Model, the Endpoint, and the DeployedModel on it
@@ -73,7 +73,7 @@ planton apply -f model-garden-deployment.yaml
 - A reservation affinity carries `key` and `values` when (and only when) its type is `SPECIFIC_RESERVATION`.
 - Each probe has exactly one handler and a timeout no longer than its period.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -104,7 +104,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpVertexAiEndpoint** -- an endpoint created on its own, for models deployed through the Vertex AI API
 - **GcpVertexAiAgentEngine** -- an agent that calls the deployed model

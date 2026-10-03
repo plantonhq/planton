@@ -44,7 +44,7 @@ not a limitation to work around.
 
 None — this preset deploys as-is.
 
-## Related Components
+## Related Kinds
 
 - **KubernetesMongodb** — the databases this operator reconciles, one
   resource per MongoDB cluster, declared in the watched namespace

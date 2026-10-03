@@ -1,5 +1,5 @@
 variable "metadata" {
-  description = "Cloud resource metadata"
+  description = "Catalog object metadata"
   type = object({
     name        = string
     id          = optional(string, "")
@@ -577,7 +577,7 @@ variable "spec" {
           # The BigQuery connection whose service account writes the bucket -- a
           # GcpBigQueryConnection reference (its name output, which the modules
           # convert to Google's {project}.{location}.{connection_id} form) or a
-          # literal in the dotted form. Use a cloud_resource connection and grant
+          # literal in the dotted form. Use an infra_component connection and grant
           # its service account storage access on the bucket.
           # Accepts a literal value or a reference in the manifest; the CLI resolves it to a plain string before the module runs.
           connection_name = string

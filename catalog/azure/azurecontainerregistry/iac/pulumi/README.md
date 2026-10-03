@@ -18,7 +18,7 @@ The SKU is the registry's feature gate; the Premium-only fields
 enforced at spec validation, mirroring ARM's own gates, so the module
 receives only deployable shapes. An unset `sku` deploys the STANDARD
 baseline, and the true-default optional bools (`public_network_access_enabled`,
-`export_policy_enabled`) are presence-guarded so stack-input paths that
+`export_policy_enabled`) are presence-guarded so iac-input paths that
 bypass the manifest loader deploy identically on both engines.
 
 Lifecycle notes worth knowing before operating this resource: name and
@@ -43,7 +43,7 @@ key's vault before the registry is created.
 
 ## Inputs
 
-The module receives an `AzureContainerRegistryStackInput` containing:
+The module receives an `AzureContainerRegistryIacInput` containing:
 
 - `target.spec.region` / `target.spec.resource_group` / `target.spec.registry_name` -- the registry's ARM identity (references resolved to literals by the platform; the name becomes `{name}.azurecr.io`)
 - `target.spec.sku` -- BASIC / STANDARD / PREMIUM; unset applies the STANDARD baseline

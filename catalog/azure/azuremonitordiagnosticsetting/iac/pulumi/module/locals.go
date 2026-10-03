@@ -18,8 +18,8 @@ var destinationTypeStrings = map[azuremonitordiagnosticsettingv1alpha1.AzureMoni
 
 // The diagnostic setting carries no tags (the ARM extension resource does
 // not support them), so locals stay minimal.
-func initializeLocals(ctx *pulumi.Context, stackInput *azuremonitordiagnosticsettingv1alpha1.AzureMonitorDiagnosticSettingStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuremonitordiagnosticsettingv1alpha1.AzureMonitorDiagnosticSettingIacInput) *Locals {
 	return &Locals{
-		AzureMonitorDiagnosticSetting: stackInput.Target,
+		AzureMonitorDiagnosticSetting: iacInput.Target,
 	}
 }

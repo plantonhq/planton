@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awsapprunnervpcconnector
 spec:
@@ -23,7 +23,7 @@ spec:
       evidence:
         type: provider_default
         reference: The connector IS the private-egress lever -- it routes App Runner services' outbound traffic to VPC resources through ENIs inside your subnets, so databases and caches they depend on never need public exposure. The connector itself has no public endpoint at any configuration.
-      notes: The services' own inbound exposure (public URL versus private ingress) is decided on the AwsAppRunnerService component; the connector governs only the outbound path.
+      notes: The services' own inbound exposure (public URL versus private ingress) is decided on the AwsAppRunnerService kind; the connector governs only the outbound path.
     - control_id: restricted-ingress
       status: configurable
       field_path: security_group_ids

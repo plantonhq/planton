@@ -17,7 +17,7 @@ The harness supports two cluster lanes, selected by environment variables:
 (`planton-e2e`). The name is stable across runs by design — a run-unique name
 would defeat reuse.
 
-Component-level verification is identical in both lanes: verifiers key off the
+Kind-level verification is identical in both lanes: verifiers key off the
 kubeconfig path, not the cluster's origin. Every test still deploys, verifies,
 destroys, and verifies cleanup of its own resources — only the cluster outlives
 the run.
@@ -87,7 +87,7 @@ Mechanics, all verified against the framework's own contracts:
   cluster already has (refused on scenarios not pinned to a real-cluster
   profile), and `planton.dev/e2e-prerequisite-install-manifest: "Kind=path"`
   substitutes a prerequisite's install profile for this lane only.
-- Component profiles whose EVERY lane needs a real cluster carry the
+- Kind profiles whose EVERY lane needs a real cluster carry the
   `real_cluster` status in `e2e/profile.yaml` (the Karpenter family): the
   entrypoints skip them wherever no external cluster is supplied, and the
   CI matrix (built from `green`) never schedules them on kind runners.
@@ -103,7 +103,7 @@ Mechanics, all verified against the framework's own contracts:
 ## Why `aa_e2e`?
 
 Every cloud provider in Planton can have an E2E harness colocated alongside
-its component directories. The directory is named `aa_e2e` (not `_e2e` or
+its kind directories. The directory is named `aa_e2e` (not `_e2e` or
 `e2e`) for two reasons:
 
 - **Go ignores directories starting with `_`**. A directory named `_e2e`
@@ -111,7 +111,7 @@ its component directories. The directory is named `aa_e2e` (not `_e2e` or
   never compile or be importable.
 - **`aa_` sorts first alphabetically** across all providers (aws, azure, gcp,
   kubernetes, etc.), making the harness directory immediately visible in file
-  explorers without needing to scroll past dozens of component directories.
+  explorers without needing to scroll past dozens of kind directories.
 
 This naming convention applies to all providers. When adding E2E support for
 a new provider (e.g., AWS), create `catalog/aws/aa_e2e/`.
@@ -129,9 +129,9 @@ aa_e2e/
     namespace.go          -- NamespaceVerifier (Tier 1)
     workload.go           -- WorkloadVerifier (Tier 1 deployments, statefulsets)
     resource_existence.go -- ResourceExistenceVerifier (Tier 1 secrets, services)
-    operator.go           -- OperatorComponentVerifier (Tier 4 operators)
+    operator.go           -- OperatorKindVerifier (Tier 4 operators)
     crd_workload.go       -- CRDWorkloadVerifier (Tier 3 operator-dependent CRD workloads)
-    helm.go               -- HelmComponentVerifier (Tier 2 Helm-based apps)
+    helm.go               -- HelmKindVerifier (Tier 2 Helm-based apps)
     valkey.go             -- ValkeyVerifier (Valkey install + persistence/replication behavioral proofs)
     perconamysql.go       -- PxcClusterVerifier (Percona MySQL cluster + Galera durability/backup proofs)
     perconamongodb.go     -- PsmdbClusterVerifier (Percona MongoDB cluster + failover/backup proofs)
@@ -160,7 +160,7 @@ The Harness implements the `provider.Harness` interface from
 Verification is **manifest-driven**: the verifier reads the test manifest YAML
 at runtime, extracts the `kind`, `metadata.name`, and `spec.namespace`, and
 selects the appropriate verifier type. This means adding a new test scenario
-(a YAML file in a component's `v1/e2e/` directory) never requires touching Go
+(a YAML file in a kind's `v1/e2e/` directory) never requires touching Go
 code.
 
 ### Verifier Types
@@ -170,8 +170,8 @@ code.
 | `NamespaceVerifier` | `namespace.go` | 1 | Namespace exists / absent |
 | `WorkloadVerifier` | `workload.go` | 1 | Deployment or StatefulSet exists in namespace / absent |
 | `ResourceExistenceVerifier` | `resource_existence.go` | 1 | Secret or Service exists in namespace / absent |
-| `HelmComponentVerifier` | `helm.go` | 2 | Namespace + running pods + services |
-| `OperatorComponentVerifier` | `operator.go` | 4 | Namespace + running pods (no service requirement) |
+| `HelmKindVerifier` | `helm.go` | 2 | Namespace + running pods + services |
+| `OperatorKindVerifier` | `operator.go` | 4 | Namespace + running pods (no service requirement) |
 | `CRDWorkloadVerifier` | `crd_workload.go` | 3 | Namespace + running pods + services |
 | `ValkeyVerifier` | `valkey.go` | 2 | Valkey workload ready + write Service. Behavioral proofs: persistence (write a marker key, DELETE the pod, read it back after restart) and replication (write through the write Service, read back through the read Service) |
 | `PxcClusterVerifier` | `perconamysql.go` | 3 | PerconaXtraDBCluster in state `ready` + proxy write Service. Behavioral proof: Galera durability (write a marker row through the proxy, DELETE a database node, read it back at full strength). Backup proof: drives a real XtraBackup to `Succeeded` in the declared store |
@@ -184,11 +184,11 @@ code.
 `GetVerifierFromManifest` uses three kind classification maps plus a hardcoded
 switch for Tier 1 native resources:
 
-- **`operatorKinds`** -- Tier 4 operator/controller components (namespace + pods)
+- **`operatorKinds`** -- Tier 4 operator/controller kinds (namespace + pods)
 - **`crdWorkloadKinds`** -- Tier 3 CRD workloads (namespace + pods + services)
 - **`helmTier2Kinds`** -- Tier 2 Helm-based applications (namespace + pods + services)
 
-New component kinds are added to the appropriate map. Tier 1 native resources
+New catalog kinds are added to the appropriate map. Tier 1 native resources
 (namespace, deployment, statefulset, secret, service) are routed via the switch.
 
 ### Retry Strategy (`kubectl.go`)
@@ -215,7 +215,7 @@ When extending E2E testing to a new provider (e.g., AWS):
 
 ## Test Manifests
 
-Test manifests live colocated with their components at
-`{component}/v1alpha1/e2e/*.yaml`, not in this directory. The test framework
+Test manifests live colocated with their kinds at
+`{kind}/v1alpha1/e2e/*.yaml`, not in this directory. The test framework
 discovers them automatically via `e2e/framework/discovery/`. Adding a new
 test scenario means dropping a YAML file -- zero Go code changes.

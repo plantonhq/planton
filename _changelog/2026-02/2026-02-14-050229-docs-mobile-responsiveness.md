@@ -6,7 +6,7 @@
 
 ## Summary
 
-Made the Planton documentation site mobile-responsive by fixing layout, typography, sticky positioning, and overflow issues across 6 component files. Eliminated the double-hamburger problem on mobile by replacing the docs header with a distinct inline navigation trigger. Page-level horizontal scroll partially addressed — deeper investigation needed in follow-up session.
+Made the Planton documentation site mobile-responsive by fixing layout, typography, sticky positioning, and overflow issues across 6 kind files. Eliminated the double-hamburger problem on mobile by replacing the docs header with a distinct inline navigation trigger. Page-level horizontal scroll partially addressed — deeper investigation needed in follow-up session.
 
 ## Problem Statement / Motivation
 

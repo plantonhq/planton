@@ -1,4 +1,4 @@
-// Package cataloglogo is the machine-enforced guard on every component's
+// Package cataloglogo is the machine-enforced guard on every kind's
 // logo.svg. The division of labor with its siblings is deliberate:
 // pkg/anatomy checks that logo.svg EXISTS, cataloglogo checks what the file
 // IS, and pkg/catalogbundle projects the logo's versionless URL without ever
@@ -49,9 +49,9 @@
 // offers its icons publishes one for a kind wearing a drawn glyph, the
 // official one replaces it.
 //
-// The walk is keyed off the kind registry (crkreflect), never directory
-// globs, mirroring pkg/anatomy: the gate sees exactly the components the
-// product serves. A component without a logo file is anatomy's finding, not
+// The walk is keyed off the kind registry (catalogkindreflect), never directory
+// globs, mirroring pkg/anatomy: the gate sees exactly the kinds the
+// product serves. A kind without a logo file is anatomy's finding, not
 // this gate's -- absence is skipped here so one defect reports in one place.
 //
 // The CI lane is .github/workflows/lint.catalog-logo.yaml. Provenance and
@@ -81,8 +81,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // Rule identifiers. Stable: baseline.yaml entries reference them.
@@ -130,16 +130,16 @@ type logo struct {
 func Check(repoRoot string) ([]Violation, error) {
 	var vs []Violation
 	var logos []logo
-	metaByKind := crkreflect.KindToKindMetaMap()
-	for _, kind := range crkreflect.KindsList() {
-		if kind == cloudresourcekind.CloudResourceKind_unspecified {
+	metaByKind := catalogkindreflect.KindToKindMetaMap()
+	for _, kind := range catalogkindreflect.KindsList() {
+		if kind == catalogkind.CatalogKind_unspecified {
 			continue
 		}
 		meta := metaByKind[kind]
 		if meta == nil {
 			continue
 		}
-		providerDir := crkreflect.ProviderDirName(meta.GetProvider())
+		providerDir := catalogkindreflect.ProviderDirName(meta.GetProvider())
 		kindDir := strings.ToLower(kind.String())
 		rel := filepath.Join("catalog", providerDir, kindDir, "logo.svg")
 		data, err := os.ReadFile(filepath.Join(repoRoot, rel))

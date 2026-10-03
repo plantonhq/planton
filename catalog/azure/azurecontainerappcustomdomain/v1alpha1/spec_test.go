@@ -30,7 +30,7 @@ func validResource() *AzureContainerAppCustomDomain {
 	return &AzureContainerAppCustomDomain{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureContainerAppCustomDomain",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "app-custom-domain",
 		},
 		Spec: &AzureContainerAppCustomDomainSpec{

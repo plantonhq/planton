@@ -16,7 +16,7 @@ The module creates the following Kubernetes resources:
 ### Prerequisites
 
 1. A Kubernetes cluster
-2. Kubernetes credentials configured in the stack input
+2. Kubernetes credentials configured in the IaC input
 3. Pulumi installed and configured
 
 ### Running Locally
@@ -31,7 +31,7 @@ The module creates the following Kubernetes resources:
    make deps
    ```
 
-3. Create a stack input file (e.g., `stack-input.yaml`):
+3. Create an IaC input file (e.g., `iac-input.yaml`):
    ```yaml
    target:
      apiVersion: kubernetes.planton.dev/v1alpha1

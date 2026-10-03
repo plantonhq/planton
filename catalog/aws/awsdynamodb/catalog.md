@@ -4,7 +4,7 @@ Deploys a DynamoDB table end to end: key schema and secondary indexes, capacity 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **DynamoDB Table** -- a managed NoSQL table in the specified AWS region with the configured primary key schema (partition key and optional sort key), billing mode, and table class
 - **Global Secondary Indexes** -- created only when `globalSecondaryIndexes` entries are configured; each GSI has its own key schema (up to 4 HASH + 4 RANGE elements), projection, and capacity riding the table's billing mode
@@ -25,7 +25,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -74,7 +74,7 @@ spec:
 planton apply -f dynamodb.yaml
 ```
 
-This creates an on-demand DynamoDB table with a composite primary key (partition key `pk` and sort key `sk`), deletion protection, and point-in-time recovery enabled. No secondary indexes, streams, or TTL are configured. A Stack Job tracks the provisioning in real time.
+This creates an on-demand DynamoDB table with a composite primary key (partition key `pk` and sort key `sk`), deletion protection, and point-in-time recovery enabled. No secondary indexes, streams, or TTL are configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -125,7 +125,7 @@ These are the most important decisions when configuring a DynamoDB table. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -135,9 +135,9 @@ These are the most important decisions when configuring a DynamoDB table. Explor
 
 Each field also accepts a literal value for resources not managed by Planton.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -160,8 +160,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Lambda Event Source Mapping**](/cloud-catalog/aws-lambda-event-source-mapping) -- consumes the table's `stream_arn` output for change-driven Lambda processing
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides customer-managed encryption keys for the table and its replicas
-- [**AWS Kinesis Data Stream**](/cloud-catalog/aws-kinesis-stream) -- receives the table's change data through the Kinesis streaming destination
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) -- provides the source data for table imports
-- [**AWS IAM Policy**](/cloud-catalog/aws-iam-policy) -- application policies reference the table ARN and name outputs
+- [**AWS Lambda Event Source Mapping**](/infra-catalog/aws-lambda-event-source-mapping) -- consumes the table's `stream_arn` output for change-driven Lambda processing
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides customer-managed encryption keys for the table and its replicas
+- [**AWS Kinesis Data Stream**](/infra-catalog/aws-kinesis-stream) -- receives the table's change data through the Kinesis streaming destination
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) -- provides the source data for table imports
+- [**AWS IAM Policy**](/infra-catalog/aws-iam-policy) -- application policies reference the table ARN and name outputs

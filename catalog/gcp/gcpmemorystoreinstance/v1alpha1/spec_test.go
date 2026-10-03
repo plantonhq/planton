@@ -42,7 +42,7 @@ var _ = ginkgo.Describe("GcpMemorystoreInstanceSpec", func() {
 		return &GcpMemorystoreInstance{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpMemorystoreInstance",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-memorystore",
 			},
 			Spec: &GcpMemorystoreInstanceSpec{

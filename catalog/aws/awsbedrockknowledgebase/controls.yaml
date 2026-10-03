@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awsbedrockknowledgebase
 spec:
@@ -57,7 +57,7 @@ spec:
       evidence:
         type: provider_default
         reference: All knowledge-base management operations (create, update, delete, data-source changes, ingestion-job starts) are control-plane calls CloudTrail records unconditionally as management events -- who changed the corpus configuration and when is always answerable.
-      notes: Runtime query capture (which questions were asked) is Bedrock model-invocation-logging territory on the AwsBedrockInvocationLogging component, not this object's.
+      notes: Runtime query capture (which questions were asked) is Bedrock model-invocation-logging territory on the AwsBedrockInvocationLogging kind, not this object's.
     - control_id: monitoring-integration
       status: not_applicable
       notes: "Bedrock's monitoring documentation enumerates metric namespaces for model invocations (AWS/Bedrock), agents (AWS/Bedrock/Agents), and AgentCore -- none covers knowledge bases, and this spec carries no metrics or log-delivery surface. Ingestion-job outcomes are visible through the job APIs and console, and AWS offers account-level vended-log delivery for knowledge bases configured outside this component; neither amounts to default CloudWatch metrics on the object."

@@ -33,7 +33,7 @@ func validResource() *AzureMonitorActivityLogAlert {
 	return &AzureMonitorActivityLogAlert{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureMonitorActivityLogAlert",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-ala",
 		},
 		Spec: &AzureMonitorActivityLogAlertSpec{

@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurevirtualhub
 spec:
@@ -10,7 +10,7 @@ spec:
   values:
     - name: virtual_hub_id
       derivations:
-        - from_stack_output: virtual_hub_id
+        - from_output: virtual_hub_id
       where_to_find: >-
         Portal -> Virtual WAN -> Hubs -> the hub -> Properties ->
         Resource ID, or `az network vhub show -g <rg> -n <name> --query

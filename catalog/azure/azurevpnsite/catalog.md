@@ -4,7 +4,7 @@ Deploys a VPN Site -- the Virtual WAN address-book entry for one branch location
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **VPN Site** -- the ARM description of the branch, including its links (ARM assigns each link an ID the `link_ids` output republishes by name)
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -62,7 +62,7 @@ spec:
 planton apply -f azure-vpn-site.yaml
 ```
 
-This creates the address-book entry for a single-ISP London branch: one link at 203.0.113.10 with a /24 behind it, ready for a connection to point at. The site is free and provisions in seconds. A Stack Job tracks the provisioning in real time.
+This creates the address-book entry for a single-ISP London branch: one link at 203.0.113.10 with a /24 behind it, ready for a connection to point at. The site is free and provisions in seconds. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -98,16 +98,16 @@ These are the most important decisions when configuring a site. Explore the full
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 | **AzureVirtualWan** | `virtualWanId` | `status.outputs.virtual_wan_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -126,6 +126,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Virtual WAN**](/cloud-catalog/azure-virtual-wan) -- the WAN the site belongs to
-- [**Azure VPN Gateway**](/cloud-catalog/azure-vpn-gateway) -- the hub gateway branches connect to
-- [**Azure VPN Gateway Connection**](/cloud-catalog/azure-vpn-gateway-connection) -- the tunnels that point at this site
+- [**Azure Virtual WAN**](/infra-catalog/azure-virtual-wan) -- the WAN the site belongs to
+- [**Azure VPN Gateway**](/infra-catalog/azure-vpn-gateway) -- the hub gateway branches connect to
+- [**Azure VPN Gateway Connection**](/infra-catalog/azure-vpn-gateway-connection) -- the tunnels that point at this site

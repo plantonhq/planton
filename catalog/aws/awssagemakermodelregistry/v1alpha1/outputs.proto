@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awssagemakermodelregistry.v1alpha1;
 
-// AwsSagemakerModelRegistryStackOutputs captures observable identifiers
+// AwsSagemakerModelRegistryOutputs captures observable identifiers
 // from a provisioned model package group. Models deploy from packages
 // registered into the group; the SageMaker model kind's
 // model_package_arn references live under this group's ARN.
-message AwsSagemakerModelRegistryStackOutputs {
+message AwsSagemakerModelRegistryOutputs {
   // The model package group name (the AWS identity training pipelines
   // register packages into).
   string model_package_group_name = 1;

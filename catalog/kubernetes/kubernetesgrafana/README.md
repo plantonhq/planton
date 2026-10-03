@@ -5,7 +5,7 @@
 **One resource is ONE standalone Grafana** — the composition hub you
 point at any mix of datasources and run independently of all of them.
 
-Not the right component when:
+Not the right kind when:
 
 - **All you need is dashboards for one kube-prometheus-stack** — its
   bundled Grafana (on by default there, pre-wired with the stack's
@@ -39,7 +39,7 @@ versions at 10.5.x). Chart pinned 12.8.0, shipping Grafana 13.1.1.
 password ONCE at first install (stable across upgrades) into its own
 `<name>` Secret — keys `admin-user` / `admin-password` — unless
 `admin_secret` points at an existing Secret. Credentials never appear
-in rendered Helm values; the Secret name lands in the stack outputs.
+in rendered Helm values; the Secret name lands in the outputs.
 
 **Key design points:**
 
@@ -114,7 +114,7 @@ in rendered Helm values; the Secret name lands in the stack outputs.
 - **`spec.image` / `spec.helm_values`**: the air-gap path and the
   escape hatch
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

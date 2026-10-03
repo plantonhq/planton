@@ -57,7 +57,7 @@ export const HOMEPAGE = {
     sources: [
       'product.service-hub.service-records-and-build-lane.md',
       'product.infra-hub.catalog-curation.md',
-      'product.infra-hub.stack-job.md',
+      'product.infra-hub.infra-job.md',
     ],
     chapter: 'what-planton-is' as ChapterId,
   },
@@ -100,11 +100,11 @@ export const HOMEPAGE = {
     eyebrow: '04 / CONTROL & VISIBILITY',
     title: 'Give developers freedom.\nKeep changes accountable.',
     intro:
-      'Self-service works when the boundaries are clear. Define which cloud components your organization can create, require approval for protected environments, and keep a record of the changes that run.',
+      'Self-service works when the boundaries are clear. Define which catalog kinds your organization can create, require approval for protected environments, and keep a record of the changes that run.',
     points: [
       {
         title: 'A catalog shaped by your team',
-        text: 'Make approved component kinds available for new resources. The platform enforces creation restrictions at the API boundary, including requests from the CLI and agents.',
+        text: 'Make approved catalog kinds available for new resources. The platform enforces creation restrictions at the API boundary, including requests from the CLI and agents.',
       },
       {
         title: 'Evidence with its limits visible',
@@ -119,7 +119,7 @@ export const HOMEPAGE = {
     sources: [
       'product.infra-hub.catalog-curation.md',
       'product.infra-hub.control-posture.md',
-      'product.infra-hub.stack-job.md',
+      'product.infra-hub.infra-job.md',
       'product.service-hub.assistant-repository-access.md',
     ],
     chapter: 'your-rules-hold' as ChapterId,
@@ -140,7 +140,7 @@ export const HOMEPAGE = {
       'The infrastructure modules are open source. Your manifests remain readable, and you can deploy them with the standalone open-source CLI. Your adoption path can start with one environment or service.',
     ],
     sources: [
-      'product.infra-hub.cloud-resource-import.md',
+      'product.infra-hub.infra-component-import.md',
       'product.infra-hub.planton.md',
       'product.desktop.feature-availability.md',
       'product.self-hosted.install-and-upgrade-lifecycle.md',

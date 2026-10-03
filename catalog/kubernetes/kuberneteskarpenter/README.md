@@ -8,7 +8,7 @@ controller fleet would fight the first over every NodeClaim. The Helm
 release names are therefore fixed (`karpenter-crd` and `karpenter`) and
 never derive from `metadata.name`.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want to declare WHAT gets provisioned** — the fleet declarations
   are separate resources: KubernetesKarpenterNodePool describes the shape
@@ -133,9 +133,9 @@ keys:
 
 The cloud-side half of either contract (trust policy or Pod Identity
 association) is written against the chart's fixed service-account name,
-`karpenter` — which is why it is a stack output.
+`karpenter` — which is why it is an output.
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

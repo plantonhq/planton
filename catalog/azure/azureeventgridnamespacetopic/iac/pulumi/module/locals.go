@@ -12,10 +12,10 @@ type Locals struct {
 // initializeLocals mirrors the Terraform module's locals. A namespace
 // topic carries no tags (the provider exposes none -- it is a pure
 // naming-and-retention entry), so there is no tag map to derive.
-func initializeLocals(ctx *pulumi.Context, stackInput *azureeventgridnamespacetopicv1alpha1.AzureEventgridNamespaceTopicStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureeventgridnamespacetopicv1alpha1.AzureEventgridNamespaceTopicIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureEventgridNamespaceTopic = stackInput.Target
+	locals.AzureEventgridNamespaceTopic = iacInput.Target
 
 	return locals
 }

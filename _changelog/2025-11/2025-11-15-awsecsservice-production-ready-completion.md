@@ -1,13 +1,13 @@
 # AwsEcsService: Production-Ready Completion with Auto Scaling and Health Check Grace Period
 
 **Date:** November 15, 2025  
-**Component:** AwsEcsService  
+**Kind:** AwsEcsService  
 **Type:** Enhancement  
 **Impact:** High - Completes production-ready feature set based on 80/20 research analysis
 
 ## Summary
 
-Completed the `AwsEcsService` component implementation by adding two critical production features that were identified in the research document but missing from the spec: **Auto Scaling** and **Health Check Grace Period**. These features are essential for production deployments and were part of the original 80/20 analysis.
+Completed the `AwsEcsService` kind implementation by adding two critical production features that were identified in the research document but missing from the spec: **Auto Scaling** and **Health Check Grace Period**. These features are essential for production deployments and were part of the original 80/20 analysis.
 
 ## Background
 
@@ -180,7 +180,7 @@ spec:
 
 ## Next Steps
 
-This completes the production-ready implementation of `AwsEcsService` according to the 80/20 principle defined in the research document. The component now includes:
+This completes the production-ready implementation of `AwsEcsService` according to the 80/20 principle defined in the research document. The kind now includes:
 
 1. ✅ **Essential Fields (80%)**: All implemented
 2. ✅ **Common Fields (19%)**: All implemented, including autoscaling and health check grace period

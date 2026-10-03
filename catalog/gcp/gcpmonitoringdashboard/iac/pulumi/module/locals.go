@@ -13,8 +13,8 @@ type Locals struct {
 	GcpMonitoringDashboard *gcpmonitoringdashboardv1alpha1.GcpMonitoringDashboard
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpmonitoringdashboardv1alpha1.GcpMonitoringDashboardStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpmonitoringdashboardv1alpha1.GcpMonitoringDashboardIacInput) *Locals {
 	return &Locals{
-		GcpMonitoringDashboard: stackInput.Target,
+		GcpMonitoringDashboard: iacInput.Target,
 	}
 }

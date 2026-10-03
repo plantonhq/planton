@@ -6,7 +6,7 @@
 
 ## Summary
 
-Brought the entire invest microapp — pitch deck (14 slides), landing page, and all explainer pages (Opportunity, Process, Carta Walkthrough, What You Get, What We Look For) — into full alignment with the monochrome design system established across the rest of planton.ai. This was a multi-phase effort spanning two separate component systems (`v2/shared.tsx` for the deck and `explainer/shared.tsx` for long-form pages) plus dozens of inline style overrides across 25+ files.
+Brought the entire invest microapp — pitch deck (14 slides), landing page, and all explainer pages (Opportunity, Process, Carta Walkthrough, What You Get, What We Look For) — into full alignment with the monochrome design system established across the rest of planton.ai. This was a multi-phase effort spanning two separate kind systems (`v2/shared.tsx` for the deck and `explainer/shared.tsx` for long-form pages) plus dozens of inline style overrides across 25+ files.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ After the monochrome redesign wave (11 changelogs from March 25-27, 2026), the m
 
 ### Pain Points
 
-- Two separate component foundations (`v2/shared.tsx` and `explainer/shared.tsx`) had never been updated for the monochrome system
+- Two separate kind foundations (`v2/shared.tsx` and `explainer/shared.tsx`) had never been updated for the monochrome system
 - Decorative gradient text, gradient backgrounds, gradient CTAs, and gradient orbs violated the "brightness, not hue" principle
 - Alpha-based styling (`bg-white/5`, `border-white/10`, `text-white/60`) produced inconsistent rendering depending on backdrop
 - Typography used `font-bold` and `font-extrabold` while the site standardized on `font-semibold`
@@ -55,7 +55,7 @@ Applied the same treatment to Wall of Love, Market, Roadmap, Team, The Ask, Why 
 - All inline card backgrounds from alpha to solid hex
 - Avatar fallback gradients replaced with solid `bg-[#2a2a2a]`
 - SAFE modal: gradient background flattened, all internal boxes to solid hex
-- CollegeBadge aligned to Badge component pattern
+- CollegeBadge aligned to Badge kind pattern
 - Gradient text on "This Hard" replaced with solid white
 
 ### Phase 3: Explainer System + All Long-Form Pages
@@ -133,7 +133,7 @@ Page-specific fixes across all explainer pages:
 
 - **Visual consistency**: The invest microapp now looks like it belongs to the same platform as the main website
 - **Faster page loads**: Team photos served locally (~170-287KB JPGs) instead of external Cloudflare PNG round-trips
-- **Maintainability**: Both component foundations now follow the same design token patterns as the main site
+- **Maintainability**: Both kind foundations now follow the same design token patterns as the main site
 - **Reduced technical debt**: Dead CSS removed, vestigial variant names cleaned up, negative margin hacks eliminated
 - **Correct branding**: "Planton" updated to "Planton" on the cover slide
 

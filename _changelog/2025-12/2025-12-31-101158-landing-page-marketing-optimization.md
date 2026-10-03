@@ -6,7 +6,7 @@
 
 ## Summary
 
-Implemented comprehensive landing page marketing optimization based on competitive analysis feedback. Added 6 new components (SecurityTrustBar, SocialProofBar, HowItWorks, ComparisonTable, WallOfLove, ROICalculator) and enhanced 9 existing components to close the gap between Planton's product capabilities and marketing execution.
+Implemented comprehensive landing page marketing optimization based on competitive analysis feedback. Added 6 new kinds (SecurityTrustBar, SocialProofBar, HowItWorks, ComparisonTable, WallOfLove, ROICalculator) and enhanced 9 existing kinds to close the gap between Planton's product capabilities and marketing execution.
 
 ## Problem Statement / Motivation
 
@@ -24,7 +24,7 @@ The landing page, while technically accurate, wasn't effectively communicating P
 
 ## Solution / What's New
 
-### New Components (6)
+### New Kinds (6)
 
 **SecurityTrustBar** (`src/components/landing-page-v2/SecurityTrustBar.tsx`)
 - Horizontal compliance badges immediately after hero
@@ -55,10 +55,10 @@ The landing page, while technically accurate, wasn't effectively communicating P
 - Inputs: team size, DevOps setup, cloud spending, deployments/week
 - Outputs: current cost, Planton cost, annual savings, payback period, 5-year projection
 
-### Enhanced Components (9)
+### Enhanced Kinds (9)
 
 - **HeroSection**: New headline "What if DevOps Didn't Block Your Developers?", animated terminal, quantified social proof
-- **InfraHub**: Updated to 120+ components, metrics bar, dual customer quotes
+- **InfraHub**: Updated to 120+ catalog kinds, metrics bar, dual customer quotes
 - **ServiceHub**: Featured TynyBay testimonial with metrics display
 - **CustomerStories**: Expanded to 3 detailed stories (Harsha/Jai.CX, TynyBay, iorta TechNext)
 - **PricingSimplified**: Early adopter urgency banner, ROI calculator link
@@ -71,11 +71,11 @@ The landing page, while technically accurate, wasn't effectively communicating P
 
 ### Design System Extensions (`src/components/landing-page-v2/shared.tsx`)
 
-Added reusable components to maintain consistency:
+Added reusable kinds to maintain consistency:
 - `TestimonialCard` - Twitter-style card with avatar, name, role, quote
 - `TerminalWindow` - Styled terminal frame for animated CLI demos
 - `WarningIcon` - Amber warning icon for partial feature indicators
-- `ComparisonCell` - Cell component for comparison tables
+- `ComparisonCell` - Cell kind for comparison tables
 - `Step` - Step indicator with icon and description
 - `MetricCard` - Enhanced metric display with sublabel
 
@@ -83,7 +83,7 @@ New color token: `accentAmber: '#f59e0b'` for warning states
 
 ### Page Route Restructure (`src/app/(root)/page.tsx`)
 
-Updated component order to follow conversion-optimized flow:
+Updated kind order to follow conversion-optimized flow:
 1. HeroSection → 2. SecurityTrustBar → 3. SocialProofBar → 4. HowItWorks → 5. ComparisonTable → 6. ProblemSolution → 7. InfraHub → 8. ServiceHub → 9. WallOfLove → 10. CustomerStories → 11. ROICalculator → 12. PricingSimplified → 13-18. (remaining sections)
 
 ### Interactive Features

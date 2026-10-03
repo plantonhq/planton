@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added AwsMemorydbCluster (R27, enum 342) as a new deployment component for Amazon MemoryDB — a fully managed, Redis-compatible, durable in-memory database. This is the 30th new AWS resource kind added as part of the cloud provider expansion project, completing the first component of Phase 3 (specialized services).
+Added AwsMemorydbCluster (R27, enum 342) as a new catalog kind for Amazon MemoryDB — a fully managed, Redis-compatible, durable in-memory database. This is the 30th new AWS resource kind added as part of the cloud provider expansion project, completing the first kind of Phase 3 (specialized services).
 
 ## Problem Statement / Motivation
 
@@ -14,17 +14,17 @@ The AWS resource catalog lacked support for MemoryDB, a distinct service from El
 
 ### Pain Points
 
-- Teams needing durable Redis-compatible storage had no Planton component to manage it
-- MemoryDB has a different authentication model (ACL-based vs ElastiCache's auth_token/user_group_ids), different topology (always sharded), and different encryption model (always-on at-rest) — it could not be conflated with the existing ElastiCache component
+- Teams needing durable Redis-compatible storage had no Planton kind to manage it
+- MemoryDB has a different authentication model (ACL-based vs ElastiCache's auth_token/user_group_ids), different topology (always sharded), and different encryption model (always-on at-rest) — it could not be conflated with the existing ElastiCache kind
 - No standardized way to manage MemoryDB subnet groups and parameter groups as part of the cluster lifecycle
 
 ## Solution / What's New
 
-A complete AwsMemorydbCluster deployment component following the established ElastiCache pattern, adapted for MemoryDB's architectural differences.
+A complete AwsMemorydbCluster catalog kind following the established ElastiCache pattern, adapted for MemoryDB's architectural differences.
 
 ### Key Design Decisions
 
-- **ACL by reference, not bundled** — MemoryDB ACLs and Users have independent lifecycles and can be shared across clusters. The component accepts `acl_name` as a required string field (default `"open-access"`) rather than attempting to bundle ACL/User creation inline.
+- **ACL by reference, not bundled** — MemoryDB ACLs and Users have independent lifecycles and can be shared across clusters. The kind accepts `acl_name` as a required string field (default `"open-access"`) rather than attempting to bundle ACL/User creation inline.
 - **Always-sharded topology** — Unlike ElastiCache's clustered-vs-non-clustered mode split, MemoryDB always uses a sharded architecture with `num_shards` and `num_replicas_per_shard`. Simpler for users.
 - **Always-on encryption at rest** — No `at_rest_encryption_enabled` toggle (MemoryDB always encrypts). The `kms_key_id` field optionally provides a customer-managed key.
 - **CEL presence-aware validation** — The `tls_disabled_requires_open_access` CEL rule uses `has()` checks to correctly handle optional fields whose defaults haven't been applied yet during validation.
@@ -34,9 +34,9 @@ A complete AwsMemorydbCluster deployment component following the established Ela
 ### Proto API (4 files)
 
 - `spec.proto` — 23 fields covering engine, topology, ACL, networking, encryption, maintenance, snapshots, parameter groups, and advanced options. 4 CEL validations for engine values, TLS/ACL coupling, parameter group family requirement, and snapshot restore mutual exclusion.
-- `stack_outputs.proto` — 7 outputs: cluster endpoint address/port, ARN, name, engine patch version, subnet group name, parameter group name.
+- `outputs.proto` — 7 outputs: cluster endpoint address/port, ARN, name, engine patch version, subnet group name, parameter group name.
 - `api.proto` — Standard KRM envelope wiring.
-- `stack_input.proto` — Standard stack input with AWS provider config.
+- `iac_input.proto` — Standard IaC input with AWS provider config.
 
 ### Pulumi IaC Module (6 files)
 
@@ -73,7 +73,7 @@ Feature parity with Pulumi: `provider.tf`, `variables.tf`, `locals.tf`, `main.tf
 
 ## Impact
 
-- **API surface**: +1 CloudResourceKind enum (342), +4 proto files
+- **API surface**: +1 CatalogKind enum (342), +4 proto files
 - **IaC modules**: +11 Go files (Pulumi), +5 Terraform files
 - **Documentation**: +8 documentation files (README, examples, catalog, 3 preset pairs)
 - **Tests**: +18 validation test cases, all passing
@@ -81,7 +81,7 @@ Feature parity with Pulumi: `provider.tf`, `variables.tf`, `locals.tf`, `main.tf
 ## Related Work
 
 - Part of 20260215.02.sp.aws-resource-expansion (R27 of ~32)
-- Pattern reference: AwsRedisElasticache component
+- Pattern reference: AwsRedisElasticache kind
 - Parent project: 20260212.01.planton-cloud-provider-expansion
 
 ---

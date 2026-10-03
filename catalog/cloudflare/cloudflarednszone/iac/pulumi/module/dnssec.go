@@ -8,7 +8,7 @@ import (
 )
 
 // dnssec enables DNSSEC on the zone. The DS material Cloudflare computes is
-// surfaced through the zone's stack outputs for entry at the registrar.
+// surfaced through the zone's outputs for entry at the registrar.
 func dnssec(
 	ctx *pulumi.Context,
 	resourceName string,

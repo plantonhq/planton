@@ -1,4 +1,4 @@
-// Package setdeploy deploys a SET of cloud-resource manifests as one
+// Package setdeploy deploys a SET of catalog object manifests as one
 // operation: the preflight wall, the dependency-ordered execution loop, and
 // the output-fed reference resolution between nodes.
 //

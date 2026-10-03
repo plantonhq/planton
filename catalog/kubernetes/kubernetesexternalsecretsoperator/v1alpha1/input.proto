@@ -6,8 +6,8 @@ import "catalog/kubernetes/kubernetesexternalsecretsoperator/v1alpha1/api.proto"
 import "catalog/kubernetes/provider.proto";
 
 //input for kubernetes-external-secrets-operator stack
-message KubernetesExternalSecretsOperatorStackInput {
-  //target cloud-resource
+message KubernetesExternalSecretsOperatorIacInput {
+  //target infra-component
   KubernetesExternalSecretsOperator target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

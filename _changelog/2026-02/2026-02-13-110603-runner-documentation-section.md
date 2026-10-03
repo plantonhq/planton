@@ -6,11 +6,11 @@
 
 ## Summary
 
-Created the complete Runner documentation section — 5 new pages covering the secure execution agent that enables Planton to operate in customer infrastructure without credential sharing or inbound firewall rules. All content verified against protobuf APIs, 13 ADRs, CLI source code, backend service implementations, and web console components.
+Created the complete Runner documentation section — 5 new pages covering the secure execution agent that enables Planton to operate in customer infrastructure without credential sharing or inbound firewall rules. All content verified against protobuf APIs, 13 ADRs, CLI source code, backend service implementations, and web console kinds.
 
 ## Problem Statement / Motivation
 
-Runner is one of Planton's most architecturally distinctive features — the component that makes the platform's security story credible for enterprise adoption. It enables infrastructure-as-code execution and real-time cloud operations without credentials leaving customer infrastructure, using outbound-only mTLS tunnel connectivity. Despite being critical for enterprise sales conversations and central to the platform's security model, Runner had zero documentation.
+Runner is one of Planton's most architecturally distinctive features — the kind that makes the platform's security story credible for enterprise adoption. It enables infrastructure-as-code execution and real-time cloud operations without credentials leaving customer infrastructure, using outbound-only mTLS tunnel connectivity. Despite being critical for enterprise sales conversations and central to the platform's security model, Runner had zero documentation.
 
 ### Pain Points
 

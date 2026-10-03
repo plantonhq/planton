@@ -8,13 +8,13 @@ import (
 )
 
 // Resources creates an Auth0 Resource Server (API) with all configured parameters
-func Resources(ctx *pulumi.Context, stackInput *auth0resourceserverv1alpha1.Auth0ResourceServerStackInput) error {
-	locals := initializeLocals(stackInput)
+func Resources(ctx *pulumi.Context, iacInput *auth0resourceserverv1alpha1.Auth0ResourceServerIacInput) error {
+	locals := initializeLocals(iacInput)
 
 	// Setup Auth0 provider with credentials from provider config
 	var provider *auth0.Provider
 	var err error
-	providerConfig := stackInput.ProviderConfig
+	providerConfig := iacInput.ProviderConfig
 
 	if providerConfig == nil {
 		// Use default provider (assumes credentials from environment variables)
@@ -56,6 +56,6 @@ func Resources(ctx *pulumi.Context, stackInput *auth0resourceserverv1alpha1.Auth
 		return errors.Wrap(err, "failed to create the default grants for third-party applications")
 	}
 
-	// Export stack outputs
+	// Export outputs
 	return exportOutputs(ctx, resourceServer, defaultGrantIds)
 }

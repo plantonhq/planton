@@ -10,15 +10,15 @@ import (
 // Resources is the module entry point—keeps symmetry with other Planton modules.
 func Resources(
 	ctx *pulumi.Context,
-	stackInput *digitaloceandropletv1alpha1.DigitalOceanDropletStackInput,
+	iacInput *digitaloceandropletv1alpha1.DigitalOceanDropletIacInput,
 ) error {
 	// 1. Prepare locals (metadata, labels, credentials, etc.).
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// 2. DigitalOcean provider from supplied credential.
 	digitalOceanProvider, err := pulumidigitaloceanprovider.Get(
 		ctx,
-		stackInput.ProviderConfig,
+		iacInput.ProviderConfig,
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup digitalocean provider")

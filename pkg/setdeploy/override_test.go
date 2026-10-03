@@ -6,11 +6,11 @@ import (
 )
 
 func TestParseNodeOverride(t *testing.T) {
-	parsed, err := ParseNodeOverride("TestCloudResourceGeneric/consumer:spec.displayName", "v2")
+	parsed, err := ParseNodeOverride("TestCatalogKindGeneric/consumer:spec.displayName", "v2")
 	if err != nil {
 		t.Fatalf("parse: %v", err)
 	}
-	if parsed.Kind != "TestCloudResourceGeneric" || parsed.Name != "consumer" ||
+	if parsed.Kind != "TestCatalogKindGeneric" || parsed.Name != "consumer" ||
 		parsed.FieldPath != "spec.displayName" || parsed.Value != "v2" {
 		t.Fatalf("wrong parse: %+v", parsed)
 	}
@@ -27,7 +27,7 @@ func TestParseNodeOverride(t *testing.T) {
 func TestApplyNodeOverride_SetsTheNamedDocumentOnly(t *testing.T) {
 	docs := docsOf(t, map[string]string{"01-producer.yaml": producerYaml, "02-consumer.yaml": consumerYaml})
 	out, err := ApplyNodeOverride(docs, NodeOverride{
-		Kind: "TestCloudResourceGeneric", Name: "consumer",
+		Kind: "TestCatalogKindGeneric", Name: "consumer",
 		FieldPath: "spec.displayName", Value: "storefront-v2",
 	})
 	if err != nil {
@@ -48,13 +48,13 @@ func TestApplyNodeOverride_SetsTheNamedDocumentOnly(t *testing.T) {
 func TestApplyNodeOverride_MissRefusesNamingTheSet(t *testing.T) {
 	docs := docsOf(t, map[string]string{"01-producer.yaml": producerYaml})
 	_, err := ApplyNodeOverride(docs, NodeOverride{
-		Kind: "TestCloudResourceGeneric", Name: "ghost",
+		Kind: "TestCatalogKindGeneric", Name: "ghost",
 		FieldPath: "spec.displayName", Value: "v",
 	})
 	if err == nil {
 		t.Fatalf("a miss must refuse")
 	}
-	if !strings.Contains(err.Error(), "TestCloudResourceGeneric/producer") {
+	if !strings.Contains(err.Error(), "TestCatalogKindGeneric/producer") {
 		t.Fatalf("the refusal must name what the set holds, got: %v", err)
 	}
 }

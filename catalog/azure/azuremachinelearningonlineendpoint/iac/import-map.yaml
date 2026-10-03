@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuremachinelearningonlineendpoint
 spec:
@@ -11,7 +11,7 @@ spec:
   values:
     - name: arm_resource_id
       derivations:
-        - from_stack_output: online_endpoint_id
+        - from_output: online_endpoint_id
       where_to_find: >-
         Compose {workspace-id}/onlineEndpoints/{endpoint-name}, or
         `az ml online-endpoint show -g <rg> --workspace-name <ws>

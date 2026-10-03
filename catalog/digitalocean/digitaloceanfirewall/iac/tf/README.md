@@ -50,4 +50,4 @@ module "firewall" {
 
 ## Outputs
 
-Exactly the kind's stack-output contract, identical to the Pulumi module: `firewall_id`.
+Exactly the kind's output contract, identical to the Pulumi module: `firewall_id`.

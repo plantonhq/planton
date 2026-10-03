@@ -3,10 +3,10 @@ syntax = "proto3";
 package dev.planton.shared.relationship.v1;
 
 import "buf/validate/validate.proto";
-import "shared/cloudresourcekind/cloud_resource_kind.proto";
+import "shared/catalogkind/catalog_kind.proto";
 
-// CloudResourceRelationship defines a relationship between two cloud resources.
-message CloudResourceRelationship {
+// InfraComponentRelationship defines a relationship between two infra components.
+message InfraComponentRelationship {
   // Type of relationship between the resources.
   enum RelationshipType {
     unspecified = 0;
@@ -20,7 +20,7 @@ message CloudResourceRelationship {
     uses = 4;
   }
   // Kind of the related resource.
-  dev.planton.shared.cloudresourcekind.CloudResourceKind kind = 1 [(buf.validate.field).required = true];
+  dev.planton.shared.catalogkind.CatalogKind kind = 1 [(buf.validate.field).required = true];
   // Environment of the related resource.
   string env = 2;
   // Name of the related resource.

@@ -7,7 +7,7 @@
 ## Summary
 
 Five AWS infra-charts forged from first principles against the rebuilt
-90/10 component surface: `fargate-web-service`, `app-runner-service`, and
+90/10 kind surface: `fargate-web-service`, `app-runner-service`, and
 `ci-cd-pipeline` (the container/delivery tier), plus `eks-platform` and the
 `production-web-stack` flagship. The AWS chart catalog now stands at 10.
 Every chart passed the full offline gate — structure guard, working-tree
@@ -143,7 +143,7 @@ build, folded into `_rules/charts/forge-planton-infra-chart.mdc`:
 The AWS chart catalog doubles to 10 of the planned 17, now covering the
 highest-demand production paths: containers three ways (Fargate, App
 Runner, EKS), native CI/CD, and the complete startup stack. Every chart
-composes the rebuilt component surface through typed references, renders
+composes the rebuilt kind surface through typed references, renders
 valid in every toggle variant, and documents its own day-2 evolution —
 the catalog a team browses and finds the thing they were about to build
 by hand.

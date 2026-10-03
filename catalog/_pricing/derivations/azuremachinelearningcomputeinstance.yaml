@@ -9,9 +9,9 @@
 # the catalog presets through these rules to emit
 # ../estimates/azuremachinelearningcomputeinstance.yaml; a server-side
 # estimator evaluates the same rules against live manifests.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: azuremachinelearningcomputeinstance
 spec:
@@ -33,6 +33,6 @@ spec:
   exclusions:
     - text: hours while the instance is stopped bill no VM hours -- the spec carries no schedule or idle-shutdown field, so the estimate assumes 24x7 running and stopping is the out-of-band savings lever
     - text: network egress follows what the workstation's code moves
-    - text: the workspace's companion resources (storage account, container registry, Key Vault, Application Insights) bill on their own components
+    - text: the workspace's companion resources (storage account, container registry, Key Vault, Application Insights) bill on their own kinds
   notes:
     - text: The instance runs in its workspace's region -- a reference these rules cannot read, so prices assume eastus.

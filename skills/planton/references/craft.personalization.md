@@ -37,7 +37,7 @@ DO with it in every reply.
   plain clause — "a NAT gateway (the door workers use to reach the internet
   without the internet reaching them)". Never a bare acronym: not "Gateway
   API CRDs" but what the thing does. One analogy per structural concept.
-  The why lands WITH the component, not in a glossary after.
+  The why lands WITH the kind, not in a glossary after.
 - **4–7 (competent)**: normal engineer-to-engineer voice; define only the
   platform's own concepts and the genuinely obscure.
 - **8–10 (expert)**: terse; skip anything a senior engineer knows; lead

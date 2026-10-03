@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awssesemailidentity.v1alpha1;
 
-// AwsSesEmailIdentityStackOutputs captures the observable identifiers and
+// AwsSesEmailIdentityOutputs captures the observable identifiers and
 // verification state of the SES email identity.
-message AwsSesEmailIdentityStackOutputs {
+message AwsSesEmailIdentityOutputs {
   // The Amazon Resource Name (ARN) of the identity -- the resource for
   // identity-policy grants and IAM statements that scope sending.
   string identity_arn = 1;

@@ -10,11 +10,11 @@ import (
 	"buf.build/go/protovalidate"
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/internal/manifest"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/deferrules"
 	"github.com/plantonhq/planton/pkg/manifestgraph"
 	"github.com/plantonhq/planton/pkg/reflection/metadatareflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/proto"
 	yamlv3 "gopkg.in/yaml.v3"
 )
@@ -26,7 +26,7 @@ import (
 // honest granularity. The deployment graph's slug-derived identity lives in
 // pkg/manifestgraph, which owns the walker and rules this pass consumes.
 type refTarget struct {
-	kind cloudresourcekind.CloudResourceKind
+	kind catalogkind.CatalogKind
 	name string
 }
 
@@ -51,7 +51,7 @@ type Issue struct {
 	Message      string
 }
 
-// Doc is one rendered cloud-resource document.
+// Doc is one rendered infra-component document.
 type Doc struct {
 	File string
 	Kind string
@@ -227,7 +227,7 @@ func (r *VariantResult) validateTemplate(tpl TemplateFile, ctx map[string]any, p
 	}
 
 	// A value-less param renders as its "<name>" placeholder — legal for the
-	// platform (the value arrives from the InfraProject), but this gate's
+	// platform (the value arrives from the InfraStack), but this gate's
 	// promise is that DEFAULTS render deployable, so depending on one is
 	// worth a warning even before schema validation rejects it.
 	for _, placeholder := range placeholders {
@@ -357,7 +357,7 @@ func (r *Report) checkReferences() {
 			if doc.Name == "" {
 				continue
 			}
-			anyVariant[refTarget{kind: crkreflect.KindFromString(doc.Kind), name: doc.Name}] = true
+			anyVariant[refTarget{kind: catalogkindreflect.KindFromString(doc.Kind), name: doc.Name}] = true
 		}
 	}
 
@@ -372,7 +372,7 @@ func (r *Report) checkReferences() {
 			if doc.Name == "" {
 				continue
 			}
-			key := refTarget{kind: crkreflect.KindFromString(doc.Kind), name: doc.Name}
+			key := refTarget{kind: catalogkindreflect.KindFromString(doc.Kind), name: doc.Name}
 			if prev, dup := index[key]; dup {
 				v.Issues = append(v.Issues, Issue{
 					Severity: SeverityError, File: doc.File, ResourceKind: doc.Kind, ResourceName: doc.Name,
@@ -394,7 +394,7 @@ func (r *Report) checkReferences() {
 					})
 				}
 				target := refTarget{kind: checked.Kind, name: checked.Name}
-				if target.kind == cloudresourcekind.CloudResourceKind_unspecified || target.name == "" {
+				if target.kind == catalogkind.CatalogKind_unspecified || target.name == "" {
 					continue
 				}
 				if use.Ref.GetEnv() != "" {

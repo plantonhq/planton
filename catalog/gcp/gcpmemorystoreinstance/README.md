@@ -88,7 +88,7 @@ spec:
 
 **Immutable fields** (require instance replacement if changed): `instance_name`, `location`, `mode`, `authorization_mode`, `transit_encryption_mode`, `kms_key`, `zone_distribution_config`, `psc_auto_connections`, and the seed sources.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -139,7 +139,7 @@ judgment lives in `iac/provider-parity.yaml`, checked by
 - You require AUTH string–based authentication (not IAM)
 - You depend on VPC peering or Private Service Access connectivity
 
-## Related Components
+## Related Kinds
 
 - **GcpServiceConnectionPolicy** — the required PSC authorization on the network (deploy first)
 - **GcpVpcNetwork** — provides the VPC network for PSC auto-connections

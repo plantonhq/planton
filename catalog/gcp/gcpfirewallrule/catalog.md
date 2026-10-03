@@ -4,7 +4,7 @@ Deploys a Compute Engine firewall rule that controls inbound or outbound traffic
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute Engine Firewall Rule** -- a `compute.Firewall` in the specified project and VPC network, configured with the direction (INGRESS or EGRESS), action (ALLOW or DENY), protocol/port rules, and traffic source or destination filters
 - **Traffic Matching Rules** -- one or more protocol/port blocks mapped to either allow or deny entries based on the `action` field
@@ -15,13 +15,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the firewall rule will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
-- **A VPC network** to attach the firewall rule to. Provide the network name or self-link directly, or reference a GcpVpcNetwork Cloud Resource via ValueFromRef.
+- **A GCP project** where the firewall rule will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
+- **A VPC network** to attach the firewall rule to. Provide the network name or self-link directly, or reference a GcpVpcNetwork Infra Component via ValueFromRef.
 - **Compute Engine API** (`compute.googleapis.com`) enabled in the target project.
 
 ## Deploy
@@ -59,7 +59,7 @@ spec:
 planton apply -f gcp-firewall-rule.yaml
 ```
 
-This creates an ingress rule allowing HTTP and HTTPS traffic from any source to all instances in the VPC. No target tags are set, so the rule applies network-wide. A Stack Job tracks the provisioning in real time.
+This creates an ingress rule allowing HTTP and HTTPS traffic from any source to all instances in the VPC. No target tags are set, so the rule applies network-wide. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,16 +95,16 @@ These are the most important decisions when configuring a firewall rule. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpVpcNetwork** | `network` | `status.outputs.network_self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -123,5 +123,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the firewall rule is created
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- provides the VPC network that the firewall rule is attached to
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the firewall rule is created
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- provides the VPC network that the firewall rule is attached to

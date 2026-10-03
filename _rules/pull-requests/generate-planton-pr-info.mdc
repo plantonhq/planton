@@ -71,12 +71,12 @@ Usage: In Ask mode, invoke explicitly as `@pr-info`.
 ## Repository-aware scope heuristics (Planton)
 Determine the `<scope-path>` from the changed files. Use the most impacted area by lines changed; if multiple, see multi-area guidance.
 
-- Catalog (components)
+- Catalog (kinds)
   - `catalog/<provider>/<kind>/**` → `catalog/<provider>/<kind>`
   - Multiple kinds under the same provider → `catalog/<provider>`
   - Shared proto surfaces (`shared/**`, `qa/**`, `iac/**`) → `shared`, `qa`, or `iac`
 
-- Charts (multi-cloud Lego blocks)
+- Charts (multi-catalog kinds)
   - `charts/<provider>/<chart>/**` → `charts/<provider>/<chart>`
     - Examples: `charts/aws/eks-platform`, `charts/gcp/gke-environment`, `charts/azure/aks-environment`, `charts/digital-ocean/doks-environment`
   - Multiple charts under the same provider → `charts/<provider>`
@@ -124,10 +124,10 @@ If context is insufficient to infer details, choose the best effort scope from f
 Use Mermaid diagrams to visualize:
 - **Workflows and processes** - Show step-by-step flows with decision points
 - **Before/after architecture** - Illustrate system changes side by side
-- **Sequence diagrams** - Demonstrate interactions between components
+- **Sequence diagrams** - Demonstrate interactions between kinds
 - **State transitions** - Depict lifecycle or status changes
 - **Data flows** - Trace how data moves through the system
-- **Component relationships** - Show how modules/services connect
+- **Kind relationships** - Show how modules/services connect
 
 **Common diagram types for PRs:**
 
@@ -161,7 +161,7 @@ stateDiagram-v2
 ```
 
 **When to include diagrams:**
-- ✅ Architecture or component relationship changes
+- ✅ Architecture or kind relationship changes
 - ✅ Workflow modifications (CLI flows, deployment processes)
 - ✅ Multi-step processes with conditional logic
 - ✅ Breaking changes requiring migration paths

@@ -1,4 +1,4 @@
-# AzureApplicationInsights Deployment Component
+# AzureApplicationInsights Catalog Kind
 
 **Date**: February 13, 2026
 **Type**: Feature
@@ -6,21 +6,21 @@
 
 ## Summary
 
-Added `AzureApplicationInsights` (enum 451, id_prefix `azai`) as a new Planton deployment component. This is the third Azure resource forged in the Azure resource expansion project (R02), following AzureResourceGroup (R00) and AzureLogAnalyticsWorkspace (R01). It provides workspace-based APM monitoring with full Pulumi and Terraform IaC parity.
+Added `AzureApplicationInsights` (enum 451, id_prefix `azai`) as a new Planton catalog kind. This is the third Azure resource forged in the Azure resource expansion project (R02), following AzureResourceGroup (R00) and AzureLogAnalyticsWorkspace (R01). It provides workspace-based APM monitoring with full Pulumi and Terraform IaC parity.
 
 ## Problem Statement / Motivation
 
-Azure Application Insights is the standard APM layer in Azure, consumed by Function Apps, Web Apps, and Container Apps. The upcoming infra charts (function-app-environment, web-app-environment, container-apps-environment) require an Application Insights resource for telemetry wiring. Without this component, infra charts cannot provision end-to-end observability stacks.
+Azure Application Insights is the standard APM layer in Azure, consumed by Function Apps, Web Apps, and Container Apps. The upcoming infra charts (function-app-environment, web-app-environment, container-apps-environment) require an Application Insights resource for telemetry wiring. Without this kind, infra charts cannot provision end-to-end observability stacks.
 
 ### Pain Points
 
-- No Planton component existed for Azure APM telemetry
+- No Planton kind existed for Azure APM telemetry
 - Infra chart observability layers were blocked on this resource
 - Downstream resources (AzureFunctionApp, AzureLinuxWebApp, AzureContainerApp) need `connection_string` for APM integration
 
 ## Solution / What's New
 
-A complete deployment component covering proto APIs, Pulumi module, Terraform module, and comprehensive documentation.
+A complete catalog kind covering proto APIs, Pulumi module, Terraform module, and comprehensive documentation.
 
 ### Dependency Chain
 
@@ -59,16 +59,16 @@ flowchart TB
 
 **Proto APIs (4 + 4 stubs + 1 test + 1 BUILD.bazel)**:
 - `spec.proto` -- 8 fields with validations and defaults
-- `stack_outputs.proto` -- 4 outputs (app_insights_id, instrumentation_key, connection_string, app_id)
+- `outputs.proto` -- 4 outputs (app_insights_id, instrumentation_key, connection_string, app_id)
 - `api.proto` -- KRM envelope (apiVersion, kind, metadata, spec, status)
-- `stack_input.proto` -- IaC module input (target + provider_config)
+- `iac_input.proto` -- IaC module input (target + provider_config)
 - `spec_test.go` -- 22 validation tests
 
 **Pulumi Module (5 files + 1 BUILD.bazel)**:
 - `module/main.go` -- Creates Azure provider + appinsights.Insights resource
 - `module/locals.go` -- StringValueOrRef resolution (.GetValue()), tag building
 - `module/outputs.go` -- Output constant definitions
-- `main.go` -- Pulumi entrypoint with stack input loading
+- `main.go` -- Pulumi entrypoint with IaC input loading
 
 **Terraform Module (5 files)**:
 - `main.tf` -- `azurerm_application_insights` resource
@@ -78,7 +78,7 @@ flowchart TB
 - `provider.tf` -- azurerm ~> 4.0
 
 **Documentation (5 files)**:
-- `README.md` -- Component overview, field table, outputs, quick example
+- `README.md` -- Kind overview, field table, outputs, quick example
 - `examples.md` -- 8 examples (minimal, dev, prod, java, node, infra chart wiring, compliance)
 - `docs/README.md` -- Research document (sampling strategy, retention model, 80/20 analysis)
 - `iac/pulumi/README.md` + `overview.md` -- Pulumi module docs
@@ -90,7 +90,7 @@ flowchart TB
 
 ### Registry Update
 
-Added enum `AzureApplicationInsights = 451` to `cloud_resource_kind.proto`.
+Added enum `AzureApplicationInsights = 451` to `catalog_kind.proto`.
 
 ## Benefits
 

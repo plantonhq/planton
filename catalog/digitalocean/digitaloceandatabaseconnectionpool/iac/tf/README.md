@@ -14,7 +14,7 @@ Generated `variables.tf` mirrors the `DigitalOceanDatabaseConnectionPoolSpec` pr
 
 ## Outputs
 
-Exactly the `DigitalOceanDatabaseConnectionPoolStackOutputs` contract: `cluster_id`, `pool_name`, `host`, `private_host`, `port`, and the secrets `uri`, `private_uri`, `password`.
+Exactly the `DigitalOceanDatabaseConnectionPoolOutputs` contract: `cluster_id`, `pool_name`, `host`, `private_host`, `port`, and the secrets `uri`, `private_uri`, `password`.
 
 ## Behavior notes
 

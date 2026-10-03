@@ -65,7 +65,7 @@ Once the policy exists, PSC-first managed services of that class can be created 
 | `pscConfig.allowedGoogleProducersResourceHierarchyLevels` | `string[]` | — | `projects/…`, `folders/…`, `organizations/…` entries producers may live in. |
 | `deletionPolicy` | `string` | `DELETE` | What destroy does: `DELETE` removes the policy (stranding existing PSC endpoints), `PREVENT` fails the destroy to protect managed-instance connectivity, `ABANDON` leaves it authorizing unmanaged. |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -92,7 +92,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 - **Regular subnets work**: service connection policies draw endpoint IPs from ordinary subnets — no special PSC purpose is required.
 - **The immutables**: `location`, `network`, `serviceClass`, and the policy name are ForceNew; the `pscConfig` contents, description, and labels update in place — so subnet growth and limit raises never recreate the policy.
 
-## Related Components
+## Related Kinds
 
 - [GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork) — the network the policy authorizes connections into
 - [GcpSubnetwork](/docs/catalog/gcp/gcpsubnetwork) — supplies the endpoint IP space

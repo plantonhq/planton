@@ -27,7 +27,7 @@ func minimalHub() *AzureEventHub {
 	return &AzureEventHub{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureEventHub",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-hub",
 		},
 		Spec: &AzureEventHubSpec{

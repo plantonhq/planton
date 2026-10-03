@@ -11,12 +11,12 @@ type Locals struct {
 	DestinationStorageAccountId   string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurestorageobjectreplicationv1alpha1.AzureStorageObjectReplicationStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurestorageobjectreplicationv1alpha1.AzureStorageObjectReplicationIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureStorageObjectReplication = stackInput.Target
-	locals.SourceStorageAccountId = stackInput.Target.Spec.SourceStorageAccountId.GetValue()
-	locals.DestinationStorageAccountId = stackInput.Target.Spec.DestinationStorageAccountId.GetValue()
+	locals.AzureStorageObjectReplication = iacInput.Target
+	locals.SourceStorageAccountId = iacInput.Target.Spec.SourceStorageAccountId.GetValue()
+	locals.DestinationStorageAccountId = iacInput.Target.Spec.DestinationStorageAccountId.GetValue()
 
 	// No Azure tags: ARM does not support tags on
 	// objectReplicationPolicies, so the platform's identity tags live on

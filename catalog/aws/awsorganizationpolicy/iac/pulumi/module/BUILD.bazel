@@ -14,7 +14,7 @@ go_library(
         "//catalog/aws/awsorganizationpolicy/v1alpha1",
         "//pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/aws/pulumiawsprovider",
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws",
         "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws/organizations",

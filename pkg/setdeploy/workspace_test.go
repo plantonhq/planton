@@ -5,14 +5,14 @@ import (
 	"testing"
 
 	"github.com/plantonhq/planton/pkg/manifestgraph"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // TestNodeWorkspaceDir_RefusesUnlawfulSlug: the slug and env are joined into
 // a filesystem path, so one that is not a lawful slug is refused before any
 // directory is touched.
 func TestNodeWorkspaceDir_RefusesUnlawfulSlug(t *testing.T) {
-	kind := cloudresourcekind.CloudResourceKind_KubernetesNamespace
+	kind := catalogkind.CatalogKind_KubernetesNamespace
 	for _, id := range []manifestgraph.Identity{
 		{Kind: kind, Slug: "../escape"},
 		{Kind: kind, Slug: "a_b"},

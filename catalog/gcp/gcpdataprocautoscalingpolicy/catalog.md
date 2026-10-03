@@ -4,7 +4,7 @@ Deploys a reusable Dataproc autoscaling policy: the scaling contract that govern
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Dataproc API enablement** -- `dataproc.googleapis.com` is enabled in the target project (never disabled on destroy, so tearing down one policy cannot break the rest of the project)
 - **Dataproc Autoscaling Policy** -- a regional policy resource with the configured worker bounds, capacity weights, and YARN scaling algorithm
@@ -16,12 +16,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the policy will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef; the module enables the Dataproc API itself.
+- **A GCP project** where the policy will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef; the module enables the Dataproc API itself.
 - **Region co-location** -- a Dataproc cluster can only attach policies in its own region; create the policy in the region your clusters run in (`location` is immutable after creation).
 
 ## Deploy
@@ -60,7 +60,7 @@ spec:
 planton apply -f autoscaling-policy.yaml
 ```
 
-This creates a policy that lets attached clusters grow their primary group to 10 workers and shrink back to 2, moving at half the suggested capacity change per evaluation, with a 30-minute drain window before any worker is removed. A Stack Job tracks the provisioning in real time.
+This creates a policy that lets attached clusters grow their primary group to 10 workers and shrink back to 2, moving at half the suggested capacity change per evaluation, with a 30-minute drain window before any worker is removed. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,15 +95,15 @@ These are the most important decisions when configuring an autoscaling policy. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -123,5 +123,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the policy is created
-- [**GCP Dataproc Cluster**](/cloud-catalog/gcp-dataproc-cluster) -- attaches this policy via `autoscalingPolicyUri`; one policy can govern many clusters
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the policy is created
+- [**GCP Dataproc Cluster**](/infra-catalog/gcp-dataproc-cluster) -- attaches this policy via `autoscalingPolicyUri`; one policy can govern many clusters

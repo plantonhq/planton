@@ -7,7 +7,7 @@
   database/Redis credentials, embedded a hardcoded ingress, and modeled
   surfaces Harbor itself removed upstream (Notary left at v2.6; Clair
   was replaced by Trivy). The spec now models the chart's real surface:
-  per-component topology (core, portal, registry, jobservice, Trivy,
+  per-kind topology (core, portal, registry, jobservice, Trivy,
   exporter, the nginx front door), internal TLS with a cert-manager
   seam, metrics/ServiceMonitor, image mirroring, the outbound proxy,
   and an escape hatch whose `fullnameOverride` is re-pinned after the
@@ -28,7 +28,7 @@
   defaults** (`Harbor12345`, `changeit`, `not-a-secure-key`,
   `harbor_registry_password`): unset admin auth generates a random
   password into `<name>-admin-auth` (key `HARBOR_ADMIN_PASSWORD`,
-  exported as the credential handle); six inter-component credentials
+  exported as the credential handle); six inter-kind credentials
   land in `<name>-internal-auth` under each chart site's contract key,
   with a STABLE bcrypt htpasswd line (the chart's own helper re-salts
   every render, which would rotate the registry credential on every
@@ -61,4 +61,4 @@
 
 - The `metadata.name` budget is enforced fail-loud in both engines at
   39 characters (the chart truncates its fullname at 63 and appends up
-  to 24 characters of component suffix).
+  to 24 characters of kind suffix).

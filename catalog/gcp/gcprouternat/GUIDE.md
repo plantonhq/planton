@@ -71,7 +71,7 @@ router's own posture, not the sessions.
   names — the whole reason per-subnetwork scoping carries range detail.
 - `deletionPolicy: PREVENT` belongs on the production egress path: a
   destroyed NAT takes the whole private fleet's connectivity down at once,
-  which is the single most disruptive "oops" this component can express.
+  which is the single most disruptive "oops" this kind can express.
 - Timeout tuning is real money for high-churn workloads:
   `tcpTimeWaitTimeoutSec` below the 120s default frees ports faster at
   the cost of stricter RFC conformance.

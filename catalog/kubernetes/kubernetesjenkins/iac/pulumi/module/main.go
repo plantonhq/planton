@@ -7,17 +7,17 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *kubernetesjenkinsv1alpha1.KubernetesJenkinsStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
-	//create kubernetes-provider from the credential in the stack-input
+func Resources(ctx *pulumi.Context, iacInput *kubernetesjenkinsv1alpha1.KubernetesJenkinsIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
+	//create kubernetes-provider from the credential in the iac-input
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to setup gcp provider")
 	}
 
 	//conditionally create namespace resource based on create_namespace flag
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

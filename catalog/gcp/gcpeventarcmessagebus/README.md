@@ -4,7 +4,7 @@ Creates an Eventarc ADVANCED message bus with its satellites — the enterprise 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Message bus** -- an `eventarc.MessageBus` (the central conduit)
 - **Google API sources** -- one `eventarc.GoogleApiSource` per spec entry, auto-wired to THIS bus

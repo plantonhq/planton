@@ -27,7 +27,7 @@ func validPortal(spec *CloudflareZeroTrustMcpPortalSpec) *CloudflareZeroTrustMcp
 	return &CloudflareZeroTrustMcpPortal{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZeroTrustMcpPortal",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-portal",
 		},
 		Spec: spec,

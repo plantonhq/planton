@@ -4,7 +4,7 @@ Deploys a DigitalOcean Virtual Private Cloud with configurable CIDR range and re
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **DigitalOcean VPC** -- a regional private network with the configured IP range (or a DigitalOcean-assigned range if omitted) and optional description
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### DigitalOcean Account
@@ -45,7 +45,7 @@ spec:
 planton apply -f do-vpc.yaml
 ```
 
-This creates a VPC in the NYC1 region with a DigitalOcean-assigned, non-conflicting IP range (reported through the `ip_range` output). A Stack Job tracks the provisioning in real time.
+This creates a VPC in the NYC1 region with a DigitalOcean-assigned, non-conflicting IP range (reported through the `ip_range` output). An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -63,13 +63,13 @@ These are the most important decisions when configuring a VPC. Explore the full 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies.
+This kind has no foreign key dependencies.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -87,8 +87,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Droplet**](/cloud-catalog/digital-ocean-droplet) -- placed in this network via its `vpc` reference
-- [**DigitalOcean Kubernetes Cluster**](/cloud-catalog/digital-ocean-kubernetes-cluster) -- cluster networking consumes `vpc_id`
-- [**DigitalOcean Database Cluster**](/cloud-catalog/digital-ocean-database-cluster) -- private database attachment inside the VPC
-- [**DigitalOcean Load Balancer**](/cloud-catalog/digital-ocean-load-balancer) -- balancer placement via its `vpc` reference
-- [**DigitalOcean App Platform App**](/cloud-catalog/digital-ocean-app) -- App Platform egress placement (`spec.vpc`)
+- [**DigitalOcean Droplet**](/infra-catalog/digital-ocean-droplet) -- placed in this network via its `vpc` reference
+- [**DigitalOcean Kubernetes Cluster**](/infra-catalog/digital-ocean-kubernetes-cluster) -- cluster networking consumes `vpc_id`
+- [**DigitalOcean Database Cluster**](/infra-catalog/digital-ocean-database-cluster) -- private database attachment inside the VPC
+- [**DigitalOcean Load Balancer**](/infra-catalog/digital-ocean-load-balancer) -- balancer placement via its `vpc` reference
+- [**DigitalOcean App Platform App**](/infra-catalog/digital-ocean-app) -- App Platform egress placement (`spec.vpc`)

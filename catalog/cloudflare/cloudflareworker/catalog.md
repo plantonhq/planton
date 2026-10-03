@@ -4,7 +4,7 @@ Deploys a Cloudflare Worker — a script that runs on Cloudflare's edge — with
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Workers Script** -- the serverless function, from inline `content` or an R2 `r2Bundle`, with optional static `assets`
 - **Bindings** -- typed lists (vars, secrets, KV, R2, D1, Hyperdrive, services, queues, Durable Objects, and the rest of the provider's binding types) flattened into the script's bindings array
@@ -55,7 +55,7 @@ spec:
 planton apply -f cloudflare-worker.yaml
 ```
 
-This deploys an inline hello-world Worker reachable on its `workers.dev` subdomain. A Stack Job tracks the provisioning in real time.
+This deploys an inline hello-world Worker reachable on its `workers.dev` subdomain. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -88,7 +88,7 @@ These are the most important decisions when configuring a Worker. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -101,9 +101,9 @@ These are the most important decisions when configuring a Worker. Explore the fu
 | **CloudflareDnsZone** (optional) | `customDomains[].zoneId`, `routes[].zoneId` | `status.outputs.zone_id` |
 | **CloudflareZeroTrustTunnel** (optional) | `vpcNetworks[].tunnelId` | `status.outputs.tunnel_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -121,10 +121,10 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Cloudflare KV Namespace**](/cloud-catalog/cloudflare-kv-namespace) -- bound for edge key-value reads and writes
-- [**Cloudflare D1 Database**](/cloud-catalog/cloudflare-d1-database) -- bound for serverless SQL access
-- [**Cloudflare R2 Bucket**](/cloud-catalog/cloudflare-r2-bucket) -- bound for object storage, or holds the CI-built script bundle (`r2Bundle`)
-- [**Cloudflare Queue**](/cloud-catalog/cloudflare-queue) -- the Worker produces to it via a `queues` binding, or consumes it as the queue's worker consumer
-- [**Cloudflare Hyperdrive Config**](/cloud-catalog/cloudflare-hyperdrive-config) -- bound for pooled access to a regional SQL database
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) -- hosts the Worker's custom domains and route patterns
-- [**Cloudflare Zero Trust Tunnel**](/cloud-catalog/cloudflare-zero-trust-tunnel) -- bound through `vpcNetworks` so the Worker reaches private networks
+- [**Cloudflare KV Namespace**](/infra-catalog/cloudflare-kv-namespace) -- bound for edge key-value reads and writes
+- [**Cloudflare D1 Database**](/infra-catalog/cloudflare-d1-database) -- bound for serverless SQL access
+- [**Cloudflare R2 Bucket**](/infra-catalog/cloudflare-r2-bucket) -- bound for object storage, or holds the CI-built script bundle (`r2Bundle`)
+- [**Cloudflare Queue**](/infra-catalog/cloudflare-queue) -- the Worker produces to it via a `queues` binding, or consumes it as the queue's worker consumer
+- [**Cloudflare Hyperdrive Config**](/infra-catalog/cloudflare-hyperdrive-config) -- bound for pooled access to a regional SQL database
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) -- hosts the Worker's custom domains and route patterns
+- [**Cloudflare Zero Trust Tunnel**](/infra-catalog/cloudflare-zero-trust-tunnel) -- bound through `vpcNetworks` so the Worker reaches private networks

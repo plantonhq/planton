@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awscloudwatchlogdelivery
+    e2e-catalog-kind: awscloudwatchlogdelivery
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AwsBedrockKnowledgeBase,AwsS3Bucket"

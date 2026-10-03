@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsorganizationaccount
 spec:
@@ -9,7 +9,7 @@ spec:
   values:
     - name: account_id
       derivations:
-        - from_stack_output: account_id
+        - from_output: account_id
       where_to_find: >-
         Organizations console -> AWS accounts (the account's 12-digit
         ID), or `aws organizations list-accounts` (Id).

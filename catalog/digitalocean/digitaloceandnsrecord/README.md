@@ -2,7 +2,7 @@
 
 A single DNS record in a DigitalOcean-hosted zone, described once in a Planton manifest: every record type the DigitalOcean API accepts (A, AAAA, CNAME, MX, TXT, SRV, NS, CAA, SOA), the per-type fields each requires, and a zone reference so records compose with their zone in infra charts.
 
-## What this component models
+## What this kind models
 
 The spec maps one-to-one onto DigitalOcean's `digitalocean_record`:
 
@@ -61,7 +61,7 @@ spec:
 - **Explicit zeros are dropped** — the provider omits a `priority`/`weight`/`port`/`flags` of exactly 0 from the create request and the API's default applies; use positive values when exactness matters (CAA `flags: 0` is safe — the API default IS 0).
 - **Concurrent writes to one zone can deadlock** — DigitalOcean fails one of several simultaneous record writes to the same domain with a `422 ... Deadlock found` error; sequence many standalone records, or use the zone kind's inline `records`, which are written one at a time.
 - **TTLs harmonize server-side** — DigitalOcean forces one TTL across records sharing a fully-qualified name (RFC 2181), so the live TTL can drift when a sibling record changes it.
-- **Records import with a two-part ID** — `{domain},{record_id}`; both are stack outputs of this component.
+- **Records import with a two-part ID** — `{domain},{record_id}`; both are outputs of this component.
 
 ## Outputs
 

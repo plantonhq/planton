@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpgkefleet.v1alpha1;
 
-// GcpGkeFleetStackOutputs carries the fleet's identity.
-message GcpGkeFleetStackOutputs {
+// GcpGkeFleetOutputs carries the fleet's identity.
+message GcpGkeFleetOutputs {
   // The fleet host project's ID -- the value every fleet child's
   // project_id references, so a chart places scopes, features, and
   // memberships inside this fleet and orders them after it.

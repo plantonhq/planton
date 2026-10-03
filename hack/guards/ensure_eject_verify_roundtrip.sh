@@ -107,7 +107,7 @@ done
 expect_ok "an unmodified ejected module verifies green (including go build)" \
   "$planton_bin" module verify --kind "$kind" --module-dir "$pulumi_dir"
 
-# Break the entrypoint contract: no typed stack input.
+# Break the entrypoint contract: no typed IaC input.
 cat >"${pulumi_dir}/main.go" <<'EOF'
 package main
 

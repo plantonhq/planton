@@ -58,7 +58,7 @@ own component lets you:
   and load balancer never churn.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `rule_arn`: ARN of the rule (the handle audit tooling and imports reference)
 - `priority`: the priority AWS assigned -- meaningful when the spec left it unset

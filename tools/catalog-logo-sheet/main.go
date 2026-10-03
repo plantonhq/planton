@@ -1,4 +1,4 @@
-// Command catalog-logo-sheet renders one provider's component logos as a
+// Command catalog-logo-sheet renders one provider's kind logos as a
 // contact sheet -- every registered kind's logo.svg at the sizes the console
 // actually draws an icon at, on a light and a dark paper wash, the kind folder
 // under each -- so a logo set can be judged glyph by glyph before it is kept.
@@ -37,8 +37,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 const perRow = 9
@@ -79,11 +79,11 @@ func main() {
 	if *provider == "" {
 		fail("-provider is required: the catalog directory name of one provider (e.g. cloudflare)")
 	}
-	prov := crkreflect.ProviderFromString(*provider)
-	if prov == cloudresourcekind.CloudResourceProvider_cloud_resource_provider_unspecified {
+	prov := catalogkindreflect.ProviderFromString(*provider)
+	if prov == catalogkind.CatalogProvider_catalog_provider_unspecified {
 		fail(fmt.Sprintf("unknown provider %q -- use a catalog directory name such as %s", *provider, strings.Join(providerDirNames(), ", ")))
 	}
-	providerDir := crkreflect.ProviderDirName(prov)
+	providerDir := catalogkindreflect.ProviderDirName(prov)
 	if _, err := os.Stat(filepath.Join("catalog", providerDir)); err != nil {
 		fail(fmt.Sprintf("catalog/%s not found -- run this from the repository root", providerDir))
 	}
@@ -123,12 +123,12 @@ func main() {
 }
 
 // collect walks the kind registry the way the gate does, so the sheet shows
-// exactly the components the product serves for this provider.
-func collect(prov cloudresourcekind.CloudResourceProvider, providerDir string) []entry {
-	metaByKind := crkreflect.KindToKindMetaMap()
+// exactly the kinds the product serves for this provider.
+func collect(prov catalogkind.CatalogProvider, providerDir string) []entry {
+	metaByKind := catalogkindreflect.KindToKindMetaMap()
 	var entries []entry
-	for _, kind := range crkreflect.KindsList() {
-		if kind == cloudresourcekind.CloudResourceKind_unspecified {
+	for _, kind := range catalogkindreflect.KindsList() {
+		if kind == catalogkind.CatalogKind_unspecified {
 			continue
 		}
 		meta := metaByKind[kind]
@@ -258,11 +258,11 @@ func labelFor(paper string) string {
 
 func providerDirNames() []string {
 	var names []string
-	for _, p := range crkreflect.ProvidersList() {
-		if p == cloudresourcekind.CloudResourceProvider_cloud_resource_provider_unspecified {
+	for _, p := range catalogkindreflect.ProvidersList() {
+		if p == catalogkind.CatalogProvider_catalog_provider_unspecified {
 			continue
 		}
-		names = append(names, crkreflect.ProviderDirName(p))
+		names = append(names, catalogkindreflect.ProviderDirName(p))
 	}
 	sort.Strings(names)
 	return names

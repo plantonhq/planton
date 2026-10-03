@@ -19,7 +19,7 @@ type ResourceChecker interface {
 type Verifier interface {
 	VerifyExists(checker ResourceChecker, id string) error
 	VerifyAbsent(checker ResourceChecker, id string) error
-	// IDOutput names the stack output that carries the resource's Management
+	// IDOutput names the output that carries the resource's Management
 	// API identifier. Most kinds report it as "id"; a kind whose identifier
 	// has its own name in the API (a user's user_id) says so here rather
 	// than duplicating the value under a second output. A tenant's settings

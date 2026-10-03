@@ -4,7 +4,7 @@ package dev.planton.gcp.gcpvertexaideployedindex.v1alpha1;
 
 // Outputs produced after deploying a Vertex AI index onto an index
 // endpoint.
-message GcpVertexAiDeployedIndexStackOutputs {
+message GcpVertexAiDeployedIndexOutputs {
   // Name of the DeployedIndex resource as the provider reports it.
   string name = 1;
 

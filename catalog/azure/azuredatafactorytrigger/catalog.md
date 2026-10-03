@@ -4,7 +4,7 @@ Deploys one trigger inside an Azure Data Factory -- the instruction that starts 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions exactly one trigger of the type the spec's variant block declares:
+When you deploy this Infra Component, the IaC module provisions exactly one trigger of the type the spec's variant block declares:
 
 - **Schedule trigger** -- fires on a wall-clock recurrence, optionally narrowed to specific minutes, hours, days, or monthly weekday occurrences
 - **Tumbling window trigger** -- fires once per contiguous, non-overlapping time window from a fixed start; backfills past windows, retries, rate-limits, and can depend on other windows (or its own earlier ones)
@@ -73,7 +73,7 @@ spec:
 planton apply -f data-factory-trigger.yaml
 ```
 
-This creates a daily 02:00 UTC schedule trigger targeting the `ingest-daily` pipeline, deployed STOPPED -- nothing runs until you flip `activated` to true. A Stack Job tracks the provisioning in real time.
+This creates a daily 02:00 UTC schedule trigger targeting the `ingest-daily` pipeline, deployed STOPPED -- nothing runs until you flip `activated` to true. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -123,7 +123,7 @@ These are the most important decisions when configuring a trigger. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -133,9 +133,9 @@ These are the most important decisions when configuring a trigger. Explore the f
 | **AzureEventgridTopic** (custom event) | `customEvent.eventgridTopicId` | `status.outputs.topic_id` |
 | **AzureDataFactoryTrigger** (tumbling window dependencies) | `tumblingWindow.dependencies[].triggerName` | `status.outputs.trigger_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -156,7 +156,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Data Factory**](/cloud-catalog/azure-data-factory) -- the factory the trigger lives in, referenced by `dataFactoryId`
-- [**Azure Data Factory Pipeline**](/cloud-catalog/azure-data-factory-pipeline) -- what every trigger fires, referenced by pipeline name
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- the event source for blob event triggers
-- [**Azure Event Grid Topic**](/cloud-catalog/azure-eventgrid-topic) -- the event source for custom event triggers (Event Grid schema required)
+- [**Azure Data Factory**](/infra-catalog/azure-data-factory) -- the factory the trigger lives in, referenced by `dataFactoryId`
+- [**Azure Data Factory Pipeline**](/infra-catalog/azure-data-factory-pipeline) -- what every trigger fires, referenced by pipeline name
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- the event source for blob event triggers
+- [**Azure Event Grid Topic**](/infra-catalog/azure-eventgrid-topic) -- the event source for custom event triggers (Event Grid schema required)

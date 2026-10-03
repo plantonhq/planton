@@ -9,7 +9,7 @@ provider.tf   — Cloudflare provider configuration
 variables.tf  — Input variables mirroring CloudflareCertificatePackSpec
 locals.tf     — Zone id flattening and type default ("advanced")
 main.tf       — cloudflare_certificate_pack resource
-outputs.tf    — Stack outputs (certificate_pack_id, zone_id)
+outputs.tf    — outputs (certificate_pack_id, zone_id)
 ```
 
 ## Usage
@@ -43,7 +43,7 @@ A pack is an order, not an editable object: changing hosts, CA, validation metho
 | `certificate_pack_id` | Cloudflare-assigned pack ID |
 | `zone_id` | The zone the pack was ordered in |
 
-There is no `status` output: issuance is asynchronous (`initializing` → `pending_validation` → `active`), and a point-in-time phase is never a stable stack output — it flips on the first refresh after the transition and re-plans forever.
+There is no `status` output: issuance is asynchronous (`initializing` → `pending_validation` → `active`), and a point-in-time phase is never a stable output — it flips on the first refresh after the transition and re-plans forever.
 
 ## Provider Version
 

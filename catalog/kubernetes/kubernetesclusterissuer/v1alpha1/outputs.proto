@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesclusterissuer.v1alpha1;
 
-// KubernetesClusterIssuerStackOutputs captures observable outputs after
+// KubernetesClusterIssuerOutputs captures observable outputs after
 // the ClusterIssuer is created.
-message KubernetesClusterIssuerStackOutputs {
+message KubernetesClusterIssuerOutputs {
   // Name of the created ClusterIssuer (equals metadata.name). Use it in
   // Certificate issuerRef.name (kind ClusterIssuer) and in the
   // cert-manager.io/cluster-issuer ingress-shim annotation.

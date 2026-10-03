@@ -8,9 +8,9 @@
 # (installed by default) carries subchart sizing this spec does not
 # model, and the Solr clusters the operator reconciles reserve their
 # own capacity on their KubernetesSolr resources.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetessolroperator
 spec:

@@ -40,7 +40,7 @@ var _ = ginkgo.Describe("KubernetesTlsRoute Validation Tests", func() {
 		input = &KubernetesTlsRoute{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesTlsRoute",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-tls-route",
 			},
 			Spec: &KubernetesTlsRouteSpec{

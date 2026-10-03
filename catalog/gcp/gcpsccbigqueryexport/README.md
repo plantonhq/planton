@@ -4,7 +4,7 @@ Continuously exports Security Command Center findings to a BigQuery dataset, for
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `securitycenter.googleapis.com` on a project export's project (never disabled on destroy)
 - **BigQuery export** -- one `scc_v2_{project,folder,organization}_scc_big_query_export`, chosen by the scope
@@ -73,7 +73,7 @@ planton apply -f scc-bigquery-export.yaml
 - `location` is `global` or a residency location; `deletionPolicy` takes only Google's values.
 - `bigQueryExportId` follows Google's ID rule; `dataset` names a dataset (IDs use letters, digits, and underscores).
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -100,7 +100,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpBigQueryDataset** -- the destination, and the access entry that grants the writer
 - **GcpSccNotificationConfig** -- real-time findings to Pub/Sub

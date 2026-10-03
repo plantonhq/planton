@@ -4,13 +4,13 @@ Deploys a Google Cloud project — the Layer-0 container every other GCP resourc
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **GCP Project** -- a new project with the immutable `projectId`, the mutable `displayName` (defaults to the resource name), and the configured hierarchy parent
 - **Hierarchy Placement** -- created under the organization or folder named by `parentType` + `parentId`, or inside a folder declared in the same chart by referencing a `GcpFolder` in `folderId`; standalone (no parent) is supported for accounts without a GCP Organization
 - **Billing Link** -- when `billingAccountId` is set, the project links to that billing account (the deploying identity needs `roles/billing.user` on it)
 - **Default Network Suppression** -- unless `autoCreateNetwork` is true, the auto-created "default" VPC with its permissive firewall rules never persists — the standard security-hardening posture
-- **Cloud API Enablement** -- each entry in `enabledApis` is activated as a project service (e.g., `compute.googleapis.com`); component kinds also enable the APIs they need at their own deploy time
+- **Cloud API Enablement** -- each entry in `enabledApis` is activated as a project service (e.g., `compute.googleapis.com`); catalog kinds also enable the APIs they need at their own deploy time
 - **Resource Manager Tags** -- entries in `tags` (`tagKeys/{id}` → `tagValues/{id}`) bind at CREATE TIME for org-policy and IAM-condition targeting; changing them later recreates the project
 - **Deletion Policy** -- `deletionPolicy` is GCP's real three-way destroy switch: `DELETE` (default, 30-day restore window), `PREVENT` (destroy fails — foundation protection), or `ABANDON` (unmanage without touching GCP)
 - **GCP Labels** -- your `labels` merge beneath Planton's attribution labels (platform keys win on conflicts); project labels are the primary cost-allocation dimension in billing exports
@@ -21,7 +21,7 @@ IAM grants are deliberately NOT part of this component — model each grant as a
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials that have permission to create projects under the target organization or folder. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials that have permission to create projects under the target organization or folder. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Organization
@@ -61,7 +61,7 @@ spec:
 planton apply -f gcp-project.yaml
 ```
 
-This creates a project under the specified folder with compute and container APIs enabled, no auto-created default network, and destroy blocked while `PREVENT` is set. A Stack Job tracks the provisioning in real time.
+This creates a project under the specified folder with compute and container APIs enabled, no auto-created default network, and destroy blocked while `PREVENT` is set. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -73,7 +73,7 @@ These are the most important decisions when configuring a GCP project. Explore t
 
 **Default network posture** -- Leave `autoCreateNetwork` unset (or false): the auto-created VPC ships permissive allow-internal/allow-ssh firewall rules in every region, and suppressing it is a standard hardening step. Model networks as explicit `GcpVpcNetwork` resources instead. Note the project still needs one free network slot of quota during creation.
 
-**API pre-enablement** -- The `enabledApis` list activates Cloud APIs at creation time; component kinds enable the APIs they need on their own, so this is a pre-warming convenience. Include `cloudresourcemanager.googleapis.com` and `serviceusage.googleapis.com` so IaC tooling can manage the project and enable further APIs; add `servicenetworking.googleapis.com` when Cloud SQL or Memorystore private IP is planned.
+**API pre-enablement** -- The `enabledApis` list activates Cloud APIs at creation time; catalog kinds enable the APIs they need on their own, so this is a pre-warming convenience. Include `cloudresourcemanager.googleapis.com` and `serviceusage.googleapis.com` so IaC tooling can manage the project and enable further APIs; add `servicenetworking.googleapis.com` when Cloud SQL or Memorystore private IP is planned.
 
 **Deletion policy** -- Set `deletionPolicy: PREVENT` for foundation projects whose accidental destruction would be catastrophic. Use `ABANDON` to hand a project off to another owner or tool: destroy removes it from Planton's state and the project lives on unmanaged.
 
@@ -81,13 +81,13 @@ These are the most important decisions when configuring a GCP project. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies — it is the root of the GCP composition graph.
+This kind has no foreign key dependencies — it is the root of the GCP composition graph.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|

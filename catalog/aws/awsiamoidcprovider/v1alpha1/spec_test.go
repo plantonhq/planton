@@ -20,7 +20,7 @@ func newValidProvider() *AwsIamOidcProvider {
 	return &AwsIamOidcProvider{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsIamOidcProvider",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "valid-name",
 		},
 		Spec: &AwsIamOidcProviderSpec{

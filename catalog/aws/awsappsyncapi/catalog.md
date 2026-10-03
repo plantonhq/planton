@@ -4,7 +4,7 @@ Deploys an AWS AppSync API — a GraphQL API that resolves fields straight out o
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **GraphQL API** — created only when the `graphql` arm is configured: the API with its primary and additional auth providers, the SDL schema (applied through AppSync's async schema creation), visibility, introspection and query-limit settings, X-Ray, enhanced metrics, logging, and optionally a WAF web-ACL association and the MERGED federation variant with its source-API associations
 - **Events API** — created only when the `events` arm is configured: per-phase authorization (connect / publish / subscribe) against declared auth providers, plus channel namespaces with inline APPSYNC_JS handlers or DIRECT data-source integrations
@@ -18,7 +18,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with AppSync permissions, `iam:PassRole` for data-source service roles, and WAF permissions when attaching a web ACL. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with AppSync permissions, `iam:PassRole` for data-source service roles, and WAF permissions when attaching a web ACL. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -99,7 +99,7 @@ spec:
 planton apply -f appsync-api.yaml
 ```
 
-This creates a Cognito-authorized GraphQL API whose `getOrder` resolver reads the referenced DynamoDB table directly — no Lambda in the middle. A Stack Job tracks the provisioning in real time.
+This creates a Cognito-authorized GraphQL API whose `getOrder` resolver reads the referenced DynamoDB table directly — no Lambda in the middle. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -159,7 +159,7 @@ These are the most important decisions when configuring an AppSync API. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -174,9 +174,9 @@ These are the most important decisions when configuring an AppSync API. Explore 
 | **AwsCertManagerCert** | `customDomain.certificateArn` | `status.outputs.cert_arn` |
 | **AwsAppSyncApi** | `graphql.merged.sourceApis[].sourceApiId` | `status.outputs.api_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -205,12 +205,12 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS DynamoDB**](/cloud-catalog/aws-dynamodb) — the zero-hop resolver backend via `datasources[].dynamodb`
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) — data source, Lambda authorizer, and sync-conflict handler
-- [**AWS Cognito User Pool**](/cloud-catalog/aws-cognito-user-pool) — user-pool authorization for either arm
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the appsync-trusting service roles data sources assume
-- [**AWS EventBridge Bus**](/cloud-catalog/aws-event-bridge-bus) — data source for publishing events from resolvers and channel handlers
-- [**AWS OpenSearch Domain**](/cloud-catalog/aws-open-search-domain) — search-backed resolvers via `datasources[].opensearch`
-- [**AWS RDS Cluster**](/cloud-catalog/aws-rds-cluster) — Aurora Data API resolvers via `datasources[].relationalDatabase`
-- [**AWS WAF Web ACL**](/cloud-catalog/aws-waf-web-acl) — request filtering on GraphQL APIs via `graphql.webAclArn`
-- [**AWS ACM Certificate**](/cloud-catalog/aws-cert-manager-cert) — the us-east-1 certificate behind a custom domain
+- [**AWS DynamoDB**](/infra-catalog/aws-dynamodb) — the zero-hop resolver backend via `datasources[].dynamodb`
+- [**AWS Lambda**](/infra-catalog/aws-lambda) — data source, Lambda authorizer, and sync-conflict handler
+- [**AWS Cognito User Pool**](/infra-catalog/aws-cognito-user-pool) — user-pool authorization for either arm
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the appsync-trusting service roles data sources assume
+- [**AWS EventBridge Bus**](/infra-catalog/aws-event-bridge-bus) — data source for publishing events from resolvers and channel handlers
+- [**AWS OpenSearch Domain**](/infra-catalog/aws-open-search-domain) — search-backed resolvers via `datasources[].opensearch`
+- [**AWS RDS Cluster**](/infra-catalog/aws-rds-cluster) — Aurora Data API resolvers via `datasources[].relationalDatabase`
+- [**AWS WAF Web ACL**](/infra-catalog/aws-waf-web-acl) — request filtering on GraphQL APIs via `graphql.webAclArn`
+- [**AWS ACM Certificate**](/infra-catalog/aws-cert-manager-cert) — the us-east-1 certificate behind a custom domain

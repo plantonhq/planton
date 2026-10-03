@@ -20,17 +20,17 @@ func TestImportRoundTripEnabled_ScenarioSkipAnnotation(t *testing.T) {
 	if err := os.MkdirAll(mapDir, 0o755); err != nil {
 		t.Fatalf("mkdir import-map dir: %v", err)
 	}
-	mapYaml := "apiVersion: iac.planton.dev/v1\nkind: ComponentImportMap\n"
+	mapYaml := "apiVersion: iac.planton.dev/v1\nkind: CatalogKindImportMap\n"
 	if err := os.WriteFile(filepath.Join(mapDir, "import-map.yaml"), []byte(mapYaml), 0o600); err != nil {
 		t.Fatalf("write import map: %v", err)
 	}
 	t.Setenv(ImportRoundTripEnvVar, "1")
 
-	tc := &provider.ComponentTestContext{
-		Component: "awsecscluster",
-		Provider:  "aws",
-		Engine:    "terraform",
-		RepoRoot:  repoRoot,
+	tc := &provider.KindTestContext{
+		Kind:     "awsecscluster",
+		Provider: "aws",
+		Engine:   "terraform",
+		RepoRoot: repoRoot,
 	}
 
 	tc.ManifestPath = writeScenarioManifest(t, t.TempDir(), "")
@@ -98,7 +98,7 @@ func TestChangedTopLevelAttributes(t *testing.T) {
 }
 
 // The sub-path tolerance backs BOTH declaration vocabularies (the provider
-// catalog's dotted config-only/write-normalized entries and the component
+// catalog's dotted config-only/write-normalized entries and the kind
 // map's resource-scoped import-normalized entries): only the declared leaf
 // may differ; any sibling drift under the same attribute fails closed. The
 // canonical import-normalized case is a Secret data key wiring a salted-hash

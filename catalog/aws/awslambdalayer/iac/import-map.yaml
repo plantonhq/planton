@@ -1,7 +1,7 @@
 # Where each placeholder in this component's import-ID formats comes
 # from (the formats themselves live in aa_import/catalog.yaml).
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awslambdalayer
 spec:
@@ -11,20 +11,20 @@ spec:
   values:
     - name: layer_version_arn
       derivations:
-        - from_stack_output: layer_version_arn
+        - from_output: layer_version_arn
       where_to_find: >-
         Lambda console -> Layers -> the layer -> Versions (the version
         ARN), or `aws lambda list-layer-versions --layer-name <name>`
         (LayerVersionArn).
     - name: layer_arn
       derivations:
-        - from_stack_output: layer_arn
+        - from_output: layer_arn
       where_to_find: >-
         The unversioned layer ARN - `aws lambda list-layers`
         (LayerArn).
     - name: layer_version
       derivations:
-        - from_stack_output: version
+        - from_output: version
       where_to_find: >-
         The published version number - `aws lambda list-layer-versions
         --layer-name <name>` (Version).

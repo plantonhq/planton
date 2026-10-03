@@ -16,7 +16,7 @@ stale by construction; the catalog's figures were read from the provider's
 own price documents, carry the source URL and the date they were verified,
 and are re-verified by machine.
 
-- **Files first (the fast path).** Covered components carry fact-sheets in
+- **Files first (the fast path).** Covered kinds carry fact-sheets in
   the catalog skill's reference pack: `<provider>/<kind>/cost.yaml` (billing
   model, always-on baseline charges, the spec fields that move the bill,
   exclusions) and `_pricing/estimates/<kinddir>.yaml` (per-preset monthly
@@ -25,9 +25,9 @@ and are re-verified by machine.
   research-recipes reference has the exact moves; resolve the pack through
   its ladder.
 - **On the platform-tools arm** (no filesystem pack), the same answers come
-  from the platform tools: `get_component_cost` for the cost anatomy and
-  preset estimates, `get_component_control_posture` and
-  `get_component_permissions` for the posture and permissions sides of the
+  from the platform tools: `get_catalog_kind_cost` for the cost anatomy and
+  preset estimates, `get_catalog_kind_control_posture` and
+  `get_catalog_kind_permissions` for the posture and permissions sides of the
   fact-sheet.
 - **When neither instrument is reachable, say so.** "I can't reach the
   verified cost data from here" is a complete, honest answer. Never fill
@@ -39,7 +39,7 @@ and are re-verified by machine.
 - **At the explain-after (Phase 4a)** — or at the plan, when the user asked
   to review one first: alongside the built (or proposed) resource list, give
   the monthly picture — the total order of magnitude and the two or three
-  resources that dominate it, from the components' estimate documents. (The
+  resources that dominate it, from the kinds' estimate documents. (The
   catalog-availability disclosure, when there is one, rides this same block
   — `catalog-availability.md`.) One
   short block, not a rate card:
@@ -52,7 +52,7 @@ and are re-verified by machine.
 - **At every costly choice**: when a decision moves the bill meaningfully
   (NAT per-AZ vs single, instance sizes, multi-AZ databases, provisioned vs
   on-demand), read both configurations' figures and state the delta as part
-  of recommending. The component's `cost.yaml` names exactly which spec
+  of recommending. The kind's `cost.yaml` names exactly which spec
   fields move the bill — that list IS the decision map.
 - **At the finish**: the chart summary repeats the cost picture and names
   the params the user can turn when they want it cheaper.
@@ -68,12 +68,12 @@ and are re-verified by machine.
   ("$16.4250/mo on the estimate" may read as "~$16/mo" with the exact line
   on request). Each line's `price_source` + `retrieved_on` is the citation
   to offer when precision matters.
-- **A component without published cost data is "not yet priced", never $0
-  and never a guess.** Coverage is component by component; some covered
-  components deliberately ship no estimate because their rate lives on a
+- **A kind without published cost data is "not yet priced", never $0
+  and never a guess.** Coverage is kind by kind; some covered
+  kinds deliberately ship no estimate because their rate lives on a
   referenced resource — their cost.yaml notes say where the honest estimate
   happens. Relay that honesty instead of papering over it.
-- **Usage-based components with a $0 committed estimate are good news to
+- **Usage-based kinds with a $0 committed estimate are good news to
   state precisely**: "nothing charges while idle; the meters that bill are
   named in the estimate's exclusions."
 
@@ -82,7 +82,7 @@ and are re-verified by machine.
 Always pair the number with the lever. The classics that fit chart params:
 
 - Single NAT gateway for non-production (the fleet's charts expose this) —
-  read the NAT component's estimate to state what each extra gateway adds.
+  read the NAT kind's estimate to state what each extra gateway adds.
 - Right-size nodes and start with fewer; scaling up later is a param change.
 - Public EKS endpoint for dev (private needs a standing runner — itself a
   cost); flip to private for production.
@@ -90,7 +90,7 @@ Always pair the number with the lever. The classics that fit chart params:
   spot presets estimate $0.00 committed with the market-price caveat stated.
 - Turn off what the motive does not need: multi-AZ databases, provisioned
   IOPS, per-AZ redundancy in a sandbox — each of these is a cost driver
-  named in its component's cost.yaml, so the delta is readable, not
+  named in its kind's cost.yaml, so the delta is readable, not
   guessable.
 
 Frame savings against the user's motive (see `discovery.md`): production

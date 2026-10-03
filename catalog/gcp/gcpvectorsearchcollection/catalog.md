@@ -4,7 +4,7 @@ Stands up a Vector Search collection -- Google's managed store for objects with 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `vectorsearch.googleapis.com` on the project
 - **Collection** -- a `vectorsearch.Collection` with the data schema, vector fields, and optional CMEK
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Vector Search admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Vector Search admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Optional Dependencies
@@ -60,7 +60,7 @@ spec:
 planton apply -f vector-search-collection.yaml
 ```
 
-This creates a collection whose embeddings Vertex AI computes from each object's title and body, with one index that returns titles inline. A Stack Job tracks the provisioning in real time.
+This creates a collection whose embeddings Vertex AI computes from each object's title and body, with one index that returns titles inline. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -78,16 +78,16 @@ These are the most important decisions when configuring a collection. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpKmsKey** | `kmsKeyName` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -107,6 +107,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- customer-managed encryption
-- [**GCP Vertex AI RAG Engine Config**](/cloud-catalog/gcp-vertex-ai-rag-engine-config) -- RAG Engine, which can use the collection as its vector database
-- [**GCP Vertex AI Agent Engine**](/cloud-catalog/gcp-vertex-ai-agent-engine) -- agents whose tools search the collection
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- customer-managed encryption
+- [**GCP Vertex AI RAG Engine Config**](/infra-catalog/gcp-vertex-ai-rag-engine-config) -- RAG Engine, which can use the collection as its vector database
+- [**GCP Vertex AI Agent Engine**](/infra-catalog/gcp-vertex-ai-agent-engine) -- agents whose tools search the collection

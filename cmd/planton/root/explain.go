@@ -11,17 +11,17 @@ import (
 )
 
 // Explain is the standalone binary's offline API reference (kubectl-explain
-// for the component catalog). It is deliberately NOT part of the engine
+// for the kind catalog). It is deliberately NOT part of the engine
 // command set (RegisterCommands): the Planton Platform CLI registers its own
-// `explain` covering BOTH its platform APIs and these cloud-resource kinds
+// `explain` covering BOTH its platform APIs and these catalog kinds
 // (through the same pkg/explain engine), so mounting this one there would
 // collide with a strictly richer command.
 var Explain = &cobra.Command{
 	Use:   "explain <kind>[.<field.path>]",
-	Short: "explain a cloud resource kind's schema (offline)",
-	Long: `Explain any cloud resource kind the way kubectl explain teaches Kubernetes
+	Short: "explain a catalog kind's schema (offline)",
+	Long: `Explain any catalog kind the way kubectl explain teaches Kubernetes
 resources: every spec field as it is written in YAML manifests, what it
-means, its validation constraints and defaults, and the stack outputs other
+means, its validation constraints and defaults, and the outputs other
 resources can reference via valueFrom.
 
 Drill into any field with a dotted path of the exact keys written in YAML.
@@ -46,7 +46,7 @@ binary; no control plane, no login, no network.`,
 }
 
 func init() {
-	Explain.Flags().Bool("list", false, "list every cloud resource kind this binary knows")
+	Explain.Flags().Bool("list", false, "list every catalog kind this binary knows")
 	Explain.Flags().StringP("output", "o", "", "output format: json for the machine-readable report")
 }
 

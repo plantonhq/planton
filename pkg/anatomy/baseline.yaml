@@ -1,4 +1,4 @@
-# Component-anatomy baseline -- the accepted backlog of anatomy gaps: components
+# Kind-anatomy baseline -- the accepted backlog of anatomy gaps: kinds
 # that predate a requirement (spec tests, module READMEs, presets, catalog pages)
 # and have not been brought up to the canonical shape yet. Gap-fill is routed to
 # the provider parity programs; this list trends to 0 and never grows.
@@ -10,25 +10,25 @@
 # Entry format: <repo-relative path>:<rule>   (see pkg/anatomy rule constants)
 # Regenerate with:  PLANTON_REGEN_ANATOMY_BASELINE=1 go test ./pkg/anatomy/
 violations:
-  - catalog/_test/testcloudresourcegeneric/iac/pulumi:missing-iac-readme
-  - catalog/_test/testcloudresourcegeneric/iac:missing-permissions
-  - catalog/_test/testcloudresourcegeneric/v1alpha1:missing-reference
-  - catalog/_test/testcloudresourcegeneric/v1alpha2:missing-reference
-  - catalog/_test/testcloudresourcegeneric/v1alpha2:missing-spec-test
-  - catalog/_test/testcloudresourcegeneric:missing-catalog-md
-  - catalog/_test/testcloudresourcegeneric:missing-control-profile
-  - catalog/_test/testcloudresourcegeneric:missing-cost-profile
-  - catalog/_test/testcloudresourcegeneric:missing-logo
-  - catalog/_test/testcloudresourcekubernetes/v1alpha1:missing-proto
-  - catalog/_test/testcloudresourcekubernetes/v1alpha1:missing-reference
-  - catalog/_test/testcloudresourcekubernetes/v1alpha1:missing-spec-test
-  - catalog/_test/testcloudresourcekubernetes:missing-catalog-md
-  - catalog/_test/testcloudresourcekubernetes:missing-control-profile
-  - catalog/_test/testcloudresourcekubernetes:missing-cost-profile
-  - catalog/_test/testcloudresourcekubernetes:missing-iac
-  - catalog/_test/testcloudresourcekubernetes:missing-logo
-  - catalog/_test/testcloudresourcekubernetes:missing-presets
-  - catalog/_test/testcloudresourcekubernetes:missing-readme
+  - catalog/_test/testcatalogkindgeneric/iac/pulumi:missing-iac-readme
+  - catalog/_test/testcatalogkindgeneric/iac:missing-permissions
+  - catalog/_test/testcatalogkindgeneric/v1alpha1:missing-reference
+  - catalog/_test/testcatalogkindgeneric/v1alpha2:missing-reference
+  - catalog/_test/testcatalogkindgeneric/v1alpha2:missing-spec-test
+  - catalog/_test/testcatalogkindgeneric:missing-catalog-md
+  - catalog/_test/testcatalogkindgeneric:missing-control-profile
+  - catalog/_test/testcatalogkindgeneric:missing-cost-profile
+  - catalog/_test/testcatalogkindgeneric:missing-logo
+  - catalog/_test/testcatalogkindkubernetes/v1alpha1:missing-proto
+  - catalog/_test/testcatalogkindkubernetes/v1alpha1:missing-reference
+  - catalog/_test/testcatalogkindkubernetes/v1alpha1:missing-spec-test
+  - catalog/_test/testcatalogkindkubernetes:missing-catalog-md
+  - catalog/_test/testcatalogkindkubernetes:missing-control-profile
+  - catalog/_test/testcatalogkindkubernetes:missing-cost-profile
+  - catalog/_test/testcatalogkindkubernetes:missing-iac
+  - catalog/_test/testcatalogkindkubernetes:missing-logo
+  - catalog/_test/testcatalogkindkubernetes:missing-presets
+  - catalog/_test/testcatalogkindkubernetes:missing-readme
   - catalog/auth0/auth0client:missing-presets
   - catalog/auth0/auth0connection:missing-presets
   - catalog/auth0/auth0eventstream:missing-presets

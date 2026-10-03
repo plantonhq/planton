@@ -4,7 +4,7 @@ Grants a Redis data-plane access policy to a Microsoft Entra identity on an Azur
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Access Policy Assignment** -- a grant record on the referenced cache binding one policy to one Microsoft Entra principal
 
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Azure Subscription
 
-- **An Azure Cache for Redis** with Microsoft Entra token authentication enabled (`redisConfiguration.activeDirectoryAuthenticationEnabled: true`). Reference the AzureRedisCache Cloud Resource via ValueFromRef.
+- **An Azure Cache for Redis** with Microsoft Entra token authentication enabled (`redisConfiguration.activeDirectoryAuthenticationEnabled: true`). Reference the AzureRedisCache Infra Component via ValueFromRef.
 - **The principal being granted** -- a user, group, service principal, or managed identity. For workload identities, reference an AzureUserAssignedIdentity's `principal_id` output; for users and groups, use the literal object GUID from Entra.
 - **A custom policy** (optional) -- an AzureRedisCacheAccessPolicy on the same cache, when the built-ins are too coarse.
 
@@ -59,7 +59,7 @@ spec:
 planton apply -f grant.yaml
 ```
 
-This grants the built-in `Data Reader` policy to the referenced managed identity on the referenced cache -- the identity can then connect with an Entra token and read every key. A Stack Job tracks the provisioning in real time.
+This grants the built-in `Data Reader` policy to the referenced managed identity on the referenced cache -- the identity can then connect with an Entra token and read every key. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,7 +102,7 @@ These are the most important decisions when configuring an assignment. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -110,9 +110,9 @@ These are the most important decisions when configuring an assignment. Explore t
 | **AzureRedisCacheAccessPolicy** (optional) | `accessPolicyName` | `status.outputs.access_policy_name` |
 | **AzureUserAssignedIdentity** (optional) | `objectId` | `status.outputs.principal_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-This component has no consumable outputs: `status.outputs` carries only the assignment's ARM ID (`access_policy_assignment_id`) and its name within the cache (`access_policy_assignment_name`), and nothing downstream composes with a grant -- the assignment is a leaf in the dependency graph.
+This kind has no consumable outputs: `status.outputs` carries only the assignment's ARM ID (`access_policy_assignment_id`) and its name within the cache (`access_policy_assignment_name`), and nothing downstream composes with a grant -- the assignment is a leaf in the dependency graph.
 
 ## Common Patterns
 
@@ -126,6 +126,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Redis Cache**](/cloud-catalog/azure-redis-cache) -- the cache the grant applies to
-- [**Azure Redis Cache Access Policy**](/cloud-catalog/azure-redis-cache-access-policy) -- the custom WHAT half, referenced by name
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- the workload principal being granted
+- [**Azure Redis Cache**](/infra-catalog/azure-redis-cache) -- the cache the grant applies to
+- [**Azure Redis Cache Access Policy**](/infra-catalog/azure-redis-cache-access-policy) -- the custom WHAT half, referenced by name
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- the workload principal being granted

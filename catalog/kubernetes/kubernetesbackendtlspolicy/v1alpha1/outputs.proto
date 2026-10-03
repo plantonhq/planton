@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesbackendtlspolicy.v1alpha1;
 
-// KubernetesBackendTlsPolicyStackOutputs captures observable outputs after
+// KubernetesBackendTlsPolicyOutputs captures observable outputs after
 // the BackendTLSPolicy is created on the target cluster. Controller-managed
 // status (the per-ancestor Accepted/ResolvedRefs conditions) is reconciled
 // asynchronously by the Gateway implementation and read via kubectl, so it is
 // intentionally not stored here.
-message KubernetesBackendTlsPolicyStackOutputs {
+message KubernetesBackendTlsPolicyOutputs {
   // Name of the created BackendTLSPolicy (equals metadata.name). In
   // InfraCharts this orders the policy after the Services and CA ConfigMaps
   // it references.

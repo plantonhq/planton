@@ -35,7 +35,7 @@ var _ = ginkgo.Describe("GcpSecretManagerSecretSpec", func() {
 		return &GcpSecretManagerSecret{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpSecretManagerSecret",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-secret",
 			},
 			Spec: &GcpSecretManagerSecretSpec{},

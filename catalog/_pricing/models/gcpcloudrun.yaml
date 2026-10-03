@@ -1,11 +1,11 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. Presets with no quantity lines have no committed always-on
-# spend and estimate to zero. Schema: finops/componentcostestimatemodel/v1.
+# spend and estimate to zero. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: gcpcloudrun
 spec:
@@ -47,5 +47,5 @@ spec:
         - "the service scales to zero (minInstanceCount: 0), so nothing is committed -- but every running instance bills one NVIDIA L4 without zonal redundancy at $0.0001867 per second (cloud.google.com/run/pricing and Cloud Billing SKU 2EEE-0BBD-C718, read 2026-08-22), about $490.65 per instance-month (730 hours) if kept busy around the clock, the dominant meter whenever traffic flows"
         - "cpuIdle: false selects instance-based billing -- each instance's 4 vCPU bill $0.000018 per vCPU-second and 16Gi bills $0.000002 per GiB-second for the instance's entire lifetime, and no per-request fee applies"
         - Google's instance-based free tier (first 240,000 vCPU-seconds and 450,000 GiB-seconds per billing account) softens light usage; the GPU meter has no free tier
-        - model weights and inference inputs/outputs bill on the storage components the code reads and writes; network egress follows Google Cloud networking pricing
+        - model weights and inference inputs/outputs bill on the storage kinds the code reads and writes; network egress follows Google Cloud networking pricing
       notes: Zero committed at creation -- unlike a GPU service pinned warm by min instances, this preset holds no capacity between requests; maxInstanceCount 4 bounds the worst-case GPU spend to 4 concurrent instance lifetimes.

@@ -29,7 +29,7 @@ iac/pulumi/
     ├── main.go       # Module coordinator
     ├── url_map.go    # URL map creation and mapping
     ├── locals.go     # Resolved resource + derived values
-    └── outputs.go    # Stack output constants
+    └── outputs.go    # Output constants
 ```
 
 ## Quick Start
@@ -43,7 +43,7 @@ pulumi stack init dev
 
 ### 2. Create Input File
 
-Provide a `stack-input.yaml` with the URL map specification:
+Provide a `iac-input.yaml` with the URL map specification:
 
 ```yaml
 target:
@@ -74,7 +74,7 @@ pulumi stack output url_map_name
 
 ## Inputs
 
-The module consumes `GcpUrlMapStackInput`:
+The module consumes `GcpUrlMapIacInput`:
 
 | Field | Required | Description |
 |-------|----------|-------------|

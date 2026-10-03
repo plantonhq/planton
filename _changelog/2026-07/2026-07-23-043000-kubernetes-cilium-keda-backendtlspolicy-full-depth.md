@@ -1,11 +1,11 @@
 # Kubernetes Cilium, KEDA, and BackendTLSPolicy at full depth: three new kinds, a CNI-capable E2E cluster profile, and live NetworkPolicy enforcement proofs
 
 **Date**: 2026-07-23
-**Scope**: `apis/dev/planton/shared/cloudresourcekind` (three new kinds; Gateway API family band extended to 850, Istio family renumbered 851–859, MetricsServer 860), `apis/dev/planton/provider/kubernetes` (kubernetescilium, kuberneteskeda, kubernetesbackendtlspolicy forged; kubernetesnetworkpolicy behavioral scenario), `pkg/kubernetes/kubernetestypes` (BackendTLSPolicy added to the gateway-api generation set), `aa_e2e` (cluster profiles) + `aa_e2e/verify` (three new verifiers + NetworkPolicy behavioral verifier), `e2e` + `e2e/framework/runner` (per-scenario cluster routing), Makefile tiers, `pkg/outputs`, `pkg/iac/importmap`, site catalog, `_rules/deployment-component` (forge + spec-proto flow)
+**Scope**: `apis/dev/planton/shared/catalogkind` (three new kinds; Gateway API family band extended to 850, Istio family renumbered 851–859, MetricsServer 860), `apis/dev/planton/provider/kubernetes` (kubernetescilium, kuberneteskeda, kubernetesbackendtlspolicy forged; kubernetesnetworkpolicy behavioral scenario), `pkg/kubernetes/kubernetestypes` (BackendTLSPolicy added to the gateway-api generation set), `aa_e2e` (cluster profiles) + `aa_e2e/verify` (three new verifiers + NetworkPolicy behavioral verifier), `e2e` + `e2e/framework/runner` (per-scenario cluster routing), Makefile tiers, `pkg/outputs`, `pkg/iac/importmap`, site catalog, `_rules/catalog-kind` (forge + spec-proto flow)
 
 ## What changed
 
-Three new deployment components, each at full configuration depth with
+Three new catalog kinds, each at full configuration depth with
 dual-engine parity, live kind-cluster E2E on both engines, and blind
 state-import round-trips proven:
 
@@ -40,7 +40,7 @@ state-import round-trips proven:
   lifecycle with keep-on-uninstall implemented via the
   `helm.sh/resource-policy: keep` annotation (the chart has no keep knob and
   a plain uninstall cascade-deletes every ScaledObject in the cluster),
-  watch-namespace fencing, per-component sizing (operator / metrics API
+  watch-namespace fencing, per-kind sizing (operator / metrics API
   server / admission webhooks incl. failure policy), ambient pod identity
   for scalers (AWS IRSA, Azure Workload Identity, GCP Workload Identity —
   each with completeness CEL), internal-TLS certificates (operator
@@ -97,7 +97,7 @@ state-import round-trips proven:
   cron-trigger ScaledObject against a plain target-Deployment fixture after
   the install assertions pass, proves KEDA drives a real scale-up (1 → 2
   ready replicas), and deletes what it applied. The driver CR is
-  verifier-owned because scenario fixtures deploy before the component under
+  verifier-owned because scenario fixtures deploy before the kind under
   test — a fixture-borne ScaledObject would precede the CRDs KEDA itself
   installs.
 
@@ -119,10 +119,10 @@ state-import round-trips proven:
 
 ### Workflow rules
 
-- Forge rule: Kubernetes cluster-profile mechanics (when a component changes
+- Forge rule: Kubernetes cluster-profile mechanics (when a kind changes
   what the cluster itself is), single-node-topology sizing for profile
   clusters, and the verifier-owned-driver-CR pattern for behavioral proofs
-  whose CR is served by the component under test.
+  whose CR is served by the kind under test.
 - Spec-proto flow rule: the `json_name` acronym-casing contract for CRD
   projection kinds.
 

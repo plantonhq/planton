@@ -4,7 +4,7 @@ Deploys an Auth0 Resource Server — the API definition that applications reques
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Auth0 Resource Server** — the API registered in the tenant with the specified identifier (audience), signing algorithm, token lifetimes, and access-control settings
 - **Resource Server Scopes** — created only when `scopes` is non-empty; an authoritative scope set that makes the API's permission list exactly match the spec on every apply
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Auth0 Provider Connection** — an active connection in the Connect module with Auth0 domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Auth0 Provider Connection** — an active connection in the Connect module with Auth0 domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Auth0 Account
@@ -53,7 +53,7 @@ spec:
 planton apply -f auth0-resource-server.yaml
 ```
 
-This creates an API with RS256 signing, Auth0's default 24-hour token lifetime, and two requestable scopes — no RBAC enforcement. A Stack Job tracks the provisioning in real time.
+This creates an API with RS256 signing, Auth0's default 24-hour token lifetime, and two requestable scopes — no RBAC enforcement. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -79,13 +79,13 @@ These are the most important decisions when configuring an Auth0 Resource Server
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. Downstream resources reference the API by its identifier (audience) string rather than a typed reference.
+This kind has no foreign key dependencies. Downstream resources reference the API by its identifier (audience) string rather than a typed reference.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -106,6 +106,6 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Auth0 Application (Client)**](/cloud-catalog/auth0-client) — the applications authorized to call this API; each `apiGrants` entry references this audience with the scopes granted to that client
-- [**Auth0 Role**](/cloud-catalog/auth0-role) — groups this API's scopes into assignable access tiers; each role permission references the audience and a scope defined here
-- [**Auth0 Tenant Settings**](/cloud-catalog/auth0-tenant-settings) — the tenant-level half of opening an API to third-party applications, such as dynamic client registration
+- [**Auth0 Application (Client)**](/infra-catalog/auth0-client) — the applications authorized to call this API; each `apiGrants` entry references this audience with the scopes granted to that client
+- [**Auth0 Role**](/infra-catalog/auth0-role) — groups this API's scopes into assignable access tiers; each role permission references the audience and a scope defined here
+- [**Auth0 Tenant Settings**](/infra-catalog/auth0-tenant-settings) — the tenant-level half of opening an API to third-party applications, such as dynamic client registration

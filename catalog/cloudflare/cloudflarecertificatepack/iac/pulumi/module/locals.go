@@ -12,9 +12,9 @@ type Locals struct {
 	CloudflareCertificatePack *cloudflarecertificatepackv1alpha1.CloudflareCertificatePack
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflarecertificatepackv1alpha1.CloudflareCertificatePackStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflarecertificatepackv1alpha1.CloudflareCertificatePackIacInput) *Locals {
 	locals := &Locals{}
-	locals.CloudflareCertificatePack = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareCertificatePack = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

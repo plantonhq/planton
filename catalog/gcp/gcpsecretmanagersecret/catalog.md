@@ -4,7 +4,7 @@ Creates a Secret Manager secret — the container for versioned secret payloads 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Secret** -- global (with replication control) or regional (payloads never leave the region)
 - **Secret Version** (optional) -- version 1 seeded from `initialVersion.data`
@@ -97,7 +97,7 @@ These are the most important decisions when configuring a secret. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -106,9 +106,9 @@ These are the most important decisions when configuring a secret. Explore the fu
 | **GcpKmsKey** (optional) | CMEK fields | `status.outputs.key_id` |
 | **GcpPubSubTopic** (optional) | `topics[]` | `status.outputs.topic_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -128,7 +128,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the workload identity granted read access
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- customer-managed payload encryption
-- [**GCP Pub/Sub Topic**](/cloud-catalog/gcp-pub-sub-topic) -- rotation-reminder delivery
-- [**GCP Cloud Run**](/cloud-catalog/gcp-cloud-run) -- mounts the secret via `valueFromSecret`
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the workload identity granted read access
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- customer-managed payload encryption
+- [**GCP Pub/Sub Topic**](/infra-catalog/gcp-pub-sub-topic) -- rotation-reminder delivery
+- [**GCP Cloud Run**](/infra-catalog/gcp-cloud-run) -- mounts the secret via `valueFromSecret`

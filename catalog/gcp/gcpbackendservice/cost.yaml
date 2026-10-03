@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: gcpbackendservice
 spec:
@@ -32,4 +32,4 @@ spec:
     - the backend service carries no hourly or per-request charge of its own -- it is the routing hub, and its meters start only with traffic
     - forwarding-rule hours ($0.025/hour for the first 5) and per-GiB data processing ($0.008/GiB inbound and outbound in us-central1) bill on the load balancer frontend components, not here
     - the serving capacity behind it -- instance groups, NEGs, Cloud Run services -- bills on its own components; health-check probe pricing belongs to the GcpHealthCheck kind
-  notes: "A backend service is the hub of GCP's L7 load-balancing family and holds no meter of its own: creating it, attaching backends, health checks, Cloud Armor policies, and signed-URL keys all cost nothing at rest. The meters it can start are Cloud CDN's trio (when enable_cdn is on) and Cloud Logging ingestion (when log_config is enabled). Identity-Aware Proxy is explicitly free for protecting Google Cloud-hosted resources -- Google's IAP pricing page says so, with paid capabilities reserved for Chrome Enterprise Premium -- so preset 03's zero-trust gate adds no meter. Cloud Armor policies referenced by security_policy and edge_security_policy bill per-policy and per-request on the GcpCloudArmorPolicy component, and Google's pricing page notes both Cloud Armor blocks and CDN cache hits reduce the LB's data-processing bill by keeping traffic out of it."
+  notes: "A backend service is the hub of GCP's L7 load-balancing family and holds no meter of its own: creating it, attaching backends, health checks, Cloud Armor policies, and signed-URL keys all cost nothing at rest. The meters it can start are Cloud CDN's trio (when enable_cdn is on) and Cloud Logging ingestion (when log_config is enabled). Identity-Aware Proxy is explicitly free for protecting Google Cloud-hosted resources -- Google's IAP pricing page says so, with paid capabilities reserved for Chrome Enterprise Premium -- so preset 03's zero-trust gate adds no meter. Cloud Armor policies referenced by security_policy and edge_security_policy bill per-policy and per-request on the GcpCloudArmorPolicy kind, and Google's pricing page notes both Cloud Armor blocks and CDN cache hits reduce the LB's data-processing bill by keeping traffic out of it."

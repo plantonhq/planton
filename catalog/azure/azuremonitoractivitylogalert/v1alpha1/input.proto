@@ -5,10 +5,10 @@ package dev.planton.azure.azuremonitoractivitylogalert.v1alpha1;
 import "catalog/azure/azuremonitoractivitylogalert/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureMonitorActivityLogAlertStackInput is the input to the IaC modules
+// AzureMonitorActivityLogAlertIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and Azure
 // provider credentials.
-message AzureMonitorActivityLogAlertStackInput {
+message AzureMonitorActivityLogAlertIacInput {
   // The activity log alert resource to deploy.
   AzureMonitorActivityLogAlert target = 1;
 

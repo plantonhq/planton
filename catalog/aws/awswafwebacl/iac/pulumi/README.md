@@ -5,8 +5,8 @@ Pulumi IaC module for deploying an AWS WAFv2 Web ACL.
 ## Usage
 
 ```bash
-# Set stack input
-export STACK_INPUT='{"target":{"apiVersion":"aws.planton.dev/v1alpha1","kind":"AwsWafWebAcl",...}}'
+# Set IaC input
+export IAC_INPUT='{"target":{"apiVersion":"aws.planton.dev/v1alpha1","kind":"AwsWafWebAcl",...}}'
 
 # Preview
 pulumi preview --stack dev
@@ -25,7 +25,7 @@ pulumi destroy --stack dev --yes
 go build ./...
 
 # Test with manifest
-export STACK_INPUT=$(cat ../../e2e/manifest.yaml | yq -o json)
+export IAC_INPUT=$(cat ../../e2e/manifest.yaml | yq -o json)
 pulumi preview --stack dev
 ```
 

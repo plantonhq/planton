@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.azure.azuremssqlelasticpool.v1alpha1;
 
-// **AzureMssqlElasticPoolStackOutputs** captures the outputs of
+// **AzureMssqlElasticPoolOutputs** captures the outputs of
 // provisioning an Azure SQL elastic pool.
 //
 // `elastic_pool_id` is the join seam databases attach through:
 // AzureMssqlDatabase.elastic_pool_id defaults to referencing it.
-message AzureMssqlElasticPoolStackOutputs {
+message AzureMssqlElasticPoolOutputs {
   // The Azure Resource Manager ID of the elastic pool.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Sql/servers/{server}/elasticPools/{name}
   // Referenced by AzureMssqlDatabase.elastic_pool_id.

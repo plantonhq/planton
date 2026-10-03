@@ -9,7 +9,7 @@ Creates a DNS forwarding ruleset -- the rule book that steers DNS queries for ch
 - `privatedns.ResolverDnsForwardingRuleset` -- the ruleset, bound to the resolver's outbound endpoint(s)
 - `privatedns.ResolverForwardingRule` -- one per `spec.forwarding_rules` entry
 
-## Stack Outputs
+## Outputs
 
 - `dns_forwarding_ruleset_id` -- the ruleset's ARM resource ID (what virtual network links reference)
 - `dns_forwarding_ruleset_name` -- the ruleset's name

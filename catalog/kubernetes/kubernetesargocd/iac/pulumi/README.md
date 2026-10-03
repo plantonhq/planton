@@ -30,7 +30,7 @@
 To deploy the `argocd-kubernetes-pulumi-module`, create an `ArgocdKubernetes` YAML file specifying the desired configuration for ArgoCD. Once the YAML is created, you can use the following command to apply the configuration and provision the ArgoCD instance in your Kubernetes cluster:
 
 ```bash
-planton pulumi up --stack-input <api-resource.yaml>
+planton pulumi up --iac-input <api-resource.yaml>
 ```
 
 Refer to the **Examples** section for detailed usage instructions.

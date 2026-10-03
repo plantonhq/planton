@@ -147,7 +147,7 @@ spec:
 
 ## Deliberate Scope Boundaries
 
-- **Legacy `auth_settings` (v1)**: superseded by `auth_settings_v2`, which this component models fully. Azure keeps v1 for backward compatibility only; new configuration should always use v2.
+- **Legacy `auth_settings` (v1)**: superseded by `auth_settings_v2`, which this kind models fully. Azure keeps v1 for backward compatibility only; new configuration should always use v2.
 - **Deployment slots**: a slot mirrors the entire app surface with an independent lifecycle -- a genuine standalone-kind candidate, not a field on this spec. `sticky_settings` (which governs swap behavior) is modeled here because it lives on the production app.
 - **Custom domain bindings and certificates**: separate Azure resources with their own lifecycles (hostname binding, managed certificate, certificate binding); they compose with the app rather than embed in it.
 - **Windows Web Apps**: `azurerm_windows_web_app` is a separate resource for the legacy .NET Framework path; the platform targets Linux-first runtimes and containers. `AzureServicePlan` supports Windows plans, so the compute tier is ready if a Windows app kind is ever added.

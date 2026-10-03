@@ -6,17 +6,17 @@
 
 ## Summary
 
-Added HTTP to HTTPS redirect support for the KubernetesSignoz deployment component. Both the Pulumi and Terraform IaC modules now create Gateway API resources with HTTP listeners (port 80) and redirect HTTPRoutes that perform 301 redirects to HTTPS, matching the pattern used across other Kubernetes deployment components.
+Added HTTP to HTTPS redirect support for the KubernetesSignoz catalog kind. Both the Pulumi and Terraform IaC modules now create Gateway API resources with HTTP listeners (port 80) and redirect HTTPRoutes that perform 301 redirects to HTTPS, matching the pattern used across other Kubernetes catalog kinds.
 
 ## Problem Statement / Motivation
 
-When deploying SigNoz using the KubernetesSignoz module, external ingress only supported HTTPS access. Users accessing the HTTP URL were not redirected to HTTPS, leading to a poor user experience and inconsistency with other deployment components.
+When deploying SigNoz using the KubernetesSignoz module, external ingress only supported HTTPS access. Users accessing the HTTP URL were not redirected to HTTPS, leading to a poor user experience and inconsistency with other catalog kinds.
 
 ### Pain Points
 
 - HTTP requests to SigNoz UI returned errors instead of redirecting to HTTPS
 - OTEL Collector HTTP ingestion endpoint lacked HTTP redirect
-- Inconsistent behavior compared to other Kubernetes deployment components (Jenkins, Tekton, OpenFGA, Solr, Locust)
+- Inconsistent behavior compared to other Kubernetes catalog kinds (Jenkins, Tekton, OpenFGA, Solr, Locust)
 - Terraform module was missing Gateway API resources entirely
 
 ## Solution / What's New
@@ -102,7 +102,7 @@ Key consistency points:
 
 - **Improved UX**: Users accessing HTTP URLs are automatically redirected to HTTPS
 - **Security**: Ensures all traffic is encrypted by forcing HTTPS
-- **Consistency**: Matches behavior of all other Kubernetes deployment components
+- **Consistency**: Matches behavior of all other Kubernetes catalog kinds
 - **Feature Parity**: Both Pulumi and Terraform modules now have complete ingress support
 
 ## Impact
@@ -114,7 +114,7 @@ Key consistency points:
 
 ### For Developers
 - Terraform module now has complete Gateway API support (was missing)
-- Pattern is consistent with other Kubernetes deployment components
+- Pattern is consistent with other Kubernetes catalog kinds
 
 ## Files Changed
 

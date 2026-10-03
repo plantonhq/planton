@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package dev.planton.aws.awsglobalaccelerator.v1alpha1;
 
-// AwsGlobalAcceleratorStackOutputs captures observable identifiers and endpoints
+// AwsGlobalAcceleratorOutputs captures observable identifiers and endpoints
 // from a provisioned Global Accelerator. These outputs are the primary interface
 // for downstream resources to wire dependencies via StringValueOrRef.
 //
 // The DNS names and hosted zone ID are used to create Route53 alias records
 // pointing custom domains to the accelerator. The listener and endpoint group
 // ARN maps enable fine-grained cross-resource references.
-message AwsGlobalAcceleratorStackOutputs {
+message AwsGlobalAcceleratorOutputs {
   // The Amazon Resource Name of the Global Accelerator. Used in IAM policies
   // and cross-service permissions.
   string accelerator_arn = 1;

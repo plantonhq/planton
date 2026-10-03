@@ -5,9 +5,9 @@ package dev.planton.azure.azurecosmosdbsqlcontainer.v1alpha1;
 import "catalog/azure/azurecosmosdbsqlcontainer/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-cosmosdb-sql-container stack-input
-message AzureCosmosdbSqlContainerStackInput {
-  //target cloud-resource
+//azure-cosmosdb-sql-container iac-input
+message AzureCosmosdbSqlContainerIacInput {
+  //target infra-component
   AzureCosmosdbSqlContainer target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

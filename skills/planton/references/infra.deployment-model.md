@@ -11,11 +11,11 @@ wants their infrastructure up.
 
 ```
 InfraChart (the template you compose)
-  → deploy: InfraProject (the chart rendered with the user's values — a
+  → deploy: InfraStack (the chart rendered with the user's values — a
     versioned record of exactly what was requested)
   → InfraPipeline (executes the project's dependency graph in order)
-  → each pipeline node = one CloudResource (one manifest from the chart)
-  → each node's deploy = a stack job (one IaC engine run for that resource)
+  → each pipeline node = one InfraComponent (one manifest from the chart)
+  → each node's deploy = an infra job (one IaC engine run for that resource)
   → real cloud infrastructure
 ```
 
@@ -25,13 +25,13 @@ Practical implications worth sharing at the right moment:
   pipeline deploys resource by resource in dependency order. Independent
   resources run in parallel; a failed node stops its dependents only.
 - A failed pipeline is diagnosed node by node: find the failed node, read its
-  stack job's error and logs (`planton-cli.md` has the exact commands).
+  infra job's error and logs (`planton-cli.md` has the exact commands).
 - Redeploying after a chart fix creates a new pipeline run; already-green
   resources converge (no duplicate infrastructure).
 
 ## Every resource deploys through an open-source module
 
-Each cloud resource kind is deployed by its IaC module in the open-source
+Each catalog kind is deployed by its IaC module in the open-source
 repository `github.com/plantonhq/planton`, at:
 
 ```
@@ -49,7 +49,7 @@ the cloud — one level deeper than the schema. Use it when:
 
 - A spec field's cloud-side effect is ambiguous and the choice matters.
 - A deploy failed inside the engine and the error names cloud-provider
-  concepts the manifest never mentions — map the failing cloud resource back
+  concepts the manifest never mentions — map the failing infra component back
   to the module code that creates it, then back to the spec field feeding it.
 - You need to know a default the schema does not state (what the module does
   when a field is empty).

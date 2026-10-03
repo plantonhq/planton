@@ -4,7 +4,7 @@ The network link Datastream uses to reach databases that have no public address:
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `datastream.googleapis.com` on the project (never disabled on destroy)
 - **Private connection** -- a `datastream_private_connection` with VPC peering or a PSC interface
@@ -69,7 +69,7 @@ planton apply -f datastream-private-connection.yaml
 - `vpcPeeringConfig.subnet` is an IPv4 CIDR of exactly /29 with no host bits set.
 - `pscInterfaceConfig.networkAttachment` is `projects/{project}/regions/{region}/networkAttachments/{name}`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -96,7 +96,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpVpcNetwork** -- the peered network
 - **GcpDatastreamConnectionProfile** -- the profiles that use the connection

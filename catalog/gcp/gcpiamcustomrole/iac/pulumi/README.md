@@ -29,7 +29,7 @@ iac/pulumi/
     ├── main.go         # Module coordinator
     ├── custom_role.go  # Custom role resource creation
     ├── locals.go       # Resolved resource holder
-    └── outputs.go      # Stack output constants
+    └── outputs.go      # Output constants
 ```
 
 ## Quick Start
@@ -43,7 +43,7 @@ pulumi stack init dev
 
 ### 2. Create Input File
 
-Provide a `stack-input.yaml` with the custom role specification:
+Provide a `iac-input.yaml` with the custom role specification:
 
 ```yaml
 target:
@@ -78,7 +78,7 @@ pulumi stack output role_id
 
 ## Inputs
 
-The module consumes `GcpIamCustomRoleStackInput`:
+The module consumes `GcpIamCustomRoleIacInput`:
 
 | Field | Required | Description |
 |-------|----------|-------------|

@@ -4,7 +4,7 @@ Creates a batch endpoint on an Azure Machine Learning workspace -- the stable ad
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Batch Endpoint** -- an ARM child of the workspace (`.../workspaces/{ws}/batchEndpoints/{name}`) with its auth mode, optional managed identity, and default-deployment pointer
 
@@ -49,7 +49,7 @@ spec:
 planton apply -f azure-machine-learning-batch-endpoint.yaml
 ```
 
-This creates an Entra-authenticated batch endpoint on the referenced workspace, free at rest; deployments then attach to it by reference. A Stack Job tracks the provisioning in real time.
+This creates an Entra-authenticated batch endpoint on the referenced workspace, free at rest; deployments then attach to it by reference. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -78,16 +78,16 @@ These are the most important decisions when configuring the endpoint. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureMachineLearningWorkspace** | `workspaceId` | `status.outputs.machine_learning_workspace_id` |
 | **AzureUserAssignedIdentity** | `identity.identityIds[]` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -107,6 +107,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Machine Learning Workspace**](/cloud-catalog/azure-machine-learning-workspace) -- the parent workspace
-- [**Azure Machine Learning Batch Deployment**](/cloud-catalog/azure-machine-learning-batch-deployment) -- the job recipes behind the endpoint
-- [**Azure Machine Learning Compute Cluster**](/cloud-catalog/azure-machine-learning-compute-cluster) -- the pooled compute batch jobs run on
+- [**Azure Machine Learning Workspace**](/infra-catalog/azure-machine-learning-workspace) -- the parent workspace
+- [**Azure Machine Learning Batch Deployment**](/infra-catalog/azure-machine-learning-batch-deployment) -- the job recipes behind the endpoint
+- [**Azure Machine Learning Compute Cluster**](/infra-catalog/azure-machine-learning-compute-cluster) -- the pooled compute batch jobs run on

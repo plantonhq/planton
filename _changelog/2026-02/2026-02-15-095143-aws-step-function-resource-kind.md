@@ -7,7 +7,7 @@
 
 ## Summary
 
-Added AwsStepFunction as the sixth new AWS resource kind in the cloud provider expansion project. This component wraps `aws_sfn_state_machine` for orchestrating serverless workflows using Amazon States Language (ASL), with support for STANDARD and EXPRESS execution modes, CloudWatch logging, X-Ray tracing, and customer-managed KMS encryption.
+Added AwsStepFunction as the sixth new AWS resource kind in the cloud provider expansion project. This kind wraps `aws_sfn_state_machine` for orchestrating serverless workflows using Amazon States Language (ASL), with support for STANDARD and EXPRESS execution modes, CloudWatch logging, X-Ray tracing, and customer-managed KMS encryption.
 
 ## What Was Delivered
 
@@ -16,9 +16,9 @@ Added AwsStepFunction as the sixth new AWS resource kind in the cloud provider e
   - `google.protobuf.Struct` for ASL definition (native YAML authoring)
   - `StringValueOrRef` for role_arn (→ AwsIamRole), kms_key_id (→ AwsKmsKey), log_destination
   - Nested: `AwsStepFunctionLoggingConfig`, `AwsStepFunctionEncryptionConfig`
-- `stack_outputs.proto` — state_machine_arn, state_machine_name
+- `outputs.proto` — state_machine_arn, state_machine_name
 - `api.proto` — KRM envelope with metadata/spec/status
-- `stack_input.proto` — target + provider_config
+- `iac_input.proto` — target + provider_config
 
 ### Validation Tests (26 tests, all passing)
 - 13 happy path (minimal, STANDARD, EXPRESS, logging levels, encryption, production-ready)
@@ -59,5 +59,5 @@ Added AwsStepFunction as the sixth new AWS resource kind in the cloud provider e
 ## Files Created/Changed
 
 - 37 files in `apis/dev/planton/provider/aws/awsstepfunction/v1/`
-- `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto` (enum addition)
+- `apis/dev/planton/shared/catalogkind/catalog_kind.proto` (enum addition)
 - `_changelog/2026-02/2026-02-15-095143-aws-step-function-resource-kind.md`

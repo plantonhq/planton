@@ -4,16 +4,16 @@ import (
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/catalog/aws/awsrestapidomain/iac/pulumi/module"
 	awsrestapidomainv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsrestapidomain/v1alpha1"
-	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/stackinput"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/iacinput"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
-		stackInput := &awsrestapidomainv1alpha1.AwsRestApiDomainStackInput{}
-		if err := stackinput.LoadStackInput(ctx, stackInput); err != nil {
-			return errors.Wrap(err, "failed to load stack-input")
+		iacInput := &awsrestapidomainv1alpha1.AwsRestApiDomainIacInput{}
+		if err := iacinput.LoadIacInput(ctx, iacInput); err != nil {
+			return errors.Wrap(err, "failed to load iac-input")
 		}
-		return module.Resources(ctx, stackInput)
+		return module.Resources(ctx, iacInput)
 	})
 }

@@ -20,11 +20,11 @@ Both resources use the `pulumi-gcp` (Google) provider. The module expects a **lo
 
 ```
 iac/pulumi/
-├── main.go              # Entry point: loads stack input, calls module.Resources
+├── main.go              # Entry point: loads IaC input, calls module.Resources
 ├── Pulumi.yaml          # Project definition
 └── module/
     ├── main.go          # Resources(): orchestrates provider, cluster, then primaryInstance
-    ├── locals.go        # Label construction, context extraction from stack input
+    ├── locals.go        # Label construction, context extraction from IaC input
     ├── cluster.go       # alloydb.NewCluster with network, backup, encryption, maintenance
     ├── instance.go      # alloydb.NewInstance for PRIMARY type
     └── outputs.go       # Export constants (cluster_id, primary_instance_ip, etc.)

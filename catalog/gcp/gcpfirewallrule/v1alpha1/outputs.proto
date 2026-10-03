@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpfirewallrule.v1alpha1;
 
 // Outputs produced after provisioning a GCP firewall rule.
-message GcpFirewallRuleStackOutputs {
+message GcpFirewallRuleOutputs {
   // Full self-link URI of the created firewall rule.
   // Example: "projects/my-project/global/firewalls/allow-http-ingress"
   // Useful for expressing depends_on or uses relationships in infra charts.

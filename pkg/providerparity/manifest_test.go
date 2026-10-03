@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 func writeManifest(t *testing.T, content string) string {
@@ -142,8 +142,8 @@ func TestLoadKindManifest_AbsenceIsNotAnError(t *testing.T) {
 	// Enrollment is file presence; a kind without a manifest is an accepted
 	// gap in the baseline, never a load failure.
 	m, err := LoadKindManifest(t.TempDir(),
-		cloudresourcekind.CloudResourceProvider_gcp,
-		cloudresourcekind.CloudResourceKind_GcpGcsBucket)
+		catalogkind.CatalogProvider_gcp,
+		catalogkind.CatalogKind_GcpGcsBucket)
 	if err != nil {
 		t.Fatalf("absence must be (nil, nil), got err %v", err)
 	}

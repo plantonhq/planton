@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awseventbridgerule.v1alpha1;
 
-// AwsEventBridgeRuleStackOutputs captures observable identifiers from a
+// AwsEventBridgeRuleOutputs captures observable identifiers from a
 // provisioned EventBridge rule. These outputs are used by downstream
 // resources for IAM policies and cross-resource references.
-message AwsEventBridgeRuleStackOutputs {
+message AwsEventBridgeRuleOutputs {
   // The Amazon Resource Name (ARN) of the rule. Used in IAM policies that
   // grant or restrict access to manage this rule, and as a reference in
   // monitoring and alerting configurations.

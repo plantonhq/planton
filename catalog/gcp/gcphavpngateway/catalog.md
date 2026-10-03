@@ -4,7 +4,7 @@ Creates a Google Cloud HA VPN gateway and the Cloud Router its tunnels speak BGP
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **HA VPN gateway** -- the `compute_ha_vpn_gateway` with two interfaces (public IPs, or Interconnect attachments when pinned)
 - **Cloud Router** -- the `compute_router` carrying the BGP ASN and default advertisement every session inherits
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with `roles/compute.networkAdmin` on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with `roles/compute.networkAdmin` on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### GCP Network
 
@@ -53,7 +53,7 @@ spec:
 planton apply -f ha-vpn-gateway.yaml
 ```
 
-This creates the hub's VPN gateway in `us-central1` with a router speaking ASN 64514, guarded against accidental destroy. A Stack Job tracks the provisioning in real time; the two `interface_*_ip_address` outputs are what the on-premises team configures next.
+This creates the hub's VPN gateway in `us-central1` with a router speaking ASN 64514, guarded against accidental destroy. An Infra Job tracks the provisioning in real time; the two `interface_*_ip_address` outputs are what the on-premises team configures next.
 
 ### InfraChart
 
@@ -92,16 +92,16 @@ These are the most important decisions when configuring a gateway. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpVpcNetwork** | `network` | `status.outputs.network_self_link` |
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -126,7 +126,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP HA VPN Connection**](/cloud-catalog/gcp-ha-vpn-connection) -- a site or peer cloud connected through this gateway
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- the network the gateway attaches to
-- [**GCP Router NAT**](/cloud-catalog/gcp-router-nat) -- a second router on the same network for NAT
-- [**GCP VPC Peering**](/cloud-catalog/gcp-vpc-peering) -- shares the VPN's routes with peered networks via custom routes
+- [**GCP HA VPN Connection**](/infra-catalog/gcp-ha-vpn-connection) -- a site or peer cloud connected through this gateway
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- the network the gateway attaches to
+- [**GCP Router NAT**](/infra-catalog/gcp-router-nat) -- a second router on the same network for NAT
+- [**GCP VPC Peering**](/infra-catalog/gcp-vpc-peering) -- shares the VPN's routes with peered networks via custom routes

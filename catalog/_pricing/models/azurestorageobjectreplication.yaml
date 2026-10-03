@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -8,9 +8,9 @@
 # (transactions, destination capacity, egress) follows the data the source
 # workload writes -- so both presets estimate to a commitment-absence zero,
 # stated in exclusions, never padded into fabricated dollars.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: azurestorageobjectreplication
 spec:
@@ -24,7 +24,7 @@ spec:
         - "the destination account bills blob capacity per GB-month for the full second copy (all blocks of each version, unique or not) and write transactions per 10,000 for the engine's writes"
         - "the source account bills read transactions per 10,000 for change-feed and blob/version reads, plus per-GB retrieval on cool or cold source blobs"
         - "the Everything backfill is a one-time surge -- the whole existing container moves through the read, write, and egress meters at enablement, proportional to its current size"
-        - "the prerequisites bill on the account components -- versioning capacity for every overwrite and change feed per 10,000 changes on the source, versioning on the destination"
+        - "the prerequisites bill on the account kinds -- versioning capacity for every overwrite and change feed per 10,000 changes on the source, versioning on the destination"
       notes: "Zero committed cost -- the policy itself never appears on the invoice; Microsoft's own advice is to enable replication on a small container and measure before production, because the backfill and steady-state charges scale with data no manifest can see."
     - preset: 02-prefix-scoped-distribution
       region_assumption: eastus
@@ -34,5 +34,5 @@ spec:
         - "only blobs under the published/ prefix replicate -- the prefix filter scales every downstream meter (egress per GB, destination capacity per GB-month, both accounts' transactions per 10,000) to the matching subset"
         - "OnlyNewObjects (the default this preset rides) means no backfill surge -- existing blobs never move, so charges start at zero and follow new publishes"
         - "a same-region destination skips inter-region egress; a regional fan-out destination pays it per GB"
-        - "the prerequisites (source versioning + change feed, destination versioning) bill on the account components"
+        - "the prerequisites (source versioning + change feed, destination versioning) bill on the account kinds"
       notes: "Zero committed cost -- forward-looking, prefix-scoped distribution is the cheapest replication shape: nothing moves until the source workload publishes, and the filter keeps the copy (and its meters) to the published subset."

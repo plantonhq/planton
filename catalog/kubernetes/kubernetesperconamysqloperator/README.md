@@ -8,7 +8,7 @@ controller that reconciles `PerconaXtraDBCluster` custom resources into
 running Galera clusters. To get an actual MySQL database, deploy this
 first, then declare a KubernetesMysql.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want a MySQL database** — that is KubernetesMysql; this component
   is the operator it requires.

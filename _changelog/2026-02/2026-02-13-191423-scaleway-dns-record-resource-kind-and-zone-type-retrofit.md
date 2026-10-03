@@ -6,7 +6,7 @@
 
 ## Summary
 
-Implemented ScalewayDnsRecord (R16), the sixteenth Scaleway resource kind, completing the DNS tier alongside ScalewayDnsZone (R15). Simultaneously retrofitted ScalewayDnsZone to use a local `RecordType` enum replacing the shared `DnsRecordType`, adding DNAME and TLSA support to both components. This establishes the design principle that DNS record type enums are component-local, not shared across providers or even between zone and record components of the same provider.
+Implemented ScalewayDnsRecord (R16), the sixteenth Scaleway resource kind, completing the DNS tier alongside ScalewayDnsZone (R15). Simultaneously retrofitted ScalewayDnsZone to use a local `RecordType` enum replacing the shared `DnsRecordType`, adding DNAME and TLSA support to both kinds. This establishes the design principle that DNS record type enums are kind-local, not shared across providers or even between zone and record kinds of the same provider.
 
 ## Problem Statement / Motivation
 
@@ -16,7 +16,7 @@ The Scaleway DNS tier needed a standalone DNS record kind for DAG-friendly recor
 
 - No standalone record kind for Scaleway DNS -- infra charts couldn't express record-level dependencies
 - ScalewayDnsZone used the shared `DnsRecordType` enum which lacked DNAME and TLSA support
-- The shared enum pattern created unnecessary coupling between providers and components
+- The shared enum pattern created unnecessary coupling between providers and kinds
 - Documentation falsely stated "use standalone ScalewayDnsRecord for DNAME/TLSA" before that kind existed
 
 ## Solution / What's New
@@ -53,7 +53,7 @@ The Scaleway Terraform provider docs list `keep_empty_zone` as an argument on `s
 - `scalewaydnszone/v1/README.md` -- Removed DNAME/TLSA caveats
 
 **Created (ScalewayDnsRecord -- 17 new files):**
-- 4 proto schemas: `api.proto`, `spec.proto`, `stack_outputs.proto`, `stack_input.proto`
+- 4 proto schemas: `api.proto`, `spec.proto`, `outputs.proto`, `iac_input.proto`
 - 6 Pulumi Go files: `Pulumi.yaml`, `main.go`, `module/main.go`, `module/locals.go`, `module/dns_record.go`, `module/outputs.go`
 - 5 Terraform HCL files: `provider.tf`, `variables.tf`, `locals.tf`, `main.tf`, `outputs.tf`
 - 2 documentation files: `README.md`, `examples.md`
@@ -63,7 +63,7 @@ The Scaleway Terraform provider docs list `keep_empty_zone` as an argument on `s
 
 - **DAG-friendly DNS management** -- Infra charts can now express record-level dependencies with explicit edges
 - **Complete Scaleway DNS type coverage** -- All 13 Scaleway record types (A, AAAA, ALIAS, CAA, CNAME, DNAME, MX, NS, PTR, SOA, SRV, TXT, TLSA) available in both zone and record kinds
-- **Design principle established** -- Record type enums are component-local, enabling each kind to evolve its type surface independently
+- **Design principle established** -- Record type enums are kind-local, enabling each kind to evolve its type surface independently
 - **Simpler spec surface** -- 7 fields vs DigitalOcean's 10, thanks to Scaleway's self-contained data format
 
 ## Impact

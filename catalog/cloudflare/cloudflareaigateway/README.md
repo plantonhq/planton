@@ -64,7 +64,7 @@ The gateway's `gateway_id` is its URL slug and is create-only: renaming replaces
 | `spend_limits` | object | Budget rules -- every rule needs its own unique `id` (spec-enforced). |
 | `dynamic_routes[]` | list | Named routing graphs; a graph edit recreates that route object. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

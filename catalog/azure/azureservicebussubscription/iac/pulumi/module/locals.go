@@ -48,11 +48,11 @@ func parseTopicId(topicId string) (namespaceName string, topicName string, err e
 	return nsParts[1], topicParts[1], nil
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureservicebussubscriptionv1alpha1.AzureServiceBusSubscriptionStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureservicebussubscriptionv1alpha1.AzureServiceBusSubscriptionIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureServiceBusSubscription = stackInput.Target
-	locals.TopicId = stackInput.Target.Spec.TopicId.GetValue()
+	locals.AzureServiceBusSubscription = iacInput.Target
+	locals.TopicId = iacInput.Target.Spec.TopicId.GetValue()
 
 	// Subscriptions carry no Azure tags: ARM does not support tags on
 	// Service Bus entities, so the platform's identity tags live on the

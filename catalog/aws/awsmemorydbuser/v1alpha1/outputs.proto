@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsmemorydbuser.v1alpha1;
 
-// AwsMemorydbUserStackOutputs captures observable identifiers from a
+// AwsMemorydbUserOutputs captures observable identifiers from a
 // provisioned MemoryDB user. These outputs are used by downstream resources
 // to wire dependencies via StringValueOrRef — most importantly the ACL's
 // `user_names` membership list.
-message AwsMemorydbUserStackOutputs {
+message AwsMemorydbUserOutputs {
   // The user's name — the single identity clients present in the AUTH
   // command and the identifier ACLs reference in their membership list.
   // Exported so ACL membership and application configuration are wired from

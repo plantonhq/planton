@@ -51,7 +51,7 @@ policy, backup mode, and 21 capabilities with kind-pairing CELs; identity + CMK
 FKs; analytical storage; capacity cap; network ACL bypass; CORS; the restore
 block. Bundled `sql_databases`/`mongo_databases` removed; the silent
 `EnableMongo` auto-add removed — MONGO_DB accounts declare the capability in the
-spec. 18 kind-authentic stack outputs (keys/connection strings documented as
+spec. 18 kind-authentic outputs (keys/connection strings documented as
 secret-bearing); Pulumi migrated to the shared provider builder. 47 spec tests.
 
 ### The four children (500–503)

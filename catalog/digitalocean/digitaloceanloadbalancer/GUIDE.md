@@ -41,7 +41,7 @@ A new balancer normally reaches `active` in one to two minutes; the provider wai
 
 ## BYOIP and subnet placement
 
-`ip` assigns an unassigned BYOIP address on the account at create time. When unset, DigitalOcean allocates one. The assigned address is always the `ip` stack output.
+`ip` assigns an unassigned BYOIP address on the account at create time. When unset, DigitalOcean allocates one. The assigned address is always the `ip` output.
 
 `subnetUuid` places the balancer in a DigitalOcean-managed VPC subnet and requires `vpc`. Both are create-only, and both deploy on either provisioner.
 

@@ -1,15 +1,15 @@
 # E2E framework: a pending_proof profile status separates authoring from proving, and repo-global locks coordinate concurrent agent sessions
 
 **Date**: 2026-07-24
-**Scope**: `apis/dev/planton/qa/componente2eprofile/v1/spec.proto` (+ regenerated Go stub), `pkg/e2e/profile/discover.go`, `cmd/planton/root/e2e/discover.go`, `internal/cli/ui/e2ediscover/` (table + interactive), `e2e/kubernetes_test.go` (profile skip switch), `_locks/` (new), forge/update workflow rules. No component behavior change.
+**Scope**: `apis/dev/planton/qa/catalogkinde2eprofile/v1/spec.proto` (+ regenerated Go stub), `pkg/e2e/profile/discover.go`, `cmd/planton/root/e2e/discover.go`, `internal/cli/ui/e2ediscover/` (table + interactive), `e2e/kubernetes_test.go` (profile skip switch), `_locks/` (new), forge/update workflow rules. No kind behavior change.
 
 ## What changed
 
-1. **`pending_proof` status in `ComponentE2EProfileSpec.Status`.** The
-   lifecycle previously had no honest state for a component that is fully
+1. **`pending_proof` status in `CatalogKindE2EProfileSpec.Status`.** The
+   lifecycle previously had no honest state for a kind that is fully
    authored and offline-validated but whose live lanes have not yet run:
    `deferred` records a KNOWN failure or blocker, and `green` would put an
-   unproven component into CI matrices (which are built from green profiles
+   unproven kind into CI matrices (which are built from green profiles
    only). `pending_proof` names that state precisely. The provider test
    entrypoints skip it exactly like `deferred` — a proving session flips the
    profile to green immediately before executing the lanes (the existing
@@ -26,7 +26,7 @@
    (whole-tree generation — protos/stubs, kind map, gazelle, proto-docs,
    e2e matrix, site regen — and brief edits to shared choke-point files).
    Committed README + `.gitignore`; the lock files themselves are transient
-   and ignored. Per-component work never needs a lock.
+   and ignored. Per-kind work never needs a lock.
 4. **Forge/update rules teach the split execution mode.** The forge rule's
    profile-honesty section now names the two phases — authoring (through the
    offline gates, profile at `pending_proof`) and proving (live lanes +

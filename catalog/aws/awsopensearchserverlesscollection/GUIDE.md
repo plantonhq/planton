@@ -1,4 +1,4 @@
-# AwsOpenSearchServerlessCollection — Component Guide
+# AwsOpenSearchServerlessCollection — Kind Guide
 
 The authored wisdom layer for this component: internal conventions, judgment
 calls, and operational judgment earned while building it. The reference for
@@ -8,7 +8,7 @@ schema alone cannot.
 ## Design decisions
 
 - **Collection-scoped policies, typed.** The provider models the four
-  policy documents as opaque JSON strings; this component models them as
+  policy documents as opaque JSON strings; this kind models them as
   typed spec fields (encryption key choice, network posture, data-access
   rules, retention rules) and the modules render the JSON — scoped to
   exactly this collection (`collection/<name>`, `index/<name>/<pattern>`).

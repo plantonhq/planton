@@ -4,7 +4,7 @@ Connects Cloud Build to your code host -- github.com, GitHub Enterprise, gitlab.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- the Cloud Build API on the connection's project
 - **Connection** -- an authorized link to one code host, the container its linked repositories live in
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with permission to manage Cloud Build connections in the target project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with permission to manage Cloud Build connections in the target project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Code Host Account
@@ -53,7 +53,7 @@ spec:
 planton apply -f cloud-build-connection.yaml
 ```
 
-This connects Cloud Build in us-central1 to the GitHub organization where the app is installed. A Stack Job tracks the provisioning in real time.
+This connects Cloud Build in us-central1 to the GitHub organization where the app is installed. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -71,16 +71,16 @@ These are the most important decisions when configuring a connection. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpSecretManagerSecret** | every `*SecretVersion` field | `status.outputs.latest_version_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -99,6 +99,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Cloud Build Repository**](/cloud-catalog/gcp-cloud-build-repository) -- repositories linked through the connection
-- [**GCP Cloud Build Trigger**](/cloud-catalog/gcp-cloud-build-trigger) -- builds triggered by the repositories' events
-- [**GCP Secret Manager Secret**](/cloud-catalog/gcp-secret-manager-secret) -- where the tokens live
+- [**GCP Cloud Build Repository**](/infra-catalog/gcp-cloud-build-repository) -- repositories linked through the connection
+- [**GCP Cloud Build Trigger**](/infra-catalog/gcp-cloud-build-trigger) -- builds triggered by the repositories' events
+- [**GCP Secret Manager Secret**](/infra-catalog/gcp-secret-manager-secret) -- where the tokens live

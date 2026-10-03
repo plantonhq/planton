@@ -2,9 +2,9 @@
 
 ## Overview
 
-**KubernetesPriorityClass** is a Planton component that creates and manages Kubernetes PriorityClasses — the steps of the cluster's workload importance ladder — as first-class, declaratively managed resources. Pods reference a class by name (the shared workload pod spec's `priority_class_name`); the scheduler places higher-priority pods first when capacity is scarce and — unless preemption is disabled — EVICTS lower-priority pods to make room for a higher-priority pod that cannot otherwise schedule.
+**KubernetesPriorityClass** is a catalog kind that creates and manages Kubernetes PriorityClasses — the steps of the cluster's workload importance ladder — as first-class, declaratively managed resources. Pods reference a class by name (the shared workload pod spec's `priority_class_name`); the scheduler places higher-priority pods first when capacity is scarce and — unless preemption is disabled — EVICTS lower-priority pods to make room for a higher-priority pod that cannot otherwise schedule.
 
-The component covers the complete `scheduling.k8s.io/v1` PriorityClass surface: the priority value, the global-default flag, the human description, and the preemption policy.
+The kind covers the complete `scheduling.k8s.io/v1` PriorityClass surface: the priority value, the global-default flag, the human description, and the preemption policy.
 
 ## Purpose
 
@@ -77,7 +77,7 @@ Any pod that sets `priority_class_name: critical-services` now schedules ahead o
 - **`spec.preemption_policy`**: `preempt_lower_priority` (default) or `never`
 - **`spec.labels`** / **`spec.annotations`**: Merged with standard Planton labels for tracking and governance
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -86,7 +86,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Merge user labels and annotations with standard Planton tracking labels
 2. Resolve the preemption policy — the explicit value, or the server default `PreemptLowerPriority` — and always submit it explicitly

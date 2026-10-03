@@ -4,7 +4,7 @@ Configures customer-managed-key (BYOK) encryption on an Event Hubs namespace: ev
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **CMK encryption configuration** -- applied onto the referenced namespace, with your Key Vault keys (1-10) and optionally a second infrastructure-encryption layer
 
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -62,7 +62,7 @@ spec:
 planton apply -f cmk.yaml
 ```
 
-This applies BYOK encryption to the `telemetry-hubs-premium` namespace with one versionless Key Vault key, unwrapped by the `cmk-identity` user-assigned identity. A Stack Job tracks the provisioning in real time.
+This applies BYOK encryption to the `telemetry-hubs-premium` namespace with one versionless Key Vault key, unwrapped by the `cmk-identity` user-assigned identity. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -93,7 +93,7 @@ These are the most important decisions when configuring CMK. Explore the full fi
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -101,9 +101,9 @@ These are the most important decisions when configuring CMK. Explore the full fi
 | **AzureKeyVaultKey** | `keyVaultKeyIds[]` | `status.outputs.versionless_id` |
 | **AzureUserAssignedIdentity** | `userAssignedIdentityId` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -121,9 +121,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Event Hub Namespace**](/cloud-catalog/azure-event-hub-namespace) -- the single-tenant namespace being encrypted
-- [**Azure Event Hub Cluster**](/cloud-catalog/azure-event-hub-cluster) -- the dedicated capacity that qualifies a namespace for CMK (or PREMIUM)
-- [**Azure Key Vault Key**](/cloud-catalog/azure-key-vault-key) -- the encryption keys, referenced versionless for automatic rotation
-- [**Azure Key Vault**](/cloud-catalog/azure-key-vault) -- must have purge protection enabled
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- the optional fleet unwrap identity
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- the "Key Vault Crypto Service Encryption User" grant on the vault
+- [**Azure Event Hub Namespace**](/infra-catalog/azure-event-hub-namespace) -- the single-tenant namespace being encrypted
+- [**Azure Event Hub Cluster**](/infra-catalog/azure-event-hub-cluster) -- the dedicated capacity that qualifies a namespace for CMK (or PREMIUM)
+- [**Azure Key Vault Key**](/infra-catalog/azure-key-vault-key) -- the encryption keys, referenced versionless for automatic rotation
+- [**Azure Key Vault**](/infra-catalog/azure-key-vault) -- must have purge protection enabled
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- the optional fleet unwrap identity
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- the "Key Vault Crypto Service Encryption User" grant on the vault

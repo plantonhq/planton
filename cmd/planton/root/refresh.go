@@ -21,7 +21,7 @@ var Refresh = &cobra.Command{
 (Pulumi, Tofu, or Terraform) based on the manifest label 'planton.dev/provisioner'.
 
 This command queries your cloud provider for the current state of managed resources and
-updates the state file to reflect reality. It does NOT modify any cloud resources.
+updates the state file to reflect reality. It does NOT modify any infra components.
 
 If the provisioner label is not present, you will be prompted to select one interactively.`,
 	Example: `
@@ -29,8 +29,8 @@ If the provisioner label is not present, you will be prompted to select one inte
 	planton refresh -f manifest.yaml
 	planton refresh --manifest manifest.yaml
 
-	# Refresh with stack input file (extracts manifest from target field)
-	planton refresh -i stack-input.yaml
+	# Refresh with IaC input file (extracts manifest from target field)
+	planton refresh -i iac-input.yaml
 
 	# Refresh with kustomize
 	planton refresh --kustomize-dir _kustomize --overlay prod

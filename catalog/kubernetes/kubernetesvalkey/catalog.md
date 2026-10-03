@@ -4,7 +4,7 @@ Deploys Valkey — the Linux Foundation's Redis-compatible in-memory data store 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm Release** (`<metadata.name>`) -- a Deployment (standalone) or StatefulSet (replication) running Valkey, with the typed `config` block rendered into the chart's valkey.conf string deterministically on both engines
 - **Services** -- the write Service (`<name>`), and in replication mode the read Service (`<name>-read`, load balancing reads across all pods) and the headless Service (`<name>-headless`, direct pod discovery)
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Kubernetes Cluster
 
@@ -60,11 +60,11 @@ spec:
 planton apply -f valkey.yaml
 ```
 
-This creates a standalone instance with a 5Gi persistent volume, append-only durability, a 256mb memory ceiling with LRU eviction, and ACL auth on -- applications reach the store at the exported in-cluster endpoint, authenticating as `default` with the module-generated password in the `sessions-cache-auth` Secret (the `password_secret` output names it). A Stack Job tracks the provisioning in real time.
+This creates a standalone instance with a 5Gi persistent volume, append-only durability, a 256mb memory ceiling with LRU eviction, and ACL auth on -- applications reach the store at the exported in-cluster endpoint, authenticating as `default` with the module-generated password in the `sessions-cache-auth` Secret (the `password_secret` output names it). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the instance to a namespace and storage class managed by other Cloud Resources:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the instance to a namespace and storage class managed by other Infra Components:
 
 ```yaml
 spec:
@@ -108,7 +108,7 @@ These are the most important decisions when configuring Valkey. Explore the full
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -116,9 +116,9 @@ These are the most important decisions when configuring Valkey. Explore the full
 | **KubernetesStorageClass** (optional) | `persistence.storageClass` / `replication.persistence.storageClass` | `status.outputs.storage_class_name` |
 | **KubernetesCertificate** (with TLS) | `tls.certificateSecret` | `status.outputs.secret_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -141,8 +141,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the placement target; deploy the cache beside the application that uses it
-- [**Kubernetes StorageClass**](/cloud-catalog/kubernetes-storage-class) -- backs the persistence volume the dataset (and replication bootstrap) depends on
-- [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) -- issues and rotates the kubernetes.io/tls Secret the TLS block references
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) -- the applications that consume the exported endpoint and the auth Secret
-- [**kube-prometheus-stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) -- provides the Prometheus operator CRDs the ServiceMonitor needs, turning cache health (memory, evictions, hit ratio, replica lag) into alerts
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the placement target; deploy the cache beside the application that uses it
+- [**Kubernetes StorageClass**](/infra-catalog/kubernetes-storage-class) -- backs the persistence volume the dataset (and replication bootstrap) depends on
+- [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) -- issues and rotates the kubernetes.io/tls Secret the TLS block references
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- the applications that consume the exported endpoint and the auth Secret
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) -- provides the Prometheus operator CRDs the ServiceMonitor needs, turning cache health (memory, evictions, hit ratio, replica lag) into alerts

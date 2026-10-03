@@ -4,7 +4,7 @@ Deploys an Azure App Service Plan -- the compute tier that hosts Azure Web Apps,
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Azure App Service Plan** -- a compute resource in the specified region and resource group, configured with the selected SKU tier, OS type, worker count, and scaling settings
 - **Zone-Balanced Instances** -- created only when `zoneBalancingEnabled` is `true`; distributes workers across availability zones for higher resilience (requires Premium, Elastic Premium, or Isolated v2 SKUs)
@@ -14,12 +14,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the Service Plan will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the Service Plan will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f service-plan.yaml
 ```
 
-This creates a Linux Standard S1 plan with a single worker instance -- zone balancing, per-site scaling, and elastic worker limits stay at their defaults. A Stack Job tracks the provisioning in real time.
+This creates a Linux Standard S1 plan with a single worker instance -- zone balancing, per-site scaling, and elastic worker limits stay at their defaults. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -88,21 +88,21 @@ These are the most important decisions when configuring a Service Plan. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
 | `service_plan_id` | Azure Resource Manager ID of the Service Plan | AzureLinuxWebApp and AzureFunctionApp `servicePlanId` field -- the reference that places an app on this plan's compute |
 
-The remaining outputs (`service_plan_name`, `os_type`, `sku_name`, `kind`, `reserved`) are readbacks of the deployed configuration for debugging, cost tracking, and audit trails; they are not wired into other Cloud Resources.
+The remaining outputs (`service_plan_name`, `os_type`, `sku_name`, `kind`, `reserved`) are readbacks of the deployed configuration for debugging, cost tracking, and audit trails; they are not wired into other Infra Components.
 
 ## Common Patterns
 
@@ -116,6 +116,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the Service Plan is created
-- [**Azure Linux Web App**](/cloud-catalog/azure-linux-web-app) -- deploys onto this plan by referencing `service_plan_id`
-- [**Azure Function App**](/cloud-catalog/azure-function-app) -- runs on this plan's compute (Consumption, Elastic Premium, or dedicated tiers) via `service_plan_id`
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the Service Plan is created
+- [**Azure Linux Web App**](/infra-catalog/azure-linux-web-app) -- deploys onto this plan by referencing `service_plan_id`
+- [**Azure Function App**](/infra-catalog/azure-function-app) -- runs on this plan's compute (Consumption, Elastic Premium, or dedicated tiers) via `service_plan_id`

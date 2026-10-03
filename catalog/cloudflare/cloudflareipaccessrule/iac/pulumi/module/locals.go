@@ -12,10 +12,10 @@ type Locals struct {
 	CloudflareIpAccessRule   *cloudflareipaccessrulev1alpha1.CloudflareIpAccessRule
 }
 
-// initializeLocals copies stack-input fields into the Locals struct.
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflareipaccessrulev1alpha1.CloudflareIpAccessRuleStackInput) *Locals {
+// initializeLocals copies iac-input fields into the Locals struct.
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflareipaccessrulev1alpha1.CloudflareIpAccessRuleIacInput) *Locals {
 	locals := &Locals{}
-	locals.CloudflareIpAccessRule = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareIpAccessRule = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

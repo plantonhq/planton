@@ -27,11 +27,11 @@ var enabledProtocolStrings = map[azurestoragesharev1alpha1.AzureStorageShareProt
 	azurestoragesharev1alpha1.AzureStorageShareProtocol_NFS: "NFS",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurestoragesharev1alpha1.AzureStorageShareStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurestoragesharev1alpha1.AzureStorageShareIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureStorageShare = stackInput.Target
-	locals.StorageAccountId = stackInput.Target.Spec.StorageAccountId.GetValue()
+	locals.AzureStorageShare = iacInput.Target
+	locals.StorageAccountId = iacInput.Target.Spec.StorageAccountId.GetValue()
 
 	// No Azure tags: ARM does not support tags on fileServices/shares,
 	// so the platform's identity tags live on the parent account.

@@ -40,7 +40,7 @@ var _ = ginkgo.Describe("GcpSharedVpcServiceProjectSpec", func() {
 		return &GcpSharedVpcServiceProject{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpSharedVpcServiceProject",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "payments-attach",
 			},
 			Spec: &GcpSharedVpcServiceProjectSpec{

@@ -17,17 +17,17 @@ import (
 // The release name is FIXED ("keda"): the component registers the
 // cluster-wide v1beta1.external.metrics.k8s.io APIService, a singleton —
 // one installation per cluster is an upstream constraint.
-func Resources(ctx *pulumi.Context, stackInput *kuberneteskedav1alpha1.KubernetesKedaStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kuberneteskedav1alpha1.KubernetesKedaIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

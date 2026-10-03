@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -7,9 +7,9 @@
 # written, Traffic Analytics per GB actually processed, and storage per GB
 # actually retained, all driven by the target network's traffic, which no
 # manifest can predict -- stated in exclusions, never padded into
-# fabricated dollars. Schema: finops/componentcostestimatemodel/v1.
+# fabricated dollars. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: azurenetworkwatcherflowlog
 spec:
@@ -20,7 +20,7 @@ spec:
       hours_per_month: 730
       exclusions:
         - collection bills "0.50" USD per GB of flow logs written after the first 5 GB each month (East US, meter "Standard VNet Flow Logs Collected") -- the vnet-wide target records EVERY flow in the network, so volume follows the network's traffic shape
-        - the raw files bill the storage account's blob capacity and transactions on the AzureStorageAccount component, with the 30-day retention pruning the accumulation window (and OVERWRITING the account's own lifecycle rules at create time)
+        - the raw files bill the storage account's blob capacity and transactions on the AzureStorageAccount kind, with the 30-day retention pruning the accumulation window (and OVERWRITING the account's own lifecycle rules at create time)
         - reading or exporting the stored logs bills the storage account's read and egress meters
       notes: "Zero committed cost -- a recorder on a silent network writes nothing and bills nothing; every dollar tracks gigabytes of actual traffic metadata."
     - preset: 02-traffic-analytics

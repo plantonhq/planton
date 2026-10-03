@@ -4,7 +4,7 @@ Deploys a Cloudflare Snippet: a small JavaScript module at the zone's edge, invo
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Snippet** -- one `cloudflare_snippet` on the zone, with the inline source files and a `metadata.main_module` entry point. The snippet does nothing until a snippet rule invokes it by name
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Snippets Edit on the target zone. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Snippets Edit on the target zone. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -52,7 +52,7 @@ spec:
 planton apply -f snippet.yaml
 ```
 
-This deploys a single-file snippet that returns a 302 — inert until a Cloudflare Snippet Rules entry invokes `redirect_legacy` by name. A Stack Job tracks the provisioning in real time.
+This deploys a single-file snippet that returns a 302 — inert until a Cloudflare Snippet Rules entry invokes `redirect_legacy` by name. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -88,15 +88,15 @@ These are the most important decisions when configuring a snippet. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** | `zoneId` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -115,6 +115,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Snippet Rules**](/cloud-catalog/cloudflare-snippet-rules) -- the zone's routing table that invokes this snippet by name; nothing runs without it.
-- [**Cloudflare Worker**](/cloud-catalog/cloudflare-worker) -- the full Worker for logic that needs bindings, cron, or a custom domain.
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) -- the zone scope; wire `zoneId` via ValueFromRef.
+- [**Cloudflare Snippet Rules**](/infra-catalog/cloudflare-snippet-rules) -- the zone's routing table that invokes this snippet by name; nothing runs without it.
+- [**Cloudflare Worker**](/infra-catalog/cloudflare-worker) -- the full Worker for logic that needs bindings, cron, or a custom domain.
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) -- the zone scope; wire `zoneId` via ValueFromRef.

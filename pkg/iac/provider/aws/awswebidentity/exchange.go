@@ -14,7 +14,7 @@
 //   - pulumi-aws-native has no web-identity field at all (upstream pulumi-aws-native#1042), so
 //     it cannot exchange the JWT itself -- the caller must hand it temporary credentials.
 //   - the OpenTofu AWS provider block is deliberately empty (region + credentials are
-//     injected as env vars from the stack input) -- so the runtime performs the exchange
+//     injected as env vars from the IaC input) -- so the runtime performs the exchange
 //     and injects the resulting short-lived credentials.
 //
 // Each consumer documents its own switch-back trigger (when its upstream gap is fixed) in its

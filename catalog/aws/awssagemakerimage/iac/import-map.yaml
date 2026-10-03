@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awssagemakerimage
 spec:
@@ -10,13 +10,13 @@ spec:
   values:
     - name: image_name
       derivations:
-        - from_stack_output: image_name
+        - from_output: image_name
       where_to_find: >-
         SageMaker console -> Images (the name), or
         `aws sagemaker list-images` (ImageName).
     - name: version
       derivations:
-        - from_stack_output_keyed_by_address: version_numbers
+        - from_output_keyed_by_address: version_numbers
       where_to_find: >-
         `aws sagemaker list-image-versions --image-name <name>` shows
         Version per entry; match each to its spec.versions entry by

@@ -76,7 +76,7 @@ Two mutually exclusive options:
 - **Confidential Computing**: AMD SEV memory encryption (requires n2d machine types)
 - **Managed EUC**: JupyterLab acts as the signed-in user's identity for per-user auditability
 
-## Related Components
+## Related Kinds
 
 - **GcpProject** -- project where the notebook is created
 - **GcpVpcNetwork / GcpSubnetwork** -- VPC networking for private instances

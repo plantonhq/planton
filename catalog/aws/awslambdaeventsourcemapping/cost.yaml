@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awslambdaeventsourcemapping
 spec:
@@ -56,4 +56,4 @@ spec:
     - the wired function's invocations and compute duration bill on its AwsLambda component -- this mapping only sets how many invocations happen
     - source-side reads bill on the source component (SQS requests, Kinesis shard throughput, MSK cluster capacity)
     - under heavy per-poller throughput, enhanced EPU utilization packs fewer pollers per EPU and allocates more EPUs -- workload-dependent
-  notes: "In default (on-demand) mode this component is free glue -- the polling infrastructure carries no charge of its own, and the entire bill lands on the function and the source. Provisioned mode (provisioned_pollers) is the explicit exception, billing Event-Poller-Unit hours from the moment it is configured."
+  notes: "In default (on-demand) mode this kind is free glue -- the polling infrastructure carries no charge of its own, and the entire bill lands on the function and the source. Provisioned mode (provisioned_pollers) is the explicit exception, billing Event-Poller-Unit hours from the moment it is configured."

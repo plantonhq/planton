@@ -41,4 +41,4 @@ It **does** support:
 - **Storage**: billed per GB-month, at well under half the STANDARD class rate — the class choice is the cost cliff here
 - **KMS**: the customer-managed key adds a flat monthly per-key charge plus per-API-call usage
 
-The verified figure for this preset lives in the component's generated estimate at `catalog/_pricing/estimates/awscloudwatchloggroup.yaml` — computed from the pinned price book, never hand-typed here.
+The verified figure for this preset lives in the kind's generated estimate at `catalog/_pricing/estimates/awscloudwatchloggroup.yaml` — computed from the pinned price book, never hand-typed here.

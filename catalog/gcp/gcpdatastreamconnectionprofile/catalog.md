@@ -4,7 +4,7 @@ Tells Datastream where a database or destination is and how to sign in -- MySQL,
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `datastream.googleapis.com` on the project (never disabled on destroy)
 - **Connection profile** -- a `datastream_connection_profile` with its one profile type
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Datastream admin permissions (`roles/datastream.admin`) on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Datastream admin permissions (`roles/datastream.admin`) on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Optional Dependencies
@@ -49,7 +49,7 @@ spec:
 planton apply -f datastream-connection-profile.yaml
 ```
 
-This creates the BigQuery destination profile every stream in `us-central1` can share. A Stack Job tracks the provisioning in real time.
+This creates the BigQuery destination profile every stream in `us-central1` can share. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -67,7 +67,7 @@ These are the most important decisions when configuring this component. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -77,9 +77,9 @@ These are the most important decisions when configuring this component. Explore 
 | **GcpGcsBucket** | `gcsProfile.bucket` | `status.outputs.bucket_name` |
 | **GcpDatastreamPrivateConnection** | `privateConnection` | `status.outputs.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|-----------------------|
@@ -97,7 +97,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Datastream Stream**](/cloud-catalog/gcp-datastream-stream) -- streams through profiles
-- [**GCP Datastream Private Connection**](/cloud-catalog/gcp-datastream-private-connection) -- private reachability
-- [**GCP Cloud SQL**](/cloud-catalog/gcp-cloud-sql) -- a source database
-- [**GCP Secret Manager Secret**](/cloud-catalog/gcp-secret-manager-secret) -- the credential
+- [**GCP Datastream Stream**](/infra-catalog/gcp-datastream-stream) -- streams through profiles
+- [**GCP Datastream Private Connection**](/infra-catalog/gcp-datastream-private-connection) -- private reachability
+- [**GCP Cloud SQL**](/infra-catalog/gcp-cloud-sql) -- a source database
+- [**GCP Secret Manager Secret**](/infra-catalog/gcp-secret-manager-secret) -- the credential

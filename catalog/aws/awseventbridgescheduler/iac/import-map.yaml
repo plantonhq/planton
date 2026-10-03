@@ -1,14 +1,14 @@
 # Where each placeholder in this component's import-ID formats comes
 # from (the formats themselves live in aa_import/catalog.yaml).
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awseventbridgescheduler
 spec:
   values:
     - name: group_name
       derivations:
-        - from_stack_output: group_name
+        - from_output: group_name
       where_to_find: >-
         EventBridge console -> Scheduler -> Schedules (the Group
         column; "default" for ungrouped schedules), or

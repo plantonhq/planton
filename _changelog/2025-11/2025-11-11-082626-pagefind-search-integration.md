@@ -10,7 +10,7 @@ Implemented comprehensive client-side search functionality for the planton docum
 
 ## Problem Statement / Motivation
 
-The planton documentation site lacked search functionality, making it difficult for users to quickly find relevant information across the growing collection of deployment component documentation, guides, and technical references. With 135+ documentation pages covering 10 cloud providers and 118 components, users needed an efficient way to discover content.
+The planton documentation site lacked search functionality, making it difficult for users to quickly find relevant information across the growing collection of catalog kind documentation, guides, and technical references. With 135+ documentation pages covering 10 cloud providers and 118 kinds, users needed an efficient way to discover content.
 
 ### Pain Points
 
@@ -45,7 +45,7 @@ Deploy out/ to GitHub Pages (includes index)
 ```
 User Types in Search Box
     ↓
-Component Dynamically Imports /_pagefind/pagefind.js
+Kind Dynamically Imports /_pagefind/pagefind.js
     ↓
 Pagefind Loads Index (lazy-loaded, cached)
     ↓
@@ -77,9 +77,9 @@ Added `postbuild` script to automatically generate search index after Next.js bu
 - Generates index in `out/_pagefind/` for deployment
 - Automatic execution after every Next.js build
 
-**2. Functional Search Component**
+**2. Functional Search Kind**
 
-Replaced placeholder SearchBar.tsx with full-featured Pagefind-based search component:
+Replaced placeholder SearchBar.tsx with full-featured Pagefind-based search kind:
 
 **File**: `site/src/app/docs/components/SearchBar.tsx`
 
@@ -239,7 +239,7 @@ cd site && yarn add -D pagefind
 ```
 
 **Build Flow**:
-1. `prebuild`: Copy component documentation from `apis/` directory
+1. `prebuild`: Copy kind documentation from `apis/` directory
 2. `build`: Next.js generates static site to `out/`
 3. `postbuild`: Pagefind scans HTML and creates search index
 
@@ -267,7 +267,7 @@ Total:
 Finished in 0.966 seconds
 ```
 
-### Search Component Implementation
+### Search Kind Implementation
 
 **Key Implementation Details**:
 
@@ -346,7 +346,7 @@ const DEV_SEARCH_NOTICE = (
 
 ✅ **Comprehensive Discovery**
 - Search across all 135+ documentation pages
-- Find deployment components, guides, concepts, and API references
+- Find catalog kinds, guides, concepts, and API references
 - Highlighted search terms show exact matches in context
 
 ✅ **Accessible Interface**
@@ -374,7 +374,7 @@ const DEV_SEARCH_NOTICE = (
 
 ✅ **Maintainable Solution**
 - Clear TypeScript types
-- Well-structured component code
+- Well-structured kind code
 - Purple theme defined in centralized styles
 
 ### For Operations
@@ -488,17 +488,17 @@ if (!el || INPUTS.has(el.tagName) || (el as HTMLElement).isContentEditable) {
 
 ### Why Material-UI for Results?
 
-**Chosen**: Material-UI Popper and Paper components
+**Chosen**: Material-UI Popper and Paper kinds
 **Considered**: Custom CSS dropdown, Headless UI Combobox (Nextra approach)
 
 **Rationale**:
-✅ **Consistency**: Matches existing site components (DocsHeader, DocsSidebar)
+✅ **Consistency**: Matches existing site kinds (DocsHeader, DocsSidebar)
 ✅ **Purple Theme**: Easy to apply site branding with MUI `sx` prop
 ✅ **Accessibility**: Built-in ARIA attributes and keyboard navigation
-✅ **Mobile Support**: Responsive Paper component adapts to screen sizes
+✅ **Mobile Support**: Responsive Paper kind adapts to screen sizes
 ✅ **Familiar API**: Team already uses MUI throughout site
 
-**Trade-off**: Adds ~300 lines to component but provides robust dropdown behavior.
+**Trade-off**: Adds ~300 lines to kind but provides robust dropdown behavior.
 
 ### Why Exclude Code Blocks?
 
@@ -509,7 +509,7 @@ if (!el || INPUTS.has(el.tagName) || (el as HTMLElement).isContentEditable) {
 ✅ **Smaller Index**: Excludes repetitive code snippets from search
 ✅ **Better Relevance**: Matches on explanatory text, not implementation details
 
-**Example**: Searching "kubernetes" returns guide pages and component docs, not every YAML code block mentioning the word.
+**Example**: Searching "kubernetes" returns guide pages and kind docs, not every YAML code block mentioning the word.
 
 ### Why TypeScript Type Definitions?
 
@@ -517,7 +517,7 @@ if (!el || INPUTS.has(el.tagName) || (el as HTMLElement).isContentEditable) {
 
 **Rationale**:
 ✅ **Type Safety**: Autocomplete and type checking for Pagefind API
-✅ **Self-Contained**: Types live with component implementation
+✅ **Self-Contained**: Types live with kind implementation
 ✅ **Build Success**: Suppresses TypeScript errors for dynamic import
 
 **Trade-off**: Requires `// @ts-ignore` comment for dynamic import of generated file.
@@ -528,7 +528,7 @@ if (!el || INPUTS.has(el.tagName) || (el as HTMLElement).isContentEditable) {
 
 **For Documentation Users**:
 - Instant search across all 135+ pages
-- Find deployment components, guides, and concepts quickly
+- Find catalog kinds, guides, and concepts quickly
 - Keyboard shortcuts for power users
 - Works offline after initial page load
 
@@ -551,7 +551,7 @@ if (!el || INPUTS.has(el.tagName) || (el as HTMLElement).isContentEditable) {
 - No server infrastructure to scale
 
 **Discoverability**:
-- Users find relevant deployment components faster
+- Users find relevant catalog kinds faster
 - Increased documentation engagement
 - Better onboarding for new users
 
@@ -611,9 +611,9 @@ ls -la out/_pagefind/
 ✅ Mobile responsive layout works
 
 **Test Search Queries**:
-- "kubernetes" - Returns 36+ component pages
-- "AWS" - Returns AWS provider and component docs
-- "deployment" - Returns getting started and component guides
+- "kubernetes" - Returns 36+ kind pages
+- "AWS" - Returns AWS provider and kind docs
+- "deployment" - Returns getting started and kind guides
 - "CLI" - Returns CLI reference documentation
 - "pulumi" - Returns deployment examples
 
@@ -623,13 +623,13 @@ ls -la out/_pagefind/
 
 This implementation complements:
 - **Documentation Site with Git-as-CMS** - Search indexes all markdown-based content
-- **Automated Component Documentation Build** - Search covers all 118 auto-generated component pages
+- **Automated Kind Documentation Build** - Search covers all 118 auto-generated kind pages
 - **Kubernetes & Snowflake Documentation Integration** - All provider docs now searchable
 
 ### Prior Changelogs
 
 - **2025-11-09-093737** - Documentation site with git-as-CMS pattern
-- **2025-11-09-104801** - Automated component docs build system
+- **2025-11-09-104801** - Automated kind docs build system
 - **2025-11-11-075159** - Kubernetes and Snowflake docs catalog integration
 
 ### Future Enhancements
@@ -642,7 +642,7 @@ This implementation complements:
 
 **Long-term**:
 - Multi-language search support (if i18n added)
-- Advanced filters (by provider, by component type)
+- Advanced filters (by provider, by kind)
 - Search suggestions and autocomplete
 - Recent searches history
 
@@ -754,7 +754,7 @@ find out/_pagefind/fragment -type f | wc -l
 ### Future Iterations
 1. **Search Analytics**: Track queries to identify documentation gaps
 2. **Keyboard Navigation**: Arrow keys to navigate results
-3. **Advanced Filters**: Filter by provider, component type, content section
+3. **Advanced Filters**: Filter by provider, kind, content section
 4. **Search Suggestions**: Show common queries or autocomplete
 5. **Recent Searches**: Display user's search history
 

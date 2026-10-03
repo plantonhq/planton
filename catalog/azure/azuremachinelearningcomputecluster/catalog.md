@@ -4,7 +4,7 @@ Creates an auto-scaling compute cluster on an Azure Machine Learning workspace -
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute Cluster** -- an ARM child of the workspace (`.../workspaces/{ws}/computes/{name}`) with its VM size, priority, scale bounds, identity, and networking
 
@@ -57,7 +57,7 @@ spec:
 planton apply -f azure-machine-learning-compute-cluster.yaml
 ```
 
-This creates a scale-to-zero dedicated cluster of up to four DS3v2 nodes with a system identity; nodes provision on demand as jobs arrive. A Stack Job tracks the provisioning in real time.
+This creates a scale-to-zero dedicated cluster of up to four DS3v2 nodes with a system identity; nodes provision on demand as jobs arrive. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -88,7 +88,7 @@ These are the most important decisions when configuring the cluster. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -96,9 +96,9 @@ These are the most important decisions when configuring the cluster. Explore the
 | **AzureSubnet** | `subnetId` | `status.outputs.subnet_id` |
 | **AzureUserAssignedIdentity** | `identity.identityIds[]` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -118,7 +118,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Machine Learning Workspace**](/cloud-catalog/azure-machine-learning-workspace) -- the parent workspace
-- [**Azure Machine Learning Datastore**](/cloud-catalog/azure-machine-learning-datastore) -- where the jobs' data lives
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- VNet placement for the nodes
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- bring-your-own identity for data and registry grants
+- [**Azure Machine Learning Workspace**](/infra-catalog/azure-machine-learning-workspace) -- the parent workspace
+- [**Azure Machine Learning Datastore**](/infra-catalog/azure-machine-learning-datastore) -- where the jobs' data lives
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- VNet placement for the nodes
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- bring-your-own identity for data and registry grants

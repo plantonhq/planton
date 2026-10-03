@@ -6,7 +6,7 @@ managed in the platform's config manager: a variable (plain config) or a
 secret (encrypted, resolved just-in-time inside the deployment runner, never
 stored in the manifest or readable back out of it). A variable reference
 works in any string field; a secret reference works in any field EXCEPT the
-ones a component marks as read by every viewer -- see "Where a secret
+ones a kind marks as read by every viewer -- see "Where a secret
 reference may go" below, because the field, not the reference, decides
 whether a secret stays secret. This file is the grammar, when to use it, and
 how to ground references against what actually exists.
@@ -67,8 +67,8 @@ spec:
 
 ## Sensitive fields accept ONLY a secret reference
 
-Every field a component's schema marks sensitive (the explain report and the
-component reference page flag these) rejects plaintext before anything
+Every field a kind's schema marks sensitive (the explain report and the
+kind reference page flag these) rejects plaintext before anything
 deploys — the control plane validates that the field holds a well-formed
 `$secret/...` reference to an EXISTING secret. So for a password/key/token
 field there are exactly two failure modes to avoid:
@@ -85,10 +85,10 @@ any, carries the REFERENCE (see "In chart templates" below).
 ## Where a secret reference may go — and why
 
 The runner resolves every `$secret/...` to its plain value just before the
-component's module runs, and the module writes that value wherever the
+kind's module runs, and the module writes that value wherever the
 manifest put it. A reference is therefore only as secret as the field it sits
-in. Components mark the two kinds of field that matter, and the explain
-report (`planton explain <Kind>`) and the component reference page show both
+in. Kinds mark the two kinds of field that matter, and the explain
+report (`planton explain <Kind>`) and the kind reference page show both
 marks:
 
 - **`(sensitive)`** — secret material. Accepts only a `$secret/...`
@@ -99,7 +99,7 @@ marks:
   pod template, a Cloud Run revision, an ECS task definition (and ECS keeps
   every revision forever). A secret reference anywhere inside such a field is
   refused before anything deploys, and the refusal names the sibling field
-  to move it to — the component's SECRET HOME, which keeps the value in a
+  to move it to — the kind's SECRET HOME, which keeps the value in a
   secret store the workload reads by reference.
 
 On every runtime that takes environment variables, the pattern is one field

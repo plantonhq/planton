@@ -1,11 +1,11 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. Presets with no quantity lines have no committed always-on
-# spend and estimate to zero. Schema: finops/componentcostestimatemodel/v1.
+# spend and estimate to zero. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: gcpcloudrunjob
 spec:
@@ -34,5 +34,5 @@ spec:
       hours_per_month: 730
       exclusions:
         - each execution runs 8 GPU tasks (4 vCPU / 16Gi / one NVIDIA L4 each, up to 7200 seconds) -- the L4 without zonal redundancy bills $0.0001867 per second per task on top of the vCPU-second and GiB-second meters, the dominant cost whenever an execution runs
-        - model artifacts and inference inputs/outputs bill on the storage components the tasks read and write
+        - model artifacts and inference inputs/outputs bill on the storage kinds the tasks read and write
       notes: Zero committed at creation -- unlike a GPU service kept warm, a GPU job holds no capacity between executions; a full 2-hour, 8-task run is a per-run cost decision, not a monthly commitment.

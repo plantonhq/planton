@@ -11,7 +11,7 @@ private peerings.
 
 The Azure provider is built through the shared provider builder, which
 resolves the right credential mechanism (static client secret, keyless
-web identity, or ambient chain) from the stack input.
+web identity, or ambient chain) from the IaC input.
 
 ## Design Decisions
 
@@ -30,7 +30,7 @@ web identity, or ambient chain) from the stack input.
 
 ## Inputs
 
-The module receives an `AzureExpressRouteCircuitPeeringStackInput` containing:
+The module receives an `AzureExpressRouteCircuitPeeringIacInput` containing:
 
 - `target.spec.resource_group` / `target.spec.express_route_circuit_name` -- the parent circuit, by NAME (references resolved to literals by the platform)
 - `target.spec.peering_type` / `target.spec.vlan_id` -- the peering's ARM identity and VLAN

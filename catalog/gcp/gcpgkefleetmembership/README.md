@@ -4,7 +4,7 @@ Registers a cluster with a GKE fleet explicitly: a cluster created without `flee
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `gkehub.googleapis.com` on the fleet host project (never disabled on destroy)
 - **Membership** -- one `gke_hub_membership`
@@ -66,7 +66,7 @@ planton apply -f gke-fleet-membership.yaml
 - `membershipId` is 1-63 lowercase letters, digits, or hyphens.
 - `issuer` is an `https://` URL shorter than 2000 characters.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -94,7 +94,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpGkeFleet** -- the fleet the cluster joins
 - **GcpGkeCluster** -- the cluster, or the alternative registration path through `fleetProject`

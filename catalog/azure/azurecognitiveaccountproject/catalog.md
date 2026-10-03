@@ -4,7 +4,7 @@ Deploys an AI Foundry project onto an Azure AI services account -- the workspace
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **AI Foundry project** -- an ARM child of the account (`.../accounts/{account}/projects/{name}`) with its own managed identity, description, display name and tags
 
@@ -53,7 +53,7 @@ spec:
 planton apply -f azure-cognitive-account-project.yaml
 ```
 
-This creates a team project with its own system-assigned identity on the referenced AIServices account. A Stack Job tracks the provisioning in real time.
+This creates a team project with its own system-assigned identity on the referenced AIServices account. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -82,16 +82,16 @@ These are the most important decisions when configuring the project. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureCognitiveAccount** | `cognitiveAccountId` | `status.outputs.cognitive_account_id` |
 | **AzureUserAssignedIdentity** (optional) | `identity.identityIds` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -111,6 +111,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Cognitive Account**](/cloud-catalog/azure-cognitive-account) -- the parent AIServices account
-- [**Azure Cognitive Deployment**](/cloud-catalog/azure-cognitive-deployment) -- the models projects consume
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- pre-granted project identities
+- [**Azure Cognitive Account**](/infra-catalog/azure-cognitive-account) -- the parent AIServices account
+- [**Azure Cognitive Deployment**](/infra-catalog/azure-cognitive-deployment) -- the models projects consume
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- pre-granted project identities

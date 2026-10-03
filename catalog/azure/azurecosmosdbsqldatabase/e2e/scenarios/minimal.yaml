@@ -10,7 +10,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurecosmosdbsqldatabase
+    e2e-catalog-kind: azurecosmosdbsqldatabase
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/azure/azurecosmosdbsqldatabase/e2e/sql-account.yaml"

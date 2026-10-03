@@ -1,4 +1,4 @@
-# KubernetesAltinityOperator Component Completion
+# KubernetesAltinityOperator Kind Completion
 
 **Date**: November 16, 2025  
 **Type**: Enhancement  
@@ -6,11 +6,11 @@
 
 ## Summary
 
-Completed the KubernetesAltinityOperator component from 85.8% to ~95% production-ready status by implementing critical missing files: comprehensive unit tests (spec_test.go), complete Terraform module files (locals.tf, outputs.tf), Pulumi module improvements (locals.go), and supporting documentation. **No specification changes were made** - all work focused on implementation files to avoid disrupting production deployments.
+Completed the KubernetesAltinityOperator kind from 85.8% to ~95% production-ready status by implementing critical missing files: comprehensive unit tests (spec_test.go), complete Terraform module files (locals.tf, outputs.tf), Pulumi module improvements (locals.go), and supporting documentation. **No specification changes were made** - all work focused on implementation files to avoid disrupting production deployments.
 
 ## Problem Statement / Motivation
 
-The KubernetesAltinityOperator component had excellent documentation (23KB research doc) and a working Pulumi implementation, but lacked critical elements for production readiness identified in the audit report (2025-11-14-060330.md):
+The KubernetesAltinityOperator kind had excellent documentation (23KB research doc) and a working Pulumi implementation, but lacked critical elements for production readiness identified in the audit report (2025-11-14-060330.md):
 
 ### Critical Gaps
 
@@ -19,23 +19,23 @@ The KubernetesAltinityOperator component had excellent documentation (23KB resea
 3. **Incomplete Pulumi Module** (4.44% impact) - Missing `locals.go` for data transformations
 4. **Missing Documentation** (3.33% impact) - No Pulumi `overview.md`
 
-**Why it mattered**: The component manages the Altinity ClickHouse Operator, which is production-critical infrastructure for running ClickHouse on Kubernetes. Without comprehensive tests and complete IaC implementations, teams couldn't confidently deploy or troubleshoot this component.
+**Why it mattered**: The kind manages the Altinity ClickHouse Operator, which is production-critical infrastructure for running ClickHouse on Kubernetes. Without comprehensive tests and complete IaC implementations, teams couldn't confidently deploy or troubleshoot this kind.
 
 ## Specification Status
 
 **⚠️ IMPORTANT: NO SPEC CHANGES**
 
-The component is already in production use. All changes were implementation-only:
+The kind is already in production use. All changes were implementation-only:
 - ✅ `api.proto` - **unchanged**
 - ✅ `spec.proto` - **unchanged**  
-- ✅ `stack_input.proto` - **unchanged**
-- ✅ `stack_outputs.proto` - **unchanged**
+- ✅ `iac_input.proto` - **unchanged**
+- ✅ `outputs.proto` - **unchanged**
 
 **No upstream API changes required.**
 
 ## Solution / What's New
 
-Implemented all missing critical files following Planton component completion standards:
+Implemented all missing critical files following Planton kind completion standards:
 
 ### 1. Comprehensive Unit Tests (`spec_test.go`)
 
@@ -91,9 +91,9 @@ type locals struct {
     HelmValues  pulumi.Map
 }
 
-func newLocals(stackInput *kubernetesaltinityoperatorv1.KubernetesAltinityOperatorStackInput) *locals {
+func newLocals(iacInput *kubernetesaltinityoperatorv1.KubernetesAltinityOperatorIacInput) *locals {
     // Namespace resolution
-    namespace := stackInput.Target.Spec.Namespace
+    namespace := iacInput.Target.Spec.Namespace
     if namespace == "" {
         namespace = vars.DefaultNamespace
     }
@@ -146,7 +146,7 @@ Comprehensive technical documentation covering:
 vars.go        → Constants (chart name, repo, version)
 locals.go      → Data transformations (namespace, helm values)
 kubernetes_altinity_operator.go → Resource provisioning
-outputs.go     → Stack outputs (namespace)
+outputs.go     → outputs (namespace)
 ```
 
 **Resource Relationships**:
@@ -227,9 +227,9 @@ Improved separation of concerns:
 
 **Before**:
 ```go
-func Resources(ctx *pulumi.Context, stackInput *...) error {
+func Resources(ctx *pulumi.Context, iacInput *...) error {
     // Inline namespace determination
-    namespace := stackInput.Target.Spec.Namespace
+    namespace := iacInput.Target.Spec.Namespace
     if namespace == "" {
         namespace = "kubernetes-altinity-operator"
     }
@@ -247,9 +247,9 @@ func Resources(ctx *pulumi.Context, stackInput *...) error {
 
 **After**:
 ```go
-func Resources(ctx *pulumi.Context, stackInput *...) error {
+func Resources(ctx *pulumi.Context, iacInput *...) error {
     // Initialize local values with computed data transformations
-    locals := newLocals(stackInput)
+    locals := newLocals(iacInput)
     
     // Create namespace using resolved value
     ns, err := corev1.NewNamespace(ctx, locals.Namespace, ...)
@@ -315,21 +315,21 @@ func Resources(ctx *pulumi.Context, stackInput *...) error {
 - QA teams validating infrastructure changes
 
 **Production Impact**:
-- Component now production-ready (was 85.8%, now 95.3%)
+- Kind now production-ready (was 85.8%, now 95.3%)
 - Safe to deploy via both Pulumi and Terraform
 - All deployments return consistent outputs
 - Validation rules verified and tested
 
 **Future Work Enabled**:
-- Component can serve as reference for completing other addon components
-- Test patterns can be copied to similar components
+- Kind can serve as reference for completing other addon components
+- Test patterns can be copied to similar kinds
 - Module structure is exemplary
 
 ## Related Work
 
 - **KubernetesArgocd** - Similar completion pattern applied (58.5% → 95%)
 - **KubernetesCertManager** - Terraform completion using same approach (58.26% → 75%)
-- **Altinity Operator** - Already deployed in production, this completes the wrapper component
+- **Altinity Operator** - Already deployed in production, this completes the wrapper kind
 
 ## Testing Strategy
 
@@ -376,7 +376,7 @@ read_lints apis/dev/planton/provider/kubernetes/kubernetesaltinityoperator/v1
 
 ## Known Limitations
 
-None - component is now feature-complete for production use.
+None - kind is now feature-complete for production use.
 
 ## Future Enhancements
 

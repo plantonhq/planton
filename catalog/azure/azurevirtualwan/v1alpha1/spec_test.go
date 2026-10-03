@@ -44,7 +44,7 @@ func validResource() *AzureVirtualWan {
 	return &AzureVirtualWan{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureVirtualWan",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-vwan",
 		},
 		Spec: &AzureVirtualWanSpec{

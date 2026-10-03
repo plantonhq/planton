@@ -1,5 +1,5 @@
 variable "metadata" {
-  description = "Cloud resource metadata"
+  description = "Catalog object metadata"
   type = object({
     name = string
     id = optional(string, "")

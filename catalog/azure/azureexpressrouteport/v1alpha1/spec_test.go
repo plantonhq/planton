@@ -39,7 +39,7 @@ func validResource() *AzureExpressRoutePort {
 	return &AzureExpressRoutePort{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureExpressRoutePort",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-erport",
 		},
 		Spec: &AzureExpressRoutePortSpec{

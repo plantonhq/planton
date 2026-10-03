@@ -4,7 +4,7 @@ Deploys a Compute Engine URL map — the L7 routing brain of an Application Load
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute Engine URL Map** -- global, or regional when `region` is set; host rules, path matchers with path or route rules, default targets at every level, header policies, routing self-tests, and per-route traffic management (timeouts, retries, mirroring, CORS, fault injection); on the global map also custom error pages, stream-duration limits, and route-scoped CDN caching
 - **Compute Engine API enablement** -- `compute.googleapis.com` is enabled in the target project; tearing down the URL map never disables the API
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
@@ -60,7 +60,7 @@ spec:
 planton apply -f url-map.yaml
 ```
 
-This creates the classic fan-out: dynamic traffic to a backend service, /assets/* to a CDN-backed bucket. A Stack Job tracks the provisioning in real time.
+This creates the classic fan-out: dynamic traffic to a backend service, /assets/* to a CDN-backed bucket. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -97,7 +97,7 @@ These are the most important decisions when configuring a URL map. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -105,9 +105,9 @@ These are the most important decisions when configuring a URL map. Explore the f
 | **GcpBackendService** | `defaultService`, path/route rule `service`, `weightedBackendServices[].backendService`, `tests[].service` | `status.outputs.self_link` |
 | **GcpBackendBucket** | `defaultService`, path rule `service`, error policy `errorService` | `status.outputs.self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -133,8 +133,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the URL map is created
-- [**GCP Backend Service**](/cloud-catalog/gcp-backend-service) -- the dynamic targets this map routes to
-- [**GCP Backend Bucket**](/cloud-catalog/gcp-backend-bucket) -- the static targets and custom-error-page origins
-- [**GCP Target HTTPS Proxy**](/cloud-catalog/gcp-target-https-proxy) -- consumes this map's `self_link` behind TLS
-- [**GCP Target HTTP Proxy**](/cloud-catalog/gcp-target-http-proxy) -- consumes a redirect-only map for the http→https upgrade
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the URL map is created
+- [**GCP Backend Service**](/infra-catalog/gcp-backend-service) -- the dynamic targets this map routes to
+- [**GCP Backend Bucket**](/infra-catalog/gcp-backend-bucket) -- the static targets and custom-error-page origins
+- [**GCP Target HTTPS Proxy**](/infra-catalog/gcp-target-https-proxy) -- consumes this map's `self_link` behind TLS
+- [**GCP Target HTTP Proxy**](/infra-catalog/gcp-target-http-proxy) -- consumes a redirect-only map for the http→https upgrade

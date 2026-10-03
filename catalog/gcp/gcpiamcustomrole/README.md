@@ -73,7 +73,7 @@ Discover valid permission strings with:
 gcloud iam list-testable-permissions //cloudresourcemanager.googleapis.com/projects/my-gcp-project-123
 ```
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -100,9 +100,9 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 - **Immutability**: `roleId` and `projectId` are ForceNew — changing either destroys and recreates the role, breaking every grant that references the old role name. `title`, `description`, `stage`, and `permissions` update in place.
 - **Soft delete**: GCP retains deleted custom roles for up to 14 days, during which the `roleId` stays reserved and grants of the role are rejected. Re-creating a role with a soft-deleted ID undeletes and updates it in place — the modules handle this natively, so a destroy/recreate cycle within the window converges rather than failing.
 - **Unsupported permissions**: some permissions cannot be used in custom roles (marked `NOT_SUPPORTED` in `list-testable-permissions` output); the API rejects them at deploy time.
-- **Org-scoped roles**: this component models project-scoped roles. Organization-scoped custom roles are a separate concern with a different parent resource.
+- **Org-scoped roles**: this kind models project-scoped roles. Organization-scoped custom roles are a separate concern with a different parent resource.
 
-## Related Components
+## Related Kinds
 
 - [GcpProjectIamMember](/docs/catalog/gcp/gcpprojectiammember) — grants this role to an identity (its `role` field references this role's `name` output)
 - [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — the identity most commonly granted custom roles

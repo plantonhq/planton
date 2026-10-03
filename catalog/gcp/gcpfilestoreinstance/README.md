@@ -86,7 +86,7 @@ This creates a 2.5 TiB SSD-backed NFS server named `my-nfs` (from `metadata.name
 | `labels` | map | No | User labels, merged beneath platform attribution labels (platform wins on conflicts) |
 | `tags` | map | No | Resource Manager tags (`tagKeys/{id}` → `tagValues/{id}`). Create-time only |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

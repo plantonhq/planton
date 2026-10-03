@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added Hetzner Cloud as provider #27 to Planton, enabling users to manage Hetzner Cloud credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. Hetzner Cloud's single API token authentication model maps cleanly to 3 `HCLOUD_*`/`HETZNER_*` environment variables without the multi-method complexity required by providers like OpenStack, AliCloud, or OCI.
+Added Hetzner Cloud as provider #27 to Planton, enabling users to manage Hetzner Cloud credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, IaC input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. Hetzner Cloud's single API token authentication model maps cleanly to 3 `HCLOUD_*`/`HETZNER_*` environment variables without the multi-method complexity required by providers like OpenStack, AliCloud, or OCI.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ Planton had no Hetzner Cloud support. Organizations using Hetzner Cloud infrastr
 
 ### Pain Points
 
-- No `hetznercloud` entry in the `CloudResourceProvider` enum
+- No `hetznercloud` entry in the `CatalogProvider` enum
 - No credential storage or management for Hetzner Cloud
 - No environment variable mapping for the Terraform hcloud provider
 - No frontend UI for capturing Hetzner Cloud credentials
@@ -31,7 +31,7 @@ The proto config includes 5 fields: the required `token` plus optional `endpoint
 ```mermaid
 flowchart TB
     subgraph proto [Proto Layer]
-        ProviderEnum["cloud_resource_provider.proto\nhetznercloud = 27"]
+        ProviderEnum["catalog_provider.proto\nhetznercloud = 27"]
         ProviderConfig["provider/hetznercloud/provider.proto\nHetznerCloudProviderConfig"]
         CredentialAPI["credential/v1/api.proto\nHETZNER_CLOUD enum + oneof"]
     end
@@ -91,7 +91,7 @@ flowchart LR
 
 ### 1. Proto Definitions
 
-**Provider registration** (`cloud_resource_provider.proto`): `hetznercloud = 27`
+**Provider registration** (`catalog_provider.proto`): `hetznercloud = 27`
 
 **Provider config** (`provider/hetznercloud/provider.proto`): `HetznerCloudProviderConfig` with 5 flat fields -- `token` (required), `endpoint`, `endpoint_hetzner`, `poll_interval`, `poll_function`.
 
@@ -121,14 +121,14 @@ Added Hetzner Cloud provider page at `/docs/catalog/hetznercloud` with placehold
 
 | Layer | New Files | Modified Files |
 |-------|-----------|----------------|
-| Proto | `provider/hetznercloud/provider.proto` | `cloud_resource_provider.proto`, `credential/v1/api.proto` |
+| Proto | `provider/hetznercloud/provider.proto` | `catalog_provider.proto`, `credential/v1/api.proto` |
 | Provider | `provider/hetznercloud/cli_help.go`, `BUILD.bazel` | -- |
-| Stack Input | `providerenvvars/hetznercloud.go` | `loader.go` |
+| IaC Input | `providerenvvars/hetznercloud.go` | `loader.go` |
 | Provider Detect | -- | `detect.go`, `guidance.go`, `validate.go` |
 | Backend | -- | `credential.go`, `credential_repo.go`, `credential_service.go`, `credential_resolver.go` |
 | Frontend | `hetznercloud.tsx` | `types.ts`, `credential-drawer.tsx`, `index.ts`, `utils.ts` |
 | Catalog | `hetznercloud/index.md` | -- |
-| Generated | `provider.pb.go`, `provider_pb.ts` | `api.pb.go`, `api_pb.ts`, `cloud_resource_provider.pb.go`, `cloud_resource_provider_pb.ts` |
+| Generated | `provider.pb.go`, `provider_pb.ts` | `api.pb.go`, `api_pb.ts`, `catalog_provider.pb.go`, `catalog_provider_pb.ts` |
 
 **Total**: ~27 files, ~500 insertions
 
@@ -158,7 +158,7 @@ Added Hetzner Cloud provider page at `/docs/catalog/hetznercloud` with placehold
 
 ### Future Work Enabled
 
-- Hetzner Cloud resource kinds (CloudResourceKind range to be assigned)
+- Hetzner Cloud resource kinds (CatalogKind range to be assigned)
 - Server, Volume, Network, Load Balancer, Firewall, and other Hetzner Cloud service resources
 - Terraform IaC modules wrapping the terraform-provider-hcloud
 

@@ -1,6 +1,6 @@
 # AwsFsxOntapFileSystem
 
-A Planton component that provisions an **Amazon FSx for NetApp ONTAP file system** — enterprise-grade, fully managed shared storage with multi-protocol access (NFS, SMB, iSCSI), instant snapshots, cloning, SnapMirror replication, and built-in compression and deduplication.
+A catalog kind that provisions an **Amazon FSx for NetApp ONTAP file system** — enterprise-grade, fully managed shared storage with multi-protocol access (NFS, SMB, iSCSI), instant snapshots, cloning, SnapMirror replication, and built-in compression and deduplication.
 
 ## What Is an FSx ONTAP File System?
 
@@ -109,7 +109,7 @@ spec:
 
 Backup-skip and tag-copy decisions are volume-scoped in ONTAP — configure them on `AwsFsxOntapVolume`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

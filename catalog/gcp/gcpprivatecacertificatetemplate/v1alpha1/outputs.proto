@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpprivatecacertificatetemplate.v1alpha1;
 
-// GcpPrivateCaCertificateTemplateStackOutputs captures the template's identity -- what certificates
+// GcpPrivateCaCertificateTemplateOutputs captures the template's identity -- what certificates
 // reference.
-message GcpPrivateCaCertificateTemplateStackOutputs {
+message GcpPrivateCaCertificateTemplateOutputs {
   // Full resource name --
   // projects/{project}/locations/{location}/certificateTemplates/{template_id}.
   string name = 1;

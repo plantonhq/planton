@@ -25,4 +25,4 @@ Provisions an Amazon Bedrock guardrail using Pulumi (Go).
 ## Usage
 
 The module is executed by the Planton platform through the entrypoint in
-`main.go`, which loads the `AwsBedrockGuardrailStackInput`.
+`main.go`, which loads the `AwsBedrockGuardrailIacInput`.

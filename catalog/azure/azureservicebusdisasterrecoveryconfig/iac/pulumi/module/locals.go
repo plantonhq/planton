@@ -12,11 +12,11 @@ type Locals struct {
 	AliasAuthorizationRuleId              string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureservicebusdisasterrecoveryconfigv1alpha1.AzureServiceBusDisasterRecoveryConfigStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureservicebusdisasterrecoveryconfigv1alpha1.AzureServiceBusDisasterRecoveryConfigIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureServiceBusDisasterRecoveryConfig = stackInput.Target
-	spec := stackInput.Target.Spec
+	locals.AzureServiceBusDisasterRecoveryConfig = iacInput.Target
+	spec := iacInput.Target.Spec
 
 	locals.PrimaryNamespaceId = spec.PrimaryNamespaceId.GetValue()
 	locals.PartnerNamespaceId = spec.PartnerNamespaceId.GetValue()

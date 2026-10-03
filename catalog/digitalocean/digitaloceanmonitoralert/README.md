@@ -2,11 +2,11 @@
 
 Built for 100% parity with the Terraform DigitalOcean provider's `digitalocean_monitor_alert` resource at the pinned provider version.
 
-## What this component models
+## What this kind models
 
 An alert policy on DigitalOcean's built-in metrics for Droplets, load balancers, and managed database clusters, with email and Slack notification channels. DigitalOcean's API targets a policy through one untyped id list plus a tag list; this spec replaces the untyped list with one TYPED reference list per resource family, so an id can never be paired with the wrong metric family and resources are wired by reference.
 
-The component covers the provider's full argument surface:
+The kind covers the provider's full argument surface:
 
 - `description` -- the policy's display handle (DigitalOcean has no separate name)
 - `metric_type` -- one of the 28 metric paths across three families: 12 `v1/insights/droplet/*`, 12 `v1/insights/lbaas/*`, 4 `v1/dbaas/alerts/*`

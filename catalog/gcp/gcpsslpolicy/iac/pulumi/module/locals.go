@@ -15,8 +15,8 @@ type Locals struct {
 	SslPolicyName string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *gcpsslpolicyv1alpha1.GcpSslPolicyStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(ctx *pulumi.Context, iacInput *gcpsslpolicyv1alpha1.GcpSslPolicyIacInput) *Locals {
+	target := iacInput.Target
 
 	sslPolicyName := target.Spec.SslPolicyName
 	if sslPolicyName == "" {

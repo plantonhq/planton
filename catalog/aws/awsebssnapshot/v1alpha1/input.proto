@@ -5,9 +5,9 @@ package dev.planton.aws.awsebssnapshot.v1alpha1;
 import "catalog/aws/awsebssnapshot/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsEbsSnapshotStackInput is the input for the IaC modules that
+// AwsEbsSnapshotIacInput is the input for the IaC modules that
 // manage an EBS snapshot.
-message AwsEbsSnapshotStackInput {
+message AwsEbsSnapshotIacInput {
   // target is the AwsEbsSnapshot resource to deploy.
   AwsEbsSnapshot target = 1;
   // provider_config contains the AWS provider credentials and configuration.

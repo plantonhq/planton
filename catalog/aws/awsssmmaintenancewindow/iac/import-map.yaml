@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsssmmaintenancewindow
 spec:
@@ -10,20 +10,20 @@ spec:
   values:
     - name: window_id
       derivations:
-        - from_stack_output: window_id
+        - from_output: window_id
       where_to_find: >-
         Systems Manager console -> Maintenance Windows (the Window ID
         column), or `aws ssm describe-maintenance-windows` (WindowId).
     - name: target_id
       derivations:
-        - from_stack_output_keyed_by_address: target_ids
+        - from_output_keyed_by_address: target_ids
       where_to_find: >-
         `aws ssm describe-maintenance-window-targets --window-id <id>`
         lists registrations with WindowTargetId; match each to its
         spec.targets entry by Name.
     - name: task_id
       derivations:
-        - from_stack_output_keyed_by_address: task_ids
+        - from_output_keyed_by_address: task_ids
       where_to_find: >-
         `aws ssm describe-maintenance-window-tasks --window-id <id>`
         lists tasks with WindowTaskId; match each to its spec.tasks

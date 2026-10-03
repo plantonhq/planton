@@ -1,11 +1,11 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceancontainerregistry
 spec:
   # The registry imports by NAME (the resource id is the registry name; an
   # account holds exactly one registry). The module exports it as the
-  # registry_name stack output -- zero user input when state is present.
+  # registry_name output -- zero user input when state is present.
   #
   # The docker-credentials resource this module optionally creates is NOT
   # importable at the current provider pin: its importer is passthrough, but
@@ -18,7 +18,7 @@ spec:
   values:
     - name: registry_name
       derivations:
-        - from_stack_output: registry_name
+        - from_output: registry_name
       where_to_find: >-
         DigitalOcean control panel -> Container Registry (the registry's
         name), or `doctl registry get` (the Name column).

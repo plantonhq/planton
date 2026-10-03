@@ -1,8 +1,8 @@
 # AzureFirewallPolicyRuleCollectionGroup -- Pulumi Module
 
-Creates a firewall policy rule collection group (`network.FirewallPolicyRuleCollectionGroup`, pulumi-azure classic v6) nested under the referenced policy, carrying the spec's application, network, and DNAT collections. Behaviorally identical to the Terraform module for the same stack input.
+Creates a firewall policy rule collection group (`network.FirewallPolicyRuleCollectionGroup`, pulumi-azure classic v6) nested under the referenced policy, carrying the spec's application, network, and DNAT collections. Behaviorally identical to the Terraform module for the same IaC input.
 
-The entrypoint (`main.go`) loads the stack input and delegates to `module.Resources`, which builds the Azure provider through the shared credential builder (static client secret, keyless web identity, or ambient chain).
+The entrypoint (`main.go`) loads the IaC input and delegates to `module.Resources`, which builds the Azure provider through the shared credential builder (static client secret, keyless web identity, or ambient chain).
 
 Key behaviors, documented inline in `module/main.go`:
 

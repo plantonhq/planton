@@ -154,14 +154,14 @@ Full ingress stack DAG:
 KubernetesGatewayApiCrds -> KubernetesGateway -> KubernetesTcpRoute
 ```
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `routeName` | Name of the created TCPRoute (equals metadata.name). |
 | `namespace` | Namespace the TCPRoute was created in. |
 
-## Related Components
+## Related Kinds
 
 - [Kubernetes Gateway](../kubernetesgateway)
 - [Kubernetes Gateway Class](../kubernetesgatewayclass)

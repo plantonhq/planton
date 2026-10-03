@@ -26,7 +26,7 @@ the fleet automatically within the surge/unavailability budget;
 
 ## Composition
 
-The `instance_group` stack output is the load-balancer backend handle: a
+The `instance_group` output is the load-balancer backend handle: a
 `GcpBackendService` backend's `group` takes exactly that value, which
 plugs this kind into the modeled HTTPS-LB family (URL map, target
 proxies, forwarding rule). Auto-healing references a `GcpHealthCheck`;

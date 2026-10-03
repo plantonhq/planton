@@ -75,7 +75,7 @@ definition -- lets you:
   shifting predictable.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `target_group_arn`: ARN of the target group (what listeners, rules, ECS services, and ASGs reference)
 - `target_group_name`: friendly name of the group (metadata.name, truncated to AWS's 32-character limit when necessary)

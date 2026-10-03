@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuresearchservice
 spec:
@@ -11,7 +11,7 @@ spec:
   values:
     - name: search_service_id
       derivations:
-        - from_stack_output: search_service_id
+        - from_output: search_service_id
       where_to_find: >-
         Portal -> AI Search -> the service -> Properties -> Resource
         ID, or `az search service show -g <rg> -n <name> --query id`.

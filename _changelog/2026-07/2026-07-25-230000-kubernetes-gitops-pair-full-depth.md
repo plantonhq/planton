@@ -6,7 +6,7 @@
   GitOps delivery engine, from the official `argo-cd` Helm chart pinned
   10.2.1 (Argo CD v3.4.5, argoproj index). The previous surface — a
   single container-resources block with an embedded ingress — is
-  replaced end to end: seven typed components (application controller,
+  replaced end to end: seven typed kinds (application controller,
   API/UI server, repo server, ApplicationSet controller, notifications,
   dex, commit server), a three-arm Redis cache oneof (bundled single pod
   XOR the redis-ha Sentinel subchart XOR an external endpoint that

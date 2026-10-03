@@ -12,7 +12,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureservicebussubscription
+    e2e-catalog-kind: azureservicebussubscription
   annotations:
     planton.dev/e2e: "true"
     # Scenario-local namespace + topic + work queue, in deploy order.

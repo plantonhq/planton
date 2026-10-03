@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	fkv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/types/known/structpb"
 )
@@ -24,7 +24,7 @@ func minimalIdentity() *AwsSesEmailIdentity {
 	return &AwsSesEmailIdentity{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsSesEmailIdentity",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "prod-sender",
 		},
 		Spec: &AwsSesEmailIdentitySpec{
@@ -55,7 +55,7 @@ var _ = ginkgo.Describe("AwsSesEmailIdentitySpec validations", func() {
 		input.Spec.ConfigurationSet = &fkv1.StringValueOrRef{
 			LiteralOrRef: &fkv1.StringValueOrRef_ValueFrom{
 				ValueFrom: &fkv1.ValueFromRef{
-					Kind:      cloudresourcekind.CloudResourceKind_AwsSesConfigurationSet,
+					Kind:      catalogkind.CatalogKind_AwsSesConfigurationSet,
 					Name:      "txn-set",
 					FieldPath: "status.outputs.configuration_set_name",
 				},

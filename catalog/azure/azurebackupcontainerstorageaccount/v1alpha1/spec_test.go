@@ -37,7 +37,7 @@ func validResource() *AzureBackupContainerStorageAccount {
 	return &AzureBackupContainerStorageAccount{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureBackupContainerStorageAccount",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-backup-container-storage-account",
 		},
 		Spec: &AzureBackupContainerStorageAccountSpec{

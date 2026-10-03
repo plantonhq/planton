@@ -64,7 +64,7 @@ func database(
 		return nil, errors.Wrap(err, "failed to create cloudflare d1 database")
 	}
 
-	// 5.  Export stack outputs. A Worker reaches D1 through its binding, so there
+	// 5.  Export outputs. A Worker reaches D1 through its binding, so there
 	// is no connection string to export (none exists on the v5 resource).
 	ctx.Export(OpDatabaseId, createdD1Database.ID())
 	ctx.Export(OpDatabaseName, createdD1Database.Name)

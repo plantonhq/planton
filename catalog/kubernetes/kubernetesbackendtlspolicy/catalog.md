@@ -4,7 +4,7 @@ Defines a Gateway API BackendTLSPolicy that encrypts the hop between your gatewa
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **A BackendTLSPolicy** — a namespaced Gateway API policy attached directly to one or more Services in its own namespace. When a gateway forwards a request to a targeted Service it opens a TLS connection instead of a plaintext one, sends the configured hostname as the SNI so the backend can pick a certificate, verifies that certificate against your trust anchor (your own CA bundle, or the implementation's system store), and optionally checks the certificate's Subject Alternative Names — for backends whose identity is a SPIFFE URI rather than a DNS name.
 - **Kubernetes Labels** — resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking.
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** — an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** — an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Kubernetes Cluster
 
@@ -59,11 +59,11 @@ spec:
 planton apply -f backend-tls-policy.yaml
 ```
 
-This makes the gateway originate TLS to the `checkout-api` Service, presenting `checkout-api.prod-apps.svc.cluster.local` as the SNI and verifying the backend's certificate against the PEM bundle in the `internal-ca-bundle` ConfigMap (key `ca.crt`). A Stack Job tracks the provisioning in real time.
+This makes the gateway originate TLS to the `checkout-api` Service, presenting `checkout-api.prod-apps.svc.cluster.local` as the SNI and verifying the backend's certificate against the PEM bundle in the `internal-ca-bundle` ConfigMap (key `ca.crt`). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire the targets to resources managed by other Cloud Resources — the policy then deploys after the Service it secures and the ConfigMap that carries the trust anchor:
+When deploying as part of a multi-resource environment, wire the targets to resources managed by other Infra Components — the policy then deploys after the Service it secures and the ConfigMap that carries the trust anchor:
 
 ```yaml
 spec:
@@ -106,11 +106,11 @@ These are the most important decisions when configuring a backend TLS policy. Ex
 
 **Target one Service; narrow with a port name.** Core support targets a Service; `sectionName` narrows a reference to one named Service port (omit it to cover every port). A `sectionName` that does not exist on the target makes the policy fail to attach — surfaced through the `ResolvedRefs` condition, not an apply error. Upstream notes implementations SHOULD support a single targetRef: multiple entries are accepted by the API, but one is the safest portable shape.
 
-**Attachment is asynchronous controller state.** Whether the policy actually attached is reconciled after apply — read the `Accepted` and `ResolvedRefs` conditions with kubectl rather than expecting them in the stack outputs.
+**Attachment is asynchronous controller state.** Whether the policy actually attached is reconciled after apply — read the `Accepted` and `ResolvedRefs` conditions with kubectl rather than expecting them in the outputs.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -118,7 +118,7 @@ These are the most important decisions when configuring a backend TLS policy. Ex
 | **KubernetesService** | `targetRefs[].name` | `status.outputs.service_name` |
 | **KubernetesConfigMap** | `validation.caCertificateRefs[].name` | `status.outputs.configmap_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
 `status.outputs` carries only `policy_name` and `namespace`, which echo the manifest back — there is nothing downstream to consume from this policy. Whether it actually attached is controller state (the `Accepted` and `ResolvedRefs` conditions), reconciled asynchronously and read with kubectl.
 
@@ -134,8 +134,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Service**](/cloud-catalog/kubernetes-service) — the policy's targets, referenced by name and optionally narrowed to one port.
-- [**Kubernetes ConfigMap**](/cloud-catalog/kubernetes-config-map) — carries the CA bundle when you bring your own trust anchor.
-- [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) — cert-manager issues the backend certificates this policy verifies.
-- [**Kubernetes Gateway API CRDs**](/cloud-catalog/kubernetes-gateway-api-crds) — installs the CRD this policy is served by.
-- [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) — the gateway whose controller enforces the policy.
+- [**Kubernetes Service**](/infra-catalog/kubernetes-service) — the policy's targets, referenced by name and optionally narrowed to one port.
+- [**Kubernetes ConfigMap**](/infra-catalog/kubernetes-config-map) — carries the CA bundle when you bring your own trust anchor.
+- [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) — cert-manager issues the backend certificates this policy verifies.
+- [**Kubernetes Gateway API CRDs**](/infra-catalog/kubernetes-gateway-api-crds) — installs the CRD this policy is served by.
+- [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) — the gateway whose controller enforces the policy.

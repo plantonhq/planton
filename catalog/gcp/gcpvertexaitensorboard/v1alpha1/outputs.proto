@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpvertexaitensorboard.v1alpha1;
 
-// GcpVertexAiTensorboardStackOutputs captures the identity Google assigned
+// GcpVertexAiTensorboardOutputs captures the identity Google assigned
 // the TensorBoard and the names of what was declared in it.
-message GcpVertexAiTensorboardStackOutputs {
+message GcpVertexAiTensorboardOutputs {
   // Full resource name -- what a training job's `tensorboard` field takes:
   // projects/{project_number}/locations/{location}/tensorboards/{tensorboard_id}.
   string name = 1;

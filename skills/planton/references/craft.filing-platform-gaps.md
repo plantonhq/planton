@@ -9,7 +9,7 @@ let that context die in the chat — offer to file it.
 
 Offer exactly once per distinct gap, right after explaining the shortfall:
 
-- A cloud resource kind or spec field the user needs does not exist.
+- A catalog kind or spec field the user needs does not exist.
 - A chart/build/deploy behavior blocks a legitimate architecture.
 - Validation rejects something the cloud provider actually allows (or
   accepts something it rejects).

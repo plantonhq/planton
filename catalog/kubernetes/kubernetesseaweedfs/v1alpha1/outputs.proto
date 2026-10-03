@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesseaweedfs.v1alpha1;
 
-//seaweedfs-kubernetes stack outputs
-message KubernetesSeaweedFsStackOutputs {
+//seaweedfs-kubernetes outputs
+message KubernetesSeaweedFsOutputs {
   //namespace the store runs in.
   string namespace = 1;
 

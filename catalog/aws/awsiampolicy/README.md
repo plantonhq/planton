@@ -46,7 +46,7 @@ role -- lets one definition serve an entire architecture. It lets you:
   permission sets practical across many principals.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `policy_arn`: ARN of the managed policy (what attachments and boundaries reference)
 - `policy_id`: stable unique ID AWS assigns to the policy

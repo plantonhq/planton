@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awseksnodegroup
 spec:
@@ -54,5 +54,5 @@ spec:
   estimate_exclusions:
     - autoscaled nodes above the floor are workload-dependent, bounded by max_size
     - data transfer between AZs and out of the region follows pod traffic
-    - the cluster's management fee bills on the AwsEksCluster component
-  notes: "This component is pure EC2 economics: nodes x instance rate plus root volumes, with no EKS-side charge of its own. Spot moves the rate to the market; a launch template moves the rate decision onto another component entirely."
+    - the cluster's management fee bills on the AwsEksCluster kind
+  notes: "This kind is pure EC2 economics: nodes x instance rate plus root volumes, with no EKS-side charge of its own. Spot moves the rate to the market; a launch template moves the rate decision onto another component entirely."

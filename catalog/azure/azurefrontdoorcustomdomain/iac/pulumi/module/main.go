@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurefrontdoorcustomdomainv1alpha1.AzureFrontDoorCustomDomainStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurefrontdoorcustomdomainv1alpha1.AzureFrontDoorCustomDomainIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -86,7 +86,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurefrontdoorcustomdomainv1alph
 		return errors.Wrapf(err, "failed to create front door custom domain %s", spec.DomainName)
 	}
 
-	// Export stack outputs. custom_domain_id is what
+	// Export outputs. custom_domain_id is what
 	// AzureFrontDoorRoute's custom_domain_ids references;
 	// validation_token/expiration_date drive the DNS validation
 	// workflow; host_name is the name to CNAME to the endpoint.

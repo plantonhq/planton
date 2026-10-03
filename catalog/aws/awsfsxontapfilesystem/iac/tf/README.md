@@ -15,7 +15,7 @@ planton tofu apply --manifest ../../e2e/manifest.yaml --auto-approve
 planton tofu destroy --manifest ../../e2e/manifest.yaml --auto-approve
 ```
 
-- Credentials are provided via stack input (by the CLI), not in the manifest `spec`.
+- Credentials are provided via IaC input (by the CLI), not in the manifest `spec`.
 - Manifest file: `../../e2e/manifest.yaml`
 
 ## File Structure
@@ -26,7 +26,7 @@ iac/tf/
 ├── variables.tf   # Input variables (provider_config, metadata, spec)
 ├── locals.tf      # Tag construction from metadata
 ├── main.tf        # FSx ONTAP File System resource
-└── outputs.tf     # Outputs matching AwsFsxOntapFileSystemStackOutputs
+└── outputs.tf     # Outputs matching AwsFsxOntapFileSystemOutputs
 ```
 
 ## Resources Created

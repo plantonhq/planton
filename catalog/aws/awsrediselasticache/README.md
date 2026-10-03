@@ -245,7 +245,7 @@ spec:
       logType: slow-log
 ```
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -260,7 +260,7 @@ After deployment, the following outputs are available in `status.outputs`:
 | `subnet_group_name` | `string` | Created subnet group name (if applicable) |
 | `parameter_group_name` | `string` | Created parameter group name (if applicable) |
 
-## Related Components
+## Related Kinds
 
 - [AwsVpc](/docs/catalog/aws/vpc) — provides VPC subnets for cluster placement
 - [AwsSecurityGroup](/docs/catalog/aws/security-group) — controls network access to Redis endpoints

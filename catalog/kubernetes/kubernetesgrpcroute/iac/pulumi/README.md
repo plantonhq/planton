@@ -30,12 +30,12 @@ planton pulumi up --manifest ../../e2e/manifest.yaml
 
 ### Direct Pulumi usage
 
-The entrypoint loads the `KubernetesGrpcRouteStackInput` from the
-`STACK_INPUT_YAML_FILE` environment variable (path to a manifest) or
-`STACK_INPUT_YAML` (inline YAML content):
+The entrypoint loads the `KubernetesGrpcRouteIacInput` from the
+`IAC_INPUT_YAML_FILE` environment variable (path to a manifest) or
+`IAC_INPUT_YAML` (inline YAML content):
 
 ```bash
-export STACK_INPUT_YAML_FILE=../../e2e/manifest.yaml
+export IAC_INPUT_YAML_FILE=../../e2e/manifest.yaml
 pulumi up
 ```
 
@@ -50,14 +50,14 @@ pulumi up
 
 ```
 pulumi/
-├── main.go              # Pulumi entrypoint (loads stack input)
+├── main.go              # Pulumi entrypoint (loads IaC input)
 ├── Pulumi.yaml          # Pulumi project configuration
 ├── Makefile             # Build automation
 ├── README.md            # This file
 └── module/
     ├── main.go          # Resource creation (typed NewGRPCRoute)
     ├── locals.go        # Computed values + resolved foreign keys
-    ├── outputs.go       # Stack output constant names
+    ├── outputs.go       # Output constant names
     ├── parent_refs.go   # parentRefs (attached Gateways) mapping
     ├── rules.go         # Rule mapping (no timeouts for GRPCRoute)
     ├── matches.go       # Method (service/method) + header match mapping
@@ -66,7 +66,7 @@ pulumi/
 ```
 
 The route's `StringValueOrRef` foreign keys (`namespace`, `parentRefs[].name`,
-`backendRefs[].name`) arrive resolved to literal strings in the stack input;
+`backendRefs[].name`) arrive resolved to literal strings in the IaC input;
 the module reads their final values directly. No await/wait logic is attached:
 Accepted/ResolvedRefs conditions belong to the Gateway controller's
 reconciliation, not to applying the resource.

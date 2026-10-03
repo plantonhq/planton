@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflareworker.v1alpha1;
 
-// CloudflareWorkerStackOutputs captures the outputs after deploying a Cloudflare Worker.
-message CloudflareWorkerStackOutputs {
+// CloudflareWorkerOutputs captures the outputs after deploying a Cloudflare Worker.
+message CloudflareWorkerOutputs {
   // The Cloudflare-assigned identifier of the deployed Worker script (equals the
   // script name in v5).
   string script_id = 1;

@@ -5,9 +5,9 @@ package dev.planton.aws.awsecscluster.v1alpha1;
 import "catalog/aws/awsecscluster/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-ecs-cluster stack-input
-message AwsEcsClusterStackInput {
-  //target cloud-resource
+//aws-ecs-cluster iac-input
+message AwsEcsClusterIacInput {
+  //target infra-component
   AwsEcsCluster target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

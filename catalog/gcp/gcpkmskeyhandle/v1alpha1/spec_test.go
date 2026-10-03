@@ -9,7 +9,7 @@ import (
 	gcpgcsbucketv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpgcsbucket/v1alpha1"
 	"github.com/plantonhq/planton/pkg/refannotations"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -31,7 +31,7 @@ var _ = ginkgo.Describe("GcpKmsKeyHandleSpec", func() {
 		return &GcpKmsKeyHandle{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpKmsKeyHandle",
-			Metadata:   &shared.CloudResourceMetadata{Name: "orders-bucket-key"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "orders-bucket-key"},
 			Spec: &GcpKmsKeyHandleSpec{
 				Location:             "us-central1",
 				ResourceTypeSelector: "storage.googleapis.com/Bucket",
@@ -83,10 +83,10 @@ var _ = ginkgo.Describe("GcpKmsKeyHandleSpec", func() {
 // output, and one naming no kind still reads as a GcpKmsKey's key_id.
 func TestAutokeyConsumerAcceptsAKeyHandle(t *testing.T) {
 	field := refannotations.Of((&gcpgcsbucketv1alpha1.GcpGcsBucketSpec{}).ProtoReflect().Descriptor().Fields().ByName("kms_key_name"))
-	if path, ok := field.DefaultPath(cloudresourcekind.CloudResourceKind_GcpKmsKeyHandle); !ok || path != "status.outputs.kms_key" {
+	if path, ok := field.DefaultPath(catalogkind.CatalogKind_GcpKmsKeyHandle); !ok || path != "status.outputs.kms_key" {
 		t.Fatalf("GcpGcsBucket.kms_key_name composes from a key handle at %q (ok=%t), want status.outputs.kms_key", path, ok)
 	}
-	if kind := field.EffectiveKind(cloudresourcekind.CloudResourceKind_unspecified); kind != cloudresourcekind.CloudResourceKind_GcpKmsKey {
+	if kind := field.EffectiveKind(catalogkind.CatalogKind_unspecified); kind != catalogkind.CatalogKind_GcpKmsKey {
 		t.Fatalf("a kindless valueFrom on GcpGcsBucket.kms_key_name reads as %s, want GcpKmsKey", kind)
 	}
 }

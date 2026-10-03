@@ -6,15 +6,15 @@
 
 ## Summary
 
-Wrote 20 new catalog pages completing catalog coverage for the remaining 4 providers: Scaleway (16 pages), Auth0 (2 pages), OpenFGA (1 page), and MongoDB Atlas (1 page). With this change, all 14 providers now have hand-written, source-verified catalog pages for every deployment component. Total catalog coverage reaches ~209 pages across 14 providers.
+Wrote 20 new catalog pages completing catalog coverage for the remaining 4 providers: Scaleway (16 pages), Auth0 (2 pages), OpenFGA (1 page), and MongoDB Atlas (1 page). With this change, all 14 providers now have hand-written, source-verified catalog pages for every catalog kind. Total catalog coverage reaches ~209 pages across 14 providers.
 
 ## Problem Statement / Motivation
 
-After completing catalog pages for the 8 largest providers (AWS, GCP, Kubernetes, Azure, OpenStack, DigitalOcean, Civo, Cloudflare) at 100% coverage, 4 providers still relied on legacy auto-generated `docs/README.md` files or had no documentation at all. Scaleway — the largest remaining gap at 16 components — had zero legacy docs for any component. This inconsistency meant users exploring Scaleway, Auth0, OpenFGA, or MongoDB Atlas components on the docs site would see either no catalog page or a research-style document that didn't match the quality standard established by the other 8 providers.
+After completing catalog pages for the 8 largest providers (AWS, GCP, Kubernetes, Azure, OpenStack, DigitalOcean, Civo, Cloudflare) at 100% coverage, 4 providers still relied on legacy auto-generated `docs/README.md` files or had no documentation at all. Scaleway — the largest remaining gap at 16 kinds — had zero legacy docs for any kind. This inconsistency meant users exploring Scaleway, Auth0, OpenFGA, or MongoDB Atlas kinds on the docs site would see either no catalog page or a research-style document that didn't match the quality standard established by the other 8 providers.
 
 ### Pain Points
 
-- Scaleway users had no catalog documentation for 16 of 18 components (only KapsuleCluster and RdbInstance had pages)
+- Scaleway users had no catalog documentation for 16 of 18 kinds (only KapsuleCluster and RdbInstance had pages)
 - Auth0Connection and Auth0EventStream still showed legacy research-style docs
 - OpenfgaRelationshipTuple had no documentation at all (no legacy docs, no catalog page)
 - MongodbAtlas had only a legacy docs/README.md with no source-verified catalog page
@@ -22,7 +22,7 @@ After completing catalog pages for the 8 largest providers (AWS, GCP, Kubernetes
 
 ## Solution / What's New
 
-20 new `catalog-page.md` files written following the established 9-section standard, organized into 5 rounds of 4 parallel agents each, grouped by infrastructure layer for related-component consistency.
+20 new `catalog-page.md` files written following the established 9-section standard, organized into 5 rounds of 4 parallel agents each, grouped by infrastructure layer for related-kind consistency.
 
 ### Scaleway — 16 New Pages (18/18 Complete)
 
@@ -69,7 +69,7 @@ Organized by infrastructure layer:
 
 ### Execution Pattern
 
-5 rounds of 4 parallel agents, each agent reading `api.proto`, `spec.proto`, `stack_outputs.proto`, and the Pulumi (or Terraform) module source before writing. Same pattern used successfully for AWS (25), GCP (19), Kubernetes (51), Azure (24), OpenStack (27), DigitalOcean (15), Civo (12), and Cloudflare (8).
+5 rounds of 4 parallel agents, each agent reading `api.proto`, `spec.proto`, `outputs.proto`, and the Pulumi (or Terraform) module source before writing. Same pattern used successfully for AWS (25), GCP (19), Kubernetes (51), Azure (24), OpenStack (27), DigitalOcean (15), Civo (12), and Cloudflare (8).
 
 ### Spot Audit Results
 
@@ -80,9 +80,9 @@ Organized by infrastructure layer:
 | ScalewayLoadBalancer | High (12 required, 18 optional fields) | PASS | 0 issues |
 | Auth0Connection | High (5 strategy option groups, 10 outputs) | PASS | 0 issues |
 | OpenfgaRelationshipTuple | Medium (Terraform-only, structured user/object) | PASS | 0 issues |
-| MongodbAtlas | Medium (nested replication specs) | PASS | 1 fix: removed 6 stack outputs not in proto |
+| MongodbAtlas | Medium (nested replication specs) | PASS | 1 fix: removed 6 outputs not in proto |
 
-The MongodbAtlas fix removed outputs that were exported in Go code but not defined in `stack_outputs.proto`, meaning they wouldn't appear in `status.outputs`.
+The MongodbAtlas fix removed outputs that were exported in Go code but not defined in `outputs.proto`, meaning they wouldn't appear in `status.outputs`.
 
 ### Key Findings
 
@@ -95,8 +95,8 @@ The MongodbAtlas fix removed outputs that were exported in Go code but not defin
 
 - **100% provider catalog coverage**: All 14 providers now have complete, source-verified catalog pages
 - **Consistent developer experience**: Users exploring any provider see the same 9-section structure, same quality standard
-- **Net-new Scaleway documentation**: 16 components that previously had zero documentation now have comprehensive catalog pages
-- **Cross-resource wiring documented**: `valueFrom` references shown in context for Scaleway, Auth0, and OpenFGA components
+- **Net-new Scaleway documentation**: 16 kinds that previously had zero documentation now have comprehensive catalog pages
+- **Cross-resource wiring documented**: `valueFrom` references shown in context for Scaleway, Auth0, and OpenFGA kinds
 
 ## Impact
 
@@ -121,7 +121,7 @@ All 14 providers are now at 100% catalog page coverage.
 
 ## Related Work
 
-- Catalog page rewrite system: `_rules/docs/write-planton-component-catalog-page.mdc` and `_rules/docs/audit-planton-component-catalog-page.mdc`
+- Catalog page rewrite system: `_rules/docs/write-catalog-kind-catalog-page.mdc` and `_rules/docs/audit-catalog-kind-catalog-page.mdc`
 - Previous coverage rounds: AWS (25/25), GCP (19/19), Kubernetes (51/51), Azure (24/24), OpenStack (27/27), DigitalOcean (15/15), Civo (12/12), Cloudflare (8/8)
 - Documentation feature parity project: `planton/_projects/20260212.03.planton-docs-feature-parity/`
 

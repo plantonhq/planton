@@ -1,10 +1,10 @@
 # Azure DNS Record
 
-Deploys one record set in an Azure public DNS zone — every value the zone answers for one (name, type) pair. The record type is declared by which typed payload the spec carries: exactly one of `a`, `aaaa`, `cname`, `mx`, `srv`, `caa`, `txt`, `ns`, or `ptr`, each shaped the way DNS actually defines that type (MX entries are preference+exchange pairs, SRV entries are priority/weight/port/target, CAA entries are flags/tag/value) — a record can never be declared with a shape its type cannot hold. Foreign key references wire the resource group and zone name to upstream Cloud Resources via ValueFromRef.
+Deploys one record set in an Azure public DNS zone — every value the zone answers for one (name, type) pair. The record type is declared by which typed payload the spec carries: exactly one of `a`, `aaaa`, `cname`, `mx`, `srv`, `caa`, `txt`, `ns`, or `ptr`, each shaped the way DNS actually defines that type (MX entries are preference+exchange pairs, SRV entries are priority/weight/port/target, CAA entries are flags/tag/value) — a record can never be declared with a shape its type cannot hold. Foreign key references wire the resource group and zone name to upstream Infra Components via ValueFromRef.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **DNS Record Set** -- one record set of the payload's type in the target zone, carrying every value listed (multiple A/AAAA addresses round-robin)
 - **Alias wiring** (A/AAAA/CNAME only) -- when the payload carries `targetResourceId` instead of literal values, Azure keeps the answer in sync with the referenced resource: a Public IP's address change follows automatically, with no drift window. Alias records also work at the zone apex, where DNS forbids CNAME
@@ -16,12 +16,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure DNS Zone** the record joins. Reference an AzureDnsZone Cloud Resource's `zone_name` output via ValueFromRef, or pass the name of a zone managed outside Planton as a literal.
+- **An Azure DNS Zone** the record joins. Reference an AzureDnsZone Infra Component's `zone_name` output via ValueFromRef, or pass the name of a zone managed outside Planton as a literal.
 - **The zone's Resource Group** -- Azure addresses record sets by (resource group, zone name, type, record name), so this must be the SAME group the zone lives in.
 
 ## Deploy
@@ -59,7 +59,7 @@ spec:
 planton apply -f dns-record.yaml
 ```
 
-This creates an A record answering `www.example.com` with one IPv4 address and the platform's default 300-second TTL. A Stack Job tracks the provisioning in real time.
+This creates an A record answering `www.example.com` with one IPv4 address and the platform's default 300-second TTL. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -90,7 +90,7 @@ These are the most important decisions when configuring a DNS record. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -99,9 +99,9 @@ These are the most important decisions when configuring a DNS record. Explore th
 | **AzurePublicIp** (alias A records) | `a.targetResourceId` | `status.outputs.public_ip_id` |
 | **AzureFrontDoorCustomDomain** (verification TXT) | `txt[]` | `status.outputs.validation_token` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -122,6 +122,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure DNS Zone**](/cloud-catalog/azure-dns-zone) -- the zone this record joins, referenced by `zone_name`
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- the zone's resource group, half of the record's management-plane address
-- [**Azure Public IP**](/cloud-catalog/azure-public-ip) -- the classic alias A target: the apex follows the IP automatically
+- [**Azure DNS Zone**](/infra-catalog/azure-dns-zone) -- the zone this record joins, referenced by `zone_name`
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- the zone's resource group, half of the record's management-plane address
+- [**Azure Public IP**](/infra-catalog/azure-public-ip) -- the classic alias A target: the apex follows the IP automatically

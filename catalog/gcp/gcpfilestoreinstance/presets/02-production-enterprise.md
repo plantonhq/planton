@@ -20,7 +20,7 @@ service-networking connection — the mode Shared VPC consumers require.
 - A `GcpVpcNetwork` named `prod-vpc` (replace with yours, or set a
   literal `value`).
 - An existing service-networking connection on that VPC —
-  `PRIVATE_SERVICE_ACCESS` uses it; this component does not create it.
+  `PRIVATE_SERVICE_ACCESS` uses it; this kind does not create it.
 
 ## Remix ideas
 

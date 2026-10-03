@@ -41,7 +41,7 @@ var operatorKinds = map[string]bool{
 
 // helmTier2Kinds lists manifest kind values (lowercased) for Helm-based
 // Kubernetes components that deploy applications with Services.
-// These must match the CloudResourceKind enum names from cloud_resource_kind.proto
+// These must match the CatalogKind enum names from catalog_kind.proto
 // (case-insensitive via lowercasing).
 var helmTier2Kinds = map[string]bool{
 	// Tier 2 Helm applications

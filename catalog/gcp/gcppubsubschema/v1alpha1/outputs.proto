@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcppubsubschema.v1alpha1;
 
 // Outputs produced after provisioning a GCP Pub/Sub schema.
-message GcpPubSubSchemaStackOutputs {
+message GcpPubSubSchemaOutputs {
   // Fully qualified schema resource path: projects/{project}/schemas/{name}.
   // This is the exact string a topic's schema_settings.schema consumes —
   // reference it from GcpPubSubTopic to attach message validation.

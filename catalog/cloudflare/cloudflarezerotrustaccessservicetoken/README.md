@@ -4,7 +4,7 @@
 
 `CloudflareZeroTrustAccessServiceToken` is a machine credential -- a client-ID / client-secret pair that non-human clients present in the `CF-Access-Client-ID` / `CF-Access-Client-Secret` request headers to pass through Access-protected applications without an identity-provider login.
 
-The secret is returned only at creation and at rotation. Cloudflare never returns it on later reads, and an imported token cannot recover it. Capture the `client_secret` stack output into a secret store at deploy time; a lost secret means rotating the token.
+The secret is returned only at creation and at rotation. Cloudflare never returns it on later reads, and an imported token cannot recover it. Capture the `client_secret` output into a secret store at deploy time; a lost secret means rotating the token.
 
 ## Key Features
 
@@ -43,7 +43,7 @@ The secret is returned only at creation and at rotation. Cloudflare never return
 | `client_secret_version` | optional int32 | Increment to rotate. Must be set together with `previous_client_secret_expires_at`. |
 | `previous_client_secret_expires_at` | string | RFC3339. When the previous secret stops being accepted after a rotation. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

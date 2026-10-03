@@ -78,7 +78,7 @@ func TestJudgeCatchesEveryForbiddenShape(t *testing.T) {
 		"files stay inside the repository",
 		"no .planton/ directory in an application repository",
 		"no chart files at the repository root",
-		"each manifest is a cloud resource manifest",
+		"each manifest is a catalog object manifest",
 		"each manifest validates",
 		"never apply without consent",
 		"platform constructs are never curriculum",

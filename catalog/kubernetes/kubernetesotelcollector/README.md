@@ -7,7 +7,7 @@ the `OpenTelemetryCollector` CR (`opentelemetry.io/v1beta1`) that the
 OpenTelemetry Operator reconciles into the collector workload, its
 Services, and the rendered config ConfigMap.
 
-Not the right component when:
+Not the right kind when:
 
 - **The operator is missing** — a `KubernetesOtelOperator` on the
   cluster is the PREREQUISITE (it watches every namespace; one install
@@ -15,7 +15,7 @@ Not the right component when:
   without it.
 - **You want to STORE telemetry** — the collector receives, processes
   and exports; it keeps nothing. Backends are their own kinds: a
-  `KubernetesLoki` for logs, Tempo for traces — this component is how
+  `KubernetesLoki` for logs, Tempo for traces — this kind is how
   telemetry reaches them.
 - **You want to READ telemetry in a UI** — that is Grafana, pointed at
   the backends this collector ships to.

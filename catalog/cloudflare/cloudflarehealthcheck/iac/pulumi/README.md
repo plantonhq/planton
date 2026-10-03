@@ -5,16 +5,16 @@ Pulumi (Go) IaC module for a standalone origin health check -- scheduled probes 
 ## Architecture
 
 ```
-main.go                    — Entrypoint loading the stack input
+main.go                    — Entrypoint loading the IaC input
 module/main.go             — Resources(): provider setup, resource, outputs
 module/locals.go           — Locals initialization
 module/healthcheck.go      — cloudflare.Healthcheck
-module/outputs.go          — Stack output keys
+module/outputs.go          — output keys
 ```
 
 ## Behavior
 
-Mirrors the Terraform module's contract exactly: type/config pairing, headers wrapper unwrapped to `header`, `healthcheck_id` / `zone_id` stack outputs.
+Mirrors the Terraform module's contract exactly: type/config pairing, headers wrapper unwrapped to `header`, `healthcheck_id` / `zone_id` outputs.
 
 ## Outputs
 

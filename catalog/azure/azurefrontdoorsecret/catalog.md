@@ -4,7 +4,7 @@ Deploys a Front Door secret -- the bring-your-own TLS certificate node inside an
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Front Door Secret** -- a named child of the profile wrapping the referenced Key Vault certificate
 - **Certificate binding** -- versionless (Front Door follows the certificate's latest version; Key Vault rotation propagates automatically) or version-pinned (one exact certificate ships until the secret is replaced)
@@ -57,7 +57,7 @@ spec:
 planton apply -f front-door-secret.yaml
 ```
 
-This creates a secret that follows the certificate's latest version, ready for custom domains to reference through the `secret_id` output. A Stack Job tracks the provisioning in real time.
+This creates a secret that follows the certificate's latest version, ready for custom domains to reference through the `secret_id` output. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,16 +94,16 @@ These are the most important decisions when configuring a Front Door secret. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureFrontDoorProfile** | `profileId` | `status.outputs.profile_id` |
 | **AzureKeyVaultCertificate** | `keyVaultCertificateId` | `status.outputs.versionless_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -121,7 +121,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Azure Front Door Profile**](/cloud-catalog/azure-front-door-profile) -- the parent container the secret nests under via `profileId`
-- [**Azure Key Vault Certificate**](/cloud-catalog/azure-key-vault-certificate) -- holds the key material this secret wraps, referenced by `keyVaultCertificateId`
-- [**Azure Key Vault**](/cloud-catalog/azure-key-vault) -- the vault carrying the certificate; Front Door's service principal needs the one-time read grant on it
-- [**Azure Front Door Custom Domain**](/cloud-catalog/azure-front-door-custom-domain) -- terminates TLS with this secret via `tls.secretId` when its certificate type is CUSTOMER_CERTIFICATE
+- [**Azure Front Door Profile**](/infra-catalog/azure-front-door-profile) -- the parent container the secret nests under via `profileId`
+- [**Azure Key Vault Certificate**](/infra-catalog/azure-key-vault-certificate) -- holds the key material this secret wraps, referenced by `keyVaultCertificateId`
+- [**Azure Key Vault**](/infra-catalog/azure-key-vault) -- the vault carrying the certificate; Front Door's service principal needs the one-time read grant on it
+- [**Azure Front Door Custom Domain**](/infra-catalog/azure-front-door-custom-domain) -- terminates TLS with this secret via `tls.secretId` when its certificate type is CUSTOMER_CERTIFICATE

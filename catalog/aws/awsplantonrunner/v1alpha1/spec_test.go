@@ -33,7 +33,7 @@ func minimalValidRunner() *AwsPlantonRunner {
 	return &AwsPlantonRunner{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsPlantonRunner",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "vpc-runner",
 		},
 		Spec: &AwsPlantonRunnerSpec{

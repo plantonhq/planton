@@ -32,7 +32,7 @@ Charts link now points at the merged `charts/` folder in the `planton` repo.
   (Open Source subLabel, footer link label, Infra Charts URL).
 
 ### Demo journey
-- Renamed the 4 `OpenMcf*` demo components to `Planton*`; updated `journeys.ts`
+- Renamed the 4 `OpenMcf*` demo kinds to `Planton*`; updated `journeys.ts`
   (journey id/screens/description) and `DemoPage.tsx` (imports, `DemoScreen` union
   `planton-*`, flows, switch); updated demo JSON apiVersions, forms, hooks, and
   concept docs.

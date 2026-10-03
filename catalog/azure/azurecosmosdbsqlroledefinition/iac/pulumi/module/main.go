@@ -18,12 +18,12 @@ var roleTypeMap = map[azurecosmosdbsqlroledefinitionv1alpha1.AzureCosmosdbSqlRol
 	azurecosmosdbsqlroledefinitionv1alpha1.AzureCosmosdbSqlRoleDefinitionType_BUILT_IN_ROLE: "BuiltInRole",
 }
 
-func Resources(ctx *pulumi.Context, stackInput *azurecosmosdbsqlroledefinitionv1alpha1.AzureCosmosdbSqlRoleDefinitionStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurecosmosdbsqlroledefinitionv1alpha1.AzureCosmosdbSqlRoleDefinitionIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -99,7 +99,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurecosmosdbsqlroledefinitionv1
 		return errors.Wrapf(err, "failed to create cosmosdb sql role definition %s", spec.RoleName)
 	}
 
-	// Export stack outputs. The fully-scoped ARM ID is the composition
+	// Export outputs. The fully-scoped ARM ID is the composition
 	// seam: it is exactly what an AzureCosmosdbSqlRoleAssignment's
 	// role_definition_id field consumes.
 	ctx.Export(OpRoleDefinitionId, createdRoleDefinition.ID())

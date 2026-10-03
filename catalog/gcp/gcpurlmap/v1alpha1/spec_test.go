@@ -38,7 +38,7 @@ var _ = ginkgo.Describe("GcpUrlMapSpec", func() {
 		return &GcpUrlMap{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpUrlMap",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-url-map",
 			},
 			Spec: &GcpUrlMapSpec{

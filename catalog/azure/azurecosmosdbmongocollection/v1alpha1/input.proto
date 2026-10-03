@@ -5,9 +5,9 @@ package dev.planton.azure.azurecosmosdbmongocollection.v1alpha1;
 import "catalog/azure/azurecosmosdbmongocollection/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-cosmosdb-mongo-collection stack-input
-message AzureCosmosdbMongoCollectionStackInput {
-  //target cloud-resource
+//azure-cosmosdb-mongo-collection iac-input
+message AzureCosmosdbMongoCollectionIacInput {
+  //target infra-component
   AzureCosmosdbMongoCollection target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

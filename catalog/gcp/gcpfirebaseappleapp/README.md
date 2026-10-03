@@ -4,7 +4,7 @@ Registers an iOS / macOS app in a Firebase-enabled Google Cloud project and comp
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **The app registration** -- one `firebase_apple_app` (`projects.iosApps`) identified by its immutable bundle id
 - **App Attest attestation** -- the app's `firebase_app_check_app_attest_config` when `appCheck.appAttest` is configured
@@ -89,7 +89,7 @@ planton apply -f ios-app.yaml
 - **Debug tokens**: `displayName` and `token` required; display names unique within the app.
 - **`deletionPolicy`**: `DELETE`, `PREVENT`, or `ABANDON`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -122,7 +122,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpFirebaseProject](/docs/catalog/gcp/gcpfirebaseproject) — the Firebase enablement this app is registered in
 - [GcpApiKey](/docs/catalog/gcp/gcpapikey) — the restricted key the app references

@@ -4,7 +4,7 @@ Deploys an AWS Systems Manager maintenance window: a recurring change window for
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Maintenance Window** — the schedule (cron/rate with timezone and optional day offset), how long it stays open, and the cutoff after which no new task starts. AWS identifies it as `mw-...`.
 - **Target Registrations** — one per `targets` entry: instance selections by tag or ID, or resource groups, each getting an AWS-generated target ID (echoed in the `target_ids` output).
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with permissions to manage SSM maintenance windows. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with permissions to manage SSM maintenance windows. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -78,7 +78,7 @@ spec:
 planton apply -f maintenance-window.yaml
 ```
 
-This opens a four-hour window Sundays at 02:00 Pacific, registers every instance tagged `env=prod`, and runs a patch install across 10% of the fleet at a time — new starts stop in the final hour, and running installs are cancelled at the cutoff. A Stack Job tracks the provisioning in real time.
+This opens a four-hour window Sundays at 02:00 Pacific, registers every instance tagged `env=prod`, and runs a patch install across 10% of the fleet at a time — new starts stop in the final hour, and running installs are cancelled at the cutoff. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -124,7 +124,7 @@ These are the most important decisions when configuring a maintenance window. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -135,9 +135,9 @@ These are the most important decisions when configuring a maintenance window. Ex
 | **AwsS3Bucket** | `tasks[].invocation.runCommand.outputS3Bucket` | `status.outputs.bucket_id` |
 | **AwsSnsTopic** | `tasks[].invocation.runCommand.notificationConfig.notificationArn` | `status.outputs.topic_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -158,9 +158,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS SSM Document**](/cloud-catalog/aws-ssm-document) — the customer runbook RUN_COMMAND and AUTOMATION tasks execute, wired via `taskArn`
-- [**AWS SSM Patch Baseline**](/cloud-catalog/aws-ssm-patch-baseline) — governs what a patch-install task approves when the window runs `AWS-RunPatchBaseline`
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) — the function LAMBDA tasks invoke
-- [**AWS Step Functions**](/cloud-catalog/aws-step-function) — the state machine STEP_FUNCTIONS tasks execute
-- [**AWS SNS Topic**](/cloud-catalog/aws-sns-topic) — receives command lifecycle notifications from Run Command tasks
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — receives Run Command output when the invocation sets an output bucket
+- [**AWS SSM Document**](/infra-catalog/aws-ssm-document) — the customer runbook RUN_COMMAND and AUTOMATION tasks execute, wired via `taskArn`
+- [**AWS SSM Patch Baseline**](/infra-catalog/aws-ssm-patch-baseline) — governs what a patch-install task approves when the window runs `AWS-RunPatchBaseline`
+- [**AWS Lambda**](/infra-catalog/aws-lambda) — the function LAMBDA tasks invoke
+- [**AWS Step Functions**](/infra-catalog/aws-step-function) — the state machine STEP_FUNCTIONS tasks execute
+- [**AWS SNS Topic**](/infra-catalog/aws-sns-topic) — receives command lifecycle notifications from Run Command tasks
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — receives Run Command output when the invocation sets an output bucket

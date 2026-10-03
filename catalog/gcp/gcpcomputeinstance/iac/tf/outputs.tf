@@ -1,4 +1,4 @@
-# Semantic outputs mirroring GcpComputeInstanceStackOutputs — names and
+# Semantic outputs mirroring GcpComputeInstanceOutputs — names and
 # shapes byte-identical to the Pulumi module's exports.
 
 output "instance_name" {

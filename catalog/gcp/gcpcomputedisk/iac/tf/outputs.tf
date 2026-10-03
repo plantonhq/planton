@@ -1,4 +1,4 @@
-# Semantic outputs mirroring GcpComputeDiskStackOutputs — names and
+# Semantic outputs mirroring GcpComputeDiskOutputs — names and
 # shapes byte-identical to the Pulumi module's exports.
 
 output "name" {

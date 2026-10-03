@@ -14,8 +14,8 @@ type Locals struct {
 	Labels           map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *kubernetesgatewayclassv1alpha1.KubernetesGatewayClassStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *kubernetesgatewayclassv1alpha1.KubernetesGatewayClassIacInput) *Locals {
+	target := iacInput.Target
 	metadata := target.Metadata
 	spec := target.Spec
 

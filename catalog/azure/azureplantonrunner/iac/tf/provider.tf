@@ -13,6 +13,6 @@ provider "azurerm" {
   features {}
   # Subscription and credentials are injected by the runtime as environment
   # variables (ARM_SUBSCRIPTION_ID + ARM_CLIENT_ID / ARM_CLIENT_SECRET or
-  # the keyless web-identity exchange), resolved from the stack input's
+  # the keyless web-identity exchange), resolved from the IaC input's
   # provider_config. Keep this block bare -- do not wire credentials here.
 }

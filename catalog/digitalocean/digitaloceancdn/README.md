@@ -2,7 +2,7 @@
 
 Built for 100% parity with the Terraform DigitalOcean provider's `digitalocean_cdn` resource at the pinned provider version.
 
-## What this component models
+## What this kind models
 
 A CDN endpoint that serves a Spaces bucket's content from DigitalOcean's global edge network -- optionally under your own subdomain with a managed TLS certificate.
 

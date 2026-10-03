@@ -1,10 +1,10 @@
 # AWS MemoryDB Cluster
 
-Deploys a fully managed Amazon MemoryDB cluster -- a Redis-compatible, durable in-memory database with multi-AZ transaction log replication, microsecond reads, and single-digit millisecond writes. The cluster supports sharded topology, ACL-based authentication ([AwsMemorydbAcl](/cloud-catalog/aws-memorydb-acl)), TLS encryption, customer-managed KMS keys, automatic snapshots, snapshot restore (MemoryDB snapshots or S3 RDB files), IPv6/dual-stack networking, multi-Region membership, and optional data tiering to SSD. Unlike ElastiCache, MemoryDB is a primary database: the multi-AZ transaction log makes every acknowledged write durable, so it can be the system of record rather than a cache in front of one.
+Deploys a fully managed Amazon MemoryDB cluster -- a Redis-compatible, durable in-memory database with multi-AZ transaction log replication, microsecond reads, and single-digit millisecond writes. The cluster supports sharded topology, ACL-based authentication ([AwsMemorydbAcl](/infra-catalog/aws-memorydb-acl)), TLS encryption, customer-managed KMS keys, automatic snapshots, snapshot restore (MemoryDB snapshots or S3 RDB files), IPv6/dual-stack networking, multi-Region membership, and optional data tiering to SSD. Unlike ElastiCache, MemoryDB is a primary database: the multi-AZ transaction log makes every acknowledged write durable, so it can be the system of record rather than a cache in front of one.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **MemoryDB Cluster** -- a sharded in-memory database cluster running Redis or Valkey with the specified node type, shard count, and replicas per shard, using ACL-based authentication
 - **Subnet Group** -- created from the provided `subnetIds` spanning at least two Availability Zones for multi-AZ durability; alternatively the cluster joins an existing group via `subnetGroupName` (the two are mutually exclusive)
@@ -15,15 +15,15 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **At least two subnets** in distinct Availability Zones within the target VPC for multi-AZ durability. Private subnets are recommended. Provide subnet IDs directly or reference AwsSubnet Cloud Resources via ValueFromRef.
-- **Security groups** (optional) to control network-level access to the MemoryDB endpoint. Must allow inbound traffic on the cluster port (default 6379). Provide security group IDs directly or reference AwsSecurityGroup Cloud Resources.
-- **A KMS key** (optional) for customer-managed at-rest encryption. MemoryDB always encrypts data at rest; this field specifies your own key instead of the AWS-managed key. The KMS key is ForceNew and cannot be changed after creation. Provide the ARN directly or reference an AwsKmsKey Cloud Resource.
-- **An SNS topic** (optional) for cluster event notifications (failover, maintenance, configuration changes). Provide the topic ARN directly or reference an AwsSnsTopic Cloud Resource.
+- **At least two subnets** in distinct Availability Zones within the target VPC for multi-AZ durability. Private subnets are recommended. Provide subnet IDs directly or reference AwsSubnet Infra Components via ValueFromRef.
+- **Security groups** (optional) to control network-level access to the MemoryDB endpoint. Must allow inbound traffic on the cluster port (default 6379). Provide security group IDs directly or reference AwsSecurityGroup Infra Components.
+- **A KMS key** (optional) for customer-managed at-rest encryption. MemoryDB always encrypts data at rest; this field specifies your own key instead of the AWS-managed key. The KMS key is ForceNew and cannot be changed after creation. Provide the ARN directly or reference an AwsKmsKey Infra Component.
+- **An SNS topic** (optional) for cluster event notifications (failover, maintenance, configuration changes). Provide the topic ARN directly or reference an AwsSnsTopic Infra Component.
 
 ## Deploy
 
@@ -61,7 +61,7 @@ spec:
 planton apply -f memorydb-cluster.yaml
 ```
 
-This creates a two-shard MemoryDB cluster with one replica per shard (4 total nodes), TLS encryption enabled, the built-in `open-access` ACL stated explicitly (swap in a real ACL for production), and AWS-managed at-rest encryption. A Stack Job tracks the provisioning in real time.
+This creates a two-shard MemoryDB cluster with one replica per shard (4 total nodes), TLS encryption enabled, the built-in `open-access` ACL stated explicitly (swap in a real ACL for production), and AWS-managed at-rest encryption. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -110,7 +110,7 @@ These are the most important decisions when configuring a MemoryDB cluster. Expl
 
 **Topology** -- `numShards` controls data partitions (each holding a portion of the keyspace). `numReplicasPerShard` (0-5) controls read replicas within each shard. Total nodes = `numShards` x (`numReplicasPerShard` + 1). For production, use at least 2 shards with 1 replica each for high availability and read scaling.
 
-**Authentication** -- Every cluster requires an `aclName`. Use the built-in `"open-access"` ACL for development (no authentication) or reference an [AwsMemorydbAcl](/cloud-catalog/aws-memorydb-acl) whose member users ([AwsMemorydbUser](/cloud-catalog/aws-memorydb-user)) carry per-application permissions for production. Swapping ACLs applies in place. When `tlsEnabled` is `false`, only `"open-access"` is allowed.
+**Authentication** -- Every cluster requires an `aclName`. Use the built-in `"open-access"` ACL for development (no authentication) or reference an [AwsMemorydbAcl](/infra-catalog/aws-memorydb-acl) whose member users ([AwsMemorydbUser](/infra-catalog/aws-memorydb-user)) carry per-application permissions for production. Swapping ACLs applies in place. When `tlsEnabled` is `false`, only `"open-access"` is allowed.
 
 **Encryption** -- TLS is on by default, and omitting `tlsEnabled` is identical to setting it `true` (the provider enforces that default itself); explicit `false` is the only way to disable it. MemoryDB always encrypts data at rest; provide `kmsKeyArn` to use a customer-managed KMS key instead of the AWS-managed key. Both `tlsEnabled` and `kmsKeyArn` are ForceNew -- changing them destroys and recreates the cluster.
 
@@ -124,7 +124,7 @@ These are the most important decisions when configuring a MemoryDB cluster. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -134,9 +134,9 @@ These are the most important decisions when configuring a MemoryDB cluster. Expl
 | **AwsKmsKey** (optional) | `kmsKeyArn` | `status.outputs.key_arn` |
 | **AwsSnsTopic** (optional) | `snsTopicArn` | `status.outputs.topic_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -160,8 +160,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS MemoryDB ACL**](/cloud-catalog/aws-memorydb-acl) -- the access control list the cluster attaches; its member [**AWS MemoryDB User**](/cloud-catalog/aws-memorydb-user) entries carry per-application permissions
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- provides subnets for the MemoryDB subnet group across multiple Availability Zones
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- provides network access control for the cluster endpoint
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for at-rest encryption
-- [**AWS SNS Topic**](/cloud-catalog/aws-sns-topic) -- provides event notification delivery for cluster operations
+- [**AWS MemoryDB ACL**](/infra-catalog/aws-memorydb-acl) -- the access control list the cluster attaches; its member [**AWS MemoryDB User**](/infra-catalog/aws-memorydb-user) entries carry per-application permissions
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- provides subnets for the MemoryDB subnet group across multiple Availability Zones
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- provides network access control for the cluster endpoint
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for at-rest encryption
+- [**AWS SNS Topic**](/infra-catalog/aws-sns-topic) -- provides event notification delivery for cluster operations

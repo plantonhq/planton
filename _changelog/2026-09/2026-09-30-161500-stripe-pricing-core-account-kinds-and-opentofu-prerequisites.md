@@ -2,7 +2,7 @@
 
 **Date**: September 30, 2026
 **Type**: Feature
-**Components**: StripeEntitlementFeature, StripeProduct, StripePrice, StripeEventDestination, StripePaymentMethodDomain, StripeRadarValueList, StripeBillingPortalConfiguration; `e2e/framework/runner`, `catalog/stripe/aa_e2e`, `catalog/stripe/aa_import`, `e2e/stripe`, `pkg/providerparity`, `pkg/crkreflect`, `pkg/explain/refgen`; the component forge rule and flow rules 012 and 014
+**Components**: StripeEntitlementFeature, StripeProduct, StripePrice, StripeEventDestination, StripePaymentMethodDomain, StripeRadarValueList, StripeBillingPortalConfiguration; `e2e/framework/runner`, `catalog/stripe/aa_e2e`, `catalog/stripe/aa_import`, `e2e/stripe`, `pkg/providerparity`, `pkg/catalogkindreflect`, `pkg/explain/refgen`; the component forge rule and flow rules 012 and 014
 
 ## Summary
 
@@ -26,7 +26,7 @@
 - **The Stripe harness:** reads Stripe with the same `Stripe-Context` and `Stripe-Version` headers the pinned provider sends (it previously sent `Stripe-Account` and no version); reads v1 and v2 objects; and gains a "forgotten" verifier that proves an object is still in Stripe after a destroy that makes no call.
 - **Catalog wiring:** eight resources leave the dispositions ledger; the registry snapshot, kind map, references and the Stripe parity page are regenerated.
 - **Teaching:**
-  - the component forge rule and flow 012 gain the law that an argument creating an untracked inline object is never offered;
+  - the kind forge rule and flow 012 gain the law that an argument creating an untracked inline object is never offered;
   - flow 014's Stripe id-prefix line gains the one-word rule;
   - the forge rule and the E2E README teach prerequisites on their own engine and the three destroy-verifier shapes;
   - two questions join the skill's eval bank: changing a price's amount, and who should own a product.
@@ -34,13 +34,13 @@
 ## Verification
 
 - **Offline:**
-  - `make protos` (including the Java stub build and the protovalidate-java rule gate), `make generate-cloud-resource-kind-map`, the registry snapshot, `make generate-reference` and `make generate-provider-parity-report`;
+  - `make protos` (including the Java stub build and the protovalidate-java rule gate), `make generate-catalog-kind-map`, the registry snapshot, `make generate-reference` and `make generate-provider-parity-report`;
   - spec tests for all seven kinds;
   - `validate-manifest` on every preset, E2E manifest, token-expanded scenario and prerequisite profile;
   - `tofu fmt`, `init` and `validate` for each module, and offline plans for every manifest shape (tiered prices with currency options, a product granting two features, EventBridge and Event Grid destinations);
   - `module verify --provisioner tofu` with engine validation;
   - `secret-coverage --check`, `validate-refs --check`, and `provider-parity --kind` for each kind and `--check`;
-  - `go test` for the runner (including the catalog-wide fixture-integrity check), the harness, crkreflect, provisioner, providerparity, anatomy, cataloglogo, catalogpage, presetvalidity, refcheck, secretcoverage, importmap, permissions, e2e/profile, outputs, cost and control profiles, protodocs, explain and refgen;
+  - `go test` for the runner (including the catalog-wide fixture-integrity check), the harness, catalogkindreflect, provisioner, providerparity, anatomy, cataloglogo, catalogpage, presetvalidity, refcheck, secretcoverage, importmap, permissions, e2e/profile, outputs, cost and control profiles, protodocs, explain and refgen;
   - the E2E package compiles and vets under the `e2e` tag; `defspack`.
 - **Red-proofed:** the engine choice, a failed apply staying tracked, mixed-engine teardown, the product-to-price chain resolving its reference, the harness's headers, the forgotten verifier, and the reference-safe product format rule.
 - **Not run live:** no Stripe lane has run; the profiles stay `pending_proof`.

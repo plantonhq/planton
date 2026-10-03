@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuremonitormetricalert
+    e2e-catalog-kind: azuremonitormetricalert
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/azure/azuremonitormetricalert/e2e/metric-target-account.yaml"

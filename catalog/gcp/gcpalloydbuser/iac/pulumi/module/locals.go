@@ -10,9 +10,9 @@ type Locals struct {
 	GcpAlloydbUser    *gcpalloydbuserv1alpha1.GcpAlloydbUser
 }
 
-func initializeLocals(stackInput *gcpalloydbuserv1alpha1.GcpAlloydbUserStackInput) *Locals {
+func initializeLocals(iacInput *gcpalloydbuserv1alpha1.GcpAlloydbUserIacInput) *Locals {
 	return &Locals{
-		GcpAlloydbUser:    stackInput.Target,
-		GcpProviderConfig: stackInput.ProviderConfig,
+		GcpAlloydbUser:    iacInput.Target,
+		GcpProviderConfig: iacInput.ProviderConfig,
 	}
 }

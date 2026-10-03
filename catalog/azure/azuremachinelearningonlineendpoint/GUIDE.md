@@ -24,7 +24,7 @@ The traffic map updates in place and is the whole point of the endpoint layer. T
 
 ## Keys: bring your own or fetch, never persist
 
-ARM never returns key values on any read -- by design, and this component honors it: keys are not stack outputs. Either bring your own keys from a secret store (`initialAuthKeys`, Key mode) so rotation is your secret manager's job, or let the service mint them and read them at deploy time with `az ml online-endpoint get-credentials`. Anything that copies keys into files or outputs is building the leak.
+ARM never returns key values on any read -- by design, and this component honors it: keys are not outputs. Either bring your own keys from a secret store (`initialAuthKeys`, Key mode) so rotation is your secret manager's job, or let the service mint them and read them at deploy time with `az ml online-endpoint get-credentials`. Anything that copies keys into files or outputs is building the leak.
 
 ## Deleting an endpoint deletes its deployments
 

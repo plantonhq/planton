@@ -26,7 +26,7 @@ func minimalValidNlb() *AwsNlb {
 	return &AwsNlb{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsNlb",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "demo-nlb",
 		},
 		Spec: &AwsNlbSpec{

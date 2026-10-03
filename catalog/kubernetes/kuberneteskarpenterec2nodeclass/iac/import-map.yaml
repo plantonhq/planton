@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kuberneteskarpenterec2nodeclass
 spec:
@@ -22,7 +22,7 @@ spec:
     - name: name
       derivations:
         - from_metadata_name: true
-        - from_stack_output: node_class_name
+        - from_output: node_class_name
       where_to_find: >-
         The EC2NodeClass's metadata.name (equals the Planton resource name)
         — `kubectl get ec2nodeclasses` (NAME column).

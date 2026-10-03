@@ -1,10 +1,10 @@
 # AWS SES Email Identity
 
-Deploys an Amazon SES (SESv2) email identity — the verified domain or email address an application is allowed to send mail FROM. The identity is the trust anchor of the SES graph: nothing sends through SES without one. A DOMAIN identity is the production shape — it verifies through DNS (the `dkim_tokens` output composes directly into [AwsRoute53DnsRecord](/cloud-catalog/aws-route53-dns-record) CNAMEs), signs mail with DKIM, covers every address at the domain, and unlocks a custom MAIL FROM domain for DMARC-aligned SPF. An EMAIL-ADDRESS identity verifies through a confirmation link — quick for testing. The identity inherits its default sending rules from an [AwsSesConfigurationSet](/cloud-catalog/aws-ses-configuration-set), and BYODKIM private keys stay in managed secrets — never in the manifest.
+Deploys an Amazon SES (SESv2) email identity — the verified domain or email address an application is allowed to send mail FROM. The identity is the trust anchor of the SES graph: nothing sends through SES without one. A DOMAIN identity is the production shape — it verifies through DNS (the `dkim_tokens` output composes directly into [AwsRoute53DnsRecord](/infra-catalog/aws-route53-dns-record) CNAMEs), signs mail with DKIM, covers every address at the domain, and unlocks a custom MAIL FROM domain for DMARC-aligned SPF. An EMAIL-ADDRESS identity verifies through a confirmation link — quick for testing. The identity inherits its default sending rules from an [AwsSesConfigurationSet](/infra-catalog/aws-ses-configuration-set), and BYODKIM private keys stay in managed secrets — never in the manifest.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SES Email Identity** -- the verified domain or address (create-time immutable; a replacement re-verifies from scratch)
 - **DKIM Configuration** -- Easy DKIM (AWS-managed keys, the default) or BYODKIM (your own key pair), on domain identities
@@ -17,13 +17,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
-- **Configuration set first** -- to attach default sending rules, deploy the [AwsSesConfigurationSet](/cloud-catalog/aws-ses-configuration-set) before the identity and reference its `configuration_set_name` output.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **Configuration set first** -- to attach default sending rules, deploy the [AwsSesConfigurationSet](/infra-catalog/aws-ses-configuration-set) before the identity and reference its `configuration_set_name` output.
 - **Managed secret for BYODKIM** -- when bringing your own DKIM key, store the base64-encoded private key as an org secret; the spec carries a `$secret/<slug>` reference and the runner resolves it just-in-time at deploy.
 
 ### AWS Account
 
-- **DNS control** -- a domain identity stays PENDING until its three DKIM CNAMEs are published; you need control of the domain's DNS (composable with [AwsRoute53DnsRecord](/cloud-catalog/aws-route53-dns-record) when the zone lives in Route 53).
+- **DNS control** -- a domain identity stays PENDING until its three DKIM CNAMEs are published; you need control of the domain's DNS (composable with [AwsRoute53DnsRecord](/infra-catalog/aws-route53-dns-record) when the zone lives in Route 53).
 - **Mailbox access** -- an email-address identity sends a confirmation link to that mailbox; someone must click it.
 - **Sandbox note** -- new SES accounts start sandboxed per region (verified recipients only); request production access per region.
 
@@ -60,7 +60,7 @@ spec:
 planton apply -f ses-email-identity.yaml
 ```
 
-This verifies `example.com` with AWS-managed Easy DKIM (the default when no DKIM configuration is set), a DMARC-aligned MAIL FROM subdomain, and the transactional configuration set as its default rules. A Stack Job tracks the provisioning in real time.
+This verifies `example.com` with AWS-managed Easy DKIM (the default when no DKIM configuration is set), a DMARC-aligned MAIL FROM subdomain, and the transactional configuration set as its default rules. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,7 +94,7 @@ These are the most important decisions when configuring an email identity. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -102,9 +102,9 @@ These are the most important decisions when configuring an email identity. Explo
 
 Without a configuration set reference, the identity is a leaf.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -124,6 +124,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS SES Configuration Set**](/cloud-catalog/aws-ses-configuration-set) -- the default sending rules this identity inherits (references `configuration_set_name`)
-- [**AWS Route 53 DNS Record**](/cloud-catalog/aws-route53-dns-record) -- publishes the DKIM CNAMEs and the MAIL FROM MX/SPF records that complete verification
-- [**AWS Route 53 Zone**](/cloud-catalog/aws-route53-zone) -- the hosted zone those records live in
+- [**AWS SES Configuration Set**](/infra-catalog/aws-ses-configuration-set) -- the default sending rules this identity inherits (references `configuration_set_name`)
+- [**AWS Route 53 DNS Record**](/infra-catalog/aws-route53-dns-record) -- publishes the DKIM CNAMEs and the MAIL FROM MX/SPF records that complete verification
+- [**AWS Route 53 Zone**](/infra-catalog/aws-route53-zone) -- the hosted zone those records live in

@@ -229,7 +229,7 @@ spec:
 | `defaultValue` | string | No | Default value when not supplied at execution time |
 | `description` | string | No | Human-readable explanation of the variable |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|

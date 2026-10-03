@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurefrontdoorendpoint.v1alpha1;
 
-// **AzureFrontDoorEndpointStackOutputs** captures the outputs of
+// **AzureFrontDoorEndpointOutputs** captures the outputs of
 // provisioning an Azure Front Door endpoint.
-message AzureFrontDoorEndpointStackOutputs {
+message AzureFrontDoorEndpointOutputs {
   // The Azure Resource Manager ID of the endpoint -- what
   // AzureFrontDoorRoute's endpoint_id references, and (alongside custom
   // domain IDs) what a Front Door security policy associates a WAF

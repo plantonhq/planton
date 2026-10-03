@@ -12,9 +12,9 @@
 # compute in ways no list price in this book commits to. The estimate
 # generator replays the catalog presets through these rules to emit
 # ../estimates/gcpdataproccluster.yaml.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: gcpdataproccluster
 spec:
@@ -465,7 +465,7 @@ spec:
         - field_path: cluster_config.gce_config.internal_ip_only
           op: equals
           value: "true"
-      text: internal-only nodes need Cloud NAT for internet egress -- a separate component with its own hourly and per-GB charges
+      text: internal-only nodes need Cloud NAT for internet egress -- a separate kind with its own hourly and per-GB charges
     - applies_when:
         - field_path: cluster_config.staging_bucket
           op: is_unset
@@ -473,7 +473,7 @@ spec:
     - applies_when:
         - field_path: cluster_config.staging_bucket
           op: is_set
-      text: the referenced staging bucket is its own component billing Cloud Storage rates by actual usage
+      text: the referenced staging bucket is its own kind billing Cloud Storage rates by actual usage
   notes:
     - applies_when:
         - field_path: cluster_config.lifecycle_config.idle_delete_ttl

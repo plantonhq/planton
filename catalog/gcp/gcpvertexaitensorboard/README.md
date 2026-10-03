@@ -4,7 +4,7 @@ A managed Vertex AI TensorBoard -- the regional, shared TensorBoard that Vertex 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project (never disabled on destroy)
 - **TensorBoard** -- a `vertex_ai_tensorboard` with its display name, description, labels, and optional CMEK
@@ -68,7 +68,7 @@ planton apply -f vertex-ai-tensorboard.yaml
 - Experiment ids are unique within the TensorBoard; run ids and run display names are unique within their experiment (Google requires unique run display names).
 - Experiment and run ids are 1-128 lowercase letters, digits, and hyphens.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -99,7 +99,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpKmsKey** -- customer-managed encryption
 - **GcpVertexAiPersistentResource** -- a warm cluster for the training jobs that stream into the TensorBoard

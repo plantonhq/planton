@@ -34,7 +34,7 @@ The kind name `GcpVpc` was an internal abbreviation that diverged from GCP's nat
 
 ### Workflow uplift
 
-Extended `_rules/deployment-component/rename/rename-planton-component.mdc` with high-fan-in checklist, four-way naming table, safe replace order, script scope honesty, and live E2E minimum (leaf + one FK consumer).
+Extended `_rules/catalog-kind/rename/rename-catalog-kind.mdc` with high-fan-in checklist, four-way naming table, safe replace order, script scope honesty, and live E2E minimum (leaf + one FK consumer).
 
 ## Validation
 

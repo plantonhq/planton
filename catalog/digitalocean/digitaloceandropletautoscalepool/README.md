@@ -2,7 +2,7 @@
 
 Built for 100% parity with the Terraform DigitalOcean provider's `digitalocean_droplet_autoscale` resource at the pinned provider version.
 
-## What this component models
+## What this kind models
 
 A pool of identical droplets DigitalOcean keeps at a fixed size or scales between bounds on CPU/memory utilization -- the closest thing DigitalOcean has to a managed instance group.
 

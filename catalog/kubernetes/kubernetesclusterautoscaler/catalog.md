@@ -4,7 +4,7 @@ Installs the Kubernetes Cluster Autoscaler from the official Helm chart. The aut
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm Release** (`cluster-autoscaler`) -- the autoscaler Deployment (chart default 1 replica; extras leader-elect as warm standbys), RBAC, the provider-specific credential Secret when declared credentials are used, and the chart-derived service account cloud-side keyless bindings are written against
 - **Namespace** (optional) -- created with standard governance labels when `createNamespace` is true; a pre-existing `kube-system` is the upstream convention
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Kubernetes Cluster
 
@@ -53,7 +53,7 @@ spec:
 planton apply -f cluster-autoscaler.yaml
 ```
 
-This installs the autoscaler into `kube-system` with tag-based ASG auto-discovery and keyless IRSA identity — it then manages every ASG carrying the discovery tags for the cluster, and new node groups enroll by tagging alone. A Stack Job tracks the provisioning in real time.
+This installs the autoscaler into `kube-system` with tag-based ASG auto-discovery and keyless IRSA identity — it then manages every ASG carrying the discovery tags for the cluster, and new node groups enroll by tagging alone. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -93,15 +93,15 @@ These are the most important decisions when configuring the autoscaler. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -121,7 +121,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Karpenter**](/cloud-catalog/kubernetes-karpenter) -- the alternative fleet controller for just-in-time, right-sized nodes; never both on the same capacity.
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) -- unschedulable pods from any workload (Deployments, StatefulSets, Jobs) trigger scale-up; no per-workload wiring needed.
-- [**Kubernetes PodDisruptionBudget**](/cloud-catalog/kubernetes-pod-disruption-budget) -- shapes what the autoscaler may evict during scale-down.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- reference it when installing outside `kube-system` so infra charts create the namespace first.
+- [**Karpenter**](/infra-catalog/kubernetes-karpenter) -- the alternative fleet controller for just-in-time, right-sized nodes; never both on the same capacity.
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- unschedulable pods from any workload (Deployments, StatefulSets, Jobs) trigger scale-up; no per-workload wiring needed.
+- [**Kubernetes PodDisruptionBudget**](/infra-catalog/kubernetes-pod-disruption-budget) -- shapes what the autoscaler may evict during scale-down.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference it when installing outside `kube-system` so infra charts create the namespace first.

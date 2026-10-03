@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kuberneteskarpenter.v1alpha1;
 
-// KubernetesKarpenterStackOutputs captures observable outputs after
+// KubernetesKarpenterOutputs captures observable outputs after
 // Karpenter is installed on the target cluster.
-message KubernetesKarpenterStackOutputs {
+message KubernetesKarpenterOutputs {
   // Namespace Karpenter was installed into (the resolved spec.namespace).
   string namespace = 1;
 

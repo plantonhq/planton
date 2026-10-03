@@ -1,6 +1,6 @@
 # Deployed Projects — Working Copies, Fixing Failures, Saving Changes
 
-A chart is a blueprint; an **infra project** is a deployment of one. The
+A chart is a blueprint; an **infra stack** is a deployment of one. The
 moment a project is created it carries its OWN copy of the templates and
 values — detached from the chart it came from. Editing the chart never
 changes a deployed project, and editing a project never changes the chart.
@@ -53,7 +53,7 @@ project. Never reconstruct a project's files from its record by hand; pull
 the real thing:
 
 ```
-planton infra project checkout <id-or-name> --output-dir <project-dir>
+planton infra stack checkout <id-or-name> --output-dir <project-dir>
 ```
 
 The checkout lays out the working copy — templates, values, and the hidden
@@ -73,7 +73,7 @@ the failure and waits is a failed turn. Consent gates CHANGES, never
 diagnosis — reading status, logs, and records requires nobody's permission.
 
 1. Run the four-step diagnosis from `planton-cli.md` (status → failed node →
-   logs → stack job when needed), dumping large records to `.scratch/`
+   logs → infra job when needed), dumping large records to `.scratch/`
    files and reading those (the large-records rule in `planton-cli.md`).
 2. Explain what went wrong in the user's language — name the resource and
    the cause, not the plumbing.
@@ -140,9 +140,9 @@ the stale ones. Recognize it by the signature (identical error after a save
 that provably changed the relevant field), then clear it:
 
 ```
-planton search cloud-resources --org <org> -e <env>      # find the resource id
-planton get cloud-resource <cr_id> -o yaml               # confirm the record already carries your fix
-planton infra cloud-resource cleanup <cr_id>             # clear the failed state (confirm with the user first)
+planton search infra-components --org <org> -e <env>      # find the resource id
+planton get infra-component <ic_id> -o yaml               # confirm the record already carries your fix
+planton infra component cleanup <ic_id>             # clear the failed state (confirm with the user first)
 ```
 
 Then save again (a fresh `chart install`, its own confirmation). Cleanup only

@@ -4,7 +4,7 @@ Creates a Secret Manager secret — the container for versioned secret payloads 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Secret** -- `secretmanager.Secret` (global, with replication control) or `secretmanager.RegionalSecret` (payloads never leave `spec.region`)
 - **Secret Version** (optional) -- version 1 seeded from `initialVersion.data`
@@ -75,7 +75,7 @@ planton apply -f secret.yaml
 - **`expireTime` XOR `ttl`**; **rotation requires topics**; **rotationPeriod requires nextRotationTime**.
 - **`versionDestroyTtl` ≥ 24h**; **at most 10 topics**; replication carries exactly one arm.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -104,7 +104,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — the workload identity granted `secretAccessor`
 - [GcpKmsKey](/docs/catalog/gcp/gcpkmskey) — CMEK for payload encryption

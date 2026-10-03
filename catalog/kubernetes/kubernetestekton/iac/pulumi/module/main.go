@@ -32,11 +32,11 @@ import (
 // full-profile teardown). Destroying this resource BEFORE the operator
 // is exactly what makes the teardown clean; the operator kind's docs
 // carry the ordering contract.
-func Resources(ctx *pulumi.Context, stackInput *kubernetestektonv1alpha1.KubernetesTektonStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetestektonv1alpha1.KubernetesTektonIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}

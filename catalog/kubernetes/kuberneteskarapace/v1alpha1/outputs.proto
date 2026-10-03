@@ -3,11 +3,11 @@ syntax = "proto3";
 package dev.planton.kubernetes.kuberneteskarapace.v1alpha1;
 
 /**
- * **KubernetesKarapaceStackOutputs** — the handles a schema registry
+ * **KubernetesKarapaceOutputs** — the handles a schema registry
  * exports for composition. Producers, consumers, Connect converters
  * and consoles configure `endpoint` as their schema.registry.url.
  */
-message KubernetesKarapaceStackOutputs {
+message KubernetesKarapaceOutputs {
   // Namespace the registry runs in.
   string namespace = 1;
 

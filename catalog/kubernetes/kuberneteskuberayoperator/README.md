@@ -9,7 +9,7 @@ this catalog, RayJob/RayService CRs authored directly). Install the
 operator once per Kubernetes cluster, then declare Ray clusters
 against it.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want a Ray cluster** — that is KubernetesRayCluster; this
   component is the controller that reconciles it.
@@ -113,7 +113,7 @@ election out of the box.
   above)
 - **`spec.helm_values`**: the escape hatch (see above)
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

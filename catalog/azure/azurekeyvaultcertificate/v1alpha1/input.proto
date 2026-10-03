@@ -5,9 +5,9 @@ package dev.planton.azure.azurekeyvaultcertificate.v1alpha1;
 import "catalog/azure/azurekeyvaultcertificate/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-key-vault-certificate stack-input
-message AzureKeyVaultCertificateStackInput {
-  //target cloud-resource
+//azure-key-vault-certificate iac-input
+message AzureKeyVaultCertificateIacInput {
+  //target infra-component
   AzureKeyVaultCertificate target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

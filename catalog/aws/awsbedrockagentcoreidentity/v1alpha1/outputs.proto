@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbedrockagentcoreidentity.v1alpha1;
 
-// AwsBedrockAgentCoreIdentityStackOutputs captures observable
+// AwsBedrockAgentCoreIdentityOutputs captures observable
 // identifiers from a provisioned AgentCore identity bundle. Downstream
 // resources (gateway targets' credential providers, gateways' policy
 // engines, JWT authorizers' workload allow-lists) wire dependencies via
 // StringValueOrRef.
-message AwsBedrockAgentCoreIdentityStackOutputs {
+message AwsBedrockAgentCoreIdentityOutputs {
   // Workload identity ARNs keyed by each `workload_identities` entry's
   // name.
   map<string, string> workload_identity_arns = 1;

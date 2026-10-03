@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -7,9 +7,9 @@
 # capacity scales to zero between jobs, and the launched compute bills as
 # plain EC2 or Fargate usage only while jobs run -- stated in exclusions,
 # never padded into fabricated dollars.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awsbatchcomputeenvironment
 spec:
@@ -21,7 +21,7 @@ spec:
       exclusions:
         - job compute bills as plain Fargate usage -- per vCPU-hour and per GB-hour for each job's duration, capped at 256 concurrent vCPUs by max_vcpus
         - Batch itself adds no charge on top of the launched capacity
-        - job container logs bill CloudWatch Logs ingestion via the job definitions, and job-level spend attribution lives on the queue and job-definition components
+        - job container logs bill CloudWatch Logs ingestion via the job definitions, and job-level spend attribution lives on the queue and job-definition kinds
       notes: Zero committed cost -- with no vCPU floor, Fargate capacity exists only while jobs run; an environment with an empty queue bills nothing.
     - preset: 02-ec2-managed-batch
       region_assumption: us-east-1

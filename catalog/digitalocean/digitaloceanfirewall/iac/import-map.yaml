@@ -1,15 +1,15 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceanfirewall
 spec:
   # The firewall's identity is its UUID, which the module exports as the
-  # firewall_id stack output -- zero user input when state is present. The
+  # firewall_id output -- zero user input when state is present. The
   # provider imports by plain passthrough of the UUID.
   values:
     - name: firewall_id
       derivations:
-        - from_stack_output: firewall_id
+        - from_output: firewall_id
       where_to_find: >-
         DigitalOcean control panel -> Networking -> Firewalls -> the firewall
         -> the UUID in the page URL, or `doctl compute firewall list` (the ID

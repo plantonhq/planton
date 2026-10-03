@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: gcpcloudcomposerenvironment
 spec:
@@ -55,7 +55,7 @@ spec:
       impact: Each triggerer replica bills its CPU and memory allocation around the clock; 0 disables the triggerer and its cost.
     - field_path: software_config.image_version
       sku_meter: environment fee
-      impact: "Composer 2 images bill per-component compute meters plus the environment fee; Composer 3 images bill Data Compute Units instead -- the image line decides which meter family the environment lives on."
+      impact: "Composer 2 images bill per-kind compute meters plus the environment fee; Composer 3 images bill Data Compute Units instead -- the image line decides which meter family the environment lives on."
     - field_path: recovery_config.enabled
       sku_meter: snapshot storage
       pricing_unit: GiB-months

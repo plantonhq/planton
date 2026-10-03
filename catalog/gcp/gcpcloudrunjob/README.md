@@ -101,7 +101,7 @@ gcloud run jobs execute my-etl --region us-central1
 | `vpcAccess` | object | — | Connector XOR direct VPC egress. |
 | `nodeSelector.accelerator` | `string` | — | GPU type (e.g. `nvidia-l4`). |
 
-### Stack Outputs
+### Outputs
 
 | Output | Description |
 |--------|-------------|
@@ -119,7 +119,7 @@ Everything the pinned GA provider can configure on `google_cloud_run_v2_job` is 
 | `client` / `client_version` | API-client telemetry strings with no user-facing behavior. |
 | Job IAM (`google_cloud_run_v2_job_iam_*`) | Jobs have no public-serving toggle (nothing to invoke over HTTP); fine-grained execution grants to specific identities are IAM-family territory. |
 
-## Related Components
+## Related Kinds
 
 - [GcpCloudRun](/docs/catalog/gcp/gcpcloudrun) — request-serving sibling (services, not jobs)
 - [GcpCloudSql](/docs/catalog/gcp/gcpcloudsql) — Cloud SQL volume source

@@ -29,7 +29,7 @@ func minimalSpec() *AzureApplicationGateway {
 	return &AzureApplicationGateway{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureApplicationGateway",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-agw",
 		},
 		Spec: &AzureApplicationGatewaySpec{

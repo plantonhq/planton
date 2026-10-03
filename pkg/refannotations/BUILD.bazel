@@ -6,7 +6,7 @@ go_library(
     importpath = "github.com/plantonhq/planton/pkg/refannotations",
     visibility = ["//visibility:public"],
     deps = [
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
         "//shared/foreignkey/v1:foreignkey",
         "@org_golang_google_protobuf//proto",
         "@org_golang_google_protobuf//reflect/protoreflect",
@@ -18,9 +18,9 @@ go_test(
     srcs = ["refannotations_test.go"],
     embed = [":refannotations"],
     deps = [
-        "//catalog/_test/testcloudresourcegeneric/v1alpha2",
+        "//catalog/_test/testcatalogkindgeneric/v1alpha2",
         "//catalog/digitalocean/digitaloceanproject/v1alpha1",
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
         "@com_github_stretchr_testify//assert",
         "@org_golang_google_protobuf//reflect/protoreflect",
     ],

@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpModelArmorTemplateSpec", func() {
 		return &GcpModelArmorTemplate{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpModelArmorTemplate",
-			Metadata:   &shared.CloudResourceMetadata{Name: "prompt-guard"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "prompt-guard"},
 			Spec: &GcpModelArmorTemplateSpec{
 				Location: "us-central1",
 				FilterConfig: &GcpModelArmorTemplateFilterConfig{

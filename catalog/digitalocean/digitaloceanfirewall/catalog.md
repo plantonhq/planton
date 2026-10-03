@@ -4,7 +4,7 @@ Deploys a DigitalOcean Cloud Firewall with configurable inbound and outbound rul
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cloud Firewall** -- a stateful, default-deny network firewall with the configured inbound and outbound rules, applied to the referenced Droplets and/or Droplet tags
 - **Inbound Rules** -- which sources (CIDR addresses, Droplet tags, Droplets, Kubernetes clusters, load balancers) can reach the protected Droplets on which protocols and ports
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### DigitalOcean Account
@@ -66,7 +66,7 @@ spec:
 planton apply -f do-firewall.yaml
 ```
 
-This creates a firewall allowing HTTPS and HTTP inbound from all addresses and all TCP outbound, applied to Droplets tagged `web`. SSH access is not included. A Stack Job tracks the provisioning in real time.
+This creates a firewall allowing HTTPS and HTTP inbound from all addresses and all TCP outbound, applied to Droplets tagged `web`. SSH access is not included. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -109,7 +109,7 @@ These are the most important decisions when configuring a Cloud Firewall. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -118,7 +118,7 @@ These are the most important decisions when configuring a Cloud Firewall. Explor
 | **DigitalOceanKubernetesCluster** (optional, per rule) | `inboundRules[].sourceKubernetesIds`, `outboundRules[].destinationKubernetesIds` | `status.outputs.cluster_id` |
 | **DigitalOceanLoadBalancer** (optional, per rule) | `inboundRules[].sourceLoadBalancerUids`, `outboundRules[].destinationLoadBalancerUids` | `status.outputs.load_balancer_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
 `status.outputs` carries a single value: `firewall_id`, the UUID DigitalOcean assigns to the firewall. No other catalog kind references a firewall, so there is no ValueFromRef story -- the ID is the handle for imports and DigitalOcean API operations. The firewall's live status and pending per-Droplet changes are deliberately not outputs: they are apply-time snapshots that go stale immediately, and verification reads them from the live API instead.
 
@@ -132,6 +132,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Droplet**](/cloud-catalog/digital-ocean-droplet) -- the Droplets this firewall protects and the rule-level source/destination Droplets
-- [**DigitalOcean Load Balancer**](/cloud-catalog/digital-ocean-load-balancer) -- rule-level sources so backends accept traffic only from their balancer
-- [**DigitalOcean Kubernetes Cluster**](/cloud-catalog/digital-ocean-kubernetes-cluster) -- rule-level sources/destinations for cluster-to-Droplet traffic
+- [**DigitalOcean Droplet**](/infra-catalog/digital-ocean-droplet) -- the Droplets this firewall protects and the rule-level source/destination Droplets
+- [**DigitalOcean Load Balancer**](/infra-catalog/digital-ocean-load-balancer) -- rule-level sources so backends accept traffic only from their balancer
+- [**DigitalOcean Kubernetes Cluster**](/infra-catalog/digital-ocean-kubernetes-cluster) -- rule-level sources/destinations for cluster-to-Droplet traffic

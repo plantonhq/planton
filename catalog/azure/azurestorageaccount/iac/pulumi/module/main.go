@@ -10,12 +10,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurestorageaccountv1alpha1.AzureStorageAccountStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurestorageaccountv1alpha1.AzureStorageAccountIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -30,7 +30,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurestorageaccountv1alpha1.Azur
 	}
 
 	// The SKU trio. Unspecified enums materialize the spec's documented
-	// defaults here (StorageV2 / Standard / LRS) -- stack inputs built
+	// defaults here (StorageV2 / Standard / LRS) -- IaC inputs built
 	// from a manifest do NOT materialize proto defaults, and azurerm
 	// REQUIRES tier and replication. Kind and tier are fixed shapes;
 	// replication may move within its zonal/non-zonal family in place.
@@ -563,7 +563,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurestorageaccountv1alpha1.Azur
 		}
 	}
 
-	// Export stack outputs from the created account. The secondary
+	// Export outputs from the created account. The secondary
 	// endpoints resolve to empty strings on non-read-access replication
 	// types; the identity principal is empty unless the type includes
 	// SystemAssigned.

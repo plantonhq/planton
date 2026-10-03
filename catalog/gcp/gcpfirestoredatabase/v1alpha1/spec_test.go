@@ -30,7 +30,7 @@ var _ = ginkgo.Describe("GcpFirestoreDatabaseSpec", func() {
 		return &GcpFirestoreDatabase{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpFirestoreDatabase",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-firestore-db",
 			},
 			Spec: &GcpFirestoreDatabaseSpec{

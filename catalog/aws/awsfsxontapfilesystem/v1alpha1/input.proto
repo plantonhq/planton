@@ -5,9 +5,9 @@ package dev.planton.aws.awsfsxontapfilesystem.v1alpha1;
 import "catalog/aws/awsfsxontapfilesystem/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// aws-fsx-ontap-file-system stack-input
-message AwsFsxOntapFileSystemStackInput {
-  // target cloud-resource
+// aws-fsx-ontap-file-system iac-input
+message AwsFsxOntapFileSystemIacInput {
+  // target infra-component
   AwsFsxOntapFileSystem target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

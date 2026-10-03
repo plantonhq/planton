@@ -4,7 +4,7 @@ Deploys a Google Cloud Artifact Registry repository — the universal package st
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Artifact Registry API enablement** (`artifactregistry.googleapis.com`) on the target project (never disabled on destroy)
 - **Artifact Registry Repository** -- in the chosen project and location, with the declared format and serving mode
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
@@ -63,7 +63,7 @@ spec:
 planton apply -f artifact-registry-repo.yaml
 ```
 
-This creates a standard Docker repository at `us-central1-docker.pkg.dev/{project}/team-images` with immutable tags and a self-cleaning storage policy. A Stack Job tracks the provisioning in real time.
+This creates a standard Docker repository at `us-central1-docker.pkg.dev/{project}/team-images` with immutable tags and a self-cleaning storage policy. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -110,7 +110,7 @@ These are the most important decisions when configuring a repository. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -120,9 +120,9 @@ These are the most important decisions when configuring a repository. Explore th
 | **GcpArtifactRegistryRepo** (optional) | `virtualRepositoryConfig.upstreamPolicies[].repository` | `status.outputs.repository_path` |
 | **GcpArtifactRegistryRepo** (optional) | `remoteRepositoryConfig.commonRepository.uri` | `status.outputs.repository_path` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -143,7 +143,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project when it differs from the connection default
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- provides the CMEK encryption key for artifacts at rest
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- its `member` output is exactly what an IAM grant consumes
-- [**GCP GKE Cluster**](/cloud-catalog/gcp-gke-cluster) / [**GCP Cloud Run**](/cloud-catalog/gcp-cloud-run) -- pull images from the repository's `registry_uri`
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project when it differs from the connection default
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- provides the CMEK encryption key for artifacts at rest
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- its `member` output is exactly what an IAM grant consumes
+- [**GCP GKE Cluster**](/infra-catalog/gcp-gke-cluster) / [**GCP Cloud Run**](/infra-catalog/gcp-cloud-run) -- pull images from the repository's `registry_uri`

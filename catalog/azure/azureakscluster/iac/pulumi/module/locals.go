@@ -5,7 +5,7 @@ import (
 
 	azureaksclusterv1alpha1 "github.com/plantonhq/planton/catalog/azure/azureakscluster/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -23,11 +23,11 @@ type Locals struct {
 	AzureTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureaksclusterv1alpha1.AzureAksClusterStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureaksclusterv1alpha1.AzureAksClusterIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureAksCluster = stackInput.Target
-	target := stackInput.Target
+	locals.AzureAksCluster = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -38,7 +38,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureaksclusterv1alpha1.A
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureAksCluster.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureAksCluster.String()),
 	}
 
 	if target.Metadata.Id != "" {

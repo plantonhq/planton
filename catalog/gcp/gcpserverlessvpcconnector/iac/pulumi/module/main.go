@@ -9,10 +9,10 @@ import (
 
 // Resources is the Pulumi program entry-point for the
 // GcpServerlessVpcConnector component.
-func Resources(ctx *pulumi.Context, stackInput *gcpserverlessvpcconnectorv1alpha1.GcpServerlessVpcConnectorStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *gcpserverlessvpcconnectorv1alpha1.GcpServerlessVpcConnectorIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, stackInput.ProviderConfig)
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

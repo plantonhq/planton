@@ -10,15 +10,15 @@ import (
 // Resources is the entry point, mirroring digital_ocean_vpc.
 func Resources(
 	ctx *pulumi.Context,
-	stackInput *digitaloceandnszonev1alpha1.DigitalOceanDnsZoneStackInput,
+	iacInput *digitaloceandnszonev1alpha1.DigitalOceanDnsZoneIacInput,
 ) error {
 	// 1. Collate locals.
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// 2. Create DO provider from credential.
 	digitalOceanProvider, err := pulumidigitaloceanprovider.Get(
 		ctx,
-		stackInput.ProviderConfig,
+		iacInput.ProviderConfig,
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup digitalocean provider")

@@ -11,10 +11,10 @@ type Locals struct {
 	GcpCloudSchedulerJob *gcpcloudschedulerjobv1alpha1.GcpCloudSchedulerJob
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudschedulerjobv1alpha1.GcpCloudSchedulerJobStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpcloudschedulerjobv1alpha1.GcpCloudSchedulerJobIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpCloudSchedulerJob = stackInput.Target
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpCloudSchedulerJob = iacInput.Target
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	// Note: Cloud Scheduler jobs do NOT support GCP labels.
 	// No label computation needed (unlike most GCP components).
 	return locals

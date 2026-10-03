@@ -61,9 +61,9 @@ func localsFor(spec *kubernetesopenbaov1alpha1.KubernetesOpenBaoSpec) *Locals {
 			s.Audit.Sink = &stdout
 		}
 	}
-	return initializeLocals(nil, &kubernetesopenbaov1alpha1.KubernetesOpenBaoStackInput{
+	return initializeLocals(nil, &kubernetesopenbaov1alpha1.KubernetesOpenBaoIacInput{
 		Target: &kubernetesopenbaov1alpha1.KubernetesOpenBao{
-			Metadata: &shared.CloudResourceMetadata{Name: "vault"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "vault"},
 			Spec:     spec,
 		},
 	})
@@ -417,9 +417,9 @@ func TestRender_WriteFixturesForCrossEngineDiff(t *testing.T) {
 func TestRender_EveryServerPodNamesItsOrganizationAndEnvironment(t *testing.T) {
 	spec := fixtures()["raft-1"]
 	spec.Namespace = literal("openbao")
-	locals := initializeLocals(nil, &kubernetesopenbaov1alpha1.KubernetesOpenBaoStackInput{
+	locals := initializeLocals(nil, &kubernetesopenbaov1alpha1.KubernetesOpenBaoIacInput{
 		Target: &kubernetesopenbaov1alpha1.KubernetesOpenBao{
-			Metadata: &shared.CloudResourceMetadata{Name: "vault", Org: "acme", Env: "dev"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "vault", Org: "acme", Env: "dev"},
 			Spec:     spec,
 		},
 	})

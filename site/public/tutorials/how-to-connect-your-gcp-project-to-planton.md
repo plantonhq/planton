@@ -306,7 +306,7 @@ planton connection default list
 
 Your GCP project is now connected to Planton. From here, you can:
 
-- **Deploy GCP infrastructure** through the Cloud Catalog -- Cloud SQL databases, GKE clusters, GCS buckets, Cloud Run services, and more
+- **Deploy GCP infrastructure** through the Infra Catalog -- Cloud SQL databases, GKE clusters, GCS buckets, Cloud Run services, and more
 - **Connect additional GCP projects** by repeating this process (organizations commonly have separate connections for different projects or environments)
 - **Scope connection access** by creating provider connection authorizations that control which connections are allowed in which environments
 

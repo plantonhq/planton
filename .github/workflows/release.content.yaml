@@ -16,9 +16,9 @@
 #   presets.zip           -- Preset YAML + MD, kind enum proto
 #   iac-source.zip        -- IaC module source (.go, .tf, .md, .yaml) plus the
 #                            provider import catalogs (aa_import/catalog.yaml)
-#   catalog-pages.zip     -- Per-component kind-root catalog.md
+#   catalog-pages.zip     -- Per-kind-root catalog.md
 #   proto-source.zip      -- Raw proto source (spec, api, input, outputs)
-#   reference-pack.zip    -- Component reference pack (generated reference pages,
+#   reference-pack.zip    -- Kind reference pack (generated reference pages,
 #                            indexes, cross-reference graph, commons, GUIDE.md /
 #                            patterns wisdom layer)
 #   conversion-corpus.zip -- The golden conversion corpus: authored
@@ -41,7 +41,7 @@
 # Upload path: s3://downloads-dot-planton-dot-dev-bucket/releases/{tag}/content/{name}.zip
 # Public URL:  https://downloads.planton.dev/releases/{tag}/content/{name}.zip
 #
-# Component logos publish separately to VERSIONLESS keys -- they are branding
+# Kind logos publish separately to VERSIONLESS keys -- they are branding
 # assets, not release-coupled binaries, so their URLs must never churn:
 #   s3://downloads-dot-planton-dot-dev-bucket/catalog/logos/{provider}/{kind}/logo.svg
 #   https://downloads.planton.dev/catalog/logos/{provider}/{kind}/logo.svg
@@ -49,7 +49,7 @@
 # A changed logo may serve stale for the CDN cache TTL (accepted: logos
 # change rarely; add a purge step only if that ever matters).
 # The sync deliberately has NO --delete: versionless keys must keep serving
-# consoles pinned to OLDER releases, so a component rename orphans its old
+# consoles pinned to OLDER releases, so a kind rename orphans its old
 # key by design instead of breaking every pinned consumer of it.
 # After the sync, every staged key is verified SERVING through the public
 # CDN URL (200 + image/svg+xml) -- a release whose logos fail to serve
@@ -119,7 +119,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Stage component logos
+      - name: Stage kind logos
         run: |
           # Stage into build/logos/{provider}/{kind}/logo.svg so the sync
           # maps 1:1 onto the versionless key shape. The _test refusal and

@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package dev.planton._test.testcatalogkindgeneric.v1alpha2;
+
+import "buf/validate/validate.proto";
+import "catalog/_test/testcatalogkindgeneric/v1alpha2/outputs.proto";
+import "catalog/_test/testcatalogkindgeneric/v1alpha2/spec.proto";
+import "shared/metadata.proto";
+
+// TestCatalogKindGeneric at v1alpha2 -- see spec.proto for the deliberate
+// breaking-change set relative to v1alpha1.
+message TestCatalogKindGeneric {
+  string api_version = 1 [(buf.validate.field).string.const = '_test.planton.dev/v1alpha2'];
+  string kind = 2 [(buf.validate.field).string.const = 'TestCatalogKindGeneric'];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
+  TestCatalogKindGenericSpec spec = 4;
+  TestCatalogKindGenericStatus status = 5;
+}
+
+message TestCatalogKindGenericStatus {
+  TestCatalogKindGenericOutputs outputs = 1;
+}

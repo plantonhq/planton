@@ -4,7 +4,7 @@ Deploys Argo Workflows — the Kubernetes-native workflow engine for DAG/step pi
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm release** (official `argo-workflows` chart, default pin `1.0.23` — ships Argo Workflows v4.0.8, named `metadata.name`) — the **workflow controller** (turns Workflow CRs into pods), the **Argo server** (UI + REST API, on by default, ClusterIP), and the **runner ServiceAccount + Role/RoleBinding** workflow pods execute under — created in the install namespace and in every `controller.workflowNamespaces` entry
 - **The Argo Workflows CRDs** — installed by default through the chart's hook Job, which **downloads the full-schema CRD YAMLs from the chart's GitHub release at install time** (they exceed inline-template limits). This is the one place the install reaches the internet; see the air-gap note below
@@ -50,7 +50,7 @@ spec:
 planton apply -f argo-workflows.yaml
 ```
 
-This near-empty spec is a complete engine: the controller, the server in `client` auth mode (callers present a Kubernetes token and act with its permissions), and the `argo-workflow` runner ServiceAccount. Submit a Workflow CR and it runs; open the UI over the exported port-forward command. No artifact repository and no archive yet — steps cannot pass files, and history lives only as Workflow CRs until something prunes them. A Stack Job tracks the provisioning in real time.
+This near-empty spec is a complete engine: the controller, the server in `client` auth mode (callers present a Kubernetes token and act with its permissions), and the `argo-workflow` runner ServiceAccount. Submit a Workflow CR and it runs; open the UI over the exported port-forward command. No artifact repository and no archive yet — steps cannot pass files, and history lives only as Workflow CRs until something prunes them. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -86,11 +86,11 @@ These are the most important decisions when configuring an Argo Workflows engine
 
 **The image override maps onto the chart's registry/repository split.** `image.registry` replaces the registry part (default `quay.io`) for all three components — workflow-controller, argocli, argoexec — while the repository paths stay upstream; a mirror that re-paths repositories overrides those via `helmValues`. `image.tag` pins all three; `pullSecretName` names an existing image-pull Secret.
 
-**`helmValues` merges last** — the escape hatch for chart surface beyond the typed fields (workflowDefaults documents, executor resources, the `server.sso` block, extra env, per-component priority classes). Anything here silently overrides the typed fields on every deploy; never put secret material in it — every credential path in this spec rides existing Secrets.
+**`helmValues` merges last** — the escape hatch for chart surface beyond the typed fields (workflowDefaults documents, executor resources, the `server.sso` block, extra env, per-kind priority classes). Anything here silently overrides the typed fields on every deploy; never put secret material in it — every credential path in this spec rides existing Secrets.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -102,9 +102,9 @@ These are the most important decisions when configuring an Argo Workflows engine
 
 The GCS/Azure credential Secrets and the image pull secret are referenced by Secret NAME (plain strings), not ValueFromRef.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -126,9 +126,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**SeaweedFS**](/cloud-catalog/kubernetes-seaweed-fs) — in-cluster S3-compatible artifact storage: its `s3_endpoint` output composes into the s3 arm by reference, and its generated `-s3-secret` composes untouched through the credential key-name defaults.
-- [**PostgreSQL**](/cloud-catalog/kubernetes-postgres) — the workflow archive: its `rw_service` output composes into `archive.host`, and its app-credentials Secret is the one the archive reads.
-- [**kube-prometheus-stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) — scrapes the controller's ServiceMonitors when `serviceMonitorEnabled` is set.
-- [**Kubernetes Manifest**](/cloud-catalog/kubernetes-manifest) — the vehicle for Workflow, WorkflowTemplate and CronWorkflow CRs once the engine runs.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — referenced placement; the InfraPipeline orders namespace-first.
-- [**Kubernetes Ingress**](/cloud-catalog/kubernetes-ingress) — HTTP exposure over the exported server Service handle; [**Kubernetes HTTPRoute**](/cloud-catalog/kubernetes-http-route) is the Gateway API alternative.
+- [**SeaweedFS**](/infra-catalog/kubernetes-seaweed-fs) — in-cluster S3-compatible artifact storage: its `s3_endpoint` output composes into the s3 arm by reference, and its generated `-s3-secret` composes untouched through the credential key-name defaults.
+- [**PostgreSQL**](/infra-catalog/kubernetes-postgres) — the workflow archive: its `rw_service` output composes into `archive.host`, and its app-credentials Secret is the one the archive reads.
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) — scrapes the controller's ServiceMonitors when `serviceMonitorEnabled` is set.
+- [**Kubernetes Manifest**](/infra-catalog/kubernetes-manifest) — the vehicle for Workflow, WorkflowTemplate and CronWorkflow CRs once the engine runs.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — referenced placement; the InfraPipeline orders namespace-first.
+- [**Kubernetes Ingress**](/infra-catalog/kubernetes-ingress) — HTTP exposure over the exported server Service handle; [**Kubernetes HTTPRoute**](/infra-catalog/kubernetes-http-route) is the Gateway API alternative.

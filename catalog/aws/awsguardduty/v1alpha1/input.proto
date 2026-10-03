@@ -5,9 +5,9 @@ package dev.planton.aws.awsguardduty.v1alpha1;
 import "catalog/aws/awsguardduty/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsGuardDutyStackInput is the input for the IaC modules that manage
+// AwsGuardDutyIacInput is the input for the IaC modules that manage
 // the region's GuardDuty posture.
-message AwsGuardDutyStackInput {
+message AwsGuardDutyIacInput {
   // target is the AwsGuardDuty resource to deploy.
   AwsGuardDuty target = 1;
   // provider_config contains the AWS provider credentials and configuration.

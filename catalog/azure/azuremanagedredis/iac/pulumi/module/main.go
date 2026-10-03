@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azuremanagedredisv1alpha1.AzureManagedRedisStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuremanagedredisv1alpha1.AzureManagedRedisIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -37,7 +37,7 @@ func Resources(ctx *pulumi.Context, stackInput *azuremanagedredisv1alpha1.AzureM
 		Tags:    pulumi.ToStringMap(locals.AzureTags),
 	}
 
-	// Presence-guarded proto defaults: stack inputs never materialize
+	// Presence-guarded proto defaults: IaC inputs never materialize
 	// them, so an unset field must deploy the spec's documented default,
 	// not the Go zero value.
 
@@ -204,7 +204,7 @@ func Resources(ctx *pulumi.Context, stackInput *azuremanagedredisv1alpha1.AzureM
 		return *identity.PrincipalId
 	}).(pulumi.StringOutput)
 
-	// Export stack outputs. The access keys are secret-bearing.
+	// Export outputs. The access keys are secret-bearing.
 	ctx.Export(OpManagedRedisId, createdInstance.ID())
 	ctx.Export(OpManagedRedisName, createdInstance.Name)
 	ctx.Export(OpRegion, createdInstance.Location)

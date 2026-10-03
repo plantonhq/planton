@@ -189,7 +189,7 @@ spec:
   description: Deny all outbound traffic by default
 ```
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -222,7 +222,7 @@ For more comprehensive examples, see `e2e/manifest.yaml`, including:
 - Firewall logging
 - Internal traffic rules
 
-## Related Components
+## Related Kinds
 
 - [GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork) — provides the VPC network that firewall rules are attached to
 - [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project and enables the Compute Engine API

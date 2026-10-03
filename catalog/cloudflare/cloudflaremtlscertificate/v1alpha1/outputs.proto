@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflaremtlscertificate.v1alpha1;
 
-// CloudflareMtlsCertificateStackOutputs captures the observable outputs after
+// CloudflareMtlsCertificateOutputs captures the observable outputs after
 // uploading an mTLS certificate.
-message CloudflareMtlsCertificateStackOutputs {
+message CloudflareMtlsCertificateOutputs {
   // The ID of the uploaded certificate -- what Authenticated Origin Pulls
   // rows, zone TLS CA associations, and Workers mTLS bindings reference.
   string certificate_id = 1;

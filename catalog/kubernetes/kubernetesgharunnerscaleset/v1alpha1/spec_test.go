@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/gomega"
 	kubernetes "github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -26,7 +26,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -53,7 +53,7 @@ var _ = ginkgo.Describe("KubernetesGhaRunnerScaleSet Validation Tests", func() {
 		input = &KubernetesGhaRunnerScaleSet{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesGhaRunnerScaleSet",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "build-runners",
 			},
 			Spec: &KubernetesGhaRunnerScaleSetSpec{
@@ -115,7 +115,7 @@ var _ = ginkgo.Describe("KubernetesGhaRunnerScaleSet Validation Tests", func() {
 			input.Spec.ContainerMode = &KubernetesGhaRunnerScaleSetContainerMode{
 				Mode: "kubernetes",
 				KubernetesWorkVolume: &KubernetesGhaRunnerScaleSetWorkVolume{
-					StorageClass: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesStorageClass, "fast-ssd", "metadata.name"),
+					StorageClass: valueFrom(catalogkind.CatalogKind_KubernetesStorageClass, "fast-ssd", "metadata.name"),
 					Size:         "2Gi",
 				},
 			}

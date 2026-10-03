@@ -2,9 +2,9 @@
 
 ## Overview
 
-**KubernetesPodDisruptionBudget** is a Planton component that creates and manages Kubernetes PodDisruptionBudgets — the availability floor for voluntary disruptions — as first-class, declaratively managed resources. A PodDisruptionBudget selects a set of pods with `selector` and declares how many of them may be taken down at once during node drains, cluster upgrades, and autoscaler consolidation.
+**KubernetesPodDisruptionBudget** is a catalog kind that creates and manages Kubernetes PodDisruptionBudgets — the availability floor for voluntary disruptions — as first-class, declaratively managed resources. A PodDisruptionBudget selects a set of pods with `selector` and declares how many of them may be taken down at once during node drains, cluster upgrades, and autoscaler consolidation.
 
-The component covers the complete `policy/v1` PodDisruptionBudgetSpec surface: exact-match and set-based label selectors, absolute and percentage availability bounds (`min_available` / `max_unavailable`), and the unhealthy-pod eviction policy. There is nothing an upstream PodDisruptionBudget can express that this spec cannot.
+The kind covers the complete `policy/v1` PodDisruptionBudgetSpec surface: exact-match and set-based label selectors, absolute and percentage availability bounds (`min_available` / `max_unavailable`), and the unhealthy-pod eviction policy. There is nothing an upstream PodDisruptionBudget can express that this spec cannot.
 
 ## Purpose
 
@@ -72,7 +72,7 @@ Set exactly one of:
 - **`spec.unhealthy_pod_eviction_policy`**: `if_healthy_budget` (default) or `always_allow`
 - **`spec.labels`** / **`spec.annotations`**: Merged with standard Planton labels for tracking and governance
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -83,7 +83,7 @@ A budget has no runtime handles of its own beyond identity — the eviction API 
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Resolve the target namespace (literal value or resolved reference)
 2. Merge user labels and annotations with standard Planton tracking labels

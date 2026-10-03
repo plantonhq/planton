@@ -1,16 +1,16 @@
 # Estimate model: the authored capacity footprints of this cluster-capacity
-# component's presets. A hand model instead of a capacity derivation because
+# kind's presets. A hand model instead of a capacity derivation because
 # a DaemonSet has no replica field -- exactly one pod runs on every node
 # matching the scheduling rules, so node membership is the multiplier and
 # only the target cluster knows it. A mechanical derivation could only bind
 # a constant-1 instance count, and its generated "1 instance x ..." basis
 # would misread as the whole reservation; these footprints state the
 # PER-NODE reservation explicitly and name the node-count multiplication in
-# every exclusion. Cluster-capacity components carry no priced lines -- the
+# every exclusion. Cluster-capacity kinds carry no priced lines -- the
 # dollar value of the reservation is the target cluster's node economics.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: kubernetesdaemonset
 spec:

@@ -10,11 +10,11 @@ type Locals struct {
 	RedisCacheId                          string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurerediscacheaccesspolicyassignmentv1alpha1.AzureRedisCacheAccessPolicyAssignmentStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurerediscacheaccesspolicyassignmentv1alpha1.AzureRedisCacheAccessPolicyAssignmentIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureRedisCacheAccessPolicyAssignment = stackInput.Target
-	locals.RedisCacheId = stackInput.Target.Spec.RedisCacheId.GetValue()
+	locals.AzureRedisCacheAccessPolicyAssignment = iacInput.Target
+	locals.RedisCacheId = iacInput.Target.Spec.RedisCacheId.GetValue()
 
 	// No Azure tags: ARM does not support tags on access policy
 	// assignments (cache children), so the platform's identity tags live

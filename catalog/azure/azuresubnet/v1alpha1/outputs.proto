@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azuresubnet.v1alpha1;
 
-// **AzureSubnetStackOutputs** captures the outputs of provisioning an Azure
+// **AzureSubnetOutputs** captures the outputs of provisioning an Azure
 // Subnet.
 //
 // The `subnet_id` output is the single most referenced Azure output in
@@ -10,7 +10,7 @@ package dev.planton.azure.azuresubnet.v1alpha1;
 // clusters, container app environments, flexible database servers, private
 // endpoints, load balancers, application gateways, VMs, function and web
 // apps) consumes it via StringValueOrRef.
-message AzureSubnetStackOutputs {
+message AzureSubnetOutputs {
   // The Azure Resource Manager ID of the subnet.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{vnet}/subnets/{name}
   // This is the primary output referenced by downstream resources.

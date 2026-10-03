@@ -7,7 +7,7 @@ import (
 
 // Locals holds the resolved inputs the module operates on: the full target
 // resource plus the scalar identifiers used for the resource name, namespace,
-// labels, and stack outputs.
+// labels, and outputs.
 type Locals struct {
 	KubernetesReferenceGrant *kubernetesreferencegrantv1alpha1.KubernetesReferenceGrant
 	ReferenceGrantName       string
@@ -15,8 +15,8 @@ type Locals struct {
 	Labels                   map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *kubernetesreferencegrantv1alpha1.KubernetesReferenceGrantStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *kubernetesreferencegrantv1alpha1.KubernetesReferenceGrantIacInput) *Locals {
+	target := iacInput.Target
 	metadata := target.Metadata
 	spec := target.Spec
 

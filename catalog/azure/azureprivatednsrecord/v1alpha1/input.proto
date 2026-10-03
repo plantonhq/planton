@@ -5,10 +5,10 @@ package dev.planton.azure.azureprivatednsrecord.v1alpha1;
 import "catalog/azure/azureprivatednsrecord/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzurePrivateDnsRecordStackInput is the input to the IaC modules
+// AzurePrivateDnsRecordIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzurePrivateDnsRecordStackInput {
+message AzurePrivateDnsRecordIacInput {
   // The private DNS record resource to deploy.
   AzurePrivateDnsRecord target = 1;
 

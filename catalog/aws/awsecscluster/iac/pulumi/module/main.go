@@ -15,13 +15,13 @@ import (
 // that provide EC2 capacity, the KMS keys that encrypt exec sessions and
 // Fargate storage, and the Cloud Map namespace Service Connect uses all
 // attach by reference.
-func Resources(ctx *pulumi.Context, stackInput *awsecsclusterv1alpha1.AwsEcsClusterStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsecsclusterv1alpha1.AwsEcsClusterIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder,
+	// Build the AWS provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static keys, keyless
 	// web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsEcsCluster.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsEcsCluster.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

@@ -26,7 +26,7 @@ func minimalValidProfile() *AwsIamInstanceProfile {
 	return &AwsIamInstanceProfile{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsIamInstanceProfile",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "web-server-profile",
 		},
 		Spec: &AwsIamInstanceProfileSpec{
@@ -75,7 +75,7 @@ var _ = ginkgo.Describe("AwsIamInstanceProfileSpec Validation Tests", func() {
 
 			ginkgo.It("should not return a validation error with full metadata set", func() {
 				input := minimalValidProfile()
-				input.Metadata = &shared.CloudResourceMetadata{
+				input.Metadata = &shared.CatalogObjectMetadata{
 					Name:   "web-server-profile",
 					Org:    "acme-corp",
 					Env:    "production",
@@ -115,7 +115,7 @@ var _ = ginkgo.Describe("AwsIamInstanceProfileSpec Validation Tests", func() {
 				input := &AwsIamInstanceProfile{
 					ApiVersion: "aws.planton.dev/v1alpha1",
 					Kind:       "AwsIamInstanceProfile",
-					Metadata:   &shared.CloudResourceMetadata{Name: "web-server-profile"},
+					Metadata:   &shared.CatalogObjectMetadata{Name: "web-server-profile"},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).ToNot(gomega.BeNil())

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Reduced landing page verbosity by ~40% across all 14 content sections while reorganizing the component folder structure into dated versions (`v1-2025-02-15-0800`, `v2-2025-12-31-0900`, `v3-2026-01-02-1000`). The trimmed version (v3) is now the active landing page, with full version history preserved for rollback and AI agent context.
+Reduced landing page verbosity by ~40% across all 14 content sections while reorganizing the kind folder structure into dated versions (`v1-2025-02-15-0800`, `v2-2025-12-31-0900`, `v3-2026-01-02-1000`). The trimmed version (v3) is now the active landing page, with full version history preserved for rollback and AI agent context.
 
 ## Problem Statement / Motivation
 
@@ -54,7 +54,7 @@ Assigned each person ONE location:
 
 ```
 src/components/landing-page/
-├── index.ts              # Exports active v3 + legacy v1 components
+├── index.ts              # Exports active v3 + legacy v1 kinds
 ├── v1-2025-02-15-0800/   # Original landing page
 ├── v2-2025-12-31-0900/   # DevOps-in-a-Box + marketing optimization
 └── v3-2026-01-02-1000/   # Trimmed content (active)
@@ -78,20 +78,20 @@ mv landing-page-v3 landing-page/v3-2026-01-02-1000
 
 ### Import Management
 
-Created parent `index.ts` that exports active version while preserving legacy component access:
+Created parent `index.ts` that exports active version while preserving legacy kind access:
 
 ```typescript
 // Active landing page version (v3 - trimmed content)
 export * from './v3-2026-01-02-1000';
 
-// Legacy v1 components used by other pages (agents, solutions, etc.)
+// Legacy v1 kinds used by other pages (agents, solutions, etc.)
 export * from './v1-2025-02-15-0800';
 ```
 
 ### Path Fixes
 
 - Updated `src/app/(root)/page.tsx` to import from `@/components/landing-page`
-- Fixed relative imports in v1 components (`../common` → `../../common`)
+- Fixed relative imports in v1 kinds (`../common` → `../../common`)
 - Removed deprecated `landing-page-v2` export from `src/components/index.ts`
 - Updated multi-cloud solutions page to reference `v1-2025-02-15-0800/components`
 
@@ -116,7 +116,7 @@ export * from './v1-2025-02-15-0800';
 
 **Pages affected**:
 - `/` (root landing page) — now uses v3
-- `/agents`, `/solutions/*` — continue using v1 components
+- `/agents`, `/solutions/*` — continue using v1 kinds
 - `/solutions/by-use-case/multi-cloud` — updated import path
 
 **Build size**: Reduced first-load JS for landing page from 209kB to 461kB (note: the increase is due to additional version folders being included, but active bundle is smaller)
@@ -126,14 +126,14 @@ export * from './v1-2025-02-15-0800';
 ## Related Work
 
 - `2025-12-19-104351-landing-page-copywriting-revamp.md` — Initial DevOps-in-a-Box messaging
-- `2025-12-19-104433-landing-page-devops-in-a-box-redesign.md` — Component system creation
+- `2025-12-19-104433-landing-page-devops-in-a-box-redesign.md` — Kind system creation
 - `2025-12-31-093857-landing-page-marketing-optimization-copywriting.md` — Content expansion
 - `2025-12-31-101158-landing-page-marketing-optimization.md` — 6 new sections added
 
 ## Future Enhancements
 
 - **Version selection UI**: Admin toggle to switch active version for A/B testing
-- **Component-level versioning**: Allow mixing sections from different versions
+- **Kind-level versioning**: Allow mixing sections from different versions
 - **Automatic diff generation**: Script to compare content between versions
 
 ---

@@ -5,9 +5,9 @@ package dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1;
 import "catalog/cloudflare/cloudflarecertificatepack/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-//cloudflare-certificate-pack stack-input
-message CloudflareCertificatePackStackInput {
-  //target cloud-resource
+//cloudflare-certificate-pack iac-input
+message CloudflareCertificatePackIacInput {
+  //target infra-component
   CloudflareCertificatePack target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

@@ -4,7 +4,7 @@ Deploys a CloudWatch Logs anomaly detector — a machine-learning model that stu
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **CloudWatch Logs Anomaly Detector** — trained over the log groups in `logGroupArns`, evaluating on the `evaluationFrequency` cadence, surfacing anomalies for `anomalyVisibilityTime` days. Findings are encrypted with the customer-managed key in `kmsKeyId` when set.
 - **AWS Tags** — resource metadata tags (organization, environment, resource kind, resource ID) applied automatically for tracking and governance.
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, carrying the CloudWatch Logs anomaly-detection permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, carrying the CloudWatch Logs anomaly-detection permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f log-anomaly-detector.yaml
 ```
 
-This creates an active detector over the `/app/api` log group, evaluating every five minutes and keeping surfaced anomalies visible for 30 days. A Stack Job tracks the provisioning in real time.
+This creates an active detector over the `/app/api` log group, evaluating every five minutes and keeping surfaced anomalies visible for 30 days. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -91,14 +91,14 @@ These are the most important decisions when configuring an anomaly detector. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsCloudwatchLogGroup** | `logGroupArns[]` | `status.outputs.log_group_arn` |
 | **AwsKmsKey** (optional) | `kmsKeyId` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains one value: `anomaly_detector_arn`, the detector's identity and the provider's import ID. Nothing downstream composes on a detector via ValueFromRef — the output exists for auditing and import.
 
@@ -112,5 +112,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) — the log group the detector trains on, wired via `logGroupArns`
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — the customer-managed key encrypting the detector's findings
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) — the log group the detector trains on, wired via `logGroupArns`
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — the customer-managed key encrypting the detector's findings

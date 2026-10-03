@@ -130,7 +130,7 @@ Created `/invest/steps/carta` with 5 step-by-step screenshots:
 | `public/images/carta-walkthrough/` | 5 screenshots with descriptive names |
 | `public/investor-updates/2026-02-02-february-where-we-stand.md` | First real update |
 | `src/app/(micro-apps)/invest/steps/carta/page.tsx` | New route |
-| `src/components/invest/carta-walkthrough/CartaWalkthroughPage.tsx` | New component |
+| `src/components/invest/carta-walkthrough/CartaWalkthroughPage.tsx` | New kind |
 
 ### Data Structure Changes
 

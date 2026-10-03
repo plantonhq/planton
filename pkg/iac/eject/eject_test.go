@@ -124,7 +124,7 @@ import (
 )
 
 var _ = module.Resources
-var _ = awss3bucketv1.AwsS3BucketStackInput{}
+var _ = awss3bucketv1.AwsS3BucketIacInput{}
 `,
 		"module/main.go": "package module\n\nfunc Resources() {}\n",
 		"Pulumi.yaml":    "name: awss3bucket\nruntime: go\n",
@@ -262,7 +262,7 @@ func TestEject_UnknownKindFailsPlainly(t *testing.T) {
 		Provisioner: provisioner.ProvisionerTypeTofu,
 		OutputDir:   filepath.Join(t.TempDir(), "out"),
 	})
-	if err == nil || !strings.Contains(err.Error(), "unknown cloud resource kind") {
+	if err == nil || !strings.Contains(err.Error(), "unknown catalog kind") {
 		t.Fatalf("expected the unknown-kind error, got: %v", err)
 	}
 }

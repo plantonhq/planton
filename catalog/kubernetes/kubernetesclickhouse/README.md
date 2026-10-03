@@ -11,7 +11,7 @@ error, no pods, nothing. Deploy the operator first with
 `watch_namespaces` covering this namespace (or `[".*"]`), clusters
 after.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want the operator itself** — installing and configuring the
   Altinity ClickHouse operator is KubernetesAltinityOperator; this
@@ -175,7 +175,7 @@ configuration.
 | S3, keyless (EKS) | `settings` / `files` only | `use_environment_credentials` with IRSA-bound identity on the nodes |
 | GCS, keyless (GKE) | `settings` / `files` only | Workload Identity on the nodes |
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

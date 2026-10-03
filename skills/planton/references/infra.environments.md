@@ -9,7 +9,7 @@ many clusters environments need.
 
 - An **organization** owns everything; **environments** partition it
   (dev, prod, …).
-- **Cloud resources are environment-scoped** — the same resource name can
+- **Infra components are environment-scoped** — the same resource name can
   exist in dev and prod without collision (which is why chart resource names
   carry `{{ values.env }}`).
 - **Connections and charts are organization-scoped** — one AWS connection,
@@ -30,7 +30,7 @@ environment, service, pull request number, expiry — and it is server-managed
 (create, update, and apply refuse it). Two laws to relay:
 
 - **Never try to delete one by hand** — `planton env delete` REFUSES a
-  preview, because a record-only delete would orphan its cloud resources. If
+  preview, because a record-only delete would orphan its infra components. If
   a user asks to remove a preview, close its pull request — that IS the
   delete button (or let the expiry pass).
 - **Previews never join promotion order** — they exist beside the durable
@@ -45,10 +45,10 @@ Deleting an environment removes Planton's records, secrets, variables, grants
 and the Planton-managed state of its resources -- it never touches the cloud.
 So `planton env delete <env>` is REFUSED while anything in the environment is
 still deployed; the refusal names each resource and the command that destroys
-it (`planton infra project undeploy <project>` for a project's resources,
+it (`planton infra stack undeploy <project>` for a project's resources,
 `planton purge <Kind> <slug>` for anything else). Relay the refusal; destroy
 first when the user wants the infrastructure gone. When they want it kept
-running outside Planton, `--retain-cloud-resources` deletes the environment
+running outside Planton, `--retain-infra-components` deletes the environment
 and leaves the infrastructure alone -- refused while a running resource keeps
 its state in Planton-managed storage, until
 `planton state-backend move-off-planton` has moved that state to a backend

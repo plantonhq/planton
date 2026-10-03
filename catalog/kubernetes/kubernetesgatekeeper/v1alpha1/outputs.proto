@@ -5,7 +5,7 @@ package dev.planton.kubernetes.kubernetesgatekeeper.v1alpha1;
 /**
  * Outputs exported after installing OPA Gatekeeper.
  */
-message KubernetesGatekeeperStackOutputs {
+message KubernetesGatekeeperOutputs {
   /**
    * Namespace the engine runs in.
    */

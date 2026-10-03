@@ -109,7 +109,7 @@ Everything except names, region, network, `endpointTypes`, and `type` updates in
 - **NAT IP rotation**: add the new GcpAddress ref to `natIps`, move the old one to `drainNatIps`, wait for connections to bleed off, then remove it.
 - **Fleet-wide egress tuning**: port floors/ceilings, timeouts, rules, and logging all apply to a live gateway without disturbing traffic.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -141,7 +141,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 | `initial_nat_ips` + `google_compute_router_nat_address` | An alternative address-attachment workflow that the provider documents as conflicting with `natIps`/`drainNatIps` — the allocation model this spec already carries; it arrives with the nat-address kind if that composition is ever built. |
 | `ncc_gateway` | An NCC-Gateway-spoke router conflicts with `network` in the provider, so modeling it would relax the required VPC attachment every NAT user relies on; it belongs to the deferred Network Connectivity Center family. |
 
-## Related Components
+## Related Kinds
 
 - [GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork) — provides the VPC network the router attaches to
 - [GcpAddress](/docs/catalog/gcp/gcpaddress) — EXTERNAL reservations referenced as stable NAT IPs

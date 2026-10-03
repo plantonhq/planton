@@ -12,9 +12,9 @@ type Locals struct {
 	DigitalOceanDatabaseFirewall *digitaloceandatabasefirewallv1alpha1.DigitalOceanDatabaseFirewall
 }
 
-// initializeLocals copies stack-input fields into the Locals struct.
-func initializeLocals(_ *pulumi.Context, stackInput *digitaloceandatabasefirewallv1alpha1.DigitalOceanDatabaseFirewallStackInput) *Locals {
+// initializeLocals copies iac-input fields into the Locals struct.
+func initializeLocals(_ *pulumi.Context, iacInput *digitaloceandatabasefirewallv1alpha1.DigitalOceanDatabaseFirewallIacInput) *Locals {
 	return &Locals{
-		DigitalOceanDatabaseFirewall: stackInput.Target,
+		DigitalOceanDatabaseFirewall: iacInput.Target,
 	}
 }

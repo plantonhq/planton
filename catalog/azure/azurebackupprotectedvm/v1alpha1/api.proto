@@ -19,17 +19,17 @@ message AzureBackupProtectedVm {
   string kind = 2 [(buf.validate.field).string.const = 'AzureBackupProtectedVm'];
 
   // Standard Planton metadata (name, org, env, labels, tags).
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // Protected VM specification.
   AzureBackupProtectedVmSpec spec = 4 [(buf.validate.field).required = true];
 
-  // Deployment status containing stack outputs. Populated after deployment.
+  // Deployment status containing outputs. Populated after deployment.
   AzureBackupProtectedVmStatus status = 5;
 }
 
 // AzureBackupProtectedVmStatus holds the deployment outputs.
 message AzureBackupProtectedVmStatus {
-  // Stack outputs from the IaC deployment.
-  AzureBackupProtectedVmStackOutputs outputs = 1;
+  // Outputs from the IaC deployment.
+  AzureBackupProtectedVmOutputs outputs = 1;
 }

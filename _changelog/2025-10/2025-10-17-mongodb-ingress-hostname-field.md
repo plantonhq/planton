@@ -176,7 +176,7 @@ type Locals struct {
     // ... other fields
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *mongodbkubernetesv1.MongodbKubernetesStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *mongodbkubernetesv1.MongodbKubernetesIacInput) *Locals {
     // ... other initialization
 
     if target.Spec.Ingress == nil ||
@@ -210,7 +210,7 @@ type Locals struct {
     // ... other fields
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *mongodbkubernetesv1.MongodbKubernetesStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *mongodbkubernetesv1.MongodbKubernetesIacInput) *Locals {
     // ... other initialization
 
     if target.Spec.Ingress == nil ||

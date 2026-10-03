@@ -11,10 +11,10 @@ type Locals struct {
 	GcpColabRuntime   *gcpcolabruntimev1alpha1.GcpColabRuntime
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpcolabruntimev1alpha1.GcpColabRuntimeStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpcolabruntimev1alpha1.GcpColabRuntimeIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpColabRuntime = stackInput.Target
+	locals.GcpColabRuntime = iacInput.Target
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

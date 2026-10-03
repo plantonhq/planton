@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpfirewallrule.v1alpha1;
 import "catalog/gcp/gcpfirewallrule/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-firewall-rule stack-input
-message GcpFirewallRuleStackInput {
-  //target cloud-resource
+//gcp-firewall-rule iac-input
+message GcpFirewallRuleIacInput {
+  //target infra-component
   GcpFirewallRule target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

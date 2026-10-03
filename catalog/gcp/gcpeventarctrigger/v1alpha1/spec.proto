@@ -144,7 +144,7 @@ message GcpEventarcTriggerSpec {
 
   // Receive events from an Eventarc SaaS PARTNER (e.g. Datadog): the
   // module creates the partner channel alongside the trigger and wires the
-  // trigger to it. The channel's activation_token stack output must be
+  // trigger to it. The channel's activation_token output must be
   // handed to the partner to complete the handshake — until then the
   // channel stays PENDING and delivers nothing.
   GcpEventarcTriggerPartnerChannel partner_channel = 11;

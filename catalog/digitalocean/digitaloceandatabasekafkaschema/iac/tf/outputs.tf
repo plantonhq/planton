@@ -1,4 +1,4 @@
-# Stack outputs — exactly the DigitalOceanDatabaseKafkaSchemaStackOutputs
+# Outputs — exactly the DigitalOceanDatabaseKafkaSchemaOutputs
 # contract, identical across both provisioners. The (cluster, subject name)
 # pair is the subject's API identity; the registry's internal numeric
 # schema id is discarded by the provider and deliberately not exported.

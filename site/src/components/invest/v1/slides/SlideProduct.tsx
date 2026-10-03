@@ -7,8 +7,8 @@ import { Layers, GitBranch, Cloud, Terminal } from 'lucide-react';
 const features = [
   {
     icon: Layers,
-    title: 'Deployment Components',
-    description: 'Pre-built, validated cloud resource definitions',
+    title: 'Catalog Kinds',
+    description: 'Pre-built, validated infra component definitions',
   },
   {
     icon: Cloud,

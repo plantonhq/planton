@@ -21,7 +21,7 @@ The strictest predefined posture: the RESTRICTED cipher profile with a TLS 1.2 f
 
 ## Remix Notes
 
-- Check the `enabled_features` stack output after deploy — it lists the exact cipher suites GCP enabled, which is what an auditor asks for
+- Check the `enabled_features` output after deploy — it lists the exact cipher suites GCP enabled, which is what an auditor asks for
 - If a legacy client population must keep connecting, start from **01-modern-tls12** instead and tighten later (profile updates in place)
 
 ## Related Presets

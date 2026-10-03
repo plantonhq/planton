@@ -32,7 +32,7 @@ metadata:
     # Option 1: Full stack FQDN (recommended)
     pulumi.planton.dev/stack.fqdn: "myorg/project/stack"
     
-    # Option 2: Individual components
+    # Option 2: Individual kinds
     pulumi.planton.dev/organization: "myorg"
     pulumi.planton.dev/project: "my-project"  
     pulumi.planton.dev/stack.name: "production"

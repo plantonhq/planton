@@ -4,7 +4,7 @@ A Vertex AI Search data store -- the corpus a search, chat, or recommendation en
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `discoveryengine.googleapis.com` on the project (never disabled on destroy)
 - **Data store** -- a `discovery_engine_data_store` with its vertical, content type, solutions, ACL flag, document processing config, and optional CMEK
@@ -86,7 +86,7 @@ planton apply -f vertex-ai-search-data-store.yaml
 - A parsing config is at most one of digital, layout, or OCR; override file types are `pdf`, `html`, `docx`, `pptx`, `xlsm`, `xlsx`; chunk sizes are 100-500.
 - Locations, verticals, content configs, solution types, and target site types are Google's values.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -119,7 +119,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpVertexAiSearchEngine** -- the search, chat, or recommendation app over one or more stores
 - **GcpVertexAiSearchDataConnector** -- a collection of stores synced from Jira, Confluence, ServiceNow, and other sources

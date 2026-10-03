@@ -5,10 +5,10 @@ package dev.planton.azure.azuredatafactory.v1alpha1;
 import "catalog/azure/azuredatafactory/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureDataFactoryStackInput is the input to the IaC modules
+// AzureDataFactoryIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureDataFactoryStackInput {
+message AzureDataFactoryIacInput {
   // The Data Factory resource to deploy.
   AzureDataFactory target = 1;
 

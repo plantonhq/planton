@@ -86,7 +86,7 @@ The rule fires on **any instance** of `StringValueOrRef` regardless of the consu
 
 ### Durability-First Test Strategy
 
-Boundary tests are anchored on the **permanent test resource** (`_test/testcloudresourceone`), not on production resources that may be removed. Two `StringValueOrRef` fields were added to `TestCloudResourceOneSpec`:
+Boundary tests are anchored on the **permanent test resource** (`_test/testcatalogkindone`), not on production resources that may be removed. Two `StringValueOrRef` fields were added to `TestCatalogKindOneSpec`:
 
 - `required_ref` (with `required = true`) -- mirrors production usage like `KubernetesDeploymentSpec.namespace`
 - `optional_ref` (without `required`) -- proves the CEL rule fires on message presence, not field annotation
@@ -103,14 +103,14 @@ flowchart TB
 
     subgraph crosscut ["Structural Tripwire"]
         B["foreign_key_consumer_test.go"]
-        B1["imports testcloudresourceonev1"]
+        B1["imports testcatalogkindonev1"]
         B2["required_ref empty → FAIL"]
         B3["optional_ref empty → FAIL"]
         B4["optional_ref nil → PASS"]
     end
 
     subgraph level2 ["Level 2: Consumer Boundary"]
-        C["testcloudresourceone spec_test.go"]
+        C["testcatalogkindone spec_test.go"]
         C1["10 boundary tests"]
         C2["5 required_ref edges"]
         C3["5 optional_ref edges"]
@@ -119,7 +119,7 @@ flowchart TB
     B1 -->|"compile-time dependency"| C
 ```
 
-The cross-cutting test in `foreign_key_consumer_test.go` uses Go's external test package (`package foreignkeyv1_test`) to avoid the import cycle `foreignkeyv1 → testcloudresourceonev1 → foreignkeyv1`. The import creates a compile-time tripwire: if `TestCloudResourceOne` is ever removed, this file fails to compile -- flagging the loss of coverage.
+The cross-cutting test in `foreign_key_consumer_test.go` uses Go's external test package (`package foreignkeyv1_test`) to avoid the import cycle `foreignkeyv1 → testcatalogkindonev1 → foreignkeyv1`. The import creates a compile-time tripwire: if `TestCatalogKindOne` is ever removed, this file fails to compile -- flagging the loss of coverage.
 
 ### Production Test Breakage Fixes
 
@@ -135,8 +135,8 @@ Two existing tests documented the old blind spot as expected behavior and were i
 | `shared/foreignkey/v1/foreign_key.proto` | CEL rule + documentation |
 | `shared/foreignkey/v1/foreign_key_test.go` | Rewrote: 5 message-level tests, removed dead Int32ValueOrRef tests |
 | `shared/foreignkey/v1/foreign_key_consumer_test.go` | NEW: 4 cross-cutting tests with structural tripwire |
-| `_test/testcloudresourceone/v1/spec.proto` | Added `required_ref` and `optional_ref` fields |
-| `_test/testcloudresourceone/v1/spec_test.go` | NEW: 10 comprehensive boundary tests |
+| `_test/testcatalogkindone/v1/spec.proto` | Added `required_ref` and `optional_ref` fields |
+| `_test/testcatalogkindone/v1/spec_test.go` | NEW: 10 comprehensive boundary tests |
 | `gcp/gcpsecretsmanager/v1/spec_test.go` | Inverted assertion |
 | `gcp/gcpcloudsql/v1/spec_test.go` | Inverted assertion |
 
@@ -152,11 +152,11 @@ Two existing tests documented the old blind spot as expected behavior and were i
 
 - **Planton service wizard**: Client-side proto validation will now correctly reject empty required fields, showing violations instead of a false green badge
 - **All Planton consumers**: Any system using `protovalidate` against Planton schemas (CLI, backend services, CI pipelines) will now catch empty `StringValueOrRef` fields
-- **New kind authors**: The rule is universal -- any new cloud resource kind that uses `StringValueOrRef` automatically benefits without additional annotation
+- **New kind authors**: The rule is universal -- any new catalog kind that uses `StringValueOrRef` automatically benefits without additional annotation
 
 ## Related Work
 
-- [Cloudflare zone_id StringValueOrRef Migration](2026-03-15-195622-cloudflare-zone-id-stringvalueorref-migration.md) -- expanded `StringValueOrRef` usage across Cloudflare components
+- [Cloudflare zone_id StringValueOrRef Migration](2026-03-15-195622-cloudflare-zone-id-stringvalueorref-migration.md) -- expanded `StringValueOrRef` usage across Cloudflare kinds
 - Planton service wizard project: client-side proto validation Phase 3 identified this gap; wizard specDefaults cleanup follows after this Planton release
 
 ---

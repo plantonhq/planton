@@ -4,7 +4,7 @@ Deploys OPA Gatekeeper -- the Open Policy Agent's Kubernetes admission controlle
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; the module then ALSO declares the `admission.gatekeeper.sh/ignore` exemption label on the namespace object itself, so day-2 applies never strip what the chart's hook stamped
 - **Helm Release** -- the `gatekeeper` chart, creating:
@@ -19,7 +19,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -67,11 +67,11 @@ spec:
 planton apply -f gatekeeper.yaml
 ```
 
-This deploys the fail-closed enforcement posture: three webhook replicas (the count the spec's own guidance names for choosing Fail), a 5-second timeout so a sick engine degrades admissions instead of hanging them, the audit loop tuned for a real cluster, and every blocked admission written to the controller log. A Stack Job tracks the provisioning in real time.
+This deploys the fail-closed enforcement posture: three webhook replicas (the count the spec's own guidance names for choosing Fail), a 5-second timeout so a sick engine degrades admissions instead of hanging them, the audit loop tuned for a real cluster, and every blocked admission written to the controller log. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire Gatekeeper to resources managed by other Cloud Resources:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire Gatekeeper to resources managed by other Infra Components:
 
 ```yaml
 spec:
@@ -111,16 +111,16 @@ These are the most important decisions when configuring Gatekeeper. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 | **KubernetesCertificate** | `externalCert.secretName` | `spec.secret_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -141,6 +141,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the namespace for the Gatekeeper install
-- [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) -- materializes the TLS Secret when webhook issuance is switched to cert-manager
-- [**Kubernetes Manifest**](/cloud-catalog/kubernetes-manifest) -- applies the ConstraintTemplates and Constraints the engine enforces
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the namespace for the Gatekeeper install
+- [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) -- materializes the TLS Secret when webhook issuance is switched to cert-manager
+- [**Kubernetes Manifest**](/infra-catalog/kubernetes-manifest) -- applies the ConstraintTemplates and Constraints the engine enforces

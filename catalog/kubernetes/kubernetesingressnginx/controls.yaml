@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: kubernetesingressnginx
 spec:
@@ -40,7 +40,7 @@ spec:
       field_path: nginx_config
       evidence:
         type: spec_default
-        reference: This component IS the edge. Web-application-firewall inspection is available through upstream's own ConfigMap vocabulary passed verbatim in nginx_config -- enable-modsecurity and enable-owasp-modsecurity-crs turn on ModSecurity with the OWASP core rule set. Off by default.
+        reference: This kind IS the edge. Web-application-firewall inspection is available through upstream's own ConfigMap vocabulary passed verbatim in nginx_config -- enable-modsecurity and enable-owasp-modsecurity-crs turn on ModSecurity with the OWASP core rule set. Off by default.
       notes: The admission webhook (enabled by default, failure_policy fail) complements it by rejecting broken NGINX config at kubectl-apply time -- a bad Ingress cannot take down the shared entry point.
     - control_id: rbac
       status: enforced_by_default

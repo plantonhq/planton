@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsbedrockflow
 spec:
@@ -7,7 +7,7 @@ spec:
   values:
     - name: flow_id
       derivations:
-        - from_stack_output: flow_id
+        - from_output: flow_id
       where_to_find: >-
         Bedrock console -> Flows -> <flow> (the ID), or
         `aws bedrock-agent list-flows` (id).

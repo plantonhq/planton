@@ -4,9 +4,9 @@
 # substrate; the official modules provision it on Cloud Run -- one
 # always-on instance (min = max = 1, CPU always allocated) plus a Secret
 # Manager secret holding the runner token. Schema:
-# finops/componentcostprofile/v1.
+# finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: gcpplantonrunner
 spec:

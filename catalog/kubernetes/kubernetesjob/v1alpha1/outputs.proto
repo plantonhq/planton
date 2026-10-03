@@ -3,11 +3,11 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesjob.v1alpha1;
 
 /**
- * **KubernetesJobStackOutputs** captures the observable handles of a deployed
+ * **KubernetesJobOutputs** captures the observable handles of a deployed
  * Job. Jobs front no Service, so the useful handles are the object's identity
  * and the label selector for finding its pods.
  */
-message KubernetesJobStackOutputs {
+message KubernetesJobOutputs {
   // The namespace the Job was created in.
   string namespace = 1;
 

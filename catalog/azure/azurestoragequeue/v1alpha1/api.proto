@@ -20,7 +20,7 @@ message AzureStorageQueue {
   string kind = 2 [(buf.validate.field).string.const = 'AzureStorageQueue'];
 
   // metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
   AzureStorageQueueSpec spec = 4 [(buf.validate.field).required = true];
@@ -31,6 +31,6 @@ message AzureStorageQueue {
 
 // AzureStorageQueueStatus holds the deployment status and outputs.
 message AzureStorageQueueStatus {
-  // stack-outputs
-  AzureStorageQueueStackOutputs outputs = 1;
+  // outputs
+  AzureStorageQueueOutputs outputs = 1;
 }

@@ -242,14 +242,14 @@ spec:
 
 See `GUIDE.md` for the full composability rationale.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `authorization_policy_name` | Name of the created AuthorizationPolicy (equals metadata.name). |
 | `namespace` | Namespace the AuthorizationPolicy was created in. |
 
-## Related Components
+## Related Kinds
 
 - [Kubernetes Request Authentication](../kubernetesrequestauthentication)
 - [Kubernetes Peer Authentication](../kubernetespeerauthentication)

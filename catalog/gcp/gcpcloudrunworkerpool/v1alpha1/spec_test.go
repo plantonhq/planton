@@ -42,7 +42,7 @@ var _ = ginkgo.Describe("GcpCloudRunWorkerPoolSpec", func() {
 		return &GcpCloudRunWorkerPool{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpCloudRunWorkerPool",
-			Metadata:   &shared.CloudResourceMetadata{Name: "orders-worker"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "orders-worker"},
 			Spec: &GcpCloudRunWorkerPoolSpec{
 				Region: "us-central1",
 				Containers: []*GcpCloudRunWorkerPoolContainer{{

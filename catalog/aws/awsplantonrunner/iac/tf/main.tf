@@ -119,7 +119,7 @@ data "aws_subnet" "first" {
 # plane, work queue, image pulls), so the group carries the permissive
 # egress rule and NO inbound rules at all. Private targets that admit
 # traffic by source security group reference this group's id (published
-# as a stack output) to trust the runner.
+# as an output) to trust the runner.
 resource "aws_security_group" "runner" {
   name = local.runner_name
   # SG descriptions reject quote characters (the API's allowed set is

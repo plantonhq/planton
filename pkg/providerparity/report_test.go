@@ -10,7 +10,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 func TestBuildReport(t *testing.T) {
@@ -72,7 +72,7 @@ func TestGcpMeasuredReport(t *testing.T) {
 		t.Fatalf("committed schemas: %v", err)
 	}
 
-	r, err := BuildReport(root, cloudresourcekind.CloudResourceProvider_gcp, schemas)
+	r, err := BuildReport(root, catalogkind.CatalogProvider_gcp, schemas)
 	if err != nil {
 		t.Fatalf("report: %v", err)
 	}

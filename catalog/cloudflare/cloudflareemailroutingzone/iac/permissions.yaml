@@ -3,7 +3,7 @@
 # modules. Cloudflare authenticates with a bearer API token assembled from
 # named permission groups; every group entry is `derived` (static analysis
 # of the module sources, cited in notes) until the live capture lane
-# upgrades it to `proven`. Schema: iac/componentpermissions/v1.
+# upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # HONEST UNKNOWN, deliberately NOT declared as data: the component's
 # catalog.md prose requires "DNS edit access for the auto-provisioned
@@ -15,7 +15,7 @@
 # never ships as data; the live capture lane settles it, and the pair joins
 # the groups below if the capture proves it.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: cloudflareemailroutingzone
 spec:

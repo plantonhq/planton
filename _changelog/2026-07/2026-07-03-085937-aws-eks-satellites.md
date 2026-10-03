@@ -36,7 +36,7 @@ core cluster add-ons as unmanaged bootstrap copies.
   creator entry was the only access path Planton could express.
 - Serverless pod placement (Fargate) was absent from the AWS surface.
 - The harness reported teardown success even when a prerequisite destroy
-  failed, silently leaking cloud resources until someone audited the
+  failed, silently leaking infra components until someone audited the
   account.
 
 ## Solution / What's New

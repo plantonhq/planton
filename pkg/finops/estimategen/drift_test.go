@@ -6,7 +6,7 @@ import (
 	"runtime"
 	"testing"
 
-	derivationv1 "github.com/plantonhq/planton/finops/componentcostderivation/v1"
+	derivationv1 "github.com/plantonhq/planton/finops/catalogkindcostderivation/v1"
 	"github.com/plantonhq/planton/pkg/finops/costestimate"
 )
 

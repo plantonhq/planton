@@ -5,7 +5,7 @@ import "strings"
 // The platform's seeding fingerprints: the tags Planton's own IaC modules
 // write onto every resource they deploy. On a SEEDED exam account these
 // tags ARE the answer key (planton.ai/resource-kind literally names the
-// component kind; planton.ai/environment names the environment), so a
+// kind; planton.ai/environment names the environment), so a
 // proposer that reads them is not being graded on mapping judgment at all.
 const (
 	seedTagPrefix = "planton.ai/"
@@ -14,8 +14,8 @@ const (
 	// e2e marker value -- managed-by itself is a realistic tag key real
 	// accounts use (managed-by: terraform), and scrubbing it wholesale
 	// would over-sanitize the exam.
-	seedManagedByValue    = "planton-e2e"
-	seedComponentLabelKey = "e2e-component"
+	seedManagedByValue = "planton-e2e"
+	seedKindLabelKey   = "e2e-catalog-kind"
 )
 
 // RedactSeedFingerprints removes the platform's own seeding fingerprints
@@ -23,7 +23,7 @@ const (
 // presents to the proposer exactly as a stranger's account would: Name
 // tags and realistic user tags stay (real accounts have those, and they
 // are legitimate mapping signals); only the deploy machinery's identity
-// tags leave. The tags remain ON the cloud resources (fixture sweeps key
+// tags leave. The tags remain ON the infra components (fixture sweeps key
 // off them by convention) -- this redacts the proposer's VIEW, nothing
 // else. It is deliberately NOT a general tag scrubber: the strip list is
 // exactly the fingerprints Planton's seeding writes, and must never grow
@@ -62,7 +62,7 @@ func isSeedFingerprintTag(raw any) bool {
 	switch {
 	case strings.HasPrefix(key, seedTagPrefix):
 		return true
-	case key == seedComponentLabelKey:
+	case key == seedKindLabelKey:
 		return true
 	case key == "managed-by" && value == seedManagedByValue:
 		return true

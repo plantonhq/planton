@@ -68,7 +68,7 @@ func TerraformDestroy(t testing.TB, opts *terraform.Options) (*TerraformResult, 
 	return result, nil
 }
 
-// TerraformOutputs retrieves all stack outputs as a map via Terratest.
+// TerraformOutputs retrieves all outputs as a map via Terratest.
 func TerraformOutputs(t testing.TB, opts *terraform.Options) (map[string]interface{}, error) {
 	outputs, err := terraform.OutputAllE(t, opts)
 	if err != nil {
@@ -84,7 +84,7 @@ func TerraformOutputs(t testing.TB, opts *terraform.Options) (map[string]interfa
 
 // TerraformBinary is the HCL engine binary every terraform-engine lane runs: "tofu" (matching
 // Planton's CLI preference for OpenTofu), or PLANTON_E2E_TF_BINARY when set ("terraform" for
-// HashiCorp Terraform). RunComponentTest refuses the binary for a kind that does not declare it.
+// HashiCorp Terraform). RunKindTest refuses the binary for a kind that does not declare it.
 func TerraformBinary() string {
 	if override := os.Getenv("PLANTON_E2E_TF_BINARY"); override != "" {
 		return override

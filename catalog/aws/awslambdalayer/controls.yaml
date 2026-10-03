@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awslambdalayer
 spec:
@@ -42,7 +42,7 @@ spec:
         reference: Every layer operation -- publish, read, delete, grant and revoke sharing -- is IAM-authorized against the layer or layer-version ARN, and cross-account use requires BOTH an explicit resource-policy grant on the version and IAM permission on the caller's side.
     - control_id: workload-identity
       status: not_applicable
-      notes: A layer runs no workload and holds no credentials -- it is inert code unpacked into /opt of the functions that attach it. Those functions authenticate to AWS through their own execution roles, a posture carried on the AwsLambda component.
+      notes: A layer runs no workload and holds no credentials -- it is inert code unpacked into /opt of the functions that attach it. Those functions authenticate to AWS through their own execution roles, a posture carried on the AwsLambda kind.
     - control_id: no-legacy-auth
       status: not_applicable
       notes: The Lambda API has a single authentication path -- SigV4-signed IAM requests; no legacy or weaker protocol exists to disable on a layer.

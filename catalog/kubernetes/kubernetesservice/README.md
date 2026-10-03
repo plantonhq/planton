@@ -2,9 +2,9 @@
 
 ## Overview
 
-**KubernetesService** is a Planton component that creates and manages a standalone Kubernetes Service — the stable network identity in front of a set of pods. A Service gives its backends one durable virtual IP and DNS name while the pods behind it come and go, and it is the unit every other networking construct composes on: Ingress backends point at a Service, NetworkPolicies allow traffic to the pods a Service selects, and sibling workloads connect to its in-cluster DNS name.
+**KubernetesService** is a catalog kind that creates and manages a standalone Kubernetes Service — the stable network identity in front of a set of pods. A Service gives its backends one durable virtual IP and DNS name while the pods behind it come and go, and it is the unit every other networking construct composes on: Ingress backends point at a Service, NetworkPolicies allow traffic to the pods a Service selects, and sibling workloads connect to its in-cluster DNS name.
 
-The component covers the complete core/v1 ServiceSpec surface: all four service types, headless services, static cluster IPs, external IPs, traffic policies, topology-aware routing, session affinity, LoadBalancer tuning knobs, dual-stack addressing, and per-port protocol/appProtocol detail. The single deliberate omission is the deprecated `loadBalancerIP` field — upstream deprecated it as under-specified and non-portable; every cloud expresses a pinned LB address through provider-specific annotations instead (set them in `spec.annotations`).
+The kind covers the complete core/v1 ServiceSpec surface: all four service types, headless services, static cluster IPs, external IPs, traffic policies, topology-aware routing, session affinity, LoadBalancer tuning knobs, dual-stack addressing, and per-port protocol/appProtocol detail. The single deliberate omission is the deprecated `loadBalancerIP` field — upstream deprecated it as under-specified and non-portable; every cloud expresses a pinned LB address through provider-specific annotations instead (set them in `spec.annotations`).
 
 ## Purpose
 
@@ -28,7 +28,7 @@ Planton workload kinds (KubernetesDeployment, KubernetesStatefulSet) already cre
 
 - **Workload components** (KubernetesDeployment, KubernetesStatefulSet): Already ship with their own Service — use this kind only for additional or differently-shaped exposure. Planton workloads stamp `app: <workload-metadata-name>` on their pods, so selecting one is a single selector entry: `selector: {app: <workload-metadata-name>}`
 - **KubernetesNamespace**: Provides the target namespace. Reference it from `spec.namespace` to deploy both in one chart
-- **Ingress / Gateway components**: Consume the Service by name as their backend; the created name and namespace are exported as stack outputs for exactly this composition
+- **Ingress / Gateway components**: Consume the Service by name as their backend; the created name and namespace are exported as outputs for exactly this composition
 
 ## Service Types
 
@@ -64,7 +64,7 @@ Orthogonal to the type, **`headless: true`** creates a service with no virtual I
 - **`spec.ip_families`** / **`spec.ip_family_policy`**: Dual-stack family selection and requirement level
 - **`spec.labels`** / **`spec.annotations`**: Merged with standard Planton labels; annotations carry the cloud LB configuration
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -79,7 +79,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Resolve the target namespace (literal value or resolved reference)
 2. Merge user labels and annotations with standard Planton tracking labels
@@ -113,7 +113,7 @@ Use **KubernetesService** when you need:
 
 ## Best Practices
 
-1. **Default to `cluster_ip`**: Expose externally only when required, and prefer one Ingress over many LoadBalancers for HTTP workloads (each LoadBalancer service is a billed cloud resource)
+1. **Default to `cluster_ip`**: Expose externally only when required, and prefer one Ingress over many LoadBalancers for HTTP workloads (each LoadBalancer service is a billed infra component)
 2. **Name every port on multi-port services**: Required by the API, and named ports (`http`, `grpc`) keep consumers readable
 3. **Use `external_traffic_policy: local` when the client IP matters**: And run enough replicas that every schedulable node is likely to hold one
 4. **Reserve `publish_not_ready_addresses` for bootstrap discovery**: On ordinary services it routes real traffic to pods that cannot handle it

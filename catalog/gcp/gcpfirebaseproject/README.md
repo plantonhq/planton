@@ -4,7 +4,7 @@ Enables Firebase on an existing Google Cloud project and configures the project-
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Firebase enablement** -- the `firebase_project` PROJECT SINGLETON (`projects.addFirebase`); an already-enabled project is adopted, not re-enabled
 - **API enablement** -- `firebase.googleapis.com` and `fcm.googleapis.com` in the target project (never disabled on destroy), plus `firebasestorage.googleapis.com` / `firebaseappcheck.googleapis.com` exactly when the spec composes their resources
@@ -67,7 +67,7 @@ planton apply -f firebase.yaml
 - **Resource policies**: `serviceId` must be `oauth2.googleapis.com`; `targetResource` starts with `//oauth2.googleapis.com/projects/`.
 - **`deletionPolicy`**: `DELETE`, `PREVENT`, or `ABANDON`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -100,7 +100,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpApiKey](/docs/catalog/gcp/gcpapikey) — the restricted key each app registration references
 - [GcpProject](/docs/catalog/gcp/gcpproject) — provides the GCP project Firebase is enabled on

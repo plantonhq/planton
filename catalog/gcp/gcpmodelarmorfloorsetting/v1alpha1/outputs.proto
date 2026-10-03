@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpmodelarmorfloorsetting.v1alpha1;
 
-// GcpModelArmorFloorSettingStackOutputs carries the floor's identity.
-message GcpModelArmorFloorSettingStackOutputs {
+// GcpModelArmorFloorSettingOutputs carries the floor's identity.
+message GcpModelArmorFloorSettingOutputs {
   // Full resource name: {parent}/locations/{location}/floorSetting.
   string name = 1;
 

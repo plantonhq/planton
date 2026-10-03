@@ -16,13 +16,13 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	"github.com/plantonhq/planton/e2e/framework/provider"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/importmap"
 	"github.com/plantonhq/planton/pkg/protobufyaml"
 )
 
 // ImportRoundTripEnvVar opts the import round-trip phase in. It stays opt-in
-// because it roughly doubles a component's E2E wall time (every resource is
+// because it roughly doubles a kind's E2E wall time (every resource is
 // re-imported and re-planned) -- the scheduled matrix enables it per lane.
 const ImportRoundTripEnvVar = "PLANTON_E2E_IMPORT_ROUNDTRIP"
 
@@ -41,16 +41,16 @@ const ImportRoundTripEnvVar = "PLANTON_E2E_IMPORT_ROUNDTRIP"
 const ImportRoundTripSkipAnnotation = "planton.dev/e2e-import-roundtrip-skip"
 
 // importRoundTripEnabled gates the phase: opted in, terraform engine (the
-// pulumi arm rides the same recipes once its lane lands), and the component
+// pulumi arm rides the same recipes once its lane lands), and the kind
 // actually ships an import map. File presence is the recipes' single
 // enrollment signal everywhere -- this gate, the offline conformance guard,
 // and the platform's catalog bundler all key off the same import-map.yaml,
 // so a map cannot ship while dodging its checks. A scenario-declared,
 // reason-carrying skip annotation (above) excludes ONE scenario.
-func importRoundTripEnabled(tc *provider.ComponentTestContext) bool {
+func importRoundTripEnabled(tc *provider.KindTestContext) bool {
 	if os.Getenv(ImportRoundTripEnvVar) != "1" ||
 		tc.Engine != "terraform" ||
-		!importmap.HasComponentImportMap(tc.RepoRoot, tc.Provider, tc.Component) {
+		!importmap.HasCatalogKindImportMap(tc.RepoRoot, tc.Provider, tc.Kind) {
 		return false
 	}
 	if reason, err := ManifestAnnotation(tc.ManifestPath, ImportRoundTripSkipAnnotation); err == nil && reason != "" {
@@ -60,7 +60,7 @@ func importRoundTripEnabled(tc *provider.ComponentTestContext) bool {
 	return true
 }
 
-// runImportRoundTrip is the machine proof that a component's import recipes
+// runImportRoundTrip is the machine proof that a kind's import recipes
 // are CORRECT, not just well-formed: with the deployed fixture's state set
 // aside, every resource is re-imported "blind" -- addresses from the real
 // state, IDs derived purely through the recipes (spec/metadata/outputs, no
@@ -70,7 +70,7 @@ func importRoundTripEnabled(tc *provider.ComponentTestContext) bool {
 // The freshly-imported state replaces the deployed one for the DESTROY phase
 // that follows, which is itself part of the proof: destroy tearing the
 // fixture down cleanly shows the re-imported state fully owns the resources.
-func runImportRoundTrip(tc *provider.ComponentTestContext) error {
+func runImportRoundTrip(tc *provider.KindTestContext) error {
 	opts, ok := tc.TerraformOpts.(*tt.Options)
 	if !ok || opts == nil {
 		return errors.New("terraform options not initialized (runValidate must run first)")
@@ -107,7 +107,7 @@ func runImportRoundTrip(tc *provider.ComponentTestContext) error {
 	if err != nil {
 		return err
 	}
-	componentMap, err := importmap.LoadComponentImportMap(tc.RepoRoot, tc.Provider, tc.Component)
+	kindMap, err := importmap.LoadCatalogKindImportMap(tc.RepoRoot, tc.Provider, tc.Kind)
 	if err != nil {
 		return err
 	}
@@ -145,7 +145,7 @@ func runImportRoundTrip(tc *provider.ComponentTestContext) error {
 		}
 	}
 
-	// The component map may additionally declare IMPORT-NORMALIZED sub-paths
+	// The kind map may additionally declare IMPORT-NORMALIZED sub-paths
 	// scoped to ONE of its own resources -- values that cannot round-trip by
 	// provider construction (a salted-hash computed attribute re-salts on
 	// import) where the first post-adoption apply is functionally a no-op.
@@ -156,14 +156,14 @@ func runImportRoundTrip(tc *provider.ComponentTestContext) error {
 	// (`data["password.db"]` — a plain dotted split would walk
 	// data→password→db and never match the real key).
 	normalizedSubPaths := map[string][][]string{}
-	for _, nr := range componentMap.GetSpec().GetImportNormalized() {
+	for _, nr := range kindMap.GetSpec().GetImportNormalized() {
 		for _, sp := range nr.GetSubPaths() {
 			normalizedSubPaths[nr.GetTofuResourceName()] = append(
 				normalizedSubPaths[nr.GetTofuResourceName()], importmap.SplitAttributePath(sp.GetPath()))
 		}
 	}
 
-	metadataName, spec, err := loadManifestMetadataAndSpec(tc.Component, tc.ManifestPath)
+	metadataName, spec, err := loadManifestMetadataAndSpec(tc.Kind, tc.ManifestPath)
 	if err != nil {
 		return err
 	}
@@ -171,7 +171,7 @@ func runImportRoundTrip(tc *provider.ComponentTestContext) error {
 	// The round-trip has no user-pasted ARN, but the ACCOUNT-LEVEL ARN parts
 	// (account_id, region) are properties of the deployed account itself, not
 	// of any one resource -- the platform always knows them from the
-	// connection, and here every ARN-shaped stack output carries the same
+	// connection, and here every ARN-shaped output carries the same
 	// pair. Recipes for IDs that embed the account id (e.g. DynamoDB
 	// contributor insights) stay blind-derivable. Per-resource parts
 	// (resource_id/resource_name/arn) are deliberately NOT filled: those
@@ -200,10 +200,10 @@ func runImportRoundTrip(tc *provider.ComponentTestContext) error {
 		if !mapped {
 			return errors.Errorf("no id_format for %s (address %s) -- the conformance guard should have caught this", resourceType, address)
 		}
-		resolved, unresolved := importmap.ResolveValues(componentMap, importmap.Placeholders(idFormat), importmap.ResolveContext{
+		resolved, unresolved := importmap.ResolveValues(kindMap, importmap.Placeholders(idFormat), importmap.ResolveContext{
 			MetadataName: metadataName,
 			Spec:         spec,
-			StackOutputs: tc.FlatOutputs,
+			Outputs:      tc.FlatOutputs,
 			AddressKey:   instanceKey,
 			LogicalName:  logicalName,
 			ArnParts:     accountArnParts,
@@ -233,7 +233,7 @@ func runImportRoundTrip(tc *provider.ComponentTestContext) error {
 		// out of error wraps.
 		displayID := importID
 		importOpts := opts
-		if idContainsSecret(idFormat, importmap.SecretDerivedNames(componentMap)) {
+		if idContainsSecret(idFormat, importmap.SecretDerivedNames(kindMap)) {
 			displayID = "[redacted secret-material import ID]"
 			silenced := *opts
 			silenced.Logger = logger.Discard
@@ -311,17 +311,17 @@ func runImportRoundTrip(tc *provider.ComponentTestContext) error {
 			if changeCoveredBySubPaths(rc.Change.Before, rc.Change.After, attribute, toleratedSubPaths[rc.Type]) {
 				continue
 			}
-			// The component map's own resource-scoped declarations (see the
+			// The kind map's own resource-scoped declarations (see the
 			// import_normalized vocabulary): tolerated exactly like catalog
 			// sub-paths, but only for THIS logical resource.
 			if changeCoveredBySubPaths(rc.Change.Before, rc.Change.After, attribute, normalizedSubPaths[changeLogicalName]) {
 				continue
 			}
 			return errors.Errorf(
-				"plan after blind re-import updates %s.%s (changed: %v) -- not a declared config-only/write-normalized attribute of %s nor an import-normalized sub-path of the component map; deployed state kept at %s",
+				"plan after blind re-import updates %s.%s (changed: %v) -- not a declared config-only/write-normalized attribute of %s nor an import-normalized sub-path of the kind map; deployed state kept at %s",
 				address, attribute, changed, rc.Type, asidePath)
 		}
-		fmt.Printf("  [import-rt] tolerating declared update on %s: %v (config-only/write-normalized in the %s catalog, or import-normalized in the component map)\n",
+		fmt.Printf("  [import-rt] tolerating declared update on %s: %v (config-only/write-normalized in the %s catalog, or import-normalized in the kind map)\n",
 			address, changed, tc.Provider)
 		tolerated++
 	}
@@ -348,7 +348,7 @@ func runImportRoundTrip(tc *provider.ComponentTestContext) error {
 }
 
 // accountLevelArnParts extracts the account_id and region from the first
-// ARN-shaped stack output. Within one deployment every ARN carries the same
+// ARN-shaped output. Within one deployment every ARN carries the same
 // account (and, for regional services, the same region), so these two parts
 // are deployment-level facts -- the same facts the platform derives from the
 // provider connection in the real import flow.
@@ -517,11 +517,11 @@ func changedTopLevelAttributes(before, after interface{}) []string {
 // loadManifestMetadataAndSpec loads the scenario manifest into the kind's api
 // message and returns the metadata.name plus the spec message the recipe
 // derivations read.
-func loadManifestMetadataAndSpec(component, manifestPath string) (string, proto.Message, error) {
-	kind := crkreflect.KindFromString(component)
-	apiMessage, err := crkreflect.NewInstance(kind)
+func loadManifestMetadataAndSpec(kindDir, manifestPath string) (string, proto.Message, error) {
+	kind := catalogkindreflect.KindFromString(kindDir)
+	apiMessage, err := catalogkindreflect.NewInstance(kind)
 	if err != nil {
-		return "", nil, errors.Wrapf(err, "no proto instance for component %s", component)
+		return "", nil, errors.Wrapf(err, "no proto instance for kind %s", kindDir)
 	}
 	if err := protobufyaml.Load(manifestPath, apiMessage); err != nil {
 		return "", nil, errors.Wrapf(err, "loading manifest %s", manifestPath)
@@ -540,7 +540,7 @@ func loadManifestMetadataAndSpec(component, manifestPath string) (string, proto.
 }
 
 // idContainsSecret reports whether any placeholder of the id_format is a
-// secret-derived value (per the component map's declarations).
+// secret-derived value (per the kind map's declarations).
 func idContainsSecret(idFormat string, secretNames map[string]bool) bool {
 	for _, name := range importmap.Placeholders(idFormat) {
 		if secretNames[name] {

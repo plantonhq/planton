@@ -7,7 +7,7 @@
 # client-credentials flow, and the grant's scopes are the policy. Every
 # group is `derived` (static analysis of the module sources against Auth0's
 # endpoint docs, cited in notes) until a live capture upgrades it to
-# `proven`. Schema: iac/componentpermissions/v1.
+# `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # Auth0 scopes are per resource family, not per object: a credential
 # holding them manages EVERY client and grant in the tenant, and
@@ -15,7 +15,7 @@
 # not expressible, so the trust boundary is the tenant (a dedicated tenant,
 # or a dedicated machine-to-machine application per boundary).
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: auth0client
 spec:

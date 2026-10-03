@@ -51,9 +51,9 @@ Close an issue when:
 {original-timestamp}.{area}.{type}.{slug}.{closed-timestamp}.md
 ```
 
-The closing timestamp is appended before the `.md` extension, preserving all original naming components.
+The closing timestamp is appended before the `.md` extension, preserving all original naming kinds.
 
-### Components
+### Kinds
 
 **Original timestamp** (`YYYY-MM-DD-HHMMSS`):
 - Preserved from the original issue filename
@@ -62,7 +62,7 @@ The closing timestamp is appended before the `.md` extension, preserving all ori
 
 **Area, type, slug**:
 - Preserved exactly as in original filename
-- No modifications to these components
+- No modifications to these kinds
 
 **Closing timestamp** (`YYYY-MM-DD-HHMMSS`):
 - Get actual current timestamp by running: `date +"%Y-%m-%d-%H%M%S"`
@@ -72,8 +72,8 @@ The closing timestamp is appended before the `.md` extension, preserving all ori
 ### Example Transformations
 
 ```
-Open:   _issues/2025-12-26-143022.component.bug.postgres-spec-validation.md
-Closed: _issues/closed/2025-12-26-143022.component.bug.postgres-spec-validation.2025-12-28-073049.md
+Open:   _issues/2025-12-26-143022.kind.bug.postgres-spec-validation.md
+Closed: _issues/closed/2025-12-26-143022.kind.bug.postgres-spec-validation.2025-12-28-073049.md
 
 Open:   _issues/2025-12-26.cli.feat.manifest-validation-command.md
 Closed: _issues/closed/2025-12-26.cli.feat.manifest-validation-command.2025-12-28-120000.md
@@ -254,15 +254,15 @@ Where:
 
 **Example**:
 ```bash
-Issue: 2025-12-26.component.bug.postgres-spec-validation.md
+Issue: 2025-12-26.kind.bug.postgres-spec-validation.md
 
 Images to find:
-- 2025-12-26.component.bug.postgres-spec-validation.*.png
-- 2025-12-26.component.bug.postgres-spec-validation.*.jpg
+- 2025-12-26.kind.bug.postgres-spec-validation.*.png
+- 2025-12-26.kind.bug.postgres-spec-validation.*.jpg
 
 Matches:
-- 2025-12-26.component.bug.postgres-spec-validation.error-output.png
-- 2025-12-26.component.bug.postgres-spec-validation.cli-error.png
+- 2025-12-26.kind.bug.postgres-spec-validation.error-output.png
+- 2025-12-26.kind.bug.postgres-spec-validation.cli-error.png
 ```
 
 ### Step 2: Move Images to Closed Directory
@@ -277,11 +277,11 @@ Matches:
 
 **Example**:
 ```bash
-mv _issues/images/2025-12-26.component.bug.postgres-spec-validation.error-output.png \
-   _issues/closed/images/2025-12-26.component.bug.postgres-spec-validation.error-output.png
+mv _issues/images/2025-12-26.kind.bug.postgres-spec-validation.error-output.png \
+   _issues/closed/images/2025-12-26.kind.bug.postgres-spec-validation.error-output.png
 
-mv _issues/images/2025-12-26.component.bug.postgres-spec-validation.cli-error.png \
-   _issues/closed/images/2025-12-26.component.bug.postgres-spec-validation.cli-error.png
+mv _issues/images/2025-12-26.kind.bug.postgres-spec-validation.cli-error.png \
+   _issues/closed/images/2025-12-26.kind.bug.postgres-spec-validation.cli-error.png
 ```
 
 ### Step 3: Image References Remain Valid
@@ -290,7 +290,7 @@ mv _issues/images/2025-12-26.component.bug.postgres-spec-validation.cli-error.pn
 
 **Original reference in issue**:
 ```markdown
-![Pulumi error output](images/2025-12-26.component.bug.postgres-spec-validation.error-output.png)
+![Pulumi error output](images/2025-12-26.kind.bug.postgres-spec-validation.error-output.png)
 ```
 
 **After move**: Same reference works from `_issues/closed/` because images are in `_issues/closed/images/`
@@ -346,7 +346,7 @@ Use this exact output for the closing timestamp. **Do not make up timestamps.**
 ### 2. Identify Issue File
 
 **From user input**:
-- User provides full filename: `2025-12-26.component.bug.postgres-spec-validation.md`
+- User provides full filename: `2025-12-26.kind.bug.postgres-spec-validation.md`
 - User provides partial match: `postgres-spec-validation`
 - User provides slug or keyword
 
@@ -358,21 +358,21 @@ ls _issues/*{keyword}*.md
 # Confirm with user if multiple matches
 ```
 
-### 3. Parse Filename Components
+### 3. Parse Filename Kinds
 
 Extract from the original filename:
 - Original timestamp (everything before first area identifier)
-- Area (component, cli, pkg, etc.)
+- Area (kind, cli, pkg, etc.)
 - Type (bug, feat, refactor, etc.)
 - Slug (descriptive identifier)
 
 **Example parsing**:
 ```
-Filename: 2025-12-26-143022.component.bug.postgres-spec-validation.md
+Filename: 2025-12-26-143022.kind.bug.postgres-spec-validation.md
 
-Components:
+Kinds:
 - Original timestamp: 2025-12-26-143022
-- Area: component
+- Area: kind
 - Type: bug
 - Slug: postgres-spec-validation
 ```
@@ -474,8 +474,8 @@ mv _issues/{old-filename}.md _issues/closed/{new-filename-with-closing-timestamp
 
 **Example**:
 ```
-Original: _issues/2025-12-26.component.bug.postgres-spec-validation.md
-Closed:   _issues/closed/2025-12-26.component.bug.postgres-spec-validation.2025-12-28-193249.md
+Original: _issues/2025-12-26.kind.bug.postgres-spec-validation.md
+Closed:   _issues/closed/2025-12-26.kind.bug.postgres-spec-validation.2025-12-28-193249.md
 ```
 
 ### 9. Verify Move Success
@@ -526,7 +526,7 @@ Before confirming completion, verify:
 
 - [ ] **Closing timestamp obtained** from actual `date` command (not made up)
 - [ ] **Issue file identified** correctly (exact match or user confirmed)
-- [ ] **Filename components parsed** accurately
+- [ ] **Filename kinds parsed** accurately
 - [ ] **Context detected** (Scenario A or B determined correctly)
 - [ ] **Resolution section added** (if Scenario A)
 - [ ] **Changelog link works** (relative path is correct)
@@ -551,7 +551,7 @@ User: "@close-planton-issue postgres-spec-validation"
 
 Agent:
 1. Gets timestamp: 2025-12-28-073049
-2. Finds issue: 2025-12-26-143022.component.bug.postgres-spec-validation.md
+2. Finds issue: 2025-12-26-143022.kind.bug.postgres-spec-validation.md
 3. Detects Scenario A (recent changelog exists)
 4. Reads issue content
 5. Finds changelog: 2025-12-28-073049-postgres-spec-validation-fix.md
@@ -570,14 +570,14 @@ Agent:
 
 7. Finds images: postgres-spec-validation.error-output.png
 8. Moves images to closed/
-9. Writes to: _issues/closed/2025-12-26-143022.component.bug.postgres-spec-validation.2025-12-28-073049.md
+9. Writes to: _issues/closed/2025-12-26-143022.kind.bug.postgres-spec-validation.2025-12-28-073049.md
 10. Deletes original from _issues/
 11. Verifies move successful
 12. Confirms to user:
 
     ✅ Issue closed: postgres-spec-validation
     
-    Moved to: _issues/closed/2025-12-26-143022.component.bug.postgres-spec-validation.2025-12-28-073049.md
+    Moved to: _issues/closed/2025-12-26-143022.kind.bug.postgres-spec-validation.2025-12-28-073049.md
     Created: December 26, 2025
     Closed: December 28, 2025
     
@@ -662,8 +662,8 @@ No action taken.
 ```
 Multiple issues match "{keyword}":
 
-1. 2025-12-26.component.bug.postgres-spec-validation.md
-2. 2025-12-27.component.bug.postgres-port-config.md
+1. 2025-12-26.kind.bug.postgres-spec-validation.md
+2. 2025-12-27.kind.bug.postgres-port-config.md
 
 Which issue should I close? (provide number or full filename)
 ```
@@ -734,7 +734,7 @@ This issue was fixed in this session.
 **When in doubt**:
 - Scenario B (simple close) is safer than adding incorrect context
 - Moving images is always safe (relative paths work)
-- Preserve all original filename components
+- Preserve all original filename kinds
 - Use actual timestamps from `date` command
 
 ---

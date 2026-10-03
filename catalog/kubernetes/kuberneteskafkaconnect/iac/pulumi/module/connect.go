@@ -33,7 +33,7 @@ func createKafkaConnect(ctx *pulumi.Context, locals *Locals,
 	spec := locals.Spec
 
 	// Replicas defaults to 1 through the platform middleware; the
-	// fallback keeps a raw stack-input (offline proofs, hand runs)
+	// fallback keeps a raw iac-input (offline proofs, hand runs)
 	// rendering the same value the middleware would have injected.
 	replicas := 1
 	if spec.Replicas != nil {

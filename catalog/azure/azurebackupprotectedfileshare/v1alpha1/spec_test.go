@@ -37,7 +37,7 @@ func validResource() *AzureBackupProtectedFileShare {
 	return &AzureBackupProtectedFileShare{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureBackupProtectedFileShare",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-backup-protected-file-share",
 		},
 		Spec: &AzureBackupProtectedFileShareSpec{

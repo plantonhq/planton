@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 	moduleverifyui "github.com/plantonhq/planton/internal/cli/ui/moduleverify"
 	"github.com/plantonhq/planton/internal/cli/ui/validateoutputs"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/moduleverify"
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
 	"github.com/spf13/cobra"
@@ -28,7 +28,7 @@ What is checked:
     the kind's schema, the outputs contract, and — when tofu or terraform is
     on PATH — the engine's own validation against a temporary copy.
   - Pulumi: the project file's go runtime, the entrypoint's typed
-    stack-input contract, the Go module context, and — when go is on PATH —
+    iac-input contract, the Go module context, and — when go is on PATH —
     a real compile.
   - Both engines: every secret home the kind declares (the field a secret
     goes in instead of one every viewer reads, such as a Cloud Run env
@@ -54,7 +54,7 @@ deployments and fail this command; warnings are worth a look but do not.`,
 }
 
 func init() {
-	Verify.Flags().String("kind", "", "cloud resource kind the module serves (e.g. AwsS3Bucket)")
+	Verify.Flags().String("kind", "", "catalog kind the module serves (e.g. AwsS3Bucket)")
 	Verify.Flags().String("module-dir", "", "path to the module directory to verify")
 	Verify.Flags().String("provisioner", "", "the module's engine: tofu, terraform, or pulumi (default: inferred from the directory)")
 	Verify.Flags().String("sample-outputs", "", "path to a JSON file with sample raw outputs for a transformation dry-run")
@@ -71,10 +71,10 @@ func verifyHandler(cmd *cobra.Command, args []string) error {
 	samplePath, _ := cmd.Flags().GetString("sample-outputs")
 	skipBuildChecks, _ := cmd.Flags().GetBool("skip-build-checks")
 
-	kind := crkreflect.KindFromString(kindName)
+	kind := catalogkindreflect.KindFromString(kindName)
 	if kind == 0 {
 		validateoutputs.RenderUnknownKind(kindName)
-		return errors.Errorf("unknown cloud resource kind %q", kindName)
+		return errors.Errorf("unknown catalog kind %q", kindName)
 	}
 
 	prov := provisioner.ProvisionerTypeUnspecified

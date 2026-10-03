@@ -2,7 +2,7 @@
 
 A DigitalOcean-hosted DNS zone described once in a Planton manifest: the domain itself, an inline list of managed records covering every type the DigitalOcean API accepts (A, AAAA, CNAME, MX, TXT, SRV, NS, CAA, SOA), and the create-only apex-A convenience. Adding a domain does not require owning it — the zone serves on DigitalOcean's name servers immediately and resolves publicly once the registrar delegates.
 
-## What this component models
+## What this kind models
 
 The spec maps onto DigitalOcean's `digitalocean_domain` plus one `digitalocean_record` per managed record value:
 

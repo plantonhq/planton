@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added OpenStack as provider #23 to Planton, enabling users to manage OpenStack cloud credentials through the platform. The integration spans all 6 system layers — proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. OpenStack's multi-method authentication model (password, application credentials, token) is handled via a structured `oneof` in the proto schema, providing type safety while mapping cleanly to the flat `OS_*` environment variables that the Terraform OpenStack provider expects.
+Added OpenStack as provider #23 to Planton, enabling users to manage OpenStack cloud credentials through the platform. The integration spans all 6 system layers — proto definitions, CLI guidance, IaC input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. OpenStack's multi-method authentication model (password, application credentials, token) is handled via a structured `oneof` in the proto schema, providing type safety while mapping cleanly to the flat `OS_*` environment variables that the Terraform OpenStack provider expects.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ Planton supports 12 cloud providers but had no OpenStack support. Organizations 
 
 ### Pain Points
 
-- No `openstack` entry in the `CloudResourceProvider` enum
+- No `openstack` entry in the `CatalogProvider` enum
 - No credential storage or management for OpenStack
 - No environment variable mapping for the Terraform OpenStack provider
 - No frontend UI for capturing OpenStack credentials
@@ -29,7 +29,7 @@ Implemented comprehensive OpenStack provider support following the established p
 ```mermaid
 flowchart TB
     subgraph proto [Proto Layer]
-        ProviderEnum["cloud_resource_provider.proto\nopenstack = 23"]
+        ProviderEnum["catalog_provider.proto\nopenstack = 23"]
         ProviderConfig["provider/openstack/provider.proto\nOpenstackProviderConfig"]
         CredentialAPI["credential/v1/api.proto\nOPENSTACK enum + oneof"]
     end
@@ -87,7 +87,7 @@ flowchart LR
 
 ### 1. Proto Definitions
 
-**Provider registration** (`cloud_resource_provider.proto`):
+**Provider registration** (`catalog_provider.proto`):
 
 ```protobuf
 openstack = 23 [(provider_meta) = {
@@ -114,7 +114,7 @@ The `cli_help.go` constants drive terminal output quality. `EnvironmentVariables
 
 ### 5. Credential Resolver Improvement
 
-Refactored the credential resolver to switch on `CloudResourceProvider` enum values instead of strings. The enum switch is type-safe and lets the compiler surface missing cases. Strings are only used where they're actually needed: the MongoDB query and error messages.
+Refactored the credential resolver to switch on `CatalogProvider` enum values instead of strings. The enum switch is type-safe and lets the compiler surface missing cases. Strings are only used where they're actually needed: the MongoDB query and error messages.
 
 ### 6. Frontend Credential Form
 
@@ -124,13 +124,13 @@ Refactored the credential resolver to switch on `CloudResourceProvider` enum val
 
 | Layer | New Files | Modified Files |
 |-------|-----------|----------------|
-| Proto | `provider/openstack/provider.proto` | `cloud_resource_provider.proto`, `credential/v1/api.proto` |
+| Proto | `provider/openstack/provider.proto` | `catalog_provider.proto`, `credential/v1/api.proto` |
 | Provider | `provider/openstack/cli_help.go`, `BUILD.bazel` | — |
-| Stack Input | `providerenvvars/openstack.go` | `loader.go` |
+| IaC Input | `providerenvvars/openstack.go` | `loader.go` |
 | Provider Detect | — | `detect.go`, `guidance.go`, `validate.go` |
 | Backend | — | `credential.go`, `credential_repo.go`, `credential_service.go`, `credential_resolver.go` |
 | Frontend | `openstack.tsx` | `types.ts`, `credential-drawer.tsx`, `index.ts`, `utils.ts` |
-| Generated | `provider.pb.go`, `provider_pb.ts` | `api.pb.go`, `api_pb.ts`, `cloud_resource_provider.pb.go`, `cloud_resource_provider_pb.ts` |
+| Generated | `provider.pb.go`, `provider_pb.ts` | `api.pb.go`, `api_pb.ts`, `catalog_provider.pb.go`, `catalog_provider_pb.ts` |
 
 **Total**: 26 files, ~850 insertions
 
@@ -160,7 +160,7 @@ Refactored the credential resolver to switch on `CloudResourceProvider` enum val
 
 ### Future Work Enabled
 
-- OpenStack resource kinds (CloudResourceKind range 2500-2799)
+- OpenStack resource kinds (CatalogKind range 2500-2799)
 - Compute, networking, block storage, identity, and other OpenStack service resources
 - Terraform IaC modules wrapping the terraform-provider-openstack
 

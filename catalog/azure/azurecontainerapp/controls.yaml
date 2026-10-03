@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: azurecontainerapp
 spec:
@@ -28,7 +28,7 @@ spec:
       evidence:
         type: spec_default
         reference: "The field's declared default is false, and ingress itself is optional: an app without ingress is reachable only inside the environment via service discovery, and an ingress with external_enabled false accepts traffic only from within the environment (or its VNet). Internet exposure requires the explicit true."
-      notes: "Presets 01-web-service and 03-enterprise-api set external_enabled true deliberately (they are public services); 02-background-worker has no ingress at all. On an internal (VNet-injected) environment even external_enabled true resolves to VNet reach, not internet -- that boundary lives on the AzureContainerAppEnvironment component."
+      notes: "Presets 01-web-service and 03-enterprise-api set external_enabled true deliberately (they are public services); 02-background-worker has no ingress at all. On an internal (VNet-injected) environment even external_enabled true resolves to VNet reach, not internet -- that boundary lives on the AzureContainerAppEnvironment kind."
     - control_id: restricted-ingress
       status: configurable
       field_path: ingress.ip_security_restrictions

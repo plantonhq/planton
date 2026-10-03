@@ -23,7 +23,7 @@ message KubernetesSecret {
 
   // Metadata for the Kubernetes Secret resource.
   // Includes standard fields like name, organization, environment, etc.
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // Specification of the desired state for the Kubernetes Secret.
   // Defines the secret type, data, and associated configuration.
@@ -41,5 +41,5 @@ message KubernetesSecret {
 message KubernetesSecretStatus {
   // Outputs from the secret deployment.
   // Contains the secret name, namespace, and type.
-  KubernetesSecretStackOutputs outputs = 1;
+  KubernetesSecretOutputs outputs = 1;
 }

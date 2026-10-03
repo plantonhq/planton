@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsbackupplan
 spec:
@@ -10,13 +10,13 @@ spec:
   values:
     - name: plan_id
       derivations:
-        - from_stack_output: plan_id
+        - from_output: plan_id
       where_to_find: >-
         AWS Backup console -> Backup plans -> <plan> (the ID in the
         ARN), or `aws backup list-backup-plans` (BackupPlanId).
     - name: selection_id
       derivations:
-        - from_stack_output_keyed_by_address: selection_ids
+        - from_output_keyed_by_address: selection_ids
       where_to_find: >-
         `aws backup list-backup-selections --backup-plan-id <id>` lists
         selections with SelectionId; match each to its spec.selections

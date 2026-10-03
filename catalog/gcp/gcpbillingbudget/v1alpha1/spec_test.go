@@ -42,7 +42,7 @@ var _ = ginkgo.Describe("GcpBillingBudgetSpec", func() {
 		return &GcpBillingBudget{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpBillingBudget",
-			Metadata:   &shared.CloudResourceMetadata{Name: "monthly-guardrail"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "monthly-guardrail"},
 			Spec: &GcpBillingBudgetSpec{
 				BillingAccount: "012345-6789AB-CDEF01",
 				Amount:         &GcpBillingBudgetAmount{SpecifiedAmount: &GcpBillingBudgetSpecifiedAmount{CurrencyCode: "USD", Units: 1000}},

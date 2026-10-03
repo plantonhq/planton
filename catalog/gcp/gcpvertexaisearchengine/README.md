@@ -4,7 +4,7 @@ A Vertex AI Search engine -- the app over one or more data stores -- on the Disc
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `discoveryengine.googleapis.com` on the project, and `dialogflow.googleapis.com` on a CHAT engine (never disabled on destroy)
 - **Engine** -- exactly one of `discovery_engine_search_engine`, `discovery_engine_chat_engine`, or `discovery_engine_recommendation_engine`
@@ -100,7 +100,7 @@ planton apply -f vertex-ai-search-engine.yaml
 - Every id in `servingConfig` names a declared control with the matching action.
 - Tiers, subscription tiers, verticals, use cases, interaction types, and the other value lists are Google's.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -137,7 +137,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpVertexAiSearchDataStore** -- the stores the engine reads
 - **GcpVertexAiSearchDataConnector** -- a connector-built collection of stores

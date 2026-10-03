@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -7,9 +7,9 @@
 # delivers free (SQS) or metered (HTTPS), and neither preset uses
 # MessageBody filtering, the quiet per-GB scan meter. Stated in exclusions,
 # never padded into fabricated dollars. Schema:
-# finops/componentcostestimatemodel/v1.
+# finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awssnssubscription
 spec:
@@ -21,8 +21,8 @@ spec:
       exclusions:
         - SQS deliveries carry no per-message charge at any volume -- queue-and-function fan-out is the cheap SNS pattern, and this preset is it
         - the attribute filter (MessageAttributes scope) is free and every filtered-out message is a delivery that never happens -- unlike MessageBody scope, no per-GB scan meter exists here
-        - data transferred to the queue bills per GB even though the per-message rate is zero; the queue's own request and storage meters bill on its AwsSqsQueue component
-        - publish-side spend (requests, payload) bills on the AwsSnsTopic component
+        - data transferred to the queue bills per GB even though the per-message rate is zero; the queue's own request and storage meters bill on its AwsSqsQueue kind
+        - publish-side spend (requests, payload) bills on the AwsSnsTopic kind
       notes: Zero committed cost -- and near-zero delivery cost by design; the protocol choice and free attribute filtering make this the shape SNS economics reward.
     - preset: 02-https-webhook
       region_assumption: us-east-1
@@ -31,6 +31,6 @@ spec:
       exclusions:
         - HTTPS deliveries bill per message after the permanent free tier of 100,000 per month, in 64 KB chunks -- one large notification can bill as several
         - retries to a failing endpoint are each a billed delivery attempt until the retry policy exhausts and the message dead-letters
-        - dead-lettered messages bill request and storage meters on the referenced webhook-dlq AwsSqsQueue component -- a healthy endpoint sends it nothing
-        - data transfer out to the webhook bills per GB at internet rates; publish-side spend bills on the AwsSnsTopic component
+        - dead-lettered messages bill request and storage meters on the referenced webhook-dlq AwsSqsQueue kind -- a healthy endpoint sends it nothing
+        - data transfer out to the webhook bills per GB at internet rates; publish-side spend bills on the AwsSnsTopic kind
       notes: Zero committed cost -- the webhook meter follows the topic's publish traffic, with the first 100,000 HTTPS deliveries each month permanently free.

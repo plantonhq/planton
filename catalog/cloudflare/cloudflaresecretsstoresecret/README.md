@@ -44,7 +44,7 @@ The `scopes` list is walled to Cloudflare's canonical alphabetical order by this
 |-------|------|-------------|
 | `comment` | string | A free-form note (shown in the dashboard). |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

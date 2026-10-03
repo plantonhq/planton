@@ -9,14 +9,14 @@ import (
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 
-	componentv1 "github.com/plantonhq/planton/qa/componente2eprofile/v1"
+	kindv1 "github.com/plantonhq/planton/qa/catalogkinde2eprofile/v1"
 	sharedpb "github.com/plantonhq/planton/shared"
 )
 
 var Discover = &cobra.Command{
 	Use:   "discover",
-	Short: "Discover E2E-testable components and generate CI matrix",
-	Long: `Scan a provider's E2E profiles and display component readiness.
+	Short: "Discover E2E-testable kinds and generate CI matrix",
+	Long: `Scan a provider's E2E profiles and display kind readiness.
 
 Three output modes:
   interactive  Interactive TUI with keyboard navigation (default in terminal)
@@ -56,17 +56,17 @@ func runDiscover(cmd *cobra.Command, args []string) error {
 	if statusFilter != "" {
 		switch statusFilter {
 		case "green":
-			opts.Status = componentv1.ComponentE2EProfileSpec_green
+			opts.Status = kindv1.CatalogKindE2EProfileSpec_green
 		case "deferred":
-			opts.Status = componentv1.ComponentE2EProfileSpec_deferred
+			opts.Status = kindv1.CatalogKindE2EProfileSpec_deferred
 		case "skip":
-			opts.Status = componentv1.ComponentE2EProfileSpec_skip
+			opts.Status = kindv1.CatalogKindE2EProfileSpec_skip
 		case "stub":
-			opts.Status = componentv1.ComponentE2EProfileSpec_stub
+			opts.Status = kindv1.CatalogKindE2EProfileSpec_stub
 		case "real_cluster":
-			opts.Status = componentv1.ComponentE2EProfileSpec_real_cluster
+			opts.Status = kindv1.CatalogKindE2EProfileSpec_real_cluster
 		case "pending_proof":
-			opts.Status = componentv1.ComponentE2EProfileSpec_pending_proof
+			opts.Status = kindv1.CatalogKindE2EProfileSpec_pending_proof
 		default:
 			return fmt.Errorf("unknown status %q: must be green, deferred, skip, stub, real_cluster, or pending_proof", statusFilter)
 		}

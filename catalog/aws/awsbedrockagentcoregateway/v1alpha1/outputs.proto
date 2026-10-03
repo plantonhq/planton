@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbedrockagentcoregateway.v1alpha1;
 
-// AwsBedrockAgentCoreGatewayStackOutputs captures observable identifiers
+// AwsBedrockAgentCoreGatewayOutputs captures observable identifiers
 // from a provisioned AgentCore gateway. Downstream resources (agents and
 // harnesses using the gateway as a tool, MCP clients) wire dependencies
 // via StringValueOrRef.
-message AwsBedrockAgentCoreGatewayStackOutputs {
+message AwsBedrockAgentCoreGatewayOutputs {
   // The unique gateway identifier (e.g. "my-gateway-abc123de45").
   string gateway_id = 1;
 

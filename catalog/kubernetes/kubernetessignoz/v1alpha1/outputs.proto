@@ -4,8 +4,8 @@ package dev.planton.kubernetes.kubernetessignoz.v1alpha1;
 
 import "catalog/kubernetes/kubernetes.proto";
 
-//signoz-kubernetes stack outputs
-message KubernetesSignozStackOutputs {
+//signoz-kubernetes outputs
+message KubernetesSignozOutputs {
   //namespace SigNoz runs in.
   string namespace = 1;
 

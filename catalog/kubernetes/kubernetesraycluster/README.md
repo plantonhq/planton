@@ -7,7 +7,7 @@ RayCluster CR (`rayclusters.ray.io/v1`) that the KubeRay operator
 reconciles into a head pod, worker groups, and the Services that Ray
 clients, jobs, and dashboards connect to.
 
-Not the right component when:
+Not the right kind when:
 
 - **The operator is missing** — a KubernetesKubeRayOperator whose
   watch scope covers this namespace (cluster-wide with the operator's
@@ -119,7 +119,7 @@ for the same reason.
   head and worker PODS but keeps the declaration and (with GCS fault
   tolerance) the external state; un-suspend to resume
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

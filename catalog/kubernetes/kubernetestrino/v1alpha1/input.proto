@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetestrino.v1alpha1;
 import "catalog/kubernetes/kubernetestrino/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//trino-kubernetes stack-input
-message KubernetesTrinoStackInput {
-  //target cloud-resource
+//trino-kubernetes iac-input
+message KubernetesTrinoIacInput {
+  //target infra-component
   KubernetesTrino target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

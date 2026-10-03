@@ -10,7 +10,7 @@ turning it on is effectively one-way).
 - The first MLflow deployment for a team of up to ~25 users
 - Steady, daily tracking load that justifies an always-on server —
   the `Small` size bills hourly from Created onward, traffic or not;
-  the verified figure lives in the component's generated estimate at
+  the verified figure lives in the kind's generated estimate at
   `catalog/_pricing/estimates/awssagemakermlflowserver.yaml`
 
 ## What You Get

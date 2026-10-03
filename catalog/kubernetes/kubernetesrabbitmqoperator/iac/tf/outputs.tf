@@ -1,5 +1,5 @@
-# Stack outputs — identical names and derivations in the Pulumi module
-# (KubernetesRabbitMqOperatorStackOutputs).
+# Outputs — identical names and derivations in the Pulumi module
+# (KubernetesRabbitMqOperatorOutputs).
 
 output "namespace" {
   description = "Namespace the operator is installed into (always rabbitmq-system — the release manifest's fixed namespace)"

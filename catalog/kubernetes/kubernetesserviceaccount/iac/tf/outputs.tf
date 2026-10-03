@@ -1,5 +1,5 @@
 # Terraform outputs for Kubernetes ServiceAccount
-# Keys mirror KubernetesServiceAccountStackOutputs field names.
+# Keys mirror KubernetesServiceAccountOutputs field names.
 
 output "service_account_name" {
   description = "The name of the created ServiceAccount — the value workloads set in spec.serviceAccountName"

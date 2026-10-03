@@ -16,21 +16,21 @@ ElastiCache is the most common managed caching layer on AWS, used for session st
 
 - No managed caching resource in Planton's AWS provider catalog
 - Users had to provision ElastiCache manually, losing dependency wiring and infra-chart composability
-- The original planning (T02) designed a single `AwsElasticacheCluster` component, but deep research revealed that Redis/Valkey and Memcached use completely different Terraform resources with ~15 unique fields each
+- The original planning (T02) designed a single `AwsElasticacheCluster` kind, but deep research revealed that Redis/Valkey and Memcached use completely different Terraform resources with ~15 unique fields each
 
 ## Solution / What's New
 
-### Component Split Decision
+### Kind Split Decision
 
-Deep research into the Terraform provider revealed that the original `AwsElasticacheCluster` design needed to be split into three focused components:
+Deep research into the Terraform provider revealed that the original `AwsElasticacheCluster` design needed to be split into three focused kinds:
 
 - **AwsRedisElasticache** (R07, this session) — Redis/Valkey via `aws_elasticache_replication_group`
 - **AwsMemcachedElasticache** (R07a, next session) — Memcached via `aws_elasticache_cluster`
 - **AwsServerlessElasticache** (R07b, future session) — Serverless via `aws_elasticache_serverless_cache`
 
-The delta between these three is massive: different TF resources, different topology models, different persistence, different authentication. Three focused components provide better clarity than one overloaded component.
+The delta between these three is massive: different TF resources, different topology models, different persistence, different authentication. Three focused kinds provide better clarity than one overloaded kind.
 
-### AwsRedisElasticache Component
+### AwsRedisElasticache Kind
 
 **Proto API**: spec.proto with 29 fields, 3 nested messages, 12 CEL validations
 
@@ -60,7 +60,7 @@ The delta between these three is massive: different TF resources, different topo
 
 During deep research into the Terraform/Pulumi providers, 10 capabilities were discovered that were not in the T02 planning guidance:
 
-1. **ElastiCache Serverless** — separate resource, fundamentally different config → separate component
+1. **ElastiCache Serverless** — separate resource, fundamentally different config → separate kind
 2. **Cluster Mode Enabled** (sharding) — not in T02, but used by ~40-50% of production deployments
 3. **Log delivery configuration** — slow-log and engine-log to CloudWatch/Firehose
 4. **user_group_ids** (Redis ACL) — fine-grained auth alternative to auth_token
@@ -83,7 +83,7 @@ During deep research into the Terraform/Pulumi providers, 10 capabilities were d
 - Complete managed caching coverage for Redis/Valkey workloads in Planton
 - Full infra-chart composability: accepts VPC, SG, KMS, SNS references; exports endpoints, ARN, port
 - Production-ready with encryption, HA, multi-AZ, snapshots, logging, and custom parameters
-- Clear component boundaries: Redis/Valkey, Memcached, and Serverless are separate, focused components
+- Clear kind boundaries: Redis/Valkey, Memcached, and Serverless are separate, focused kinds
 
 ## Impact
 

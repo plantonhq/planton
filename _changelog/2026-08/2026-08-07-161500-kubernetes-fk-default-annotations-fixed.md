@@ -3,7 +3,7 @@
 **Date**: August 7, 2026
 **Type**: Fix
 **Provider**: Kubernetes
-**Component(s)**: `catalog/kubernetes/kubernetesairflow`, `catalog/kubernetes/kuberneteskafkaui`, `catalog/kubernetes/kuberneteskeycloak`
+**Kind(s)**: `catalog/kubernetes/kubernetesairflow`, `catalog/kubernetes/kuberneteskafkaui`, `catalog/kubernetes/kuberneteskeycloak`
 
 ## Summary
 

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1;
 
-// AwsFsxOpenzfsFileSystemStackOutputs captures observable identifiers and
+// AwsFsxOpenzfsFileSystemOutputs captures observable identifiers and
 // endpoints from a provisioned FSx for OpenZFS file system. These outputs are
 // used by downstream resources to wire dependencies via StringValueOrRef.
 //
@@ -15,7 +15,7 @@ package dev.planton.aws.awsfsxopenzfsfilesystem.v1alpha1;
 // - Multi-AZ routing: needs `endpoint_ip_address`
 //
 // Mount command: mount -t nfs <dns_name>:/fsx /mnt/fsx
-message AwsFsxOpenzfsFileSystemStackOutputs {
+message AwsFsxOpenzfsFileSystemOutputs {
   // The ID of the file system (e.g., "fs-0123456789abcdef0"). Primary
   // identifier used by EKS PersistentVolumes, ECS task definitions, and
   // other AWS services.

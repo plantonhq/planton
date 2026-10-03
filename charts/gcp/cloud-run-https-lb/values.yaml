@@ -78,7 +78,7 @@ params:
 
   - name: dnsZoneName
     description: >
-      Name of the GcpDnsZone Cloud Resource (the Planton resource name,
+      Name of the GcpDnsZone Infra Component (the Planton resource name,
       not the DNS name) that hosts the domain. The zone must already
       exist in the target environment — typically deployed by your DNS
       chart. Ignored while dnsEnabled is false.

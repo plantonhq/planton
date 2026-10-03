@@ -9,16 +9,16 @@
 
 ## Summary
 
-Implemented a complete full-stack application in the `/app` directory with a Go-based backend service using Connect RPC and MongoDB, a Next.js frontend with Material-UI, and production-ready Docker containerization for both services. The application provides a deployment component management system with a modern web interface.
+Implemented a complete full-stack application in the `/app` directory with a Go-based backend service using Connect RPC and MongoDB, a Next.js frontend with Material-UI, and production-ready Docker containerization for both services. The application provides a catalog kind management system with a modern web interface.
 
 ---
 
 ## Problem Statement / Motivation
 
-Planton needed a web application to manage and visualize deployment components. The requirements included:
+Planton needed a web application to manage and visualize catalog kinds. The requirements included:
 
-- **Backend API**: A gRPC-compatible service to manage deployment component data
-- **Frontend Interface**: A modern web UI for viewing and managing deployment components
+- **Backend API**: A gRPC-compatible service to manage catalog kind data
+- **Frontend Interface**: A modern web UI for viewing and managing catalog kinds
 - **Containerization**: Production-ready Docker images for easy deployment
 - **Integration**: Seamless communication between frontend and backend using Connect RPC
 
@@ -28,7 +28,7 @@ Planton needed a web application to manage and visualize deployment components. 
 
 ### 1. Backend Service (`app/backend/`)
 
-A Go-based backend service providing deployment component management via Connect RPC.
+A Go-based backend service providing catalog kind management via Connect RPC.
 
 #### Core Components
 
@@ -40,31 +40,31 @@ A Go-based backend service providing deployment component management via Connect
 - Environment-based configuration (port, MongoDB connection)
 - Structured logging with logrus
 
-**Service Layer** (`internal/service/deployment_component_service.go`):
+**Service Layer** (`internal/service/catalog_kind_service.go`):
 
-- `DeploymentComponentService` implementing Connect RPC interface
-- `ListDeploymentComponents` RPC method with optional filtering by provider and kind
+- `CatalogKindService` implementing Connect RPC interface
+- `ListCatalogKinds` RPC method with optional filtering by provider and kind
 - Request/response transformation between MongoDB models and protobuf messages
 - Timestamp conversion using `google.protobuf.Timestamp`
 
 **Database Layer** (`internal/database/`):
 
 - MongoDB connection management with connection pooling
-- `DeploymentComponentRepository` for data access operations
+- `CatalogKindRepository` for data access operations
 - Filtering support for provider and kind fields
 - Error handling and connection lifecycle management
 
-**Data Models** (`pkg/models/deployment_component.go`):
+**Data Models** (`pkg/models/catalog_kind.go`):
 
-- `DeploymentComponent` struct with BSON tags for MongoDB
+- `CatalogKind` struct with BSON tags for MongoDB
 - Fields: ID, Kind, Provider, Name, Version, IDPrefix, IsServiceKind, CreatedAt, UpdatedAt
 - Primitive ObjectID for MongoDB document identification
 
-**Protocol Buffers** (`apis/proto/deployment_component_service.proto`):
+**Protocol Buffers** (`apis/proto/catalog_kind_service.proto`):
 
-- `DeploymentComponentService` service definition
-- `ListDeploymentComponents` RPC with optional filters
-- `DeploymentComponent` message with all metadata fields
+- `CatalogKindService` service definition
+- `ListCatalogKinds` RPC with optional filters
+- `CatalogKind` message with all metadata fields
 - Generated Connect RPC handlers and protobuf code
 
 **Build System** (`Makefile`):
@@ -94,16 +94,16 @@ A Next.js 14 web application with Material-UI providing a modern dashboard inter
 
 **Dashboard Page** (`src/app/dashboard/page.tsx`):
 
-- Deployment component data table with sorting, pagination, and filtering
+- Catalog kind data table with sorting, pagination, and filtering
 - Statistics cards showing total products, inventory, and average price
 - Real-time data loading from backend API
-- Action buttons (View, Edit, Delete) for each component
+- Action buttons (View, Edit, Delete) for each kind
 - Refresh functionality with loading states
 - Error handling with user-friendly alerts
 
 **Layout System** (`src/components/layout/`):
 
-- Header component with navigation
+- Header kind with navigation
 - Sidebar with collapsible menu
 - Responsive layout using Material-UI Grid2
 - Theme-aware styling with Emotion
@@ -128,7 +128,7 @@ A Next.js 14 web application with Material-UI providing a modern dashboard inter
 **Query Services** (`src/app/dashboard/_services/query.ts`):
 
 - `useDashboardQuery` hook for API interactions
-- `listDeploymentComponents` query method
+- `listCatalogKinds` query method
 - Loading state management via AppContext
 - Snackbar notifications for errors
 - Promise-based API with proper error handling
@@ -273,25 +273,25 @@ Production-ready multi-stage Docker builds for both backend and frontend.
 app/backend/
 ├── apis/
 │   ├── proto/
-│   │   └── deployment_component_service.proto
+│   │   └── catalog_kind_service.proto
 │   └── gen/
 │       └── go/
 │           └── proto/
 │               ├── backendv1connect/
-│               │   └── deployment_component_service.connect.go
-│               └── deployment_component_service.pb.go
+│               │   └── catalog_kind_service.connect.go
+│               └── catalog_kind_service.pb.go
 ├── cmd/
 │   └── server/
 │       └── main.go
 ├── internal/
 │   ├── database/
 │   │   ├── mongodb.go
-│   │   └── deployment_component_repo.go
+│   │   └── catalog_kind_repo.go
 │   └── service/
-│       └── deployment_component_service.go
+│       └── catalog_kind_service.go
 ├── pkg/
 │   └── models/
-│       └── deployment_component.go
+│       └── catalog_kind.go
 ├── Dockerfile
 ├── Makefile
 ├── go.mod
@@ -330,8 +330,8 @@ app/frontend/
 │   │   └── index.ts
 │   ├── gen/
 │   │   └── proto/
-│   │       ├── deployment_component_service_connect.ts
-│   │       └── deployment_component_service_pb.ts
+│   │       ├── catalog_kind_service_connect.ts
+│   │       └── catalog_kind_service_pb.ts
 │   ├── hooks/
 │   │   ├── useConnectRpcClient.ts
 │   │   └── index.ts
@@ -404,7 +404,7 @@ app/frontend/
 
 3. **Frontend Display**:
    - Response received and deserialized
-   - State updated with deployment components
+   - State updated with catalog kinds
    - Data table renders with sorting/pagination
    - User sees updated information
 
@@ -550,7 +550,7 @@ volumes:
 ### Why MongoDB?
 
 - **Flexibility**: Schema-less design for evolving data models
-- **Document Model**: Natural fit for deployment component metadata
+- **Document Model**: Natural fit for catalog kind metadata
 - **Querying**: Rich query capabilities for filtering
 - **Scalability**: Horizontal scaling support
 - **Maturity**: Well-established Go driver
@@ -598,7 +598,7 @@ volumes:
 ### Potential Additions
 
 1. **Authentication**: User authentication and authorization
-2. **CRUD Operations**: Create, update, delete deployment components
+2. **CRUD Operations**: Create, update, delete catalog kinds
 3. **Real-time Updates**: WebSocket support for live data
 4. **Advanced Filtering**: More sophisticated query capabilities
 5. **Export/Import**: Data export and import functionality
@@ -612,7 +612,7 @@ volumes:
 
 This implementation establishes the foundation for Planton's web application infrastructure. It integrates with:
 
-- **Planton CLI**: Deployment component definitions
+- **Planton CLI**: Catalog kind definitions
 - **Protobuf APIs**: Shared API definitions
 - **Docker Ecosystem**: Container orchestration platforms
 

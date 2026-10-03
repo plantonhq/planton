@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpcloudbuildtrigger.v1alpha1;
 
-// GcpCloudBuildTriggerStackOutputs carries the trigger's identity.
-message GcpCloudBuildTriggerStackOutputs {
+// GcpCloudBuildTriggerOutputs carries the trigger's identity.
+message GcpCloudBuildTriggerOutputs {
   // The trigger's full resource ID:
   // projects/{project}/locations/{location}/triggers/{trigger_id} for a
   // regional trigger, projects/{project}/triggers/{trigger_id} for a

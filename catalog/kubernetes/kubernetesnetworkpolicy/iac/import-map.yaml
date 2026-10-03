@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesnetworkpolicy
 spec:
@@ -8,13 +8,13 @@ spec:
   values:
     - name: network_policy_name
       derivations:
-        - from_stack_output: network_policy_name
+        - from_output: network_policy_name
         - from_spec_field: name
       where_to_find: >-
         `kubectl get networkpolicies -A` (NAME column).
     - name: network_policy_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `kubectl get networkpolicies -A` (NAMESPACE column); "default" when

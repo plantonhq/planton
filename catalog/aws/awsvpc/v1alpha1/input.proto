@@ -5,9 +5,9 @@ package dev.planton.aws.awsvpc.v1alpha1;
 import "catalog/aws/awsvpc/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-vpc stack-input
-message AwsVpcStackInput {
-  //target cloud-resource
+//aws-vpc iac-input
+message AwsVpcIacInput {
+  //target infra-component
   AwsVpc target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

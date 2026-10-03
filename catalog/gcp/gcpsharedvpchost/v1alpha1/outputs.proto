@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpsharedvpchost.v1alpha1;
 
-// GcpSharedVpcHostStackOutputs captures the host project's identity after
+// GcpSharedVpcHostOutputs captures the host project's identity after
 // provisioning.
-message GcpSharedVpcHostStackOutputs {
+message GcpSharedVpcHostOutputs {
   // The project ID that is now the Shared VPC host -- the resolved value,
   // so it is populated even when the spec left project_id empty and the
   // provider's default project was used. What a

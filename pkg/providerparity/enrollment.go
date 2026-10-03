@@ -34,14 +34,14 @@ import (
 	"sort"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // Enrollment binds one catalog provider to the GA schema its parity is
 // declared against.
 type Enrollment struct {
-	Provider cloudresourcekind.CloudResourceProvider
+	Provider catalogkind.CatalogProvider
 	// GASchema names the committed schema artifact (schemas/<name>-*.json.gz)
 	// that is this provider's parity baseline.
 	GASchema string
@@ -73,7 +73,7 @@ func DiscoverEnrollments(repoRoot string) ([]Enrollment, error) {
 		if err != nil {
 			return nil, errors.Wrapf(err, "%s", page)
 		}
-		if dir := filepath.Base(filepath.Dir(page)); dir != crkreflect.ProviderDirName(provider) {
+		if dir := filepath.Base(filepath.Dir(page)); dir != catalogkindreflect.ProviderDirName(provider) {
 			return nil, errors.Errorf("%s: embedded provider %q does not match its directory %q", page, providerName, dir)
 		}
 		enrollments = append(enrollments, Enrollment{Provider: provider, GASchema: gaSchema})

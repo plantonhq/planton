@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuremonitorautoscalesetting
+    e2e-catalog-kind: azuremonitorautoscalesetting
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/azure/azuremonitorautoscalesetting/e2e/scale-target-plan.yaml"

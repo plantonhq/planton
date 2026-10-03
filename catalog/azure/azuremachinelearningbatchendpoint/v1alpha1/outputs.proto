@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1;
 
-// **AzureMachineLearningBatchEndpointStackOutputs** captures the
+// **AzureMachineLearningBatchEndpointOutputs** captures the
 // outputs of provisioning a Machine Learning batch endpoint.
 //
 // No key outputs exist here BY THE SERVICE'S OWN CONTRACT: batch
@@ -10,7 +10,7 @@ package dev.planton.azure.azuremachinelearningbatchendpoint.v1alpha1;
 // rejects Key mode outright), so there are no static keys to mint,
 // set, or read -- the listKeys ARM action exists on the surface but
 // answers for a mode the service never enables.
-message AzureMachineLearningBatchEndpointStackOutputs {
+message AzureMachineLearningBatchEndpointOutputs {
   // The Azure Resource Manager ID of the batch endpoint.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.MachineLearningServices/workspaces/{ws}/batchEndpoints/{name}
   string batch_endpoint_id = 1;

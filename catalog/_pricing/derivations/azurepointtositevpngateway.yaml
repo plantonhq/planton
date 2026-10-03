@@ -7,9 +7,9 @@
 # so it rides the exclusions instead of a line. The estimate generator
 # replays the catalog presets through these rules; a server-side
 # estimator evaluates the same rules against live manifests.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: azurepointtositevpngateway
 spec:
@@ -30,4 +30,4 @@ spec:
   exclusions:
     - text: connection units bill per concurrently connected remote user per hour -- attendance the manifest cannot know; the address pools bound it without fixing it
     - text: data leaving Azure through client tunnels bills at standard data-transfer rates and follows traffic
-    - text: the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub component
+    - text: the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub kind

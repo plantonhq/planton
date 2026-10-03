@@ -5,10 +5,10 @@ package dev.planton.cloudflare.cloudflarezerotrustaccessservicetoken.v1alpha1;
 import "catalog/cloudflare/cloudflarezerotrustaccessservicetoken/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-// CloudflareZeroTrustAccessServiceTokenStackInput is the input to the IaC module.
+// CloudflareZeroTrustAccessServiceTokenIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-message CloudflareZeroTrustAccessServiceTokenStackInput {
-  // target cloud-resource to be deployed
+message CloudflareZeroTrustAccessServiceTokenIacInput {
+  // target infra-component to be deployed
   CloudflareZeroTrustAccessServiceToken target = 1;
   // provider-config for Cloudflare authentication
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

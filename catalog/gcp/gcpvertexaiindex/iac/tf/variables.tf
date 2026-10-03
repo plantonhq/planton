@@ -1,5 +1,5 @@
 variable "metadata" {
-  description = "Cloud resource metadata"
+  description = "Catalog object metadata"
   type = object({
     name        = string
     id          = optional(string, "")
@@ -51,7 +51,7 @@ variable "spec" {
     # one-field diff on the next plan.
     #
     # A plain string (not a reference) because the gs:// directory URI
-    # has no matching stack output shape on the GCS kinds; compose by
+    # has no matching output shape on the GCS kinds; compose by
     # writing the bucket name into the URI.
     contents_delta_uri = optional(string, "")
 

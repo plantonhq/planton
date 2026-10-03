@@ -34,7 +34,7 @@ Two gaps were documented when the state-backend and foundation charts shipped:
   that forbid granting roles to federated principals).
 
 `GcpServiceAccountIamMember` and `GcpKmsKeyIamMember` closed both gaps as
-components; this change makes the charts consume them.
+kinds; this change makes the charts consume them.
 
 ## Solution / What's New
 

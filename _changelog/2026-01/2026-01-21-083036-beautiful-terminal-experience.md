@@ -225,7 +225,7 @@ if err != nil {
 
 - **Consistent patterns**: All error display follows the same visual language
 - **Extensible framework**: Easy to add new error types with beautiful display
-- **Testable components**: Separated error detection from display logic
+- **Testable kinds**: Separated error detection from display logic
 
 ### Visual Comparison
 
@@ -276,7 +276,7 @@ The "Beautiful Terminal Experience" follows these principles:
 ## Related Work
 
 - [Terraform CLI Support](2026-01-21-064104-full-terraform-cli-support.md) - Used the UI system for Terraform-specific messages
-- [Stack Input CLI Support](2026-01-13-084929-stack-input-cli-support-and-command-refactoring.md) - Clipboard integration foundation
+- [IaC Input CLI Support](2026-01-13-084929-iac-input-cli-support-and-command-refactoring.md) - Clipboard integration foundation
 
 ## Future Enhancements
 

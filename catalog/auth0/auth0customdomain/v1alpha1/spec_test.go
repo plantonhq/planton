@@ -20,7 +20,7 @@ func customDomain(spec *Auth0CustomDomainSpec) *Auth0CustomDomain {
 	return &Auth0CustomDomain{
 		ApiVersion: "auth0.planton.dev/v1alpha1",
 		Kind:       "Auth0CustomDomain",
-		Metadata:   &shared.CloudResourceMetadata{Name: "sign-in-domain"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "sign-in-domain"},
 		Spec:       spec,
 	}
 }

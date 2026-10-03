@@ -4,7 +4,7 @@ Creates a database user on an existing Google Cloud SQL instance — a classic p
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cloud SQL User** -- a `google_sql_user` on the referenced instance: BUILT_IN (username + password, with an optional per-user password policy) or one of the three IAM types (CLOUD_IAM_USER, CLOUD_IAM_SERVICE_ACCOUNT, CLOUD_IAM_GROUP — passwordless, authenticated through IAM)
 
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### GCP Project
 
-- **A Cloud SQL instance** -- the [GcpCloudSql](/cloud-catalog/gcp-cloud-sql) instance the user authenticates against. Reference it via ValueFromRef so the pipeline deploys the instance first.
+- **A Cloud SQL instance** -- the [GcpCloudSql](/infra-catalog/gcp-cloud-sql) instance the user authenticates against. Reference it via ValueFromRef so the pipeline deploys the instance first.
 - **IAM authentication flag** (IAM-typed users on PostgreSQL) -- the instance must carry the database flag `cloudsql.iam_authentication: "on"` before IAM users can be created.
 
 ## Deploy
@@ -53,7 +53,7 @@ spec:
 planton apply -f user.yaml
 ```
 
-This creates a BUILT_IN user named `orders-app` on the referenced instance, its password resolved from the org secret at deploy — plaintext never enters the manifest. A Stack Job tracks the provisioning in real time.
+This creates a BUILT_IN user named `orders-app` on the referenced instance, its password resolved from the org secret at deploy — plaintext never enters the manifest. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -90,16 +90,16 @@ These are the most important decisions when configuring a Cloud SQL user. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpCloudSql** | `instance` | `status.outputs.instance_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -118,6 +118,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Cloud SQL**](/cloud-catalog/gcp-cloud-sql) -- the instance this user authenticates against
-- [**GCP Cloud SQL Database**](/cloud-catalog/gcp-cloud-sql-database) -- the database the application connects to with these credentials
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the workload identity behind a CLOUD_IAM_SERVICE_ACCOUNT user
+- [**GCP Cloud SQL**](/infra-catalog/gcp-cloud-sql) -- the instance this user authenticates against
+- [**GCP Cloud SQL Database**](/infra-catalog/gcp-cloud-sql-database) -- the database the application connects to with these credentials
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the workload identity behind a CLOUD_IAM_SERVICE_ACCOUNT user

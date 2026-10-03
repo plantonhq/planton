@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesplantonplatform
 spec:
@@ -21,14 +21,14 @@ spec:
     - name: name
       tofu_resource_name: planton_platform
       derivations:
-        - from_stack_output: platform_name
+        - from_output: platform_name
       where_to_find: >-
         The platform name — this resource's metadata.name
         (`kubectl get plantonplatforms -A` shows every platform).
     - name: namespace
       tofu_resource_name: planton_platform
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         The platform's namespace (`kubectl get plantonplatforms -A`,
@@ -37,7 +37,7 @@ spec:
     # ── the optional owning namespace ─────────────────────────────────────
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Only imported when create_namespace is true; the platform's
@@ -60,7 +60,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: backup_credentials
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the platform.
@@ -74,7 +74,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: recovery_credentials
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the platform.
@@ -88,7 +88,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: backup_endpoint_ca
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the platform.
@@ -102,7 +102,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: recovery_endpoint_ca
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the platform.
@@ -117,7 +117,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: vault_seal_credentials
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the platform.

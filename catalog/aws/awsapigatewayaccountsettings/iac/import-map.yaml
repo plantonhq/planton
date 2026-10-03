@@ -1,12 +1,12 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsapigatewayaccountsettings
 spec:
   values:
     - name: account_id
       derivations:
-        - from_stack_output: account_id
+        - from_output: account_id
       where_to_find: >-
         The 12-digit AWS account id (top-right account menu, or
         `aws sts get-caller-identity`).

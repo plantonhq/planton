@@ -5,10 +5,10 @@ package dev.planton.azure.azurevirtualnetworkgateway.v1alpha1;
 import "catalog/azure/azurevirtualnetworkgateway/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureVirtualNetworkGatewayStackInput is the input to the IaC modules
+// AzureVirtualNetworkGatewayIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureVirtualNetworkGatewayStackInput {
+message AzureVirtualNetworkGatewayIacInput {
   // The virtual network gateway resource to deploy.
   AzureVirtualNetworkGateway target = 1;
 

@@ -35,4 +35,4 @@ Provisions an Amazon Bedrock agent and its folded satellites using Pulumi
 ## Usage
 
 The module is executed by the Planton platform through the entrypoint in
-`main.go`, which loads the `AwsBedrockAgentStackInput`.
+`main.go`, which loads the `AwsBedrockAgentIacInput`.

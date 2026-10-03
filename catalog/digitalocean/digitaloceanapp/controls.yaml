@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: digitaloceanapp
 spec:
@@ -58,7 +58,7 @@ spec:
       field_path: alerts
       evidence:
         type: spec_default
-        reference: App-level alerts (deployment failures, domain issues) and per-component alerts (CPU, memory, restarts) are declared in the spec; none exist unless declared.
+        reference: App-level alerts (deployment failures, domain issues) and per-kind alerts (CPU, memory, restarts) are declared in the spec; none exist unless declared.
       notes: Basic runtime metrics flow to the DigitalOcean control panel automatically; log_destinations on each component forward logs to external providers (Papertrail, Datadog, Logtail, OpenSearch).
     - control_id: backup-recovery
       status: not_applicable

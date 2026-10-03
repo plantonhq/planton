@@ -4,7 +4,7 @@ Attaches a Google Cloud project to a Shared VPC host (`GcpSharedVpcHost`) as a S
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Shared VPC attachment** -- the `compute_shared_vpc_service_project` binding a service project to its host
 
@@ -60,7 +60,7 @@ planton apply -f shared-vpc-service-project.yaml
 
 - **`deletionPolicy`**: empty or `ABANDON`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -87,7 +87,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpSharedVpcHost](/docs/catalog/gcp/gcpsharedvpchost) — the host this project attaches to
 - [GcpProject](/docs/catalog/gcp/gcpproject) — the service project

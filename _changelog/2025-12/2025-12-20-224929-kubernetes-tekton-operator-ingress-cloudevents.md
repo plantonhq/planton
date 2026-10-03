@@ -6,11 +6,11 @@
 
 ## Summary
 
-Extended the `KubernetesTektonOperator` component to support dashboard ingress via Kubernetes Gateway API and CloudEvents sink URL configuration. These features bring feature parity with the manifest-based `KubernetesTekton` component, enabling production-ready Tekton deployments with external dashboard access and pipeline event notifications.
+Extended the `KubernetesTektonOperator` kind to support dashboard ingress via Kubernetes Gateway API and CloudEvents sink URL configuration. These features bring feature parity with the manifest-based `KubernetesTekton` kind, enabling production-ready Tekton deployments with external dashboard access and pipeline event notifications.
 
 ## Problem Statement / Motivation
 
-The `KubernetesTektonOperator` component provided a simplified way to deploy Tekton using the operator pattern, but lacked two critical features available in the sibling `KubernetesTekton` component:
+The `KubernetesTektonOperator` kind provided a simplified way to deploy Tekton using the operator pattern, but lacked two critical features available in the sibling `KubernetesTekton` kind:
 
 ### Pain Points
 
@@ -108,7 +108,7 @@ metadata:
   name: tekton-operator
 spec:
   operatorVersion: v0.78.0
-  components:
+  kinds:
     pipelines: true
     triggers: true
     dashboard: true
@@ -123,7 +123,7 @@ spec:
 ### For Platform Teams
 - **External Dashboard Access**: Expose Tekton Dashboard with TLS without manual ingress configuration
 - **Pipeline Observability**: Enable event-driven monitoring and alerting via CloudEvents
-- **Consistent Experience**: Same ingress pattern as other Planton components
+- **Consistent Experience**: Same ingress pattern as other Planton kinds
 
 ### For Developers
 - **Simple Configuration**: Two fields to enable powerful features
@@ -149,7 +149,7 @@ spec:
 ## Related Work
 
 - **yaml/v2 Fix** (earlier in session): Fixed CRD timing issues using Pulumi's yaml/v2
-- **KubernetesTekton Component**: Reference implementation with same features
+- **KubernetesTekton Kind**: Reference implementation with same features
 - **Gateway API Pattern**: Follows established Planton ingress conventions
 
 ---

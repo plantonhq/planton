@@ -4,7 +4,7 @@ Deploys an Aurora DSQL cluster — AWS's serverless, PostgreSQL-compatible distr
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **DSQL Cluster** — the serverless cluster with deletion protection, force-destroy posture, optional customer-managed KMS encryption, and (for multi-region halves) the witness region baked in at create
 - **Cluster Peering** — created only when `multiRegion` is set; joins this cluster to its named peers to form one logical active-active database. The peering has no update path and a no-op delete at the provider — changing peers means recreating the cluster
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Aurora DSQL permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Aurora DSQL permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -47,7 +47,7 @@ spec:
 planton apply -f aws-aurora-dsql.yaml
 ```
 
-This creates a delete-protected single-region cluster with AWS-owned encryption; connect any PostgreSQL driver to the `endpoint` output using an IAM auth token as the password. A Stack Job tracks the provisioning in real time.
+This creates a delete-protected single-region cluster with AWS-owned encryption; connect any PostgreSQL driver to the `endpoint` output using an IAM auth token as the password. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -86,16 +86,16 @@ These are the most important decisions when configuring a cluster. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsKmsKey** | `kmsEncryptionKey` | `status.outputs.key_arn` |
 | **AwsAuroraDsql** | `multiRegion.peerClusterArns[]` | `status.outputs.cluster_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -117,6 +117,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption via `kmsEncryptionKey`; swappable in place
-- [**AWS VPC Endpoint**](/cloud-catalog/aws-vpc-endpoint) — the PrivateLink door to the cluster, created against `vpc_endpoint_service_name`
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the application identity that generates DSQL auth tokens; grant it `dsql:DbConnect` on the `cluster_arn`
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption via `kmsEncryptionKey`; swappable in place
+- [**AWS VPC Endpoint**](/infra-catalog/aws-vpc-endpoint) — the PrivateLink door to the cluster, created against `vpc_endpoint_service_name`
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the application identity that generates DSQL auth tokens; grant it `dsql:DbConnect` on the `cluster_arn`

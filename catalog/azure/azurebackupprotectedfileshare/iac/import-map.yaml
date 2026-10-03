@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurebackupprotectedfileshare
 spec:
@@ -11,7 +11,7 @@ spec:
   values:
     - name: backup_protected_file_share_id
       derivations:
-        - from_stack_output: backup_protected_file_share_id
+        - from_output: backup_protected_file_share_id
       where_to_find: >-
         `az backup item list -g <rg> -v <vault>
         --backup-management-type AzureStorage --query

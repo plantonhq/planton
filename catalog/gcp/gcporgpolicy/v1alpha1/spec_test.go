@@ -42,7 +42,7 @@ var _ = ginkgo.Describe("GcpOrgPolicySpec", func() {
 		return &GcpOrgPolicy{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpOrgPolicy",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "disable-serial-port",
 			},
 			Spec: &GcpOrgPolicySpec{

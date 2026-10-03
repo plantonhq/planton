@@ -48,12 +48,12 @@ message Auth0TenantSettings {
   // Must be "Auth0TenantSettings" for this resource type.
   string kind = 2 [(buf.validate.field).string.const = 'Auth0TenantSettings'];
 
-  // metadata contains standard cloud resource metadata.
+  // metadata contains standard catalog object metadata.
   // - name: Unique identifier for the settings resource within Planton
   // - org: Organization that owns it
   // - env: Environment it is deployed from
   // - labels: Key-value pairs for filtering and organization
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec contains the tenant settings to manage.
   Auth0TenantSettingsSpec spec = 4 [(buf.validate.field).required = true];
@@ -65,6 +65,6 @@ message Auth0TenantSettings {
 // Auth0TenantSettingsStatus represents the current state of an
 // Auth0TenantSettings resource. Populated by the deployment system.
 message Auth0TenantSettingsStatus {
-  // outputs contains the stack outputs: the tenant settings as applied.
-  Auth0TenantSettingsStackOutputs outputs = 1;
+  // outputs contains the outputs: the tenant settings as applied.
+  Auth0TenantSettingsOutputs outputs = 1;
 }

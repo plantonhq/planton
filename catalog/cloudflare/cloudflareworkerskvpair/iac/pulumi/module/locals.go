@@ -12,9 +12,9 @@ type Locals struct {
 	CloudflareWorkersKvPair  *cloudflareworkerskvpairv1alpha1.CloudflareWorkersKvPair
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflareworkerskvpairv1alpha1.CloudflareWorkersKvPairStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflareworkerskvpairv1alpha1.CloudflareWorkersKvPairIacInput) *Locals {
 	locals := &Locals{}
-	locals.CloudflareWorkersKvPair = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareWorkersKvPair = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

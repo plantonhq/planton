@@ -28,12 +28,12 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"gopkg.in/yaml.v3"
 )
 
-// ManifestFileName is the per-kind mapping manifest, at the component's
+// ManifestFileName is the per-kind mapping manifest, at the kind's
 // iac/ root beside import-map.yaml.
 const ManifestFileName = "provider-parity.yaml"
 
@@ -121,10 +121,10 @@ type SpecExclusion struct {
 }
 
 // ManifestPath composes the manifest location for one kind, mirroring the
-// module census's path grammar (iac/ sits at the component root; the
+// module census's path grammar (iac/ sits at the kind root; the
 // version segment never appears).
-func ManifestPath(repoRoot string, provider cloudresourcekind.CloudResourceProvider, kind cloudresourcekind.CloudResourceKind) string {
-	return filepath.Join(repoRoot, catalogRoot, crkreflect.ProviderDirName(provider),
+func ManifestPath(repoRoot string, provider catalogkind.CatalogProvider, kind catalogkind.CatalogKind) string {
+	return filepath.Join(repoRoot, catalogRoot, catalogkindreflect.ProviderDirName(provider),
 		strings.ToLower(kind.String()), "iac", ManifestFileName)
 }
 
@@ -153,7 +153,7 @@ func LoadManifest(path string) (*Manifest, error) {
 
 // LoadKindManifest loads one kind's manifest, returning (nil, nil) when the
 // kind ships none -- absence is the enrollment signal, not an error.
-func LoadKindManifest(repoRoot string, provider cloudresourcekind.CloudResourceProvider, kind cloudresourcekind.CloudResourceKind) (*Manifest, error) {
+func LoadKindManifest(repoRoot string, provider catalogkind.CatalogProvider, kind catalogkind.CatalogKind) (*Manifest, error) {
 	path := ManifestPath(repoRoot, provider, kind)
 	if _, err := os.Stat(path); err != nil {
 		if os.IsNotExist(err) {

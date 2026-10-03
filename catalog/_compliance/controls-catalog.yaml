@@ -1,5 +1,5 @@
 # The Planton Control Catalog: the single controlled vocabulary of technical
-# controls the catalog speaks about. Component control profiles
+# controls the catalog speaks about. Catalog kind control profiles
 # (catalog/<provider>/<kind>/controls.yaml) reference these ids; framework
 # crosswalks (frameworks/*.yaml) map external requirements onto them. Ids are
 # immutable once published -- the conformance gate enforces referential
@@ -12,7 +12,7 @@ spec:
   controls:
     - id: enc-at-rest
       name: Encryption at rest
-      statement: Data the component stores is encrypted at rest.
+      statement: Data the kind stores is encrypted at rest.
       category: data_protection
     - id: enc-at-rest-cmk
       name: Customer-managed encryption keys
@@ -20,11 +20,11 @@ spec:
       category: data_protection
     - id: enc-in-transit
       name: Encryption in transit
-      statement: Connections to and from the component are encrypted in transit.
+      statement: Connections to and from the kind are encrypted in transit.
       category: data_protection
     - id: no-public-access
       name: No public exposure
-      statement: The component is not reachable from the public internet.
+      statement: The kind is not reachable from the public internet.
       category: network_exposure
     - id: restricted-ingress
       name: Restricted ingress
@@ -32,11 +32,11 @@ spec:
       category: network_exposure
     - id: edge-protection
       name: Edge request filtering
-      statement: A web application firewall or equivalent request filter protects the component's inbound traffic.
+      statement: A web application firewall or equivalent request filter protects the kind's inbound traffic.
       category: network_exposure
     - id: rbac
       name: Role-based access control
-      statement: Access to the component's management and data planes is governed by role-based access control.
+      statement: Access to the kind's management and data planes is governed by role-based access control.
       category: identity_access
     - id: workload-identity
       name: Keyless workload identity
@@ -48,7 +48,7 @@ spec:
       category: identity_access
     - id: strong-user-auth
       name: Strong user authentication
-      statement: End-user sign-in enforced by the component requires strong credentials -- password strength rules, brute-force protection, or multi-factor verification.
+      statement: End-user sign-in enforced by the kind requires strong credentials -- password strength rules, brute-force protection, or multi-factor verification.
       category: identity_access
     - id: audit-logging
       name: Audit logging
@@ -60,7 +60,7 @@ spec:
       category: observability
     - id: backup-recovery
       name: Automated backup and recovery
-      statement: The component's data is backed up automatically and can be restored.
+      statement: The kind's data is backed up automatically and can be restored.
       category: resilience
     - id: backup-retention-policy
       name: Backup retention policy
@@ -68,11 +68,11 @@ spec:
       category: resilience
     - id: multi-zone-ha
       name: Multi-zone high availability
-      statement: The component can run replicated across availability zones or failure domains.
+      statement: The kind can run replicated across availability zones or failure domains.
       category: resilience
     - id: deletion-protection
       name: Deletion protection
-      statement: The component refuses deletion until protection is explicitly lifted.
+      statement: The kind refuses deletion until protection is explicitly lifted.
       category: change_safety
     - id: managed-patching
       name: Managed patching

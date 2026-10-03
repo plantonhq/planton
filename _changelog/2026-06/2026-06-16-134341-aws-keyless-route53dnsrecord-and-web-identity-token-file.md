@@ -13,7 +13,7 @@ Two related improvements to the AWS keyless web-identity path, plus a dead-doc c
    every AWS pulumi module now resolves credentials through one path and is keyless by
    construction.
 2. **Feature**: added a file-based token source (`web_identity_token_file`) to
-   `AwsWebIdentityProviderConfig` for long-running stack jobs whose runtime outlives a single
+   `AwsWebIdentityProviderConfig` for long-running infra jobs whose runtime outlives a single
    assumed-role session, wired into the pulumi-aws "classic" provider (the only engine that
    can refresh by re-reading the file).
 3. **Cleanup**: removed all 294 unused `overview.md` files from the API tree.
@@ -25,16 +25,16 @@ Two related improvements to the AWS keyless web-identity path, plus a dead-doc c
 - **One module never converged.** The D2 sweep migrated 63 AWS pulumi modules onto the shared
   `pulumiawsprovider.Get` builder, but `AwsRoute53DnsRecord` was deferred because it named its
   provider resource `"aws-provider"` (vs the builder's pinned `"classic-provider"`), so a
-  rename risked replacing live DNS records. With no live users of that component today, the
+  rename risked replacing live DNS records. With no live users of that kind today, the
   rename is risk-free -- and leaving one inline `aws.NewProvider` in the tree teaches the next
   coding agent the pre-keyless pattern (the exact divergence the shared builder exists to end).
   The inline path also carried a latent bug: it passed an empty-string session-token pointer.
 - **Inline tokens cannot refresh.** The keyless web identity is supplied inline
-  (`web_identity_token`) and exchanged once. A stack job that outlives its assumed-role
+  (`web_identity_token`) and exchanged once. An infra job that outlives its assumed-role
   session (role chaining caps cross-account-trust at 1h) has no way to refresh -- the minted
   JWT is in memory only.
 - **Dead docs.** 294 `overview.md` files sat in the API tree referenced by nothing in code,
-  build, or content packaging (only by the deployment-component authoring rules). Several
+  build, or content packaging (only by the catalog-kind authoring rules). Several
   still documented the pre-D2 inline `aws.NewProvider` pattern, actively teaching the wrong
   shape.
 
@@ -43,7 +43,7 @@ Two related improvements to the AWS keyless web-identity path, plus a dead-doc c
 ### 1. route53dnsrecord -> shared builder
 
 `apis/dev/planton/provider/aws/awsroute53dnsrecord/v1/iac/pulumi/module/main.go` now calls
-`pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, spec.Region)` -- the same convergent
+`pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, spec.Region)` -- the same convergent
 path every other AWS module uses. The two inline `aws.NewProvider("aws-provider", ...)`
 branches (and the empty-session-token-pointer bug) are gone. The module is now keyless by
 construction (web identity / static keys / ambient chain), and `"aws-provider"` no longer
@@ -78,7 +78,7 @@ silently treating it as one-shot.
 ### 3. Removed all overview.md
 
 All 294 `overview.md` files removed (`git rm`). Nothing in code, build, or content packaging
-consumes them; only the deployment-component authoring rules mention generating/auditing them.
+consumes them; only the catalog-kind authoring rules mention generating/auditing them.
 
 ## Implementation Details
 
@@ -103,7 +103,7 @@ consumes them; only the deployment-component authoring rules mention generating/
 
 - Every AWS pulumi module now builds its provider through one keyless-capable builder -- zero
   remaining inline `aws.NewProvider` in module code.
-- Long-running stack jobs gain a credential-refresh path without lengthening JWT TTLs (each
+- Long-running infra jobs gain a credential-refresh path without lengthening JWT TTLs (each
   minted token stays short-lived; the runner refreshes the file).
 - Latent empty-session-token-pointer bug removed.
 - 294 dead docs gone; the codebase no longer teaches the pre-D2 inline pattern.

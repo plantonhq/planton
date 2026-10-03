@@ -21,7 +21,7 @@ import (
 // file by its bare name because `go test` runs with the package directory as cwd.
 const DefaultBaselinePath = "pkg/secretcoverage/baseline.yaml"
 
-const baselineHeader = `# Secret-coverage baseline -- the accepted backlog of cloud-resource fields that
+const baselineHeader = `# Secret-coverage baseline -- the accepted backlog of infra-component fields that
 # LOOK sensitive by name (the secret heuristic) but are not yet annotated with the
 # Planton ` + "`sensitive`" + ` option. This is the annotation-sweep TODO list.
 #

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpvertexaisearchdatastore.v1alpha1;
 
-// GcpVertexAiSearchDataStoreStackOutputs captures what the data store and
+// GcpVertexAiSearchDataStoreOutputs captures what the data store and
 // its folded schema, target sites, and sitemaps resolved to.
-message GcpVertexAiSearchDataStoreStackOutputs {
+message GcpVertexAiSearchDataStoreOutputs {
   // Full resource name of the store:
   // projects/{project}/locations/{location}/collections/default_collection/dataStores/{data_store_id}.
   // Control actions and widget configs on an engine name a store this way.

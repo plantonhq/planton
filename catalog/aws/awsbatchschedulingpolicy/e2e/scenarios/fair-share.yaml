@@ -10,7 +10,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsbatchschedulingpolicy
+    e2e-catalog-kind: awsbatchschedulingpolicy
   annotations:
     planton.dev/e2e: "true"
   tags:

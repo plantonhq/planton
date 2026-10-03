@@ -6,9 +6,9 @@
 # the provider's price book (../pricebook/). Simple-metric alarms price
 # exactly (one metric, one flat monthly fee, resolution chosen by period);
 # metric-math and PromQL alarms refuse honestly, per their reasons below.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awscloudwatchalarm
 spec:

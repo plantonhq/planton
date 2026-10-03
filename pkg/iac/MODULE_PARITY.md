@@ -1,13 +1,13 @@
 # IaC Module Parity (Tofu <-> Pulumi)
 
-Every cloud-resource kind ships two IaC implementations under `catalog/.../<kind>/v1/iac/`:
+Every catalog kind ships two IaC implementations under `catalog/.../<kind>/v1/iac/`:
 a Pulumi module (`pulumi/module/*.go`) and an OpenTofu module (`tf/*.tf`). For a given
-`stack-input` they MUST produce the same cloud objects, names, labels, selectors,
-environment, and stack outputs. A divergence here is not cosmetic: it silently changes
+`iac-input` they MUST produce the same catalog objects, names, labels, selectors,
+environment, and outputs. A divergence here is not cosmetic: it silently changes
 what gets deployed depending on which provisioner a resource happens to use.
 
 A kind may declare that it runs on fewer engines (`kind_meta.provisioners` in
-`shared/cloudresourcekind/cloud_resource_kind.proto`) -- a provider with no Pulumi
+`shared/catalogkind/catalog_kind.proto`) -- a provider with no Pulumi
 provider, or kinds proven on OpenTofu alone. Such a kind ships only the modules its
 declared engines run (the anatomy gate holds the tree to the declaration), so it has no
 cross-engine pair to keep in parity; everything below applies between the modules a
@@ -24,10 +24,10 @@ touch a module on either side (or add a new kind).
 
 ## What is enforced automatically (don't re-litigate by hand)
 
-- **Stack-outputs conformance** -- `pkg/outputs/conformance_test.go`
-  (`TestStackOutputsConformance`). Both engines feed the same generic transformer
+- **Outputs conformance** -- `pkg/outputs/conformance_test.go`
+  (`TestOutputsConformance`). Both engines feed the same generic transformer
   (`pkg/outputs.TransformRaw` -> `Flatten` -> `populateMessage`), so a single bar per
-  kind -- "this representative output set fully populates the `StackOutputs` proto with
+  kind -- "this representative output set fully populates the `Outputs` proto with
   nothing left unmapped" -- enforces cross-engine output parity. Add a case for each
   kind whose outputs you care about. You can also dry-run a module ad hoc:
   `planton validate-outputs --kind <Kind> --module-dir <dir> --sample-outputs <json>`,
@@ -69,7 +69,7 @@ matching `pulumi/module/*.go`), confirm both sides agree on:
   back in DIFFERENT string forms on the two engines: the bridged Pulumi provider may
   return a fully qualified resource path (e.g. `projects/{p}/instanceConfigs/{name}`)
   where the released Terraform provider stores the plain name the spec passed in.
-  Exporting the raw attribute as a stack output then breaks output parity — and any
+  Exporting the raw attribute as an output then breaks output parity — and any
   API caller or verifier consuming the output — on one engine only, invisibly to every
   offline gate. Decide the output contract from the spec's vocabulary (usually the
   plain name), normalize the divergent engine with a comment, and prove with a live
@@ -96,7 +96,7 @@ matching `pulumi/module/*.go`), confirm both sides agree on:
 - **Labels.** Same keys and values. The resource-identity labels are the
   `kuberneteslabelkeys` set (`planton.ai/resource`, `planton.ai/name`, `planton.ai/kind`,
   `planton.ai/id`, `planton.ai/organization`, `planton.ai/environment`); the kind value
-  is the `CloudResourceKind` enum string (e.g. `KubernetesPostgres`), and the id label is
+  is the `CatalogKind` enum string (e.g. `KubernetesPostgres`), and the id label is
   present only when `metadata.id` is set.
 - **Pod / service selectors.** Selectors must match the labels the operator/helm chart
   actually puts on the workload pods (e.g. Zalando/Spilo pods are `application: spilo`),
@@ -105,7 +105,7 @@ matching `pulumi/module/*.go`), confirm both sides agree on:
 - **Spec feature coverage.** Every behavior on one side exists on the other: backup,
   restore/standby, ingress, env injection, resource sizing, etc. The proto `spec` is the
   contract -- if it has a field, both modules must honor it.
-- **Outputs shape.** Both engines export the same `StackOutputs` field set (see the
+- **Outputs shape.** Both engines export the same `Outputs` field set (see the
   automated conformance guard above).
 
 ## variables.tf (generator-owned where enrolled, curated elsewhere)
@@ -145,7 +145,7 @@ root (`metadata.name`), with nested secret-handle outputs
 EFFECTIVE application Secret — the operator-generated `<name>-app` normally,
 the module-provided `<name>-app-provided` when initdb declares an owner
 password. See the conformance guard's `KubernetesPostgres` case and its
-negative counterpart `TestStackOutputsConformance_DetectsFlatSecretDrift`
+negative counterpart `TestOutputsConformance_DetectsFlatSecretDrift`
 (which proves flat `password_secret_name`-style outputs are caught).
 
 The `Auth0Client` `jwt_configuration.alg` default is another spec-feature-coverage parity
@@ -156,7 +156,7 @@ Both engines now encode the default -- tofu via `alg = optional(string, "RS256")
 `client.go`. The default is module-level rather than a proto `(options.default)` because the
 proto-default applier (`internal/manifest/protodefaults.ApplyDefaults`) runs only in the CLI
 manifest loader, not on the tfvars-render path used by orchestrated deploys (`pkg/iac/tofu/generators/tfvars.go`
-prunes unset fields). `alg` is not a stack output, so the conformance guard is unaffected.
+prunes unset fields). `alg` is not an output, so the conformance guard is unaffected.
 
 The `KubernetesPostgres` **backup object-store credentials** (the declared-key
 arms of `spec.backup.object_store`) are a spec-feature-coverage +
@@ -172,7 +172,7 @@ because the ObjectStore CR the plugin reads is the same object either engine
 applies. `secret_access_key`/`storage_key`/`connection_string`/
 `service_account_key_json` carry `(options.sensitive) = true`;
 `access_key_id` is an identifier (the secret-coverage heuristic does not flag
-the `_id` suffix), so it needs no annotation. None of these are stack outputs,
+the `_id` suffix), so it needs no annotation. None of these are outputs,
 so the conformance guard is unaffected.
 
 The `CloudflareR2Bucket` module pins the Cloudflare provider to v5 on both engines (tofu
@@ -189,7 +189,7 @@ v5 attrs `domain`/`zone_id`/`enabled = true` plus optional `min_tls`/`ciphers`; 
 `StringValueOrRef` resolved to a plain string before tfvars. CORS, lifecycle, and lock are each a
 single sub-resource created only when their `rules` list is non-empty; the abort-multipart transition
 is always an `Age` condition and storage-class transitions always target `InfrequentAccess` (the sole
-supported class), hard-set identically on both engines. Stack outputs are the proto fields
+supported class), hard-set identically on both engines. Outputs are the proto fields
 `bucket_name`, `bucket_url` (the path-style `https://<account_id>.r2.cloudflarestorage.com/<bucket>`
 S3 URL), `custom_domain_urls` (one per enabled custom domain), and `public_url` (the r2.dev domain
 when public access is enabled) — see the conformance guard's `CloudflareR2Bucket` case.
@@ -204,7 +204,7 @@ resource binding resolving a `StringValueOrRef` to a plain id. The script source
 configured on the bundle path). Routing folds onto the worker as `cloudflare_workers_script_subdomain`
 (workers.dev), `cloudflare_workers_custom_domain` (one per hostname; `environment` is deprecated and omitted),
 and `cloudflare_workers_route` (one per pattern); cron schedules fold onto
-`cloudflare_workers_cron_trigger`. Stack outputs are `script_id`, `script_name`,
+`cloudflare_workers_cron_trigger`. Outputs are `script_id`, `script_name`,
 `custom_domain_hostnames`, `route_patterns`, plus keyed maps `custom_domain_ids` (by hostname),
 `route_ids` and `route_zone_ids` (by list index) so import can reassemble `{account_id}/{domain_id}`
 and `{zone_id}/{route_id}`. Bindings cover the provider's full type list (wrangler.toml grain);
@@ -222,7 +222,7 @@ fold onto the same `cloudflare_workers_script` as the `assets` block: both engin
 is `interface{}`; mutually-exclusive by CEL). When `assets` is set without a script source the
 Worker is assets-only: both engines omit `content`/`main_module`. `assets.binding_name` appends
 an `assets`-type entry to the shared bindings list so a full-stack worker can read assets via
-`env.<NAME>`. No new stack outputs (the workers.dev URL is not derivable — the provider exposes
+`env.<NAME>`. No new outputs (the workers.dev URL is not derivable — the provider exposes
 no account-subdomain lookup). The provider pins the Pulumi Cloudflare SDK at
 **v6.17.0**, and tofu↔Pulumi are at **full parity** across the family: D1 `jurisdiction`, the worker
 service-binding `entrypoint`, worker `limits.subrequests`, the worker custom-domain `zone_id`, and the
@@ -233,7 +233,7 @@ lagging engine is upgraded or degraded-and-documented, never held back with prot
 Hyperdrive's `origin.service_id` (egress through a Workers VPC Service for a private origin) is
 modeled and honored by both engines (tofu `main.tf` origin block, Pulumi `originArgs.ServiceId`),
 omitted when empty; it is mutually exclusive with the spec-level `mtls` block by a message CEL
-(TLS is managed on the VPC Service) and is not a stack output, so the conformance guard is
+(TLS is managed on the VPC Service) and is not an output, so the conformance guard is
 unaffected. Hyperdrive's `origin.password`/`origin.access_client_secret` and the worker `secrets[].value` are
 `StringValueOrRef + (sensitive)`. See the conformance guard's `CloudflareWorker`,
 `CloudflareKvNamespace`, `CloudflareWorkersKvPair`, `CloudflareD1Database`, and
@@ -264,8 +264,8 @@ Cloudflare's own resource topology: a reusable account/zone-scoped **group** (a 
 rules) is referenced by a reusable account-scoped **policy** (decision + rules), which is referenced by
 the **application** (the protected resource) via `policies[]` (`StringValueOrRef` → policy id). Policy and
 group share an identical `CloudflareAccessRule` oneof (26 variants: identity, network/device, service
-token, user-risk, and external evaluation) modeled independently in each component (the codebase has no
-cross-component proto imports); the Terraform modules pass the rule lists straight through (proto field
+token, user-risk, and external evaluation) modeled independently in each kind (the codebase has no
+cross-kind proto imports); the Terraform modules pass the rule lists straight through (proto field
 names match the provider 1:1, including the nested `user_risk_score.user_risk_score`), while the Pulumi
 modules map each variant explicitly. The application carries the full v5 surface — typed `type` enum,
 `destinations`, app-launcher visuals, self-hosted cookie/CORS/interstitial controls, `mfa_config`,
@@ -279,11 +279,11 @@ the Terraform provider (v5.21.1) but **not in the Pulumi Cloudflare SDK (v6.17.0
 The proto models it (full source-of-truth) and the Terraform modules provision it; the Pulumi modules log a
 warning and skip that one variant. Every other field is at full parity. When a newer Pulumi SDK exposes
 `ZeroTrustAccess{Group,Policy}Include/Exclude/Require.CloudflareAccountMember`, wire it in and remove the
-note (see each component's Pulumi `README.md`). See the conformance guard's
+note (see each kind's Pulumi `README.md`). See the conformance guard's
 `CloudflareZeroTrustAccessApplication`, `CloudflareZeroTrustAccessPolicy`, and
 `CloudflareZeroTrustAccessGroup` cases.
 
-The `CloudflareRuleset` component carries the full v5 `cloudflare_ruleset` surface: the 20-value action
+The `CloudflareRuleset` kind carries the full v5 `cloudflare_ruleset` surface: the 20-value action
 set, rule-level `ratelimit` / `logging` / `exposed_credential_check`, and the deep `action_parameters`
 tree — `set_config` (SSL/security-level/Polish/Rocket Loader/autominify/…), the full cache surface
 (`cache_key.custom_key` cookie/header/host/query_string/user, `cache_reserve`, `edge_ttl`/`browser_ttl`,
@@ -316,11 +316,11 @@ so one rule can forward AND invoke a Worker. The catch-all's `matchers` argument
 address's `status` (explicit verification-state override, `unverified`/`verified`) exists in the
 Terraform provider (v5.23.0) but **not in the pulumi-cloudflare SDK (v6.17.0)** — `EmailRoutingAddressArgs`
 carries only `AccountId` and `Email`; tofu honors it, Pulumi omits it with an inline note. Every other
-field is at full parity. Stack outputs: zone `{zone_id, enabled, status, name}` (the zone id is the
+field is at full parity. Outputs: zone `{zone_id, enabled, status, name}` (the zone id is the
 import identity of all three singletons), rule `{rule_id, zone_id}`, address
 `{address_id, email, verified, created}`.
 
-The `CloudflareQueue` component models the queue plus its single (folded) consumer; the Pulumi SDK
+The `CloudflareQueue` kind models the queue plus its single (folded) consumer; the Pulumi SDK
 (v6.17.0) and Terraform provider (v5.21.1) are at **full parity** (`cloudflare_queue` +
 `cloudflare_queue_consumer`, both engines). The consumer is folded onto the queue because at the resource
 level a queue has exactly one consumer with no independent lifecycle (the module still provisions the
@@ -329,7 +329,7 @@ separate consumer resource). The queue has no secret-bearing fields. The v5 API 
 The Worker `queues` producer binding and the R2 `event_notifications` reference a `CloudflareQueue` by name
 and id respectively, at full parity on both engines. See the conformance guard's `CloudflareQueue` case.
 
-The `CloudflarePagesProject` component manages the Pages **project** (build config, optional git source,
+The `CloudflarePagesProject` kind manages the Pages **project** (build config, optional git source,
 per-environment deployment configs, and folded custom domains via `cloudflare_pages_domain`); it never
 manages deployments, because the Cloudflare provider (v5.21.1) and Pulumi SDK (v6.17.0) expose no Pages
 deployment resource — versions are produced out-of-band (git push for git-connected projects, or
@@ -346,7 +346,7 @@ three behaviors that BOTH engines implement identically (learned from the live A
 3. **Empty binding maps are omitted, not `{}`.** The provider normalizes an empty map to null and flags an
    inconsistent apply otherwise; both engines send null for any empty binding group (tofu via
    `length(...) > 0 ? {...} : null`, Pulumi by only assigning a non-empty `...Map`). Bindings resolve a
-   `StringValueOrRef` to a plain id (KV/D1/R2/Queue/Hyperdrive/Worker). Stack outputs are `project_name`,
+   `StringValueOrRef` to a plain id (KV/D1/R2/Queue/Hyperdrive/Worker). Outputs are `project_name`,
    `subdomain`, `domains`, and `created_on` (no deployment-level outputs — none exist at provision time). The
    web-analytics token and secret env values are `(sensitive)`. `CloudflarePagesProject` is **not** marked
    `is_service_kind`: with the git-connected model Cloudflare is the deployer, so Service Hub drives no version

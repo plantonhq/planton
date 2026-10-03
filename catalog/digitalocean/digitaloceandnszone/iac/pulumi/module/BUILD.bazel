@@ -15,7 +15,7 @@ go_library(
         "//catalog/digitalocean/digitaloceandnszone/v1alpha1",
         "//pkg/iac/pulumi/pulumimodule/provider/digitalocean/digitaloceanlabelkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/digitalocean/pulumidigitaloceanprovider",
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_digitalocean_sdk_v4//go/digitalocean",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",

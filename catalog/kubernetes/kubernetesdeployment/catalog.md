@@ -4,7 +4,7 @@ Deploys a containerized application on any Kubernetes cluster as an apps/v1 Depl
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **Kubernetes Deployment** -- the core workload resource with the configured container image, resource requests/limits, environment variables, probes, volume mounts, command/args overrides, lifecycle hooks, security contexts, scheduling rules, sidecar containers, and init containers
@@ -18,7 +18,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -64,11 +64,11 @@ spec:
 planton apply -f deployment.yaml
 ```
 
-This creates a single-replica Deployment with a Kubernetes Service on port 80 and cluster-internal access. Autoscaling, probes, secrets, and hardening are not configured -- add them as your workload needs them. A Stack Job tracks the provisioning in real time.
+This creates a single-replica Deployment with a Kubernetes Service on port 80 and cluster-internal access. Autoscaling, probes, secrets, and hardening are not configured -- add them as your workload needs them. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the deployment to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the deployment to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -88,7 +88,7 @@ These are the most important decisions when configuring a Kubernetes Deployment.
 
 **Container image and deployment track** -- The `container.app.image` field specifies the repository and tag for the application container; deployment pipelines inject the freshly built tag through exactly these paths. The `version` field (e.g., `"main"` or `"review-42"`) is the deployment track, stamped as a pod label so multiple tracks of one app coexist in a namespace with disjoint traffic -- pipelines set it from the git branch.
 
-**Environment variables and secrets** -- Use `container.app.env.variables` for plain configuration and `container.app.env.secrets` for sensitive values. Variables support every Kubernetes-native source (ConfigMap keys, pod fields, container resource quantities) plus ValueFromRef to resolve values from other Cloud Resources at deploy time. Secret literals are materialized into an auto-created Kubernetes Secret; existing Secrets are referenced by name and key.
+**Environment variables and secrets** -- Use `container.app.env.variables` for plain configuration and `container.app.env.secrets` for sensitive values. Variables support every Kubernetes-native source (ConfigMap keys, pod fields, container resource quantities) plus ValueFromRef to resolve values from other Infra Components at deploy time. Secret literals are materialized into an auto-created Kubernetes Secret; existing Secrets are referenced by name and key.
 
 **Availability and autoscaling** -- Set `availability.replicas` for the baseline pod count. Enable `availability.horizontalPodAutoscaling` with `maxReplicas` and a CPU or memory target to auto-scale under load. Configure `availability.strategy` with `maxUnavailable: "0"` and `maxSurge: "1"` for zero-downtime rolling updates. Add a `podDisruptionBudget` to protect availability during node drains and cluster upgrades.
 
@@ -100,7 +100,7 @@ These are the most important decisions when configuring a Kubernetes Deployment.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -108,9 +108,9 @@ These are the most important decisions when configuring a Kubernetes Deployment.
 | **KubernetesServiceAccount** | `pod.serviceAccount` | `status.outputs.service_account_name` |
 | **KubernetesSecret** | `pod.imagePullSecrets` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -135,7 +135,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the target namespace for the Deployment
-- [**Kubernetes ServiceAccount**](/cloud-catalog/kubernetes-service-account) -- the composed identity pods run as, carrying workload-identity bindings and pull secrets
-- [**Kubernetes Ingress**](/cloud-catalog/kubernetes-ingress) -- exposes the Deployment's Service externally with host/path routing and TLS
-- [**Kubernetes HTTPRoute**](/cloud-catalog/kubernetes-http-route) -- Gateway API exposure referencing the exported Service
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the target namespace for the Deployment
+- [**Kubernetes ServiceAccount**](/infra-catalog/kubernetes-service-account) -- the composed identity pods run as, carrying workload-identity bindings and pull secrets
+- [**Kubernetes Ingress**](/infra-catalog/kubernetes-ingress) -- exposes the Deployment's Service externally with host/path routing and TLS
+- [**Kubernetes HTTPRoute**](/infra-catalog/kubernetes-http-route) -- Gateway API exposure referencing the exported Service

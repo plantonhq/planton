@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.aws.awsfsxontapfilesystem.v1alpha1;
 
-// AwsFsxOntapFileSystemStackOutputs captures observable identifiers and
+// AwsFsxOntapFileSystemOutputs captures observable identifiers and
 // endpoints from a provisioned FSx for ONTAP file system. These outputs are
 // used by downstream resources to wire dependencies via StringValueOrRef.
 //
@@ -13,7 +13,7 @@ package dev.planton.aws.awsfsxontapfilesystem.v1alpha1;
 // - SnapMirror replication: needs `intercluster_dns_name` and `intercluster_ip_addresses`
 // - ONTAP CLI administration: needs `management_dns_name` or `management_ip_addresses`
 // - Network troubleshooting: needs `network_interface_ids`, `vpc_id`
-message AwsFsxOntapFileSystemStackOutputs {
+message AwsFsxOntapFileSystemOutputs {
   // The ID of the file system (e.g., "fs-0123456789abcdef0"). Primary
   // identifier used by Storage Virtual Machines and other AWS services.
   string file_system_id = 1;

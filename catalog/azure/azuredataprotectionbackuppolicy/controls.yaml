@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: azuredataprotectionbackuppolicy
 spec:
@@ -54,7 +54,7 @@ spec:
       evidence:
         type: spec_validation
         reference: Every variant REQUIRES its retention grammar -- disk and data_lake_storage a default_retention_duration (ISO-8601, CEL-validated), kubernetes_cluster and both flexible servers a default_retention_rule with at least one life cycle, blob_storage at least one of the operational/vault tier durations -- and every variant layers named retention_rules that keep tagged backups (FirstOfDay/FirstOfWeek/calendar selectors) longer.
-      notes: This component IS the retention policy for modern Azure Backup; the cited field is the disk variant's -- each variant carries the equivalent under its own block. All three presets carry retention -- 01-daily-disk-backup keeps 7 days with first-of-week held 90 days, 02-aks-cluster-backup keeps 14 days with first-of-day held 8 weeks, 03-blob-dual-tier keeps 30 operational / 90 vaulted days with first-of-month held a year. The policy is immutable after create (the provider ships no update path) -- changing retention replaces it.
+      notes: This kind IS the retention policy for modern Azure Backup; the cited field is the disk variant's -- each variant carries the equivalent under its own block. All three presets carry retention -- 01-daily-disk-backup keeps 7 days with first-of-week held 90 days, 02-aks-cluster-backup keeps 14 days with first-of-day held 8 weeks, 03-blob-dual-tier keeps 30 operational / 90 vaulted days with first-of-month held a year. The policy is immutable after create (the provider ships no update path) -- changing retention replaces it.
     - control_id: multi-zone-ha
       status: not_applicable
       notes: A configuration object with no data plane of its own; where recovery points replicate is the vault's redundancy choice, fixed on AzureDataProtectionBackupVault.

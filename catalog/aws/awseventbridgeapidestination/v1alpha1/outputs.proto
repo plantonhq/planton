@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awseventbridgeapidestination.v1alpha1;
 
-// AwsEventBridgeApiDestinationStackOutputs captures the observable
+// AwsEventBridgeApiDestinationOutputs captures the observable
 // state of the connection and destination after apply.
-message AwsEventBridgeApiDestinationStackOutputs {
+message AwsEventBridgeApiDestinationOutputs {
   // The owned connection's ARN - what other instances' destinations
   // and pipe/rule targets reference. Empty when the instance has no
   // connection arm.

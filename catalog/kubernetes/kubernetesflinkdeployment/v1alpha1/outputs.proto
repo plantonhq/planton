@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesflinkdeployment.v1alpha1;
 
-//flink-deployment-kubernetes stack outputs
-message KubernetesFlinkDeploymentStackOutputs {
+//flink-deployment-kubernetes outputs
+message KubernetesFlinkDeploymentOutputs {
   //namespace the Flink cluster runs in.
   string namespace = 1;
 

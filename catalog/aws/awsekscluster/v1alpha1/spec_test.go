@@ -27,7 +27,7 @@ func minimalValidCluster() *AwsEksCluster {
 	return &AwsEksCluster{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsEksCluster",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "platform",
 		},
 		Spec: &AwsEksClusterSpec{

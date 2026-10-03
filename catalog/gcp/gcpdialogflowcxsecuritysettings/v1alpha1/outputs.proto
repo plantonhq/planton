@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpdialogflowcxsecuritysettings.v1alpha1;
 
-// GcpDialogflowCxSecuritySettingsStackOutputs captures the identity Google
+// GcpDialogflowCxSecuritySettingsOutputs captures the identity Google
 // assigned the security settings.
-message GcpDialogflowCxSecuritySettingsStackOutputs {
+message GcpDialogflowCxSecuritySettingsOutputs {
   // Full resource name -- what an agent's security_settings field takes:
   // projects/{project}/locations/{location}/securitySettings/{id}.
   string name = 1;

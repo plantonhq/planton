@@ -73,7 +73,7 @@ flowchart TD
 
 - `USE_WALG_BACKUP` is emitted once: an explicit `enable_backup` wins, otherwise a present
   `r2_config` implies `true`.
-- The dedicated-R2 env mirrors the operator-level component's proven set
+- The dedicated-R2 env mirrors the operator-level kind's proven set
   (`AWS_FORCE_PATH_STYLE=true`, `AWS_REGION=auto`, `AWS_ENDPOINT`), so it is not guesswork.
 - Tofu typing: plain (`{name,value}`) and `secretKeyRef` (`{name,valueFrom}`) env entries are
   appended via single-element `concat()` conditionals so the heterogeneous tuple type-checks

@@ -3,10 +3,10 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesnamespace.v1alpha1;
 
 /**
- * **KubernetesNamespaceStackOutputs** captures observable outputs from a Kubernetes namespace deployment.
+ * **KubernetesNamespaceOutputs** captures observable outputs from a Kubernetes namespace deployment.
  * These outputs provide essential information for referencing the namespace and understanding its configuration.
  */
-message KubernetesNamespaceStackOutputs {
+message KubernetesNamespaceOutputs {
   /**
    * The name of the created Kubernetes namespace.
    * This is the primary identifier for referencing the namespace in other resources.

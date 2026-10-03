@@ -1,5 +1,5 @@
-# Stack outputs — identical names and derivations in the Pulumi module
-# (KubernetesRabbitMqStackOutputs).
+# Outputs — identical names and derivations in the Pulumi module
+# (KubernetesRabbitMqOutputs).
 
 output "namespace" {
   description = "Namespace the cluster runs in"

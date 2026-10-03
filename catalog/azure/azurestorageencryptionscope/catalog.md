@@ -4,7 +4,7 @@ Deploys an encryption scope inside an Azure Storage Account -- a named encryptio
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Encryption Scope** -- a named scope on the referenced storage account (by ARM ID -- the control-plane path), with your chosen key ownership model (platform-managed or your Key Vault key) and optional infrastructure (double) encryption
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -51,7 +51,7 @@ spec:
 planton apply -f scope.yaml
 ```
 
-This creates a platform-managed scope -- a distinct encryption boundary with zero key management: Azure creates and rotates the key. A Stack Job tracks the provisioning in real time.
+This creates a platform-managed scope -- a distinct encryption boundary with zero key management: Azure creates and rotates the key. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,16 +89,16 @@ These are the most important decisions when configuring an encryption scope. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureStorageAccount** | `storageAccountId` | `status.outputs.storage_account_id` |
 | **AzureKeyVaultKey** | `keyVaultKeyId` | `status.outputs.versionless_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -119,6 +119,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- the parent account; with a customer-managed key it must carry an identity with wrap/unwrap access on the key's vault
-- [**Azure Storage Container**](/cloud-catalog/azure-storage-container) -- pins the scope through `defaultEncryptionScope`, optionally blocking the per-blob override for hard isolation
-- [**Azure Key Vault Key**](/cloud-catalog/azure-key-vault-key) -- the customer-managed key, referenced versionless so rotation is transparent
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- the parent account; with a customer-managed key it must carry an identity with wrap/unwrap access on the key's vault
+- [**Azure Storage Container**](/infra-catalog/azure-storage-container) -- pins the scope through `defaultEncryptionScope`, optionally blocking the per-blob override for hard isolation
+- [**Azure Key Vault Key**](/infra-catalog/azure-key-vault-key) -- the customer-managed key, referenced versionless so rotation is transparent

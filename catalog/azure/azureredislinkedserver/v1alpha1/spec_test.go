@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -26,7 +26,7 @@ func cacheRef(name string, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
-				Kind:      cloudresourcekind.CloudResourceKind_AzureRedisCache,
+				Kind:      catalogkind.CatalogKind_AzureRedisCache,
 				Name:      name,
 				FieldPath: fieldPath,
 			},
@@ -44,7 +44,7 @@ func minimalSpec() *AzureRedisLinkedServer {
 	return &AzureRedisLinkedServer{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureRedisLinkedServer",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-link",
 		},
 		Spec: &AzureRedisLinkedServerSpec{

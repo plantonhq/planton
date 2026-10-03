@@ -13,14 +13,14 @@ tags:
 
 Planton turns your own cloud account into a self-service platform. AI designs the infrastructure, verifies the cost and permissions before anything is created, and publishes it as templates your whole team can deploy. Your services then ship onto that infrastructure straight from Git. It deploys to your own cloud accounts (AWS, GCP, Azure, Kubernetes) while managing the workflow, governance, and operational complexity.
 
-The platform is organized around a clear resource hierarchy and a set of interconnected components.
+The platform is organized around a clear resource hierarchy and a set of interconnected kinds.
 
 ## Platform Architecture
 
 ```mermaid
 graph TD
     A[Organization] --> B[Environments]
-    B --> C[Cloud Resources]
+    B --> C[Infra Components]
     B --> D[Services]
 
     E[Connections] --> A
@@ -47,7 +47,7 @@ Secure, reusable integrations with external services. Connect your AWS credentia
 
 ### Infrastructure
 
-Declarative infrastructure provisioning. Browse a catalog of deployment components, compose them into Infra Charts, and deploy with automated Stack Job execution using Pulumi, Terraform, or OpenTofu.
+Declarative infrastructure provisioning. Browse a catalog of catalog kinds, compose them into Infra Charts, and deploy with automated Infra Job execution using Pulumi, Terraform, or OpenTofu.
 
 [Explore Infrastructure](/docs/infrastructure)
 
@@ -87,16 +87,16 @@ Seat-based pricing — automation is never metered for billing, and on planton.a
 
 ### Day 2: First Infrastructure
 
-1. Browse the deployment component catalog
+1. Browse the Infra Catalog
 2. Deploy a database or other resource
 3. Watch the deployment progress in real-time
 4. Access your resource
 
-<!-- SCREENSHOT: Deployment component catalog
-  Page: /infra-hub/deployment-components
-  Action: Show the component catalog with search and filters
-  Focus: Component grid with provider filters
-  Alt: Deployment component catalog showing cloud resources filterable by provider
+<!-- SCREENSHOT: Infra Catalog
+  Page: /infra-hub/catalog-kinds
+  Action: Show the kind catalog with search and filters
+  Focus: Kind grid with provider filters
+  Alt: Infra Catalog showing infra components filterable by provider
 -->
 
 ### Day 3: First Application

@@ -23,8 +23,8 @@ type Locals struct {
 	Parent string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcptagkeyv1alpha1.GcpTagKeyStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcptagkeyv1alpha1.GcpTagKeyIacInput) *Locals {
+	target := iacInput.Target
 
 	shortName := target.Spec.ShortName
 	if shortName == "" {

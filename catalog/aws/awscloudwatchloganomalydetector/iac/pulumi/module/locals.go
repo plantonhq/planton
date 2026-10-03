@@ -5,11 +5,11 @@ import (
 
 	awscloudwatchloganomalydetectorv1alpha1 "github.com/plantonhq/planton/catalog/aws/awscloudwatchloganomalydetector/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 type Locals struct {
 	Target *awscloudwatchloganomalydetectorv1alpha1.AwsCloudwatchLogAnomalyDetector
 	Spec   *awscloudwatchloganomalydetectorv1alpha1.AwsCloudwatchLogAnomalyDetectorSpec
@@ -17,7 +17,7 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, in *awscloudwatchloganomalydetectorv1alpha1.AwsCloudwatchLogAnomalyDetectorStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, in *awscloudwatchloganomalydetectorv1alpha1.AwsCloudwatchLogAnomalyDetectorIacInput) *Locals {
 	locals := &Locals{}
 	locals.Target = in.Target
 	locals.Spec = in.Target.Spec
@@ -30,7 +30,7 @@ func initializeLocals(_ *pulumi.Context, in *awscloudwatchloganomalydetectorv1al
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsCloudwatchLogAnomalyDetector.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsCloudwatchLogAnomalyDetector.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

@@ -5,9 +5,9 @@ package dev.planton.aws.awsbackuprestoretestingplan.v1alpha1;
 import "catalog/aws/awsbackuprestoretestingplan/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsBackupRestoreTestingPlanStackInput is the input for the IaC
+// AwsBackupRestoreTestingPlanIacInput is the input for the IaC
 // modules that manage an AWS Backup restore testing plan.
-message AwsBackupRestoreTestingPlanStackInput {
+message AwsBackupRestoreTestingPlanIacInput {
   // target is the AwsBackupRestoreTestingPlan resource to deploy.
   AwsBackupRestoreTestingPlan target = 1;
   // provider_config contains the AWS provider credentials and configuration.

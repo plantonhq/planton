@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added Alibaba Cloud (alicloud) as provider #25 to Planton, enabling users to manage Alibaba Cloud credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. This integration introduces a **new proto pattern** (enum discriminator + separate messages, no protobuf oneof) to support all 7 upstream authentication methods with clean per-method typing.
+Added Alibaba Cloud (alicloud) as provider #25 to Planton, enabling users to manage Alibaba Cloud credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, IaC input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. This integration introduces a **new proto pattern** (enum discriminator + separate messages, no protobuf oneof) to support all 7 upstream authentication methods with clean per-method typing.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ Planton had no Alibaba Cloud support. Organizations using Alibaba Cloud infrastr
 
 ### Pain Points
 
-- No `alicloud` entry in the `CloudResourceProvider` enum
+- No `alicloud` entry in the `CatalogProvider` enum
 - No credential storage or management for Alibaba Cloud
 - No environment variable mapping for the Terraform Alibaba Cloud provider
 - No frontend UI for capturing Alibaba Cloud credentials
@@ -29,7 +29,7 @@ Implemented comprehensive Alibaba Cloud provider support covering all 7 authenti
 ```mermaid
 flowchart TB
     subgraph proto [Proto Layer]
-        ProviderEnum["cloud_resource_provider.proto\nalicloud = 25"]
+        ProviderEnum["catalog_provider.proto\nalicloud = 25"]
         ProviderConfig["provider/alicloud/provider.proto\nAliCloudProviderConfig + 7 sub-messages"]
         CredentialAPI["credential/v1/api.proto\nALICLOUD enum + oneof"]
     end
@@ -99,7 +99,7 @@ flowchart LR
 
 ### 1. Proto Definitions
 
-**Provider registration** (`cloud_resource_provider.proto`): `alicloud = 25`
+**Provider registration** (`catalog_provider.proto`): `alicloud = 25`
 
 **Provider config** (`provider/alicloud/provider.proto`): `AliCloudProviderConfig` with a package-scope `AuthenticationType` enum and 7 separate sub-message types. The enum is at package scope (not nested in the message) to avoid protobuf C++ scoping conflicts between enum values and message field names.
 
@@ -129,14 +129,14 @@ Added Alibaba Cloud provider page at `/docs/catalog/alicloud` with placeholder f
 
 | Layer | New Files | Modified Files |
 |-------|-----------|----------------|
-| Proto | `provider/alicloud/provider.proto` | `cloud_resource_provider.proto`, `credential/v1/api.proto` |
+| Proto | `provider/alicloud/provider.proto` | `catalog_provider.proto`, `credential/v1/api.proto` |
 | Provider | `provider/alicloud/cli_help.go`, `BUILD.bazel` | -- |
-| Stack Input | `providerenvvars/alicloud.go` | `loader.go` |
+| IaC Input | `providerenvvars/alicloud.go` | `loader.go` |
 | Provider Detect | -- | `guidance.go`, `validate.go` |
 | Backend | -- | `credential.go`, `credential_repo.go`, `credential_service.go`, `credential_resolver.go` |
 | Frontend | `alicloud.tsx` | `types.ts`, `credential-drawer.tsx`, `index.ts`, `utils.ts` |
 | Catalog | `alicloud/index.md` | -- |
-| Generated | `provider.pb.go`, `provider_pb.ts` | `api.pb.go`, `api_pb.ts`, `cloud_resource_provider.pb.go`, `cloud_resource_provider_pb.ts` |
+| Generated | `provider.pb.go`, `provider_pb.ts` | `api.pb.go`, `api_pb.ts`, `catalog_provider.pb.go`, `catalog_provider_pb.ts` |
 
 **Total**: ~30 files, ~1400 insertions
 
@@ -166,7 +166,7 @@ Added Alibaba Cloud provider page at `/docs/catalog/alicloud` with placeholder f
 
 ### Future Work Enabled
 
-- Alibaba Cloud resource kinds (CloudResourceKind range to be assigned)
+- Alibaba Cloud resource kinds (CatalogKind range to be assigned)
 - ECS, VPC, RDS, OSS, SLB, and other Alibaba Cloud service resources
 - Terraform IaC modules wrapping the terraform-provider-alicloud
 

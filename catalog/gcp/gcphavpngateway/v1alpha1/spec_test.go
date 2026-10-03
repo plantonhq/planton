@@ -40,7 +40,7 @@ var _ = ginkgo.Describe("GcpHaVpnGatewaySpec", func() {
 		return &GcpHaVpnGateway{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpHaVpnGateway",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "hub-vpn",
 			},
 			Spec: &GcpHaVpnGatewaySpec{

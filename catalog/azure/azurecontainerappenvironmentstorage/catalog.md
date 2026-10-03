@@ -4,7 +4,7 @@ Registers an Azure Files share as a named storage resource on a Container App En
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Environment Storage Registration** -- on the referenced Container App Environment, addressing the share over exactly one protocol: SMB (storage account name + access key) or NFS (the account's file endpoint, for VNet-injected environments)
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -54,7 +54,7 @@ spec:
 planton apply -f storage.yaml
 ```
 
-This registers the SMB share `app-data-share` on the environment as `app-data`, mountable read-write by any app or job volume that references it. A Stack Job tracks the provisioning in real time.
+This registers the SMB share `app-data-share` on the environment as `app-data`, mountable read-write by any app or job volume that references it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,7 +102,7 @@ These are the most important decisions when configuring a registration. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -111,9 +111,9 @@ These are the most important decisions when configuring a registration. Explore 
 | **AzureStorageAccount** | `accountName` (SMB) | `status.outputs.storage_account_name` |
 | **AzureStorageAccount** | `accessKey` (SMB) | `status.outputs.primary_access_key` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -132,8 +132,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Container App Environment**](/cloud-catalog/azure-container-app-environment) -- where the registration lives
-- [**Azure Storage Share**](/cloud-catalog/azure-storage-share) -- the Azure Files share being registered
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- addresses and authenticates the SMB mount
-- [**Azure Container App**](/cloud-catalog/azure-container-app) -- mounts the registration through AZURE_FILE / NFS_AZURE_FILE volumes
-- [**Azure Container App Job**](/cloud-catalog/azure-container-app-job) -- persists execution results through the same volume seam
+- [**Azure Container App Environment**](/infra-catalog/azure-container-app-environment) -- where the registration lives
+- [**Azure Storage Share**](/infra-catalog/azure-storage-share) -- the Azure Files share being registered
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- addresses and authenticates the SMB mount
+- [**Azure Container App**](/infra-catalog/azure-container-app) -- mounts the registration through AZURE_FILE / NFS_AZURE_FILE volumes
+- [**Azure Container App Job**](/infra-catalog/azure-container-app-job) -- persists execution results through the same volume seam

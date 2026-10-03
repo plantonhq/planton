@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 type Locals struct {
 	Target *awscloudwatchlogaccountpolicyv1alpha1.AwsCloudwatchLogAccountPolicy
 	Spec   *awscloudwatchlogaccountpolicyv1alpha1.AwsCloudwatchLogAccountPolicySpec
@@ -15,7 +15,7 @@ type Locals struct {
 // argument), so this module carries no tag map - the one deliberate
 // absence against the catalog's tag convention (mirrored in the
 // Terraform module).
-func initializeLocals(_ *pulumi.Context, in *awscloudwatchlogaccountpolicyv1alpha1.AwsCloudwatchLogAccountPolicyStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, in *awscloudwatchlogaccountpolicyv1alpha1.AwsCloudwatchLogAccountPolicyIacInput) *Locals {
 	locals := &Locals{}
 	locals.Target = in.Target
 	locals.Spec = in.Target.Spec

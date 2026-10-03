@@ -23,7 +23,7 @@ hosting models, and we now cover both:
 - **Workers Static Assets** — your CI builds, then uploads the artifact; deploys
   as desired state. (Shipped separately on `CloudflareWorker`.)
 - **Pages, git-connected** — you connect a repo and Cloudflare builds on push.
-  Cloudflare is the CI; you manage the project. This component.
+  Cloudflare is the CI; you manage the project. This kind.
 
 ## Solution / What's New
 
@@ -56,8 +56,8 @@ flowchart TB
 
 - **Protos** (`cloudflarepagesproject/v1`): `spec.proto` (one reused
   `CloudflarePagesDeploymentConfig` for preview + production), `api.proto`,
-  `stack_input.proto`, `stack_outputs.proto`; `spec_test.go`.
-- **Registry**: `CloudflarePagesProject = 1816` in `cloud_resource_kind.proto`
+  `iac_input.proto`, `outputs.proto`; `spec_test.go`.
+- **Registry**: `CloudflarePagesProject = 1816` in `catalog_kind.proto`
   (`is_service_kind` intentionally NOT set — see Decisions); regenerated the kind
   map and conformance case.
 - **Pulumi** (`iac/pulumi/module/`): `project.go` (project + folded domains),
@@ -74,7 +74,7 @@ flowchart TB
   because the provider has no deployment resource.
 - **`is_service_kind: false`.** With the git-connected model Cloudflare is the
   deployer, so Service Hub drives no version deploys; the flag stays off.
-- **Stack outputs are project-level only** (`project_name`, `subdomain`,
+- **Outputs are project-level only** (`project_name`, `subdomain`,
   `domains`, `created_on`). Per-deployment URLs/ids don't exist at provision time.
 
 ## Surprises Encountered (and how they were resolved)
@@ -95,7 +95,7 @@ identically in both engines:
 
 ## Validation
 
-- `make protos`, `make generate-cloud-resource-kind-map`, `make reset-gazelle`.
+- `make protos`, `make generate-catalog-kind-map`, `make reset-gazelle`.
 - `go test` (spec + `pkg/outputs` conformance), `planton secret-coverage --check`,
   repo-wide `go build ./...`.
 - `tofu validate` against the real v5 provider; Pulumi entrypoint builds.

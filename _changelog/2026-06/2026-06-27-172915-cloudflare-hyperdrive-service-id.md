@@ -100,7 +100,7 @@ manifests and presets are unaffected; only a config that set both `service_id` a
 
 `make protos`, `go test` / `go test -v` (15 specs incl. the new CEL cases),
 `go build` of the package + Pulumi module, `gofmt`, `go vet`, and
-`planton secret-coverage --check` — all green. `service_id` is not a stack output,
+`planton secret-coverage --check` — all green. `service_id` is not an output,
 so the cross-engine outputs conformance guard is unaffected. Live `tofu apply`
 against a real VPC Service was not run (requires a provisioned Workers VPC Service);
 the proto + both engines are validated statically.
@@ -112,7 +112,7 @@ the proto + both engines are validated statically.
 - **Validated early**: the mTLS/VPC-Service mutual exclusion is enforced at the spec
   level, so an invalid combination is rejected before any provider call.
 - **Zero blast radius**: additive optional field with both engines at parity; existing
-  manifests, presets, and stack outputs are unchanged.
+  manifests, presets, and outputs are unchanged.
 - **Proto stays the source of truth**: the proto now matches the live provider surface,
   and the web wizard generated from it gains the field for free on its next forge.
 

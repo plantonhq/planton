@@ -79,15 +79,15 @@ type ApiGrant struct {
 	OrganizationUsage    string
 }
 
-// initializeLocals creates and populates the Locals struct from stack input
-func initializeLocals(ctx *pulumi.Context, stackInput *auth0clientv1alpha1.Auth0ClientStackInput) *Locals {
+// initializeLocals creates and populates the Locals struct from IaC input
+func initializeLocals(ctx *pulumi.Context, iacInput *auth0clientv1alpha1.Auth0ClientIacInput) *Locals {
 	locals := &Locals{}
 
 	// Store the target resource
-	locals.Auth0Client = stackInput.Target
+	locals.Auth0Client = iacInput.Target
 
-	spec := stackInput.Target.Spec
-	metadata := stackInput.Target.Metadata
+	spec := iacInput.Target.Spec
+	metadata := iacInput.Target.Metadata
 
 	// Core configuration
 	locals.ClientName = metadata.Name

@@ -6,12 +6,12 @@ import "catalog/kubernetes/kubernetesresourcequota/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
 /**
- * **KubernetesResourceQuotaStackInput** defines the input structure for
+ * **KubernetesResourceQuotaIacInput** defines the input structure for
  * deploying Kubernetes namespace resource governance. It carries the target
  * quota specification and the Kubernetes cluster configuration the IaC
  * modules (Pulumi and Terraform) need to reach the cluster.
  */
-message KubernetesResourceQuotaStackInput {
+message KubernetesResourceQuotaIacInput {
   /**
    * The target ResourceQuota resource to be created.
    * Contains the complete specification including metadata, aggregate caps,

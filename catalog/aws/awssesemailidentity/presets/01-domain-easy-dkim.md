@@ -1,6 +1,6 @@
 # Domain with Easy DKIM
 
-Verifies a sending domain with AWS-managed DKIM keys. The stack output
+Verifies a sending domain with AWS-managed DKIM keys. The output
 `dkim_tokens` carries three CNAME names to publish via `AwsRoute53DnsRecord`.
 
 ## When to Use

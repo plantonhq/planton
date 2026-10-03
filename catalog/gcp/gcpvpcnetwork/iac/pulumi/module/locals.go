@@ -7,7 +7,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpvpcnetworkv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpvpcnetwork/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -18,18 +18,18 @@ type Locals struct {
 	GcpLabels         map[string]string
 }
 
-// initializeLocals populates the Locals struct from the stack input.
+// initializeLocals populates the Locals struct from the IaC input.
 // It mirrors the pattern used in the gcp_gke_cluster module and applies the same Planton label strategy.
-func initializeLocals(_ *pulumi.Context, stackInput *gcpvpcnetworkv1alpha1.GcpVpcNetworkStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpvpcnetworkv1alpha1.GcpVpcNetworkIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.GcpVpcNetwork = stackInput.Target
+	locals.GcpVpcNetwork = iacInput.Target
 
 	// Standard Planton‑wide labels for GCP resources
 	locals.GcpLabels = map[string]string{
 		gcplabelkeys.Resource:     strconv.FormatBool(true),
 		gcplabelkeys.ResourceName: locals.GcpVpcNetwork.Spec.NetworkName,
-		gcplabelkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_GcpVpcNetwork.String()),
+		gcplabelkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_GcpVpcNetwork.String()),
 	}
 
 	if locals.GcpVpcNetwork.Metadata.Org != "" {
@@ -44,7 +44,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpvpcnetworkv1alpha1.GcpVp
 		locals.GcpLabels[gcplabelkeys.ResourceId] = locals.GcpVpcNetwork.Metadata.Id
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 
 	return locals
 }

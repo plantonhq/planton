@@ -2,16 +2,16 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awssnssubscription
 spec:
   controls:
     - control_id: enc-at-rest
       status: not_applicable
-      notes: A subscription is a routing rule, not a store -- messages rest on the topic (whose kms_key_id governs server-side encryption on the AwsSnsTopic component) and on the endpoints they land in; nothing rests here.
+      notes: A subscription is a routing rule, not a store -- messages rest on the topic (whose kms_key_id governs server-side encryption on the AwsSnsTopic kind) and on the endpoints they land in; nothing rests here.
     - control_id: enc-at-rest-cmk
       status: not_applicable
       notes: With no stored data there is no key surface; customer-managed keying belongs to the topic and endpoint components.
@@ -27,7 +27,7 @@ spec:
       notes: A subscription exposes nothing -- it pushes messages outward to the declared endpoint. Whether that endpoint is publicly reachable is the endpoint's own posture, decided on its component (or, for HTTP/S URLs, outside the platform entirely).
     - control_id: restricted-ingress
       status: not_applicable
-      notes: No inbound surface exists; who may publish into the pipeline is the topic's access policy on the AwsSnsTopic component, and who may create subscriptions is IAM on sns:Subscribe.
+      notes: No inbound surface exists; who may publish into the pipeline is the topic's access policy on the AwsSnsTopic kind, and who may create subscriptions is IAM on sns:Subscribe.
     - control_id: edge-protection
       status: not_applicable
       notes: There is no listener to put a WAF in front of; request filtering for an HTTP/S endpoint belongs to whatever serves that endpoint.
@@ -50,7 +50,7 @@ spec:
       notes: The component itself enforces no end-user sign-in -- it packages no human sign-in surface; any credentials it carries are workload or administrative access, whose posture rbac and workload-identity carry.
     - control_id: audit-logging
       status: not_applicable
-      notes: Subscribe/Unsubscribe and attribute changes land in CloudTrail by default. Per-delivery status logging is a topic-side opt-in (delivery_feedback on the AwsSnsTopic component) -- this spec deliberately carries no logging surface of its own.
+      notes: Subscribe/Unsubscribe and attribute changes land in CloudTrail by default. Per-delivery status logging is a topic-side opt-in (delivery_feedback on the AwsSnsTopic kind) -- this spec deliberately carries no logging surface of its own.
     - control_id: monitoring-integration
       status: enforced_by_default
       evidence:

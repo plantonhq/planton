@@ -10,15 +10,15 @@ import (
 // Resources is the module entry point.
 func Resources(
 	ctx *pulumi.Context,
-	stackInput *cloudflarer2bucketv1alpha1.CloudflareR2BucketStackInput,
+	iacInput *cloudflarer2bucketv1alpha1.CloudflareR2BucketIacInput,
 ) error {
 	// 1. Prepare locals.
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// 2. Create a Cloudflare provider from the supplied credential.
 	cloudflareProvider, err := pulumicloudflareprovider.Get(
 		ctx,
-		stackInput.ProviderConfig,
+		iacInput.ProviderConfig,
 	)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup Cloudflare provider")

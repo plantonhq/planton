@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarenotificationwebhook.v1alpha1;
 
-// CloudflareNotificationWebhookStackOutputs captures the observable outputs
+// CloudflareNotificationWebhookOutputs captures the observable outputs
 // after registering the webhook destination.
-message CloudflareNotificationWebhookStackOutputs {
+message CloudflareNotificationWebhookOutputs {
   // The Cloudflare-assigned UUID of the webhook destination (what
   // notification policies reference).
   string webhook_id = 1;

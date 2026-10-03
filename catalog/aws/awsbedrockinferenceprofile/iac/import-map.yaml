@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsbedrockinferenceprofile
 spec:
@@ -9,7 +9,7 @@ spec:
   values:
     - name: inference_profile_id
       derivations:
-        - from_stack_output: inference_profile_id
+        - from_output: inference_profile_id
         - from_metadata_name: true
       where_to_find: >-
         `aws bedrock list-inference-profiles --type-equals APPLICATION`

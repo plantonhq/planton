@@ -18,17 +18,17 @@ blocking. It turns a class of production incident into a sub-second red check on
 The fix for the helm v3 break removed the trigger, but the *reason it reached production*
 was a process gap: the failure is statically detectable with zero infrastructure, but the
 only Terraform execution in CI is the weekly e2e `apply`, which needs real clusters/DNS and
-skips the DNS-dependent components entirely.
+skips the DNS-dependent kinds entirely.
 
 ### Pain Points
 
 - **PRs never run Terraform statically.** `e2e-kubernetes.yaml` only *compiles* e2e tests on
   PRs; the real init/apply runs weekly. No `tofu validate` runs on any PR.
 - **No repo-wide `tofu validate`.** `terraform validate` exists only as a manual agent step
-  in `complete-planton-component.mdc`, never in CI.
+  in `complete-catalog-kind.mdc`, never in CI.
 - **`.terraform.lock.hcl` is gitignored**, so every CI/runner `tofu init` resolves providers
   fresh -- an unpinned module floats to the latest major (exactly the helm v3 path).
-- **The failing component was an e2e `skip`.** `KubernetesExternalDns` / `KubernetesCertManager`
+- **The failing kind was an e2e `skip`.** `KubernetesExternalDns` / `KubernetesCertManager`
   profiles are `status: skip` ("requires cloud DNS provider_config" / "ACME + DnsProvider"),
   so a real tofu apply of them never ran in CI -- the first tofu adopter (GoSilver) hit it.
 - **Latent siblings.** 22 more modules had the same unpinned defect, undetected.
@@ -59,7 +59,7 @@ flowchart TB
 `hack/guards/ensure_tf_provider_pins.sh` fails if any `apis/**/v1/iac/tf` module references a
 provider (`resource "<p>_..."` / `data "<p>_..."`) without declaring it in
 `required_providers`. Unpinned providers are exactly what let `tofu init` float to a new
-major. No network/cluster/creds, so it covers `skip`/`deferred` components too.
+major. No network/cluster/creds, so it covers `skip`/`deferred` kinds too.
 
 ### 2. `tofu validate` in CI (`.github/workflows/lint.terraform-modules.yaml`)
 
@@ -101,7 +101,7 @@ After this, all 377 tofu modules pin every provider they reference (guard verifi
 ## Benefits
 
 - A would-be production incident becomes a **~sub-second, infra-free red check** on the PR.
-- Coverage finally includes **`skip`/`deferred` components** (ExternalDns, CertManager, etc.)
+- Coverage finally includes **`skip`/`deferred` kinds** (ExternalDns, CertManager, etc.)
   that e2e can never `apply`-test.
 - The nightly drift net catches a **provider release breaking an unchanged module** -- the
   exact, sneakiest variant that no changed-files check would see.
@@ -134,7 +134,7 @@ the parity sweep, not fixed here.
 - Directly follows `2026-06-04-...-helm-provider-v3-migration-and-externaldns-parity.md`
   (the fix this gate prevents from regressing).
 - Complements the existing static guards `hack/guards/ensure_pulumi_entrypoints.sh` and the
-  `pkg/outputs` stack-output conformance test -- this is their Terraform-side counterpart.
+  `pkg/outputs` output conformance test -- this is their Terraform-side counterpart.
 
 ---
 

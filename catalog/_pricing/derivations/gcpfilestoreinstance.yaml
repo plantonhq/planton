@@ -11,9 +11,9 @@
 # of pricing the wrong model. IOPS quantity has two arms mirroring the
 # spec's oneof: fixed_iops reads max_iops directly; iops_per_tb
 # multiplies capacity by max_iops_per_tb over 1024. Schema:
-# finops/componentcostderivation/v1.
+# finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: gcpfilestoreinstance
 spec:

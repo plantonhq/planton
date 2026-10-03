@@ -18,13 +18,13 @@ The cluster owns the warehouse brain: compute topology (node type and count), cr
 - **Cross-VPC and cross-account access** -- `endpointAccesses` create Redshift-managed VPC endpoints into other subnet groups (RA3 only; per-endpoint private addresses exported); `endpointAuthorizations` grant other AWS accounts permission to create their own endpoints to this cluster (the grantor side -- the grantee's endpoint lives in their account).
 - **Snapshot schedule** -- `snapshotScheduleIdentifier` associates the cluster with an existing account-level schedule (AWS keeps one per cluster), replacing the default automated-snapshot cadence.
 
-## Stack outputs
+## Outputs
 
 `cluster_identifier`, `cluster_arn`, `cluster_namespace_arn`, `endpoint` (address:port), `dns_name`, `database_name`, `port`, `subnet_group_name`, `parameter_group_name`, `master_password_secret_arn`, `endpoint_access_addresses` (keyed by endpoint name), `usage_limit_ids` (AWS-generated, keyed by feature/limit-type/period).
 
 ## How it works
 
-Planton provisions via the Pulumi or Terraform module in `iac/`, both implementing the same contract at full parity. The API contract is protobuf-based (`spec.proto`); stack execution is orchestrated using `AwsRedshiftClusterStackInput` (provider credentials + IaC info).
+Planton provisions via the Pulumi or Terraform module in `iac/`, both implementing the same contract at full parity. The API contract is protobuf-based (`spec.proto`); stack execution is orchestrated using `AwsRedshiftClusterIacInput` (provider credentials + IaC info).
 
 ## References
 

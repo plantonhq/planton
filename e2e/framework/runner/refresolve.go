@@ -10,20 +10,20 @@ import (
 	"github.com/plantonhq/planton/pkg/outputs"
 	"github.com/plantonhq/planton/pkg/protobufyaml"
 	"github.com/plantonhq/planton/pkg/reflection/metadatareflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
-// DependencyOutputs holds the captured stack outputs of every deployed
+// DependencyOutputs holds the captured outputs of every deployed
 // prerequisite, keyed by kind and then by manifest name. The second level exists
 // because a prerequisite install profile may deploy several instances of the
 // same kind (e.g. the two different-AZ subnets a load balancer requires), and a
 // reference must be able to pick the specific instance it means.
-type DependencyOutputs map[cloudresourcekind.CloudResourceKind]map[string]map[string]interface{}
+type DependencyOutputs map[catalogkind.CatalogKind]map[string]map[string]interface{}
 
 // ResolveManifestRefs implements, for the standalone E2E harness, the foreign-key
 // resolution the orchestrated lanes perform: it replaces each value_from
-// reference in the component manifest that matches a deployed prerequisite
+// reference in the kind manifest that matches a deployed prerequisite
 // with the literal value read from that prerequisite's outputs. Standalone
 // Planton otherwise requires literal values -- the tofu generator errors on an
 // unresolved ref and the pulumi modules drop it -- so this is the step that
@@ -66,8 +66,8 @@ func ResolveManifestRefs(manifestPath string, depOutputs DependencyOutputs) (str
 		name string
 		outs map[string]string
 	}
-	bySlug := make(map[cloudresourcekind.CloudResourceKind]map[string]instance, len(depOutputs))
-	perKind := make(map[cloudresourcekind.CloudResourceKind][]instance, len(depOutputs))
+	bySlug := make(map[catalogkind.CatalogKind]map[string]instance, len(depOutputs))
+	perKind := make(map[catalogkind.CatalogKind][]instance, len(depOutputs))
 	for kind, instances := range depOutputs {
 		bySlug[kind] = make(map[string]instance, len(instances))
 		for name, out := range instances {

@@ -25,8 +25,8 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // machineryArgPaths are Terraform's own operational surface, present on
@@ -221,7 +221,7 @@ type Accounting struct {
 // artifacts, the dispositions ledger from dispositionsPath and the admission
 // list from admissionsDir (empty strings for the defaults). gaSchema names
 // the parity-baseline schema (e.g. "google").
-func BuildAccounting(repoRoot string, provider cloudresourcekind.CloudResourceProvider, schemas map[string]*Schema, gaSchema, dispositionsPath, admissionsDir string) (Accounting, error) {
+func BuildAccounting(repoRoot string, provider catalogkind.CatalogProvider, schemas map[string]*Schema, gaSchema, dispositionsPath, admissionsDir string) (Accounting, error) {
 	if _, ok := schemas[gaSchema]; !ok {
 		return Accounting{}, errors.Errorf("GA schema %q is not among the loaded schemas", gaSchema)
 	}
@@ -232,7 +232,7 @@ func BuildAccounting(repoRoot string, provider cloudresourcekind.CloudResourcePr
 	}
 	manifests := map[string]*Manifest{}
 	for _, m := range modules {
-		kind := crkreflect.KindFromString(m.Kind)
+		kind := catalogkindreflect.KindFromString(m.Kind)
 		manifest, err := LoadKindManifest(repoRoot, provider, kind)
 		if err != nil {
 			return Accounting{}, err
@@ -255,7 +255,7 @@ func BuildAccounting(repoRoot string, provider cloudresourcekind.CloudResourcePr
 	if err != nil {
 		return Accounting{}, err
 	}
-	acc := buildAccounting(crkreflect.ProviderDirName(provider), spec, modules, schemas, gaSchema, manifests, ledger, admissions)
+	acc := buildAccounting(catalogkindreflect.ProviderDirName(provider), spec, modules, schemas, gaSchema, manifests, ledger, admissions)
 
 	// Provider-block accounting, enrolled by manifest presence. Composed here
 	// (the I/O boundary) rather than inside the pure join so the existing

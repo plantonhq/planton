@@ -6,7 +6,7 @@
 
 ## Summary
 
-Rewrote the entire Runner documentation section to remove intellectual property details while strengthening the enterprise trust narrative. Consolidated from 5 pages to 3 pages. All references to internal technologies (Konnectivity, Temporal), endpoints, ports, protocol details, component names, and architectural internals have been removed. The docs now focus exclusively on what enterprise security-conscious customers need to evaluate and trust the Runner model.
+Rewrote the entire Runner documentation section to remove intellectual property details while strengthening the enterprise trust narrative. Consolidated from 5 pages to 3 pages. All references to internal technologies (Konnectivity, Temporal), endpoints, ports, protocol details, kind names, and architectural internals have been removed. The docs now focus exclusively on what enterprise security-conscious customers need to evaluate and trust the Runner model.
 
 ## Problem Statement / Motivation
 
@@ -21,7 +21,7 @@ The original Runner documentation (5 pages, ~860 lines) was written with deep so
 - Channel identifier format: `org.{org-slug}.runner.{runner-slug}`
 - Virtual hostname routing: `{channel-id}.tunnel.local:50051`
 - HTTP CONNECT protocol details
-- Three-component architecture breakdown (Tunnel Agent, gRPC Server, Temporal Worker)
+- Three-kind architecture breakdown (Tunnel Agent, gRPC Server, Temporal Worker)
 - Execution modes (`grpc`, `temporal`, `dual`) with `--mode` flag
 - Local credential storage paths
 - Certificate CN validation implementation
@@ -40,7 +40,7 @@ None of this helps an enterprise customer decide to trust Runner. It helps a com
 
 ### Pages Deleted (2)
 
-- **`runner/architecture.md`** — Entirely internal implementation detail (component names, execution modes, Go binary design, request flow diagrams showing internal routing, channel identification system).
+- **`runner/architecture.md`** — Entirely internal implementation detail (kind names, execution modes, Go binary design, request flow diagrams showing internal routing, channel identification system).
 
 - **`runner/runner-tunnel.md`** — Konnectivity references, tunnel endpoint URLs, HTTP CONNECT protocol, virtual hostname format, "Why Temporal Uses a Separate Path" section.
 

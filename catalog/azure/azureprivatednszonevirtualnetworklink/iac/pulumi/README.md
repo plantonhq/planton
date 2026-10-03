@@ -24,7 +24,7 @@ disagree with the referenced zone.
 
 ## Inputs
 
-The module receives an `AzurePrivateDnsZoneVirtualNetworkLinkStackInput` containing:
+The module receives an `AzurePrivateDnsZoneVirtualNetworkLinkIacInput` containing:
 
 - `target.spec.name` -- the link's name under the parent zone
 - `target.spec.private_dns_zone_id` -- the parent zone's ARM ID (references resolved to a literal by the platform; zone name + resource group derived from it)

@@ -11,7 +11,7 @@ new `spec.assets` block at a built site directory and the Worker serves it
 directly from Cloudflare's edge — as a pure static site/SPA, or alongside a
 script as a full-stack app. This makes `CloudflareWorker` the answer to "deploy a
 static or full-stack site to Cloudflare," and it deploys as ordinary desired
-state (a changed directory ships a new version) through the existing stack-job
+state (a changed directory ships a new version) through the existing infra-job
 flow. Both the Terraform and Pulumi modules implement it at full parity on
 provider v5 / pulumi-cloudflare v6.17.0.
 
@@ -101,7 +101,7 @@ tofu↔pulumi parity; no `PARITY-EXCEPTION`.
 
 - One resource hosts static sites, SPAs, and full-stack apps at the edge.
 - Deploys as desired state — a changed directory is a new version — via the
-  normal stack-job flow, no new deploy modality required.
+  normal infra-job flow, no new deploy modality required.
 - Stays composable: assets sit alongside all existing bindings (KV/D1/R2/Queues/…).
 
 ## Impact

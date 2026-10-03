@@ -30,7 +30,7 @@ func validResource() *AzureAvailabilitySet {
 	return &AzureAvailabilitySet{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureAvailabilitySet",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-avset",
 		},
 		Spec: &AzureAvailabilitySetSpec{

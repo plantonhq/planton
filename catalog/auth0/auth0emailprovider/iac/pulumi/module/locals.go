@@ -4,7 +4,7 @@ import (
 	auth0emailproviderv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0emailprovider/v1alpha1"
 )
 
-// Locals holds the values the module computes from the stack input. It mirrors
+// Locals holds the values the module computes from the IaC input. It mirrors
 // the Terraform module's locals.tf -- keep them in lockstep.
 type Locals struct {
 	// ResourceName is the resource's identity (the Pulumi resource name).
@@ -65,8 +65,8 @@ type Message struct {
 	ViewContentLink      *bool
 }
 
-func initializeLocals(stackInput *auth0emailproviderv1alpha1.Auth0EmailProviderStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(iacInput *auth0emailproviderv1alpha1.Auth0EmailProviderIacInput) *Locals {
+	target := iacInput.Target
 	spec := target.Spec
 
 	locals := &Locals{

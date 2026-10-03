@@ -14,13 +14,13 @@ module/
   outputs.go     — Output key constants
 ```
 
-## Stack Inputs
+## IaC Inputs
 
-The module reads `AwsTransitGatewayRouteTableStackInput` which contains:
+The module reads `AwsTransitGatewayRouteTableIacInput` which contains:
 - `target` — The fully-specified `AwsTransitGatewayRouteTable` resource
 - `provider_config` — AWS credentials/region resolution
 
-## Stack Outputs
+## Outputs
 
 | Key | Description |
 |-----|-------------|

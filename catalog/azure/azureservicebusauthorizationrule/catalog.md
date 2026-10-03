@@ -4,7 +4,7 @@ Mints a SAS (shared-access-signature) credential for Azure Service Bus: a named 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **A SAS authorization rule** -- at namespace, queue, or topic scope (Azure models these as three ARM types with identical shapes; this kind dispatches to the right one from whichever parent you set)
 - **Primary and secondary keys** -- with ready-to-use connection strings for each, surfaced as sensitive outputs; the secondary pair exists for zero-downtime rotation
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -53,7 +53,7 @@ spec:
 planton apply -f rule.yaml
 ```
 
-This mints `orders-api-sender`, a send-only SAS credential scoped to the `orders-queue` queue -- the tightest credential Service Bus can offer a producer. A Stack Job tracks the provisioning in real time.
+This mints `orders-api-sender`, a send-only SAS credential scoped to the `orders-queue` queue -- the tightest credential Service Bus can offer a producer. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -84,7 +84,7 @@ These are the most important decisions when configuring an authorization rule. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -92,9 +92,9 @@ These are the most important decisions when configuring an authorization rule. E
 | **AzureServiceBusQueue** | `queueId` | `status.outputs.queue_id` |
 | **AzureServiceBusTopic** | `topicId` | `status.outputs.topic_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -114,8 +114,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Service Bus Namespace**](/cloud-catalog/azure-service-bus-namespace) -- the namespace-wide scope, and the root rule's home
-- [**Azure Service Bus Queue**](/cloud-catalog/azure-service-bus-queue) -- the least-privilege single-queue scope
-- [**Azure Service Bus Topic**](/cloud-catalog/azure-service-bus-topic) -- the single-topic scope (publishers and subscription consumers)
-- [**Azure Service Bus Disaster Recovery Config**](/cloud-catalog/azure-service-bus-disaster-recovery-config) -- consumes a namespace-scoped rule's ID for least-privilege alias credentials
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- the keyless Entra alternative to SAS
+- [**Azure Service Bus Namespace**](/infra-catalog/azure-service-bus-namespace) -- the namespace-wide scope, and the root rule's home
+- [**Azure Service Bus Queue**](/infra-catalog/azure-service-bus-queue) -- the least-privilege single-queue scope
+- [**Azure Service Bus Topic**](/infra-catalog/azure-service-bus-topic) -- the single-topic scope (publishers and subscription consumers)
+- [**Azure Service Bus Disaster Recovery Config**](/infra-catalog/azure-service-bus-disaster-recovery-config) -- consumes a namespace-scoped rule's ID for least-privilege alias credentials
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- the keyless Entra alternative to SAS

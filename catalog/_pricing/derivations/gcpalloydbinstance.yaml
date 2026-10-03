@@ -7,9 +7,9 @@
 # instance lives wherever its parent cluster does -- so the region is a
 # stated assumption. PRIMARY and SECONDARY standalone instances refuse
 # honestly rather than guess their node math. Schema:
-# finops/componentcostderivation/v1.
+# finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: gcpalloydbinstance
 spec:

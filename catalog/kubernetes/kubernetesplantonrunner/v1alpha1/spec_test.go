@@ -31,7 +31,7 @@ func minimalValidRunner() *KubernetesPlantonRunner {
 	return &KubernetesPlantonRunner{
 		ApiVersion: "kubernetes.planton.dev/v1alpha1",
 		Kind:       "KubernetesPlantonRunner",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "cluster-runner",
 		},
 		Spec: &KubernetesPlantonRunnerSpec{

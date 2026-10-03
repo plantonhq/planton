@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.azure.azurecosmosdbsqlroleassignment.v1alpha1;
 
-// **AzureCosmosdbSqlRoleAssignmentStackOutputs** captures the outputs of
+// **AzureCosmosdbSqlRoleAssignmentOutputs** captures the outputs of
 // provisioning a Cosmos DB SQL role assignment -- the grant record's ARM
 // identity, exported so downstream automation can audit or reference the
 // grant without re-reading the spec.
-message AzureCosmosdbSqlRoleAssignmentStackOutputs {
+message AzureCosmosdbSqlRoleAssignmentOutputs {
   // The fully-scoped Azure Resource Manager ID of the role assignment.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.DocumentDB/databaseAccounts/{account}/sqlRoleAssignments/{guid}
   string role_assignment_id = 1;

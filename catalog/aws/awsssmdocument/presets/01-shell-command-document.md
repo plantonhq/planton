@@ -22,7 +22,7 @@ shell script Systems Manager runs on managed EC2 nodes.
 - Add `versionName` labels per release (immutable forever — treat them
   like git tags)
 - Schedule it against tagged instances with
-  [AWS SSM Association](/cloud-catalog/aws-ssm-association) or run it
+  [AWS SSM Association](/infra-catalog/aws-ssm-association) or run it
   in a window with
-  [AWS SSM Maintenance Window](/cloud-catalog/aws-ssm-maintenance-window)
+  [AWS SSM Maintenance Window](/infra-catalog/aws-ssm-maintenance-window)
 - Share it to sibling accounts with `shareWithAccountIds`

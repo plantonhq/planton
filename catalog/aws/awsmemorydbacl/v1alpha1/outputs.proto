@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsmemorydbacl.v1alpha1;
 
-// AwsMemorydbAclStackOutputs captures observable identifiers from a
+// AwsMemorydbAclOutputs captures observable identifiers from a
 // provisioned MemoryDB ACL. These outputs are used by downstream resources
 // to wire dependencies via StringValueOrRef — most importantly the cluster's
 // `acl_name` attachment.
-message AwsMemorydbAclStackOutputs {
+message AwsMemorydbAclOutputs {
   // The ACL's AWS name. This is what clusters attach via their `acl_name`
   // and what the AWS CLI/API address.
   string acl_name = 1;

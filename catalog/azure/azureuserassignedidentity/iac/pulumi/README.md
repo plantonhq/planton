@@ -20,7 +20,7 @@ grants live in `AzureRoleAssignment` and keyless trust rules in
 
 ## Inputs
 
-The module receives an `AzureUserAssignedIdentityStackInput` containing:
+The module receives an `AzureUserAssignedIdentityIacInput` containing:
 
 - `target.spec.region` -- the Azure region (a regional resource)
 - `target.spec.resource_group` -- the resource group name (references resolved to a literal by the platform)

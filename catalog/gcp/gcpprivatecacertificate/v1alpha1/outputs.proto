@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpprivatecacertificate.v1alpha1;
 
-// GcpPrivateCaCertificateStackOutputs captures the issued certificate -- what the workload
+// GcpPrivateCaCertificateOutputs captures the issued certificate -- what the workload
 // installs beside its private key.
-message GcpPrivateCaCertificateStackOutputs {
+message GcpPrivateCaCertificateOutputs {
   // Full resource name --
   // projects/{project}/locations/{location}/caPools/{pool}/certificates/{certificate_id}.
   string name = 1;

@@ -5,7 +5,7 @@
 # keycloak-k8s-resources release (see locals.tf).
 
 variable "metadata" {
-  description = "Cloud resource metadata"
+  description = "Catalog object metadata"
   type = object({
     name        = string
     id          = optional(string, "")

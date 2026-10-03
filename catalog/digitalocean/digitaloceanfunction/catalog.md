@@ -4,7 +4,7 @@ Deploys serverless functions as an App Platform app with a single functions comp
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **App Platform Application** -- a `digitalocean_app` named `spec.appName`
 - **Functions component** -- one functions component named `spec.functionName`, sourced from the Git remote you declared
@@ -16,7 +16,7 @@ App Platform reads `project.yml` from the repository root (or from `sourceDirect
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### DigitalOcean Account
@@ -55,7 +55,7 @@ spec:
 planton apply -f do-function.yaml
 ```
 
-This clones the public hello-world sample and deploys it as an HTTP function; no GitHub connection is required. A Stack Job tracks the provisioning in real time.
+This clones the public hello-world sample and deploys it as an HTTP function; no GitHub connection is required. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -88,7 +88,7 @@ These are the most important decisions when configuring a functions app. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -96,9 +96,9 @@ These are the most important decisions when configuring a functions app. Explore
 
 Sources are Git coordinates, not references; the project is the one Planton-managed resource a functions app names.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -116,4 +116,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-Functions that should share an app with HTTP services or workers belong on [**DigitalOcean App Platform App**](/cloud-catalog/digital-ocean-app) as `spec.functions`, not on this kind.
+Functions that should share an app with HTTP services or workers belong on [**DigitalOcean App Platform App**](/infra-catalog/digital-ocean-app) as `spec.functions`, not on this kind.

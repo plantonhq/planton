@@ -4,7 +4,7 @@ Deploys a Kubernetes ConfigMap into a Cloud Composer environment's GKE cluster, 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **User Workloads ConfigMap** -- a Kubernetes ConfigMap in the Composer environment's user-workloads namespace, holding the configured key-value data
 - **Environment Attachment** -- the ConfigMap is created through the Cloud Composer API against the referenced environment, so its lifecycle follows the environment's
@@ -13,12 +13,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A Cloud Composer environment** (Composer 3, or Composer 2 with user workloads support) in the target project and region — reference a GcpCloudComposerEnvironment Cloud Resource via ValueFromRef. The Composer API is necessarily already enabled: a ConfigMap cannot exist without an environment, so the module deliberately performs no API enablement of its own.
+- **A Cloud Composer environment** (Composer 3, or Composer 2 with user workloads support) in the target project and region — reference a GcpCloudComposerEnvironment Infra Component via ValueFromRef. The Composer API is necessarily already enabled: a ConfigMap cannot exist without an environment, so the module deliberately performs no API enablement of its own.
 
 ## Deploy
 
@@ -54,7 +54,7 @@ spec:
 planton apply -f config-map.yaml
 ```
 
-This creates a ConfigMap named `dag-config` in the `prod-airflow` environment's cluster, holding two tuning values DAGs read at runtime (`projectId` omitted falls back to the provider's default project). A Stack Job tracks the provisioning in real time.
+This creates a ConfigMap named `dag-config` in the `prod-airflow` environment's cluster, holding two tuning values DAGs read at runtime (`projectId` omitted falls back to the provider's default project). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -88,16 +88,16 @@ These are the most important decisions when configuring a user workloads ConfigM
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 | **GcpCloudComposerEnvironment** | `environment` | `status.outputs.environment_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -114,6 +114,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Cloud Composer Environment**](/cloud-catalog/gcp-cloud-composer-environment) -- the environment this ConfigMap lives in
-- [**GCP Cloud Composer User Workloads Secret**](/cloud-catalog/gcp-cloud-composer-user-workloads-secret) -- the sensitive twin for credentials
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project the environment runs in
+- [**GCP Cloud Composer Environment**](/infra-catalog/gcp-cloud-composer-environment) -- the environment this ConfigMap lives in
+- [**GCP Cloud Composer User Workloads Secret**](/infra-catalog/gcp-cloud-composer-user-workloads-secret) -- the sensitive twin for credentials
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project the environment runs in

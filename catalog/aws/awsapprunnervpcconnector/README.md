@@ -61,7 +61,7 @@ spec:
 | `subnetIds` | StringValueOrRef[] | Yes (min 1) | Subnets for the connector's ENIs. Immutable -- changing the set replaces the connector. Spread across at least two AZs. |
 | `securityGroupIds` | StringValueOrRef[] | Yes (min 1) | Security groups on the connector's ENIs -- they govern what connected services can reach. Immutable. |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

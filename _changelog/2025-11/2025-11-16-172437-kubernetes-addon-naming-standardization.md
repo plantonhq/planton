@@ -6,11 +6,11 @@
 
 ## Summary
 
-Systematically renamed 12 Kubernetes addon components to include the `Kubernetes` prefix, establishing naming consistency across all Kubernetes-based infrastructure addons. This refactoring also improved the component rename script to handle directory-only renames without proto file validation, making it more flexible for bulk renaming operations.
+Systematically renamed 12 Kubernetes addon components to include the `Kubernetes` prefix, establishing naming consistency across all Kubernetes-based infrastructure addons. This refactoring also improved the kind rename script to handle directory-only renames without proto file validation, making it more flexible for bulk renaming operations.
 
 ## Problem Statement / Motivation
 
-The Planton codebase had inconsistent naming for Kubernetes addon components. While workload components (like `KubernetesPostgres`, `KubernetesArgocd`) followed the `Kubernetes*` prefix pattern, addon operators and infrastructure components had mixed naming:
+The Planton codebase had inconsistent naming for Kubernetes addon components. While workload kinds (like `KubernetesPostgres`, `KubernetesArgocd`) followed the `Kubernetes*` prefix pattern, addon operators and infrastructure kinds had mixed naming:
 
 - Some had no prefix: `CertManager`, `ExternalDns`, `IngressNginx`
 - Others had vendor prefixes: `StrimziKafkaOperator`, `ZalandoPostgresOperator`
@@ -20,9 +20,9 @@ The Planton codebase had inconsistent naming for Kubernetes addon components. Wh
 
 - **Naming inconsistency**: Difficult to distinguish Kubernetes addons from other provider resources
 - **Discovery challenges**: No clear pattern for finding Kubernetes-related addon components
-- **Categorization confusion**: Unclear which components were Kubernetes-specific vs provider-agnostic
+- **Categorization confusion**: Unclear which kinds were Kubernetes-specific vs provider-agnostic
 - **Script limitations**: The rename script required proto file validation, making it unsuitable when protos were already updated
-- **Manual effort risk**: Renaming 12 components manually would be error-prone and time-consuming
+- **Manual effort risk**: Renaming 12 kinds manually would be error-prone and time-consuming
 
 ## Solution / What's New
 
@@ -30,21 +30,21 @@ Established a consistent `Kubernetes*` naming convention for all Kubernetes addo
 
 ### Rename Script Improvements
 
-Enhanced `_rules/deployment-component/rename/_scripts/rename_deployment_component.py` to:
+Enhanced `_rules/catalog-kind/rename/_scripts/rename_catalog_kind.py` to:
 
-1. **Remove proto validation dependency**: Script no longer requires finding old names in `cloud_resource_kind.proto`
-2. **Auto-discover component directories**: Searches kubernetes, kubernetes/workload, and kubernetes/addon paths
-3. **Add missing directory rename**: Fixed critical bug where component directory itself wasn't being renamed
+1. **Remove proto validation dependency**: Script no longer requires finding old names in `catalog_kind.proto`
+2. **Auto-discover kind directories**: Searches kubernetes, kubernetes/workload, and kubernetes/addon paths
+3. **Add missing directory rename**: Fixed critical bug where kind directory itself wasn't being renamed
 4. **Skip build pipeline**: Focus purely on file/directory operations without running make commands
-5. **Flexible execution**: Can rename components even when proto file is already updated
+5. **Flexible execution**: Can rename kinds even when proto file is already updated
 
 **Key Script Changes**:
 
 ```python
 # Old approach - required proto validation
-component_info = find_component_in_registry(repo_root, args.old_name)
-if not component_info:
-    result['error'] = f"Component {args.old_name} not found in cloud_resource_kind.proto"
+kind_info = find_kind_in_registry(repo_root, args.old_name)
+if not kind_info:
+    result['error'] = f"Kind {args.old_name} not found in catalog_kind.proto"
     return 1
 
 # New approach - direct directory search
@@ -55,13 +55,13 @@ if os.path.exists(test_path):
 ```
 
 ```python
-# Added missing component directory rename step
-if old_component_dir.exists() and old_component_dir != new_component_dir:
-    old_component_dir.rename(new_component_dir)
+# Added missing kind directory rename step
+if old_kind_dir.exists() and old_kind_dir != new_kind_dir:
+    old_kind_dir.rename(new_kind_dir)
     stats['dirs_renamed'] += 1
 ```
 
-### Components Renamed
+### Kinds Renamed
 
 All 12 Kubernetes addon components were systematically renamed:
 
@@ -82,7 +82,7 @@ All 12 Kubernetes addon components were systematically renamed:
 
 ### Naming Pattern Transformations
 
-Each component rename applied 7 comprehensive naming pattern transformations:
+Each kind rename applied 7 comprehensive naming pattern transformations:
 
 1. **PascalCase**: `CertManager` → `KubernetesCertManager`
 2. **camelCase**: `certManager` → `kubernetesCertManager`
@@ -96,31 +96,31 @@ Each component rename applied 7 comprehensive naming pattern transformations:
 
 ### Script Execution
 
-Each component was renamed using the improved Python script:
+Each kind was renamed using the improved Python script:
 
 ```bash
 # Example: CertManager rename
-python3 _rules/deployment-component/rename/_scripts/rename_deployment_component.py \
+python3 _rules/catalog-kind/rename/_scripts/rename_catalog_kind.py \
   --old-name CertManager \
   --new-name KubernetesCertManager
 
 # Output
 Icon folder not found (skipped): .../images/providers/kubernetes/certmanager
-Renamed component directory: .../kubernetes/certmanager -> .../kubernetes/kubernetescertmanager
+Renamed kind directory: .../kubernetes/certmanager -> .../kubernetes/kubernetescertmanager
 Successfully renamed CertManager -> KubernetesCertManager
   Directories: 1, Files: 3, Content updates: 85
 ```
 
 The script performed:
 
-- **Directory renames**: Component folder from `certmanager/` to `kubernetescertmanager/`
-- **File renames**: Files containing old component name in filename
+- **Directory renames**: Kind folder from `certmanager/` to `kubernetescertmanager/`
+- **File renames**: Files containing old kind name in filename
 - **Content updates**: All 7 naming patterns replaced in proto, Go, YAML, Markdown files
 - **Icon folder renames**: When icon folders existed in `site/public/images/providers/kubernetes/`
 
 ### Batch Execution
 
-Components were renamed in three batches for efficiency:
+Kinds were renamed in three batches for efficiency:
 
 ```bash
 # Batch 1: Core infrastructure
@@ -133,12 +133,12 @@ ZalandoPostgresOperator, ApacheSolrOperator, ExternalSecrets, AltinityOperator
 PerconaPostgresqlOperator, PerconaServerMongodbOperator, PerconaServerMysqlOperator
 ```
 
-### Files Affected Per Component
+### Files Affected Per Kind
 
-Average impact per component:
+Average impact per kind:
 
-- **Directories renamed**: 1 (component root directory)
-- **Files renamed**: 1-3 (files with component name in filename)
+- **Directories renamed**: 1 (kind root directory)
+- **Files renamed**: 1-3 (files with kind name in filename)
 - **Files with content updates**: 37-85 (proto, Go, YAML, Markdown files)
 - **Total replacements**: 37-85 pattern substitutions
 
@@ -207,7 +207,7 @@ make build
 github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/kubernetescertmanager/v1
 github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/kuberneteselasticoperator/v1
 github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/kubernetesexternaldns/v1
-# ... all 12 components successfully compiled
+# ... all 12 kinds successfully compiled
 ```
 
 ## Benefits
@@ -215,27 +215,27 @@ github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/kubernetesexte
 ### Naming Consistency
 
 - **Unified pattern**: All Kubernetes addons now follow `Kubernetes*` prefix convention
-- **Clear categorization**: Easy to identify Kubernetes-specific components at a glance
-- **Improved discoverability**: Consistent naming makes it easier to find related components
+- **Clear categorization**: Easy to identify Kubernetes-specific kinds at a glance
+- **Improved discoverability**: Consistent naming makes it easier to find related kinds
 - **Professional appearance**: Standardized naming reflects mature, well-organized codebase
 
 ### Developer Experience
 
 - **Reduced cognitive load**: No need to remember which addons have which naming patterns
-- **Faster navigation**: IDE autocomplete groups all Kubernetes components together
+- **Faster navigation**: IDE autocomplete groups all Kubernetes kinds together
 - **Easier refactoring**: Consistent patterns make bulk operations more predictable
-- **Better code reviews**: Reviewers can quickly identify component types by name
+- **Better code reviews**: Reviewers can quickly identify kind types by name
 
 ### Tooling Improvements
 
 - **Flexible rename script**: Can now handle renames even when proto is already updated
 - **Reduced manual effort**: Automated script eliminates error-prone manual find-replace
 - **Reproducible process**: Script ensures consistent transformation across all files
-- **Time savings**: 12 components renamed in ~2 minutes vs hours of manual work
+- **Time savings**: 12 kinds renamed in ~2 minutes vs hours of manual work
 
 ### Code Metrics
 
-- **Components renamed**: 12
+- **Kinds renamed**: 12
 - **Total directories renamed**: 12
 - **Total files renamed**: 15
 - **Total content updates**: ~600 files
@@ -250,7 +250,7 @@ github.com/plantonhq/planton/apis/dev/planton/provider/kubernetes/kubernetesexte
 The renaming establishes clear naming hierarchy:
 
 ```
-Kubernetes Infrastructure Components:
+Kubernetes Infrastructure Kinds:
 ├── Workloads (already had prefix)
 │   ├── KubernetesPostgres
 │   ├── KubernetesArgocd
@@ -263,7 +263,7 @@ Kubernetes Infrastructure Components:
 
 ### Proto File Registry
 
-All Kubernetes components in `cloud_resource_kind.proto` now follow consistent naming:
+All Kubernetes kinds in `catalog_kind.proto` now follow consistent naming:
 
 ```protobuf
 // 800–999: Kubernetes resources
@@ -297,7 +297,7 @@ KubernetesIngressNginx = 824
 
 Developers working with Kubernetes addons will now:
 
-- Find all Kubernetes components grouped together in IDE navigation
+- Find all Kubernetes kinds grouped together in IDE navigation
 - Use consistent import patterns across all Kubernetes addons
 - Benefit from improved code organization and searchability
 
@@ -305,27 +305,27 @@ Developers working with Kubernetes addons will now:
 
 This refactoring builds on previous Kubernetes naming standardization efforts:
 
-- **2025-11-14**: Kubernetes workload naming consistency (23 components renamed from suffix to prefix pattern)
+- **2025-11-14**: Kubernetes workload naming consistency (23 kinds renamed from suffix to prefix pattern)
 - **2025-11-13**: Altinity operator complete rename
 - **Previous naming refactors**: Multiple smaller-scale naming improvements
 
-This work completes the Kubernetes naming standardization initiative, ensuring all Kubernetes-related components (workloads and addons) follow the `Kubernetes*` prefix convention.
+This work completes the Kubernetes naming standardization initiative, ensuring all Kubernetes-related kinds (workloads and addons) follow the `Kubernetes*` prefix convention.
 
 ## Future Enhancements
 
 Potential follow-up work:
 
-1. **Update documentation**: Ensure all docs reference new component names
+1. **Update documentation**: Ensure all docs reference new kind names
 2. **Migration guide**: If needed, create guide for external tool integrations
 3. **Script generalization**: Make rename script handle other provider types
 4. **Automated testing**: Add tests to verify all 7 naming patterns are applied
-5. **Icon standardization**: Ensure all components have appropriate icons
+5. **Icon standardization**: Ensure all kinds have appropriate icons
 
 ## Design Decisions
 
 ### Why Remove Proto Validation?
 
-The original script validated component existence in `cloud_resource_kind.proto` before renaming. This created a chicken-and-egg problem:
+The original script validated kind existence in `catalog_kind.proto` before renaming. This created a chicken-and-egg problem:
 
 - Proto file already updated with new names (from previous work)
 - Script expects to find old names in proto
@@ -346,19 +346,19 @@ We kept proto message names unchanged (e.g., `message CertManager` stays as-is) 
 - **Lower risk**: Reduces scope of changes and potential breakage
 - **Separation of concerns**: Directory/package naming vs API surface are different
 
-The enum names in `cloud_resource_kind.proto` were updated (part of earlier work), but message types remain stable.
+The enum names in `catalog_kind.proto` were updated (part of earlier work), but message types remain stable.
 
 ### Batch Execution Strategy
 
-Components were renamed in batches rather than all at once to:
+Kinds were renamed in batches rather than all at once to:
 
 - **Monitor progress**: See results after each group
 - **Catch errors early**: If script fails, only partial work to redo
-- **Logical grouping**: Related components renamed together
+- **Logical grouping**: Related kinds renamed together
 - **Terminal output manageability**: Easier to review results in smaller chunks
 
 ---
 
 **Status**: ✅ Production Ready  
-**Timeline**: ~2 hours total (script improvements + 12 component renames + verification)  
+**Timeline**: ~2 hours total (script improvements + 12 kind renames + verification)  
 **Build Status**: All tests passing, binaries built successfully

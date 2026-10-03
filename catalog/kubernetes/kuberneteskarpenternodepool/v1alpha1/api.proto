@@ -21,7 +21,7 @@ message KubernetesKarpenterNodePool {
   string kind = 2 [(buf.validate.field).string.const = 'KubernetesKarpenterNodePool'];
 
   // metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
   KubernetesKarpenterNodePoolSpec spec = 4 [(buf.validate.field).required = true];
@@ -32,6 +32,6 @@ message KubernetesKarpenterNodePool {
 
 // KubernetesKarpenterNodePoolStatus holds the deployment status and outputs.
 message KubernetesKarpenterNodePoolStatus {
-  // stack-outputs
-  KubernetesKarpenterNodePoolStackOutputs outputs = 1;
+  // outputs
+  KubernetesKarpenterNodePoolOutputs outputs = 1;
 }

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpgkenodepool.v1alpha1;
 
-// GcpGkeNodePoolStackOutputs captures key info after provisioning a GKE
+// GcpGkeNodePoolOutputs captures key info after provisioning a GKE
 // node pool.
-message GcpGkeNodePoolStackOutputs {
+message GcpGkeNodePoolOutputs {
   // Name of the node pool as created in GKE — the handle gcloud commands
   // and in-cluster references use. Matches spec.node_pool_name when set,
   // otherwise metadata.name.

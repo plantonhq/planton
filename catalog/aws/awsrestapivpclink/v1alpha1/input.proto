@@ -5,9 +5,9 @@ package dev.planton.aws.awsrestapivpclink.v1alpha1;
 import "catalog/aws/awsrestapivpclink/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsRestApiVpcLinkStackInput is the input for the IaC modules that
+// AwsRestApiVpcLinkIacInput is the input for the IaC modules that
 // deploy the VPC link.
-message AwsRestApiVpcLinkStackInput {
+message AwsRestApiVpcLinkIacInput {
   // target is the AwsRestApiVpcLink resource to deploy.
   AwsRestApiVpcLink target = 1;
   // provider_config contains the AWS provider credentials and configuration.

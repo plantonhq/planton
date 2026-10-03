@@ -6,17 +6,17 @@ import (
 	"strings"
 
 	"github.com/plantonhq/planton/pkg/e2e/profile"
-	componentv1 "github.com/plantonhq/planton/qa/componente2eprofile/v1"
+	kindv1 "github.com/plantonhq/planton/qa/catalogkinde2eprofile/v1"
 	sharedpb "github.com/plantonhq/planton/shared"
 )
 
 // RenderTable writes a plain-text table to w. No ANSI codes, suitable for piping.
 func RenderTable(w io.Writer, result *profile.DiscoverResult) error {
-	fmt.Fprintf(w, "%-5s %-40s %-10s %-9s %s\n", "TIER", "COMPONENT", "STATUS", "PROV", "TIMEOUT")
+	fmt.Fprintf(w, "%-5s %-40s %-10s %-9s %s\n", "TIER", "KIND", "STATUS", "PROV", "TIMEOUT")
 	fmt.Fprintf(w, "%s\n", strings.Repeat("─", 80))
 
 	var currentTier int32
-	for _, ce := range result.Components {
+	for _, ce := range result.Kinds {
 		spec := ce.Profile.Spec
 		if spec == nil {
 			continue
@@ -45,19 +45,19 @@ func RenderTable(w io.Writer, result *profile.DiscoverResult) error {
 	return nil
 }
 
-func statusName(s componentv1.ComponentE2EProfileSpec_Status) string {
+func statusName(s kindv1.CatalogKindE2EProfileSpec_Status) string {
 	switch s {
-	case componentv1.ComponentE2EProfileSpec_green:
+	case kindv1.CatalogKindE2EProfileSpec_green:
 		return "GREEN"
-	case componentv1.ComponentE2EProfileSpec_deferred:
+	case kindv1.CatalogKindE2EProfileSpec_deferred:
 		return "DEFERRED"
-	case componentv1.ComponentE2EProfileSpec_skip:
+	case kindv1.CatalogKindE2EProfileSpec_skip:
 		return "SKIP"
-	case componentv1.ComponentE2EProfileSpec_stub:
+	case kindv1.CatalogKindE2EProfileSpec_stub:
 		return "STUB"
-	case componentv1.ComponentE2EProfileSpec_real_cluster:
+	case kindv1.CatalogKindE2EProfileSpec_real_cluster:
 		return "REAL-CLUSTER"
-	case componentv1.ComponentE2EProfileSpec_pending_proof:
+	case kindv1.CatalogKindE2EProfileSpec_pending_proof:
 		return "PENDING-PROOF"
 	default:
 		return "UNKNOWN"

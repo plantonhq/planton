@@ -49,8 +49,8 @@ an IaC engine).`,
 	# Apply a kustomize overlay (multi-resource overlays deploy as one set)
 	planton apply --kustomize-dir _kustomize --overlay prod
 
-	# Apply with stack input file (extracts manifest from target field)
-	planton apply -i stack-input.yaml
+	# Apply with IaC input file (extracts manifest from target field)
+	planton apply -i iac-input.yaml
 
 	# Apply with field overrides (single manifest only)
 	planton apply -f manifest.yaml --set spec.version=v1.2.3
@@ -111,16 +111,16 @@ func applyHandler(cmd *cobra.Command, args []string) {
 // resolveSetDocs detects plural input without disturbing the single-manifest
 // path: a -f DIRECTORY is always a set (kubectl's mental model — a set of one
 // is still a set); a -f file or a rendered kustomize overlay is a set exactly
-// when it holds more than one document. Clipboard and stack-input stay
+// when it holds more than one document. Clipboard and iac-input stay
 // single-manifest sources — their loaders refuse plural content with the
 // sentence that points here.
 func resolveSetDocs(cmd *cobra.Command) ([]setdeploy.Doc, bool, error) {
-	// Clipboard and stack-input take priority in the single lane's source
+	// Clipboard and iac-input take priority in the single lane's source
 	// ladder; when either is chosen, the set lane stays out of the way.
 	if clipboard, _ := cmd.Flags().GetBool(string(flag.Clipboard)); clipboard {
 		return nil, false, nil
 	}
-	if stackInput, _ := cmd.Flags().GetString(string(flag.StackInput)); stackInput != "" {
+	if iacInput, _ := cmd.Flags().GetString(string(flag.IacInput)); iacInput != "" {
 		return nil, false, nil
 	}
 

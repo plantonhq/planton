@@ -24,7 +24,7 @@ Investors come from diverse backgrounds with varying levels of familiarity with 
 
 ## Solution / What's New
 
-Built a modular, component-based explainer system with:
+Built a modular, kind-based explainer system with:
 
 ### Page 1: `/invest/and-you-get` (What You Get When You Invest)
 
@@ -77,7 +77,7 @@ src/components/invest/explainer/
 ├── calculator/
 │   └── Calculator.tsx      # Investment calculator + scenario table
 ├── content/
-│   └── FAQ.tsx             # Accordion FAQ component
+│   └── FAQ.tsx             # Accordion FAQ kind
 └── pages/
     ├── AndYouGetPage.tsx   # Full page 1 with all sections
     ├── IfYouArePage.tsx    # Full page 2 with all sections
@@ -95,7 +95,7 @@ src/components/invest/explainer/
    - Post-money dilution modeling
    - Exit scenario projections
 
-4. **Component Modularity**: Section components are self-contained with consistent props interface, allowing easy reordering and conditional rendering based on path
+4. **Kind Modularity**: Section components are self-contained with consistent props interface, allowing easy reordering and conditional rendering based on path
 
 ### Files Created
 
@@ -105,7 +105,7 @@ src/components/invest/explainer/
 - `src/app/(micro-apps)/invest/why/page.tsx` (alias)
 - `src/app/(micro-apps)/invest/if/page.tsx` (alias)
 
-**Components (12 files)**:
+**Kinds (12 files)**:
 - `src/components/invest/explainer/shared.tsx`
 - `src/components/invest/explainer/hooks/useExplainerState.ts`
 - `src/components/invest/explainer/hooks/useCalculator.ts`

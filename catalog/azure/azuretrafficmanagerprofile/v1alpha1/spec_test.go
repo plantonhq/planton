@@ -33,7 +33,7 @@ func validResource() *AzureTrafficManagerProfile {
 	return &AzureTrafficManagerProfile{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureTrafficManagerProfile",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-profile",
 		},
 		Spec: &AzureTrafficManagerProfileSpec{

@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesopenfga
 spec:
@@ -19,14 +19,14 @@ spec:
         the resource's name.
     - name: release_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `helm list -A` (NAMESPACE column); conventionally "openfga".
     # ── the optional anchor namespace ──────────────────────────────────
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Only imported when create_namespace is true; the installation
@@ -38,7 +38,7 @@ spec:
     - name: secret_name
       tofu_resource_name: authn_keys
       derivations:
-        - from_stack_output: authn_keys_secret_name
+        - from_output: authn_keys_secret_name
         - from_metadata_name_suffix: "-authn-keys"
       where_to_find: >-
         Always "<resource-name>-authn-keys" when inline keys are
@@ -46,7 +46,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: authn_keys
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.

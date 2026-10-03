@@ -29,7 +29,7 @@ iac/pulumi/
     ├── main.go             # Module coordinator
     ├── backend_service.go  # Backend service + signed-URL key creation
     ├── locals.go           # Resolved resource + derived values
-    └── outputs.go          # Stack output constants
+    └── outputs.go          # Output constants
 ```
 
 ## Quick Start
@@ -43,7 +43,7 @@ pulumi stack init dev
 
 ### 2. Create Input File
 
-Provide a `stack-input.yaml` with the backend service specification:
+Provide a `iac-input.yaml` with the backend service specification:
 
 ```yaml
 target:
@@ -79,7 +79,7 @@ pulumi stack output self_link
 
 ## Inputs
 
-The module consumes `GcpBackendServiceStackInput`:
+The module consumes `GcpBackendServiceIacInput`:
 
 | Field | Required | Description |
 |-------|----------|-------------|

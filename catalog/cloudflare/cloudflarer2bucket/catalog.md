@@ -4,7 +4,7 @@ Deploys an R2 object storage bucket on Cloudflare with configurable location hin
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **R2 Bucket** -- an object storage bucket in the specified Cloudflare account with the configured location hint, jurisdiction, and default storage class
 - **Managed Public Domain (r2.dev)** -- created only when `publicAccess` is `true`; its URL is published as the `public_url` output
@@ -18,13 +18,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has R2 permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has R2 permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
 
 - **A Cloudflare account** with R2 enabled. The `accountId` field identifies which account owns the bucket.
-- **A Cloudflare DNS zone** (optional) -- required only when using a custom domain. Provide the zone ID directly or reference a CloudflareDnsZone Cloud Resource via ValueFromRef.
+- **A Cloudflare DNS zone** (optional) -- required only when using a custom domain. Provide the zone ID directly or reference a CloudflareDnsZone Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -54,7 +54,7 @@ spec:
 planton apply -f r2-bucket.yaml
 ```
 
-This creates a private R2 bucket with automatic location selection. No public URL or custom domain is configured. Access is limited to Workers, API tokens, or the Cloudflare dashboard. A Stack Job tracks the provisioning in real time.
+This creates a private R2 bucket with automatic location selection. No public URL or custom domain is configured. Access is limited to Workers, API tokens, or the Cloudflare dashboard. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,16 +92,16 @@ These are the most important decisions when configuring an R2 bucket. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** (optional) | `customDomains[].zoneId` | `status.outputs.zone_id` |
 | **CloudflareQueue** (optional) | `eventNotifications[].queue` | `status.outputs.queue_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -125,7 +125,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) -- provides the zone ID for custom domain configuration
-- [**Cloudflare Queue**](/cloud-catalog/cloudflare-queue) -- receives this bucket's event notifications for downstream processing
-- [**Cloudflare Worker**](/cloud-catalog/cloudflare-worker) -- binds the bucket through an `r2Buckets` binding for object reads and writes
-- [**Cloudflare Pages Project**](/cloud-catalog/cloudflare-pages-project) -- binds the bucket to Pages Functions the same way
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) -- provides the zone ID for custom domain configuration
+- [**Cloudflare Queue**](/infra-catalog/cloudflare-queue) -- receives this bucket's event notifications for downstream processing
+- [**Cloudflare Worker**](/infra-catalog/cloudflare-worker) -- binds the bucket through an `r2Buckets` binding for object reads and writes
+- [**Cloudflare Pages Project**](/infra-catalog/cloudflare-pages-project) -- binds the bucket to Pages Functions the same way

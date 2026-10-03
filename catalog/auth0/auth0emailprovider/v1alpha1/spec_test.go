@@ -18,7 +18,7 @@ func emailProvider(spec *Auth0EmailProviderSpec) *Auth0EmailProvider {
 	return &Auth0EmailProvider{
 		ApiVersion: "auth0.planton.dev/v1alpha1",
 		Kind:       "Auth0EmailProvider",
-		Metadata:   &shared.CloudResourceMetadata{Name: "email-provider"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "email-provider"},
 		Spec:       spec,
 	}
 }

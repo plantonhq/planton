@@ -4,7 +4,7 @@ Deploys an API Gateway v1 VPC link — the Network Load Balancer attachment that
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **VPC Link** — one API Gateway v1 VPC link named after `metadata.name`, fronting exactly one Network Load Balancer, with the optional `description` and Planton's resource tags
 - **Network attachment** — the AWS-managed attachment to that balancer, built behind the link during creation; provisioning waits for it to reach AVAILABLE (up to about twenty minutes) before integrations can reference the link
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with API Gateway VPC-link control-plane permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with API Gateway VPC-link control-plane permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -50,7 +50,7 @@ spec:
 planton apply -f rest-api-vpc-link.yaml
 ```
 
-This creates a VPC link in us-west-2 fronting the referenced internal NLB, ready for REST API integrations to reference once the attachment is AVAILABLE. A Stack Job tracks the provisioning in real time.
+This creates a VPC link in us-west-2 fronting the referenced internal NLB, ready for REST API integrations to reference once the attachment is AVAILABLE. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,15 +85,15 @@ These are the most important decisions when configuring a REST API VPC link. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsNlb** | `targetArn` | `status.outputs.load_balancer_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -113,6 +113,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS NLB**](/cloud-catalog/aws-nlb) — the internal balancer the link fronts, wired via `targetArn`
-- [**AWS REST API Gateway**](/cloud-catalog/aws-rest-api-gateway) — integrations route through the link by setting `connectionType: VPC_LINK` and this link's `vpc_link_id`
-- [**AWS HTTP API VPC Link**](/cloud-catalog/aws-http-api-vpc-link) — the API Gateway v2 counterpart that attaches to subnets (ALB, NLB, or Cloud Map); not interchangeable with this link
+- [**AWS NLB**](/infra-catalog/aws-nlb) — the internal balancer the link fronts, wired via `targetArn`
+- [**AWS REST API Gateway**](/infra-catalog/aws-rest-api-gateway) — integrations route through the link by setting `connectionType: VPC_LINK` and this link's `vpc_link_id`
+- [**AWS HTTP API VPC Link**](/infra-catalog/aws-http-api-vpc-link) — the API Gateway v2 counterpart that attaches to subnets (ALB, NLB, or Cloud Map); not interchangeable with this link

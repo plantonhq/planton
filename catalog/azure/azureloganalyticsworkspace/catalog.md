@@ -1,10 +1,10 @@
 # Azure Log Analytics Workspace
 
-Deploys an Azure Log Analytics Workspace -- the central data platform for Azure Monitor. Workspaces collect, store, and query log and performance data, and they are the foundation AKS Container Insights, Application Insights, Microsoft Sentinel, diagnostic settings, and log-query alerts all build on. The component covers the full workspace surface: pricing tier and commitment capacity, retention and daily quota, the authentication and network-access posture, the query access model, compliance switches, a managed identity, and a default Data Collection Rule.
+Deploys an Azure Log Analytics Workspace -- the central data platform for Azure Monitor. Workspaces collect, store, and query log and performance data, and they are the foundation AKS Container Insights, Application Insights, Microsoft Sentinel, diagnostic settings, and log-query alerts all build on. The kind covers the full workspace surface: pricing tier and commitment capacity, retention and daily quota, the authentication and network-access posture, the query access model, compliance switches, a managed identity, and a default Data Collection Rule.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Log Analytics Workspace** -- an `operationalinsights.AnalyticsWorkspace` in the specified Azure region and resource group, configured with the chosen pricing SKU (and commitment capacity when applicable), retention period, daily ingestion quota, access posture, and compliance switches
 - **Managed Identity binding** (optional) -- a system-assigned or user-assigned identity on the workspace, for dedicated-cluster customer-managed keys and linked-storage access
@@ -14,12 +14,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the workspace will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the workspace will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -49,7 +49,7 @@ spec:
 planton apply -f log-analytics.yaml
 ```
 
-This creates a Log Analytics Workspace on Azure's defaults: pay-as-you-go pricing (PerGB2018), 30-day retention, unlimited daily ingestion, and public ingestion/query endpoints. A Stack Job tracks the provisioning in real time.
+This creates a Log Analytics Workspace on Azure's defaults: pay-as-you-go pricing (PerGB2018), 30-day retention, unlimited daily ingestion, and public ingestion/query endpoints. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -82,7 +82,7 @@ These are the most important decisions when configuring a Log Analytics Workspac
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -90,9 +90,9 @@ These are the most important decisions when configuring a Log Analytics Workspac
 | **AzureUserAssignedIdentity** | `identity.userAssignedIdentityIds` | `status.outputs.identity_id` |
 | **AzureMonitorDataCollectionRule** | `dataCollectionRuleId` | `status.outputs.data_collection_rule_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -116,10 +116,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the workspace is created
-- [**Azure Application Insights**](/cloud-catalog/azure-application-insights) -- workspace-based Application Insights stores its telemetry here via `workspace_id`
-- [**Azure Container App Environment**](/cloud-catalog/azure-container-app-environment) -- persists application logs here when its logs destination is Log Analytics
-- [**Azure AKS Cluster**](/cloud-catalog/azure-aks-cluster) -- Container Insights and Microsoft Defender stream cluster telemetry here
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- supplies the workspace's user-assigned identity for CMK and linked-storage access
-- [**Azure Monitor Data Collection Rule**](/cloud-catalog/azure-monitor-data-collection-rule) -- referenced as the workspace's default DCR for data arriving without an explicit rule
-- [**Azure Monitor Scheduled Query Alert**](/cloud-catalog/azure-monitor-scheduled-query-alert) -- runs KQL alert rules against the logs stored here
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the workspace is created
+- [**Azure Application Insights**](/infra-catalog/azure-application-insights) -- workspace-based Application Insights stores its telemetry here via `workspace_id`
+- [**Azure Container App Environment**](/infra-catalog/azure-container-app-environment) -- persists application logs here when its logs destination is Log Analytics
+- [**Azure AKS Cluster**](/infra-catalog/azure-aks-cluster) -- Container Insights and Microsoft Defender stream cluster telemetry here
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- supplies the workspace's user-assigned identity for CMK and linked-storage access
+- [**Azure Monitor Data Collection Rule**](/infra-catalog/azure-monitor-data-collection-rule) -- referenced as the workspace's default DCR for data arriving without an explicit rule
+- [**Azure Monitor Scheduled Query Alert**](/infra-catalog/azure-monitor-scheduled-query-alert) -- runs KQL alert rules against the logs stored here

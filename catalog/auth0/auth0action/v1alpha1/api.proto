@@ -79,12 +79,12 @@ message Auth0Action {
   // Must be "Auth0Action" for this resource type.
   string kind = 2 [(buf.validate.field).string.const = 'Auth0Action'];
 
-  // metadata contains standard cloud resource metadata.
+  // metadata contains standard catalog object metadata.
   // - name: Unique identifier for the action within Planton (becomes the Auth0 action name)
   // - org: Organization that owns this action
   // - env: Environment (development, staging, production)
   // - labels: Key-value pairs for filtering and organization
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec contains the desired configuration for the Auth0 action.
   // This includes the trigger, source code, runtime, dependencies, secrets,
@@ -100,8 +100,8 @@ message Auth0Action {
 // Auth0ActionStatus represents the current state of an Auth0 Action resource.
 // This is populated by the deployment system and contains read-only outputs.
 message Auth0ActionStatus {
-  // outputs contains the stack outputs from the Auth0 action deployment.
+  // outputs contains the outputs from the Auth0 action deployment.
   // These values are populated after successful deployment and include
   // the action ID, version ID, and resolved runtime.
-  Auth0ActionStackOutputs outputs = 1;
+  Auth0ActionOutputs outputs = 1;
 }

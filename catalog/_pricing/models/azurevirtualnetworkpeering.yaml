@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -6,9 +6,9 @@
 # price list has no hourly or monthly meter for the peering object -- an
 # idle peering bills nothing forever, and every charge it shapes is per-GB
 # data transfer, stated in exclusions and never padded into fabricated
-# dollars. Schema: finops/componentcostestimatemodel/v1.
+# dollars. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: azurevirtualnetworkpeering
 spec:
@@ -19,8 +19,8 @@ spec:
       hours_per_month: 730
       exclusions:
         - "traffic crossing the peering bills per GB at both ends -- same-region $0.01 ingress plus $0.01 egress per GB; a cross-region (global) pair instead bills zonal per-direction rates ($0.035 Zone 1, $0.09 Zone 2, $0.16 Zone 3, $0.044 US Gov per GB)"
-        - "this direction admits forwarded traffic and offers gateway transit, the hub-inspection posture: spoke-to-spoke flows steered through the hub cross TWO peerings (billing each one's ingress and egress) plus the hub firewall or NVA's own per-GB processing on its component"
-        - spokes riding the hub's VPN/ExpressRoute gateway bill the gateway's hourly and data-processing meters on the gateway's own component
+        - "this direction admits forwarded traffic and offers gateway transit, the hub-inspection posture: spoke-to-spoke flows steered through the hub cross TWO peerings (billing each one's ingress and egress) plus the hub firewall or NVA's own per-GB processing on its kind"
+        - spokes riding the hub's VPN/ExpressRoute gateway bill the gateway's hourly and data-processing meters on the gateway's own kind
       notes: "Zero committed cost -- the flags that make this the hub side (forwarded traffic, gateway transit) are free routing posture; they move WHERE traffic flows and therefore where its per-GB charges land, not what the peering costs."
     - preset: 02-spoke-to-hub
       region_assumption: eastus
@@ -28,8 +28,8 @@ spec:
       hours_per_month: 730
       exclusions:
         - "traffic crossing the peering bills per GB at both ends -- same-region $0.01 ingress plus $0.01 egress per GB; a cross-region (global) pair instead bills zonal per-direction rates ($0.035 Zone 1, $0.09 Zone 2, $0.16 Zone 3, $0.044 US Gov per GB) -- note use_remote_gateways cannot be combined with global peering, so this preset's shape is same-region by construction"
-        - use_remote_gateways routes this spoke's on-premises traffic through the hub's gateway -- the gateway's hourly and per-GB data-processing meters bill on the gateway's component, and the spoke-to-hub hop bills standard peering data rates
-      notes: "Zero committed cost -- riding the hub's gateway commits nothing on the peering itself; the gateway was already billing hourly on its own component, which is the economy of the hub-and-spoke pattern."
+        - use_remote_gateways routes this spoke's on-premises traffic through the hub's gateway -- the gateway's hourly and per-GB data-processing meters bill on the gateway's kind, and the spoke-to-hub hop bills standard peering data rates
+      notes: "Zero committed cost -- riding the hub's gateway commits nothing on the peering itself; the gateway was already billing hourly on its own kind, which is the economy of the hub-and-spoke pattern."
     - preset: 03-subnet-scoped-peering
       region_assumption: eastus
       currency: USD

@@ -51,7 +51,7 @@ The never-downgrade check used to list CRDs by the module's own label, so a CRD 
 
 ### The harness runs a lane as an identity it builds from the permissions file
 
-`planton.dev/e2e-identity: declared` runs a scenario as a ServiceAccount bound, through one ClusterRole, to exactly the rules the component's `iac/permissions.yaml` declares; `declared-minus:<apiGroup>/<resource>:<verb>,<verb>` withholds named verbs. The Kubernetes harness implements the provider-neutral `provider.IdentityProvisioner`: it applies the ServiceAccount, ClusterRole, and binding in a harness-owned namespace, mints a short-lived token, derives a kubeconfig from the harness's own, and hands the lane a `self_managed` provider configuration, which reaches both engines through the same stack-input path a console deploy uses (Pulumi through the stack input; Terraform as `KUBECONFIG` and `KUBE_CONFIG_PATH`, now written into the lane's working directory so the path is absolute). The identity applies to the component under test only; fixtures keep the harness's posture. A withhold that a wildcard rule would grant anyway is refused up front: the generic Helm kind honestly declares `*` for the arbitrary chart it installs, so a denied lane lives on a typed kind.
+`planton.dev/e2e-identity: declared` runs a scenario as a ServiceAccount bound, through one ClusterRole, to exactly the rules the kind's `iac/permissions.yaml` declares; `declared-minus:<apiGroup>/<resource>:<verb>,<verb>` withholds named verbs. The Kubernetes harness implements the provider-neutral `provider.IdentityProvisioner`: it applies the ServiceAccount, ClusterRole, and binding in a harness-owned namespace, mints a short-lived token, derives a kubeconfig from the harness's own, and hands the lane a `self_managed` provider configuration, which reaches both engines through the same iac-input path a console deploy uses (Pulumi through the IaC input; Terraform as `KUBECONFIG` and `KUBE_CONFIG_PATH`, now written into the lane's working directory so the path is absolute). The identity applies to the kind under test only; fixtures keep the harness's posture. A withhold that a wildcard rule would grant anyway is refused up front: the generic Helm kind honestly declares `*` for the arbitrary chart it installs, so a denied lane lives on a typed kind.
 
 ### The lanes and the direct proofs
 
@@ -71,6 +71,6 @@ Every Kubernetes kind's permissions file was `derived` by reading the module sou
 
 ## What comes next
 
-- The platform runner consumes the tofu JSON diagnostics stream; attaching `failure.Explain` to that path gives the console's stack-job errors the same explanations.
+- The platform runner consumes the tofu JSON diagnostics stream; attaching `failure.Explain` to that path gives the console's infra-job errors the same explanations.
 - Running every Kubernetes kind's lanes under `planton.dev/e2e-identity: declared` promotes its permissions file from `derived` to `proven`; the namespace-watch gap found here is the first of what that will find.
 - A permissions preflight for every Kubernetes Pulumi module, driven by its own `permissions.yaml` (the CRD probe here is its first instance).

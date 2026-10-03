@@ -6,7 +6,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpcomputediskv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpcomputedisk/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -20,25 +20,25 @@ type Locals struct {
 	DiskName string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpcomputediskv1alpha1.GcpComputeDiskStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpcomputediskv1alpha1.GcpComputeDiskIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpComputeDisk = stackInput.Target
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpComputeDisk = iacInput.Target
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 
-	locals.DiskName = stackInput.Target.Spec.DiskName
+	locals.DiskName = iacInput.Target.Spec.DiskName
 	if locals.DiskName == "" {
-		locals.DiskName = stackInput.Target.Metadata.Name
+		locals.DiskName = iacInput.Target.Metadata.Name
 	}
 
 	// User labels first so platform attribution labels win on key
 	// conflicts — identical merge order to the Terraform module.
 	locals.GcpLabels = map[string]string{}
-	for key, value := range stackInput.Target.Spec.Labels {
+	for key, value := range iacInput.Target.Spec.Labels {
 		locals.GcpLabels[key] = value
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = locals.DiskName
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpComputeDisk.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpComputeDisk.String())
 
 	if locals.GcpComputeDisk.Metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = locals.GcpComputeDisk.Metadata.Org

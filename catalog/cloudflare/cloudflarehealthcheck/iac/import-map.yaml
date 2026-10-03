@@ -1,19 +1,19 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarehealthcheck
 spec:
   values:
     - name: zone_id
       derivations:
-        - from_stack_output: zone_id
+        - from_output: zone_id
       where_to_find: >-
         Cloudflare dashboard -> the zone's Overview page (Zone ID in the
         right-hand API panel), or `GET /zones?name=<domain>` on the
         Cloudflare v4 API (the id field).
     - name: healthcheck_id
       derivations:
-        - from_stack_output: healthcheck_id
+        - from_output: healthcheck_id
       where_to_find: >-
         Cloudflare dashboard -> Traffic -> Health Checks -> the check, or
         `GET /zones/<zone_id>/healthchecks` on the Cloudflare v4 API (the

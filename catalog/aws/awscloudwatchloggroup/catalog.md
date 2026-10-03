@@ -4,7 +4,7 @@ Deploys a CloudWatch Logs log group with configurable retention, optional custom
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **CloudWatch Log Group** -- a log group container for log streams, configured with the specified retention period, log group class, and optional KMS encryption
 - **Retention Policy** -- created only when `retentionInDays` is set to a non-zero value; automatically deletes log events after the specified number of days
@@ -15,12 +15,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **A KMS key** (optional) -- required only when using customer-managed encryption. The key must be in the same region as the log group, and its policy must grant `logs.amazonaws.com` the required permissions. Provide the ARN directly or reference an AwsKmsKey Cloud Resource via ValueFromRef.
+- **A KMS key** (optional) -- required only when using customer-managed encryption. The key must be in the same region as the log group, and its policy must grant `logs.amazonaws.com` the required permissions. Provide the ARN directly or reference an AwsKmsKey Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -48,7 +48,7 @@ spec:
 planton apply -f log-group.yaml
 ```
 
-This creates a STANDARD class log group with 30-day retention and default AWS encryption. No KMS encryption or deletion protection is configured. A Stack Job tracks the provisioning in real time.
+This creates a STANDARD class log group with 30-day retention and default AWS encryption. No KMS encryption or deletion protection is configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,7 +89,7 @@ These are the most important decisions when configuring a CloudWatch log group. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -99,9 +99,9 @@ These are the most important decisions when configuring a CloudWatch log group. 
 | **AwsLambda** (optional) | `subscriptionFilters[*].destinationArn` | `status.outputs.function_arn` |
 | **AwsIamRole** (optional) | `subscriptionFilters[*].roleArn` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -124,8 +124,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for encrypting log data at rest
-- [**AWS Kinesis Data Stream**](/cloud-catalog/aws-kinesis-stream) -- real-time subscription filter destination for custom consumers
-- [**AWS Kinesis Firehose**](/cloud-catalog/aws-kinesis-firehose) -- buffered subscription filter destination for delivery to S3, OpenSearch, and more
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) -- per-batch subscription filter processing with your own code
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the delivery role CloudWatch Logs assumes for Kinesis and Firehose destinations
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for encrypting log data at rest
+- [**AWS Kinesis Data Stream**](/infra-catalog/aws-kinesis-stream) -- real-time subscription filter destination for custom consumers
+- [**AWS Kinesis Firehose**](/infra-catalog/aws-kinesis-firehose) -- buffered subscription filter destination for delivery to S3, OpenSearch, and more
+- [**AWS Lambda**](/infra-catalog/aws-lambda) -- per-batch subscription filter processing with your own code
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the delivery role CloudWatch Logs assumes for Kinesis and Firehose destinations

@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awslbtargetgroup.v1alpha1;
 
-// AwsLbTargetGroupStackOutputs captures the observable outputs of a
+// AwsLbTargetGroupOutputs captures the observable outputs of a
 // provisioned target group, for listeners, listener rules, ECS services, and
 // auto-scaling groups to reference.
-message AwsLbTargetGroupStackOutputs {
+message AwsLbTargetGroupOutputs {
   // The ARN of the target group (e.g. "arn:aws:elasticloadbalancing:
   // us-west-2:123456789012:targetgroup/api/50dc6c495c0c9188"). The primary
   // handle other resources reference via status.outputs.target_group_arn --

@@ -78,7 +78,7 @@ func TestResources(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			mocks := &recordingMocks{}
 			err := pulumi.RunErr(func(ctx *pulumi.Context) error {
-				return Resources(ctx, stackInput(tc.spec))
+				return Resources(ctx, iacInput(tc.spec))
 			}, pulumi.WithMocks("auth0-tenant-settings", "test", mocks))
 			if err != nil {
 				t.Fatalf("the program must run to completion: %v", err)

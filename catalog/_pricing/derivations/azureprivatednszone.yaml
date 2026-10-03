@@ -11,9 +11,9 @@
 # estimate generator replays the catalog presets through these rules to
 # emit ../estimates/azureprivatednszone.yaml; a server-side estimator
 # evaluates the same rules against live manifests.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: azureprivatednszone
 spec:
@@ -29,7 +29,7 @@ spec:
       basis: one private zone billed per month (prorated daily by Azure) at the first-25-zones list rate -- a stated assumption, since the tier is counted across the whole subscription and invisible here; zones from the subscription's 26th bill at a fifth of this rate, so the line never understates a single zone's fee
   exclusions:
     - text: query volume bills per million queries answered, aggregated across the subscription, and follows traffic entirely
-    - text: record sets beyond the first 25,000 in the zone bill a small monthly fee each -- the records ride their own record components, and virtual network links carry no meter at all
+    - text: record sets beyond the first 25,000 in the zone bill a small monthly fee each -- the records ride their own record kinds, and virtual network links carry no meter at all
   notes:
     - applies_when:
         - field_path: soa_record

@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/plantonhq/planton/internal/manifest"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 )
 
 // The manifest-lifecycle certification cases: the offline seams every real
@@ -62,7 +62,7 @@ func TestCertify_WrongEnvelopeRejectedWithExactFix(t *testing.T) {
 // registry (group domain + served version).
 func servedAPIVersion(t *testing.T) string {
 	t.Helper()
-	versionDir, err := crkreflect.ComponentVersionDir("testcloudresourcegeneric")
+	versionDir, err := catalogkindreflect.KindVersionDir("testcatalogkindgeneric")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -88,7 +88,7 @@ func TestCertify_UnknownFieldRejectedAtLoad(t *testing.T) {
 // what it exercises -- if a pipeline artifact quietly disappears, every
 // certification case that depends on it degrades to vacuous, so the shape
 // itself is certified. Version dirs hold the versioned contract; the
-// component root holds the living component (one IaC set, presets, README).
+// kind root holds the living kind (one IaC set, presets, README).
 func TestCertify_TortureKindKeepsFullCatalogShape(t *testing.T) {
 	versionDir := TortureKindDir(t)
 	for _, required := range []string{
@@ -112,7 +112,7 @@ func TestCertify_TortureKindKeepsFullCatalogShape(t *testing.T) {
 		filepath.Join("iac", "pulumi", "module", "main.go"),
 	} {
 		if _, err := os.Stat(filepath.Join(root, required)); err != nil {
-			t.Errorf("torture kind lost part of its living-component shape: %s (%v)", required, err)
+			t.Errorf("torture kind lost part of its living-kind shape: %s (%v)", required, err)
 		}
 	}
 }

@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarequeue
 spec:
@@ -17,7 +17,7 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: queue_id
       derivations:
-        - from_stack_output: queue_id
+        - from_output: queue_id
       where_to_find: >-
         Cloudflare dashboard -> Storage & Databases -> Queues -> the queue
         (the queue ID on the settings pane), or

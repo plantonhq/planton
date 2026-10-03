@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awsbedrockinvocationlogging
 spec:
@@ -47,7 +47,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: This component IS Bedrock's audit backbone -- it captures every model invocation in the region with full request/response data. And operations on the configuration itself (who enabled it, who narrowed the data types, who deleted it) are management events CloudTrail records unconditionally, so tampering with the recorder is itself recorded.
+        reference: This kind IS Bedrock's audit backbone -- it captures every model invocation in the region with full request/response data. And operations on the configuration itself (who enabled it, who narrowed the data types, who deleted it) are management events CloudTrail records unconditionally, so tampering with the recorder is itself recorded.
       notes: Each log entry carries the caller's assumed-role identity ARN automatically, so per-principal token usage and prompt attribution are answerable from the delivered logs alone.
     - control_id: monitoring-integration
       status: enforced_by_default

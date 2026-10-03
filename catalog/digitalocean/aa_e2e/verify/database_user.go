@@ -10,7 +10,7 @@ import (
 // databaseUserVerifier verifies a DigitalOceanDatabaseUser via
 // GET /v2/databases/{cluster_id}/users/{name}. The API has no standalone
 // user id -- the (cluster, name) pair is the identity -- so the verifier
-// reads both from the stack outputs (the OutputsVerifier extension exists
+// reads both from the outputs (the OutputsVerifier extension exists
 // for exactly this shape).
 type databaseUserVerifier struct{}
 
@@ -34,7 +34,7 @@ func (v *databaseUserVerifier) VerifyExistsFromOutputs(ctx context.Context, clie
 	if user == nil {
 		return pkgerrors.Errorf("digitaloceandatabaseuser %q not found after deploy", StringOutput(outputs, "user_name"))
 	}
-	// Assert the role only when the stack outputs claim it (contractually
+	// Assert the role only when the outputs claim it (contractually
 	// identical across both engines, so one assertion protects both).
 	if role := StringOutput(outputs, "role"); role != "" {
 		liveRole := user.Role

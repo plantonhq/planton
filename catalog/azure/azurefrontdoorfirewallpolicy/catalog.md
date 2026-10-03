@@ -4,7 +4,7 @@ Deploys a Web Application Firewall (WAF) policy for Azure Front Door -- the rule
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Front Door WAF Policy** -- a global `Microsoft.Network/frontDoorWebApplicationFirewallPolicies` resource in the resource group, carrying every layer below as inline configuration
 - **Custom rules** -- your IP/geo allowlists, header exceptions, and per-client rate limits, evaluated first by ascending priority
@@ -16,7 +16,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery.
 
 ### Azure Subscription
@@ -62,7 +62,7 @@ spec:
 planton apply -f front-door-firewall-policy.yaml
 ```
 
-This creates a STANDARD policy in DETECTION mode with one per-client rate-limit rule -- it logs matches without blocking until you attach it to domains through an Azure Front Door Security Policy and flip the mode to PREVENTION. A Stack Job tracks the provisioning in real time.
+This creates a STANDARD policy in DETECTION mode with one per-client rate-limit rule -- it logs matches without blocking until you attach it to domains through an Azure Front Door Security Policy and flip the mode to PREVENTION. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -111,15 +111,15 @@ These are the most important decisions when configuring a Front Door WAF policy.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -140,9 +140,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Front Door Security Policy**](/cloud-catalog/azure-front-door-security-policy) -- attaches this policy to a profile's domains; without one the policy sits idle
-- [**Azure Front Door Profile**](/cloud-catalog/azure-front-door-profile) -- the delivery container whose sku must match this policy's sku
-- [**Azure Front Door Custom Domain**](/cloud-catalog/azure-front-door-custom-domain) -- a domain a security policy scopes this WAF to
-- [**Azure Front Door Endpoint**](/cloud-catalog/azure-front-door-endpoint) -- an endpoint a security policy scopes this WAF to
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the policy lives in
-- [**Azure Web Application Firewall Policy**](/cloud-catalog/azure-web-application-firewall-policy) -- the DIFFERENT, regional policy type Application Gateways attach; do not confuse the two
+- [**Azure Front Door Security Policy**](/infra-catalog/azure-front-door-security-policy) -- attaches this policy to a profile's domains; without one the policy sits idle
+- [**Azure Front Door Profile**](/infra-catalog/azure-front-door-profile) -- the delivery container whose sku must match this policy's sku
+- [**Azure Front Door Custom Domain**](/infra-catalog/azure-front-door-custom-domain) -- a domain a security policy scopes this WAF to
+- [**Azure Front Door Endpoint**](/infra-catalog/azure-front-door-endpoint) -- an endpoint a security policy scopes this WAF to
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the policy lives in
+- [**Azure Web Application Firewall Policy**](/infra-catalog/azure-web-application-firewall-policy) -- the DIFFERENT, regional policy type Application Gateways attach; do not confuse the two

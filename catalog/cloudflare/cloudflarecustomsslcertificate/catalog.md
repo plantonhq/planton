@@ -4,7 +4,7 @@ Uploads a bring-your-own TLS certificate to a zone — Cloudflare presents it to
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Custom Certificate Upload** — one `cloudflare_custom_ssl` on the zone, carrying the chosen SNI class (`type`), bundle method, optional private-key geo restrictions, and optional staging-network deploy. Certificate `priority` is deliberately not managed: at provider v5.23.0 it is read-only.
 
@@ -14,7 +14,7 @@ Destroy is a real delete: the zone falls back to Universal SSL / Advanced certif
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module whose API token carries **Zone → SSL and Certificates → Edit**. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module whose API token carries **Zone → SSL and Certificates → Edit**. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Cloudflare Account
@@ -55,7 +55,7 @@ spec:
 planton apply -f custom-certificate.yaml
 ```
 
-This uploads an SNI-class custom certificate to the zone with Cloudflare's default ubiquitous bundle method — Cloudflare starts presenting it to SNI-capable visitors once the asynchronous deployment settles. A Stack Job tracks the provisioning in real time.
+This uploads an SNI-class custom certificate to the zone with Cloudflare's default ubiquitous bundle method — Cloudflare starts presenting it to SNI-capable visitors once the asynchronous deployment settles. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -100,15 +100,15 @@ These are the most important decisions when configuring a custom SSL certificate
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** | `zoneId` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -116,7 +116,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `zone_id` | The zone the certificate belongs to | Confirming the upload landed in the intended zone |
 | `expires_on` | Expiry timestamp (RFC3339) | Rotation scheduling and expiry alerting — the renewal is yours |
 
-Deployment status is deliberately not a stack output: deployment is asynchronous (pending before active), so a point-in-time phase would flip on the first refresh and re-plan forever. Read deployment status from the Cloudflare API or dashboard.
+Deployment status is deliberately not an output: deployment is asynchronous (pending before active), so a point-in-time phase would flip on the first refresh and re-plan forever. Read deployment status from the Cloudflare API or dashboard.
 
 ## Common Patterns
 
@@ -130,7 +130,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) — the zone the certificate is uploaded to; wire `zoneId` via ValueFromRef
-- [**Cloudflare Certificate Pack**](/cloud-catalog/cloudflare-certificate-pack) — the managed-renewal alternative; pick it unless an external issuer is mandated
-- [**Cloudflare Zone TLS Settings**](/cloud-catalog/cloudflare-zone-tls-settings) — minimum TLS version and Universal SSL posture on the same zone
-- [**Cloudflare Authenticated Origin Pulls Certificate**](/cloud-catalog/cloudflare-authenticated-origin-pulls-certificate) — the right kind when the goal is Cloudflare-to-origin authentication rather than visitor-facing TLS
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) — the zone the certificate is uploaded to; wire `zoneId` via ValueFromRef
+- [**Cloudflare Certificate Pack**](/infra-catalog/cloudflare-certificate-pack) — the managed-renewal alternative; pick it unless an external issuer is mandated
+- [**Cloudflare Zone TLS Settings**](/infra-catalog/cloudflare-zone-tls-settings) — minimum TLS version and Universal SSL posture on the same zone
+- [**Cloudflare Authenticated Origin Pulls Certificate**](/infra-catalog/cloudflare-authenticated-origin-pulls-certificate) — the right kind when the goal is Cloudflare-to-origin authentication rather than visitor-facing TLS

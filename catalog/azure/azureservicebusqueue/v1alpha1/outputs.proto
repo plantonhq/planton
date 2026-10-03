@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package dev.planton.azure.azureservicebusqueue.v1alpha1;
 
-// **AzureServiceBusQueueStackOutputs** captures the outputs of provisioning
+// **AzureServiceBusQueueOutputs** captures the outputs of provisioning
 // a Service Bus queue.
 //
 // No connection string here on purpose: credentials are minted by
 // AzureServiceBusAuthorizationRule (namespace- or queue-scoped) or granted
 // keyless via Entra data-plane roles on queue_id. SDKs address the queue
 // by the namespace endpoint plus queue_name.
-message AzureServiceBusQueueStackOutputs {
+message AzureServiceBusQueueOutputs {
   // The Azure Resource Manager ID of the queue. The scope for queue-level
   // data-plane role assignments (Azure Service Bus Data Receiver/Sender)
   // and the parent reference for queue-scoped SAS rules.

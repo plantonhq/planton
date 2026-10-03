@@ -114,7 +114,7 @@ export const CHAPTERS: readonly Chapter[] = [
     proof: [
       'Every deployment-changing job is born with a verified monthly cost: an exact figure with line items when the pricing rules can derive one, a range otherwise, and plainly \u201cunpriced\u201d when neither is possible. A zero never stands in for unknown.',
       'The cost names the catalog release its prices came from and, when both can be priced exactly, how much more or less this will cost each month than what is deployed today.',
-      'The least-privilege permission policy is derived from exactly what is composed, per component kind.',
+      'The least-privilege permission policy is derived from exactly what is composed, per kind.',
       'Every covered component states which of a fixed list of 17 technical controls it enforces, with evidence for each claim.',
       'The console, the CLI, and the assistant render the same server-stamped statement word for word.',
     ],
@@ -130,7 +130,7 @@ export const CHAPTERS: readonly Chapter[] = [
     proof: [
       'An environment can carry a deployment budget. A deploy whose verified cost exceeds it pauses for a human decision, and who approved, when, and why is stamped on the record.',
       'Protected environments pause before anything deploys, and nobody approves work they initiated, the assistant included.',
-      'The catalog can be curated to the component kinds your organization allows. The console, the CLI, and the agent all see the same list and refuse the same things, because one answer serves both.',
+      'The catalog can be curated to the catalog kinds your organization allows. The console, the CLI, and the agent all see the same list and refuse the same things, because one answer serves both.',
       'A field the schema marks sensitive takes a managed secret. There is no way to type a raw secret into it.',
     ],
     neverSay: ['guardrails over spec content as shipped', 'policy as code', 'prevents all misconfiguration'],
@@ -141,12 +141,12 @@ export const CHAPTERS: readonly Chapter[] = [
     number: 5,
     title: 'Every Deployment Leaves a Record',
     claim:
-      'Every change to infrastructure runs as one stack job, and every stack job is kept: the exact configuration that was deployed, the cost fact, the budget verdict, who approved and why, who triggered it, what happened in every phase, and a snapshot of what exists afterward.',
+      'Every change to infrastructure runs as one infra job, and every infra job is kept: the exact configuration that was deployed, the cost fact, the budget verdict, who approved and why, who triggered it, what happened in every phase, and a snapshot of what exists afterward.',
     proof: [
       'The full configuration is embedded into the job when it is created, and the job is immutable: the resource may change later; the job never does.',
       'Every job is retained and queryable by resource, organization, environment, time, and outcome.',
       'One event stream drives the console, the CLI, and the audit log, so every surface tells the same story.',
-      'Every cloud resource Planton creates carries identity tags naming its organization, environment, kind, and id.',
+      'Every infra component Planton creates carries identity tags naming its organization, environment, kind, and id.',
     ],
     neverSay: ['audit-ready for SOC 2', 'any framework verdict about a deployment', 'drift detection (a future consideration)', 'compliance dashboard'],
   },
@@ -216,7 +216,7 @@ export const CHAPTERS: readonly Chapter[] = [
     claim:
       'Teams have run production on Planton since 2023. Here is what the people running it say, in their own words.',
     proof: [
-      'Component kinds, providers, Infra Charts, controls, and crosswalks are counted from the open-source tree, and the date of the count is printed beside the numbers.',
+      'catalog kinds, providers, Infra Charts, controls, and crosswalks are counted from the open-source tree, and the date of the count is printed beside the numbers.',
       'Every testimonial is verbatim and attributed to the person who said it.',
       'Planton runs on Planton: its own infrastructure and the pipelines that ship it go through the platform.',
     ],

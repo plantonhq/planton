@@ -5,10 +5,10 @@ package dev.planton.azure.azuremonitorautoscalesetting.v1alpha1;
 import "catalog/azure/azuremonitorautoscalesetting/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureMonitorAutoscaleSettingStackInput is the input to the IaC modules
+// AzureMonitorAutoscaleSettingIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureMonitorAutoscaleSettingStackInput {
+message AzureMonitorAutoscaleSettingIacInput {
   // The autoscale setting resource to deploy.
   AzureMonitorAutoscaleSetting target = 1;
 

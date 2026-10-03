@@ -6,7 +6,7 @@ import (
 
 	gcpdnszonev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdnszone/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -15,17 +15,17 @@ type Locals struct {
 	GcpLabels  map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpdnszonev1alpha1.GcpDnsZoneStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpdnszonev1alpha1.GcpDnsZoneIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.GcpDnsZone = stackInput.Target
-	target := stackInput.Target
+	locals.GcpDnsZone = iacInput.Target
+	target := iacInput.Target
 	spec := target.Spec
 
 	locals.GcpLabels = map[string]string{
 		gcplabelkeys.Resource:     strconv.FormatBool(true),
 		gcplabelkeys.ResourceName: target.Metadata.Name,
-		gcplabelkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_GcpDnsZone.String()),
+		gcplabelkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_GcpDnsZone.String()),
 	}
 
 	if target.Metadata.Id != "" {

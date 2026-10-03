@@ -21,7 +21,7 @@ message AwsLambdaEventSourceMapping {
 
   // metadata captures identifying information (name, org, environment,
   // labels) and must pass standard validations for resource naming.
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec holds the desired configuration of the mapping.
   AwsLambdaEventSourceMappingSpec spec = 4 [(buf.validate.field).required = true];
@@ -35,5 +35,5 @@ message AwsLambdaEventSourceMapping {
 message AwsLambdaEventSourceMappingStatus {
   // outputs captures the observable values returned by Pulumi/Terraform
   // after provisioning.
-  AwsLambdaEventSourceMappingStackOutputs outputs = 1;
+  AwsLambdaEventSourceMappingOutputs outputs = 1;
 }

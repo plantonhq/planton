@@ -6,7 +6,7 @@ package dev.planton.kubernetes.kubernetesargocd.v1alpha1;
  * Outputs exported after deploying Argo CD — the handles downstream
  * resources and humans compose against.
  */
-message KubernetesArgocdStackOutputs {
+message KubernetesArgocdOutputs {
   /**
    * Namespace Argo CD is installed in.
    */

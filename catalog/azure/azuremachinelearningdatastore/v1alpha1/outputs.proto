@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azuremachinelearningdatastore.v1alpha1;
 
-// **AzureMachineLearningDatastoreStackOutputs** captures the outputs
+// **AzureMachineLearningDatastoreOutputs** captures the outputs
 // of provisioning a Machine Learning datastore.
-message AzureMachineLearningDatastoreStackOutputs {
+message AzureMachineLearningDatastoreOutputs {
   // The Azure Resource Manager ID of the datastore.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.MachineLearningServices/workspaces/{ws}/dataStores/{name}
   string datastore_id = 1;

@@ -30,7 +30,7 @@ func minimalValidTaskDefinition() *AwsEcsTaskDefinition {
 	return &AwsEcsTaskDefinition{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsEcsTaskDefinition",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "api",
 		},
 		Spec: &AwsEcsTaskDefinitionSpec{

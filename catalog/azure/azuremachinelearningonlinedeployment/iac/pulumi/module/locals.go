@@ -6,7 +6,7 @@ import (
 
 	azuremachinelearningonlinedeploymentv1alpha1 "github.com/plantonhq/planton/catalog/azure/azuremachinelearningonlinedeployment/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -54,11 +54,11 @@ func parseEndpointId(endpointId string) (resourceGroupName, workspaceName, endpo
 	return resourceGroupName, workspaceName, endpointName, nil
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuremachinelearningonlinedeploymentv1alpha1.AzureMachineLearningOnlineDeploymentStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuremachinelearningonlinedeploymentv1alpha1.AzureMachineLearningOnlineDeploymentIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureMachineLearningOnlineDeployment = stackInput.Target
-	target := stackInput.Target
+	locals.AzureMachineLearningOnlineDeployment = iacInput.Target
+	target := iacInput.Target
 
 	locals.EndpointId = target.Spec.EndpointId.GetValue()
 
@@ -69,7 +69,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azuremachinelearningonlin
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureMachineLearningOnlineDeployment.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureMachineLearningOnlineDeployment.String()),
 	}
 
 	if target.Metadata.Id != "" {

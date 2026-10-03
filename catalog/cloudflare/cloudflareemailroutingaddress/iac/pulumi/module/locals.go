@@ -12,9 +12,9 @@ type Locals struct {
 	CloudflareEmailRoutingAddress *cloudflareemailroutingaddressv1alpha1.CloudflareEmailRoutingAddress
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflareemailroutingaddressv1alpha1.CloudflareEmailRoutingAddressStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflareemailroutingaddressv1alpha1.CloudflareEmailRoutingAddressIacInput) *Locals {
 	locals := &Locals{}
-	locals.CloudflareEmailRoutingAddress = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareEmailRoutingAddress = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

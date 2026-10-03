@@ -7,7 +7,7 @@
 //
 // Unlike providers whose resources carry one opaque id, GCP identifiers are
 // frequently compound (an IAM grant is a project+role+member tuple), so
-// verifiers receive the component's full string-ified stack outputs.
+// verifiers receive the component's full string-ified outputs.
 package verify
 
 import (
@@ -141,7 +141,7 @@ type Services struct {
 
 // Verifier checks a single component's GCP resource for existence/absence.
 type Verifier interface {
-	// IDOutputKey is the stack-output key carrying the primary identifier —
+	// IDOutputKey is the output key carrying the primary identifier —
 	// used to confirm the deploy produced a verifiable handle.
 	IDOutputKey() string
 	// VerifyExists returns an error unless the resource exists.
@@ -154,7 +154,7 @@ type Verifier interface {
 // its kind's scenario EXPECTS the deploy to fail (the framework's
 // expected-deploy-failure lane, for substrates that gate resource creation on
 // workload health — Cloud Run gates service creation on first-revision
-// readiness). Stack outputs do not exist when this runs: identity arrives as
+// readiness). Outputs do not exist when this runs: identity arrives as
 // the manifest-derived service name and region. Implementations must classify
 // the engine's error, assert the partially-created resource's state with the
 // provider's own APIs, and pin the workload's failure cause from its logs —

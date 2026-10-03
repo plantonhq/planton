@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awscloudwatchsynthetics.v1alpha1;
 
-// AwsCloudwatchSyntheticsStackOutputs captures the observable state of
+// AwsCloudwatchSyntheticsOutputs captures the observable state of
 // the canary and owned groups after apply.
-message AwsCloudwatchSyntheticsStackOutputs {
+message AwsCloudwatchSyntheticsOutputs {
   // The canary's name (the provider's import ID for the canary).
   // Empty on groups-only instances.
   string canary_name = 1;

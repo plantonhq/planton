@@ -48,9 +48,9 @@ flowchart TB
 ### Proto Schemas (4 files)
 
 - `spec.proto` -- 5 nested messages: `ScalewayKapsuleClusterSpec`, `ScalewayKapsuleDefaultNodePool`, `ScalewayKapsuleAutoUpgrade`, `ScalewayKapsuleAutoscalerConfig`, `ScalewayKapsuleNodePoolUpgradePolicy`
-- `stack_outputs.proto` -- 6 outputs: `cluster_id`, `kubeconfig`, `apiserver_url`, `cluster_ca_certificate`, `wildcard_dns`, `default_pool_id`
+- `outputs.proto` -- 6 outputs: `cluster_id`, `kubeconfig`, `apiserver_url`, `cluster_ca_certificate`, `wildcard_dns`, `default_pool_id`
 - `api.proto` -- KRM structure with `scaleway.planton.dev/v1` apiVersion
-- `stack_input.proto` -- Standard stack input with ScalewayProviderConfig
+- `iac_input.proto` -- Standard IaC input with ScalewayProviderConfig
 
 ### Pulumi Go Module (6 files)
 
@@ -64,14 +64,14 @@ flowchart TB
 
 ### Documentation (2 files)
 
-- `README.md` -- Component overview, dependency map, composition layer, Scaleway docs links.
+- `README.md` -- Kind overview, dependency map, composition layer, Scaleway docs links.
 - `examples.md` -- 4 scenarios: minimal dev, production with autoscaling, infra-chart composition with valueFrom, dedicated control plane.
 
 ## Benefits
 
 - Users can provision a working Kapsule cluster from a single YAML manifest
 - The cluster is immediately composable into the `kapsule-environment` infra chart
-- 6 stack outputs provide everything needed for downstream K8s addon deployment
+- 6 outputs provide everything needed for downstream K8s addon deployment
 - Autoscaler config is cluster-wide (matching Scaleway's architecture) -- no need to duplicate settings per pool
 
 ## Impact

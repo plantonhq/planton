@@ -15,13 +15,13 @@ import (
 // keyed by name. Subnets, security groups, and KMS keys compose by
 // reference -- this module never creates or mutates a resource that
 // deserves to be its own node.
-func Resources(ctx *pulumi.Context, stackInput *awsdocumentdbv1alpha1.AwsDocumentDbStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsdocumentdbv1alpha1.AwsDocumentDbIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder,
+	// Build the AWS provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static keys, keyless
 	// web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsDocumentDb.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsDocumentDb.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

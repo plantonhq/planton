@@ -10,10 +10,10 @@ per cluster. Install the operator once per Kubernetes cluster (or once
 per watched namespace set), then declare ClickHouse clusters against
 it.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want a ClickHouse cluster** — that is KubernetesClickHouse;
-  this component is the controller that reconciles it, including the
+  this kind is the controller that reconciles it, including the
   managed-Keeper arm (`ClickHouseKeeperInstallation` resources are
   reconciled by this same operator).
 - **You want a managed cloud analytics service** — use ClickHouse
@@ -119,7 +119,7 @@ per-host StatefulSets.
 - **`spec.helm_values`**: the escape hatch (see above for the one
   off-limits key)
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

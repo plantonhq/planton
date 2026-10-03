@@ -1,10 +1,10 @@
 # Auth0 Prompt Screen Partials
 
-Inserts your own HTML fragments on one Universal Login prompt's screens -- extra form fields, consent checkboxes, a notice above the form -- at the insertion points each screen offers. One Cloud Resource per prompt. Partials render only inside a page template on a custom domain.
+Inserts your own HTML fragments on one Universal Login prompt's screens -- extra form fields, consent checkboxes, a notice above the form -- at the insertion points each screen offers. One Infra Component per prompt. Partials render only inside a page template on a custom domain.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module sets every partial of one prompt on the tenant your Auth0 connection's credential belongs to:
+When you deploy this Infra Component, the IaC module sets every partial of one prompt on the tenant your Auth0 connection's credential belongs to:
 
 - **The fragments of each screen you declare** -- each at its insertion point: the start or end of the form, the form's footer, around the secondary actions, or in place of the form's fields
 - **Nothing anywhere else** -- a screen or insertion point you leave out renders nothing
@@ -13,15 +13,15 @@ When you deploy this Cloud Resource, the IaC module sets every partial of one pr
 
 ### Planton Setup
 
-- **Auth0 Provider Connection** -- an active connection in the Connect module with the tenant's domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Auth0 Provider Connection** -- an active connection in the Connect module with the tenant's domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Auth0 Account
 
 - **The connection's Machine-to-Machine application** must hold `read:prompts` and `update:prompts` on the tenant's Management API (Auth0 dashboard: Applications, APIs, Auth0 Management API, Machine To Machine Applications).
-- **A custom domain** on the tenant (the Auth0 Custom Domain Cloud Resource, verified).
-- **A Universal Login page template** (the Auth0 Branding Cloud Resource's `universalLoginTemplate`), which partials render inside.
-- **The Universal Login experience "new"** (the Auth0 Prompt Cloud Resource).
+- **A custom domain** on the tenant (the Auth0 Custom Domain Infra Component, verified).
+- **A Universal Login page template** (the Auth0 Branding Infra Component's `universalLoginTemplate`), which partials render inside.
+- **The Universal Login experience "new"** (the Auth0 Prompt Infra Component).
 
 ## Deploy
 
@@ -52,7 +52,7 @@ spec:
 planton apply -f auth0-prompt-screen-partials.yaml
 ```
 
-The sign-up screen shows your note below its fields. A Stack Job tracks the change in real time.
+The sign-up screen shows your note below its fields. An Infra Job tracks the change in real time.
 
 ## Key Configuration
 
@@ -70,11 +70,11 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. The tenant is the one the Auth0 connection's credential belongs to.
+This kind has no foreign key dependencies. The tenant is the one the Auth0 connection's credential belongs to.
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -92,8 +92,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Auth0 Branding**](/cloud-catalog/auth0-branding) -- the page template partials render inside.
-- [**Auth0 Custom Domain**](/cloud-catalog/auth0-custom-domain) -- the custom domain a page template needs.
-- [**Auth0 Prompt Custom Text**](/cloud-catalog/auth0-prompt-custom-text) -- `var-<name>` words a partial reads, per language.
-- [**Auth0 Action**](/cloud-catalog/auth0-action) -- reads the fields a partial adds.
-- [**Auth0 Prompt**](/cloud-catalog/auth0-prompt) -- the Universal Login experience partials need, and the flow that decides which prompts people see.
+- [**Auth0 Branding**](/infra-catalog/auth0-branding) -- the page template partials render inside.
+- [**Auth0 Custom Domain**](/infra-catalog/auth0-custom-domain) -- the custom domain a page template needs.
+- [**Auth0 Prompt Custom Text**](/infra-catalog/auth0-prompt-custom-text) -- `var-<name>` words a partial reads, per language.
+- [**Auth0 Action**](/infra-catalog/auth0-action) -- reads the fields a partial adds.
+- [**Auth0 Prompt**](/infra-catalog/auth0-prompt) -- the Universal Login experience partials need, and the flow that decides which prompts people see.

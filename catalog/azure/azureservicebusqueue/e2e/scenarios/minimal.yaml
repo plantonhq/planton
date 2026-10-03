@@ -12,7 +12,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureservicebusqueue
+    e2e-catalog-kind: azureservicebusqueue
   annotations:
     planton.dev/e2e: "true"
     # Scenario-local namespace (fixture-namespace.yaml) instead of a

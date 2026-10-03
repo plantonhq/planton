@@ -1,18 +1,18 @@
 # DigitalOcean Droplet -- Pulumi Module
 
-Deploys a `digitalocean:index/droplet:Droplet` from a `DigitalOceanDroplet` stack input: image and sizing, region and VPC placement, SSH keys, backups with a policy window, IPv6, the monitoring and web-console agents, volume attachments, tags, cloud-init user data, graceful shutdown, and resize behavior. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`.
+Deploys a `digitalocean:index/droplet:Droplet` from a `DigitalOceanDroplet` IaC input: image and sizing, region and VPC placement, SSH keys, backups with a policy window, IPv6, the monitoring and web-console agents, volume attachments, tags, cloud-init user data, graceful shutdown, and resize behavior. Bridge SDK pin is `pulumi-digitalocean/sdk/v4 v4.79.1`.
 
 ## Module structure
 
-- `main.go` -- Pulumi program entry point reading the stack input
+- `main.go` -- Pulumi program entry point reading the IaC input
 - `module/main.go` -- `Resources()`: locals, provider, droplet
-- `module/locals.go` -- stack-input references and the standard Planton label map
-- `module/droplet.go` -- the droplet resource and stack-output exports
+- `module/locals.go` -- iac-input references and the standard Planton label map
+- `module/droplet.go` -- the droplet resource and output exports
 - `module/outputs.go` -- output key constants (the kind's outputs.proto contract)
 
 ## Outputs
 
-Exactly the kind's stack-output contract, identical to the Terraform module: `droplet_id`, `ipv4_address`, `ipv6_address`, `ipv4_address_private`, `urn`, `vpc_uuid`.
+Exactly the kind's output contract, identical to the Terraform module: `droplet_id`, `ipv4_address`, `ipv6_address`, `ipv4_address_private`, `urn`, `vpc_uuid`.
 
 ## Behavior notes
 

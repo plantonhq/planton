@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.aws.awstransitgateway.v1alpha1;
 
-// AwsTransitGatewayStackOutputs captures observable identifiers from a
+// AwsTransitGatewayOutputs captures observable identifiers from a
 // provisioned Transit Gateway.
 //
 // These outputs are the primary interface for downstream resources:
@@ -11,7 +11,7 @@ package dev.planton.aws.awstransitgateway.v1alpha1;
 // gateway, and by VPN connections and Direct Connect gateways. The default
 // route table IDs let route-table-aware tooling address the built-in tables
 // without introspecting the gateway.
-message AwsTransitGatewayStackOutputs {
+message AwsTransitGatewayOutputs {
   // The Transit Gateway ID (e.g., "tgw-0123456789abcdef0"). This is the
   // primary identifier used by VPC attachments, route tables, subnet routes,
   // VPN connections, Direct Connect gateways, and peering attachments.

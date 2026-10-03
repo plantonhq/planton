@@ -44,7 +44,7 @@ Identity is user-supplied and immutable: `server_id`, `hostname`, and `auth_type
 | `auth_credentials` | secret ref | The bearer token for auth_type bearer. WRITE-ONLY at Cloudflare. |
 | `client_secret` | secret ref | The OAuth client secret for manually-configured OAuth. WRITE-ONLY. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

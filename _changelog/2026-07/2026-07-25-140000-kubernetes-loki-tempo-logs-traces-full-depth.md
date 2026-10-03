@@ -57,5 +57,5 @@ full-surface shapes (real chart pulls); dedicated E2E verifiers (Loki
 push→LogQL round-trip + volume-loss durability; Tempo OTLP→trace-by-ID
 round-trip + persistence-through-pod-loss) authored and compiled; import
 maps; presets; docs. Secret-coverage, outputs conformance, importmap
-conformance, crkreflect, the structural guards and `make build-go` all
+conformance, catalogkindreflect, the structural guards and `make build-go` all
 green.

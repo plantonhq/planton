@@ -71,7 +71,7 @@ What Planton adds to the agent you already use:
   [trace: `planton.domain.infra-hub.planton-cli.md` (explain is offline, schemas compiled in); `/docs/coding-agents` (validate offline, no account); count from `PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT`]
 - **Verified before created.** The monthly cost from the providers' own price documents, stating exactly what it covers. The least-privilege permission policy derived from what is being composed, downloadable per provider.
   [trace: cost odometer + Runner Policy panel — `planton.domain.infra-hub.infra-chart.md`]
-- **A record, not a transcript.** Every deploy is a stack job with a live log and a revision history. State lives under a path you can `ls`. The Infrastructure Map answers "where did this come from."
+- **A record, not a transcript.** Every deploy is an infra job with a live log and a revision history. State lives under a path you can `ls`. The Infrastructure Map answers "where did this come from."
   [trace: server-minted revisions — desktop GTM changelog 069; state under `iac/state/` — `wiki/product.desktop.feature-availability.md`; Infrastructure Map — `planton.architecture.estate.md`]
 - **Secrets the agent never reads.** Encrypted in the local database, key in your OS keychain, resolved on the runner at the moment of use. The agent references a secret by name; it never sees a value.
   [trace: `planton.architecture.security.just-in-time-secret-resolution.md`; local backend — `planton.architecture.local-runtime-plantond.md`]

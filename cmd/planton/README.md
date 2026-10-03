@@ -46,7 +46,7 @@ The Planton CLI is a Go-based command-line tool built with [Cobra](https://githu
 │  ├── Reads manifest from env/tfvars                     │
 │  ├── Executes deployment code                           │
 │  ├── Manages state                                       │
-│  └── Creates/updates cloud resources                    │
+│  └── Creates/updates infra components                    │
 └─────────────────────────────────────────────────────────┘
 ```
 
@@ -261,12 +261,12 @@ error (no manifest source)
 - `LoadWithOverrides()`: Apply --set flags
 - `ApplyOverridesToFile()`: Create temp file with overrides
 
-### Cloud Resource Kind Reflection
+### Catalog Kind Reflection
 
-`pkg/crkreflect/` provides:
+`pkg/catalogkindreflect/` provides:
 
-- Kind string → CloudResourceKind enum mapping
-- CloudResourceKind → proto.Message type mapping
+- Kind string → CatalogKind enum mapping
+- CatalogKind → proto.Message type mapping
 - Kind → provider mapping
 - Kind metadata (name, group, version)
 
@@ -498,7 +498,7 @@ Most operations are idempotent:
 
 - [CLI Reference](/docs/cli/cli-reference) - User-facing CLI reference
 - [Manifest Package](../../internal/manifest/README.md) - Manifest loading
-- [CRK Reflect Package](../../pkg/crkreflect/README.md) - Kind resolution
+- [CRK Reflect Package](../../pkg/catalogkindreflect/README.md) - Kind resolution
 
 ---
 

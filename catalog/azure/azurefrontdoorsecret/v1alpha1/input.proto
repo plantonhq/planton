@@ -5,9 +5,9 @@ package dev.planton.azure.azurefrontdoorsecret.v1alpha1;
 import "catalog/azure/azurefrontdoorsecret/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-front-door-secret stack-input
-message AzureFrontDoorSecretStackInput {
-  //target cloud-resource
+//azure-front-door-secret iac-input
+message AzureFrontDoorSecretIacInput {
+  //target infra-component
   AzureFrontDoorSecret target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

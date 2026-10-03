@@ -20,11 +20,11 @@ type Locals struct {
 // (ARM backup policies are untagged), so this module derives no tag
 // map -- deliberately unlike its vault sibling.
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurebackuppolicyfilesharev1alpha1.AzureBackupPolicyFileShareStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurebackuppolicyfilesharev1alpha1.AzureBackupPolicyFileShareIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureBackupPolicyFileShare = stackInput.Target
-	target := stackInput.Target
+	locals.AzureBackupPolicyFileShare = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 	locals.RecoveryVaultName = target.Spec.RecoveryVaultName.GetValue()

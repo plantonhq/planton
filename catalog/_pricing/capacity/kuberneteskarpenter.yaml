@@ -8,9 +8,9 @@
 # leader plus a warm standby, each reserving the declared resources. The
 # NODES Karpenter launches are deliberately NOT here: their economics ride
 # the KubernetesKarpenterNodePool resources that declare the fleet.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kuberneteskarpenter
 spec:

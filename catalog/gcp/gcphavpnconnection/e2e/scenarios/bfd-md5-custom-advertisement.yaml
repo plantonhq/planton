@@ -19,7 +19,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcphavpnconnection
+    e2e-catalog-kind: gcphavpnconnection
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/gcp/gcphavpnconnection/e2e/prerequisites/gcpvpcnetwork-spoke.yaml,catalog/gcp/gcphavpnconnection/e2e/prerequisites/gcphavpngateway-spoke.yaml,catalog/gcp/gcphavpnconnection/e2e/prerequisites/gcphavpnconnection-spoke-to-hub.yaml"

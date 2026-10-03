@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azureapplicationgateway.v1alpha1;
 
-// **AzureApplicationGatewayStackOutputs** captures the outputs of
+// **AzureApplicationGatewayOutputs** captures the outputs of
 // provisioning an Azure Application Gateway.
 //
 // The name-keyed maps are the composition seams: backend-pool membership
@@ -15,7 +15,7 @@ package dev.planton.azure.azureapplicationgateway.v1alpha1;
 // A public frontend's ADDRESS is not exported here -- it lives on the
 // referenced AzurePublicIp resource (its ip_address output), which DNS
 // records point at.
-message AzureApplicationGatewayStackOutputs {
+message AzureApplicationGatewayOutputs {
   // The Azure Resource Manager ID of the Application Gateway.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/applicationGateways/{name}
   string application_gateway_id = 1;

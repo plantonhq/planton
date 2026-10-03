@@ -5,7 +5,7 @@ package dev.planton.kubernetes.kubernetesgharunnerscalesetcontroller.v1alpha1;
 /**
  * Outputs exported after installing the runner scale set controller.
  */
-message KubernetesGhaRunnerScaleSetControllerStackOutputs {
+message KubernetesGhaRunnerScaleSetControllerOutputs {
   /**
    * Namespace the controller runs in.
    */

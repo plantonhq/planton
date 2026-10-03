@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurestoragelocaluser
+    e2e-catalog-kind: azurestoragelocaluser
   annotations:
     planton.dev/e2e: "true"
     # Scenario-local account + container (in deploy order) instead of

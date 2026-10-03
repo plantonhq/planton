@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesistio.v1alpha1;
 
 /**
- * KubernetesIstioStackOutputs captures the handles downstream resources compose
+ * KubernetesIstioOutputs captures the handles downstream resources compose
  * against once the Istio control plane is installed:
  *  * Gateway API Gateways select the mesh through `gateway_class_name`,
  *  * mesh policy kinds (PeerAuthentication, AuthorizationPolicy, ...) target
@@ -11,7 +11,7 @@ package dev.planton.kubernetes.kubernetesistio.v1alpha1;
  *  * multi-revision setups discover the control-plane identity through
  *    `revision` and `istiod_service_name`.
  */
-message KubernetesIstioStackOutputs {
+message KubernetesIstioOutputs {
   // Namespace the control plane is installed in (e.g. "istio-system").
   string namespace = 1;
 

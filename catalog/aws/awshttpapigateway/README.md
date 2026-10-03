@@ -30,7 +30,7 @@ Use **AwsHttpApiGateway** when you need to:
 **When not to use:**
 
 - WebSocket APIs (a separate protocol surface with its own route/response model)
-- APIs requiring API keys and usage plans (a REST API feature; use the AwsRestApiUsagePlan component, or JWT/IAM/Lambda authorizers on HTTP APIs)
+- APIs requiring API keys and usage plans (a REST API feature; use the AwsRestApiUsagePlan kind, or JWT/IAM/Lambda authorizers on HTTP APIs)
 
 **Custom domains** are configured with the `AwsHttpApiDomain` component, which maps one or more APIs (by `api_id`) onto an owned domain with an ACM certificate. **Private backends** are reached through an `AwsHttpApiVpcLink` referenced from the integration's `connection_id`.
 
@@ -207,7 +207,7 @@ Configures JWT validation for a JWT authorizer.
 | `issuer` | `string` | **Yes** | Token issuer URL (e.g., Cognito: "https://cognito-idp.{region}.amazonaws.com/{userPoolId}") |
 | `audiences` | `string[]` | **Yes** | Expected audiences (e.g., Cognito app client ID). HTTP APIs validate both the `iss` and `aud` claims, so at least one audience is required |
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -375,7 +375,7 @@ spec:
             fieldPath: status.outputs.vpc_link_id
 ```
 
-## Related Components
+## Related Kinds
 
 - [AwsLambda](/docs/catalog/aws/awslambda) — Lambda functions used as backend integrations
 - [AwsHttpApiVpcLink](/docs/catalog/aws/awshttpapivpclink) — VPC links for private integrations

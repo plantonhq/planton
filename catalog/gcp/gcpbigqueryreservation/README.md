@@ -4,7 +4,7 @@ A BigQuery slot reservation -- dedicated query capacity in an administration pro
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `bigqueryreservation.googleapis.com` on the admin project (never disabled on destroy)
 - **Reservation** -- a `bigquery_reservation` carrying the platform attribution labels
@@ -79,7 +79,7 @@ planton apply -f bigquery-reservation.yaml
 - Job types, editions, and the numeric organization id follow Google's forms; principals start with `principal://`.
 - Slot counts are non-negative.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -108,7 +108,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpBigQueryCapacityCommitment** -- committed slots the reservation draws on
 - **GcpBigQueryReservationGroup** -- idle-slot sharing among reservations

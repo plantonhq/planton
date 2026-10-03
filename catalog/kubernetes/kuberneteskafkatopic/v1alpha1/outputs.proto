@@ -3,12 +3,12 @@ syntax = "proto3";
 package dev.planton.kubernetes.kuberneteskafkatopic.v1alpha1;
 
 /**
- * **KubernetesKafkaTopicStackOutputs** — the handles a declared Kafka
+ * **KubernetesKafkaTopicOutputs** — the handles a declared Kafka
  * topic exports for composition (producers/consumers configure the
  * topic name; the bootstrap endpoint comes from the KubernetesKafka
  * resource's own outputs).
  */
-message KubernetesKafkaTopicStackOutputs {
+message KubernetesKafkaTopicOutputs {
   // Namespace the KafkaTopic resource lives in (the Kafka cluster's
   // namespace).
   string namespace = 1;

@@ -9,7 +9,7 @@ import "catalog/kubernetes/kubernetes.proto";
  * everything a workload (or an exposure kind) needs to reach the
  * database.
  */
-message KubernetesMysqlStackOutputs {
+message KubernetesMysqlOutputs {
   /**
    * Namespace the cluster runs in.
    */

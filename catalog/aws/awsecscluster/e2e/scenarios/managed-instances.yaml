@@ -25,7 +25,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsecscluster
+    e2e-catalog-kind: awsecscluster
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AwsIamInstanceProfile, AwsSubnet, AwsSecurityGroup"

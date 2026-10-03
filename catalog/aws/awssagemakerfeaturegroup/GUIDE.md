@@ -1,4 +1,4 @@
-# AwsSagemakerFeatureGroup — Component Guide
+# AwsSagemakerFeatureGroup — Kind Guide
 
 Authored operational judgment for the feature group component: the
 design decisions behind the spec's shape, and what to know before

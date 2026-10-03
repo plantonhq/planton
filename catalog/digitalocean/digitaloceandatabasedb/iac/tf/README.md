@@ -14,7 +14,7 @@ Generated `variables.tf` mirrors the `DigitalOceanDatabaseDbSpec` proto: `cluste
 
 ## Outputs
 
-Exactly the `DigitalOceanDatabaseDbStackOutputs` contract: `cluster_id` and `database_name` -- the (cluster, name) pair IS the API identity.
+Exactly the `DigitalOceanDatabaseDbOutputs` contract: `cluster_id` and `database_name` -- the (cluster, name) pair IS the API identity.
 
 ## Behavior notes
 

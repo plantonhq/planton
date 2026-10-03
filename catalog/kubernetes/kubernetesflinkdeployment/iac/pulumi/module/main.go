@@ -18,8 +18,8 @@ import (
 //
 // PREREQUISITE: a KubernetesFlinkOperator whose watch scope covers this
 // namespace.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesflinkdeploymentv1alpha1.KubernetesFlinkDeploymentStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesflinkdeploymentv1alpha1.KubernetesFlinkDeploymentIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// FAIL LOUDLY on names past the operator's naming budget: the
 	// operator derives `<name>-rest` and `<name>-taskmanager-N-M` child
@@ -40,17 +40,17 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesflinkdeploymentv1alpha
 	// strings, and the Terraform twin's tonumber() fails its plan on a
 	// value like "abc" — this guard keeps the engines' failure semantics
 	// identical instead of silently rendering the default sizing.
-	if err := validateCpuQuantities(stackInput.Target.Spec); err != nil {
+	if err := validateCpuQuantities(iacInput.Target.Spec); err != nil {
 		return err
 	}
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
 
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

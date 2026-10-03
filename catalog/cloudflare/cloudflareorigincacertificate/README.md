@@ -6,7 +6,7 @@ Cloudflare-to-origin hop runs encrypted ("Full (Strict)" SSL). It is not a
 public/browser-trusted certificate; it is valid only between Cloudflare and the
 origin.
 
-This component is a one-click certificate+key node: by default it generates the
+This kind is a one-click certificate+key node: by default it generates the
 private key and CSR for you and exports the signed **certificate** plus the
 (sensitive) **private key**, so a downstream origin can mount both with no
 out-of-band key handling.
@@ -56,7 +56,7 @@ output is exported as a sensitive value — resolve it downstream as a managed-s
 reference rather than embedding it in plaintext. When you supply your own `csr`,
 the key never leaves your control and `private_key` is empty.
 
-## Related components
+## Related kinds
 
 - `CloudflareDnsRecord` / `CloudflareDnsZone` — the proxied hostnames this cert
   secures on the Cloudflare-to-origin hop.

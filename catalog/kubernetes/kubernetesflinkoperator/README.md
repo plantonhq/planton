@@ -10,10 +10,10 @@ FlinkSessionJob/FlinkStateSnapshot/FlinkBlueGreenDeployment CRs
 authored directly). Install the operator once, then declare Flink
 deployments against it.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want a Flink cluster or job** — that is
-  KubernetesFlinkDeployment; this component is the controller that
+  KubernetesFlinkDeployment; this kind is the controller that
   reconciles it.
 - **You cannot run cert-manager and want the webhook** — with the
   webhook enabled (the upstream default this spec keeps),
@@ -137,7 +137,7 @@ chart's own default is the unpinned `latest`).
 - **`spec.helm_values`**: the escape hatch (see above for the one
   re-pinned key)
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

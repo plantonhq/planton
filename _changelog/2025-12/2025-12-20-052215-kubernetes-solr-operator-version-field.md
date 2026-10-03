@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added `operator_version` field to the KubernetesSolrOperator component spec, allowing users to specify which version of the Apache Solr Operator to deploy. The default value is set to `v0.9.1` (the latest release) via proto field options, with the version flowing through to both Terraform and Pulumi IaC modules.
+Added `operator_version` field to the KubernetesSolrOperator kind spec, allowing users to specify which version of the Apache Solr Operator to deploy. The default value is set to `v0.9.1` (the latest release) via proto field options, with the version flowing through to both Terraform and Pulumi IaC modules.
 
 ## Problem Statement / Motivation
 
-The KubernetesSolrOperator component had hardcoded operator versions in both the Terraform and Pulumi modules, making it difficult for users to:
+The KubernetesSolrOperator kind had hardcoded operator versions in both the Terraform and Pulumi modules, making it difficult for users to:
 
 ### Pain Points
 

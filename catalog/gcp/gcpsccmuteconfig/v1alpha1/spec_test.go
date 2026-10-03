@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpSccMuteConfigSpec", func() {
 		return &GcpSccMuteConfig{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpSccMuteConfig",
-			Metadata:   &shared.CloudResourceMetadata{Name: "sandbox-public-buckets"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "sandbox-public-buckets"},
 			Spec: &GcpSccMuteConfigSpec{
 				MuteConfigId: "sandbox-public-buckets",
 				Filter:       `category = "PUBLIC_BUCKET_ACL"`,

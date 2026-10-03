@@ -4,12 +4,12 @@ Creates one Certificate Manager DNS authorization — the proof of domain contro
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Certificate Manager API enablement** (`certificatemanager.googleapis.com`) on the target project (never disabled on destroy)
 - **Certificate Manager DNS Authorization** -- a `google_certificate_manager_dns_authorization` for the domain, exporting the DNS validation record (a CNAME) that must exist in the domain's zone
 
-The validation record itself is NOT created here — serve it with a [GcpDnsRecord](/cloud-catalog/gcp-dns-record) wired to this kind's outputs, and validation completes automatically.
+The validation record itself is NOT created here — serve it with a [GcpDnsRecord](/infra-catalog/gcp-dns-record) wired to this kind's outputs, and validation completes automatically.
 
 ## Before You Deploy
 
@@ -19,7 +19,7 @@ The validation record itself is NOT created here — serve it with a [GcpDnsReco
 
 ### GCP Project
 
-- **An authoritative DNS zone** for the domain — typically a [GcpDnsZone](/cloud-catalog/gcp-dns-zone) — where the exported validation CNAME will be served.
+- **An authoritative DNS zone** for the domain — typically a [GcpDnsZone](/infra-catalog/gcp-dns-zone) — where the exported validation CNAME will be served.
 
 ## Deploy
 
@@ -48,7 +48,7 @@ spec:
 planton apply -f authorization.yaml
 ```
 
-This creates a global authorization for `example.com` (covering its wildcard too) and exports the validation CNAME to serve in the domain's zone. A Stack Job tracks the provisioning in real time.
+This creates a global authorization for `example.com` (covering its wildcard too) and exports the validation CNAME to serve in the domain's zone. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -80,15 +80,15 @@ These are the most important decisions when configuring a DNS authorization. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -111,6 +111,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Cert Manager Cert**](/cloud-catalog/gcp-cert-manager-cert) -- the Google-managed certificate that references this authorization by ID
-- [**GCP DNS Record**](/cloud-catalog/gcp-dns-record) -- serves the exported validation CNAME; wire its name/type/values to this kind's outputs
-- [**GCP DNS Zone**](/cloud-catalog/gcp-dns-zone) -- the authoritative zone the record lives in
+- [**GCP Cert Manager Cert**](/infra-catalog/gcp-cert-manager-cert) -- the Google-managed certificate that references this authorization by ID
+- [**GCP DNS Record**](/infra-catalog/gcp-dns-record) -- serves the exported validation CNAME; wire its name/type/values to this kind's outputs
+- [**GCP DNS Zone**](/infra-catalog/gcp-dns-zone) -- the authoritative zone the record lives in

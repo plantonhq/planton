@@ -3,11 +3,11 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesdaemonset.v1alpha1;
 
 /**
- * **KubernetesDaemonSetStackOutputs** captures the observable handles of a deployed
+ * **KubernetesDaemonSetOutputs** captures the observable handles of a deployed
  * node agent. DaemonSets have no Service or ingress, so the composition surface is
  * the object identity and its selector labels.
  */
-message KubernetesDaemonSetStackOutputs {
+message KubernetesDaemonSetOutputs {
   // The namespace the workload was deployed into.
   string namespace = 1;
 

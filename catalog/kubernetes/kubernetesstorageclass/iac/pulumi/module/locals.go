@@ -5,7 +5,7 @@ import (
 
 	kubernetesstorageclassv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesstorageclass/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -13,7 +13,7 @@ import (
 // spec's is_default_class bool renders to this annotation on both engines.
 const isDefaultClassAnnotation = "storageclass.kubernetes.io/is-default-class"
 
-// Locals holds computed values derived from the stack input for use across the module.
+// Locals holds computed values derived from the IaC input for use across the module.
 type Locals struct {
 	Context     *pulumi.Context
 	Spec        *kubernetesstorageclassv1alpha1.KubernetesStorageClassSpec
@@ -29,8 +29,8 @@ type Locals struct {
 }
 
 // initializeLocals extracts and transforms spec fields into module-local values.
-func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesstorageclassv1alpha1.KubernetesStorageClassStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(ctx *pulumi.Context, iacInput *kubernetesstorageclassv1alpha1.KubernetesStorageClassIacInput) *Locals {
+	target := iacInput.Target
 	spec := target.Spec
 
 	// Resource-identity labels: the kuberneteslabelkeys set, identical to what
@@ -39,7 +39,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *kubernetesstorageclassv1a
 	labels := map[string]string{
 		kuberneteslabelkeys.Resource:     strconv.FormatBool(true),
 		kuberneteslabelkeys.ResourceName: target.Metadata.Name,
-		kuberneteslabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_KubernetesStorageClass.String(),
+		kuberneteslabelkeys.ResourceKind: catalogkind.CatalogKind_KubernetesStorageClass.String(),
 	}
 	if target.Metadata.Id != "" {
 		labels[kuberneteslabelkeys.ResourceId] = target.Metadata.Id

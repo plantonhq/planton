@@ -36,8 +36,8 @@ import (
 // The typed spec renders into chart values (values.go); the helm_values
 // escape hatch merges last with Helm -f semantics — the exact semantic
 // twin of the Terraform module's helm_release values documents.
-func Resources(ctx *pulumi.Context, stackInput *kubernetessparkoperatorv1alpha1.KubernetesSparkOperatorStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetessparkoperatorv1alpha1.KubernetesSparkOperatorIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// Fail-loud name budget: 63-char Kubernetes name limit minus the
 	// module's longest derived suffix, "-workload-clusterrole"/
@@ -50,7 +50,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetessparkoperatorv1alpha1.
 	}
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
@@ -59,7 +59,7 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetessparkoperatorv1alpha1.
 	// Workload namespaces (spec.workload.namespaces) are CHART-created and
 	// chart-kept (helm.sh/resource-policy: keep) — deliberately not this
 	// module's resources; only the installation namespace is.
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

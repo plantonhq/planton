@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awstransitgatewayroutetable.v1alpha1;
 
-// AwsTransitGatewayRouteTableStackOutputs captures observable identifiers
+// AwsTransitGatewayRouteTableOutputs captures observable identifiers
 // from a provisioned Transit Gateway route table.
-message AwsTransitGatewayRouteTableStackOutputs {
+message AwsTransitGatewayRouteTableOutputs {
   // The Transit Gateway route table ID (e.g., "tgw-rtb-0123456789abcdef0").
   // Referenced by tooling that manages routes or inspects the routing
   // domain, and by the gateway-level default-table designation surface.

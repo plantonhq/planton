@@ -4,7 +4,7 @@ Memorystore for Redis Cluster -- Google's fully managed, sharded Redis. Your key
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Redis Cluster** -- a `redis.Cluster` in the chosen region with the declared shards and replicas on the chosen node type, authentication and TLS modes, persistence, backups, maintenance window, zone distribution, optional customer-managed encryption, and Private Service Connect configuration
 - **API enablement** -- the Memorystore for Redis and Network Connectivity APIs on the project, never disabled on destroy
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with `roles/redis.admin` on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with `roles/redis.admin` on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Networks
@@ -62,7 +62,7 @@ spec:
 planton apply -f redis-cluster.yaml
 ```
 
-This creates a three-shard cluster with one replica per shard, TLS, append-only persistence, and daily backups kept for 35 days, reachable from the production VPC. A Stack Job tracks the provisioning in real time; creation takes ten to fifteen minutes.
+This creates a three-shard cluster with one replica per shard, TLS, append-only persistence, and daily backups kept for 35 days, reachable from the production VPC. An Infra Job tracks the provisioning in real time; creation takes ten to fifteen minutes.
 
 ### InfraChart
 
@@ -84,7 +84,7 @@ These are the most important decisions when configuring a cluster. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -93,9 +93,9 @@ These are the most important decisions when configuring a cluster. Explore the f
 | **GcpKmsKey** | `kmsKey` | `status.outputs.key_id` |
 | **GcpRedisCluster** | `crossClusterReplicationConfig.primaryCluster.cluster`, `secondaryClusters[].cluster` | `status.outputs.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -118,8 +118,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Service Connection Policy**](/cloud-catalog/gcp-service-connection-policy) -- the automation policy Google-placed endpoints need
-- [**GCP Redis Cluster Endpoint Set**](/cloud-catalog/gcp-redis-cluster-endpoint-set) -- registers consumer-built PSC connections
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- the consumer network
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- customer-managed encryption at rest
-- [**GCP Cloud Run Worker Pool**](/cloud-catalog/gcp-cloud-run-worker-pool) -- a typical client, reaching the cluster over direct VPC egress
+- [**GCP Service Connection Policy**](/infra-catalog/gcp-service-connection-policy) -- the automation policy Google-placed endpoints need
+- [**GCP Redis Cluster Endpoint Set**](/infra-catalog/gcp-redis-cluster-endpoint-set) -- registers consumer-built PSC connections
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- the consumer network
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- customer-managed encryption at rest
+- [**GCP Cloud Run Worker Pool**](/infra-catalog/gcp-cloud-run-worker-pool) -- a typical client, reaching the cluster over direct VPC egress

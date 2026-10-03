@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuremachinelearningcomputeinstance
 spec:
@@ -10,7 +10,7 @@ spec:
   values:
     - name: machine_learning_compute_instance_id
       derivations:
-        - from_stack_output: machine_learning_compute_instance_id
+        - from_output: machine_learning_compute_instance_id
       where_to_find: >-
         Compose {workspace-id}/computes/{instance-name}, or `az ml
         compute show -g <rg> --workspace-name <ws> -n <name>

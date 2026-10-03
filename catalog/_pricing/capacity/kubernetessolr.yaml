@@ -7,11 +7,11 @@
 # classes: the Solr nodes and the bundled ZooKeeper ensemble members
 # (a real second pod class -- the zookeeper-operator provisions it
 # unless zookeeper.external replaces it). The operand only -- the
-# Apache Solr Operator is a separate component (KubernetesSolrOperator)
+# Apache Solr Operator is a separate kind (KubernetesSolrOperator)
 # with its own footprint. Schema:
-# finops/componentcapacityderivation/v1.
+# finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetessolr
 spec:

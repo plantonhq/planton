@@ -1,6 +1,6 @@
 # CloudflareCustomHostname — Terraform module
 
-Provisions a `cloudflare_custom_hostname` from the component's stack input.
+Provisions a `cloudflare_custom_hostname` from the component's IaC input.
 
 ## Upstream/provider parity (Enterprise-gated fields)
 

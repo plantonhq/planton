@@ -17,7 +17,7 @@ message AwsEventBridgeBus {
   string kind = 2 [(buf.validate.field).string.const = "AwsEventBridgeBus"];
 
   // metadata captures identifying information (name, org, env, id, labels, relationships).
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec holds the desired configuration for the EventBridge bus.
   AwsEventBridgeBusSpec spec = 4 [(buf.validate.field).required = true];
@@ -29,6 +29,6 @@ message AwsEventBridgeBus {
 // AwsEventBridgeBusStatus captures lifecycle, audit, job linkage, and
 // observable outputs.
 message AwsEventBridgeBusStatus {
-  // stack-outputs
-  AwsEventBridgeBusStackOutputs outputs = 1;
+  // outputs
+  AwsEventBridgeBusOutputs outputs = 1;
 }

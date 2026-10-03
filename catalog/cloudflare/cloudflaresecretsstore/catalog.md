@@ -4,7 +4,7 @@ Deploys the account-level Cloudflare Secrets Store: the vault that Worker secret
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Secrets Store** -- one `cloudflare_secrets_store` in the account: the singleton vault every store secret, Worker binding, and AI Gateway key reference
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Secrets Store Edit on the account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Secrets Store Edit on the account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -45,7 +45,7 @@ spec:
 planton apply -f secrets-store.yaml
 ```
 
-This creates the account's single Secrets Store, empty and ready for Cloudflare Secrets Store Secret resources to fill. A Stack Job tracks the provisioning in real time.
+This creates the account's single Secrets Store, empty and ready for Cloudflare Secrets Store Secret resources to fill. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -59,13 +59,13 @@ These are the most important decisions when configuring a Secrets Store. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. The account ID travels as a literal value, and the store is the root of the secrets dependency chain — everything else references it.
+This kind has no foreign key dependencies. The account ID travels as a literal value, and the store is the root of the secrets dependency chain — everything else references it.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -83,6 +83,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Secrets Store Secret**](/cloud-catalog/cloudflare-secrets-store-secret) -- the secrets inside this store, each a separate resource wired to `store_id`.
-- [**Cloudflare Worker**](/cloud-catalog/cloudflare-worker) -- secrets-store bindings that read secrets from this vault at runtime.
-- [**Cloudflare AI Gateway**](/cloud-catalog/cloudflare-ai-gateway) -- BYO-keys authentication backed by secrets in this store.
+- [**Cloudflare Secrets Store Secret**](/infra-catalog/cloudflare-secrets-store-secret) -- the secrets inside this store, each a separate resource wired to `store_id`.
+- [**Cloudflare Worker**](/infra-catalog/cloudflare-worker) -- secrets-store bindings that read secrets from this vault at runtime.
+- [**Cloudflare AI Gateway**](/infra-catalog/cloudflare-ai-gateway) -- BYO-keys authentication backed by secrets in this store.

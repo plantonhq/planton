@@ -4,7 +4,7 @@ Deploys a reusable Cloudflare Zero Trust Access policy: a decision (allow / deny
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Access Policy** -- a reusable policy with a decision, three rule lists (`include`/`exclude`/`require`) of the 26 Cloudflare rule criteria, an optional session duration, approval workflow, browser-isolation and purpose-justification flags, RDP connection rules, and per-policy MFA
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Access (Zero Trust) edit permission. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Access (Zero Trust) edit permission. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -55,7 +55,7 @@ spec:
 planton apply -f cloudflare-zero-trust-access-policy.yaml
 ```
 
-This creates an allow policy that grants the referenced engineering group. A Stack Job tracks the provisioning in real time.
+This creates an allow policy that grants the referenced engineering group. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,15 +89,15 @@ These are the most important decisions when configuring a policy. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareZeroTrustAccessGroup** | `include[].group.id` | `status.outputs.group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -115,5 +115,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Zero Trust Access Group**](/cloud-catalog/cloudflare-zero-trust-access-group) -- referenced by this policy's `group` rule
-- [**Cloudflare Zero Trust Access Application**](/cloud-catalog/cloudflare-zero-trust-access-application) -- attaches this policy via its policies list
+- [**Cloudflare Zero Trust Access Group**](/infra-catalog/cloudflare-zero-trust-access-group) -- referenced by this policy's `group` rule
+- [**Cloudflare Zero Trust Access Application**](/infra-catalog/cloudflare-zero-trust-access-application) -- attaches this policy via its policies list

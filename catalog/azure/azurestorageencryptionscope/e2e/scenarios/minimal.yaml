@@ -17,7 +17,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurestorageencryptionscope
+    e2e-catalog-kind: azurestorageencryptionscope
   annotations:
     planton.dev/e2e: "true"
     # Scenario-local account (minimal-account.yaml) instead of a registry

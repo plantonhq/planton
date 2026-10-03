@@ -22,7 +22,7 @@ The GCP chart catalog covered state backends, foundations, and the
 serverless tier, but the architectures data-centric teams deploy first —
 a production relational database, an analytics platform, a
 globally-consistent application database, and a vector-retrieval layer —
-still had to be hand-wired from individual components. Each of these
+still had to be hand-wired from individual kinds. Each of these
 compositions hides ordering and posture traps that cost a first-time
 team real debugging hours:
 
@@ -67,7 +67,7 @@ explicit `depends_on` edge. The Dataproc arm (default off) adds
 chart-owned staging/temp buckets, a dedicated service account with
 `roles/dataproc.worker` (cluster ordered after the grant), a reusable
 autoscaling policy (on-demand base at weight 1, spot burst at weight 3),
-and a private-IP-only autoscaling cluster with Component Gateway.
+and a private-IP-only autoscaling cluster with Kind Gateway.
 
 ### `charts/gcp/spanner-application`
 
@@ -137,7 +137,7 @@ flowchart LR
   stats regenerated (53 charts).
 - Live chart deploys and server-side `chart build` remain later gates
   by structure: every composed kind is already live dual-engine
-  E2E-proven by its own component work.
+  E2E-proven by its own kind work.
 
 ## Impact
 

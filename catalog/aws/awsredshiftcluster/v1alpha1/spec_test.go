@@ -29,7 +29,7 @@ func validCluster() *AwsRedshiftCluster {
 	return &AwsRedshiftCluster{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsRedshiftCluster",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-redshift",
 		},
 		Spec: &AwsRedshiftClusterSpec{

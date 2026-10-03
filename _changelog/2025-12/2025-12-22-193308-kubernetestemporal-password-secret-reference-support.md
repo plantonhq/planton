@@ -190,7 +190,7 @@ func secretRefPassword(name, key string) *kubernetes.KubernetesSensitiveValue {
 - **Improved security**: Production deployments can use Kubernetes Secrets instead of plaintext passwords
 - **GitOps friendly**: Manifests can be safely committed to version control without exposing credentials
 - **Easier rotation**: Password changes only require updating the Kubernetes Secret, not the manifest
-- **Consistency**: Follows the same pattern established by `KubernetesSignoz` component
+- **Consistency**: Follows the same pattern established by `KubernetesSignoz` kind
 - **Reuses existing types**: Uses the shared `KubernetesSensitiveValue` type for consistency
 - **Backward compatible API**: Both Pulumi and Terraform modules handle both value types seamlessly
 
@@ -202,7 +202,7 @@ func secretRefPassword(name, key string) *kubernetes.KubernetesSensitiveValue {
 - Clear documentation with examples for both approaches
 
 ### Developers
-- Pattern established for handling secrets is consistent across components
+- Pattern established for handling secrets is consistent across kinds
 - All tests updated and passing
 
 ## Files Changed

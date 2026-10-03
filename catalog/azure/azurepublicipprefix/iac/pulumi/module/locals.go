@@ -5,7 +5,7 @@ import (
 
 	azurepublicipprefixv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurepublicipprefix/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -30,11 +30,11 @@ type Locals struct {
 	AzureTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurepublicipprefixv1alpha1.AzurePublicIpPrefixStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurepublicipprefixv1alpha1.AzurePublicIpPrefixIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzurePublicIpPrefix = stackInput.Target
-	target := stackInput.Target
+	locals.AzurePublicIpPrefix = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -66,7 +66,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurepublicipprefixv1alph
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzurePublicIpPrefix.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzurePublicIpPrefix.String()),
 	}
 
 	if target.Metadata.Id != "" {

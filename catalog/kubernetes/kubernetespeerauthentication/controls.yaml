@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: kubernetespeerauthentication
 spec:
@@ -21,7 +21,7 @@ spec:
       evidence:
         type: spec_default
         reference: Omitting mtls inherits the parent (namespace-level, then mesh-level) policy, treated as PERMISSIVE when none exists -- plaintext and mTLS both accepted; mode STRICT requires every inbound connection to the selected workloads to be a mutual-TLS tunnel with a client certificate, and DISABLE turns tunneling off.
-      notes: "This component IS the mesh's transit-encryption requirement. Presets: 01-namespace-strict-mtls sets STRICT for a whole namespace; 02-workload-strict-with-plaintext-port sets STRICT on one workload with a port_level_mtls DISABLE carve-out for a single port. Scope caveats: enforcement reaches only workloads with Istio sidecars, and port_level_mtls overrides take effect only when a selector is present (spec validation enforces this)."
+      notes: "This kind IS the mesh's transit-encryption requirement. Presets: 01-namespace-strict-mtls sets STRICT for a whole namespace; 02-workload-strict-with-plaintext-port sets STRICT on one workload with a port_level_mtls DISABLE carve-out for a single port. Scope caveats: enforcement reaches only workloads with Istio sidecars, and port_level_mtls overrides take effect only when a selector is present (spec validation enforces this)."
     - control_id: no-public-access
       status: not_applicable
       notes: The policy is not an endpoint -- it has nothing to expose. It governs how the selected workloads' inbound connections authenticate, not where they are reachable from.

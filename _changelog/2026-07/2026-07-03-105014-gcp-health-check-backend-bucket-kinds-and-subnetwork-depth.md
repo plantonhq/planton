@@ -68,7 +68,7 @@ All three new/updated kinds' modules (and the two conformed prerequisites) enabl
 
 ## Validation
 
-- Offline: `make protos` ×2; spec tests 24 + 20 + 23 (plus the two prerequisite kinds') green; release-equivalent Pulumi builds for all five touched kinds; `tofu validate` + offline `planton tofu plan` per kind through the real tfvars-converter path; `secret-coverage --check`; `validate-refs --check`; `validate-outputs` dry-runs with full proto population; every hack manifest, preset, scenario, and prerequisite manifest through `planton validate`; `make build-go`; framework tests (`pkg/outputs`, `pkg/refcheck`, `pkg/crkreflect`) green.
+- Offline: `make protos` ×2; spec tests 24 + 20 + 23 (plus the two prerequisite kinds') green; release-equivalent Pulumi builds for all five touched kinds; `tofu validate` + offline `planton tofu plan` per kind through the real tfvars-converter path; `secret-coverage --check`; `validate-refs --check`; `validate-outputs` dry-runs with full proto population; every hack manifest, preset, scenario, and prerequisite manifest through `planton validate`; `make build-go`; framework tests (`pkg/outputs`, `pkg/refcheck`, `pkg/catalogkindreflect`) green.
 - Live (dual-engine, ephemeral create→verify→destroy): health check Pulumi 80.6s / Terraform 98.7s (global + regional scenarios), backend bucket 65s / 95s (with the GcsBucket prerequisite chain), subnetwork 135s / 148s (with the VPC prerequisite chain). Post-run sweeps: zero orphaned health checks, backend buckets, subnets, networks, or buckets.
 - Audits: all three kinds **Fully Complete — PARITY ✅** with zero `PARITY-EXCEPTION`s (reports in each kind's `docs/audit/`).
 

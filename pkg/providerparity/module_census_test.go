@@ -10,7 +10,7 @@ import (
 	"runtime"
 	"testing"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // TestScanModule_HermeticFixture proves the scan against a module that would
@@ -120,7 +120,7 @@ func TestModuleCensusGcp(t *testing.T) {
 	if _, err := os.Stat(filepath.Join(root, catalogRoot)); err != nil {
 		t.Skip("catalog source tree not present (bazel sandbox); runs under go test")
 	}
-	census, err := ModuleCensusForProvider(root, cloudresourcekind.CloudResourceProvider_gcp)
+	census, err := ModuleCensusForProvider(root, catalogkind.CatalogProvider_gcp)
 	if err != nil {
 		t.Fatalf("census: %v", err)
 	}
@@ -141,7 +141,7 @@ func TestModuleCensusGcp(t *testing.T) {
 	}
 }
 
-// TestModuleCensusIsProviderAgnostic is the guard the sibling cloud catalogs
+// TestModuleCensusIsProviderAgnostic is the guard the sibling infra catalogs
 // rely on: the census must RUN over every major provider's catalog -- kinds
 // with recorded anatomy debt (a missing iac/tf) surface as MissingModule
 // census rows, never as an error that hides the rest of the catalog.
@@ -150,9 +150,9 @@ func TestModuleCensusIsProviderAgnostic(t *testing.T) {
 	if _, err := os.Stat(filepath.Join(root, catalogRoot)); err != nil {
 		t.Skip("catalog source tree not present (bazel sandbox); runs under go test")
 	}
-	for _, provider := range []cloudresourcekind.CloudResourceProvider{
-		cloudresourcekind.CloudResourceProvider_azure,
-		cloudresourcekind.CloudResourceProvider_aws,
+	for _, provider := range []catalogkind.CatalogProvider{
+		catalogkind.CatalogProvider_azure,
+		catalogkind.CatalogProvider_aws,
 	} {
 		census, err := ModuleCensusForProvider(root, provider)
 		if err != nil {

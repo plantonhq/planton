@@ -3,7 +3,7 @@
 # modules. Cloudflare authenticates with a bearer API token assembled from
 # named permission groups; every group entry is `derived` (static analysis
 # of the module sources, cited in notes) until the live capture lane
-# upgrades it to `proven`. Schema: iac/componentpermissions/v1.
+# upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # The catalog page additionally names the account-scoped "Load Balancing:
 # Monitors and Pools Edit" group -- that group belongs to the companion
@@ -12,7 +12,7 @@
 # the account-level pool or monitor APIs), so it lives in those components'
 # inventories, not this one.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: cloudflareloadbalancer
 spec:

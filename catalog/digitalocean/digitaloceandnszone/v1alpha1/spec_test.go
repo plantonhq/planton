@@ -33,7 +33,7 @@ func zone() *DigitalOceanDnsZone {
 	return &DigitalOceanDnsZone{
 		ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 		Kind:       "DigitalOceanDnsZone",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-dns-zone",
 		},
 		Spec: &DigitalOceanDnsZoneSpec{

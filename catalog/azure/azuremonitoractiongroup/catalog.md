@@ -4,7 +4,7 @@ Deploys an Azure Monitor Action Group -- the notification and automation hub ale
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Action Group** -- a `Microsoft.Insights/actionGroups` resource (GLOBAL -- it lives in a resource group but not in a region, so notifications keep flowing during regional outages) carrying the configured receiver lists and the short name shown as the SMS/push sender identity
 - **Azure Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically, merged with any user tags (user values win on key conflicts)
@@ -13,12 +13,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the action group will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the action group will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 - **Receiver-side prerequisites, per channel** -- automation receivers reference things that must already exist: a Function App's trigger URL, a Logic App's callback URL, an Automation runbook's webhook, an Event Hub, or an ITSM Connector configured on a Log Analytics workspace.
 
 ## Deploy
@@ -56,7 +56,7 @@ spec:
 planton apply -f action-group.yaml
 ```
 
-This creates a global action group whose SMS messages arrive signed "PltOnCall"; a group with no receivers at all is also legal -- a routing node declared before its channels exist. A Stack Job tracks the provisioning in real time.
+This creates a global action group whose SMS messages arrive signed "PltOnCall"; a group with no receivers at all is also legal -- a routing node declared before its channels exist. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,7 +87,7 @@ These are the most important decisions when configuring an action group. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -97,9 +97,9 @@ These are the most important decisions when configuring an action group. Explore
 | **AzureEventHub** | `eventHubReceivers[].eventHubName` | `status.outputs.event_hub_name` |
 | **AzureEventHubNamespace** | `eventHubReceivers[].eventHubNamespace` | `status.outputs.namespace_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -118,8 +118,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the action group is created
-- [**Azure Monitor Metric Alert**](/cloud-catalog/azure-monitor-metric-alert) -- fires this group when a platform metric breaches
-- [**Azure Monitor Scheduled Query Alert**](/cloud-catalog/azure-monitor-scheduled-query-alert) -- fires this group when a KQL query result crosses a threshold
-- [**Azure Monitor Activity Log Alert**](/cloud-catalog/azure-monitor-activity-log-alert) -- fires this group on control-plane and service-health events
-- [**Azure Event Hub**](/cloud-catalog/azure-event-hub) -- receives the streamed alert payload for SIEM pipelines
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the action group is created
+- [**Azure Monitor Metric Alert**](/infra-catalog/azure-monitor-metric-alert) -- fires this group when a platform metric breaches
+- [**Azure Monitor Scheduled Query Alert**](/infra-catalog/azure-monitor-scheduled-query-alert) -- fires this group when a KQL query result crosses a threshold
+- [**Azure Monitor Activity Log Alert**](/infra-catalog/azure-monitor-activity-log-alert) -- fires this group on control-plane and service-health events
+- [**Azure Event Hub**](/infra-catalog/azure-event-hub) -- receives the streamed alert payload for SIEM pipelines

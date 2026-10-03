@@ -1,4 +1,4 @@
-# AwsSsmPatchBaseline — Component Guide
+# AwsSsmPatchBaseline — Kind Guide
 
 Authored operational judgment for the patch baseline component: the
 design decisions behind the spec's shape, and what to know before

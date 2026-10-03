@@ -11,7 +11,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: digitaloceanloadbalancer
+    e2e-catalog-kind: digitaloceanloadbalancer
   annotations:
     planton.dev/e2e: "true"
   tags:

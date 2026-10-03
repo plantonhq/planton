@@ -7,7 +7,7 @@
 // manifest author can express. Descriptor-based on purpose: regex/text
 // counting undercounts nested specs and is banned for parity numbers.
 //
-// The walk is a sibling of pkg/secretcoverage's (registry via crkreflect,
+// The walk is a sibling of pkg/secretcoverage's (registry via catalogkindreflect,
 // StringValueOrRef as a leaf, map/list handling, recursion guard) -- a reader
 // who knows one walk knows both.
 
@@ -16,8 +16,8 @@ package providerparity
 import (
 	"sort"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/plantonhq/planton/shared/options"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -69,13 +69,13 @@ type KindCensus struct {
 // cloud provider, sorted by kind. Kinds whose API package is not implemented
 // yet (registry entry without generated code) are skipped, matching the
 // kind-map codegen.
-func SpecCensus(provider cloudresourcekind.CloudResourceProvider) []KindCensus {
+func SpecCensus(provider catalogkind.CatalogProvider) []KindCensus {
 	var out []KindCensus
-	for _, kind := range crkreflect.KindsList() {
-		if crkreflect.GetProvider(kind) != provider {
+	for _, kind := range catalogkindreflect.KindsList() {
+		if catalogkindreflect.GetProvider(kind) != provider {
 			continue
 		}
-		msg, err := crkreflect.NewInstance(kind)
+		msg, err := catalogkindreflect.NewInstance(kind)
 		if err != nil {
 			continue // enum value exists but the API package is not implemented yet
 		}
@@ -96,7 +96,7 @@ func SpecCensus(provider cloudresourcekind.CloudResourceProvider) []KindCensus {
 
 // CollectSpecPaths walks one spec message descriptor and returns its sorted
 // leaf field paths. Exposed so tests can drive it against the hermetic
-// testcloudresourcegeneric spec in isolation.
+// testcatalogkindgeneric spec in isolation.
 func CollectSpecPaths(specMd protoreflect.MessageDescriptor, prefix string) []string {
 	paths, _ := CollectSpecCensus(specMd, prefix)
 	return paths

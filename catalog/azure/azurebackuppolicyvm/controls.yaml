@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: azurebackuppolicyvm
 spec:
@@ -54,7 +54,7 @@ spec:
       evidence:
         type: spec_validation
         reference: The spec's CEL rules require a retention layer matched to the schedule -- retention_daily (1 or 7-9999 days) for Hourly/Daily schedules, retention_weekly (1-9999 weeks) for Weekly -- and the optional weekly/monthly/yearly layers extend keeps grandfather-father-son style; Azure's 2-6-day daily-retention rejection is front-loaded as validation.
-      notes: This component IS the retention policy for classic VM backup. Both presets carry full ladders -- 01-daily-backup-policy keeps 30 dailies / 12 weeklies / 12 monthlies / 7 yearlies; 02-hourly-enhanced-policy adds archive tiering (tiering_policy TierAfter 3 months) and instant_restore_retention_days 7. Reducing retention on a vault under immutability or Multi-User Authorization is a guarded operation.
+      notes: This kind IS the retention policy for classic VM backup. Both presets carry full ladders -- 01-daily-backup-policy keeps 30 dailies / 12 weeklies / 12 monthlies / 7 yearlies; 02-hourly-enhanced-policy adds archive tiering (tiering_policy TierAfter 3 months) and instant_restore_retention_days 7. Reducing retention on a vault under immutability or Multi-User Authorization is a guarded operation.
     - control_id: multi-zone-ha
       status: not_applicable
       notes: A configuration object with no data plane of its own; where recovery points replicate is the vault's storage_mode_type. (V2 policies make instant-restore snapshots zonally resilient, but that is a property of the protected VM's snapshots, metered and realized on the binding.)

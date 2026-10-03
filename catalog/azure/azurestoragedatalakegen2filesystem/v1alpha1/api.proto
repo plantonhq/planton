@@ -22,7 +22,7 @@ message AzureStorageDataLakeGen2Filesystem {
   string kind = 2 [(buf.validate.field).string.const = 'AzureStorageDataLakeGen2Filesystem'];
 
   // metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
   AzureStorageDataLakeGen2FilesystemSpec spec = 4 [(buf.validate.field).required = true];
@@ -33,6 +33,6 @@ message AzureStorageDataLakeGen2Filesystem {
 
 // AzureStorageDataLakeGen2FilesystemStatus holds the deployment status and outputs.
 message AzureStorageDataLakeGen2FilesystemStatus {
-  // stack-outputs
-  AzureStorageDataLakeGen2FilesystemStackOutputs outputs = 1;
+  // outputs
+  AzureStorageDataLakeGen2FilesystemOutputs outputs = 1;
 }

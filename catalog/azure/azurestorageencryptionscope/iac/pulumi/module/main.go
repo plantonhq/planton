@@ -11,12 +11,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurestorageencryptionscopev1alpha1.AzureStorageEncryptionScopeStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurestorageencryptionscopev1alpha1.AzureStorageEncryptionScopeIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -24,7 +24,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurestorageencryptionscopev1alp
 	spec := locals.AzureStorageEncryptionScope.Spec
 
 	// The account name, parsed from the resolved account ARM ID for the
-	// stack output -- consumers frequently need the account/scope name
+	// output -- consumers frequently need the account/scope name
 	// pair, and this saves them a second reference. The id must END
 	// with /storageAccounts/{name} (matching the Terraform module's
 	// anchored regex), so a malformed or over-long id fails loudly here
@@ -77,7 +77,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurestorageencryptionscopev1alp
 		return errors.Wrapf(err, "failed to create storage encryption scope %s", spec.ScopeName)
 	}
 
-	// Export stack outputs. The name is what containers
+	// Export outputs. The name is what containers
 	// (default_encryption_scope), ADLS filesystems, and per-blob upload
 	// options reference within the account.
 	ctx.Export(OpEncryptionScopeId, createdScope.ID())

@@ -1,0 +1,12 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "module",
+    srcs = ["main.go"],
+    importpath = "github.com/plantonhq/planton/catalog/_test/testcatalogkindgeneric/iac/pulumi/module",
+    visibility = ["//visibility:public"],
+    deps = [
+        "//catalog/_test/testcatalogkindgeneric/v1alpha2",
+        "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",
+    ],
+)

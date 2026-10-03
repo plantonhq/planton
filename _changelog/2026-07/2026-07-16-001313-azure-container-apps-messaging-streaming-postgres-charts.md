@@ -6,7 +6,7 @@
 
 ## Summary
 
-Four production-shaped Azure infra charts joined the catalog — `azure/container-apps-environment`, `azure/service-bus-messaging`, `azure/event-streaming-platform`, and `azure/ha-postgres` — bringing the Azure catalog to nine charts. Building the Container Apps chart surfaced two component seams that could not be wired by reference, so two retrofits shipped with it: the Dapr component's metadata values and the KEDA scale-rule identity became `StringValueOrRef` fields, which is what lets the chart compose fully keyless messaging (no connection string anywhere in the deployment).
+Four production-shaped Azure infra charts joined the catalog — `azure/container-apps-environment`, `azure/service-bus-messaging`, `azure/event-streaming-platform`, and `azure/ha-postgres` — bringing the Azure catalog to nine charts. Building the Container Apps chart surfaced two kind seams that could not be wired by reference, so two retrofits shipped with it: the Dapr component's metadata values and the KEDA scale-rule identity became `StringValueOrRef` fields, which is what lets the chart compose fully keyless messaging (no connection string anywhere in the deployment).
 
 ## Problem Statement / Motivation
 
@@ -24,18 +24,18 @@ The Azure chart catalog covered networking, AKS, observability, and the web/stat
 
 ## Solution / What's New
 
-### Component retrofits (the seam-gap discipline)
+### Kind retrofits (the seam-gap discipline)
 
 Both fields became foreign-key-capable, following the established update workflow:
 
-- **Dapr metadata `value`** → bare `StringValueOrRef` (no default kind — metadata entries are component-type specific). The `dapr_metadata_value_xor_secret` CEL moved to presence form. The canonical use is an `azureClientId` entry tracking an `AzureUserAssignedIdentity`'s `client_id` output.
+- **Dapr metadata `value`** → bare `StringValueOrRef` (no default kind — metadata entries are kind-type specific). The `dapr_metadata_value_xor_secret` CEL moved to presence form. The canonical use is an `azureClientId` entry tracking an `AzureUserAssignedIdentity`'s `client_id` output.
 - **Scale-rule `identity_id`** → `StringValueOrRef` with default kind `AzureUserAssignedIdentity` → `status.outputs.identity_id`; the literal `"System"` stays first-class. Both siblings moved together (identical message shape).
 
 Modules unwrap with `GetValue()` on the Pulumi side; the Terraform variable shapes are unchanged (references arrive flattened by the tfvars converter). Spec tests cover literal and reference forms; hack manifests, the E2E scenario, presets, README, catalog page, and docs moved to the wrapper form. The `02-servicebus-pubsub` preset was rewritten to the keyless shape.
 
 ### The four charts
 
-**`azure/container-apps-environment`** (18 documents at defaults) — a VNet-injected (/21, `Microsoft.App/environments`-delegated), zone-redundant environment running a public API, an ingress-less worker, and a cron job. The messaging spine is fully keyless: one user-assigned identity, Azure Service Bus Data Sender + Data Receiver grants, a Dapr pub/sub component (`pubsub.azure.servicebus.queues`) whose `namespaceName` is render-composed and whose `azureClientId` rides the new reference seam, with `disableEntityManagement: "true"` so the topic's backing queue stays a first-class IaC resource with real DLQ posture. The worker scales 0→N on queue depth through a KEDA `azure-servicebus` rule that authenticates as the same identity (the other new seam), and mounts an SMB Azure Files volume registered with the account key by reference (the one seam Azure offers no identity path for — stated honestly in the template). Toggles: `zone_redundancy_enabled`, `internal_only_enabled`.
+**`azure/container-apps-environment`** (18 documents at defaults) — a VNet-injected (/21, `Microsoft.App/environments`-delegated), zone-redundant environment running a public API, an ingress-less worker, and a cron job. The messaging spine is fully keyless: one user-assigned identity, Azure Service Bus Data Sender + Data Receiver grants, a Dapr pub/sub kind (`pubsub.azure.servicebus.queues`) whose `namespaceName` is render-composed and whose `azureClientId` rides the new reference seam, with `disableEntityManagement: "true"` so the topic's backing queue stays a first-class IaC resource with real DLQ posture. The worker scales 0→N on queue depth through a KEDA `azure-servicebus` rule that authenticates as the same identity (the other new seam), and mounts an SMB Azure Files volume registered with the account key by reference (the one seam Azure offers no identity path for — stated honestly in the template). Toggles: `zone_redundancy_enabled`, `internal_only_enabled`.
 
 **`azure/service-bus-messaging`** (15 at defaults) — the integration backbone: per-service command queues (looped over a list param) each with DLQ posture and its own send-only/listen-only SAS pair; an events topic with a SQL-filtered subscription plus a `1=1` audit catch-all (the `$Default` rule cannot be declared — the always-true filter states the intent); a namespace-wide `DeadletteredMessages > 0` alert. The `premium_enabled` toggle renders the sku + capacity + partition trio together (the PREMIUM CELs demand all three).
 

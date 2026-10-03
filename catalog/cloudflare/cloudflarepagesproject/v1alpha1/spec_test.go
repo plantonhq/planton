@@ -20,7 +20,7 @@ func validProject() *CloudflarePagesProject {
 	return &CloudflarePagesProject{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflarePagesProject",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-site"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-site"},
 		Spec: &CloudflarePagesProjectSpec{
 			AccountId:        validAccountID,
 			Name:             "test-site",

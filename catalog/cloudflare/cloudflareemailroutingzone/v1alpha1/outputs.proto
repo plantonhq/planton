@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1;
 
-// CloudflareEmailRoutingZoneStackOutputs captures the outputs after enabling
+// CloudflareEmailRoutingZoneOutputs captures the outputs after enabling
 // Email Routing on a zone.
-message CloudflareEmailRoutingZoneStackOutputs {
+message CloudflareEmailRoutingZoneOutputs {
   // The zone ID Email Routing was enabled on.
   string zone_id = 1;
 

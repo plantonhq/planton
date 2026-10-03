@@ -33,7 +33,7 @@ func validResource() *AzureDiskEncryptionSet {
 	return &AzureDiskEncryptionSet{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureDiskEncryptionSet",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-des",
 		},
 		Spec: &AzureDiskEncryptionSetSpec{

@@ -5,9 +5,9 @@ package dev.planton.aws.awsssmdocument.v1alpha1;
 import "catalog/aws/awsssmdocument/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsSsmDocumentStackInput is the input for the IaC modules that
+// AwsSsmDocumentIacInput is the input for the IaC modules that
 // manage a customer-owned SSM document.
-message AwsSsmDocumentStackInput {
+message AwsSsmDocumentIacInput {
   // target is the AwsSsmDocument resource to deploy.
   AwsSsmDocument target = 1;
   // provider_config contains the AWS provider credentials and configuration.

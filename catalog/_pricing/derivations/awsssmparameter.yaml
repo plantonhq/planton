@@ -8,9 +8,9 @@
 # parameter per month, billed as an hourly proration in the offer
 # document); Standard-tier parameters -- both catalog presets -- commit
 # nothing on existence, and that zero is a real free tier, not
-# commitment-absence. Schema: finops/componentcostderivation/v1.
+# commitment-absence. Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsssmparameter
 spec:
@@ -50,7 +50,7 @@ spec:
     - applies_when:
         - field_path: key_id
           op: is_set
-      text: the customer-managed KMS key bills its monthly fee and per-request encrypt/decrypt charges on the referenced AwsKmsKey component -- the AWS-managed aws/ssm default carries no monthly fee
+      text: the customer-managed KMS key bills its monthly fee and per-request encrypt/decrypt charges on the referenced AwsKmsKey kind -- the AWS-managed aws/ssm default carries no monthly fee
   notes:
     - applies_when:
         - field_path: tier

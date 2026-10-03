@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1;
 import "catalog/kubernetes/kubernetesopensearchoperator/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//kubernetes-open-search-operator stack-input
-message KubernetesOpenSearchOperatorStackInput {
-  //target cloud-resource
+//kubernetes-open-search-operator iac-input
+message KubernetesOpenSearchOperatorIacInput {
+  //target infra-component
   KubernetesOpenSearchOperator target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

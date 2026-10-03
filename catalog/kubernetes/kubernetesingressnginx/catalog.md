@@ -4,7 +4,7 @@ Installs the ingress-nginx controller — the cluster's HTTP and HTTPS entry poi
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** — created only when `createNamespace` is true; otherwise deploys into an existing namespace
 - **Helm Release** — the official `ingress-nginx` chart (release named `metadata.name`; controller resources are named `<release>-controller`), creating:
@@ -20,7 +20,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** — an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** — an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -61,11 +61,11 @@ spec:
 planton apply -f ingress-nginx.yaml
 ```
 
-This installs a two-replica controller (the chart adds a PodDisruptionBudget automatically) owning the standard `nginx` IngressClass, behind an AWS NLB provisioned by EKS's built-in cloud controller, with client source IPs preserved. A Stack Job tracks the provisioning in real time.
+This installs a two-replica controller (the chart adds a PodDisruptionBudget automatically) owning the standard `nginx` IngressClass, behind an AWS NLB provisioned by EKS's built-in cloud controller, with client source IPs preserved. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire the placement and the cluster-wide default certificate to resources managed by other Cloud Resources:
+When deploying as part of a multi-resource environment, wire the placement and the cluster-wide default certificate to resources managed by other Infra Components:
 
 ```yaml
 spec:
@@ -106,16 +106,16 @@ These are the most important decisions when configuring an ingress-nginx control
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 | **KubernetesCertificate** | `defaultTlsCertificate.secretName` | `status.outputs.secret_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -141,10 +141,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — where the controller runs.
-- [**Kubernetes Ingress**](/cloud-catalog/kubernetes-ingress) — the routing rules this controller serves, selected by class name.
-- [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) — supplies the cluster-wide default TLS certificate by reference.
-- [**Cert Manager**](/cloud-catalog/kubernetes-cert-manager) — issues and renews the certificates behind each Ingress's TLS secret.
-- [**Kubernetes Service**](/cloud-catalog/kubernetes-service) — the backends Ingresses route to, and the raw TCP/UDP passthrough targets.
-- [**Kubernetes PriorityClass**](/cloud-catalog/kubernetes-priority-class) — ranks controller pods above ordinary workloads on production clusters.
-- [**Metrics Server**](/cloud-catalog/kubernetes-metrics-server) — required for the autoscaling utilization targets.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — where the controller runs.
+- [**Kubernetes Ingress**](/infra-catalog/kubernetes-ingress) — the routing rules this controller serves, selected by class name.
+- [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) — supplies the cluster-wide default TLS certificate by reference.
+- [**Cert Manager**](/infra-catalog/kubernetes-cert-manager) — issues and renews the certificates behind each Ingress's TLS secret.
+- [**Kubernetes Service**](/infra-catalog/kubernetes-service) — the backends Ingresses route to, and the raw TCP/UDP passthrough targets.
+- [**Kubernetes PriorityClass**](/infra-catalog/kubernetes-priority-class) — ranks controller pods above ordinary workloads on production clusters.
+- [**Metrics Server**](/infra-catalog/kubernetes-metrics-server) — required for the autoscaling utilization targets.

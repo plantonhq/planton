@@ -205,7 +205,7 @@ Added tests for:
 - **Simpler configuration**: No need to manually construct complex URIs with escaping
 - **Better defaults**: Automatic port selection based on engine type
 - **SSL/TLS support**: Simple boolean flag to enable secure connections
-- **Reusable pattern**: Uses existing `KubernetesSensitiveValue` type for consistency across components
+- **Reusable pattern**: Uses existing `KubernetesSensitiveValue` type for consistency across kinds
 - **MySQL compatibility**: Automatically adds `parseTime=true` for proper MySQL time handling
 
 ## Impact
@@ -216,7 +216,7 @@ Added tests for:
 - Clear documentation with examples for both approaches
 
 ### Developers
-- Pattern consistent with `kubernetessignoz` component
+- Pattern consistent with `kubernetessignoz` kind
 - All tests updated and passing
 - Both Pulumi and Terraform modules maintain feature parity
 
@@ -237,7 +237,7 @@ Added tests for:
 
 - Follows the pattern established in `kubernetessignoz` (2025-12-19 changelog)
 - Uses existing `KubernetesSensitiveValue` from `kubernetes_secret.proto`
-- Aligns with security recommendations in the component's research document (`docs/README.md`)
+- Aligns with security recommendations in the kind's research document (`docs/README.md`)
 
 ---
 

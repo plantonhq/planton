@@ -5,9 +5,9 @@ package dev.planton.azure.azureaksnodepool.v1alpha1;
 import "catalog/azure/azureaksnodepool/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-aks-node-pool stack-input
-message AzureAksNodePoolStackInput {
-  //target cloud-resource
+//azure-aks-node-pool iac-input
+message AzureAksNodePoolIacInput {
+  //target infra-component
   AzureAksNodePool target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

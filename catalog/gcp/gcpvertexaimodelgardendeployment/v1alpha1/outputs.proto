@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpvertexaimodelgardendeployment.v1alpha1;
 
-// GcpVertexAiModelGardenDeploymentStackOutputs captures what the one-step
+// GcpVertexAiModelGardenDeploymentOutputs captures what the one-step
 // Model Garden deployment created: the endpoint the model serves from and
 // the deployed model on it. Output names follow GcpVertexAiEndpoint so a
 // chart reads an endpoint the same way whichever block made it.
-message GcpVertexAiModelGardenDeploymentStackOutputs {
+message GcpVertexAiModelGardenDeploymentOutputs {
   // Fully qualified endpoint resource path:
   // projects/{project}/locations/{location}/endpoints/{endpoint_name}.
   string endpoint_id = 1;

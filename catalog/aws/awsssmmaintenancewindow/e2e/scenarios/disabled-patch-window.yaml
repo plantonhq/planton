@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsssmmaintenancewindow
+    e2e-catalog-kind: awsssmmaintenancewindow
   annotations:
     planton.dev/e2e: "true"
   tags:

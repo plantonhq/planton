@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: kubernetesvelero
 spec:
@@ -72,7 +72,7 @@ spec:
       evidence:
         type: spec_default
         reference: backup_storage is REQUIRED -- Velero without a storage location backs up nothing, so every install has a store. Backup records survive uninstall (Helm never deletes crds/-directory CRDs and crds.cleanup_on_uninstall defaults false), the bucket's objects are never touched, and location sync re-imports whatever the store holds -- restorable even into a fresh cluster.
-      notes: This component IS the cluster's backup-and-recovery arm. All three presets ship a nightly schedule; server.restore_only_mode is the DR-standby posture for a second cluster reading the same store.
+      notes: This kind IS the cluster's backup-and-recovery arm. All three presets ship a nightly schedule; server.restore_only_mode is the DR-standby posture for a second cluster reading the same store.
     - control_id: backup-retention-policy
       status: configurable
       field_path: server.default_backup_ttl

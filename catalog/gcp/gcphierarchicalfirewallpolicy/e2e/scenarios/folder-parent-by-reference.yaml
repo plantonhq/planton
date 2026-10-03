@@ -15,7 +15,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcphierarchicalfirewallpolicy
+    e2e-catalog-kind: gcphierarchicalfirewallpolicy
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_ORGANIZATION_ID

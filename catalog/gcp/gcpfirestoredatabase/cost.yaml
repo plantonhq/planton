@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: gcpfirestoredatabase
 spec:
@@ -30,7 +30,7 @@ spec:
       impact: On ENTERPRISE databases, live query subscriptions bill real-time update units at $0.30 per million (one unit per 4 KiB of updated data pushed to a listener) on top of the initial query's read units.
     - field_path: kms_key_name
       sku_meter: Cloud KMS key usage
-      impact: CMEK itself adds no Firestore charge; the key's version storage and per-operation charges bill on the GcpKmsKey component protecting the database.
+      impact: CMEK itself adds no Firestore charge; the key's version storage and per-operation charges bill on the GcpKmsKey kind protecting the database.
   estimate_exclusions:
     - an empty database bills nothing -- document reads, writes, and deletes accrue per operation (STANDARD) or per data-sized unit (ENTERPRISE) as applications use it, and stored data bills per GiB-month including index and metadata overhead
     - TTL deletes bill like ordinary deletes and have no free quota

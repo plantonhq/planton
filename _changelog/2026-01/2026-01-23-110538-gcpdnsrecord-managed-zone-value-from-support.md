@@ -6,11 +6,11 @@
 
 ## Summary
 
-Enhanced the `GcpDnsRecord` component's `managed_zone` field to support the `StringValueOrRef` pattern, enabling declarative references to `GcpDnsZone` resources. This allows users to compose DNS records that automatically reference zone outputs, eliminating hardcoded zone names and enabling dependency tracking between resources.
+Enhanced the `GcpDnsRecord` kind's `managed_zone` field to support the `StringValueOrRef` pattern, enabling declarative references to `GcpDnsZone` resources. This allows users to compose DNS records that automatically reference zone outputs, eliminating hardcoded zone names and enabling dependency tracking between resources.
 
 ## Problem Statement / Motivation
 
-The original `GcpDnsRecord` component required users to hardcode the managed zone name as a plain string. This created several issues:
+The original `GcpDnsRecord` kind required users to hardcode the managed zone name as a plain string. This created several issues:
 
 ### Pain Points
 
@@ -120,9 +120,9 @@ flowchart LR
 
 ## Related Work
 
-- Prior `GcpDnsRecord` forging (created the component)
-- `StringValueOrRef` pattern established in other components
-- `GcpDnsZone` stack outputs provide the referenced field
+- Prior `GcpDnsRecord` forging (created the kind)
+- `StringValueOrRef` pattern established in other kinds
+- `GcpDnsZone` outputs provide the referenced field
 
 ---
 

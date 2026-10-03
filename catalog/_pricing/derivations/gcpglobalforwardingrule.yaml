@@ -2,9 +2,9 @@
 # price choices from a manifest's spec fields. Field paths are spec-relative
 # proto field names. Price slugs resolve in the GCP price book
 # (catalog/_pricing/pricebook/gcp.yaml). Schema:
-# finops/componentcostderivation/v1.
+# finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: gcpglobalforwardingrule
 spec:
@@ -64,7 +64,7 @@ spec:
   exclusions:
     - text: "data processing follows traffic: an external frontend bills inbound and outbound data processing per GiB at the rate of the region where it is processed; a PSC endpoint targeting a published service attachment bills consumer data processing per GiB; the all-apis and vpc-sc Google-APIs bundles carry no data charge at all"
     - text: internet data transfer out to clients follows traffic volume and destination
-    - text: everything behind the VIP -- target proxies, URL maps, backend services, Cloud Armor policies, Cloud CDN, SSL certificates -- is separate wiring billing on its own components
-    - text: a reserved static address referenced by ip_address bills nothing while attached to this rule; the reservation itself is the GcpGlobalAddress component's concern
+    - text: everything behind the VIP -- target proxies, URL maps, backend services, Cloud Armor policies, Cloud CDN, SSL certificates -- is separate wiring billing on its own kinds
+    - text: a reserved static address referenced by ip_address bills nothing while attached to this rule; the reservation itself is the GcpGlobalAddress kind's concern
   notes:
     - text: "The forwarding-rule charge is a project-wide band invisible from any single manifest: the first five global rules share one minimum service charge, so a project's first rule pays the full rate shown here, rules two through five add nothing (the classic port-80-redirect-plus-port-443 pair costs no more than one rule), and each rule beyond five bills $0.01/hour instead."

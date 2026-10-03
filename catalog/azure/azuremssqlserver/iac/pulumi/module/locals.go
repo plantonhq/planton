@@ -5,7 +5,7 @@ import (
 
 	azuremssqlserverv1alpha1 "github.com/plantonhq/planton/catalog/azure/azuremssqlserver/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -48,18 +48,18 @@ var alertTypeStrings = map[azuremssqlserverv1alpha1.AzureMssqlServerSecurityAler
 	azuremssqlserverv1alpha1.AzureMssqlServerSecurityAlertType_UNSAFE_ACTION:               "Unsafe_Action",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuremssqlserverv1alpha1.AzureMssqlServerStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuremssqlserverv1alpha1.AzureMssqlServerIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureMssqlServer = stackInput.Target
-	target := stackInput.Target
+	locals.AzureMssqlServer = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureMssqlServer.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureMssqlServer.String()),
 	}
 
 	if target.Metadata.Id != "" {

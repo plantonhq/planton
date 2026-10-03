@@ -25,7 +25,7 @@ message KubernetesManifest {
 
   // Metadata for the manifest resource.
   // Includes standard fields like name, organization, environment, etc.
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // Specification of the manifest to apply: the anchor namespace, the raw
   // YAML, and the await behavior.
@@ -43,5 +43,5 @@ message KubernetesManifest {
 message KubernetesManifestStatus {
   // Outputs from the manifest apply.
   // Contains the anchor namespace and the applied-resource inventory.
-  KubernetesManifestStackOutputs outputs = 1;
+  KubernetesManifestOutputs outputs = 1;
 }

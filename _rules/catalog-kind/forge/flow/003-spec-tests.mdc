@@ -1,0 +1,56 @@
+---
+alwaysApply: false
+---
+RULE NUMBER
+003
+
+TITLE
+Forge: Add and run spec-level validation tests (protovalidate + Ginkgo/Gomega)
+
+ROLE
+You are the Planton Code Partner working inside the developer’s local workspace in Cursor. This rule creates and executes Go tests focused on validating `spec.proto` rules for a resource kind.
+
+SCOPE
+- Target directory: `catalog/<provider>/<kindfolder>/v1alpha1/`.
+- Create `spec_test.go` covering field-level and CEL validations.
+- Do not change schema; only tests are created/updated.
+
+TOOLS
+- Reader: `_rules/catalog-kind/_scripts/spec_proto_reader.py`
+- Test Writer+Run: `_rules/catalog-kind/_scripts/spec_tests_write_and_run.py`
+- Reference kinds (live ground truth): `catalog/aws/awsvpc/v1alpha1/spec_test.go`
+  and `catalog/aws/awsalb/v1alpha1/spec_test.go` -- the canonical test-suite skeleton and positive/negative cases.
+
+SEQUENTIAL STEPS
+1) Read `spec.proto` using the reader tool to confirm target package and kind.
+2) Draft `spec_test.go` modeled on the reference kind `spec_test.go` files (suite skeleton, positive/negative cases).
+3) Write and run tests:
+   - `cat <<'GO' | python3 _rules/catalog-kind/_scripts/spec_tests_write_and_run.py --provider <provider> --kindfolder <kindfolder> --stdin | cat`
+   - If `test_succeeded` is false, refine tests (or, if clearly a CEL robustness issue, refine CEL in `spec.proto` via the validate rule) and retry (≤3).
+
+OUTPUT
+- Show created/updated path and key JSON fields from the tool.
+- On success: confirm file path. On error: brief fix and rerun (≤3).
+
+SUCCESS
+- `spec_test.go` exists and compiles; tool reports `test_succeeded: true`.
+- Positive and negative cases cover core validations.
+
+SUCCESS CRITERIA
+- `spec_test.go` exists and compiles.
+- `go test` for the resource passes with both positive and negative cases.
+- CEL expressions are robust (no runtime panics) and enforce intended constraints.
+- While writing tests, verify each CEL `message` meets the quality standard in rule
+  `002-spec-validate` ("VALIDATION MESSAGE QUALITY"). If you find a terse or generic message during test authoring (e.g., "required", "invalid", raw regex), fix the message in `spec.proto` via the validate rule before proceeding. Tests are the last line of defense for message quality.
+
+TESTING OPTIONAL FIELDS
+- Fields with `(dev.planton.shared.options.default)` are marked `optional`
+- Generated Go code uses pointer types (`*string` vs `string`)
+- Tests must assign via pointers:
+  ```go
+  // WRONG: spec.RunnerGroup = "production"
+  // CORRECT:
+  runnerGroup := "production"
+  spec.RunnerGroup = &runnerGroup
+  ```
+- See the reference kind `spec_test.go` files named in TOOLS for worked examples

@@ -3,14 +3,14 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetespersistentvolumeclaim.v1alpha1;
 
 /**
- * **KubernetesPersistentVolumeClaimStackOutputs** captures the observable
+ * **KubernetesPersistentVolumeClaimOutputs** captures the observable
  * handles of a deployed PersistentVolumeClaim. Workloads mount the claim by
  * referencing `pvc_name` in their volume mounts; the outputs deliberately
  * avoid bind-time status (bound volume name, phase) because a claim under a
  * wait_for_first_consumer StorageClass is correctly Pending until a pod
  * consumes it.
  */
-message KubernetesPersistentVolumeClaimStackOutputs {
+message KubernetesPersistentVolumeClaimOutputs {
   // The name of the PersistentVolumeClaim object as created in the cluster —
   // the value workload volume mounts reference as their claim name.
   string pvc_name = 1;

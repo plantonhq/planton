@@ -1,6 +1,6 @@
 # DigitalOcean Monitor Alert -- Operational Guide
 
-What experience with this component teaches that the field reference cannot.
+What experience with this kind teaches that the field reference cannot.
 
 ## Prefer tags over id lists for droplet fleets
 

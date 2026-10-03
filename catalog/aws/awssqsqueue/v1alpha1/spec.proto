@@ -23,7 +23,7 @@ import "shared/foreignkey/v1/foreign_key.proto";
 //   setting `sqs_managed_sse_enabled` at all).
 // - Dead letter queue configuration allows routing failed messages to a separate queue
 //   for investigation and reprocessing.
-// - Credentials, region, and deployment workflow live outside this spec in stack inputs.
+// - Credentials, region, and deployment workflow live outside this spec in IaC inputs.
 message AwsSqsQueueSpec {
   // The AWS region where the resource will be created.
   // Example: "us-west-2", "eu-west-1"

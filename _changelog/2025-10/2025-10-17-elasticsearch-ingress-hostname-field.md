@@ -240,7 +240,7 @@ type Locals struct {
     KibanaIngressInternalHostname        string  // Never used
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *elasticsearchkubernetesv1.ElasticsearchKubernetesStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *elasticsearchkubernetesv1.ElasticsearchKubernetesIacInput) *Locals {
     if target.Spec.Ingress == nil ||
         !target.Spec.Ingress.Enabled ||
         target.Spec.Ingress.DnsDomain == "" {
@@ -275,7 +275,7 @@ type Locals struct {
     // Internal hostname fields removed
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *elasticsearchkubernetesv1.ElasticsearchKubernetesStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *elasticsearchkubernetesv1.ElasticsearchKubernetesIacInput) *Locals {
     // Elasticsearch ingress
     if target.Spec.Elasticsearch.Ingress != nil &&
         target.Spec.Elasticsearch.Ingress.Enabled &&

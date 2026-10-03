@@ -16,7 +16,7 @@ message KubernetesRayCluster {
   string kind = 2 [(buf.validate.field).string.const = 'KubernetesRayCluster'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   KubernetesRayClusterSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,6 +27,6 @@ message KubernetesRayCluster {
 
 //ray-cluster-kubernetes status.
 message KubernetesRayClusterStatus {
-  //stack-outputs
-  KubernetesRayClusterStackOutputs outputs = 1;
+  //outputs
+  KubernetesRayClusterOutputs outputs = 1;
 }

@@ -42,7 +42,7 @@ type BrowseManifest struct {
 
 // SkillBrowse is one skill's file tree. Paths are archive-relative
 // (SKILL.md at the root, references/ beside it, the catalog pack under
-// components/); the downloadable URL for each is
+// kinds/); the downloadable URL for each is
 // releases/{version}/definitions/exploded/{slug}/{path}.
 type SkillBrowse struct {
 	Slug  string       `json:"slug"`

@@ -1,4 +1,4 @@
-# Stack outputs — exactly the DigitalOceanDatabaseReplicaStackOutputs
+# Outputs — exactly the DigitalOceanDatabaseReplicaOutputs
 # contract, identical across both provisioners. DigitalOcean reads and
 # deletes replicas by (cluster, name); the replica's own UUID (the uuid
 # attribute -- the Terraform state id is a legacy composite string) is

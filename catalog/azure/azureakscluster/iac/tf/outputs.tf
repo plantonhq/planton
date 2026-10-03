@@ -1,4 +1,4 @@
-# Semantic stack outputs, matching AzureAksClusterStackOutputs field for
+# Semantic outputs, matching AzureAksClusterOutputs field for
 # field. cluster_id is the parent seam every standalone AzureAksNodePool
 # consumes; oidc_issuer_url is the trust anchor an
 # AzureFederatedIdentityCredential binds to for workload identity.
@@ -72,7 +72,7 @@ output "current_kubernetes_version" {
 # The CA certificate is public cluster identity (the TLS trust anchor), not
 # credential material. nonsensitive() deliberately unwraps the sensitivity it
 # inherits from the enclosing kube_config attribute so the platform's
-# cluster-connection materializer can read it as a plain stack output -- the
+# cluster-connection materializer can read it as a plain output -- the
 # same posture as the EKS/GKE CA outputs.
 output "cluster_ca_certificate" {
   description = "Base64-encoded cluster CA certificate (the standard kubeconfig certificate-authority-data format)."

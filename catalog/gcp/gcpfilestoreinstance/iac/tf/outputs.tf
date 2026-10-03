@@ -1,4 +1,4 @@
-# Semantic outputs mirroring GcpFilestoreInstanceStackOutputs — names and
+# Semantic outputs mirroring GcpFilestoreInstanceOutputs — names and
 # shapes byte-identical to the Pulumi module's exports.
 
 output "instance_id" {

@@ -1,9 +1,9 @@
 # Least-privilege permissions for the official kubernetessuperset modules
 # (iac/tf and iac/pulumi -- behaviorally equivalent). Derived from the
 # resources the modules create directly plus everything the pinned Superset
-# chart renders inside the Helm release. Schema: catalog/componentpermissions/v1.
+# chart renders inside the Helm release. Schema: catalog/catalogkindpermissions/v1.
 apiVersion: catalog.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: kubernetessuperset
 spec:

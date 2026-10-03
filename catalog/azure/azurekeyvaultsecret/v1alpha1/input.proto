@@ -5,10 +5,10 @@ package dev.planton.azure.azurekeyvaultsecret.v1alpha1;
 import "catalog/azure/azurekeyvaultsecret/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureKeyVaultSecretStackInput is the input to the IaC modules
+// AzureKeyVaultSecretIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureKeyVaultSecretStackInput {
+message AzureKeyVaultSecretIacInput {
   // The Key Vault secret resource to deploy.
   AzureKeyVaultSecret target = 1;
 

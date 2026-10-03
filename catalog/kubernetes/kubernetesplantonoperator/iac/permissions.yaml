@@ -2,7 +2,7 @@
 # provision, update, and destroy this component with the official modules.
 # Every entry is `derived` (static analysis of the module sources plus the
 # pinned 0.8.0 chart's template census, cited in notes) until the live
-# capture lane upgrades it to `proven`. Schema: iac/componentpermissions/v1.
+# capture lane upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # NOTE the asymmetry with what the OPERATOR ITSELF needs: the chart grants
 # the operator a broad ClusterRole (it deploys entire platforms). The
@@ -15,7 +15,7 @@
 # grant, and nothing wider than that (proven by the least-privilege lane,
 # which runs the install as exactly this file's identity).
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: kubernetesplantonoperator
 spec:

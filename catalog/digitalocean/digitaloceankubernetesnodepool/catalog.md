@@ -4,7 +4,7 @@ Adds a worker pool to an existing DigitalOcean Kubernetes (DOKS) cluster with co
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **DigitalOcean Kubernetes Node Pool** -- a worker pool attached to the referenced DOKS cluster, with the configured Droplet size and node count
 - **Autoscaling** -- enabled by `autoScale`, with DigitalOcean's cluster-autoscaler managing the node count between `minNodes` and `maxNodes`
@@ -15,12 +15,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### DigitalOcean Account
 
-- **A DOKS cluster** -- the pool attaches to an existing cluster; reference a `DigitalOceanKubernetesCluster` Cloud Resource via ValueFromRef or provide the cluster UUID directly (`doctl kubernetes cluster list`).
+- **A DOKS cluster** -- the pool attaches to an existing cluster; reference a `DigitalOceanKubernetesCluster` Infra Component via ValueFromRef or provide the cluster UUID directly (`doctl kubernetes cluster list`).
 - **A valid Droplet size slug** (e.g., `"s-2vcpu-4gb"`) -- check DOKS-capable sizes via `doctl kubernetes options sizes`.
 
 ## Deploy
@@ -54,7 +54,7 @@ spec:
 planton apply -f node-pool.yaml
 ```
 
-This attaches an autoscaling pool to the cluster. A Stack Job tracks the provisioning in real time.
+This attaches an autoscaling pool to the cluster. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,15 +85,15 @@ These are the most important decisions when configuring a node pool. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **DigitalOceanKubernetesCluster** (required) | `cluster` | `status.outputs.cluster_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -112,5 +112,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Kubernetes Cluster**](/cloud-catalog/digital-ocean-kubernetes-cluster) -- the cluster this pool attaches to
-- [**DigitalOcean Cloud Firewall**](/cloud-catalog/digital-ocean-firewall) -- secures the pool's Droplets; target by tag, which tracks pool membership as nodes come and go
+- [**DigitalOcean Kubernetes Cluster**](/infra-catalog/digital-ocean-kubernetes-cluster) -- the cluster this pool attaches to
+- [**DigitalOcean Cloud Firewall**](/infra-catalog/digital-ocean-firewall) -- secures the pool's Droplets; target by tag, which tracks pool membership as nodes come and go

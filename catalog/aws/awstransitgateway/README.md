@@ -56,7 +56,7 @@ With the default association and propagation dials enabled (the defaults), every
 |---|---|---|---|
 | `transitGatewayCidrBlocks` | string[] | [] | TGW CIDR blocks for TGW Connect/GRE (max 5; IPv4 /24 or larger, IPv6 /64 or larger, never 169.254.0.0/16) |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |---|---|

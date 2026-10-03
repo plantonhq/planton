@@ -1,10 +1,10 @@
 # GCP Firestore Database
 
-Deploys a Firestore database in a GCP project with configurable database type (Native or Datastore mode), location (single-region or multi-region), concurrency mode, point-in-time recovery, delete protection, edition tier (Standard or Enterprise), CMEK encryption, ENTERPRISE data-access modes (classic Firestore API, MongoDB-compatible API, realtime updates), resource-manager tags, and teardown policy. A project holds one `(default)` database plus any number of named databases; this component models one database per Cloud Resource.
+Deploys a Firestore database in a GCP project with configurable database type (Native or Datastore mode), location (single-region or multi-region), concurrency mode, point-in-time recovery, delete protection, edition tier (Standard or Enterprise), CMEK encryption, ENTERPRISE data-access modes (classic Firestore API, MongoDB-compatible API, realtime updates), resource-manager tags, and teardown policy. A project holds one `(default)` database plus any number of named databases; this kind models one database per Infra Component.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Firestore Database** -- a named database resource in the specified GCP project and location, configured with the chosen database type, concurrency mode, and edition
 - **Point-in-Time Recovery** -- created only when `pointInTimeRecoveryEnablement` is set to `POINT_IN_TIME_RECOVERY_ENABLED`; retains 7 days of version history for timestamp-based reads and recovery
@@ -14,18 +14,18 @@ When you deploy this Cloud Resource, the IaC module provisions:
 - **Teardown Policy** -- `deletionPolicy` defaults to DELETE so destroys manage the full lifecycle; PREVENT makes a destroy fail, ABANDON unmanages the database while it keeps serving
 - **Firestore API enablement** -- `firestore.googleapis.com` enabled in the target project (never disabled on destroy)
 
-Firestore databases do not support GCP labels. Resource Manager tags (`resourceManagerTags`) are applied at create time only; day-to-day resource tracking relies on the Planton metadata (organization, environment, resource kind) stored in the Cloud Resource record.
+Firestore databases do not support GCP labels. Resource Manager tags (`resourceManagerTags`) are applied at create time only; day-to-day resource tracking relies on the Planton metadata (organization, environment, resource kind) stored in the Infra Component record.
 
 ## Before You Deploy
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the Firestore database will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
+- **A GCP project** where the Firestore database will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
 - **Cloud KMS key** in the same location as the database (only for CMEK). For multi-region databases: `nam5` requires a key in the `us` multi-region; `eur3` requires a key in the `europe` multi-region.
 
 ## Deploy
@@ -57,7 +57,7 @@ spec:
 planton apply -f firestore-database.yaml
 ```
 
-This creates the project's default Firestore Native database in the US multi-region with optimistic concurrency, no PITR, delete protection disabled, and Google-managed encryption. A Stack Job tracks the provisioning in real time.
+This creates the project's default Firestore Native database in the US multi-region with optimistic concurrency, no PITR, delete protection disabled, and Google-managed encryption. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -97,16 +97,16 @@ These are the most important decisions when configuring a Firestore database. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpKmsKey** (optional) | `kmsKeyName` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -128,7 +128,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the database is created
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- provides the CMEK encryption key for data at rest
-- [**GCP Firestore Index**](/cloud-catalog/gcp-firestore-index) -- composite and vector indexes attached to this database
-- [**GCP Firestore Backup Schedule**](/cloud-catalog/gcp-firestore-backup-schedule) -- daily and weekly managed backups of this database
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the database is created
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- provides the CMEK encryption key for data at rest
+- [**GCP Firestore Index**](/infra-catalog/gcp-firestore-index) -- composite and vector indexes attached to this database
+- [**GCP Firestore Backup Schedule**](/infra-catalog/gcp-firestore-backup-schedule) -- daily and weekly managed backups of this database

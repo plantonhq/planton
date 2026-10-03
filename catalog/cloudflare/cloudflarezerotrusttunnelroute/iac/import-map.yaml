@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarezerotrusttunnelroute
 spec:
@@ -17,7 +17,7 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: route_id
       derivations:
-        - from_stack_output: route_id
+        - from_output: route_id
       where_to_find: >-
         Zero Trust dashboard -> Networks -> Routes (the route ID is in the
         API, not the UI), or

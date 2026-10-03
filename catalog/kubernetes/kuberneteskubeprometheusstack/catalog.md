@@ -6,7 +6,7 @@ The grain is deliberate: **one stack per cluster is the norm**. The chart instal
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm release** (official `kube-prometheus-stack` chart, default pin `91.8.2`, named `metadata.name`) — the operator Deployment, the Prometheus StatefulSet on a 50Gi PVC per replica (the chart's own emptyDir default is deliberately overridden), the Alertmanager StatefulSet on a 2Gi PVC, kube-state-metrics, the node-exporter DaemonSet, the curated PrometheusRule set, and the bundled Grafana with its pre-wired datasource and dashboards
 - **The monitoring.coreos.com CRDs** — installed ONCE by Helm and never touched again: chart upgrades do NOT upgrade CRDs (pair version bumps across operator minors with `crdUpgradeJob`, a pre-upgrade hook that server-side-applies the new bundle), and uninstall KEEPS them, so ServiceMonitors and rules across the cluster survive removal of the stack
@@ -53,7 +53,7 @@ spec:
 planton apply -f kube-prometheus-stack.yaml
 ```
 
-This empty-spec install is a complete monitoring plane: a single Prometheus with 10-day retention on a 50Gi volume, Alertmanager, both exporters, the curated rules, the bundled Grafana with generated credentials, and cluster-wide monitor discovery. A Stack Job tracks the provisioning in real time.
+This empty-spec install is a complete monitoring plane: a single Prometheus with 10-day retention on a 50Gi volume, Alertmanager, both exporters, the curated rules, the bundled Grafana with generated credentials, and cluster-wide monitor discovery. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -75,7 +75,7 @@ The InfraPipeline creates the namespace first, then installs the stack into it.
 
 These are the most important decisions when configuring a kube-prometheus-stack deployment. Explore the full field reference in the [API Explorer](#api-explorer) tab.
 
-**Discovery is deliberately wider than the chart's own default** — unset, this component discovers EVERY ServiceMonitor, PodMonitor, PrometheusRule, Probe, and ScrapeConfig in the cluster, whoever created it. The chart's own default only discovers objects labeled by its release (upstream's most-tripped-over behavior); cluster-wide discovery is what makes every catalog component's `service_monitor_enabled` toggle and any hand-authored monitor light up with zero wiring. Set `discovery: release_managed_only` to restore the chart's fence for deliberate multi-tenant ownership boundaries.
+**Discovery is deliberately wider than the chart's own default** — unset, this component discovers EVERY ServiceMonitor, PodMonitor, PrometheusRule, Probe, and ScrapeConfig in the cluster, whoever created it. The chart's own default only discovers objects labeled by its release (upstream's most-tripped-over behavior); cluster-wide discovery is what makes every catalog kind's `service_monitor_enabled` toggle and any hand-authored monitor light up with zero wiring. Set `discovery: release_managed_only` to restore the chart's fence for deliberate multi-tenant ownership boundaries.
 
 **On managed clouds, disable the scrapers that can never succeed** — on EKS/GKE/AKS the controller-manager, etcd, and scheduler run on provider machines the cluster network can never reach; leaving their scrapers on produces permanently-down targets and alerts that can never recover (kube-proxy's metrics port is often localhost-bound too). Disable them via `controlPlaneScrapers` and pair each with its rule group in `defaultRules.disabledGroups`, so the alert set stays truthful. The **Managed cloud preset** carries the exact set.
 
@@ -89,11 +89,11 @@ These are the most important decisions when configuring a kube-prometheus-stack 
 
 **Nothing is exposed by default** — Prometheus, Alertmanager, and Grafana stay ClusterIP. Expose them by composing first-class kinds (KubernetesIngress, the Gateway API kinds) over the exported service handles; the stack never opens its own doors.
 
-**`helmValues` merges last** — the escape hatch for chart surface beyond the typed fields (Thanos sidecar/ruler, windows monitoring, scrape classes, per-component securityContexts). Anything here silently overrides the typed fields on every deploy; never put secrets in it, and leave `fullnameOverride` alone — the naming contract the outputs derive from depends on it.
+**`helmValues` merges last** — the escape hatch for chart surface beyond the typed fields (Thanos sidecar/ruler, windows monitoring, scrape classes, per-kind securityContexts). Anything here silently overrides the typed fields on every deploy; never put secrets in it, and leave `fullnameOverride` alone — the naming contract the outputs derive from depends on it.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -104,9 +104,9 @@ These are the most important decisions when configuring a kube-prometheus-stack 
 
 The stack's secret inputs — the bring-your-own Grafana `adminSecret`, remote-write basic-auth/bearer-token/SigV4 Secrets, and `imagePullSecrets` — are plain Secret name + key selectors resolved in the installation namespace, not typed references.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -134,10 +134,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — referenced placement; the InfraPipeline orders namespace-first
-- [**Kubernetes StorageClass**](/cloud-catalog/kubernetes-storage-class) — SSD-backed classes for the TSDB and state volumes
-- [**Kubernetes Secret**](/cloud-catalog/kubernetes-secret) — bring-your-own Grafana credentials, remote-write credentials, image-pull Secrets
-- [**Cert Manager**](/cloud-catalog/kubernetes-cert-manager) — issues the operator's admission-webhook certificate when `certManager` is chosen
-- [**Kubernetes Ingress**](/cloud-catalog/kubernetes-ingress) — HTTP exposure over the exported Grafana and Prometheus handles (Gateway API kinds compose the same way)
-- [**Grafana**](/cloud-catalog/kubernetes-grafana) — the standalone, multi-datasource alternative to the bundled Grafana, consuming the exported `prometheus_endpoint`
-- **Every catalog component with a `service_monitor_enabled` toggle** — discovered automatically under the default cluster-wide discovery
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — referenced placement; the InfraPipeline orders namespace-first
+- [**Kubernetes StorageClass**](/infra-catalog/kubernetes-storage-class) — SSD-backed classes for the TSDB and state volumes
+- [**Kubernetes Secret**](/infra-catalog/kubernetes-secret) — bring-your-own Grafana credentials, remote-write credentials, image-pull Secrets
+- [**Cert Manager**](/infra-catalog/kubernetes-cert-manager) — issues the operator's admission-webhook certificate when `certManager` is chosen
+- [**Kubernetes Ingress**](/infra-catalog/kubernetes-ingress) — HTTP exposure over the exported Grafana and Prometheus handles (Gateway API kinds compose the same way)
+- [**Grafana**](/infra-catalog/kubernetes-grafana) — the standalone, multi-datasource alternative to the bundled Grafana, consuming the exported `prometheus_endpoint`
+- **Every catalog kind with a `service_monitor_enabled` toggle** — discovered automatically under the default cluster-wide discovery

@@ -26,7 +26,7 @@ func minimalSpec() *AzureContainerAppEnvironmentStorage {
 	return &AzureContainerAppEnvironmentStorage{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureContainerAppEnvironmentStorage",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-storage",
 		},
 		Spec: &AzureContainerAppEnvironmentStorageSpec{

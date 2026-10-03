@@ -4,7 +4,7 @@ Grants one role, to one identity, on one project — the safe, ADDITIVE unit of 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Project IAM Member Binding** -- a `projects.IAMMember` merging the (role, member) pair into the target project's IAM policy, with an optional IAM Condition attached
 
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### GCP Project
 
-- **A GCP project** whose IAM policy receives the grant. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
+- **A GCP project** whose IAM policy receives the grant. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
 - **The identity** receiving the grant must already exist (deleted principals are not grantable).
 
 ## Deploy
@@ -50,7 +50,7 @@ spec:
 planton apply -f gcp-project-iam-member.yaml
 ```
 
-This merges one binding into the project policy. A Stack Job tracks the provisioning in real time.
+This merges one binding into the project policy. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -86,7 +86,7 @@ These are the most important decisions when configuring a grant. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -94,9 +94,9 @@ These are the most important decisions when configuring a grant. Explore the ful
 | **GcpIamCustomRole** (optional) | `role` | `status.outputs.name` |
 | **GcpServiceAccount** (optional) | `member` | `status.outputs.member` |
 
-### What This Component Provides
+### What This Kind Provides
 
-This component has no outputs that downstream Cloud Resources consume. `status.outputs` echoes the fully resolved grant tuple (`project_id`, `role`, `member`) plus the project policy `etag` at the moment the grant merged — audit visibility for values that usually arrive through references, not composition inputs. Downstream resources reference the service account or custom role directly, never the grant.
+This kind has no outputs that downstream Infra Components consume. `status.outputs` echoes the fully resolved grant tuple (`project_id`, `role`, `member`) plus the project policy `etag` at the moment the grant merged — audit visibility for values that usually arrive through references, not composition inputs. Downstream resources reference the service account or custom role directly, never the grant.
 
 ## Common Patterns
 
@@ -110,7 +110,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- its `member` output feeds the member field; its inline role lists are the alternative for account-owned grants
-- [**GCP IAM Custom Role**](/cloud-catalog/gcp-iam-custom-role) -- its `name` output feeds the role field for least-privilege bundles
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the project whose policy receives the grant
-- [**GCP Service Account IAM Member**](/cloud-catalog/gcp-service-account-iam-member) -- the account-scoped sibling: grants ON a service account (impersonation, actAs) instead of on a project
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- its `member` output feeds the member field; its inline role lists are the alternative for account-owned grants
+- [**GCP IAM Custom Role**](/infra-catalog/gcp-iam-custom-role) -- its `name` output feeds the role field for least-privilege bundles
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the project whose policy receives the grant
+- [**GCP Service Account IAM Member**](/infra-catalog/gcp-service-account-iam-member) -- the account-scoped sibling: grants ON a service account (impersonation, actAs) instead of on a project

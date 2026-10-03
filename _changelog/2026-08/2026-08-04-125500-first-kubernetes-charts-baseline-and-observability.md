@@ -48,7 +48,7 @@ relationship edges wherever ordering matters but no output flows.
 
 ### Observability Stack
 
-- A first-class namespace resource owns `observability`; every component
+- A first-class namespace resource owns `observability`; every kind
   joins it — shared-namespace ownership is structural, not conventional.
 - Grafana ships wired to Prometheus, Loki, AND Tempo by reference; team
   dashboards arrive by labeled ConfigMap, never by editing the chart.

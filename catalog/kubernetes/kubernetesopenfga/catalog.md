@@ -6,7 +6,7 @@ Know the grain before you deploy: this component deploys the ENGINE, never the D
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **Helm Release** -- the `openfga` chart, creating:
@@ -25,7 +25,7 @@ Deliberately absent: the chart's demo playground is ALWAYS disabled (upstream se
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -75,7 +75,7 @@ spec:
 planton apply -f openfga.yaml
 ```
 
-This deploys three stateless server replicas against a PostgreSQL datastore, with schema migrations running as an init container in every pod and the API guarded by pre-shared keys from a Secret you maintain. Metrics serve on port 2112 by default. A Stack Job tracks the provisioning in real time.
+This deploys three stateless server replicas against a PostgreSQL datastore, with schema migrations running as an init container in every pod and the API guarded by pre-shared keys from a Secret you maintain. Metrics serve on port 2112 by default. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -124,7 +124,7 @@ These are the most important decisions when configuring OpenFGA. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -133,9 +133,9 @@ These are the most important decisions when configuring OpenFGA. Explore the ful
 | **KubernetesPostgres** (optional) | `datastore.postgres.passwordSecret.secretName` | `status.outputs.password_secret.name` |
 | **KubernetesMysql** (optional) | `datastore.mysql.host` | `status.outputs.primary_service` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -158,9 +158,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the namespace for the OpenFGA install
-- [**PostgreSQL**](/cloud-catalog/kubernetes-postgres) -- the recommended production datastore; the host and credential Secret both resolve by reference
-- [**MySQL**](/cloud-catalog/kubernetes-mysql) -- the alternative datastore engine
-- [**kube-prometheus-stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) -- provides the Prometheus Operator CRDs the ServiceMonitor needs
-- [**OpenTelemetry Collector**](/cloud-catalog/kubernetes-otel-collector) -- the OTLP gRPC target for trace export
-- [**OpenFGA Store**](/cloud-catalog/openfga-store) -- creates stores as first-class resources against the exported HTTP endpoint
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the namespace for the OpenFGA install
+- [**PostgreSQL**](/infra-catalog/kubernetes-postgres) -- the recommended production datastore; the host and credential Secret both resolve by reference
+- [**MySQL**](/infra-catalog/kubernetes-mysql) -- the alternative datastore engine
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) -- provides the Prometheus Operator CRDs the ServiceMonitor needs
+- [**OpenTelemetry Collector**](/infra-catalog/kubernetes-otel-collector) -- the OTLP gRPC target for trace export
+- [**OpenFGA Store**](/infra-catalog/openfga-store) -- creates stores as first-class resources against the exported HTTP endpoint

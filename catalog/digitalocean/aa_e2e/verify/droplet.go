@@ -9,9 +9,9 @@ import (
 )
 
 // dropletVerifier verifies a DigitalOceanDroplet via GET /v2/droplets/{id}.
-// Droplet ids are integers in the API; the stack output carries the decimal
+// Droplet ids are integers in the API; the output carries the decimal
 // string form. Beyond existence, it asserts the live droplet is active and
-// checks the IPv4 addresses the module CLAIMS in its stack outputs against
+// checks the IPv4 addresses the module CLAIMS in its outputs against
 // the live droplet -- outputs are contractually identical across both
 // engines, so one assertion protects both. An EMPTY public-address output
 // is itself a claim: the droplet was created without public networking, so

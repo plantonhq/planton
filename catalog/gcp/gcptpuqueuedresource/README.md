@@ -4,7 +4,7 @@ A Cloud TPU queued resource -- a request for TPU capacity that waits in Google's
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `tpu.googleapis.com` on the project (never disabled on destroy)
 - **Queued resource** -- a `tpu_v2_queued_resource` (google-beta) requesting the declared nodes
@@ -64,7 +64,7 @@ planton apply -f tpu-queued-resource.yaml
 - At least one node; `nodeId` values are unique.
 - Ids are lowercase letters, digits, and hyphens, starting with a letter.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -93,7 +93,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpTpuVm** -- create a TPU directly when capacity is available
 - **GcpVpcNetwork** / **GcpSubnetwork** -- the nodes' network

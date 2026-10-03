@@ -213,7 +213,7 @@ spec:
     path: scripts/worker.js
 ```
 
-### Affected Components
+### Affected Kinds
 
 - **Protocol Buffers**: Message removed, field renamed
 - **Go Stubs**: Regenerated with `make protos`
@@ -230,7 +230,7 @@ All changes verified with:
 # Regenerate protocol buffer stubs
 make protos
 
-# Run component-specific tests
+# Run kind-specific tests
 go test ./apis/dev/planton/provider/cloudflare/cloudflareworker/v1/
 
 # Full project build

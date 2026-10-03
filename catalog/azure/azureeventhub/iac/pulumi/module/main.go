@@ -8,13 +8,13 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureeventhubv1alpha1.AzureEventHubStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureeventhubv1alpha1.AzureEventHubIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder,
+	// Build the Azure provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static client secret,
 	// keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -119,7 +119,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureeventhubv1alpha1.AzureEvent
 		return errors.Wrapf(err, "failed to create event hub %s", spec.EventHubName)
 	}
 
-	// Export stack outputs.
+	// Export outputs.
 	ctx.Export(OpEventHubId, createdHub.ID())
 	ctx.Export(OpEventHubName, createdHub.Name)
 	ctx.Export(OpPartitionIds, createdHub.PartitionIds)

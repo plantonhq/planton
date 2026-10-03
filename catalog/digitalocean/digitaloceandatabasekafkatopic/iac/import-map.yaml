@@ -1,11 +1,11 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceandatabasekafkatopic
 spec:
   # The topic imports as "{cluster_id},{topic_name}" -- the provider's
   # importer splits on the comma and rewrites the id into its canonical
-  # internal form. Both parts are stack outputs, so a blind round-trip
+  # internal form. Both parts are outputs, so a blind round-trip
   # needs zero user input. The one tolerance (recorded in
   # aa_import/catalog.yaml): partition_count is NEVER read back (partition
   # changes apply asynchronously, so the provider keeps the value already
@@ -16,13 +16,13 @@ spec:
   values:
     - name: cluster_id
       derivations:
-        - from_stack_output: cluster_id
+        - from_output: cluster_id
       where_to_find: >-
         The Kafka cluster's UUID: DigitalOcean control panel -> Databases ->
         the cluster's Overview, or `doctl databases list` (the ID column).
     - name: topic_name
       derivations:
-        - from_stack_output: topic_name
+        - from_output: topic_name
       where_to_find: >-
         The topic's name: the cluster's "Topics" tab in the control panel,
         or `doctl databases topics list <cluster-id>`.

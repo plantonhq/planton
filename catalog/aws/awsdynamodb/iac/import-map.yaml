@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsdynamodb
 spec:
@@ -13,13 +13,13 @@ spec:
     - name: table_name
       derivations:
         - from_metadata_name: true
-        - from_stack_output: table_name
+        - from_output: table_name
       where_to_find: >-
         DynamoDB console -> Tables (the table name), or
         `aws dynamodb list-tables` (TableNames).
     - name: table_arn
       derivations:
-        - from_stack_output: table_arn
+        - from_output: table_arn
         - from_arn_part: arn
       where_to_find: >-
         DynamoDB console -> Tables -> <table> -> Additional info (the ARN),

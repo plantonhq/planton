@@ -41,7 +41,7 @@ A standalone resource kind following the established Scaleway pattern (closest t
 
 | Category | Files | Description |
 |---|---|---|
-| Proto schemas | 4 | api.proto, spec.proto, stack_input.proto, stack_outputs.proto |
+| Proto schemas | 4 | api.proto, spec.proto, iac_input.proto, outputs.proto |
 | Pulumi Go module | 6 | main.go, Pulumi.yaml, module/{main,locals,registry,outputs}.go |
 | Terraform HCL | 5 | main.tf, variables.tf, outputs.tf, locals.tf, provider.tf |
 | Documentation | 2 | README.md, examples.md |
@@ -56,7 +56,7 @@ Three spec fields covering the 80% use case:
 | `description` | string | No | Human-readable namespace description |
 | `is_public` | bool | No | Public pull access (default: false) |
 
-### Stack Outputs
+### Outputs
 
 | Output | Format | Downstream Use |
 |---|---|---|

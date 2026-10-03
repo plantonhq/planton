@@ -30,7 +30,7 @@ func minimalValidService() *AwsEcsService {
 	return &AwsEcsService{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsEcsService",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "api",
 		},
 		Spec: &AwsEcsServiceSpec{

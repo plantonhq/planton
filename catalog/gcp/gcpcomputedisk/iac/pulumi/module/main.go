@@ -9,10 +9,10 @@ import (
 
 // Resources is the Pulumi program entry-point for the GcpComputeDisk
 // component.
-func Resources(ctx *pulumi.Context, stackInput *gcpcomputediskv1alpha1.GcpComputeDiskStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *gcpcomputediskv1alpha1.GcpComputeDiskIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, stackInput.ProviderConfig)
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

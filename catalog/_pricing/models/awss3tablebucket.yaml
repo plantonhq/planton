@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -7,9 +7,9 @@
 # meter, and every S3 Tables charge (storage, requests, per-object
 # monitoring, compaction work, replication) starts with the first object a
 # query engine writes -- stated in exclusions, never padded into fabricated
-# dollars. Schema: finops/componentcostestimatemodel/v1.
+# dollars. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awss3tablebucket
 spec:
@@ -31,6 +31,6 @@ spec:
       exclusions:
         - the same storage, request, monitoring, and compaction meters as the single-region preset, all zero on the empty events table this manifest creates
         - replication starts its meter family with the first write -- $0.010 per 1,000 table updates, destination PUT requests per replicated file, inter-Region Data Transfer OUT per GB to the us-west-2 replica, and the replica bucket's own storage and monitoring meters
-        - the aws:kms encryption choice routes KMS request charges (including the maintenance service's GenerateDataKey/Decrypt calls during compaction) to the referenced key, billed on its own AwsKmsKey component
-        - the replication IAM role is free and billed nowhere; it is authored as its own AwsIamRole component
-      notes: Zero committed cost -- KMS encryption and cross-region replication are POSTURE on this manifest, and both bill only per unit of data moved or key operation made; an idle replicated lake meters nothing on this component.
+        - the aws:kms encryption choice routes KMS request charges (including the maintenance service's GenerateDataKey/Decrypt calls during compaction) to the referenced key, billed on its own AwsKmsKey kind
+        - the replication IAM role is free and billed nowhere; it is authored as its own AwsIamRole kind
+      notes: Zero committed cost -- KMS encryption and cross-region replication are POSTURE on this manifest, and both bill only per unit of data moved or key operation made; an idle replicated lake meters nothing on this kind.

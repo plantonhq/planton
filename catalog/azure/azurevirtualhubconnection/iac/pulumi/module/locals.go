@@ -13,10 +13,10 @@ type Locals struct {
 	AzureVirtualHubConnection *azurevirtualhubconnectionv1alpha1.AzureVirtualHubConnection
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurevirtualhubconnectionv1alpha1.AzureVirtualHubConnectionStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurevirtualhubconnectionv1alpha1.AzureVirtualHubConnectionIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureVirtualHubConnection = stackInput.Target
+	locals.AzureVirtualHubConnection = iacInput.Target
 
 	return locals
 }

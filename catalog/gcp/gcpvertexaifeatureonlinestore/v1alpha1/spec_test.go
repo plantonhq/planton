@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpVertexAiFeatureOnlineStoreSpec", func() {
 		return &GcpVertexAiFeatureOnlineStore{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpVertexAiFeatureOnlineStore",
-			Metadata:   &shared.CloudResourceMetadata{Name: "serving-store"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "serving-store"},
 			Spec: &GcpVertexAiFeatureOnlineStoreSpec{
 				Location:             "us-central1",
 				FeatureOnlineStoreId: "serving_store",

@@ -13,14 +13,14 @@ import (
 // metrics or thresholds of its own — it re-evaluates its boolean alarm_rule
 // whenever any referenced alarm changes state, which is why the module maps
 // the spec 1:1 with no evaluation plumbing.
-func Resources(ctx *pulumi.Context, stackInput *awscloudwatchcompositealarmv1alpha1.AwsCloudwatchCompositeAlarmStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awscloudwatchcompositealarmv1alpha1.AwsCloudwatchCompositeAlarmIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 	spec := locals.AwsCloudwatchCompositeAlarm.Spec
 
-	// Build the AWS provider from the stack input via the shared builder, which
+	// Build the AWS provider from the IaC input via the shared builder, which
 	// resolves the right credential mechanism (static keys, keyless web
 	// identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

@@ -4,7 +4,7 @@ Authors a custom DATA-PLANE role for a Cosmos DB SQL (NoSQL) API account. Cosmos
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cosmos DB SQL Role Definition** -- a named, GUID-identified custom role inside the referenced account, carrying its assignable scopes and permission blocks
 
@@ -12,12 +12,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **A Cosmos DB account** speaking the SQL (NoSQL) API. Reference an AzureCosmosdbAccount Cloud Resource via ValueFromRef, or provide the account's ARM ID directly.
+- **A Cosmos DB account** speaking the SQL (NoSQL) API. Reference an AzureCosmosdbAccount Infra Component via ValueFromRef, or provide the account's ARM ID directly.
 - **Check the built-ins first** — every SQL-API account already carries two built-in data roles: Data Reader (`00000000-0000-0000-0000-000000000001`) and Data Contributor (`00000000-0000-0000-0000-000000000002`). Assigning one needs NO definition resource: an AzureCosmosdbSqlRoleAssignment references the well-known ID directly. Author a custom definition only when neither fits — "read-only on one container", "write items but never delete", "metadata-only for a monitoring probe".
 
 ## Deploy
@@ -61,7 +61,7 @@ spec:
 planton apply -f cosmosdb-sql-role-definition.yaml
 ```
 
-This creates a read-only role assignable anywhere in the account. A Stack Job tracks the provisioning in real time.
+This creates a read-only role assignable anywhere in the account. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -79,16 +79,16 @@ These are the most important decisions when configuring a role definition. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | AzureCosmosdbAccount | `cosmosdbAccountId` | `status.outputs.cosmosdb_account_id` |
 | AzureCosmosdbAccount | `assignableScopes[]` | `status.outputs.cosmosdb_account_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -107,6 +107,6 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Azure Cosmos DB Account**](/cloud-catalog/azure-cosmosdb-account) — the SQL-API account the definition lives in, and the default assignable-scope reference
-- [**Azure Cosmos DB SQL Role Assignment**](/cloud-catalog/azure-cosmosdb-sql-role-assignment) — the grant that binds this definition to a principal at a scope, consuming `role_definition_id`
-- [**Azure Cosmos DB SQL Database**](/cloud-catalog/azure-cosmosdb-sql-database) / [**Azure Cosmos DB SQL Container**](/cloud-catalog/azure-cosmosdb-sql-container) — the narrower assignable scopes (`{account-id}/dbs/{db}` and `{account-id}/dbs/{db}/colls/{container}`)
+- [**Azure Cosmos DB Account**](/infra-catalog/azure-cosmosdb-account) — the SQL-API account the definition lives in, and the default assignable-scope reference
+- [**Azure Cosmos DB SQL Role Assignment**](/infra-catalog/azure-cosmosdb-sql-role-assignment) — the grant that binds this definition to a principal at a scope, consuming `role_definition_id`
+- [**Azure Cosmos DB SQL Database**](/infra-catalog/azure-cosmosdb-sql-database) / [**Azure Cosmos DB SQL Container**](/infra-catalog/azure-cosmosdb-sql-container) — the narrower assignable scopes (`{account-id}/dbs/{db}` and `{account-id}/dbs/{db}/colls/{container}`)

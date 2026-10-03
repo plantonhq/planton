@@ -5,9 +5,9 @@ package dev.planton.cloudflare.cloudflarekvnamespace.v1alpha1;
 import "catalog/cloudflare/cloudflarekvnamespace/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-//cloudflare-kv-namespace stack-input
-message CloudflareKvNamespaceStackInput {
-  //target cloud-resource
+//cloudflare-kv-namespace iac-input
+message CloudflareKvNamespaceIacInput {
+  //target infra-component
   CloudflareKvNamespace target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

@@ -9,12 +9,12 @@ import (
 
 // Resources orchestrates custom domain + API mapping creation and exports
 // outputs.
-func Resources(ctx *pulumi.Context, stackInput *awshttpapidomainv1alpha1.AwsHttpApiDomainStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awshttpapidomainv1alpha1.AwsHttpApiDomainIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which resolves
+	// Build the AWS provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static keys, keyless web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsHttpApiDomain.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsHttpApiDomain.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

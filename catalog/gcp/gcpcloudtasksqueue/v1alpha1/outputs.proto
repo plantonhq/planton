@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpcloudtasksqueue.v1alpha1;
 
 // Outputs produced after provisioning a GCP Cloud Tasks queue.
-message GcpCloudTasksQueueStackOutputs {
+message GcpCloudTasksQueueOutputs {
   // The fully qualified queue ID.
   // Format: projects/{project}/locations/{location}/queues/{name}
   // This is the value downstream resources use to reference this queue.

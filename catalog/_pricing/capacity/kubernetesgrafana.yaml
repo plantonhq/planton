@@ -2,9 +2,9 @@
 # KubernetesGrafana manifest's spec values into the cluster capacity the
 # deployment reserves. Field paths are spec-relative proto field names,
 # held to the served contract by the conformance gate.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesgrafana
 spec:
@@ -34,7 +34,7 @@ spec:
     - applies_when:
         - field_path: database
           op: is_set
-      text: "state lives in the external database, whose capacity and storage ride its own component (a KubernetesPostgres composes naturally) -- nothing persistent is reserved here"
+      text: "state lives in the external database, whose capacity and storage ride its own kind (a KubernetesPostgres composes naturally) -- nothing persistent is reserved here"
   notes:
     - applies_when:
         - field_path: resources

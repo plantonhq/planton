@@ -16,7 +16,7 @@ message GcpComputeImage {
   string kind = 2 [(buf.validate.field).string.const = 'GcpComputeImage'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   GcpComputeImageSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,6 +27,6 @@ message GcpComputeImage {
 
 //gcp-compute-image status
 message GcpComputeImageStatus {
-  //stack-outputs
-  GcpComputeImageStackOutputs outputs = 1;
+  //outputs
+  GcpComputeImageOutputs outputs = 1;
 }

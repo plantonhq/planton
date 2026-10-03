@@ -9,7 +9,7 @@ provider.tf   — Cloudflare provider configuration
 variables.tf  — Input variables mirroring CloudflareEmailRoutingRuleSpec
 locals.tf     — Typed actions -> provider {type, value[]} mapping
 main.tf       — cloudflare_email_routing_rule resource
-outputs.tf    — Stack outputs (rule_id, zone_id)
+outputs.tf    — outputs (rule_id, zone_id)
 ```
 
 ## Usage

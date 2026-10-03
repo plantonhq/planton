@@ -4,7 +4,7 @@ The Kafka access rules for one resource pattern on a Managed Service for Apache 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kafka ACL** -- a `managed_kafka_acl` for the pattern named by `aclId`
 
@@ -73,7 +73,7 @@ planton apply -f managed-kafka-acl.yaml
 - Principals start with `User:`; operations and permission types take only Google's values; `host` is `*`.
 - 1-100 entries.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -102,7 +102,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpManagedKafkaCluster** -- the cluster the ACL applies to
 - **GcpManagedKafkaTopic** -- the topics a `topic/` pattern names

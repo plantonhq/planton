@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsguardduty.v1alpha1;
 
-// AwsGuardDutyStackOutputs captures the observable state of the
+// AwsGuardDutyOutputs captures the observable state of the
 // region's GuardDuty posture after apply.
-message AwsGuardDutyStackOutputs {
+message AwsGuardDutyOutputs {
   // The detector's AWS-assigned ID (also the provider's import ID and
   // the key every satellite composes its import ID from).
   string detector_id = 1;

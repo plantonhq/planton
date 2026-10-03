@@ -1,10 +1,10 @@
 # Azure AKS Cluster
 
-Deploys an Azure Kubernetes Service (AKS) cluster -- the managed control plane plus its built-in system node pool. The cluster is deliberately the CONTROL PLANE'S resource: application capacity attaches as separate AzureAksNodePool Cloud Resources referencing this cluster's outputs, so pools scale, price (spot), and upgrade independently. The spec covers the full control-plane surface: SKU tier and support plan, the system node pool, CNI networking and egress, API-server exposure, identity and workload identity, and the add-on families from Container Insights to managed Istio.
+Deploys an Azure Kubernetes Service (AKS) cluster -- the managed control plane plus its built-in system node pool. The cluster is deliberately the CONTROL PLANE'S resource: application capacity attaches as separate AzureAksNodePool Infra Components referencing this cluster's outputs, so pools scale, price (spot), and upgrade independently. The spec covers the full control-plane surface: SKU tier and support plan, the system node pool, CNI networking and egress, API-server exposure, identity and workload identity, and the add-on families from Container Insights to managed Istio.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Managed Control Plane** -- the Kubernetes API server, etcd, and controllers operated by Azure, at the SKU tier you choose (Free / Standard with SLA / Premium with LTS)
 - **Default (System) Node Pool** -- the cluster's built-in pool from `defaultNodePool`: VM size, fixed count or autoscaling bounds, availability zones, OS image, disks, and optional kernel/kubelet tuning
@@ -17,12 +17,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** -- the cluster object must be created inside a resource group. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** -- the cluster object must be created inside a resource group. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 - **Network planning (bring-your-own-VNet only)** -- when placing nodes into your own AzureSubnet, size it for nodes plus (with flat Azure CNI) max-pods IPs per node, and make sure `serviceCidr`/`podCidr` overlap nothing your VNets or on-premises ranges can route to.
 - **Quota** -- the default pool's VM size needs available vCPU quota in the target region (Azure Portal → Quotas → Compute).
 - **Entra ID groups (hardened clusters)** -- have the admin group object IDs ready if you plan to disable local accounts.
@@ -69,7 +69,7 @@ spec:
 planton apply -f azure-aks-cluster.yaml
 ```
 
-This creates an SLA-backed cluster with a zone-spread autoscaled system pool on Azure CNI Overlay. A Stack Job tracks the provisioning in real time.
+This creates an SLA-backed cluster with a zone-spread autoscaled system pool on Azure CNI Overlay. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -123,7 +123,7 @@ These are the most important decisions when configuring an AKS cluster. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -141,9 +141,9 @@ These are the most important decisions when configuring an AKS cluster. Explore 
 | **AzurePublicIp** | `networkProfile.loadBalancerProfile.outboundIpAddressIds` | `status.outputs.public_ip_id` |
 | **AzureContainerRegistry** | `bootstrapProfile.containerRegistryId` | `status.outputs.container_registry_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -169,10 +169,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- owns the managed-cluster object
-- [**Azure AKS Node Pool**](/cloud-catalog/azure-aks-node-pool) -- attaches application capacity to this cluster
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- hosts the nodes when you bring your own network
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- pre-created control-plane and kubelet identities
-- [**Azure Log Analytics Workspace**](/cloud-catalog/azure-log-analytics-workspace) -- receives Container Insights and Defender telemetry
-- [**Azure Container Registry**](/cloud-catalog/azure-container-registry) -- image source (grant AcrPull to the kubelet identity output)
-- [**Azure Private DNS Zone**](/cloud-catalog/azure-private-dns-zone) -- resolves a private cluster's API endpoint
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- owns the managed-cluster object
+- [**Azure AKS Node Pool**](/infra-catalog/azure-aks-node-pool) -- attaches application capacity to this cluster
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- hosts the nodes when you bring your own network
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- pre-created control-plane and kubelet identities
+- [**Azure Log Analytics Workspace**](/infra-catalog/azure-log-analytics-workspace) -- receives Container Insights and Defender telemetry
+- [**Azure Container Registry**](/infra-catalog/azure-container-registry) -- image source (grant AcrPull to the kubelet identity output)
+- [**Azure Private DNS Zone**](/infra-catalog/azure-private-dns-zone) -- resolves a private cluster's API endpoint

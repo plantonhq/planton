@@ -5,9 +5,9 @@ package dev.planton.aws.awsbedrockagentcoretokenvault.v1alpha1;
 import "catalog/aws/awsbedrockagentcoretokenvault/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsBedrockAgentCoreTokenVaultStackInput is the input for the IaC
+// AwsBedrockAgentCoreTokenVaultIacInput is the input for the IaC
 // modules that manage the token vault's encryption key.
-message AwsBedrockAgentCoreTokenVaultStackInput {
+message AwsBedrockAgentCoreTokenVaultIacInput {
   // target is the AwsBedrockAgentCoreTokenVault resource to deploy.
   AwsBedrockAgentCoreTokenVault target = 1;
   // provider_config contains the AWS provider credentials and configuration.

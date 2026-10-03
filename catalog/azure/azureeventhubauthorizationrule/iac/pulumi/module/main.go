@@ -8,16 +8,16 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureeventhubauthorizationrulev1alpha1.AzureEventHubAuthorizationRuleStackInput) error {
-	locals, err := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureeventhubauthorizationrulev1alpha1.AzureEventHubAuthorizationRuleIacInput) error {
+	locals, err := initializeLocals(ctx, iacInput)
 	if err != nil {
 		return err
 	}
 
-	// Build the Azure provider from the stack input via the shared builder,
+	// Build the Azure provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static client secret,
 	// keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -99,7 +99,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureeventhubauthorizationrulev1
 		secondaryConnectionStringAlias = createdRule.SecondaryConnectionStringAlias
 	}
 
-	// Export stack outputs -- identical faces regardless of scope. Alias
+	// Export outputs -- identical faces regardless of scope. Alias
 	// connection strings are only populated when the namespace carries a
 	// geo-DR pairing.
 	ctx.Export(OpAuthorizationRuleId, ruleId)

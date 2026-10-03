@@ -8,7 +8,7 @@ This Pulumi module deploys one Kubernetes RBAC grant: a role (created or existin
 
 ```
 iac/pulumi/
-├── main.go          # Entrypoint: loads stack input, calls module
+├── main.go          # Entrypoint: loads IaC input, calls module
 ├── Pulumi.yaml      # Pulumi project configuration
 ├── Makefile         # Make targets for preview/up/down/refresh
 └── module/
@@ -21,7 +21,7 @@ iac/pulumi/
 
 ## How It Works
 
-1. **Stack Input Loading**: The entrypoint loads `KubernetesRbacStackInput` from Pulumi config
+1. **IaC Input Loading**: The entrypoint loads `KubernetesRbacIacInput` from Pulumi config
 2. **Locals Initialization**: `locals.go` resolves the spec's three orthogonal choices:
    - **Scope**: `namespace_scope` → Role/RoleBinding (namespace defaults to `default`); `cluster_scope` → ClusterRole/ClusterRoleBinding
    - **Role**: `create_role` → a new role named `create_role.name` (default: the component's `metadata.name`); `existing_role` → no role is created, the binding references it by name
@@ -30,7 +30,7 @@ iac/pulumi/
 4. **Binding Creation**: `binding.go` creates the binding with an immutable `roleRef` (apiGroup `rbac.authorization.k8s.io`) and maps subjects:
    - `service_account` → kind `ServiceAccount`; namespace defaults to the grant's namespace in namespace scope (spec validation requires it explicitly in cluster scope)
    - `user` / `group` → kind `User`/`Group` under apiGroup `rbac.authorization.k8s.io`
-5. **Output Export**: role/binding names and kinds plus the namespace are exported as stack outputs
+5. **Output Export**: role/binding names and kinds plus the namespace are exported as outputs
 
 ## Grant Shapes
 

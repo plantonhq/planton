@@ -105,7 +105,7 @@ Metadata: metav1.ObjectMetaArgs{
 },
 ```
 
-### 3. HTTP Redirect Route (component namespace)
+### 3. HTTP Redirect Route (kind namespace)
 
 ```go
 Metadata: metav1.ObjectMetaArgs{
@@ -118,7 +118,7 @@ Metadata: metav1.ObjectMetaArgs{
 },
 ```
 
-### 4. HTTPS Route (component namespace)
+### 4. HTTPS Route (kind namespace)
 
 ```go
 Metadata: metav1.ObjectMetaArgs{
@@ -137,8 +137,8 @@ Metadata: metav1.ObjectMetaArgs{
 |----------|-----------|------------------|
 | Certificate | istio-ingress (shared) | `pulumi.com/patchForce: "true"` |
 | Gateway | istio-ingress (shared) | `pulumi.com/patchForce: "true"` |
-| HTTPRoute (redirect) | component namespace | `pulumi.com/patchForce: "true"` |
-| HTTPRoute (https) | component namespace | `pulumi.com/patchForce: "true"` |
+| HTTPRoute (redirect) | kind namespace | `pulumi.com/patchForce: "true"` |
+| HTTPRoute (https) | kind namespace | `pulumi.com/patchForce: "true"` |
 
 ## Benefits
 
@@ -163,16 +163,16 @@ After: All Pulumi runs succeed, with field ownership automatically transferred
 ### Shared Namespace Considerations
 
 Resources in the `istio-ingress` namespace are particularly susceptible to this issue because:
-1. Multiple deployment components may create resources in this shared namespace
-2. Each component's Pulumi runs generate different field manager hashes
+1. Multiple catalog kinds may create resources in this shared namespace
+2. Each kind's Pulumi runs generate different field manager hashes
 3. Without `patchForce`, resources created by one run cannot be updated by another
 
 ## Related Work
 
-This pattern should be applied to other deployment components that create resources in shared namespaces:
+This pattern should be applied to other catalog kinds that create resources in shared namespaces:
 - KubernetesSolr ingress resources
 - KubernetesTektonOperator ingress resources
-- Any other component using the istio-ingress namespace
+- Any other kind using the istio-ingress namespace
 
 ### Reference Documentation
 

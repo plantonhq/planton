@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -26,7 +26,7 @@ func minimalPairing() *AzureEventHubDisasterRecoveryConfig {
 	return &AzureEventHubDisasterRecoveryConfig{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureEventHubDisasterRecoveryConfig",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-geo-dr",
 		},
 		Spec: &AzureEventHubDisasterRecoveryConfigSpec{
@@ -57,7 +57,7 @@ var _ = ginkgo.Describe("AzureEventHubDisasterRecoveryConfigSpec Validation Test
 				input.Spec.PrimaryNamespaceId = &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &foreignkeyv1.ValueFromRef{
-							Kind:      cloudresourcekind.CloudResourceKind_AzureEventHubNamespace,
+							Kind:      catalogkind.CatalogKind_AzureEventHubNamespace,
 							Name:      "primary-ehns",
 							FieldPath: "status.outputs.namespace_id",
 						},
@@ -66,7 +66,7 @@ var _ = ginkgo.Describe("AzureEventHubDisasterRecoveryConfigSpec Validation Test
 				input.Spec.PartnerNamespaceId = &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &foreignkeyv1.ValueFromRef{
-							Kind:      cloudresourcekind.CloudResourceKind_AzureEventHubNamespace,
+							Kind:      catalogkind.CatalogKind_AzureEventHubNamespace,
 							Name:      "partner-ehns",
 							FieldPath: "status.outputs.namespace_id",
 						},

@@ -2,7 +2,7 @@
 
 ## Overview
 
-**KubernetesStatefulSet** is a Planton component that deploys a stateful application to a Kubernetes cluster as an apps/v1 StatefulSet. Every replica gets a stable name (`<name>-0`, `<name>-1`, ...), a stable per-replica DNS name through a headless governing Service the module derives from the resource name, and its own PersistentVolumeClaim stamped from `volumeClaimTemplates`. This is the kind for databases, message brokers, and consensus systems — anything where replicas are NOT interchangeable.
+**KubernetesStatefulSet** is a catalog kind that deploys a stateful application to a Kubernetes cluster as an apps/v1 StatefulSet. Every replica gets a stable name (`<name>-0`, `<name>-1`, ...), a stable per-replica DNS name through a headless governing Service the module derives from the resource name, and its own PersistentVolumeClaim stamped from `volumeClaimTemplates`. This is the kind for databases, message brokers, and consensus systems — anything where replicas are NOT interchangeable.
 
 For stateless services use **KubernetesDeployment**; for run-to-completion work use **KubernetesJob** / **KubernetesCronJob**; for one-pod-per-node agents use **KubernetesDaemonSet**.
 
@@ -35,7 +35,7 @@ The workload deliberately owns nothing but the workload:
 - **`pvcRetentionPolicy`** — what happens to the stamped PVCs `whenDeleted` and `whenScaled`; the default retains everything.
 - **`ordinals.start`** — alternate ordinal base for numbering conventions or ordinal-range migrations.
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following are available in `status.outputs`:
 

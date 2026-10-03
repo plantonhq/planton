@@ -4,7 +4,7 @@ Deploys a Kubernetes ResourceQuota with an optional companion LimitRange — two
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes ResourceQuota** -- the aggregate caps (compute, storage, object counts) with optional scope filtering, in the specified namespace
 - **Kubernetes LimitRange** (when limit defaults are set) -- the per-object defaults and bounds, sharing this resource's name
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -60,7 +60,7 @@ spec:
 planton apply -f resourcequota.yaml
 ```
 
-This caps the namespace's compute AND gives silent containers sane defaults — the pairing that keeps naive workloads deployable. A Stack Job tracks the provisioning in real time.
+This caps the namespace's compute AND gives silent containers sane defaults — the pairing that keeps naive workloads deployable. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,15 +94,15 @@ These are the most important decisions when configuring a Kubernetes ResourceQuo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -122,5 +122,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- reference the namespace so infra charts create it and this quota in dependency order; prefer its built-in resource profiles for simple T-shirt sizing.
-- [**Kubernetes PriorityClass**](/cloud-catalog/kubernetes-priority-class) -- a priority-class-scoped quota budgets one tier's consumption.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference the namespace so infra charts create it and this quota in dependency order; prefer its built-in resource profiles for simple T-shirt sizing.
+- [**Kubernetes PriorityClass**](/infra-catalog/kubernetes-priority-class) -- a priority-class-scoped quota budgets one tier's consumption.

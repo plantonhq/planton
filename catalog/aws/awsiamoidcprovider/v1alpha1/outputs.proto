@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsiamoidcprovider.v1alpha1;
 
-// AwsIamOidcProviderStackOutputs describes the values returned by Pulumi/Terraform
+// AwsIamOidcProviderOutputs describes the values returned by Pulumi/Terraform
 // after provisioning an IAM OIDC identity provider.
-message AwsIamOidcProviderStackOutputs {
+message AwsIamOidcProviderOutputs {
   // provider_arn is the Amazon Resource Name (ARN) of the IAM OIDC provider
   // (e.g. "arn:aws:iam::123456789012:oidc-provider/oidc.eks.us-west-2.amazonaws.com/id/EXAMPLED").
   // This is the value an AwsIamRole trust policy references as a `Federated`

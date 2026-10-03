@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbackupframework.v1alpha1;
 
-// AwsBackupFrameworkStackOutputs captures the observable state of the
+// AwsBackupFrameworkOutputs captures the observable state of the
 // framework after apply.
-message AwsBackupFrameworkStackOutputs {
+message AwsBackupFrameworkOutputs {
   // The framework's ARN - what report plans reference.
   string framework_arn = 1;
 

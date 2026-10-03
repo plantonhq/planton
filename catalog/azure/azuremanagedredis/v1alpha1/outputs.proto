@@ -4,7 +4,7 @@ package dev.planton.azure.azuremanagedredis.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureManagedRedisStackOutputs** captures the outputs of provisioning
+// **AzureManagedRedisOutputs** captures the outputs of provisioning
 // an Azure Managed Redis instance.
 //
 // For application connectivity, keyless (Entra) clients need only
@@ -15,7 +15,7 @@ import "shared/options/options.proto";
 //
 // The access keys are SECRET-BEARING: treat any output that embeds them
 // as a credential in downstream configuration.
-message AzureManagedRedisStackOutputs {
+message AzureManagedRedisOutputs {
   // The Azure Resource Manager ID of the Managed Redis cluster.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Cache/redisEnterprise/{name}
   //

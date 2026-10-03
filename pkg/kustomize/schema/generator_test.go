@@ -7,8 +7,8 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -110,8 +110,8 @@ func TestGenerate_GroupVersionKindMetadata(t *testing.T) {
 }
 
 func TestFindMergeFields_SkipsMapFields(t *testing.T) {
-	kind := cloudresourcekind.CloudResourceKind_KubernetesDeployment
-	msg, err := crkreflect.NewInstance(kind)
+	kind := catalogkind.CatalogKind_KubernetesDeployment
+	msg, err := catalogkindreflect.NewInstance(kind)
 	if err != nil {
 		t.Fatalf("NewInstance failed: %v", err)
 	}
@@ -133,8 +133,8 @@ func TestFindMergeFields_SkipsMapFields(t *testing.T) {
 }
 
 func TestFindMergeFields_ExcludesEnvFrom(t *testing.T) {
-	kind := cloudresourcekind.CloudResourceKind_KubernetesDeployment
-	msg, err := crkreflect.NewInstance(kind)
+	kind := catalogkind.CatalogKind_KubernetesDeployment
+	msg, err := catalogkindreflect.NewInstance(kind)
 	if err != nil {
 		t.Fatalf("NewInstance failed: %v", err)
 	}

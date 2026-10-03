@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpbinaryauthorizationpolicy.v1alpha1;
 
-// GcpBinaryAuthorizationPolicyStackOutputs carries the policy's identity.
-message GcpBinaryAuthorizationPolicyStackOutputs {
+// GcpBinaryAuthorizationPolicyOutputs carries the policy's identity.
+message GcpBinaryAuthorizationPolicyOutputs {
   // The policy's resource name: projects/{project}/policy.
   string name = 1;
 

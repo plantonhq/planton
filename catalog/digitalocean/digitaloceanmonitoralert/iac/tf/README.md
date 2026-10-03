@@ -14,7 +14,7 @@ Generated `variables.tf` mirrors the `DigitalOceanMonitorAlertSpec` proto: `desc
 
 ## Outputs
 
-Exactly the `DigitalOceanMonitorAlertStackOutputs` contract: `alert_id` (the policy UUID from the resource id -- the provider's own `uuid` attribute is never populated at the pin).
+Exactly the `DigitalOceanMonitorAlertOutputs` contract: `alert_id` (the policy UUID from the resource id -- the provider's own `uuid` attribute is never populated at the pin).
 
 ## Behavior notes
 

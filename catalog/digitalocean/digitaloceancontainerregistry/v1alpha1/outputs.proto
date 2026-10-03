@@ -4,8 +4,8 @@ package dev.planton.digitalocean.digitaloceancontainerregistry.v1alpha1;
 
 import "shared/options/options.proto";
 
-// DigitalOceanContainerRegistryStackOutputs captures outputs after provisioning.
-message DigitalOceanContainerRegistryStackOutputs {
+// DigitalOceanContainerRegistryOutputs captures outputs after provisioning.
+message DigitalOceanContainerRegistryOutputs {
   // The registry name (also the registry's resource identifier in DigitalOcean).
   string registry_name = 1;
 

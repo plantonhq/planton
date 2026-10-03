@@ -42,7 +42,7 @@ blast radius is enumerated rather than unbounded.
 - `kafka-team-a`, `kafka-team-b` — the real team namespaces (they must
   exist before the operator installs)
 
-## Related Components
+## Related Kinds
 
 - **KubernetesKafka** — declared inside the fenced namespaces only;
   clusters declared elsewhere are silently never reconciled

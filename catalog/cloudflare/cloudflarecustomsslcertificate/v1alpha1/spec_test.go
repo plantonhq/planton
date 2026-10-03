@@ -34,7 +34,7 @@ func validCertificate(spec *CloudflareCustomSslCertificateSpec) *CloudflareCusto
 	return &CloudflareCustomSslCertificate{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareCustomSslCertificate",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-custom-ssl",
 		},
 		Spec: spec,

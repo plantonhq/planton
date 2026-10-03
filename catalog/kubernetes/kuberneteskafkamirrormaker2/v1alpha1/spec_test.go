@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/gomega"
 	kubernetes "github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -26,7 +26,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -57,7 +57,7 @@ var _ = ginkgo.Describe("KubernetesKafkaMirrorMaker2 Validation Tests", func() {
 		input = &KubernetesKafkaMirrorMaker2{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesKafkaMirrorMaker2",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "msk-migration",
 			},
 			Spec: &KubernetesKafkaMirrorMaker2Spec{
@@ -76,7 +76,7 @@ var _ = ginkgo.Describe("KubernetesKafkaMirrorMaker2 Validation Tests", func() {
 		})
 
 		ginkgo.It("target bootstrap_servers as a reference should be valid", func() {
-			input.Spec.Target.BootstrapServers = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesKafka, "my-kafka", "status.outputs.internal_bootstrap_endpoint")
+			input.Spec.Target.BootstrapServers = valueFrom(catalogkind.CatalogKind_KubernetesKafka, "my-kafka", "status.outputs.internal_bootstrap_endpoint")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 

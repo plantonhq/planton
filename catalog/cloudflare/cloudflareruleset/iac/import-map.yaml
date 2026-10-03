@@ -1,25 +1,25 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflareruleset
 spec:
   # A ruleset's import identity is compound with a literal "zones/" scope
   # prefix recorded in the provider catalog's id_format: the zone it lives in
   # plus the ruleset's own Cloudflare-assigned id. Both are discoverable from
-  # a prior deploy's stack outputs (the kind's zone_id output exists for
+  # a prior deploy's outputs (the kind's zone_id output exists for
   # zone-scoped rulesets; an account-scoped ruleset imports via the accounts/
   # arm instead). Neither value is derivable from metadata.
   values:
     - name: zone_id
       derivations:
-        - from_stack_output: zone_id
+        - from_output: zone_id
       where_to_find: >-
         Cloudflare dashboard -> the zone's Overview page (Zone ID in the
         right-hand API panel), or `GET /zones?name=<domain>` on the
         Cloudflare v4 API (the id field).
     - name: ruleset_id
       derivations:
-        - from_stack_output: ruleset_id
+        - from_output: ruleset_id
       where_to_find: >-
         Cloudflare dashboard -> the zone -> Rules (the ruleset id is in the
         API, not the UI), or `GET /zones/<zone_id>/rulesets` on the

@@ -1,6 +1,6 @@
 # Overview
 
-The **AzureDataProtectionBackupPolicy** component creates a Data Protection backup policy -- WHEN backups run (ISO-8601 repeating intervals) and HOW LONG they are kept (a default retention plus optional named rules that keep specific backups -- first of day, first of week -- longer). ONE component covers the six datasource types as variants: blob storage, managed disks, Kubernetes (AKS) clusters, MySQL flexible servers, PostgreSQL flexible servers, and Data Lake storage. Exactly one variant block is set; the block IS the datasource type. The policy itself is a free configuration object -- cost follows the protected instances and their backup storage.
+The **AzureDataProtectionBackupPolicy** component creates a Data Protection backup policy -- WHEN backups run (ISO-8601 repeating intervals) and HOW LONG they are kept (a default retention plus optional named rules that keep specific backups -- first of day, first of week -- longer). ONE kind covers the six datasource types as variants: blob storage, managed disks, Kubernetes (AKS) clusters, MySQL flexible servers, PostgreSQL flexible servers, and Data Lake storage. Exactly one variant block is set; the block IS the datasource type. The policy itself is a free configuration object -- cost follows the protected instances and their backup storage.
 
 ## Purpose
 

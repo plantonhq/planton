@@ -5,7 +5,7 @@ import (
 
 	azureprivatednsrecordv1alpha1 "github.com/plantonhq/planton/catalog/azure/azureprivatednsrecord/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -29,11 +29,11 @@ type Locals struct {
 	AzureTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureprivatednsrecordv1alpha1.AzurePrivateDnsRecordStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureprivatednsrecordv1alpha1.AzurePrivateDnsRecordIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzurePrivateDnsRecord = stackInput.Target
-	target := stackInput.Target
+	locals.AzurePrivateDnsRecord = iacInput.Target
+	target := iacInput.Target
 
 	// The zone id's shape is /subscriptions/{sub}/resourceGroups/{rg}
 	// /providers/Microsoft.Network/privateDnsZones/{zone}. Segment names
@@ -56,7 +56,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureprivatednsrecordv1al
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzurePrivateDnsRecord.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzurePrivateDnsRecord.String()),
 	}
 
 	if target.Metadata.Id != "" {

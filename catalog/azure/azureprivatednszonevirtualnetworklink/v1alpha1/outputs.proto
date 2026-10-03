@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azureprivatednszonevirtualnetworklink.v1alpha1;
 
-// AzurePrivateDnsZoneVirtualNetworkLinkStackOutputs captures the outputs of
+// AzurePrivateDnsZoneVirtualNetworkLinkOutputs captures the outputs of
 // provisioning a private DNS zone virtual network link.
-message AzurePrivateDnsZoneVirtualNetworkLinkStackOutputs {
+message AzurePrivateDnsZoneVirtualNetworkLinkOutputs {
   // The Azure Resource Manager ID of the virtual network link.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/privateDnsZones/{zone}/virtualNetworkLinks/{name}
   string link_id = 1;

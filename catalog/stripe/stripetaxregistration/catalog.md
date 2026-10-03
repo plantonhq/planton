@@ -1,10 +1,10 @@
 # Stripe Tax Registration
 
-Declares one place your account is registered to collect tax with Stripe Tax -- VAT in Germany under the EU's One-Stop Shop, sales tax in Texas. One Cloud Resource per registration.
+Declares one place your account is registered to collect tax with Stripe Tax -- VAT in Germany under the EU's One-Stop Shop, sales tax in Texas. One Infra Component per registration.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the OpenTofu module creates one tax registration in the Stripe account your Stripe connection's key belongs to:
+When you deploy this Infra Component, the OpenTofu module creates one tax registration in the Stripe account your Stripe connection's key belongs to:
 
 - **Where** -- a country, and a province or state where the country has them
 - **The kind of registration** -- standard, simplified, the EU's One-Stop Shops, or a US state or local tax
@@ -50,7 +50,7 @@ spec:
 planton apply -f stripe-tax-registration.yaml
 ```
 
-A Stack Job tracks the change in real time.
+An Infra Job tracks the change in real time.
 
 ## Key Configuration
 
@@ -64,11 +64,11 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies.
+This kind has no foreign key dependencies.
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -87,6 +87,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Stripe Payment Link**](/cloud-catalog/stripe-payment-link) -- hosted payment pages that can collect tax automatically.
-- [**Stripe Price**](/cloud-catalog/stripe-price) -- prices whose tax behavior Stripe Tax reads.
-- [**Stripe Tax Rate**](/cloud-catalog/stripe-tax-rate) -- manual rates, for accounts that do not use Stripe Tax.
+- [**Stripe Payment Link**](/infra-catalog/stripe-payment-link) -- hosted payment pages that can collect tax automatically.
+- [**Stripe Price**](/infra-catalog/stripe-price) -- prices whose tax behavior Stripe Tax reads.
+- [**Stripe Tax Rate**](/infra-catalog/stripe-tax-rate) -- manual rates, for accounts that do not use Stripe Tax.

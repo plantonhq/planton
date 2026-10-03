@@ -57,9 +57,9 @@ This works with any OCI registry (Scaleway, Docker Hub, GHCR) -- Scaleway regist
 ### Proto Schemas (4 files)
 
 - `spec.proto` -- 23 spec fields + 3 enums + 7 nested messages (Image, Env, EnvVar, CronTrigger, HealthCheck, ScalingOption)
-- `stack_outputs.proto` -- 3 outputs (container_id, namespace_id, domain_name)
+- `outputs.proto` -- 3 outputs (container_id, namespace_id, domain_name)
 - `api.proto` -- KRM wrapper with api_version `scaleway.planton.dev/v1`
-- `stack_input.proto` -- target + provider config
+- `iac_input.proto` -- target + provider config
 
 ### Pulumi Go Module (6 files)
 
@@ -113,7 +113,7 @@ Image URL composed in locals: `"${var.spec.image.registry_endpoint}/${var.spec.i
 
 ### Developers
 - Structured image message is extensible (future: digest pinning, pull policy)
-- Component-local messages avoid cross-component coupling with R17
+- Kind-local messages avoid cross-kind coupling with R17
 
 ## Related Work
 
@@ -126,4 +126,4 @@ Image URL composed in locals: `"${var.spec.image.registry_endpoint}/${var.spec.i
 
 **Status**: Production Ready
 **Files Created**: 25 new files (4 proto, 6 Pulumi Go, 5 Terraform HCL, 2 docs, plus generated stubs and BUILD.bazel)
-**Files Modified**: `pkg/crkreflect/kind_map_gen.go` (auto-generated kind map registration)
+**Files Modified**: `pkg/catalogkindreflect/kind_map_gen.go` (auto-generated kind map registration)

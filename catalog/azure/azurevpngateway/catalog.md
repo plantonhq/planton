@@ -4,7 +4,7 @@ Deploys a Virtual WAN VPN Gateway -- the managed site-to-site VPN terminator ins
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **VPN Gateway** -- the managed terminator inside the hub, with its BGP speaker and instance public IPs (Azure assigns them; there is no public-IP resource to bring)
 - **NAT Rules** (optional) -- one ARM child per spec entry, published by name in the `nat_rule_ids` output
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -50,7 +50,7 @@ spec:
 planton apply -f azure-vpn-gateway.yaml
 ```
 
-This creates a one-scale-unit (500 Mbps) gateway inside the referenced hub, with Azure-assigned instance public IPs and the default BGP speaker. Expect the create to run 30-45 minutes (ARM's slow path, not a failure); the gateway bills from the moment it exists. A Stack Job tracks the provisioning in real time.
+This creates a one-scale-unit (500 Mbps) gateway inside the referenced hub, with Azure-assigned instance public IPs and the default BGP speaker. Expect the create to run 30-45 minutes (ARM's slow path, not a failure); the gateway bills from the moment it exists. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -86,16 +86,16 @@ These are the most important decisions when configuring a gateway. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 | **AzureVirtualHub** | `virtualHubId` | `status.outputs.virtual_hub_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -105,7 +105,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `private_ip_addresses` | Each instance's private IPv4 | Private-peering tunnel endpoints |
 | `nat_rule_ids` | Each NAT rule's ARM ID, keyed by rule name | A connection link's NAT opt-ins (`status.outputs.nat_rule_ids.<rule-name>`) |
 
-The only other output, `vpn_gateway_name`, echoes the gateway's name back; no downstream Cloud Resource consumes it.
+The only other output, `vpn_gateway_name`, echoes the gateway's name back; no downstream Infra Component consumes it.
 
 ## Common Patterns
 
@@ -117,6 +117,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Virtual Hub**](/cloud-catalog/azure-virtual-hub) -- the hub the gateway deploys into
-- [**Azure VPN Site**](/cloud-catalog/azure-vpn-site) -- the branches that connect
-- [**Azure VPN Gateway Connection**](/cloud-catalog/azure-vpn-gateway-connection) -- the tunnels joining sites to this gateway
+- [**Azure Virtual Hub**](/infra-catalog/azure-virtual-hub) -- the hub the gateway deploys into
+- [**Azure VPN Site**](/infra-catalog/azure-vpn-site) -- the branches that connect
+- [**Azure VPN Gateway Connection**](/infra-catalog/azure-vpn-gateway-connection) -- the tunnels joining sites to this gateway

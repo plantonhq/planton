@@ -28,7 +28,7 @@ func buildValidMetricAlert() *AzureMonitorMetricAlert {
 	return &AzureMonitorMetricAlert{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureMonitorMetricAlert",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-metric-alert",
 		},
 		Spec: &AzureMonitorMetricAlertSpec{

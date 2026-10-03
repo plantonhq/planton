@@ -53,7 +53,7 @@ per-application credentials deserve a first-class, composable node:
   rendered manifests or logs.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `user_name`: the AUTH identity ACLs reference (same as `metadata.name`)
 - `user_arn`: the user's ARN (for IAM `memorydb:Connect` policies)

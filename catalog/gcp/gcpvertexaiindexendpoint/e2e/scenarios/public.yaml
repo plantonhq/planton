@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpvertexaiindexendpoint
+    e2e-catalog-kind: gcpvertexaiindexendpoint
   annotations:
     planton.dev/e2e: "true"
   tags:

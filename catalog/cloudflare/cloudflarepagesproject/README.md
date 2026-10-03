@@ -123,7 +123,7 @@ exist until the first deployment is produced out-of-band.
 secret-by-default: provide a managed-secret reference, resolved just-in-time at
 deploy. Plain configuration belongs in `vars`.
 
-## Related components
+## Related kinds
 
 - `CloudflareWorker` (with Static Assets) — the build-and-upload hosting model.
 - `CloudflareKvNamespace`, `CloudflareD1Database`, `CloudflareR2Bucket`,

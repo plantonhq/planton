@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpsccbigqueryexport.v1alpha1;
 import "catalog/gcp/gcpsccbigqueryexport/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-scc-bigquery-export stack-input
-message GcpSccBigQueryExportStackInput {
-  //target cloud-resource
+//gcp-scc-bigquery-export iac-input
+message GcpSccBigQueryExportIacInput {
+  //target infra-component
   GcpSccBigQueryExport target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

@@ -1,7 +1,7 @@
 package module
 
 // Output keys for the aws_security_group module.
-// They reflect the fields in AwsSecurityGroupStackOutputs.
+// They reflect the fields in AwsSecurityGroupOutputs.
 const (
 	OpSecurityGroupId             = "security_group_id"
 	OpSecurityGroupArn            = "security_group_arn"

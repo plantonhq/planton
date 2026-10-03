@@ -4,7 +4,7 @@ A BigQuery connection -- the credential-carrying link BigQuery uses to reach dat
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `bigqueryconnection.googleapis.com` on the project (never disabled on destroy)
 - **Connection** -- a `bigquery_connection` with its one arm
@@ -72,7 +72,7 @@ planton apply -f bigquery-connection.yaml
 - Spanner: `useDataBoost` requires `useParallelism`; `maxParallelism` requires both; `databaseRole` starts with a letter.
 - Cloud SQL `type` is `POSTGRES` or `MYSQL`; resource paths (Spanner database, network attachment, Metastore service, Dataproc cluster) take their documented form.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -106,7 +106,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpCloudSql** -- a federated-query source
 - **GcpBigQueryDataset** -- where external tables and remote models live

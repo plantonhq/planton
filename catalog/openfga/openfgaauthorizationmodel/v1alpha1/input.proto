@@ -5,7 +5,7 @@ package dev.planton.openfga.openfgaauthorizationmodel.v1alpha1;
 import "catalog/openfga/openfgaauthorizationmodel/v1alpha1/api.proto";
 import "catalog/openfga/provider.proto";
 
-// OpenFgaAuthorizationModelStackInput is the input message for the OpenFGA Authorization Model IaC modules.
+// OpenFgaAuthorizationModelIacInput is the input message for the OpenFGA Authorization Model IaC modules.
 //
 // This message aggregates all information needed to deploy an OpenFGA Authorization Model:
 // - The target OpenFgaAuthorizationModel resource specification
@@ -16,7 +16,7 @@ import "catalog/openfga/provider.proto";
 //
 // The Terraform module receives this as input and uses it to create
 // the authorization model via the OpenFGA API.
-message OpenFgaAuthorizationModelStackInput {
+message OpenFgaAuthorizationModelIacInput {
   // target is the OpenFgaAuthorizationModel resource to deploy.
   // Contains the complete specification of the desired model configuration.
   OpenFgaAuthorizationModel target = 1;

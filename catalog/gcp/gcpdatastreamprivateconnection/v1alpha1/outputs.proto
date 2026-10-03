@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpdatastreamprivateconnection.v1alpha1;
 
-// GcpDatastreamPrivateConnectionStackOutputs captures the private
+// GcpDatastreamPrivateConnectionOutputs captures the private
 // connection's identity -- what connection profiles reference.
-message GcpDatastreamPrivateConnectionStackOutputs {
+message GcpDatastreamPrivateConnectionOutputs {
   // Full resource name --
   // projects/{project}/locations/{location}/privateConnections/{private_connection_id}.
   // The value a GcpDatastreamConnectionProfile's private_connection takes.

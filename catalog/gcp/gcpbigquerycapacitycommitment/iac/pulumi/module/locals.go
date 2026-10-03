@@ -18,15 +18,15 @@ type Locals struct {
 
 // initializeLocals derives the defaulted commitment id. Commitments carry
 // no labels, so there is no attribution label set.
-func initializeLocals(_ *pulumi.Context, stackInput *gcpbigquerycapacitycommitmentv1alpha1.GcpBigQueryCapacityCommitmentStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpbigquerycapacitycommitmentv1alpha1.GcpBigQueryCapacityCommitmentIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpBigQueryCapacityCommitment = stackInput.Target
+	locals.GcpBigQueryCapacityCommitment = iacInput.Target
 
 	locals.CapacityCommitmentId = locals.GcpBigQueryCapacityCommitment.Spec.CapacityCommitmentId
 	if locals.CapacityCommitmentId == "" {
 		locals.CapacityCommitmentId = locals.GcpBigQueryCapacityCommitment.Metadata.Name
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

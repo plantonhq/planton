@@ -6,11 +6,11 @@ import "catalog/kubernetes/kubernetesnamespace/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
 /**
- * **KubernetesNamespaceStackInput** defines the input structure for deploying a Kubernetes namespace.
+ * **KubernetesNamespaceIacInput** defines the input structure for deploying a Kubernetes namespace.
  * This message contains the target namespace specification and the Kubernetes cluster configuration
  * required by the IaC modules (Pulumi and Terraform) to create and configure the namespace.
  */
-message KubernetesNamespaceStackInput {
+message KubernetesNamespaceIacInput {
   /**
    * The target Kubernetes namespace resource to be created.
    * Contains the complete specification including metadata, desired configuration,

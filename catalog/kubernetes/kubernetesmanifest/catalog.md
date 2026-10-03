@@ -4,7 +4,7 @@ Deploys raw Kubernetes YAML manifests to any Kubernetes cluster, acting as a gen
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created (with the standard governance labels) only when `createNamespace` is `true`, and deleted with the resource; otherwise deploys into an existing namespace
 - **Kubernetes Resources from Manifest** -- all resources defined in the `manifestYaml` field are applied to the cluster exactly as written. Multi-document YAML (resources separated by `---`) is supported with automatic CRD ordering: a CRD and its custom resources can ship in the same manifest. The manifest content itself is never mutated -- no injected labels, no rewritten fields.
@@ -13,13 +13,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
 
 - **Appropriate RBAC permissions** for the resource types in your manifest -- see `iac/permissions.yaml` for the full permission statement.
-- **CRDs pre-installed** if your manifest references custom resources. The manifest component does not handle CRD installation ordering across separate Cloud Resources.
+- **CRDs pre-installed** if your manifest references custom resources. The manifest component does not handle CRD installation ordering across separate Infra Components.
 
 ## Deploy
 
@@ -57,11 +57,11 @@ spec:
 planton apply -f manifest.yaml
 ```
 
-This deploys a ConfigMap into the `my-app` namespace. The `manifestYaml` field accepts any valid Kubernetes YAML, including multi-document manifests with `---` separators. A Stack Job tracks the provisioning in real time.
+This deploys a ConfigMap into the `my-app` namespace. The `manifestYaml` field accepts any valid Kubernetes YAML, including multi-document manifests with `---` separators. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the manifest deployment to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the manifest deployment to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -85,19 +85,19 @@ These are the most important decisions when configuring a Kubernetes Manifest de
 
 **Readiness semantics** -- By default the deploy blocks until every applied resource becomes ready: Deployments, DaemonSets, and StatefulSets complete their rollout, and other kinds pass readiness checks. Set `skipAwait: true` to return as soon as the API server accepts every document -- for manifests whose readiness depends on something deployed later (a webhook configuration waiting on its Service) or that intentionally stay not-ready at install time.
 
-**Use case boundaries** -- A first-class catalog component always wins: typed components validate configuration before deploy, export composable outputs, and document their trade-offs field by field -- raw YAML does none of that. Reach for a manifest only when the catalog has no component for what you need to apply (a vendor's install manifest, a CRD bundle, an exotic custom resource).
+**Use case boundaries** -- A first-class catalog kind always wins: typed components validate configuration before deploy, export composable outputs, and document their trade-offs field by field -- raw YAML does none of that. Reach for a manifest only when the catalog has no component for what you need to apply (a vendor's install manifest, a CRD bundle, an exotic custom resource).
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -116,6 +116,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the default namespace for manifest resources
-- [**Helm Release**](/cloud-catalog/kubernetes-helm-release) -- the right escape hatch when the vendor publishes a chart rather than raw YAML
-- [**Kubernetes ConfigMap**](/cloud-catalog/kubernetes-config-map) -- the typed component a single configuration document belongs in
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the default namespace for manifest resources
+- [**Helm Release**](/infra-catalog/kubernetes-helm-release) -- the right escape hatch when the vendor publishes a chart rather than raw YAML
+- [**Kubernetes ConfigMap**](/infra-catalog/kubernetes-config-map) -- the typed component a single configuration document belongs in

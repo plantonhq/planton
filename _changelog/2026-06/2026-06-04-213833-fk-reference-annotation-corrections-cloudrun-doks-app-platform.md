@@ -10,7 +10,7 @@ Corrects three foreign-key (FK) reference annotations that were either semantica
 
 ## Problem Statement / Motivation
 
-The platform resolves a `StringValueOrRef.value_from { kind, name, field_path }` at deploy time via a generic JSONB lookup against the referenced resource's stored cloud-object (`spec.cloudObject.<field_path>`, snake_case canonical). For that to work, a field's `default_kind_field_path` annotation must name an output the referent actually exports, and the field itself must be a `StringValueOrRef`. Three fields violated this:
+The platform resolves a `StringValueOrRef.value_from { kind, name, field_path }` at deploy time via a generic JSONB lookup against the referenced resource's stored catalog-object (`spec.catalogObject.<field_path>`, snake_case canonical). For that to work, a field's `default_kind_field_path` annotation must name an output the referent actually exports, and the field itself must be a `StringValueOrRef`. Three fields violated this:
 
 ### Pain Points
 

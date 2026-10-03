@@ -31,7 +31,7 @@ var _ = ginkgo.Describe("KubernetesExternalSecretsOperator Validation Tests", fu
 		input = &KubernetesExternalSecretsOperator{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesExternalSecretsOperator",
-			Metadata:   &shared.CloudResourceMetadata{Name: "external-secrets"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "external-secrets"},
 			Spec: &KubernetesExternalSecretsOperatorSpec{
 				Namespace:       literal("external-secrets"),
 				CreateNamespace: true,

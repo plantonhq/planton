@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awss3directorybucket
 spec:
@@ -19,7 +19,7 @@ spec:
       notes: AWS's s3express control plane accepts a bucket encryption configuration (SSE-KMS under a customer managed key), but this spec exposes no key field and the modules manage no encryption configuration -- a CMK posture is not representable on this component today; objects rest under the SSE-S3 default.
     - control_id: enc-in-transit
       status: not_applicable
-      notes: The spec carries no bucket-policy surface, so an enforced TLS-only posture (a deny on insecure transport, the standard S3 pattern) is not representable here. Clients reach the bucket over the HTTPS Regional and Zonal endpoints; requiring that at the bucket is a policy statement this component cannot yet make.
+      notes: The spec carries no bucket-policy surface, so an enforced TLS-only posture (a deny on insecure transport, the standard S3 pattern) is not representable here. Clients reach the bucket over the HTTPS Regional and Zonal endpoints; requiring that at the bucket is a policy statement this kind cannot yet make.
     - control_id: no-public-access
       status: enforced_by_default
       evidence:
@@ -52,13 +52,13 @@ spec:
       notes: The spec exposes no audit dial. Bucket lifecycle operations (create, delete) land in AWS CloudTrail as management events at the account level; object-level audit capture is account CloudTrail territory, and S3 server access logging is a general-purpose-bucket feature -- none of it configurable on this component.
     - control_id: monitoring-integration
       status: not_applicable
-      notes: The spec exposes no monitoring surface. The s3express control plane does accept metrics configurations (PutMetricsConfiguration exists in the service's own action inventory), so the gap is this component's spec, not the service's capability.
+      notes: The spec exposes no monitoring surface. The s3express control plane does accept metrics configurations (PutMetricsConfiguration exists in the service's own action inventory), so the gap is this kind's spec, not the service's capability.
     - control_id: backup-recovery
       status: not_applicable
       notes: "Single-zone is the class's defining trade: data lives in exactly ONE availability zone or Local Zone (data_redundancy can only say so), object versioning is not part of this spec, and no replication surface exists. Treat contents as reproducible -- both presets model exactly that (training scratch, render cache). Data that must survive zone loss belongs in a general-purpose bucket (AwsS3Bucket)."
     - control_id: backup-retention-policy
       status: not_applicable
-      notes: No retention or lifecycle surface exists on this spec -- the s3express control plane accepts lifecycle configurations (PutLifecycleConfiguration is in its action inventory), but this component does not yet carry the dial, so expiry is the workload's own discipline.
+      notes: No retention or lifecycle surface exists on this spec -- the s3express control plane accepts lifecycle configurations (PutLifecycleConfiguration is in its action inventory), but this kind does not yet carry the dial, so expiry is the workload's own discipline.
     - control_id: multi-zone-ha
       status: not_applicable
       notes: The exact inverse of the general-purpose bucket's multi-AZ durability -- a directory bucket exists in ONE zone by design (zone_id), and SingleAvailabilityZone/SingleLocalZone are the only redundancy classes the spec admits. Zonal co-location IS the product; multi-zone resilience is what it deliberately trades for single-digit-millisecond latency.

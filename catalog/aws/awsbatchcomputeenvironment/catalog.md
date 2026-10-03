@@ -1,29 +1,29 @@
 # AWS Batch Compute Environment
 
-Deploys a managed AWS Batch compute environment: the elastic pool of compute (EC2 On-Demand, EC2 Spot, Fargate, or Fargate Spot) that AWS Batch scales up and down to run submitted jobs. The compute environment is one node of the Batch resource graph — jobs are submitted to an [AWS Batch Job Queue](/cloud-catalog/aws-batch-job-queue) (which maps onto one or more compute environments in preference order) using an [AWS Batch Job Definition](/cloud-catalog/aws-batch-job-definition) as the container blueprint.
+Deploys a managed AWS Batch compute environment: the elastic pool of compute (EC2 On-Demand, EC2 Spot, Fargate, or Fargate Spot) that AWS Batch scales up and down to run submitted jobs. The compute environment is one node of the Batch resource graph — jobs are submitted to an [AWS Batch Job Queue](/infra-catalog/aws-batch-job-queue) (which maps onto one or more compute environments in preference order) using an [AWS Batch Job Definition](/infra-catalog/aws-batch-job-definition) as the container blueprint.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Batch Compute Environment** -- a MANAGED compute environment with the specified resource type (EC2, SPOT, FARGATE, or FARGATE_SPOT), vCPU scaling limits, VPC networking, and optional instance type selection and allocation strategy
 - **Optional EKS attachment** -- when `eksConfiguration` is set, the environment schedules jobs as Kubernetes pods on your existing EKS cluster instead of ECS tasks (Batch on EKS)
 - **AWS Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically for tracking and governance
 
-Job queues and fair-share scheduling policies are **separate Cloud Resources** ([AwsBatchJobQueue](/cloud-catalog/aws-batch-job-queue), [AwsBatchSchedulingPolicy](/cloud-catalog/aws-batch-scheduling-policy)) that reference this environment by ARN — one queue can span a Spot environment with an On-Demand overflow, and an environment can be replaced behind a queue with zero queue downtime.
+Job queues and fair-share scheduling policies are **separate Infra Components** ([AwsBatchJobQueue](/infra-catalog/aws-batch-job-queue), [AwsBatchSchedulingPolicy](/infra-catalog/aws-batch-scheduling-policy)) that reference this environment by ARN — one queue can span a Spot environment with an On-Demand overflow, and an environment can be replaced behind a queue with zero queue downtime.
 
 ## Before You Deploy
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **VPC subnets** in one or more Availability Zones for compute resource placement. Private subnets are recommended. Provide subnet IDs directly or reference AwsSubnet Cloud Resources via ValueFromRef.
-- **Security groups** -- recommended for all resource types; required for FARGATE and FARGATE_SPOT. Provide IDs directly or reference an AwsSecurityGroup Cloud Resource.
-- **An IAM instance profile** (EC2 and SPOT only) -- grants the ECS agent on each instance permission to communicate with AWS Batch. Reference an AwsIamInstanceProfile Cloud Resource or provide the profile ARN.
+- **VPC subnets** in one or more Availability Zones for compute resource placement. Private subnets are recommended. Provide subnet IDs directly or reference AwsSubnet Infra Components via ValueFromRef.
+- **Security groups** -- recommended for all resource types; required for FARGATE and FARGATE_SPOT. Provide IDs directly or reference an AwsSecurityGroup Infra Component.
+- **An IAM instance profile** (EC2 and SPOT only) -- grants the ECS agent on each instance permission to communicate with AWS Batch. Reference an AwsIamInstanceProfile Infra Component or provide the profile ARN.
 - **A Spot Fleet IAM role** (SPOT with the BEST_FIT allocation strategy only) -- allows EC2 Spot Fleet to request and manage Spot instances. The modern capacity-optimized strategies do not use Spot Fleet and need no role.
 - **An EKS cluster with a prepared namespace** (Batch on EKS only) -- the cluster must exist and the namespace must be RBAC-configured for AWS Batch before the environment is created.
 
@@ -60,7 +60,7 @@ spec:
 planton apply -f batch-compute-environment.yaml
 ```
 
-This creates a Fargate compute environment with a 256 vCPU ceiling. To start submitting jobs, create an AwsBatchJobQueue that references this environment's ARN. A Stack Job tracks the provisioning in real time.
+This creates a Fargate compute environment with a 256 vCPU ceiling. To start submitting jobs, create an AwsBatchJobQueue that references this environment's ARN. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -110,7 +110,7 @@ These are the most important decisions when configuring a Batch compute environm
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -122,9 +122,9 @@ These are the most important decisions when configuring a Batch compute environm
 | **AwsLaunchTemplate** (optional) | `computeResources.launchTemplate.launchTemplateId` | `status.outputs.launch_template_id` |
 | **AwsEksCluster** (Batch on EKS only) | `eksConfiguration.eksClusterArn` | `status.outputs.cluster_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -145,11 +145,11 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Batch Job Queue**](/cloud-catalog/aws-batch-job-queue) -- routes submitted jobs onto this environment (and up to two others) in preference order
-- [**AWS Batch Job Definition**](/cloud-catalog/aws-batch-job-definition) -- the container blueprint jobs are submitted from
-- [**AWS Batch Scheduling Policy**](/cloud-catalog/aws-batch-scheduling-policy) -- fair-share capacity division for queues mapped onto this environment
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- provides subnets for compute resource placement across Availability Zones
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- controls network access for compute resources
-- [**AWS IAM Instance Profile**](/cloud-catalog/aws-iam-instance-profile) -- wraps the ECS instance role for EC2/SPOT environments
-- [**AWS Launch Template**](/cloud-catalog/aws-launch-template) -- custom AMIs, user data, and instance hardening
-- [**AWS EKS Cluster**](/cloud-catalog/aws-eks-cluster) -- the pod-scheduling target for Batch on EKS
+- [**AWS Batch Job Queue**](/infra-catalog/aws-batch-job-queue) -- routes submitted jobs onto this environment (and up to two others) in preference order
+- [**AWS Batch Job Definition**](/infra-catalog/aws-batch-job-definition) -- the container blueprint jobs are submitted from
+- [**AWS Batch Scheduling Policy**](/infra-catalog/aws-batch-scheduling-policy) -- fair-share capacity division for queues mapped onto this environment
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- provides subnets for compute resource placement across Availability Zones
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- controls network access for compute resources
+- [**AWS IAM Instance Profile**](/infra-catalog/aws-iam-instance-profile) -- wraps the ECS instance role for EC2/SPOT environments
+- [**AWS Launch Template**](/infra-catalog/aws-launch-template) -- custom AMIs, user data, and instance hardening
+- [**AWS EKS Cluster**](/infra-catalog/aws-eks-cluster) -- the pod-scheduling target for Batch on EKS

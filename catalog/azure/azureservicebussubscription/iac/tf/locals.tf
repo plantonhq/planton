@@ -24,7 +24,7 @@ locals {
   }
 
   # The topic and namespace names, parsed from the resolved topic ARM ID
-  # for the stack outputs -- consumers frequently need the
+  # for the outputs -- consumers frequently need the
   # namespace/topic/subscription triple. The anchored regexes fail the
   # plan loudly if the ID is not a Service Bus topic ARM ID.
   topic_name     = regex("/topics/(?P<name>[^/]+)$", var.spec.topic_id)["name"]

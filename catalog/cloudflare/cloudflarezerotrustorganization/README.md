@@ -47,7 +47,7 @@ Two hard provider facts shape this resource: it is a SINGLETON UPSERT (Cloudflar
 | `mfa_ssh_piv_key_requirements` | object | Hardware PIV key constraints (pin/touch policy, key types/sizes). |
 | `key_rotation_interval_days` | int | The folded Access service-key rotation cadence (21-365; account scope only). |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

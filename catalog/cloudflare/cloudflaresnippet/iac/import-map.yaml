@@ -1,19 +1,19 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflaresnippet
 spec:
   values:
     - name: zone_id
       derivations:
-        - from_stack_output: zone_id
+        - from_output: zone_id
       where_to_find: >-
         Cloudflare dashboard -> the zone's Overview page (Zone ID in the
         right-hand API panel), or `GET /zones?name=<domain>` on the
         Cloudflare v4 API (the id field).
     - name: snippet_name
       derivations:
-        - from_stack_output: snippet_name
+        - from_output: snippet_name
       where_to_find: >-
         Cloudflare dashboard -> Rules -> Snippets -> the snippet's name, or
         `GET /zones/<zone_id>/snippets` on the Cloudflare v4 API.

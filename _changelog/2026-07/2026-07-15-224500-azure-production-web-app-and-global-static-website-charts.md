@@ -15,8 +15,8 @@ custom domain) and `azure/global-static-website` (storage-to-TLS static
 hosting: StorageV2 static website behind Front Door with edge caching and
 compression, a default-on self-validating custom domain, and an optional WAF).
 
-Designing the pair surfaced three component composition gaps, each closed at
-the component level with the literal-or-reference (`StringValueOrRef`)
+Designing the pair surfaced three kind composition gaps, each closed at
+the kind level with the literal-or-reference (`StringValueOrRef`)
 retrofit discipline and proven live on both engines:
 
 1. **`AzureDnsRecord`**: TXT record values (`repeated string` →
@@ -128,7 +128,7 @@ reshape-the-parameter principle.
 
 - **Catalog**: the DD-006 roadmap's session-037 pair ships — the web-workload
   flagship and the highest-delight starter chart, 5 of 12 charts done.
-- **Component surface**: four kinds' Front Door seams are now composable by
+- **Kind surface**: four kinds' Front Door seams are now composable by
   reference; every future chart (and standalone manifest) inherits them.
 - **Security**: the origin-lockdown pattern is now expressible correctly —
   the WAF-bypass-via-default-hostname class cannot ship from a chart.

@@ -20,7 +20,7 @@ func passwordUser() *AwsElasticacheUser {
 	return &AwsElasticacheUser{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsElasticacheUser",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "orders-service",
 		},
 		Spec: &AwsElasticacheUserSpec{
@@ -42,7 +42,7 @@ func lockedDefaultUser() *AwsElasticacheUser {
 	return &AwsElasticacheUser{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsElasticacheUser",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "rbac-default-user",
 		},
 		Spec: &AwsElasticacheUserSpec{

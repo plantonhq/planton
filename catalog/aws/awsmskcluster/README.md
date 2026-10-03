@@ -275,7 +275,7 @@ The following MSK features are **not** covered by this v1 API. They may be added
 
 ## How it works
 
-Planton provisions the MSK cluster via Pulumi or Terraform modules defined in this repository. The API contract is protobuf-based (`api.proto`, `spec.proto`, `outputs.proto`) and stack execution is orchestrated by the platform using the `AwsMskClusterStackInput` (includes provider credentials and target resource).
+Planton provisions the MSK cluster via Pulumi or Terraform modules defined in this repository. The API contract is protobuf-based (`api.proto`, `spec.proto`, `outputs.proto`) and stack execution is orchestrated by the platform using the `AwsMskClusterIacInput` (includes provider credentials and target resource).
 
 ## References
 

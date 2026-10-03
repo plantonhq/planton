@@ -16,7 +16,7 @@ The cluster name comes from `metadata.name` (create-time immutable in AWS). Ever
 - **Managed storage encryption**: customer-managed KMS keys for Fargate ephemeral task storage -- the compliance posture for regulated workloads.
 - **Service Connect defaults**: the Cloud Map namespace ARN every service in the cluster inherits.
 
-## Stack outputs
+## Outputs
 
 `cluster_name`, `cluster_arn` (the join key -- `AwsEcsService.cluster_arn` references it), `capacity_provider_names` (the full strategy vocabulary: built-ins plus every folded provider), `capacity_provider_arns` (the folded providers' identities).
 

@@ -4,7 +4,7 @@ Deploys a DigitalOcean project -- the account-level container that organizes dro
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Project** -- one `digitalocean_project` resource: the named container with description, purpose, and environment
 - **Membership assignments** -- configured only when `resources` is set: each listed URN is moved into the project, and removing one from the list moves it back to the account's default project. An empty list leaves membership unmanaged, so console assignments and the members' own project selections are left untouched.
@@ -13,8 +13,8 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
-- **Member resources** (only for managed membership) -- the Cloud Resources joining by reference must exist or deploy in the same InfraPipeline; pre-existing resources join by literal URN (`do:<type>:<id>`).
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **Member resources** (only for managed membership) -- the Infra Components joining by reference must exist or deploy in the same InfraPipeline; pre-existing resources join by literal URN (`do:<type>:<id>`).
 
 ### DigitalOcean Account
 
@@ -48,7 +48,7 @@ spec:
 planton apply -f do-project.yaml
 ```
 
-This creates a production-labeled project with membership left unmanaged -- resources join from the console or by their own project selections without the manifest fighting them. A Stack Job tracks the provisioning in real time.
+This creates a production-labeled project with membership left unmanaged -- resources join from the console or by their own project selections without the manifest fighting them. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -88,7 +88,7 @@ These are the most important decisions when configuring a project. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -96,9 +96,9 @@ These are the most important decisions when configuring a project. Explore the f
 
 The list carries no default kind -- each `valueFrom` names its own `kind` (droplets, load balancers, buckets, domains, ...), or the entry is a literal URN.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -116,7 +116,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Droplet**](/cloud-catalog/digital-ocean-droplet) -- joins the project by reference to its `urn` output
-- [**DigitalOcean Droplet Autoscale Pool**](/cloud-catalog/digital-ocean-droplet-autoscale-pool) -- consumes this project's `project_id` so pool members are created here
-- [**DigitalOcean DNS Zone**](/cloud-catalog/digital-ocean-dns-zone) -- joins by reference to its `urn` output (`do:domain:example.com`)
-- [**DigitalOcean Spaces Bucket**](/cloud-catalog/digital-ocean-bucket) -- joins by literal Spaces URN (`do:space:<name>`)
+- [**DigitalOcean Droplet**](/infra-catalog/digital-ocean-droplet) -- joins the project by reference to its `urn` output
+- [**DigitalOcean Droplet Autoscale Pool**](/infra-catalog/digital-ocean-droplet-autoscale-pool) -- consumes this project's `project_id` so pool members are created here
+- [**DigitalOcean DNS Zone**](/infra-catalog/digital-ocean-dns-zone) -- joins by reference to its `urn` output (`do:domain:example.com`)
+- [**DigitalOcean Spaces Bucket**](/infra-catalog/digital-ocean-bucket) -- joins by literal Spaces URN (`do:space:<name>`)

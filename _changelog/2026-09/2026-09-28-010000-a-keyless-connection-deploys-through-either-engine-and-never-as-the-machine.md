@@ -2,7 +2,7 @@
 
 **Date**: September 28, 2026
 **Type**: Fix
-**Components**: Provider environment (`pkg/iac/stackinput/providerenvvars`), Google Cloud keyless exchange (`pkg/iac/provider/gcp/gcpwebidentity`, new), OpenTofu boundary (`pkg/iac/tofu/tofumodule`), E2E harness (`e2e/framework/runner`)
+**Components**: Provider environment (`pkg/iac/iacinput/providerenvvars`), Google Cloud keyless exchange (`pkg/iac/provider/gcp/gcpwebidentity`, new), OpenTofu boundary (`pkg/iac/tofu/tofumodule`), E2E harness (`e2e/framework/runner`)
 
 ## Summary
 
@@ -27,7 +27,7 @@ The engine is now a required choice, not a flag. `Options.ResolveAwsWebIdentity 
 
 ## Verification
 
-- `go test ./pkg/iac/stackinput/providerenvvars/ ./pkg/iac/tofu/tofumodule/ ./pkg/iac/provider/...` passes.
+- `go test ./pkg/iac/iacinput/providerenvvars/ ./pkg/iac/tofu/tofumodule/ ./pkg/iac/provider/...` passes.
 - The four Bazel test targets pass.
 - The `gcpwebidentity` tests run the exchange against an `httptest` fake of STS and IAM Credentials. They pin the audience sent, the subject-token type, the impersonated account and the returned token, and check that a refused exchange's error names the account and the pool provider.
 - **Red proofs:**

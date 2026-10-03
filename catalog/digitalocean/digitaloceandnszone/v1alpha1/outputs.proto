@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceandnszone.v1alpha1;
 
-// DigitalOceanDnsZoneStackOutputs captures the identifiers exported after a
+// DigitalOceanDnsZoneOutputs captures the identifiers exported after a
 // DNS zone (domain) is provisioned on DigitalOcean.
-message DigitalOceanDnsZoneStackOutputs {
+message DigitalOceanDnsZoneOutputs {
   // The domain name of the DNS zone (e.g. "example.com").
   string zone_name = 1;
 

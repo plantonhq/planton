@@ -4,7 +4,7 @@ Deploys a Traffic Manager profile -- Azure's DNS-based traffic director, which a
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Traffic Manager profile** -- the global routing object with its DNS identity and health-probe configuration; the provider pins the ARM location to `global`, which is why the spec carries no region
 
@@ -55,11 +55,11 @@ spec:
 planton apply -f profile.yaml
 ```
 
-This creates a Performance-routed profile answering on `acme-corp-web-prod.trafficmanager.net`, probing each endpoint over HTTPS on `/healthz` every 30 seconds and expecting a 200. A Stack Job tracks the provisioning in real time.
+This creates a Performance-routed profile answering on `acme-corp-web-prod.trafficmanager.net`, probing each endpoint over HTTPS on `/healthz` every 30 seconds and expecting a 200. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When the resource group is a Cloud Resource in the same chart, wire it by reference:
+When the resource group is an Infra Component in the same chart, wire it by reference:
 
 ```yaml
 spec:
@@ -100,15 +100,15 @@ These are the most important decisions when configuring an Azure Traffic Manager
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |---|---|---|
 | Azure Resource Group | `resourceGroup` | `status.outputs.resource_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -127,6 +127,6 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Azure Traffic Manager Endpoint**](/cloud-catalog/azure-traffic-manager-endpoint) -- the destinations this profile steers to; each references the profile's `traffic_manager_profile_id` output.
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- holds the profile's metadata record; reference its `resource_group_name` output.
-- [**Azure DNS Record**](/cloud-catalog/azure-dns-record) -- points your own domain at the profile: a CNAME to the `fqdn` output, or an alias record targeting the profile's ARM ID.
+- [**Azure Traffic Manager Endpoint**](/infra-catalog/azure-traffic-manager-endpoint) -- the destinations this profile steers to; each references the profile's `traffic_manager_profile_id` output.
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- holds the profile's metadata record; reference its `resource_group_name` output.
+- [**Azure DNS Record**](/infra-catalog/azure-dns-record) -- points your own domain at the profile: a CNAME to the `fqdn` output, or an alias record targeting the profile's ARM ID.

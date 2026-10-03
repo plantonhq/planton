@@ -21,7 +21,7 @@ set -euo pipefail
 #      (a kind whose resources take no tags).
 #   2. The Pulumi module names those keys through the shared azuretagkeys
 #      constants, never as string literals.
-#   3. The `resource_kind` value is the kind's CloudResourceKind enum name,
+#   3. The `resource_kind` value is the kind's CatalogKind enum name,
 #      lowercased: OpenTofu writes it as that exact literal, Pulumi derives it
 #      from that exact enum value. The enum is the source of truth, so a
 #      hand-spelled literal (snake_case, a sibling's kind) cannot slip in.
@@ -37,7 +37,7 @@ repo_root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$repo_root_dir"
 
 provider_root="catalog/azure"
-kind_enum_proto="shared/cloudresourcekind/cloud_resource_kind.proto"
+kind_enum_proto="shared/catalogkind/catalog_kind.proto"
 
 canonical_keys="environment
 organization
@@ -62,7 +62,7 @@ constant_to_key() {
   esac
 }
 
-# Every Azure CloudResourceKind enum name, one per line.
+# Every Azure CatalogKind enum name, one per line.
 azure_enum_names="$(grep -oE '^[[:space:]]*Azure[A-Za-z0-9]+[[:space:]]*=[[:space:]]*[0-9]+' "$kind_enum_proto" \
   | sed -E 's/^[[:space:]]*//; s/[[:space:]]*=.*$//')"
 
@@ -137,7 +137,7 @@ while IFS= read -r kinddir; do
   # 3. resource_kind is the enum name lowercased, on both engines.
   enum_name="$(enum_name_for_kind "$kind")"
   if [[ -z "$enum_name" ]]; then
-    kind_violations+=("${kind} -> no Azure CloudResourceKind enum value lowercases to the directory name")
+    kind_violations+=("${kind} -> no Azure CatalogKind enum value lowercases to the directory name")
   else
     expected_kind="$(echo "$enum_name" | tr '[:upper:]' '[:lower:]')"
     if [[ -n "$tf_keys" ]]; then
@@ -150,8 +150,8 @@ while IFS= read -r kinddir; do
     if [[ -n "$pulumi_keys" ]]; then
       pulumi_kind_values="$({ grep -hE "(azuretagkeys\.ResourceKind|\"resource_kind\")[[:space:]]*(:|\])" "$pulumi_locals" || true; } \
         | sed -E 's/^.*(azuretagkeys\.ResourceKind|"resource_kind")[[:space:]]*(:|\][[:space:]]*=)[[:space:]]*//; s/,?[[:space:]]*$//' | sort -u)"
-      if [[ "$pulumi_kind_values" != "strings.ToLower(cloudresourcekind.CloudResourceKind_${enum_name}.String())" ]]; then
-        kind_violations+=("${kind} -> pulumi resource_kind is $(one_line "$pulumi_kind_values"), expected strings.ToLower(cloudresourcekind.CloudResourceKind_${enum_name}.String())")
+      if [[ "$pulumi_kind_values" != "strings.ToLower(catalogkind.CatalogKind_${enum_name}.String())" ]]; then
+        kind_violations+=("${kind} -> pulumi resource_kind is $(one_line "$pulumi_kind_values"), expected strings.ToLower(catalogkind.CatalogKind_${enum_name}.String())")
       fi
     fi
   fi

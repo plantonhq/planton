@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpcloudsqluser.v1alpha1;
 
-// GcpCloudSqlUserStackOutputs captures values returned after provisioning a
+// GcpCloudSqlUserOutputs captures values returned after provisioning a
 // Cloud SQL user.
-message GcpCloudSqlUserStackOutputs {
+message GcpCloudSqlUserOutputs {
   // The user name as stored by Cloud SQL. For IAM users on MySQL this is
   // the truncated form (email without the "@domain" suffix) — the name
   // clients actually authenticate with.

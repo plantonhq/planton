@@ -4,9 +4,9 @@
 # notes) until the live capture lane upgrades it to `proven`. DocumentDB
 # management actions live under the rds: prefix -- there is no docdb:
 # action namespace (docdb-elastic is the separate elastic offering). Schema:
-# iac/componentpermissions/v1.
+# iac/catalogkindpermissions/v1.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: awsdocumentdb
 spec:

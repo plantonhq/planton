@@ -12,26 +12,26 @@ tags:
 
 # Infra Pipelines
 
-An Infra Pipeline coordinates the deployment of multiple Cloud Resources in the right order. When an Infra Project defines resources that depend on each other — a VPC that must exist before the database inside it, a security group that must exist before the load balancer that references it — the Infra Pipeline figures out the order, deploys independent resources in parallel, and waits for dependencies to complete before starting their dependents.
+An Infra Pipeline coordinates the deployment of multiple Infra Components in the right order. When an Infra Stack defines resources that depend on each other — a VPC that must exist before the database inside it, a security group that must exist before the load balancer that references it — the Infra Pipeline figures out the order, deploys independent resources in parallel, and waits for dependencies to complete before starting their dependents.
 
 ## Why Infra Pipelines Exist
 
-Deploying a single Cloud Resource is straightforward — define it, submit it, and a Stack Job provisions it. But real environments rarely consist of a single resource. An AWS environment might include a VPC, subnets, security groups, an ECS cluster, a load balancer, Route 53 records, and an ACM certificate — with specific dependency relationships between them.
+Deploying a single Infra Component is straightforward — define it, submit it, and an Infra Job provisions it. But real environments rarely consist of a single resource. An AWS environment might include a VPC, subnets, security groups, an ECS cluster, a load balancer, Route 53 records, and an ACM certificate — with specific dependency relationships between them.
 
 Without orchestration, you would deploy each resource manually, wait for it to complete, copy output values (like a VPC ID) into the next resource's configuration, and repeat. Sequential, error-prone, and slow.
 
-Infra Pipelines automate this. They read the dependency graph from the Infra Project, deploy independent resources in parallel, pass outputs from completed resources to their dependents, and give you a single view of the entire deployment's progress. What might take 25 minutes of sequential manual work completes in roughly half the time with parallel execution.
+Infra Pipelines automate this. They read the dependency graph from the Infra Stack, deploy independent resources in parallel, pass outputs from completed resources to their dependents, and give you a single view of the entire deployment's progress. What might take 25 minutes of sequential manual work completes in roughly half the time with parallel execution.
 
 ## How It Works
 
-When an Infra Project is created or updated, the system generates an Infra Pipeline from the project's dependency graph (DAG). Each node in the graph is a Cloud Resource; each edge is a dependency where one resource needs an output from another.
+When an Infra Stack is created or updated, the system generates an Infra Pipeline from the project's dependency graph (DAG). Each node in the graph is an Infra Component; each edge is a dependency where one resource needs an output from another.
 
 The pipeline executes the graph:
 
 1. Resources with no dependencies start immediately, in parallel.
 2. When a resource completes, its dependents become eligible.
 3. Independent branches of the graph execute concurrently.
-4. Each resource deployment runs as a separate [Stack Job](/docs/infrastructure/stack-jobs).
+4. Each resource deployment runs as a separate [Infra Job](/docs/infrastructure/infra-jobs).
 5. If a resource fails, all of its downstream dependents are cancelled.
 
 ```mermaid
@@ -56,8 +56,8 @@ In this example, the VPC deploys first. Once it completes, both subnets start in
 
 Infra Pipelines support two operations:
 
-- **Deploy** — Create or update Cloud Resources. This is the default, triggered when an Infra Project is created, updated, or explicitly redeployed.
-- **Undeploy** — Destroy Cloud Resources in reverse dependency order. The database is destroyed before the VPC it depends on, ensuring clean teardown.
+- **Deploy** — Create or update Infra Components. This is the default, triggered when an Infra Stack is created, updated, or explicitly redeployed.
+- **Undeploy** — Destroy Infra Components in reverse dependency order. The database is destroyed before the VPC it depends on, ensuring clean teardown.
 
 ## Manual Approval Gates
 
@@ -88,7 +88,7 @@ planton infra-pipeline resolve-node-manual-gate <pipeline-id> <env-name> <node-i
 
 ## Monitoring Progress
 
-The web console displays the dependency graph with real-time status updates for each resource. Completed resources are marked as successful, active deployments show as in progress, and pending resources wait for their dependencies. Click any resource node to drill down to its Stack Job logs.
+The web console displays the dependency graph with real-time status updates for each resource. Completed resources are marked as successful, active deployments show as in progress, and pending resources wait for their dependencies. Click any resource node to drill down to its Infra Job logs.
 
 The pipeline detail view shows the full graph along with timing information — when each resource started, how long it took, and the overall pipeline duration.
 
@@ -106,13 +106,13 @@ The web console provides a cancel button with a confirmation dialog explaining t
 
 | Aspect | Direct Deployment | Infra Pipeline |
 |--------|------------------|----------------|
-| Scope | Single Cloud Resource | Multiple Cloud Resources |
+| Scope | Single Infra Component | Multiple Infra Components |
 | Dependencies | None — each resource is independent | Automatic — resources deploy in dependency order |
-| Execution | One Stack Job | Multiple Stack Jobs, with parallelism |
+| Execution | One Infra Job | Multiple Infra Jobs, with parallelism |
 | Approval | Per-resource | Environment-level and per-resource gates |
-| Tracking | Individual Stack Job status | Unified view across all resources |
+| Tracking | Individual Infra Job status | Unified view across all resources |
 
-Use direct deployment for standalone resources. Use Infra Pipelines (via [Infra Projects](/docs/infrastructure/infra-projects)) when resources depend on each other or when you need coordinated, multi-resource deployments.
+Use direct deployment for standalone resources. Use Infra Pipelines (via [Infra Stacks](/docs/infrastructure/infra-stacks)) when resources depend on each other or when you need coordinated, multi-resource deployments.
 
 ## Using the CLI
 
@@ -127,23 +127,23 @@ planton infra-pipeline resolve-env-manual-gate <pipeline-id> <env-name> yes
 planton infra-pipeline resolve-node-manual-gate <pipeline-id> <env-name> <node-id> yes
 ```
 
-Infra Pipelines are typically created automatically when you create or update an Infra Project. To trigger a pipeline manually:
+Infra Pipelines are typically created automatically when you create or update an Infra Stack. To trigger a pipeline manually:
 
 ```bash
-# Deploy an Infra Project (starts a deploy run and follows it)
-planton infra project deploy <project-id>
+# Deploy an Infra Stack (starts a deploy run and follows it)
+planton infra stack deploy <project-id>
 
 # List pipelines for a project
-planton infra project infra-pipelines <project-name-or-id>
+planton infra stack infra-pipelines <project-name-or-id>
 
 # Get the last pipeline for a project
-planton infra project last-pipeline <project-name-or-id>
+planton infra stack last-pipeline <project-name-or-id>
 ```
 
 ## Related Documentation
 
-- [Infra Projects](/docs/infrastructure/infra-projects) — The projects that pipelines execute
-- [Cloud Resources](/docs/infrastructure/cloud-resources) — The resources deployed by pipelines
-- [Stack Jobs](/docs/infrastructure/stack-jobs) — The atomic IaC execution units within pipelines
+- [Infra Stacks](/docs/infrastructure/infra-stacks) — The projects that pipelines execute
+- [Infra Components](/docs/infrastructure/infra-components) — The resources deployed by pipelines
+- [Infra Jobs](/docs/infrastructure/infra-jobs) — The atomic IaC execution units within pipelines
 - [Flow Control](/docs/infrastructure/flow-control) — Governance policies for approval gates
 - [Infra Charts](/docs/infrastructure/infra-charts) — Templates that define the resources a project deploys

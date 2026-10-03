@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsvpc
 spec:
@@ -8,7 +8,7 @@ spec:
   values:
     - name: vpc_id
       derivations:
-        - from_stack_output: vpc_id
+        - from_output: vpc_id
         - from_arn_part: resource_id
       where_to_find: >-
         VPC console -> Your VPCs (the VPC ID column), or
@@ -21,8 +21,8 @@ spec:
         # association resources: the ordered lookups cannot collide because
         # the two maps' key spaces are disjoint (IPv4 vs IPv6 CIDR formats;
         # "ipam-" vs "ipv6-" index prefixes).
-        - from_stack_output_keyed_by_address: secondary_ipv4_cidr_association_ids
-        - from_stack_output_keyed_by_address: secondary_ipv6_cidr_association_ids
+        - from_output_keyed_by_address: secondary_ipv4_cidr_association_ids
+        - from_output_keyed_by_address: secondary_ipv6_cidr_association_ids
       where_to_find: >-
         `aws ec2 describe-vpcs --vpc-ids <vpc-id>` -> CidrBlockAssociationSet
         (IPv4) or Ipv6CidrBlockAssociationSet (IPv6) -> AssociationId
@@ -31,7 +31,7 @@ spec:
       derivations:
         # One encryption control per VPC (count-gated singleton), so the
         # plain scalar output serves it.
-        - from_stack_output: encryption_control_id
+        - from_output: encryption_control_id
       where_to_find: >-
         `aws ec2 describe-vpc-encryption-controls` -> the control whose
         VpcId matches ("vpcec-...").

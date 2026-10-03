@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package dev.planton.iac.catalogkindimportmap.v1;
+
+import "iac/catalogkindimportmap/v1/spec.proto";
+import "shared/metadata.proto";
+
+// CatalogKindImportMap declares a single kind's import-value sources --
+// the thin, per-kind half of the import knowledge (the shared half is
+// the provider's ProviderImportCatalog). Follows the KRM pattern
+// (apiVersion + kind + metadata + spec).
+// Lives at {kind}/v1/iac/import-map.yaml, next to the module it maps.
+//
+// Example:
+//   apiVersion: iac.planton.dev/v1
+//   kind: CatalogKindImportMap
+//   metadata:
+//     name: awss3bucket
+//   spec:
+//     values:
+//       - name: bucket
+//         derivations:
+//           - from_metadata_name: true
+message CatalogKindImportMap {
+  string api_version = 1;
+  string kind = 2;
+  dev.planton.shared.CatalogObjectMetadata metadata = 3;
+  CatalogKindImportMapSpec spec = 4;
+}

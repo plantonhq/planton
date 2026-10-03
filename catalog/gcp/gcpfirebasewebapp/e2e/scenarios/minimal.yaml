@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpfirebasewebapp
+    e2e-catalog-kind: gcpfirebasewebapp
   annotations:
     planton.dev/e2e: "true"
   tags:

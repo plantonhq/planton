@@ -53,7 +53,7 @@ Reference the policy's `self_link` from a target HTTPS proxy's `sslPolicy` field
 | `postQuantumKeyExchange` | `string` | `DEFAULT` | Post-quantum key exchange (X25519MLKEM768) rollout stance: `DEFAULT`, `ENABLED`, or `DEFERRED`. Mutable. |
 | `deletionPolicy` | `string` | `DELETE` | What happens on destroy: `DELETE`, `PREVENT`, or `ABANDON`. |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -81,7 +81,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 - **Post-quantum is a rollout stance, not a switch**: `DEFAULT` follows GCP's own X25519MLKEM768 timeline, `ENABLED` opts in now, `DEFERRED` opts out until GCP's later mandatory date.
 - **Scope is permanent**: a policy cannot move between global and regional scope, and regional proxies can only reference policies in their own region.
 
-## Related Components
+## Related Kinds
 
 - [GcpTargetHttpsProxy](/docs/catalog/gcp/gcptargethttpsproxy) — attaches this policy to harden client handshakes
 - [GcpSslCertificate](/docs/catalog/gcp/gcpsslcertificate) — self-managed certificate presented by the same proxy

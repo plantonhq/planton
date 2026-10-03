@@ -87,7 +87,7 @@ This makes `NEXT_PUBLIC_API_URL` the correct choice for the backend API endpoint
 
 1. **Docker environment** sets `NEXT_PUBLIC_API_URL` (configurable or default)
 2. **Next.js build** embeds the value into the production bundle
-3. **RootLayout component** reads it from `process.env.NEXT_PUBLIC_API_URL`
+3. **RootLayout kind** reads it from `process.env.NEXT_PUBLIC_API_URL`
 4. **AppContextProvider** receives it as `connectHost` prop
 5. **useConnectRpcClient hook** uses it to create the gRPC-Web transport
 6. **All API calls** go to the configured backend URL

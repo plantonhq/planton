@@ -8,7 +8,7 @@ Memorystore for Redis provides a managed Redis service on GCP with automatic pat
 
 ## Purpose
 
-This component exists to give platform engineers a declarative, infrastructure-as-code interface for provisioning Redis on GCP. It abstracts the underlying Terraform/Pulumi resources behind a consistent spec, supports cross-resource references (project, VPC, KMS key), and exports connection details and secrets as stack outputs for downstream consumers.
+This component exists to give platform engineers a declarative, infrastructure-as-code interface for provisioning Redis on GCP. It abstracts the underlying Terraform/Pulumi resources behind a consistent spec, supports cross-resource references (project, VPC, KMS key), and exports connection details and secrets as outputs for downstream consumers.
 
 ## Key Features
 
@@ -70,7 +70,7 @@ For STANDARD_HA, GCP automatically places the primary and replica in different z
 - **AUTH**: Enable `auth_enabled` and use the `auth_string` output — treat as a secret
 - **Network isolation**: Attach to a private VPC via `authorized_network`; avoid public exposure
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -100,7 +100,7 @@ provider version is representable through this spec; the recorded judgment
 lives in `iac/provider-parity.yaml`, checked by
 `planton provider-parity --check`.
 
-## Related Components
+## Related Kinds
 
 - **GcpProject** — provides the GCP project
 - **GcpVpcNetwork** — provides the VPC network for `authorized_network`

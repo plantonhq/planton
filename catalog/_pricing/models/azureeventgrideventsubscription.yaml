@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -6,9 +6,9 @@
 # object has no meter -- every charge it shapes is a per-operation charge on
 # the source's meter or a downstream charge on the destination, at volumes
 # only traffic determines -- stated in exclusions, never padded into
-# fabricated dollars. Schema: finops/componentcostestimatemodel/v1.
+# fabricated dollars. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: azureeventgrideventsubscription
 spec:
@@ -19,8 +19,8 @@ spec:
       hours_per_month: 730
       exclusions:
         - "every delivery attempt to the storage queue bills the source topic's Basic operations meter at 0.60 USD per million past its monthly 100,000-operation free grant, counted in 64 KB units, retries included"
-        - "dead-lettered events bill as delivery operations, and each parked event is a blob whose storage and write transactions bill on the dead-letter storage account's own component"
-        - "the queue messages the deliveries become bill storage-queue transactions on the destination storage account's own component"
+        - "dead-lettered events bill as delivery operations, and each parked event is a blob whose storage and write transactions bill on the dead-letter storage account's own kind"
+        - "the queue messages the deliveries become bill storage-queue transactions on the destination storage account's own kind"
         - "no billable filters are configured -- this subscription delivers everything the topic emits, so filtering adds nothing to the meter"
       notes: "Zero committed cost -- the subscription holds for free, and the production-grade dead-letter posture costs nothing until an event actually fails its retries."
     - preset: 02-filtered-webhook
@@ -30,6 +30,6 @@ spec:
       exclusions:
         - "every delivery attempt to the webhook bills the source topic's Basic operations meter at 0.60 USD per million past its monthly free grant -- with the tuned retry policy capping a failing endpoint at 10 attempts per event instead of Azure's default 30"
         - "the advanced filter (data.amount greater-than) bills one operation per evaluation, including for events it rejects; the subject-BEGINS-with filter is free by Microsoft's pricing FAQ"
-        - "dead-lettered events bill as delivery operations, with blob charges on the dead-letter storage account's own component"
+        - "dead-lettered events bill as delivery operations, with blob charges on the dead-letter storage account's own kind"
         - "the webhook handler's own compute is wherever it runs -- never on this meter"
       notes: "Zero committed cost -- filters, delivery schema, and retry tuning are free to declare; the advanced filter starts billing only when events start arriving to evaluate."

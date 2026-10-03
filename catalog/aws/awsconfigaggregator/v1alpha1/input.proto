@@ -5,9 +5,9 @@ package dev.planton.aws.awsconfigaggregator.v1alpha1;
 import "catalog/aws/awsconfigaggregator/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsConfigAggregatorStackInput is the input for the IaC modules
+// AwsConfigAggregatorIacInput is the input for the IaC modules
 // that manage Config aggregation.
-message AwsConfigAggregatorStackInput {
+message AwsConfigAggregatorIacInput {
   // target is the AwsConfigAggregator resource to deploy.
   AwsConfigAggregator target = 1;
   // provider_config contains the AWS provider credentials and configuration.

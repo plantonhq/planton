@@ -20,7 +20,7 @@ func validApp() *CloudflareZeroTrustAccessApplication {
 	return &CloudflareZeroTrustAccessApplication{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZeroTrustAccessApplication",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-app"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-app"},
 		Spec: &CloudflareZeroTrustAccessApplicationSpec{
 			AccountId: validAccountID,
 			Name:      "internal-app",

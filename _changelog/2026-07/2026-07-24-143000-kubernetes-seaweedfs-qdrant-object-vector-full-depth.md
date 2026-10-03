@@ -55,7 +55,7 @@ Spec tests for both kinds (every CEL rule accept+reject locked); offline
 `tofu` plan and `pulumi preview` proofs across full-surface and minimal
 shapes for all four modules (the minimal-shape preview caught and fixed
 a nil-dereference on an absent optional block); secret-coverage,
-reference, containment, import-map and stack-outputs conformance gates;
+reference, containment, import-map and outputs conformance gates;
 image pullability probes at the exact pinned tags; repo-wide Bazel
 build; e2e-build/e2e-vet; license footers; all presets and scenario
 manifests CLI-validated.

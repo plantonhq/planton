@@ -142,7 +142,7 @@ const helmCRDsTFBody = `locals {
 
   # Versions order as three numeric components folded into one number
   # (HCL orders numbers, not strings; the chart repository index publishes
-  # semver, and no component reaches 10000). A version this pattern cannot
+  # semver, and no kind reaches 10000). A version this pattern cannot
   # read is refused rather than guessed at.
   helm_crds_semver_pattern     = "^([0-9]+)\\.([0-9]+)\\.([0-9]+)"
   helm_crds_requested_sortable = can(regex(local.helm_crds_semver_pattern, local.chart_version)) ? tonumber(regex(local.helm_crds_semver_pattern, local.chart_version)[0]) * 100000000 + tonumber(regex(local.helm_crds_semver_pattern, local.chart_version)[1]) * 10000 + tonumber(regex(local.helm_crds_semver_pattern, local.chart_version)[2]) : null

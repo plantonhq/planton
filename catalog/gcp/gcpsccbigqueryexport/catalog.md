@@ -4,7 +4,7 @@ Keeps a live copy of your Security Command Center findings in BigQuery, for a pr
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `securitycenter.googleapis.com` on a project export's project
 - **BigQuery export** -- the scope's `securitycenter.V2*SccBigQueryExport`
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Security Command Center BigQuery-export admin permissions at the scope. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Security Command Center BigQuery-export admin permissions at the scope. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ## Deploy
@@ -44,7 +44,7 @@ spec:
 planton apply -f scc-bigquery-export.yaml
 ```
 
-This keeps every active, unmuted finding in the project in BigQuery. A Stack Job tracks the provisioning in real time.
+This keeps every active, unmuted finding in the project in BigQuery. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -62,7 +62,7 @@ These are the most important decisions when configuring an export. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -70,9 +70,9 @@ These are the most important decisions when configuring an export. Explore the f
 | **GcpFolder** | `scope.folderId` | `status.outputs.folder_id` |
 | **GcpBigQueryDataset** | `dataset` | `status.outputs.self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -89,6 +89,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP BigQuery Dataset**](/cloud-catalog/gcp-bigquery-dataset) -- the destination
-- [**GCP SCC Notification Config**](/cloud-catalog/gcp-scc-notification-config) -- real-time findings to Pub/Sub
-- [**GCP SCC Mute Config**](/cloud-catalog/gcp-scc-mute-config) -- keep accepted findings out
+- [**GCP BigQuery Dataset**](/infra-catalog/gcp-bigquery-dataset) -- the destination
+- [**GCP SCC Notification Config**](/infra-catalog/gcp-scc-notification-config) -- real-time findings to Pub/Sub
+- [**GCP SCC Mute Config**](/infra-catalog/gcp-scc-mute-config) -- keep accepted findings out

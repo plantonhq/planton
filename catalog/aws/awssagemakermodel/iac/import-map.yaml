@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awssagemakermodel
 spec:
@@ -7,7 +7,7 @@ spec:
   values:
     - name: model_name
       derivations:
-        - from_stack_output: model_name
+        - from_output: model_name
       where_to_find: >-
         SageMaker console -> Inference -> Models (the name), or
         `aws sagemaker list-models` (ModelName).

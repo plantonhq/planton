@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarezerotrustaccessservicetoken
 spec:
@@ -16,7 +16,7 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: service_token_id
       derivations:
-        - from_stack_output: service_token_id
+        - from_output: service_token_id
       where_to_find: >-
         Zero Trust dashboard -> Access -> Service Auth -> the token, or
         `GET /accounts/<account_id>/access/service_tokens` on the

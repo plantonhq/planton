@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetessuperset
 spec:
@@ -25,14 +25,14 @@ spec:
         the resource's name.
     - name: release_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `helm list -A` (NAMESPACE column); conventionally "superset".
     # ── the optional anchor namespace ──────────────────────────────────
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Only imported when create_namespace is true; the installation
@@ -41,7 +41,7 @@ spec:
     - name: secret_name
       tofu_resource_name: env
       derivations:
-        - from_stack_output: env_secret_name
+        - from_output: env_secret_name
         - from_metadata_name_suffix: "-env"
       where_to_find: >-
         "<resource-name>-env" — the chart's runtime-credential
@@ -51,7 +51,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: env
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
@@ -59,7 +59,7 @@ spec:
     - name: secret_name
       tofu_resource_name: secret_key
       derivations:
-        - from_stack_output: secret_key_secret_name
+        - from_output: secret_key_secret_name
         - from_metadata_name_suffix: "-secret-key"
       where_to_find: >-
         "<resource-name>-secret-key" when module-generated (a
@@ -68,7 +68,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: secret_key
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.
@@ -96,7 +96,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: admin_auth
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the installation.

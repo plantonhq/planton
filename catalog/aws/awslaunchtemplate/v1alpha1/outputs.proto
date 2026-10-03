@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awslaunchtemplate.v1alpha1;
 
-// AwsLaunchTemplateStackOutputs captures the observable outputs of a
+// AwsLaunchTemplateOutputs captures the observable outputs of a
 // provisioned launch template, for auto-scaling groups, EKS node groups,
 // and Batch compute environments to reference.
-message AwsLaunchTemplateStackOutputs {
+message AwsLaunchTemplateOutputs {
   // The launch template ID (e.g. "lt-0123456789abcdef0"). The primary
   // handle other resources reference via
   // status.outputs.launch_template_id -- auto-scaling groups, EKS managed

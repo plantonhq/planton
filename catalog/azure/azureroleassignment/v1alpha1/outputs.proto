@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package dev.planton.azure.azureroleassignment.v1alpha1;
 
-// **AzureRoleAssignmentStackOutputs** captures the outputs of provisioning an
+// **AzureRoleAssignmentOutputs** captures the outputs of provisioning an
 // Azure RBAC role assignment. The fully-scoped ARM ID is the assignment's
 // identity for auditing and for the authorization API; the resolved
 // scope/role/principal coordinates are exported so downstream automation can
 // reason about the grant without re-reading the spec (the role definition ID
 // in particular is resolved even when the spec referenced the role by name).
-message AzureRoleAssignmentStackOutputs {
+message AzureRoleAssignmentOutputs {
   // The fully-scoped Azure Resource Manager ID of the role assignment.
   // Format: {scope}/providers/Microsoft.Authorization/roleAssignments/{name}
   // This is the identifier the authorization API uses to fetch or delete the

@@ -5,11 +5,11 @@ import (
 
 	awss3bucketv1alpha1 "github.com/plantonhq/planton/catalog/aws/awss3bucket/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 type Locals struct {
 	Target  *awss3bucketv1alpha1.AwsS3Bucket
 	Spec    *awss3bucketv1alpha1.AwsS3BucketSpec
@@ -19,7 +19,7 @@ type Locals struct {
 	BucketName string
 }
 
-func initializeLocals(ctx *pulumi.Context, in *awss3bucketv1alpha1.AwsS3BucketStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, in *awss3bucketv1alpha1.AwsS3BucketIacInput) *Locals {
 	locals := &Locals{}
 	locals.Target = in.Target
 	locals.Spec = in.Target.Spec
@@ -31,7 +31,7 @@ func initializeLocals(ctx *pulumi.Context, in *awss3bucketv1alpha1.AwsS3BucketSt
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.Target.Metadata.Org,
 		awstagkeys.Environment:  locals.Target.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsS3Bucket.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsS3Bucket.String(),
 		awstagkeys.ResourceId:   locals.Target.Metadata.Id,
 	}
 

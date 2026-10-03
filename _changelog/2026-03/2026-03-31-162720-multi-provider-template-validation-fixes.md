@@ -32,7 +32,7 @@ Cross-referenced every failing template against its protobuf spec in the planton
 
 All Kubernetes environment charts (EKS, AKS, GKE, DOKS, Civo, Kapsule) shared the same addon template structure with two issues:
 
-- **`group` field in relationships**: `CloudResourceRelationship` only has `kind`, `name`, `type`, and `env` — no `group`. Removed from all 54 addon files.
+- **`group` field in relationships**: `InfraComponentRelationship` only has `kind`, `name`, `type`, and `env` — no `group`. Removed from all 54 addon files.
 - **`kubernetesClusterSelector` wrapper**: `targetCluster` IS a `KubernetesClusterSelector` directly — it shouldn't contain a nested `kubernetesClusterSelector`. Flattened `clusterKind` and `clusterName` up one level.
 
 Before:

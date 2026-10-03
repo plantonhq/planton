@@ -7,7 +7,7 @@ This Pulumi (Go) module provisions an Amazon Cognito User Pool at full provider 
 ## Module Structure
 
 ```
-main.go                — entrypoint (loads stack input, runs module.Resources)
+main.go                — entrypoint (loads IaC input, runs module.Resources)
 module/main.go         — orchestration: provider → pool → domain → log delivery
 module/user_pool.go    — cognito.UserPool with the full spec surface
 module/domain.go       — cognito.UserPoolDomain + domain join-key exports
@@ -19,7 +19,7 @@ module/outputs.go      — output name constants
 ## Deploy
 
 ```bash
-# from iac/pulumi/ with a stack-input.yaml present
+# from iac/pulumi/ with an iac-input.yaml present
 make preview
 make up
 make destroy

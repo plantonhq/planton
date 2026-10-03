@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpserverlessvpcconnector.v1alpha1;
 
-// GcpServerlessVpcConnectorStackOutputs captures values returned after
+// GcpServerlessVpcConnectorOutputs captures values returned after
 // provisioning.
-message GcpServerlessVpcConnectorStackOutputs {
+message GcpServerlessVpcConnectorOutputs {
   // Short name of the connector as created in GCP.
   string name = 1;
 

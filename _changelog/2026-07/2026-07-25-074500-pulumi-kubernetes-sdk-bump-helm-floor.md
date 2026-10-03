@@ -11,7 +11,7 @@
   every Pulumi `helm.sh/v3:Release` install of the chart failed at
   render. v4.33.0 embeds Helm 3.20.2. Because a Release renders
   templates only at APPLY, previews pass on an incompatible engine —
-  the component update workflow now teaches checking a chart's
+  the kind update workflow now teaches checking a chart's
   template-function floor against the provider's embedded Helm version
   when adopting a chart pin.
 

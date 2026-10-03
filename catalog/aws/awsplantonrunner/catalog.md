@@ -4,7 +4,7 @@ Deploys a standing Planton runner appliance inside your AWS VPC -- an always-on,
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Secrets Manager secret** -- holds the runner token; the container reads it at start through native secret injection, so the token never appears in the task definition
 - **IAM execution role** -- the setup identity: pulls the runner image, writes logs, and reads exactly the one token secret
@@ -63,7 +63,7 @@ spec:
 planton apply -f runner.yaml
 ```
 
-This minimal manifest deploys a pull-based worker at the default sizing (0.5 vCPU, 1 GiB) tracking the latest runner release, with a permissionless runtime role and 30-day log retention -- sizing, version pinning, and the runtime identity are not configured. The runner registers itself as `prod-vpc-runner` (`<env>-<metadata.name>`) the moment it joins. A Stack Job tracks the provisioning in real time.
+This minimal manifest deploys a pull-based worker at the default sizing (0.5 vCPU, 1 GiB) tracking the latest runner release, with a permissionless runtime role and 30-day log retention -- sizing, version pinning, and the runtime identity are not configured. The runner registers itself as `prod-vpc-runner` (`<env>-<metadata.name>`) the moment it joins. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -106,7 +106,7 @@ These are the most important decisions when configuring the runner. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -114,9 +114,9 @@ These are the most important decisions when configuring the runner. Explore the 
 | **AwsSecurityGroup** (optional) | `securityGroups` | `status.outputs.security_group_id` |
 | **AwsIamRole** (optional) | `taskRole` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -126,7 +126,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 | `token_secret_arn` | The token secret's ARN -- the token authorizes joining and is never the runner's identity | Auditing secret access; rotation tooling |
 | `runner_name` | The name the runner registers itself under with the control plane | Console and `planton runner list` lookups |
 
-The remaining outputs (`service_arn`, `service_name`, `cluster_arn`, `task_definition_arn`, `execution_role_arn`, `region`) echo the appliance's own AWS identifiers for inspection with AWS tooling; downstream Cloud Resources have no real use for them.
+The remaining outputs (`service_arn`, `service_name`, `cluster_arn`, `task_definition_arn`, `execution_role_arn`, `region`) echo the appliance's own AWS identifiers for inspection with AWS tooling; downstream Infra Components have no real use for them.
 
 ## Common Patterns
 
@@ -140,6 +140,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- where the runner's network interfaces live; the placement that defines what it can reach
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- extra groups a private target trusts, attached beside the created outbound-only group
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the runner's runtime identity, composed first-class with exactly the permissions its workloads need
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- where the runner's network interfaces live; the placement that defines what it can reach
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- extra groups a private target trusts, attached beside the created outbound-only group
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the runner's runtime identity, composed first-class with exactly the permissions its workloads need

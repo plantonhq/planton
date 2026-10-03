@@ -14,7 +14,7 @@ The table name comes from `metadata.name` (create-time immutable in AWS). A tabl
 - **Folded table-scoped satellites**: a resource-based IAM `resourcePolicy` (the policy document as native YAML, plus the `confirmRemoveSelfResourceAccess` guard for deliberate lockdown policies), the `kinesisStreamingDestination` (one per table, by AWS's own rule), and `contributorInsights` on the table and opted-in GSIs -- each materializes as its own provider resource in both engines, so edits are in-place.
 - **Recovery and safety**: point-in-time recovery with a tunable 1-35 day window, deletion protection, table class, and TTL.
 
-## Stack outputs
+## Outputs
 
 `table_name`, `table_arn`, `table_id`, `stream_arn`, `stream_label` -- the name and ARN are the join keys IAM policies and application configuration consume; the stream ARN is what Lambda event-source mappings attach to.
 

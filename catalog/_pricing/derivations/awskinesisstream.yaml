@@ -6,9 +6,9 @@
 # book (../pricebook/). stream_mode selects between the two rule sets:
 # PROVISIONED commits shard-hours (plus the extended-retention surcharge);
 # ON_DEMAND commits only the per-stream hourly fee, with the data charges
-# named in exclusions. Schema: finops/componentcostderivation/v1.
+# named in exclusions. Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awskinesisstream
 spec:
@@ -97,8 +97,8 @@ spec:
     - applies_when:
         - field_path: kms_key_id
           op: is_set
-      text: KMS request charges follow record volume, and a customer-managed key bills its monthly fee on its own AwsKmsKey component
-    - text: enhanced fan-out consumers bill consumer-shard hours and retrieved GB on their own AwsKinesisStreamConsumer components
+      text: KMS request charges follow record volume, and a customer-managed key bills its monthly fee on its own AwsKmsKey kind
+    - text: enhanced fan-out consumers bill consumer-shard hours and retrieved GB on their own AwsKinesisStreamConsumer kinds
   notes:
     - applies_when:
         - field_path: stream_mode

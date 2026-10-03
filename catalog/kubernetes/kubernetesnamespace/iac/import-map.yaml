@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesnamespace
 spec:
@@ -11,14 +11,14 @@ spec:
   values:
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: name
         - from_metadata_name: true
       where_to_find: >-
         `kubectl get namespaces` (NAME column).
     - name: resource_quota_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: name
       where_to_find: >-
         Same as the namespace name -- the quota lives inside the namespace.
@@ -29,7 +29,7 @@ spec:
         module names it "<namespace>-quota".
     - name: limit_range_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: name
       where_to_find: >-
         Same as the namespace name -- the limit range lives inside the
@@ -41,7 +41,7 @@ spec:
         names it "<namespace>-limits".
     - name: network_policy_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: name
       where_to_find: >-
         Same as the namespace name -- the policies live inside the namespace.

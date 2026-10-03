@@ -1,4 +1,4 @@
-# AwsApiGatewayAccountSettings — Component Guide
+# AwsApiGatewayAccountSettings — Kind Guide
 
 Authored operational judgment for the API Gateway account-settings
 singleton: the design decisions behind the spec's shape, and what to

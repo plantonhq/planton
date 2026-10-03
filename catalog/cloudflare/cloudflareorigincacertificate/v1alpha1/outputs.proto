@@ -4,9 +4,9 @@ package dev.planton.cloudflare.cloudflareorigincacertificate.v1alpha1;
 
 import "shared/options/options.proto";
 
-// CloudflareOriginCaCertificateStackOutputs captures the outputs after issuing an
+// CloudflareOriginCaCertificateOutputs captures the outputs after issuing an
 // Origin CA certificate.
-message CloudflareOriginCaCertificateStackOutputs {
+message CloudflareOriginCaCertificateOutputs {
   // The Origin CA certificate identifier.
   string certificate_id = 1;
 

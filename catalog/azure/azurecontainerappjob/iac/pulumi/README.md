@@ -22,7 +22,7 @@ containerapp.Job (one finite-run workload: template + trigger + identity)
 - **`identity_principal_id` exports empty when no system identity is
   enabled** rather than failing consumers.
 - **Identity tags match the Terraform module** key for key and value
-  for value: `resource_kind` is the lowercased CloudResourceKind enum
+  for value: `resource_kind` is the lowercased CatalogKind enum
   name, and `resource_id` is written only when `metadata.id` is set.
 
 ## Provider

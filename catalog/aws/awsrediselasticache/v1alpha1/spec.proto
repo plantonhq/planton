@@ -38,7 +38,7 @@ import "shared/options/options.proto";
 // - `auth_token` and `user_group_ids` are mutually exclusive authentication
 //   methods; user groups (RBAC) are AWS's recommended production model.
 // - Credentials, region, and deployment workflow live outside this spec in
-//   stack inputs.
+//   IaC inputs.
 message AwsRedisElasticacheSpec {
   // The AWS region where the resource will be created.
   // Example: "us-west-2", "eu-west-1"

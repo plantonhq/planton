@@ -1,7 +1,7 @@
 # Where each placeholder in this component's import-ID formats comes
 # from (the formats themselves live in aa_import/catalog.yaml).
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsprivateca
 spec:
@@ -15,14 +15,14 @@ spec:
   values:
     - name: certificate_authority_arn
       derivations:
-        - from_stack_output: certificate_authority_arn
+        - from_output: certificate_authority_arn
       where_to_find: >-
         ACM PCA console -> Certificate authorities (the ARN column), or
         `aws acm-pca list-certificate-authorities` (Arn).
     - name: issued_certificate_arn
       tofu_resource_name: root_ca
       derivations:
-        - from_stack_output: activation_certificate_arn
+        - from_output: activation_certificate_arn
       where_to_find: >-
         The root CA's self-signed certificate ARN - the CA's
         GetCertificateAuthorityCertificate call reports the PEM; the
@@ -30,14 +30,14 @@ spec:
     - name: issued_certificate_arn
       tofu_resource_name: subordinate_ca
       derivations:
-        - from_stack_output: activation_certificate_arn
+        - from_output: activation_certificate_arn
       where_to_find: >-
         The parent-issued subordinate certificate ARN (this module
         exports it).
     - name: issued_certificate_arn
       tofu_resource_name: issued
       derivations:
-        - from_stack_output_keyed_by_address: issued_certificate_arns
+        - from_output_keyed_by_address: issued_certificate_arns
       where_to_find: >-
         Each issued certificate's ARN, keyed by the spec entry's name -
         take it from the issue call's output or the CA's audit report.

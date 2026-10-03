@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcploggingsink.v1alpha1;
 
 // Outputs produced after provisioning a Cloud Logging sink.
-message GcpLoggingSinkStackOutputs {
+message GcpLoggingSinkOutputs {
   // The sink name as it exists in GCP.
   string sink_name = 1;
 

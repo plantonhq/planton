@@ -21,4 +21,4 @@ agreement, plus the optional account use-case form) using Pulumi (Go).
 ## Usage
 
 The module is executed by the Planton platform through the entrypoint in
-`main.go`, which loads the `AwsBedrockModelAccessStackInput`.
+`main.go`, which loads the `AwsBedrockModelAccessIacInput`.

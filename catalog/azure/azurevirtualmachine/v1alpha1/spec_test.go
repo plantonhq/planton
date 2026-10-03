@@ -72,7 +72,7 @@ func validInput(spec *AzureVirtualMachineSpec) *AzureVirtualMachine {
 	return &AzureVirtualMachine{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureVirtualMachine",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-virtual-machine",
 		},
 		Spec: spec,

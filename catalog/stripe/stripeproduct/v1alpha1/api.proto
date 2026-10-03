@@ -41,12 +41,12 @@ message StripeProduct {
   // Must be "StripeProduct" for this resource type.
   string kind = 2 [(buf.validate.field).string.const = 'StripeProduct'];
 
-  // metadata contains standard cloud resource metadata.
+  // metadata contains standard catalog object metadata.
   // - name: Unique identifier for the resource within Planton
   // - org: Organization that owns it
   // - env: Environment it is deployed from
   // - labels: Key-value pairs for filtering and organization
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec contains what customers see and the features the product grants.
   StripeProductSpec spec = 4 [(buf.validate.field).required = true];
@@ -58,6 +58,6 @@ message StripeProduct {
 // StripeProductStatus represents the current state of a StripeProduct resource.
 // Populated by the deployment system.
 message StripeProductStatus {
-  // outputs contains the stack outputs: the product's id and its feature links.
-  StripeProductStackOutputs outputs = 1;
+  // outputs contains the outputs: the product's id and its feature links.
+  StripeProductOutputs outputs = 1;
 }

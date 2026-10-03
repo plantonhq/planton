@@ -105,8 +105,8 @@ Planton is pre-1.0 with no external wire-compatibility obligations, so do **not*
 - Delete the field and **renumber the remaining fields so they stay sequential** (`1..N`, no gaps). Do not leave a hole or add `reserved`.
 - This is safe because manifests are keyed by field *name* (JSON/YAML) and IaC Go references fields by struct name -- only proto-binary wire data depends on numbers, and none is persisted.
 
-### `CloudResourceKind` enum values
+### `CatalogKind` enum values
 - Remove the entry; do **not** add `reserved`. The freed number stays available for a future kind in the same provider block.
-- **Never renumber an existing kind** -- its number is its permanent identity (see forge rule `014-cloud-resource-kind`). This also rules out "flattening" the enum to be globally sequential.
+- **Never renumber an existing kind** -- its number is its permanent identity (see forge rule `014-catalog-kind`). This also rules out "flattening" the enum to be globally sequential.
 - The enum is **band-allocated per provider** — every provider owns a 1,000-wide band (1000s AWS, 2000s Azure, 3000s GCP, 4000s Kubernetes, 5000s DigitalOcean, 7000s Cloudflare, 8000s Auth0, 9000s OpenFGA; the authoritative table is the enum's header comment), and bands organize into family sub-bands recorded in section comments. Preserve the band grouping and any documented sub-convention; let removed slots be refilled naturally by the next kind.
 - A one-line comment marking a freed slot is a helpful breadcrumb -- use that, never `reserved`.

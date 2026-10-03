@@ -4,9 +4,9 @@
 # substrate; the official modules provision it as one always-on Container
 # App replica (min = max = 1) in a REFERENCED Container App Environment --
 # the environment itself bills on its own component. Schema:
-# finops/componentcostprofile/v1.
+# finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azureplantonrunner
 spec:

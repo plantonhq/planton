@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: striperadarvaluelist
 spec:
@@ -7,13 +7,13 @@ spec:
   values:
     - name: radar_value_list_id
       derivations:
-        - from_stack_output: id
+        - from_output: id
       where_to_find: >-
         Stripe Dashboard -> Radar -> Lists (the list's id, rsl_..., on its page), or `GET
         /v1/radar/value_lists?alias=<alias>`.
     - name: radar_value_list_item_id
       derivations:
-        - from_stack_output_keyed_by_address: item_ids
+        - from_output_keyed_by_address: item_ids
       where_to_find: >-
         The id of each item: the `item_ids` output keyed by the item's value, or `GET
         /v1/radar/value_list_items?value_list=<list id>` (the id of the entry whose value

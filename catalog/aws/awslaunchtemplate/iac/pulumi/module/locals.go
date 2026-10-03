@@ -5,7 +5,7 @@ import (
 
 	awslaunchtemplatev1alpha1 "github.com/plantonhq/planton/catalog/aws/awslaunchtemplate/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -14,17 +14,17 @@ type Locals struct {
 	AwsTags           map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *awslaunchtemplatev1alpha1.AwsLaunchTemplateStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *awslaunchtemplatev1alpha1.AwsLaunchTemplateIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsLaunchTemplate = stackInput.Target
+	locals.AwsLaunchTemplate = iacInput.Target
 
-	metadata := stackInput.Target.Metadata
+	metadata := iacInput.Target.Metadata
 	locals.AwsTags = map[string]string{
 		awstagkeys.Name:         metadata.Name,
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsLaunchTemplate.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsLaunchTemplate.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

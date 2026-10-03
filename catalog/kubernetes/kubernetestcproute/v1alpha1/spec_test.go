@@ -40,7 +40,7 @@ var _ = ginkgo.Describe("KubernetesTcpRoute Validation Tests", func() {
 		input = &KubernetesTcpRoute{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesTcpRoute",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-tcp-route",
 			},
 			Spec: &KubernetesTcpRouteSpec{

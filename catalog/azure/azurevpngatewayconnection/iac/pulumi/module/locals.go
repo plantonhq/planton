@@ -13,10 +13,10 @@ type Locals struct {
 	AzureVpnGatewayConnection *azurevpngatewayconnectionv1alpha1.AzureVpnGatewayConnection
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurevpngatewayconnectionv1alpha1.AzureVpnGatewayConnectionStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurevpngatewayconnectionv1alpha1.AzureVpnGatewayConnectionIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureVpnGatewayConnection = stackInput.Target
+	locals.AzureVpnGatewayConnection = iacInput.Target
 
 	return locals
 }

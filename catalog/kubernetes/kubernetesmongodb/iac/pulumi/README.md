@@ -30,7 +30,7 @@ The MongoDB Kubernetes module adheres to a standard Kubernetes resource structur
 - **Automated Password Generation**: A random password for MongoDB authentication is generated and securely stored in a Kubernetes secret, simplifying the process of credential management.
 
 ### Key Features of the Pulumi Module:
-- **Dynamic Resource Creation**: The module dynamically creates Kubernetes resources based on the `MongodbKubernetesStackInput`, including namespaces, PerconaServerMongoDB CRDs, services, and persistent volumes.
+- **Dynamic Resource Creation**: The module dynamically creates Kubernetes resources based on the `MongodbKubernetesIacInput`, including namespaces, PerconaServerMongoDB CRDs, services, and persistent volumes.
 - **Kubernetes Provider Integration**: The module uses Pulumi's Kubernetes provider to manage resources and interact with the Kubernetes cluster using provided credentials.
 - **Operator-Based Management**: Deploys MongoDB using the Percona operator, which provides automated lifecycle management, failover, and recovery.
 - **CRD-Based Deployment**: Creates `PerconaServerMongoDB` custom resources that the operator reconciles into running MongoDB clusters.
@@ -58,7 +58,7 @@ The module provides the following outputs to simplify the operational management
 
 ## Usage
 
-To deploy and manage a MongoDB Kubernetes cluster using this module, create a YAML file representing the MongoDB Kubernetes resource. Use the CLI command `planton pulumi up --stack-input <api-resource.yaml>` to apply the configuration and provision the resources.
+To deploy and manage a MongoDB Kubernetes cluster using this module, create a YAML file representing the MongoDB Kubernetes resource. Use the CLI command `planton pulumi up --iac-input <api-resource.yaml>` to apply the configuration and provision the resources.
 
 Refer to the example section for usage instructions.
 

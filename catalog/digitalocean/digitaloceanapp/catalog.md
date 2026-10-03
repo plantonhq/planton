@@ -4,7 +4,7 @@ Deploys a full App Platform application -- HTTP services, workers, jobs, static 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **App Platform Application** -- a `digitalocean_app` resource whose spec lists every component you declared
 - **HTTP services** -- created from `spec.services`; receive traffic with automatic HTTPS
@@ -12,13 +12,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 - **Jobs** -- created from `spec.jobs`; run around a deployment (`pre_deploy`, `post_deploy`, or `failed_deploy`)
 - **Static sites, functions, in-app databases** -- created from the matching spec lists when present
 - **Domains and ingress** -- created from `spec.domains` and `spec.ingress` when present
-- **Environment variables** -- from `spec.envs` and per-component `envs`; `secret` values are stored in App Platform's secret store
+- **Environment variables** -- from `spec.envs` and per-kind `envs`; `secret` values are stored in App Platform's secret store
 
 ## Before You Deploy
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### DigitalOcean Account
@@ -60,7 +60,7 @@ spec:
 planton apply -f app.yaml
 ```
 
-This creates a single-instance web app in NYC3 built from the sample Node.js repository, served with automatic HTTPS on its default hostname. A Stack Job tracks the provisioning in real time.
+This creates a single-instance web app in NYC3 built from the sample Node.js repository, served with automatic HTTPS on its default hostname. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -119,7 +119,7 @@ These are the most important decisions when configuring an App Platform applicat
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -130,9 +130,9 @@ These are the most important decisions when configuring an App Platform applicat
 
 VPC placement is wired by both provisioners.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -152,7 +152,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean VPC**](/cloud-catalog/digital-ocean-vpc) -- optional egress placement (`spec.vpc`)
-- [**DigitalOcean DNS Zone**](/cloud-catalog/digital-ocean-dns-zone) -- custom domains (`spec.domains`)
-- [**DigitalOcean Database Cluster**](/cloud-catalog/digital-ocean-database-cluster) -- in-app database `clusterName`
-- [**DigitalOcean Function**](/cloud-catalog/digital-ocean-function) -- standalone functions app when the functions component should not share this app
+- [**DigitalOcean VPC**](/infra-catalog/digital-ocean-vpc) -- optional egress placement (`spec.vpc`)
+- [**DigitalOcean DNS Zone**](/infra-catalog/digital-ocean-dns-zone) -- custom domains (`spec.domains`)
+- [**DigitalOcean Database Cluster**](/infra-catalog/digital-ocean-database-cluster) -- in-app database `clusterName`
+- [**DigitalOcean Function**](/infra-catalog/digital-ocean-function) -- standalone functions app when the functions component should not share this app

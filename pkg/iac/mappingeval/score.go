@@ -4,7 +4,7 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
@@ -18,12 +18,12 @@ const structFullName = "google.protobuf.Struct"
 
 // ScoreOptions carries the declared knowledge the scorer needs beyond the
 // ground truth itself. Both members derive from the provider import catalog
-// and the components' import maps (see NameDerivedIdentityChecks and
+// and the kinds' import maps (see NameDerivedIdentityChecks and
 // ConfigOnlySpecFieldExclusions) -- nothing here is authored per suite.
 type ScoreOptions struct {
 	// ExcludedSpecFields are spec field names (proto snake_case) excluded
 	// from the spec axis at any depth: values that exist only in IaC
-	// configuration, never on the cloud resource (the catalog's
+	// configuration, never on the infra component (the catalog's
 	// config_only_attributes), so no scan-driven proposer could ever
 	// reconstruct them. Expecting them would penalize physics, not mapping
 	// quality. This leans on the deliberate convention that spec fields
@@ -37,7 +37,7 @@ type ScoreOptions struct {
 	// the manifest name IS the bucket name). Names are otherwise never
 	// scored; this is the one declared exception -- breaking the derivation
 	// breaks the downstream zero-typing import.
-	NameDerivedIdentity map[cloudresourcekind.CloudResourceKind]string
+	NameDerivedIdentity map[catalogkind.CatalogKind]string
 
 	// GradeEnvironmentPartition enables the partition axis. Unlike the
 	// members above it derives from the SUITE (grade_environment_partition),
@@ -386,7 +386,7 @@ func scoreRefs(matches []InstanceMatch, gt *GroundTruth, matchedGT map[string]*I
 				continue
 			}
 			if propEdge.TargetName == targetMatch.Proposed.Name &&
-				(propEdge.TargetKind == cloudresourcekind.CloudResourceKind_unspecified ||
+				(propEdge.TargetKind == catalogkind.CatalogKind_unspecified ||
 					targetMatch.Proposed.Kind == propEdge.TargetKind) {
 				report.Refs.CorrectEdges++
 				continue

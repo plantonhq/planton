@@ -92,7 +92,7 @@ Grants to deleted principals (`deleted:...`) are rejected at deploy time.
 
 IAM on KMS flows down the resource hierarchy: a project-level grant covers every ring, a ring-level grant covers every key in the ring, and a key-level grant — this component — covers exactly one key. Use key-scoped grants when different keys in a ring serve different consumers (the common case once a ring hosts state, database, and artifact keys side by side). The key-scoped grant is also what gives a first CMEK deploy a real ordering edge: the encrypted bucket, dataset, or disk can depend on the grant instead of racing project-wide IAM propagation.
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -122,7 +122,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 - **Only additive grants are modeled**: authoritative per-role bindings and whole-policy writes clobber every grant they do not list and are deliberately not modeled.
 - **Finding service agent emails**: each service documents its agent format (Cloud Storage: `service-<project_number>@gs-project-accounts.iam.gserviceaccount.com`; BigQuery: `bq-<project_number>@bigquery-encryption.iam.gserviceaccount.com`; and so on). Some agents are created lazily on the service's first use in the project.
 
-## Related Components
+## Related Kinds
 
 - [GcpKmsKey](/docs/catalog/gcp/gcpkmskey) — the key being granted on (its `key_id` output feeds this component)
 - [GcpKmsKeyRing](/docs/catalog/gcp/gcpkmskeyring) — the key's parent ring (ring-level IAM flows down to every key)

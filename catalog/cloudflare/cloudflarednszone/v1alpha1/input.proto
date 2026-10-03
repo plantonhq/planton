@@ -5,9 +5,9 @@ package dev.planton.cloudflare.cloudflarednszone.v1alpha1;
 import "catalog/cloudflare/cloudflarednszone/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-//cloudflare-dns-zone stack-input
-message CloudflareDnsZoneStackInput {
-  //target cloud-resource
+//cloudflare-dns-zone iac-input
+message CloudflareDnsZoneIacInput {
+  //target infra-component
   CloudflareDnsZone target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

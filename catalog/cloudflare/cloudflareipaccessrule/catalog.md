@@ -4,7 +4,7 @@ Deploys one IP Access rule: an allow, block, or challenge decision applied to tr
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **IP Access Rule** — one `cloudflare_access_rule` on the account or the zone, carrying the action (`mode`), a single `{target, value}` selector, and the optional note. The module never sends both scopes — the provider would silently prefer the account if both arrived, so the spec requires exactly one.
 
@@ -14,7 +14,7 @@ Destroy is a real delete: the rule stops matching immediately, with no abandon-i
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module whose API token carries **Account → Firewall Access Rules → Edit** for account-wide rules, or the zone equivalent for zone-scoped rules. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module whose API token carries **Account → Firewall Access Rules → Edit** for account-wide rules, or the zone equivalent for zone-scoped rules. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Cloudflare Account
@@ -52,7 +52,7 @@ spec:
 planton apply -f ip-access-rule.yaml
 ```
 
-This blocks a single IPv4 address on every zone in the account. Do not set `zoneId` on the same manifest — the spec requires exactly one scope. A Stack Job tracks the provisioning in real time.
+This blocks a single IPv4 address on every zone in the account. Do not set `zoneId` on the same manifest — the spec requires exactly one scope. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,15 +92,15 @@ These are the most important decisions when configuring an IP Access rule. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareDnsZone** (zone-scoped rules) | `zoneId` | `status.outputs.zone_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,6 +120,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare DNS Zone**](/cloud-catalog/cloudflare-dns-zone) — the zone a zone-scoped rule applies to; wire `zoneId` via ValueFromRef
-- [**Cloudflare Ruleset**](/cloud-catalog/cloudflare-ruleset) — expression-based WAF and custom rules when a single static selector is not enough
-- [**Cloudflare Bot Management**](/cloud-catalog/cloudflare-bot-management) — zone-wide bot scoring; reach for this kind when the decision is a static IP/ASN/country selector
+- [**Cloudflare DNS Zone**](/infra-catalog/cloudflare-dns-zone) — the zone a zone-scoped rule applies to; wire `zoneId` via ValueFromRef
+- [**Cloudflare Ruleset**](/infra-catalog/cloudflare-ruleset) — expression-based WAF and custom rules when a single static selector is not enough
+- [**Cloudflare Bot Management**](/infra-catalog/cloudflare-bot-management) — zone-wide bot scoring; reach for this kind when the decision is a static IP/ASN/country selector

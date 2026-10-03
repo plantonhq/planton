@@ -35,7 +35,7 @@ make test
 
 ## Environment Variables
 
-When `provider_config` is not set in the stack input, the module falls back to environment variables:
+When `provider_config` is not set in the IaC input, the module falls back to environment variables:
 
 | Variable | Description |
 |---|---|
@@ -50,7 +50,7 @@ When `provider_config` is not set in the stack input, the module falls back to e
 | `module/main.go` | Provider setup and the create sequence: user, roles, permissions, outputs |
 | `module/locals.go` | The spec read once into plain values: references flattened, metadata rendered as JSON, the mint predicate |
 | `module/user.go` | The user resource, the minted password, and the two authoritative companion resources |
-| `module/outputs.go` | Stack outputs mapped onto `Auth0UserStackOutputs`; the password exported only when minted |
+| `module/outputs.go` | Outputs mapped onto `Auth0UserOutputs`; the password exported only when minted |
 
 ## Outputs
 

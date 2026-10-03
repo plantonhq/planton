@@ -54,7 +54,7 @@ func validResource() *AzureNetworkWatcherFlowLog {
 	return &AzureNetworkWatcherFlowLog{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureNetworkWatcherFlowLog",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-flow-log",
 		},
 		Spec: &AzureNetworkWatcherFlowLogSpec{

@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpbigquerytable.v1alpha1;
 
 // Outputs produced after provisioning a GCP BigQuery table.
-message GcpBigQueryTableStackOutputs {
+message GcpBigQueryTableOutputs {
   // The short table ID (same as the spec's table_id input) — the value SQL
   // queries and foreign keys reference.
   string table_id = 1;

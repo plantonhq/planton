@@ -14,13 +14,13 @@ import (
 // all attach by reference, and warehouse ingress rules live on the
 // referenced AwsSecurityGroup nodes -- this module never creates or
 // mutates a resource that deserves to be its own node.
-func Resources(ctx *pulumi.Context, stackInput *awsredshiftserverlessworkgroupv1alpha1.AwsRedshiftServerlessWorkgroupStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsredshiftserverlessworkgroupv1alpha1.AwsRedshiftServerlessWorkgroupIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder,
+	// Build the AWS provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static keys, keyless
 	// web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsRedshiftServerlessWorkgroup.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsRedshiftServerlessWorkgroup.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

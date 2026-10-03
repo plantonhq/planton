@@ -1,7 +1,7 @@
 package module
 
-// Stack output keys — must stay in lockstep with
-// AwsCloudwatchCompositeAlarmStackOutputs.
+// Output keys — must stay in lockstep with
+// AwsCloudwatchCompositeAlarmOutputs.
 const (
 	OpAlarmArn  = "alarm_arn"
 	OpAlarmName = "alarm_name"

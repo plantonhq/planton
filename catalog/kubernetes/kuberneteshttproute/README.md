@@ -81,14 +81,14 @@ planton pulumi up --manifest httproute.yaml
 | `backend_refs` | Weighted backends to forward to (max 16); each `name` is an FK to `KubernetesService`. |
 | `timeouts` | `request` and `backend_request` durations. |
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `route_name` | Name of the created HTTPRoute (equals `metadata.name`). |
 | `namespace` | Namespace the HTTPRoute was created in. |
 
-## Related Components
+## Related Kinds
 
 - [`KubernetesGateway`](../kubernetesgateway/README.md) -- the Gateway routes attach to.
 - [`KubernetesGatewayClass`](../kubernetesgatewayclass/README.md) -- the controller class.

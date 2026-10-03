@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awscognitoidentityprovider
 spec:
@@ -35,7 +35,7 @@ spec:
       field_path: attribute_mapping
       evidence:
         type: spec_default
-        reference: This component IS the pool's federation surface -- it delegates WHO may authenticate to the external directory (Google, an enterprise Okta/Azure AD via OIDC, or a SAML IdP), so access governance rides the directory's own membership and policy. attribute_mapping controls which provider claims populate the pool's user attributes -- the identity data every downstream authorization decision keys off; omitted means AWS's per-provider-type default mappings apply.
+        reference: This kind IS the pool's federation surface -- it delegates WHO may authenticate to the external directory (Google, an enterprise Okta/Azure AD via OIDC, or a SAML IdP), so access governance rides the directory's own membership and policy. attribute_mapping controls which provider claims populate the pool's user attributes -- the identity data every downstream authorization decision keys off; omitted means AWS's per-provider-type default mappings apply.
       notes: Exposure is additionally gated per app client -- a provider only becomes a sign-in path for clients that list its provider_name in their supported_identity_providers. idp_identifiers give aliasing for IdP selection without exposing the provider name. The directory's own vetting (who exists in it, MFA, conditional access) is where the real access decisions live, deliberately outside this spec.
     - control_id: workload-identity
       status: not_applicable

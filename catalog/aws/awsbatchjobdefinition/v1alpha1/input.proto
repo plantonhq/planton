@@ -5,10 +5,10 @@ package dev.planton.aws.awsbatchjobdefinition.v1alpha1;
 import "catalog/aws/awsbatchjobdefinition/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsBatchJobDefinitionStackInput is the input for the
+// AwsBatchJobDefinitionIacInput is the input for the
 // aws-batch-job-definition IaC modules.
-message AwsBatchJobDefinitionStackInput {
-  // target cloud-resource
+message AwsBatchJobDefinitionIacInput {
+  // target infra-component
   AwsBatchJobDefinition target = 1;
 
   // provider-config

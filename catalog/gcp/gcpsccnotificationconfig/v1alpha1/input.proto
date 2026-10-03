@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpsccnotificationconfig.v1alpha1;
 import "catalog/gcp/gcpsccnotificationconfig/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-scc-notification-config stack-input
-message GcpSccNotificationConfigStackInput {
-  //target cloud-resource
+//gcp-scc-notification-config iac-input
+message GcpSccNotificationConfigIacInput {
+  //target infra-component
   GcpSccNotificationConfig target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

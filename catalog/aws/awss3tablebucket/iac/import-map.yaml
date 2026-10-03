@@ -1,14 +1,14 @@
 # Where each placeholder in this component's import-ID formats comes
 # from (the formats themselves live in aa_import/catalog.yaml).
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awss3tablebucket
 spec:
   values:
     - name: table_bucket_arn
       derivations:
-        - from_stack_output: table_bucket_arn
+        - from_output: table_bucket_arn
       where_to_find: >-
         S3 console -> Table buckets (the bucket's ARN), or `aws
         s3tables list-table-buckets` (arn).
@@ -30,7 +30,7 @@ spec:
         list-tables --table-bucket-arn ...` (name).
     - name: table_arn
       derivations:
-        - from_stack_output_keyed_by_address: table_arns
+        - from_output_keyed_by_address: table_arns
       where_to_find: >-
         The table's ARN, keyed "namespace//table" in the table_arns
         output; `aws s3tables get-table` (tableARN).

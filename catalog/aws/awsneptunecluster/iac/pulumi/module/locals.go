@@ -6,7 +6,7 @@ import (
 
 	awsneptuneclusterv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsneptunecluster/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -20,11 +20,11 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *awsneptuneclusterv1alpha1.AwsNeptuneClusterStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *awsneptuneclusterv1alpha1.AwsNeptuneClusterIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsNeptuneCluster = stackInput.Target
+	locals.AwsNeptuneCluster = iacInput.Target
 
-	metadata := stackInput.Target.Metadata
+	metadata := iacInput.Target.Metadata
 	locals.ClusterIdentifier = metadata.Name
 
 	// Resource-identity tags match the Terraform module key-for-key.
@@ -33,7 +33,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *awsneptuneclusterv1alpha1.A
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsNeptuneCluster.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsNeptuneCluster.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

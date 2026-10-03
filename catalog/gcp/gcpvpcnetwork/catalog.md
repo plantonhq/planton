@@ -4,7 +4,7 @@ Deploys a Google Cloud VPC network — the global routing domain everything else
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute Engine API enablement** on the target project (never disabled on destroy)
 - **VPC Network** -- a `google_compute_network` in auto or custom subnet mode, with the configured routing mode, MTU, ULA internal IPv6 allocation, firewall-policy evaluation order, BGP best-path selection, and default-route posture
@@ -13,12 +13,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the network will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef. In a Shared VPC design this is the HOST project.
+- **A GCP project** where the network will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef. In a Shared VPC design this is the HOST project.
 - **IAM permissions** -- the connection's principal needs network administration on the target project (`compute.networks.*`) plus `serviceusage.services.enable` for the module's Compute API enablement step; `compute.routes.list`/`delete` are additionally required only when `deleteDefaultRoutesOnCreate` is true.
 
 ## Deploy
@@ -50,7 +50,7 @@ spec:
 planton apply -f vpc.yaml
 ```
 
-This creates an empty custom-mode network — the deliberate starting point. Subnetworks, firewall rules, and NAT are then authored as their own resources against its self link. A Stack Job tracks the provisioning in real time.
+This creates an empty custom-mode network — the deliberate starting point. Subnetworks, firewall rules, and NAT are then authored as their own resources against its self link. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,15 +87,15 @@ These are the most important decisions when configuring a VPC network. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -115,12 +115,12 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- the regional address spaces authored into this network
-- [**GCP Firewall Rule**](/cloud-catalog/gcp-firewall-rule) -- allows and denies traffic on this network
-- [**GCP Router NAT**](/cloud-catalog/gcp-router-nat) -- managed egress for instances without external IPs
-- [**GCP Serverless VPC Connector**](/cloud-catalog/gcp-serverless-vpc-connector) -- bridges Cloud Run / Cloud Functions into this network
-- [**GCP Address**](/cloud-catalog/gcp-address) -- anchors peering and interconnect ranges to this network
-- [**GCP Global Address**](/cloud-catalog/gcp-global-address) -- reserves the private-services-access range for managed services
-- [**GCP Service Networking Connection**](/cloud-catalog/gcp-service-networking-connection) -- peers the reserved range to Google's service producers for Cloud SQL / AlloyDB / Memorystore private IP
-- [**GCP GKE Cluster**](/cloud-catalog/gcp-gke-cluster) -- VPC-native clusters consume this network and its subnets
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the network is created
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- the regional address spaces authored into this network
+- [**GCP Firewall Rule**](/infra-catalog/gcp-firewall-rule) -- allows and denies traffic on this network
+- [**GCP Router NAT**](/infra-catalog/gcp-router-nat) -- managed egress for instances without external IPs
+- [**GCP Serverless VPC Connector**](/infra-catalog/gcp-serverless-vpc-connector) -- bridges Cloud Run / Cloud Functions into this network
+- [**GCP Address**](/infra-catalog/gcp-address) -- anchors peering and interconnect ranges to this network
+- [**GCP Global Address**](/infra-catalog/gcp-global-address) -- reserves the private-services-access range for managed services
+- [**GCP Service Networking Connection**](/infra-catalog/gcp-service-networking-connection) -- peers the reserved range to Google's service producers for Cloud SQL / AlloyDB / Memorystore private IP
+- [**GCP GKE Cluster**](/infra-catalog/gcp-gke-cluster) -- VPC-native clusters consume this network and its subnets
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the network is created

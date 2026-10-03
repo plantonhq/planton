@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: azurekeyvaultsecret
 spec:
@@ -24,7 +24,7 @@ spec:
         reference: "Every read and write of the secret travels the vault's HTTPS-only data plane ({name}.vault.azure.net, TLS 1.2+); no plaintext path to the value exists."
     - control_id: no-public-access
       status: not_applicable
-      notes: "A secret has no network surface of its own -- reachability is the parent vault's posture (public_network_access_enabled, network_acls, private endpoints), set on the AzureKeyVault component this spec references."
+      notes: "A secret has no network surface of its own -- reachability is the parent vault's posture (public_network_access_enabled, network_acls, private endpoints), set on the AzureKeyVault kind this spec references."
     - control_id: restricted-ingress
       status: not_applicable
       notes: "Inbound filtering is the vault's network_acls territory (see no-public-access) -- there is no per-secret network rule to declare."
@@ -68,7 +68,7 @@ spec:
         reference: "The secret inherits Key Vault's automatic redundancy -- zone-redundant service in availability-zone regions, with contents replicated within the region (and to the paired region where one exists), no configuration surface, no opt-out."
     - control_id: deletion-protection
       status: not_applicable
-      notes: "No per-secret protection flag exists. The vault's purge_protection_enabled is the relevant guard: with it on, even a deleted secret cannot be purged before the retention window lapses -- set on the AzureKeyVault component."
+      notes: "No per-secret protection flag exists. The vault's purge_protection_enabled is the relevant guard: with it on, even a deleted secret cannot be purged before the retention window lapses -- set on the AzureKeyVault kind."
     - control_id: managed-patching
       status: enforced_by_default
       evidence:

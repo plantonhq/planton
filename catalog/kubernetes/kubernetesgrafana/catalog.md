@@ -6,7 +6,7 @@ Everything that matters is provisioned as code: `datasources` and `communityDash
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm release** (official `grafana` chart, pinned `12.8.0` — ships Grafana 13.1.1 — named `metadata.name`) — the Grafana Deployment, a ClusterIP Service (port 80 → container 3000), provisioning ConfigMaps for the declared datasources and community dashboards, the dashboard-discovery sidecar (on by default), and any declared plugins installed at startup
 - **Admin credentials Secret** (`<name>`, keys `admin-user` / `admin-password`) — generated ONCE at first install and stable across upgrades; skipped when `adminSecret` points at an existing Secret you own (that name is echoed in the outputs instead)
@@ -58,7 +58,7 @@ spec:
 planton apply -f grafana.yaml
 ```
 
-This creates the smallest useful Grafana: one ephemeral replica, the chart-generated admin credentials in the `dev-grafana` Secret (name and a port-forward command land in the stack outputs), and a Prometheus datasource present from first boot because it is provisioned as code, not clicked together. A Stack Job tracks the provisioning in real time.
+This creates the smallest useful Grafana: one ephemeral replica, the chart-generated admin credentials in the `dev-grafana` Secret (name and a port-forward command land in the outputs), and a Prometheus datasource present from first boot because it is provisioned as code, not clicked together. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,7 +102,7 @@ These are the most important decisions when configuring a Grafana instance. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -113,9 +113,9 @@ These are the most important decisions when configuring a Grafana instance. Expl
 
 Secret references (`adminSecret`, `database.passwordSecret`, datasource basic-auth, `smtp.credentialsSecretName`) name existing Kubernetes Secrets directly — they are plain names, not ValueFromRef foreign keys.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -138,9 +138,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — referenced placement; the InfraPipeline orders namespace-first.
-- [**kube-prometheus-stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) — its exported Prometheus endpoint is the classic first datasource; its operator CRDs are the ServiceMonitor prerequisite.
-- [**PostgreSQL**](/cloud-catalog/kubernetes-postgres) and [**MySQL**](/cloud-catalog/kubernetes-mysql) — the external state database behind the HA posture, wired by its read-write endpoint.
-- [**Kubernetes StorageClass**](/cloud-catalog/kubernetes-storage-class) — explicit placement for the state volume.
-- [**Kubernetes Secret**](/cloud-catalog/kubernetes-secret) — bring-your-own admin credentials, the database password, datasource basic-auth, SMTP credentials — always by reference, never material.
-- [**Kubernetes HTTPRoute**](/cloud-catalog/kubernetes-http-route) — HTTP exposure composed over the exported `service` handle, with `server.rootUrl` set to match.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — referenced placement; the InfraPipeline orders namespace-first.
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) — its exported Prometheus endpoint is the classic first datasource; its operator CRDs are the ServiceMonitor prerequisite.
+- [**PostgreSQL**](/infra-catalog/kubernetes-postgres) and [**MySQL**](/infra-catalog/kubernetes-mysql) — the external state database behind the HA posture, wired by its read-write endpoint.
+- [**Kubernetes StorageClass**](/infra-catalog/kubernetes-storage-class) — explicit placement for the state volume.
+- [**Kubernetes Secret**](/infra-catalog/kubernetes-secret) — bring-your-own admin credentials, the database password, datasource basic-auth, SMTP credentials — always by reference, never material.
+- [**Kubernetes HTTPRoute**](/infra-catalog/kubernetes-http-route) — HTTP exposure composed over the exported `service` handle, with `server.rootUrl` set to match.

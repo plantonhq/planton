@@ -12,10 +12,10 @@ import (
 // raw subnets or inline parameters; existing group names short-circuit
 // creation (CEL-enforced mutual exclusion). The cluster itself is always
 // provisioned and exports connection endpoints.
-func Resources(ctx *pulumi.Context, stackInput *awsmemcachedelasticachev1alpha1.AwsMemcachedElasticacheStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsmemcachedelasticachev1alpha1.AwsMemcachedElasticacheIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

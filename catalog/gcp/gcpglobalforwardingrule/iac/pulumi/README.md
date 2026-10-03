@@ -30,7 +30,7 @@ iac/pulumi/
     ├── main.go                     # Module coordinator
     ├── global_forwarding_rule.go   # Rule creation and mapping
     ├── locals.go                   # Resolved resource + derived values (incl. the NONE→"" scheme mapping)
-    └── outputs.go                  # Stack output constants
+    └── outputs.go                  # Output constants
 ```
 
 ## Quick Start
@@ -44,7 +44,7 @@ pulumi stack init dev
 
 ### 2. Create Input File
 
-Provide a `stack-input.yaml` with the rule specification:
+Provide a `iac-input.yaml` with the rule specification:
 
 ```yaml
 target:
@@ -77,7 +77,7 @@ pulumi stack output self_link
 
 ## Inputs
 
-The module consumes `GcpGlobalForwardingRuleStackInput`:
+The module consumes `GcpGlobalForwardingRuleIacInput`:
 
 | Field | Required | Description |
 |-------|----------|-------------|

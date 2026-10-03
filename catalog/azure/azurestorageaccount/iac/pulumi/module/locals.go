@@ -5,7 +5,7 @@ import (
 
 	azurestorageaccountv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurestorageaccount/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -17,7 +17,7 @@ type Locals struct {
 
 // accountKindStrings maps the spec's account-kind enum to ARM's values.
 // Unspecified materializes StorageV2 (the spec's documented default) in
-// main.go -- stack inputs never carry proto defaults.
+// main.go -- IaC inputs never carry proto defaults.
 var accountKindStrings = map[azurestorageaccountv1alpha1.AzureStorageAccountKind]string{
 	azurestorageaccountv1alpha1.AzureStorageAccountKind_STORAGE_V2:         "StorageV2",
 	azurestorageaccountv1alpha1.AzureStorageAccountKind_BLOB_STORAGE:       "BlobStorage",
@@ -149,18 +149,18 @@ var lifecycleBlobTypeStrings = map[azurestorageaccountv1alpha1.AzureStorageAccou
 	azurestorageaccountv1alpha1.AzureStorageAccountLifecycleBlobType_APPEND_BLOB: "appendBlob",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurestorageaccountv1alpha1.AzureStorageAccountStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurestorageaccountv1alpha1.AzureStorageAccountIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureStorageAccount = stackInput.Target
-	target := stackInput.Target
+	locals.AzureStorageAccount = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureStorageAccount.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureStorageAccount.String()),
 	}
 
 	if target.Metadata.Id != "" {

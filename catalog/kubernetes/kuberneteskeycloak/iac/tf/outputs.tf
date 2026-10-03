@@ -1,5 +1,5 @@
-# Stack outputs — identical names and derivations in the Pulumi module
-# (KubernetesKeycloakStackOutputs).
+# Outputs — identical names and derivations in the Pulumi module
+# (KubernetesKeycloakOutputs).
 
 output "namespace" {
   description = "Namespace the Keycloak server runs in"

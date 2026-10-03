@@ -26,7 +26,7 @@ The **AwsEventBridgeBus** resource provides a standardized way to provision and 
 
 - **event_source_name**: Partner event source name for SaaS integrations (e.g., Datadog, PagerDuty). Must match the pattern `aws.partner/{partner}/{...}`. The bus name (`metadata.name`) must match this value. Immutable after creation.
 
-## Stack Outputs
+## Outputs
 
 After provisioning, the AwsEventBridgeBus resource provides the following outputs:
 

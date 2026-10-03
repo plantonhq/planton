@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurefirewallpolicy.v1alpha1;
 
-// **AzureFirewallPolicyStackOutputs** captures the outputs of provisioning
+// **AzureFirewallPolicyOutputs** captures the outputs of provisioning
 // an Azure Firewall Policy.
-message AzureFirewallPolicyStackOutputs {
+message AzureFirewallPolicyOutputs {
   // The Azure Resource Manager ID of the firewall policy. This is the
   // composition seam: rule collection groups nest under it
   // (firewall_policy_id), firewalls attach it (firewall_policy_id), and

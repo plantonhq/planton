@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awsbedrockinferenceprofile
 spec:
@@ -35,7 +35,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: This component is itself an IAM-scoping instrument -- the profile's own ARN is an InvokeModel resource, so grants can allow one application's principals exactly its profile and nothing else; Get/Delete and tagging scope to the application-inference-profile ARN per the bedrock service reference.
+        reference: This kind is itself an IAM-scoping instrument -- the profile's own ARN is an InvokeModel resource, so grants can allow one application's principals exactly its profile and nothing else; Get/Delete and tagging scope to the application-inference-profile ARN per the bedrock service reference.
     - control_id: workload-identity
       status: not_applicable
       notes: A profile runs no workload and references no execution role -- it is pure routing configuration; the identities that matter are the callers', governed by their own IAM principals.

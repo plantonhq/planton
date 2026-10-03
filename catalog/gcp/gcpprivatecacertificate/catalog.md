@@ -4,7 +4,7 @@ Issue a certificate from your private CA as code -- for a load balancer, a serve
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Certificate** -- a `privateca_certificate` signed by the pool (or the named authority in it), optionally through a template
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with certificate permissions (`roles/privateca.certificateManager`) on the pool. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with certificate permissions (`roles/privateca.certificateManager`) on the pool. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Required Dependencies
@@ -53,7 +53,7 @@ spec:
 planton apply -f certificate.yaml
 ```
 
-This has the `internal-servers` pool sign a 30-day certificate for the CSR. A Stack Job tracks the provisioning in real time.
+This has the `internal-servers` pool sign a 30-day certificate for the CSR. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -71,7 +71,7 @@ These are the most important decisions when configuring this component. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -80,9 +80,9 @@ These are the most important decisions when configuring this component. Explore 
 | **GcpPrivateCaCertificateAuthority** | `certificateAuthority` | `status.outputs.name` |
 | **GcpPrivateCaCertificateTemplate** | `certificateTemplate` | `status.outputs.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|-----------------------|
@@ -99,6 +99,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Private CA Pool**](/cloud-catalog/gcp-private-ca-pool) -- the pool that issues it
-- [**GCP Private CA Certificate Authority**](/cloud-catalog/gcp-private-ca-certificate-authority) -- the authority that signs it
-- [**GCP Private CA Certificate Template**](/cloud-catalog/gcp-private-ca-certificate-template) -- the shape it is issued with
+- [**GCP Private CA Pool**](/infra-catalog/gcp-private-ca-pool) -- the pool that issues it
+- [**GCP Private CA Certificate Authority**](/infra-catalog/gcp-private-ca-certificate-authority) -- the authority that signs it
+- [**GCP Private CA Certificate Template**](/infra-catalog/gcp-private-ca-certificate-template) -- the shape it is issued with

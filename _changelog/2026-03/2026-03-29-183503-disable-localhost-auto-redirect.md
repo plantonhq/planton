@@ -38,7 +38,7 @@ The `/?preview` bypass is preserved for explicit use: anyone who manually naviga
 
 **`src/app/layout.tsx`** — Added `window.location.hostname==="planton.ai"` to the redirect script condition chain.
 
-**`src/components/layout/header/header.tsx`** — Simplified `HeaderLogo` to always link to `/`. Removed the `useLoggedIn()` call from the component (the hook is still used by `DesktopAuthButtons` and `MobileAuthButtons` for the Dashboard vs Sign in/Sign up toggle).
+**`src/components/layout/header/header.tsx`** — Simplified `HeaderLogo` to always link to `/`. Removed the `useLoggedIn()` call from the kind (the hook is still used by `DesktopAuthButtons` and `MobileAuthButtons` for the Dashboard vs Sign in/Sign up toggle).
 
 ## Benefits
 

@@ -7,17 +7,17 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Resources sets the words of one prompt in one language, from the stack input,
+// Resources sets the words of one prompt in one language, from the IaC input,
 // on the tenant the provider's credential belongs to.
-func Resources(ctx *pulumi.Context, stackInput *auth0promptcustomtextv1alpha1.Auth0PromptCustomTextStackInput) error {
-	locals, err := initializeLocals(stackInput)
+func Resources(ctx *pulumi.Context, iacInput *auth0promptcustomtextv1alpha1.Auth0PromptCustomTextIacInput) error {
+	locals, err := initializeLocals(iacInput)
 	if err != nil {
 		return errors.Wrap(err, "failed to render the custom text")
 	}
 
 	// Setup Auth0 provider with credentials from provider config.
 	var provider *auth0.Provider
-	providerConfig := stackInput.ProviderConfig
+	providerConfig := iacInput.ProviderConfig
 
 	if providerConfig == nil {
 		// Use default provider (assumes credentials from environment variables).

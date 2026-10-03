@@ -5,7 +5,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	componentv1 "github.com/plantonhq/planton/iac/componentimportmap/v1"
+	kindv1 "github.com/plantonhq/planton/iac/catalogkindimportmap/v1"
 	providerv1 "github.com/plantonhq/planton/iac/providerimportcatalog/v1"
 	"github.com/plantonhq/planton/pkg/protobufyaml"
 )
@@ -19,24 +19,24 @@ func LoadProviderCatalog(repoRoot, provider string) (*providerv1.ProviderImportC
 	return catalog, nil
 }
 
-// LoadComponentImportMap reads and parses a component's import map from disk.
-func LoadComponentImportMap(repoRoot, provider, component string) (*componentv1.ComponentImportMap, error) {
-	path, err := ComponentImportMapPath(repoRoot, provider, component)
+// LoadCatalogKindImportMap reads and parses a kind's import map from disk.
+func LoadCatalogKindImportMap(repoRoot, provider, kindDir string) (*kindv1.CatalogKindImportMap, error) {
+	path, err := CatalogKindImportMapPath(repoRoot, provider, kindDir)
 	if err != nil {
 		return nil, err
 	}
-	m := &componentv1.ComponentImportMap{}
+	m := &kindv1.CatalogKindImportMap{}
 	if err := protobufyaml.Load(path, m); err != nil {
-		return nil, errors.Wrapf(err, "loading component import map for %s/%s", provider, component)
+		return nil, errors.Wrapf(err, "loading catalog kind import map for %s/%s", provider, kindDir)
 	}
 	return m, nil
 }
 
-// HasComponentImportMap reports whether a component ships an import map --
+// HasCatalogKindImportMap reports whether a kind ships an import map --
 // the "is this kind mapped?" check callers use before offering derived import.
 // A name that does not resolve to a registered kind has no import map.
-func HasComponentImportMap(repoRoot, provider, component string) bool {
-	path, err := ComponentImportMapPath(repoRoot, provider, component)
+func HasCatalogKindImportMap(repoRoot, provider, kindDir string) bool {
+	path, err := CatalogKindImportMapPath(repoRoot, provider, kindDir)
 	if err != nil {
 		return false
 	}

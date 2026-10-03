@@ -44,7 +44,7 @@ At least one TLS setting must be configured -- a resource that manages nothing w
 | `hostname_settings[]` | repeated message | No | Per-hostname TLS overrides. Each row targets one `hostname` (required) and sets any of `min_tls_version` (`1.0`-`1.3`), `http2` (bool), or `ciphers` (BoringSSL format). At least one override per row. Requires the zone's Advanced Certificate Manager subscription (401 code 1450 without it). Real delete at Cloudflare. |
 | `ca_hostname_associations[]` | repeated message | No | CA hostname associations: `hostnames` (at least one) plus optional `mtls_certificate_id` (StringValueOrRef to a `CloudflareMtlsCertificate`). Without a certificate ID the row manages the zone's managed-CA list; with one it manages that certificate's hostname list. No delete at Cloudflare. |
 
-### Stack Outputs
+### Outputs
 
 After successful deployment, the following outputs are available:
 

@@ -6,7 +6,7 @@ go_library(
     importpath = "github.com/plantonhq/planton/e2e/framework/discovery",
     visibility = ["//visibility:public"],
     deps = [
-        "//pkg/crkreflect",
+        "//pkg/catalogkindreflect",
         "@com_github_pkg_errors//:errors",
     ],
 )

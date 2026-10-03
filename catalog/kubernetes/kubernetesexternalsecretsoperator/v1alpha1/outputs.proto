@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesexternalsecretsoperator.v1alpha1;
 
-// KubernetesExternalSecretsOperatorStackOutputs captures observable outputs
+// KubernetesExternalSecretsOperatorOutputs captures observable outputs
 // after the operator installation completes.
-message KubernetesExternalSecretsOperatorStackOutputs {
+message KubernetesExternalSecretsOperatorOutputs {
   // Namespace the operator is installed in. Store resources reference it as
   // the home for credential Secrets that cluster-scoped stores read.
   string namespace = 1;

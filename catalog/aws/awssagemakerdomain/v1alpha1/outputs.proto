@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awssagemakerdomain.v1alpha1;
 
-// AwsSagemakerDomainStackOutputs captures observable identifiers and endpoints from a deployed
+// AwsSagemakerDomainOutputs captures observable identifiers and endpoints from a deployed
 // Amazon SageMaker Domain. These outputs enable downstream resources (user profiles, spaces,
 // apps, IAM policies) to connect to and operate within the domain, and provide essential
 // information for monitoring, security auditing, and infra chart composition.
-message AwsSagemakerDomainStackOutputs {
+message AwsSagemakerDomainOutputs {
   // domain_id is the unique identifier of the SageMaker Domain.
   // Used in API calls and as a reference when creating user profiles, spaces, and apps.
   string domain_id = 1;

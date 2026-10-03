@@ -6,9 +6,9 @@
 # the sizing the modules apply when a manifest omits resources -- and the
 # estimator states those defaults with their origin named in the basis.
 # Keycloak binds no persistent volumes: state lives in the database the
-# db block names. Schema: finops/componentcapacityderivation/v1.
+# db block names. Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kuberneteskeycloak
 spec:

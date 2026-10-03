@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpredisclusterendpointset.v1alpha1;
 
-// GcpRedisClusterEndpointSetStackOutputs captures what the registration of
+// GcpRedisClusterEndpointSetOutputs captures what the registration of
 // user-created connections on a Memorystore for Redis Cluster produced.
-message GcpRedisClusterEndpointSetStackOutputs {
+message GcpRedisClusterEndpointSetOutputs {
   // Bare name of the cluster the connections were registered on -- the
   // segment Google's resource is keyed by.
   string cluster_name = 1;

@@ -1,7 +1,7 @@
 # mappingeval — the import-mapping examination system
 
 Import mapping is the judgment half of bringing existing cloud
-infrastructure under management: deciding which discovered cloud resources
+infrastructure under management: deciding which discovered infra components
 group into which component instances, what each instance's spec says, and
 where `value_from` references run between them. Whatever performs that
 judgment — a deterministic mapper, an AI mapping agent — its quality must be
@@ -21,9 +21,9 @@ MappingEvalSuite    deploy →   read-only scan (inventory)    Score(gt, proposa
 - **`MappingEvalSuite`** (`qa.planton.dev/v1`,
   `{provider}/aa_eval/suites/*.yaml`): an ordered list of fixture manifests
   plus the scan scope. A member is a manifest for a **live-proven
-  component** — either an existing E2E scenario or a suite-owned fixture
+  kind** — either an existing E2E scenario or a suite-owned fixture
   (under `suites/<name>/members/`); either way the deployment code is the
-  same module the component's own E2E lane proves, and the suite's live
+  same module the kind's own E2E lane proves, and the suite's live
   lane proves the composition. Suites never invent parallel deployment
   paths. Deploying one yields the **ground truth**: per instance, the
   manifest as authored (references unresolved) and the scan-visible cloud
@@ -53,7 +53,7 @@ MappingEvalSuite    deploy →   read-only scan (inventory)    Score(gt, proposa
   exists to replace.
 - **`Score`**: the grader. Entirely structural — driven by the kinds' own
   proto schemas and the shared `StringValueOrRef` encoding — so it works
-  for any component on any provider with zero per-kind grading code.
+  for any kind on any provider with zero per-kind grading code.
 
 ## The exams
 

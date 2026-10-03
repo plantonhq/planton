@@ -136,7 +136,7 @@ export const SITE_PAGES: readonly SitePage[] = [
     path: '/trust/the-record',
     title: 'The Record',
     description:
-      'Every infrastructure change is one stack job, kept and queryable with its configuration, cost fact, verdicts, approvals, and the snapshot of what exists afterward.',
+      'Every infrastructure change is one infra job, kept and queryable with its configuration, cost fact, verdicts, approvals, and the snapshot of what exists afterward.',
     group: 'trust',
     chapters: ['every-deployment-leaves-a-record'],
   },
@@ -201,7 +201,7 @@ export const SITE_PAGES: readonly SitePage[] = [
   {
     path: '/product/catalog',
     title: 'Catalog',
-    description: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} component kinds across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers, each with a cost fact sheet, a control posture with evidence, and least-privilege permissions; ${PLATFORM_STATS.INFRA_CHART_COUNT} Infra Charts.`,
+    description: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} catalog kinds across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers, each with a cost fact sheet, a control posture with evidence, and least-privilege permissions; ${PLATFORM_STATS.INFRA_CHART_COUNT} Infra Charts.`,
     group: 'product',
     chapters: ['proof-it-works', 'verified-before-it-exists', 'your-rules-hold'],
   },

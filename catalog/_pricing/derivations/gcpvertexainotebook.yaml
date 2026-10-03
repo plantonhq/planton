@@ -3,16 +3,16 @@
 # price choices. A Workbench instance bills through the Notebooks service:
 # Compute Engine-equivalent passthrough rates for cores, memory, GPUs, and
 # disks, each with a Workbench management fee layered per unit -- so every
-# component here carries a usage line and a fee line. The machine type
+# kind here carries a usage line and a fee line. The machine type
 # picks the family's per-vCPU and per-GiB rates (the documented shape of
 # each pinned type supplies the quantity constants); machine types, GPU
 # types, and disk types outside the pinned set refuse. desired_state
 # STOPPED parks the compute meters while both disks keep billing. The
 # estimate generator replays the catalog presets through these rules to
 # emit ../estimates/gcpvertexainotebook.yaml.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: gcpvertexainotebook
 spec:

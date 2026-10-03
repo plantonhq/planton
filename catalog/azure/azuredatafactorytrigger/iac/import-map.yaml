@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuredatafactorytrigger
 spec:
@@ -10,9 +10,9 @@ spec:
   values:
     - name: trigger_id
       derivations:
-        - from_stack_output: trigger_id
+        - from_output: trigger_id
       where_to_find: >-
         Compose it from the factory's resource ID plus
         /triggers/<trigger-name>, or `az datafactory trigger show
         --factory-name <factory> -g <rg> -n <name> --query id`; also
-        the component's own trigger_id stack output.
+        the component's own trigger_id output.

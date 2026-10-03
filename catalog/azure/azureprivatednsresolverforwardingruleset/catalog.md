@@ -4,7 +4,7 @@ Deploys a DNS forwarding ruleset for Azure DNS Private Resolver -- the declarati
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **DNS forwarding ruleset** -- bound to the resolver's outbound endpoint(s)
 - **Forwarding rules** (optional, up to 1,000) -- one per captured domain, each with its ordered target DNS servers, keyed by rule name so adding or removing one never touches its siblings
@@ -58,11 +58,11 @@ spec:
 planton apply -f ruleset.yaml
 ```
 
-This creates a ruleset bound to the resolver's outbound endpoint with one rule forwarding `corp.acme.com.` (and everything under it) to two datacenter DNS servers, tried in order on port 53. A Stack Job tracks the provisioning in real time.
+This creates a ruleset bound to the resolver's outbound endpoint with one rule forwarding `corp.acme.com.` (and everything under it) to two datacenter DNS servers, tried in order on port 53. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When the resolver is a Cloud Resource in the same chart, bind its outbound endpoint by reference:
+When the resolver is an Infra Component in the same chart, bind its outbound endpoint by reference:
 
 ```yaml
 spec:
@@ -103,16 +103,16 @@ These are the most important decisions when configuring an Azure DNS Forwarding 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |---|---|---|
 | Azure Resource Group | `resourceGroup` | `status.outputs.resource_group_name` |
 | Azure DNS Private Resolver | `outboundEndpointIds` | `status.outputs.outbound_endpoint_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -130,7 +130,7 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Azure DNS Private Resolver**](/cloud-catalog/azure-private-dns-resolver) -- owns the outbound endpoint the ruleset binds; reference its `outbound_endpoint_id` output.
-- [**Azure DNS Resolver Virtual Network Link**](/cloud-catalog/azure-private-dns-resolver-virtual-network-link) -- attaches each consuming network to this ruleset; without links, rules steer nothing.
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- where the ruleset lives; reference its `resource_group_name` output.
-- [**Azure Virtual Network**](/cloud-catalog/azure-virtual-network) -- the networks whose DNS queries the rules steer, hub and spokes alike, each attached through a link.
+- [**Azure DNS Private Resolver**](/infra-catalog/azure-private-dns-resolver) -- owns the outbound endpoint the ruleset binds; reference its `outbound_endpoint_id` output.
+- [**Azure DNS Resolver Virtual Network Link**](/infra-catalog/azure-private-dns-resolver-virtual-network-link) -- attaches each consuming network to this ruleset; without links, rules steer nothing.
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- where the ruleset lives; reference its `resource_group_name` output.
+- [**Azure Virtual Network**](/infra-catalog/azure-virtual-network) -- the networks whose DNS queries the rules steer, hub and spokes alike, each attached through a link.

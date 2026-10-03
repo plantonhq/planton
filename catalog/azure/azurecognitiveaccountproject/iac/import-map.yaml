@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurecognitiveaccountproject
 spec:
@@ -8,7 +8,7 @@ spec:
   values:
     - name: project_id
       derivations:
-        - from_stack_output: project_id
+        - from_output: project_id
       where_to_find: >-
         Portal -> the AI Foundry resource -> Projects -> the project
         (its resource ID is the account's ID + /projects/<name>), or

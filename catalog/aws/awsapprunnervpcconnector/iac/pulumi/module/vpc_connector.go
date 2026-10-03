@@ -41,7 +41,7 @@ func vpcConnector(ctx *pulumi.Context, locals *Locals, provider *aws.Provider) e
 		return errors.Wrap(err, "failed to create VPC connector")
 	}
 
-	// Export outputs matching AwsAppRunnerVpcConnectorStackOutputs.
+	// Export outputs matching AwsAppRunnerVpcConnectorOutputs.
 	ctx.Export(OpVpcConnectorArn, createdConnector.Arn)
 	ctx.Export(OpVpcConnectorRevision, createdConnector.VpcConnectorRevision)
 	ctx.Export(OpStatus, createdConnector.Status)

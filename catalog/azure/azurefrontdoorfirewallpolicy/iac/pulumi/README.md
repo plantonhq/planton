@@ -14,7 +14,7 @@ referenced resource group, through the shared Azure provider builder
   (Azure rejects the fields -- the spec's CELs keep values out).
 - **Provider defaults pass through**: enabled, request-body check,
   custom-rule enabled/priority and the rate-limit pair are sent only
-  on an explicit spec choice (stack inputs never materialize proto
+  on an explicit spec choice (IaC inputs never materialize proto
   defaults).
 - **Enum prefixes are proto-local**: `RULE_SET_*` / `OVERRIDE_*` /
   `SELECTOR_*` / `EXCLUDE_*` / `SCRUB_*` values map to ARM's bare

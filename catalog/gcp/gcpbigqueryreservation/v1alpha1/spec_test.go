@@ -40,7 +40,7 @@ var _ = ginkgo.Describe("GcpBigQueryReservationSpec", func() {
 		return &GcpBigQueryReservation{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpBigQueryReservation",
-			Metadata:   &shared.CloudResourceMetadata{Name: "analytics"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "analytics"},
 			Spec:       &GcpBigQueryReservationSpec{},
 		}
 	}

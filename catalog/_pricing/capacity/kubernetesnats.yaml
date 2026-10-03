@@ -7,9 +7,9 @@
 # single server when cluster is empty) carries the declared resources,
 # and JetStream -- on by default for this kind -- provisions one
 # file-store volume per server. Schema:
-# finops/componentcapacityderivation/v1.
+# finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesnats
 spec:

@@ -4,7 +4,7 @@ Deploys a Cloud KMS cryptographic key within an existing key ring for symmetric 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **KMS CryptoKey** -- a `kms.CryptoKey` in the specified key ring, configured with the chosen purpose, algorithm, protection level, and rotation schedule
 - **Version Template** -- created only when `versionTemplate` is specified; controls the encryption algorithm and protection level (SOFTWARE, HSM, EXTERNAL, or EXTERNAL_VPC) for new key versions
@@ -16,12 +16,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A KMS key ring** where the key will be created. Provide the fully qualified key ring path (`projects/{project}/locations/{location}/keyRings/{name}`) directly or reference a GcpKmsKeyRing Cloud Resource via ValueFromRef. The module enables the Cloud KMS API itself.
+- **A KMS key ring** where the key will be created. Provide the fully qualified key ring path (`projects/{project}/locations/{location}/keyRings/{name}`) directly or reference a GcpKmsKeyRing Infra Component via ValueFromRef. The module enables the Cloud KMS API itself.
 - **An EkmConnection** (only for EXTERNAL_VPC protection) — the `cryptoKeyBackend` field names the external key manager connection reached through your VPC.
 
 ## Deploy
@@ -52,7 +52,7 @@ spec:
 planton apply -f gcp-kms-key.yaml
 ```
 
-This creates a symmetric encryption key with 90-day automatic rotation using software-level protection. Purpose defaults to ENCRYPT_DECRYPT. A Stack Job tracks the provisioning in real time.
+This creates a symmetric encryption key with 90-day automatic rotation using software-level protection. Purpose defaults to ENCRYPT_DECRYPT. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -91,15 +91,15 @@ These are the most important decisions when configuring a KMS key. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpKmsKeyRing** | `keyRingId` | `status.outputs.key_ring_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -121,5 +121,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP KMS Key Ring**](/cloud-catalog/gcp-kms-key-ring) -- provides the key ring that contains this cryptographic key
-- [**GCP KMS Key IAM Member**](/cloud-catalog/gcp-kms-key-iam-member) -- grants service agents and workloads permission to use this key (CMEK consumers need `cryptoKeyEncrypterDecrypter`)
+- [**GCP KMS Key Ring**](/infra-catalog/gcp-kms-key-ring) -- provides the key ring that contains this cryptographic key
+- [**GCP KMS Key IAM Member**](/infra-catalog/gcp-kms-key-iam-member) -- grants service agents and workloads permission to use this key (CMEK consumers need `cryptoKeyEncrypterDecrypter`)

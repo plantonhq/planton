@@ -7,7 +7,7 @@ import (
 	"fmt"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -36,7 +36,7 @@ type DryRunResult struct {
 	// UnmappedOutputs lists output keys that had no matching proto field.
 	UnmappedOutputs []string
 
-	// TotalProtoFields is the number of fields on the StackOutputs message.
+	// TotalProtoFields is the number of fields on the Outputs message.
 	TotalProtoFields int
 
 	// PopulatedCount is how many fields were actually set.
@@ -59,7 +59,7 @@ type FieldResult struct {
 //
 // If sampleOutputs is nil, only schema validation is performed.
 func ValidateOverride(
-	kind cloudresourcekind.CloudResourceKind,
+	kind catalogkind.CatalogKind,
 	moduleDir string,
 	sampleOutputs map[string]interface{},
 ) (*ValidationResult, error) {
@@ -97,7 +97,7 @@ func validateExecutableSchema(moduleDir string, result *ValidationResult) {
 	}
 }
 
-func validateMappingSchema(kind cloudresourcekind.CloudResourceKind, moduleDir string, result *ValidationResult) {
+func validateMappingSchema(kind catalogkind.CatalogKind, moduleDir string, result *ValidationResult) {
 	mapping, err := loadMapping(moduleDir)
 	if err != nil {
 		result.SchemaErrors = append(result.SchemaErrors,
@@ -105,10 +105,10 @@ func validateMappingSchema(kind cloudresourcekind.CloudResourceKind, moduleDir s
 		return
 	}
 
-	outputsMsg, resolveErr := resolveStackOutputsMessage(kind)
+	outputsMsg, resolveErr := resolveOutputsMessage(kind)
 	if resolveErr != nil {
 		result.SchemaErrors = append(result.SchemaErrors,
-			fmt.Sprintf("cannot resolve StackOutputs for kind %s: %v", kind.String(), resolveErr))
+			fmt.Sprintf("cannot resolve Outputs for kind %s: %v", kind.String(), resolveErr))
 		return
 	}
 
@@ -119,7 +119,7 @@ func validateMappingSchema(kind cloudresourcekind.CloudResourceKind, moduleDir s
 	for src, dst := range mapping.Mappings {
 		if _, exists := protoFields[dst]; !exists {
 			result.SchemaErrors = append(result.SchemaErrors,
-				fmt.Sprintf("mapping target %q (from source %q) is not a field on %s StackOutputs",
+				fmt.Sprintf("mapping target %q (from source %q) is not a field on %s Outputs",
 					dst, src, kind.String()))
 		}
 		if prevSrc, dup := targetSeen[dst]; dup {
@@ -145,7 +145,7 @@ func validateMappingSchema(kind cloudresourcekind.CloudResourceKind, moduleDir s
 }
 
 func runDryRun(
-	kind cloudresourcekind.CloudResourceKind,
+	kind catalogkind.CatalogKind,
 	moduleDir string,
 	sampleOutputs map[string]interface{},
 	override OverrideKind,

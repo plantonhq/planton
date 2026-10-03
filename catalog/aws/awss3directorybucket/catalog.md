@@ -4,7 +4,7 @@ Deploys an S3 directory bucket (S3 Express One Zone) — single-digit-millisecon
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **S3 Directory Bucket** — the Express One Zone bucket in the zone `zoneId` names, under the derived full name `{metadata.name}--{zoneId}--x-s3`, with the declared zone type, redundancy class, and force-destroy posture
 - **AWS Tags** — resource metadata tags (organization, environment, resource kind, resource ID) applied automatically for tracking and governance
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, including S3 Express permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with credentials for the target AWS account, including S3 Express permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -49,7 +49,7 @@ spec:
 planton apply -f directory-bucket.yaml
 ```
 
-This creates a directory bucket named `training-scratch--use1-az4--x-s3` in availability zone `use1-az4`, destroyable even while it holds objects. A Stack Job tracks the provisioning in real time.
+This creates a directory bucket named `training-scratch--use1-az4--x-s3` in availability zone `use1-az4`, destroyable even while it holds objects. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -71,13 +71,13 @@ These are the most important decisions when configuring a directory bucket. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies — the zone and redundancy fields are plain strings, so nothing is wired from other Cloud Resources.
+This kind has no foreign key dependencies — the zone and redundancy fields are plain strings, so nothing is wired from other Infra Components.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -94,6 +94,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — the regional system of record; directory buckets hold the hot, reconstructible copy of data whose durable home is a general-purpose bucket
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — the regional system of record; directory buckets hold the hot, reconstructible copy of data whose durable home is a general-purpose bucket
 
-Beyond that pairing the component is standalone: it references no other Cloud Resources, and consumers reach it through the `bucket_name` output rather than a typed edge.
+Beyond that pairing the component is standalone: it references no other Infra Components, and consumers reach it through the `bucket_name` output rather than a typed edge.

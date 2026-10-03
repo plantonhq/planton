@@ -22,7 +22,7 @@ import "shared/foreignkey/v1/foreign_key.proto";
 //   - Closed-set "enum-like" values are `string` + a closed `in [...]` rule, not proto
 //     enums. Istio constants are UPPERCASE (external-standard exception).
 //
-// This file is seeded minimally and grown just-in-time as each component consumes a
+// This file is seeded minimally and grown just-in-time as each kind consumes a
 // shared type.
 
 // KubernetesIstioApiWorkloadSelector selects the workloads (pods/VMs) a policy applies to,

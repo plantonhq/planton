@@ -2,7 +2,7 @@
 
 ## Overview
 
-Provisions a model deployment on an Azure AI services account using the classic `pulumi-azure` (azurerm-bridged) SDK, from the kind's typed stack input.
+Provisions a model deployment on an Azure AI services account using the classic `pulumi-azure` (azurerm-bridged) SDK, from the kind's typed IaC input.
 
 ## Design Decisions
 
@@ -12,7 +12,7 @@ Provisions a model deployment on an Azure AI services account using the classic 
 
 ## Inputs
 
-The module consumes `AzureCognitiveDeploymentStackInput`: the target resource (metadata + spec) and the Azure provider configuration. `cognitive_account_id` arrives pre-resolved; `GetValue()` returns the literal ARM ID.
+The module consumes `AzureCognitiveDeploymentIacInput`: the target resource (metadata + spec) and the Azure provider configuration. `cognitive_account_id` arrives pre-resolved; `GetValue()` returns the literal ARM ID.
 
 ## Outputs
 

@@ -4,7 +4,7 @@ Deploys an Azure Application Security Group (ASG) — a named, logical grouping 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Application Security Group** -- the named grouping anchor, holding no members and no rules of its own
 - **Azure Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically and merged with the user tags
@@ -15,12 +15,12 @@ Memberships and rules are NOT created here — a NIC joins from its own spec (`a
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the group will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the group will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 - **A naming plan**: one group per workload ROLE (web, app-tier, db) — the names become the vocabulary your NSG rules are written in.
 
 ## Deploy
@@ -53,7 +53,7 @@ spec:
 planton apply -f asg.yaml
 ```
 
-This creates one empty role-named group ready for NICs to join and NSG rules to target — create one per tier and the security policy reads as intent, surviving every scale event without a firewall rewrite. A Stack Job tracks the provisioning in real time.
+This creates one empty role-named group ready for NICs to join and NSG rules to target — create one per tier and the security policy reads as intent, surviving every scale event without a firewall rewrite. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -82,15 +82,15 @@ These are the most important decisions when configuring an Application Security 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -107,7 +107,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the ASG is created
-- [**Azure Network Interface**](/cloud-catalog/azure-network-interface) -- joins the group by referencing its `application_security_group_id` output (membership lives on the NIC)
-- [**Azure Network Security Group**](/cloud-catalog/azure-network-security-group) -- targets the group in security rules as source/destination, turning CIDR rules into role rules
-- [**Azure Virtual Machine**](/cloud-catalog/azure-virtual-machine) -- the workload whose NICs carry the memberships that make the group mean something
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the ASG is created
+- [**Azure Network Interface**](/infra-catalog/azure-network-interface) -- joins the group by referencing its `application_security_group_id` output (membership lives on the NIC)
+- [**Azure Network Security Group**](/infra-catalog/azure-network-security-group) -- targets the group in security rules as source/destination, turning CIDR rules into role rules
+- [**Azure Virtual Machine**](/infra-catalog/azure-virtual-machine) -- the workload whose NICs carry the memberships that make the group mean something

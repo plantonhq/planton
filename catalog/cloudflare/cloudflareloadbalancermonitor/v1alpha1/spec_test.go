@@ -15,7 +15,7 @@ func validMonitor() *CloudflareLoadBalancerMonitor {
 	return &CloudflareLoadBalancerMonitor{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareLoadBalancerMonitor",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-monitor"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-monitor"},
 		Spec: &CloudflareLoadBalancerMonitorSpec{
 			AccountId:     validAccountID,
 			Type:          CloudflareLoadBalancerMonitorType_https,

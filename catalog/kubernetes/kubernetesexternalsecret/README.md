@@ -36,7 +36,7 @@ The materialized Secret appears when the operator reaches the backend — not as
 - **`spec.target.name`**: the materialized Secret's name (defaults to `metadata.name`)
 - **`spec.refresh_interval`**: how fresh the Secret stays (default `1h`)
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

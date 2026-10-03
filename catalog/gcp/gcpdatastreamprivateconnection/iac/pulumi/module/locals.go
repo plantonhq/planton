@@ -6,7 +6,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpdatastreamprivateconnectionv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpdatastreamprivateconnection/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -24,9 +24,9 @@ type Locals struct {
 	DisplayName string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpdatastreamprivateconnectionv1alpha1.GcpDatastreamPrivateConnectionStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpdatastreamprivateconnectionv1alpha1.GcpDatastreamPrivateConnectionIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpDatastreamPrivateConnection = stackInput.Target
+	locals.GcpDatastreamPrivateConnection = iacInput.Target
 	metadata := locals.GcpDatastreamPrivateConnection.Metadata
 	spec := locals.GcpDatastreamPrivateConnection.Spec
 
@@ -47,7 +47,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpdatastreamprivateconnect
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = metadata.Name
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpDatastreamPrivateConnection.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpDatastreamPrivateConnection.String())
 
 	if metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = metadata.Org
@@ -59,6 +59,6 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpdatastreamprivateconnect
 		locals.GcpLabels[gcplabelkeys.ResourceId] = metadata.Id
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

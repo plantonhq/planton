@@ -5,7 +5,7 @@ Pulumi (Go) IaC module for Web Analytics (RUM) sites.
 ## Architecture
 
 ```
-main.go                         — stack-input loading + module entry
+main.go                         — iac-input loading + module entry
 module/main.go                  — provider setup + resource orchestration
 module/locals.go                — metadata/credential references
 module/web_analytics_site.go    — WebAnalyticsSite + one WebAnalyticsRule per rules[] row

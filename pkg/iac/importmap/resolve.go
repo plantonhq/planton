@@ -8,18 +8,18 @@ import (
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 
-	componentv1 "github.com/plantonhq/planton/iac/componentimportmap/v1"
+	kindv1 "github.com/plantonhq/planton/iac/catalogkindimportmap/v1"
 )
 
-// ResolveContext carries everything a component's derivations may draw from
+// ResolveContext carries everything a kind's derivations may draw from
 // when resolving import-ID placeholder values for ONE enumerated address.
 type ResolveContext struct {
 	// The Planton resource's metadata.name (from_metadata_name).
 	MetadataName string
 	// The kind's spec message (from_spec_field). May be nil.
 	Spec proto.Message
-	// Flattened stack outputs, key -> value (from_stack_output). May be nil.
-	StackOutputs map[string]string
+	// Flattened outputs, key -> value (from_output). May be nil.
+	Outputs map[string]string
 	// The enumerated address's instance key, e.g. "archive" from
 	// `...intelligent_tiering_configuration.this["archive"]`
 	// (from_address_key). Empty for non-repeated resources.
@@ -48,7 +48,7 @@ type ResolveContext struct {
 	ReadClusterSecret func(secretName, key string) (string, error)
 }
 
-// ResolveValues resolves the named placeholders through the component map's
+// ResolveValues resolves the named placeholders through the kind map's
 // ordered derivations. The first derivation that yields a non-empty value
 // wins. A declaration scoped to the address's logical resource name
 // (tofu_resource_name) wins over the unscoped declaration of the same
@@ -57,12 +57,12 @@ type ResolveContext struct {
 // caller decides whether unresolved names are user inputs (the wizard) or a
 // failure (the round-trip proof).
 func ResolveValues(
-	m *componentv1.ComponentImportMap,
+	m *kindv1.CatalogKindImportMap,
 	names []string,
 	rctx ResolveContext,
 ) (resolved map[string]string, unresolved []string) {
-	unscopedByName := make(map[string]*componentv1.ImportValue)
-	scopedByName := make(map[string]*componentv1.ImportValue)
+	unscopedByName := make(map[string]*kindv1.ImportValue)
+	scopedByName := make(map[string]*kindv1.ImportValue)
 	for _, v := range m.GetSpec().GetValues() {
 		switch v.GetTofuResourceName() {
 		case "":
@@ -101,11 +101,11 @@ func ResolveValues(
 // material when resolved. Callers use this to redact import IDs from
 // logs and command traces (the values exist to feed the import
 // operation, never to be displayed).
-func SecretDerivedNames(m *componentv1.ComponentImportMap) map[string]bool {
+func SecretDerivedNames(m *kindv1.CatalogKindImportMap) map[string]bool {
 	names := make(map[string]bool)
 	for _, v := range m.GetSpec().GetValues() {
 		for _, d := range v.GetDerivations() {
-			if _, ok := d.GetSource().(*componentv1.ImportValueDerivation_FromClusterSecretKey); ok {
+			if _, ok := d.GetSource().(*kindv1.ImportValueDerivation_FromClusterSecretKey); ok {
 				names[v.GetName()] = true
 			}
 		}
@@ -113,33 +113,33 @@ func SecretDerivedNames(m *componentv1.ComponentImportMap) map[string]bool {
 	return names
 }
 
-func resolveDerivation(d *componentv1.ImportValueDerivation, rctx ResolveContext) string {
+func resolveDerivation(d *kindv1.ImportValueDerivation, rctx ResolveContext) string {
 	switch source := d.GetSource().(type) {
-	case *componentv1.ImportValueDerivation_FromMetadataName:
+	case *kindv1.ImportValueDerivation_FromMetadataName:
 		if source.FromMetadataName {
 			return rctx.MetadataName
 		}
-	case *componentv1.ImportValueDerivation_FromSpecField:
+	case *kindv1.ImportValueDerivation_FromSpecField:
 		return specFieldValue(rctx.Spec, source.FromSpecField)
-	case *componentv1.ImportValueDerivation_FromStackOutput:
-		return rctx.StackOutputs[source.FromStackOutput]
-	case *componentv1.ImportValueDerivation_FromArnPart:
+	case *kindv1.ImportValueDerivation_FromOutput:
+		return rctx.Outputs[source.FromOutput]
+	case *kindv1.ImportValueDerivation_FromArnPart:
 		return rctx.ArnParts[source.FromArnPart]
-	case *componentv1.ImportValueDerivation_FromAddressKey:
+	case *kindv1.ImportValueDerivation_FromAddressKey:
 		if source.FromAddressKey {
 			return rctx.AddressKey
 		}
-	case *componentv1.ImportValueDerivation_FromMetadataNameSuffix:
+	case *kindv1.ImportValueDerivation_FromMetadataNameSuffix:
 		if rctx.MetadataName != "" && source.FromMetadataNameSuffix != "" {
 			return rctx.MetadataName + source.FromMetadataNameSuffix
 		}
-	case *componentv1.ImportValueDerivation_FromMetadataNamePrefix:
+	case *kindv1.ImportValueDerivation_FromMetadataNamePrefix:
 		if rctx.MetadataName != "" && source.FromMetadataNamePrefix != "" {
 			return source.FromMetadataNamePrefix + rctx.MetadataName
 		}
-	case *componentv1.ImportValueDerivation_Literal:
+	case *kindv1.ImportValueDerivation_Literal:
 		return source.Literal
-	case *componentv1.ImportValueDerivation_FromClusterSecretKey:
+	case *kindv1.ImportValueDerivation_FromClusterSecretKey:
 		// Only cluster-connected contexts bind the reader; anywhere else
 		// the arm resolves empty and the caller's ask-the-user fallback
 		// (where_to_find) carries the recipe. A read failure is treated
@@ -165,7 +165,7 @@ func resolveDerivation(d *componentv1.ImportValueDerivation, rctx ResolveContext
 			return ""
 		}
 		return value
-	case *componentv1.ImportValueDerivation_FromStackOutputKeyedByAddress:
+	case *kindv1.ImportValueDerivation_FromOutputKeyedByAddress:
 		// The module exports a map keyed by the SAME key as the resource's
 		// for_each instances, so the enumerated address selects the entry.
 		// The lookup composes the flattened dot-path key directly (map keys
@@ -175,8 +175,8 @@ func resolveDerivation(d *componentv1.ImportValueDerivation, rctx ResolveContext
 		if rctx.AddressKey == "" {
 			return ""
 		}
-		return rctx.StackOutputs[source.FromStackOutputKeyedByAddress+"."+rctx.AddressKey]
-	case *componentv1.ImportValueDerivation_FromAddressKeySegment:
+		return rctx.Outputs[source.FromOutputKeyedByAddress+"."+rctx.AddressKey]
+	case *kindv1.ImportValueDerivation_FromAddressKeySegment:
 		// The delimiter is fixed to "//" — the kubectl composed-ID form
 		// this arm exists for (see the proto comment). An out-of-range
 		// index resolves to "" so an optional trailing segment (the

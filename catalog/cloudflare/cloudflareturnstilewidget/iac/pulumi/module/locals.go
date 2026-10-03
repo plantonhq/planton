@@ -12,9 +12,9 @@ type Locals struct {
 	CloudflareTurnstileWidget *cloudflareturnstilewidgetv1alpha1.CloudflareTurnstileWidget
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflareturnstilewidgetv1alpha1.CloudflareTurnstileWidgetStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflareturnstilewidgetv1alpha1.CloudflareTurnstileWidgetIacInput) *Locals {
 	locals := &Locals{}
-	locals.CloudflareTurnstileWidget = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareTurnstileWidget = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

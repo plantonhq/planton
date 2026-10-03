@@ -9,10 +9,10 @@ import (
 )
 
 // Resources is the Pulumi program entry-point for the GcpCloudRunJob component.
-func Resources(ctx *pulumi.Context, stackInput *gcpcloudrunjobv1alpha1.GcpCloudRunJobStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *gcpcloudrunjobv1alpha1.GcpCloudRunJobIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, stackInput.ProviderConfig)
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

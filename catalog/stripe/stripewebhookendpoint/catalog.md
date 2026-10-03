@@ -1,10 +1,10 @@
 # Stripe Webhook Endpoint
 
-Declares where a Stripe account delivers its events -- the URL and the event types -- and captures the signing secret your service verifies every delivery with. One Cloud Resource per endpoint.
+Declares where a Stripe account delivers its events -- the URL and the event types -- and captures the signing secret your service verifies every delivery with. One Infra Component per endpoint.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the OpenTofu module creates one webhook endpoint in the Stripe account your Stripe connection's key belongs to:
+When you deploy this Infra Component, the OpenTofu module creates one webhook endpoint in the Stripe account your Stripe connection's key belongs to:
 
 - **The delivery address** -- the URL Stripe POSTs each event to
 - **The events** -- exactly the event types you list
@@ -51,7 +51,7 @@ spec:
 planton apply -f stripe-webhook-endpoint.yaml
 ```
 
-The endpoint starts receiving events at once. A Stack Job tracks the change in real time.
+The endpoint starts receiving events at once. An Infra Job tracks the change in real time.
 
 ## Key Configuration
 
@@ -67,11 +67,11 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies.
+This kind has no foreign key dependencies.
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -93,5 +93,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Stripe Billing Portal Configuration**](/cloud-catalog/stripe-billing-portal-configuration) -- the portal whose cancellations and plan changes arrive here as subscription events.
-- [**Stripe Payment Method Configuration**](/cloud-catalog/stripe-payment-method-configuration) -- the methods checkout offers; the checkouts they complete arrive here.
+- [**Stripe Billing Portal Configuration**](/infra-catalog/stripe-billing-portal-configuration) -- the portal whose cancellations and plan changes arrive here as subscription events.
+- [**Stripe Payment Method Configuration**](/infra-catalog/stripe-payment-method-configuration) -- the methods checkout offers; the checkouts they complete arrive here.

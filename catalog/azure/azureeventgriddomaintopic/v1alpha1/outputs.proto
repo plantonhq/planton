@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azureeventgriddomaintopic.v1alpha1;
 
-// **AzureEventgridDomainTopicStackOutputs** captures the outputs from
+// **AzureEventgridDomainTopicOutputs** captures the outputs from
 // provisioning an Azure Event Grid domain topic.
-message AzureEventgridDomainTopicStackOutputs {
+message AzureEventgridDomainTopicOutputs {
   // The domain topic's Azure Resource Manager ID
   // ({domain_id}/topics/{name}) -- the scope event subscriptions
   // attach to.

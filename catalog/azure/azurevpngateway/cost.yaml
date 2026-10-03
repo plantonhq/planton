@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurevpngateway
 spec:
@@ -19,6 +19,6 @@ spec:
       impact: The only lever this manifest holds -- the hourly rate multiplies linearly by scale units (unset applies the provider's default of 1), and the value updates in place, so capacity can be tuned without replacing the gateway.
   estimate_exclusions:
     - each connected branch bills a VPN S2S connection unit per hour on its own AzureVpnGatewayConnection component -- the gateway meter never counts branches
-    - the hub's deployment hours and its per-GB data processing bill on the AzureVirtualHub component
+    - the hub's deployment hours and its per-GB data processing bill on the AzureVirtualHub kind
     - data leaving Azure through the tunnels bills at standard data-transfer rates and follows traffic
   notes: "Virtual WAN splits VPN spend three ways: the gateway carries the scale-unit meter (capacity), each branch connection carries a connection-unit meter (membership), and the hub carries deployment hours plus data processing (transit). This manifest prices only the first. NAT rules are free configuration -- the Virtual WAN price list carries no NAT meter, so translating overlapping branch address spaces adds nothing to the bill. The scale-unit rate is flat per unit (unlike Virtual WAN's ExpressRoute gateway, whose 6th-10th units bill a lower increment)."

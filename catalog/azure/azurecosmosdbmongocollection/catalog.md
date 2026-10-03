@@ -4,7 +4,7 @@ Deploys a MongoDB API collection inside a Cosmos DB Mongo database — the unit 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cosmos DB Mongo Collection** -- a named collection inside the referenced Mongo database, with its shard key and declared indexes (including the `_id` index Azure requires)
 - **Dedicated Throughput** (optional) -- fixed RU/s or an autoscale ceiling owned by this collection alone; omit both to share the database's provisioned throughput (or on serverless accounts)
@@ -14,12 +14,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **A Cosmos DB Mongo database**. Reference an AzureCosmosdbMongoDatabase Cloud Resource via ValueFromRef, or provide the database's ARM ID directly.
+- **A Cosmos DB Mongo database**. Reference an AzureCosmosdbMongoDatabase Infra Component via ValueFromRef, or provide the database's ARM ID directly.
 - **For the analytical TTL**: analytical storage enabled on the account.
 
 ## Deploy
@@ -61,7 +61,7 @@ spec:
 planton apply -f cosmosdb-mongo-collection.yaml
 ```
 
-This creates a tenant-sharded collection with dedicated autoscale throughput and a compound index for per-tenant recency queries. A Stack Job tracks the provisioning in real time.
+This creates a tenant-sharded collection with dedicated autoscale throughput and a compound index for per-tenant recency queries. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -81,15 +81,15 @@ These are the most important decisions when configuring a Mongo collection. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | AzureCosmosdbMongoDatabase | `mongoDatabaseId` | `status.outputs.mongo_database_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -110,5 +110,5 @@ There are deliberately no endpoint or credential outputs here: connectivity and 
 
 ## Works With
 
-- [**Azure Cosmos DB Mongo Database**](/cloud-catalog/azure-cosmosdb-mongo-database) — the parent database this collection lives in, referenced via `mongo_database_id`
-- [**Azure Cosmos DB Account**](/cloud-catalog/azure-cosmosdb-account) — the MONGO_DB account that owns connectivity, connection strings, and network posture for everything inside
+- [**Azure Cosmos DB Mongo Database**](/infra-catalog/azure-cosmosdb-mongo-database) — the parent database this collection lives in, referenced via `mongo_database_id`
+- [**Azure Cosmos DB Account**](/infra-catalog/azure-cosmosdb-account) — the MONGO_DB account that owns connectivity, connection strings, and network posture for everything inside

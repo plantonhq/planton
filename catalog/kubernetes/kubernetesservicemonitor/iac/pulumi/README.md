@@ -21,10 +21,10 @@ planton pulumi up --manifest ../../e2e/manifest.yaml
 
 ### Direct Pulumi usage
 
-The entrypoint loads the `KubernetesServiceMonitorStackInput` from the `STACK_INPUT_YAML_FILE` environment variable (path to a manifest) or `STACK_INPUT_YAML` (inline YAML content):
+The entrypoint loads the `KubernetesServiceMonitorIacInput` from the `IAC_INPUT_YAML_FILE` environment variable (path to a manifest) or `IAC_INPUT_YAML` (inline YAML content):
 
 ```bash
-export STACK_INPUT_YAML_FILE=../../e2e/manifest.yaml
+export IAC_INPUT_YAML_FILE=../../e2e/manifest.yaml
 pulumi up
 ```
 
@@ -39,7 +39,7 @@ pulumi up
 
 ```
 pulumi/
-├── main.go          # Pulumi entrypoint (loads the stack input)
+├── main.go          # Pulumi entrypoint (loads the IaC input)
 ├── Pulumi.yaml      # Pulumi project configuration
 ├── README.md        # This file
 └── module/

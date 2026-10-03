@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsbedrockagent
 spec:
@@ -10,7 +10,7 @@ spec:
   values:
     - name: agent_id
       derivations:
-        - from_stack_output: agent_id
+        - from_output: agent_id
       where_to_find: >-
         Bedrock console -> Agents -> <agent> (the ID), or
         `aws bedrock-agent list-agents` (agentId).
@@ -19,28 +19,28 @@ spec:
         - literal: DRAFT
     - name: action_group_id
       derivations:
-        - from_stack_output_keyed_by_address: action_group_ids
+        - from_output_keyed_by_address: action_group_ids
       where_to_find: >-
         `aws bedrock-agent list-agent-action-groups --agent-id <id>
         --agent-version DRAFT` lists actionGroupId per group; match each
         to its spec.action_groups entry by name.
     - name: agent_alias_id
       derivations:
-        - from_stack_output_keyed_by_address: alias_ids
+        - from_output_keyed_by_address: alias_ids
       where_to_find: >-
         `aws bedrock-agent list-agent-aliases --agent-id <id>` lists
         agentAliasId per alias; match each to its spec.aliases entry by
         name.
     - name: collaborator_id
       derivations:
-        - from_stack_output_keyed_by_address: collaborator_ids
+        - from_output_keyed_by_address: collaborator_ids
       where_to_find: >-
         `aws bedrock-agent list-agent-collaborators --agent-id <id>
         --agent-version DRAFT` lists collaboratorId per collaborator;
         match each to its spec.collaborators entry by name.
     - name: knowledge_base_id
       derivations:
-        - from_stack_output_keyed_by_address: associated_knowledge_base_ids
+        - from_output_keyed_by_address: associated_knowledge_base_ids
       where_to_find: >-
         `aws bedrock-agent list-agent-knowledge-bases --agent-id <id>
         --agent-version DRAFT` lists knowledgeBaseId per association;

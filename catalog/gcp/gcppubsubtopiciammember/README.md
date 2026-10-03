@@ -95,7 +95,7 @@ Grants to deleted principals (`deleted:...`) are refused by validation.
 
 A project-level `roles/pubsub.publisher` lets the member publish to every topic in the project. A topic-scoped grant — this component — lets it publish to exactly one. A sink's writer identity needs nothing more than its own destination topic, so the topic grant is the least-privilege shape and the one that keeps the dependency graph honest.
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -125,7 +125,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 - **A sink exports nothing until this grant lands**: Cloud Logging drops entries it cannot publish. Deploy the grant in the same chart as the sink so the export works from its first entry.
 - **Recreating a sink can mint a new writer identity**: a reference to `writer_identity` follows it automatically; a literal member does not.
 
-## Related Components
+## Related Kinds
 
 - [GcpPubSubTopic](/docs/catalog/gcp/gcppubsubtopic) — the topic being granted on (its `topic_id` output feeds this component)
 - [GcpLoggingSink](/docs/catalog/gcp/gcploggingsink) — a sink exporting to the topic (its `writer_identity` output feeds `member`)

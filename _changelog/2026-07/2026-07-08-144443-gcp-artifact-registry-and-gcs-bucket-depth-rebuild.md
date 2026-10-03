@@ -31,7 +31,7 @@ parity and philosophy defects in every layer.
 
 - **Secret material in state**: the AR module silently created reader and
   writer service accounts and exported their JSON keys base64-encoded in
-  stack outputs — hidden resources, key material in both engines' state,
+  outputs — hidden resources, key material in both engines' state,
   and a design that contradicts the keyless-first catalog.
 - **A Docker-only naming assumption**: both engines hardcoded a
   `-docker` repository suffix and `-docker.pkg.dev` hostnames regardless

@@ -11,9 +11,9 @@
 # stated region assumption is cosmetic. The estimate generator replays the
 # catalog presets through these rules to emit
 # ../estimates/digitaloceankubernetesnodepool.yaml.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: digitaloceankubernetesnodepool
 spec:
@@ -59,7 +59,7 @@ spec:
           value: "true"
       text: "the cluster autoscaler grows the pool above the min_nodes floor up to max_nodes with workload demand -- each extra node bills the same monthly rate while it exists"
     - text: "outbound data transfer past the account's pooled free allowance (starting at 2,000 GiB per Basic node per month) bills 0.01 USD/GiB; inbound and node-to-node transfer are free"
-    - text: "the owning cluster's control plane, default pool, and workload-created volumes and load balancers bill on their own components"
+    - text: "the owning cluster's control plane, default pool, and workload-created volumes and load balancers bill on their own kinds"
   notes:
     - text: "Worker nodes bill at DigitalOcean's droplet rates -- the DOKS pricing page charges only the underlying droplets; labels, taints, and tags are free metadata."
     - text: "Priced at DigitalOcean's global rates -- the DOKS and droplet pricing pages carry no region dimension, and the pool inherits its cluster's region."

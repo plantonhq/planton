@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -26,7 +26,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -56,7 +56,7 @@ var _ = ginkgo.Describe("KubernetesArgoWorkflows Validation Tests", func() {
 		input = &KubernetesArgoWorkflows{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesArgoWorkflows",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "pipelines",
 			},
 			Spec: &KubernetesArgoWorkflowsSpec{
@@ -71,7 +71,7 @@ var _ = ginkgo.Describe("KubernetesArgoWorkflows Validation Tests", func() {
 		})
 
 		ginkgo.It("namespace as a reference should be valid", func() {
-			input.Spec.Namespace = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "argo", "spec.name")
+			input.Spec.Namespace = valueFrom(catalogkind.CatalogKind_KubernetesNamespace, "argo", "spec.name")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -134,10 +134,10 @@ var _ = ginkgo.Describe("KubernetesArgoWorkflows Validation Tests", func() {
 			input.Spec.ArtifactRepository = &KubernetesArgoWorkflowsArtifactRepository{
 				Backend: &KubernetesArgoWorkflowsArtifactRepository_S3{S3: &KubernetesArgoWorkflowsArtifactS3{
 					Bucket:   "workflow-artifacts",
-					Endpoint: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesSeaweedFs, "objects", "status.outputs.s3_endpoint"),
+					Endpoint: valueFrom(catalogkind.CatalogKind_KubernetesSeaweedFs, "objects", "status.outputs.s3_endpoint"),
 					Insecure: true,
 					CredentialsSecret: &KubernetesArgoWorkflowsS3CredentialsSecret{
-						SecretName: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesSeaweedFs, "objects", "status.outputs.s3_credentials_secret_name"),
+						SecretName: valueFrom(catalogkind.CatalogKind_KubernetesSeaweedFs, "objects", "status.outputs.s3_credentials_secret_name"),
 					},
 				}},
 			}
@@ -184,8 +184,8 @@ var _ = ginkgo.Describe("KubernetesArgoWorkflows Validation Tests", func() {
 
 		ginkgo.It("a postgres archive with KubernetesPostgres host and credentials references should be valid", func() {
 			archive := testArchive()
-			archive.Host = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "workflows-db", "status.outputs.rw_service")
-			archive.CredentialsSecret.Name = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "workflows-db", "status.outputs.password_secret.name")
+			archive.Host = valueFrom(catalogkind.CatalogKind_KubernetesPostgres, "workflows-db", "status.outputs.rw_service")
+			archive.CredentialsSecret.Name = valueFrom(catalogkind.CatalogKind_KubernetesPostgres, "workflows-db", "status.outputs.password_secret.name")
 			archive.SslMode = "require"
 			input.Spec.Archive = archive
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())

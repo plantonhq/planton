@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: azurekeyvaultkey
 spec:
@@ -25,7 +25,7 @@ spec:
         reference: "Every operation on the key rides the vault's HTTPS-only data plane ({name}.vault.azure.net, TLS 1.2+), and the private half never travels at all -- consumers send data TO the vault for wrap/unwrap/sign; the key stays put."
     - control_id: no-public-access
       status: not_applicable
-      notes: "A key has no network surface of its own -- reachability is the parent vault's posture (public_network_access_enabled, network_acls, private endpoints), set on the AzureKeyVault component key_vault_id references."
+      notes: "A key has no network surface of its own -- reachability is the parent vault's posture (public_network_access_enabled, network_acls, private endpoints), set on the AzureKeyVault kind key_vault_id references."
     - control_id: restricted-ingress
       status: not_applicable
       notes: "Inbound filtering is the vault's network_acls territory (see no-public-access); no per-key network rule exists. What this spec does scope per-key is capability, not source: key_opts is the operation allowlist -- Azure rejects any operation not listed, so a WRAP_KEY/UNWRAP_KEY CMK can never be made to sign."
@@ -73,7 +73,7 @@ spec:
         reference: "The key inherits Key Vault's automatic redundancy -- zone-redundant service in availability-zone regions, replicated within the region and to the paired region where one exists; no configuration surface, no opt-out."
     - control_id: deletion-protection
       status: not_applicable
-      notes: "No per-key protection flag exists. The vault's purge_protection_enabled is the relevant guard -- with it on, even a deleted key cannot be purged before the retention window lapses, which for a CMK is the difference between an incident and permanent data loss. Set on the AzureKeyVault component."
+      notes: "No per-key protection flag exists. The vault's purge_protection_enabled is the relevant guard -- with it on, even a deleted key cannot be purged before the retention window lapses, which for a CMK is the difference between an incident and permanent data loss. Set on the AzureKeyVault kind."
     - control_id: managed-patching
       status: enforced_by_default
       evidence:

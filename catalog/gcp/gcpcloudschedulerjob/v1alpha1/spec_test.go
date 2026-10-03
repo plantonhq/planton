@@ -31,7 +31,7 @@ var _ = ginkgo.Describe("GcpCloudSchedulerJobSpec", func() {
 		return &GcpCloudSchedulerJob{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpCloudSchedulerJob",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-job",
 			},
 			Spec: &GcpCloudSchedulerJobSpec{
@@ -54,7 +54,7 @@ var _ = ginkgo.Describe("GcpCloudSchedulerJobSpec", func() {
 		return &GcpCloudSchedulerJob{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpCloudSchedulerJob",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-job",
 			},
 			Spec: &GcpCloudSchedulerJobSpec{
@@ -81,7 +81,7 @@ var _ = ginkgo.Describe("GcpCloudSchedulerJobSpec", func() {
 		return &GcpCloudSchedulerJob{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpCloudSchedulerJob",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-job",
 			},
 			Spec: &GcpCloudSchedulerJobSpec{
@@ -431,7 +431,7 @@ var _ = ginkgo.Describe("GcpCloudSchedulerJobSpec", func() {
 		msg := &GcpCloudSchedulerJob{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpCloudSchedulerJob",
-			Metadata:   &shared.CloudResourceMetadata{Name: "test"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "test"},
 			Spec: &GcpCloudSchedulerJobSpec{
 				ProjectId: strRef("my-project"),
 				Location:  "us-central1",

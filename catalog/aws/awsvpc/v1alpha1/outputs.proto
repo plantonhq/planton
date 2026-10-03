@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsvpc.v1alpha1;
 
-// AwsVpcStackOutputs captures the observable outputs of a provisioned VPC, for
+// AwsVpcOutputs captures the observable outputs of a provisioned VPC, for
 // downstream resources (subnets, gateways, security groups, ...) to reference.
-message AwsVpcStackOutputs {
+message AwsVpcOutputs {
   // The ID of the VPC (e.g. "vpc-0abc123"). The primary handle other resources
   // reference via status.outputs.vpc_id.
   string vpc_id = 1;

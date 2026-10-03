@@ -4,7 +4,7 @@ Enables a Google Cloud project as a Shared VPC HOST — the project whose VPC ne
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Shared VPC host enablement** -- the `compute_shared_vpc_host_project` flag on the project
 
@@ -55,7 +55,7 @@ None. An empty spec enables the provider's default project.
 
 - **`deletionPolicy`**: `DELETE`, `PREVENT`, or `ABANDON`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -81,7 +81,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpSharedVpcServiceProject](/docs/catalog/gcp/gcpsharedvpcserviceproject) — attaches a service project to this host
 - [GcpProject](/docs/catalog/gcp/gcpproject) — the project being enabled

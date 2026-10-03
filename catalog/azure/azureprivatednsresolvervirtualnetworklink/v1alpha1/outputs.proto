@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.azure.azureprivatednsresolvervirtualnetworklink.v1alpha1;
 
-// **AzurePrivateDnsResolverVirtualNetworkLinkStackOutputs** captures
+// **AzurePrivateDnsResolverVirtualNetworkLinkOutputs** captures
 // the outputs of provisioning a DNS forwarding ruleset virtual
 // network link.
-message AzurePrivateDnsResolverVirtualNetworkLinkStackOutputs {
+message AzurePrivateDnsResolverVirtualNetworkLinkOutputs {
   // The link's ARM resource ID. Format:
   // /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/dnsForwardingRulesets/{ruleset}/virtualNetworkLinks/{name}
   string virtual_network_link_id = 1;

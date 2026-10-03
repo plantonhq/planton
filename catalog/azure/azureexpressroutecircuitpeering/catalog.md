@@ -4,7 +4,7 @@ Deploys an ExpressRoute circuit peering -- the BGP routing configuration that ma
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **ExpressRoute Circuit Peering** -- the ARM child of the circuit (named by its type) carrying the VLAN, BGP session addressing, and type-specific configuration
 - **Global Reach Connections** -- one per `connections` entry: links from this private peering to other circuits' private peerings
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -56,7 +56,7 @@ spec:
 planton apply -f azure-express-route-circuit-peering.yaml
 ```
 
-This configures private peering on the `hq-circuit` circuit: two BGP sessions on VLAN 100, one /30 per physical link, with Microsoft's ASN and edge-port identifiers surfacing in the outputs. A Stack Job tracks the provisioning in real time.
+This configures private peering on the `hq-circuit` circuit: two BGP sessions on VLAN 100, one /30 per physical link, with Microsoft's ASN and edge-port identifiers surfacing in the outputs. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,7 +87,7 @@ These are the most important decisions when configuring a peering. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -95,9 +95,9 @@ These are the most important decisions when configuring a peering. Explore the f
 | **AzureExpressRouteCircuit** | `expressRouteCircuitName` | `status.outputs.express_route_circuit_name` |
 | **AzureExpressRouteCircuitPeering** | `connections[].peerPeeringId` | `status.outputs.express_route_circuit_peering_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -117,7 +117,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure ExpressRoute Circuit**](/cloud-catalog/azure-express-route-circuit) -- the parent circuit this peering configures
-- [**Azure Virtual Network Gateway**](/cloud-catalog/azure-virtual-network-gateway) -- the EXPRESS_ROUTE-type gateway that consumes private peering
-- [**Azure Virtual Network Gateway Connection**](/cloud-catalog/azure-virtual-network-gateway-connection) -- the link between a gateway and the circuit
-- [**Azure ExpressRoute Gateway**](/cloud-catalog/azure-express-route-gateway) -- the Virtual WAN gateway whose circuit connections reference this peering's ID
+- [**Azure ExpressRoute Circuit**](/infra-catalog/azure-express-route-circuit) -- the parent circuit this peering configures
+- [**Azure Virtual Network Gateway**](/infra-catalog/azure-virtual-network-gateway) -- the EXPRESS_ROUTE-type gateway that consumes private peering
+- [**Azure Virtual Network Gateway Connection**](/infra-catalog/azure-virtual-network-gateway-connection) -- the link between a gateway and the circuit
+- [**Azure ExpressRoute Gateway**](/infra-catalog/azure-express-route-gateway) -- the Virtual WAN gateway whose circuit connections reference this peering's ID

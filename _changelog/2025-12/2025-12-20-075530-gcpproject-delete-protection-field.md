@@ -173,7 +173,7 @@ module "prod_project" {
 ## Validation
 
 - ✅ Proto stubs regenerated with `make protos`
-- ✅ Component tests passed: `go test ./apis/dev/planton/provider/gcp/gcpproject/v1/`
+- ✅ Kind tests passed: `go test ./apis/dev/planton/provider/gcp/gcpproject/v1/`
 - ✅ Full build completed: `make build`
 - ✅ All tests passed: `make test`
 

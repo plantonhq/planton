@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awsapprunnerservice.v1alpha1;
 
-// AwsAppRunnerServiceStackOutputs captures the observable identifiers of a
+// AwsAppRunnerServiceOutputs captures the observable identifiers of a
 // deployed App Runner service -- the join keys downstream resources and
 // operators reference, plus the DNS material custom domains need.
-message AwsAppRunnerServiceStackOutputs {
+message AwsAppRunnerServiceOutputs {
   // The full ARN of the App Runner service (e.g. "arn:aws:apprunner:
   // us-west-2:123456789012:service/my-api/abc123"). The handle IAM
   // policies, VPC Ingress Connections, and deployment triggers reference.

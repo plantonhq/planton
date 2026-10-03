@@ -2,16 +2,16 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: azuredatafactoryintegrationruntime
 spec:
   controls:
     - control_id: enc-at-rest
       status: not_applicable
-      notes: An integration runtime is a compute engine, not a store -- Spark clusters (azure flavor) and SSIS node VMs are provisioned per run or per started session and hold data transiently; the data being moved rests in the source and sink systems, which own that posture. The one durable store this component can CAUSE is the SSISDB catalog database, created on your Azure SQL server, whose encryption at rest is that server's posture.
+      notes: An integration runtime is a compute engine, not a store -- Spark clusters (azure flavor) and SSIS node VMs are provisioned per run or per started session and hold data transiently; the data being moved rests in the source and sink systems, which own that posture. The one durable store this kind can CAUSE is the SSISDB catalog database, created on your Azure SQL server, whose encryption at rest is that server's posture.
     - control_id: enc-at-rest-cmk
       status: not_applicable
       notes: No durable data of its own to key (see enc-at-rest); the factory definition store's customer-managed-key lever lives on the AzureDataFactory kind, and SSISDB's on the hosting SQL server's kind.

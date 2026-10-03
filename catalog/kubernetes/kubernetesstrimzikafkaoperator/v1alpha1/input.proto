@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesstrimzikafkaoperator.v1alpha1;
 import "catalog/kubernetes/kubernetesstrimzikafkaoperator/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//kubernetes-strimzi-kafka-operator stack-input
-message KubernetesStrimziKafkaOperatorStackInput {
-  //target cloud-resource
+//kubernetes-strimzi-kafka-operator iac-input
+message KubernetesStrimziKafkaOperatorIacInput {
+  //target infra-component
   KubernetesStrimziKafkaOperator target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpgkecluster.v1alpha1;
 
-// GcpGkeClusterStackOutputs captures key info after provisioning a GKE
+// GcpGkeClusterOutputs captures key info after provisioning a GKE
 // cluster.
-message GcpGkeClusterStackOutputs {
+message GcpGkeClusterOutputs {
   // Kubernetes API server endpoint (IP address). For a cluster with a
   // private-only control plane this is the private endpoint.
   string endpoint = 1;

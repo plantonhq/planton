@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for a Cloud Deploy delivery pi
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `deliveryPipeline` |
-| `module/locals.go` | Stack input, attribution labels, the label merge |
+| `module/locals.go` | IaC input, attribution labels, the label merge |
 | `module/delivery_pipeline.go` | API enablement, the pipeline, its stages and strategies, the send-when-set helpers, the outputs |
 | `module/automation.go` | The automations, keyed by `automation_id` |
 | `module/outputs.go` | Output key constants (`name`, `delivery_pipeline_id`, `uid`) |

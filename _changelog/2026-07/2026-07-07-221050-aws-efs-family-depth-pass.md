@@ -6,7 +6,7 @@
 
 ## Summary
 
-Rebuilt `AwsElasticFileSystem` to the full Terraform-provider surface and split EFS access points out into the new first-class `AwsEfsAccessPoint` kind (enum 360). The rebuild fixes a deploy-breaking Terraform defect (the resource policy was typed as a string while the tfvars pipeline delivers a nested object), converges the two engines' physical identity and tag sets, adds the previously missing provider surface (dual-stack mount targets, replication, overwrite protection, the policy-lockout bypass), and lands the family's first-ever E2E coverage — all four live dual-engine lanes green. A framework gap fixed along the way: `map<string,string>` stack outputs now actually populate typed StackOutputs protos.
+Rebuilt `AwsElasticFileSystem` to the full Terraform-provider surface and split EFS access points out into the new first-class `AwsEfsAccessPoint` kind (enum 360). The rebuild fixes a deploy-breaking Terraform defect (the resource policy was typed as a string while the tfvars pipeline delivers a nested object), converges the two engines' physical identity and tag sets, adds the previously missing provider surface (dual-stack mount targets, replication, overwrite protection, the policy-lockout bypass), and lands the family's first-ever E2E coverage — all four live dual-engine lanes green. A framework gap fixed along the way: `map<string,string>` outputs now actually populate typed Outputs protos.
 
 ## Problem Statement / Motivation
 
@@ -38,7 +38,7 @@ The least-privilege front door to a shared file system: `file_system_id` ref, en
 - `AwsLambda.file_system_config.access_point_arn` → `default_kind: AwsEfsAccessPoint` + `default_kind_field_path: status.outputs.access_point_arn` (previously default-kind-only with a hand-typed map path).
 - `AwsEcsTaskDefinition` EFS volumes: `file_system_id` and `access_point_id` converted from literal strings to typed refs; the Pulumi module reads the resolved values, the generated TF contract is shape-identical (refs flatten to strings).
 
-### Framework fix: map-typed stack outputs now populate
+### Framework fix: map-typed outputs now populate
 
 The generic outputs transformer could not populate `map<string,string>` proto fields from either engine's raw outputs: the flattener dot-flattens map entries (`mount_target_ids.subnet-0abc`), but the populate walker tried to JSON-parse the leaf value as a whole map, and the key preprocessor rewrote hyphens to underscores across the WHOLE key — corrupting map keys, which are data (subnet IDs). Every map output in the catalog (Lambda `alias_arns`, S3 object-set `object_etags`, transit gateway, and now the EFS mount-target maps) silently arrived empty in the platform's typed outputs.
 
@@ -51,7 +51,7 @@ flowchart LR
     C --> D{"field lookup"}
     D -->|"map field, more segments"| E["setMapEntry: remaining segments rejoined as VERBATIM map key"]
     D -->|"field name miss"| F["per-segment hyphen normalization, retry"]
-    E --> G[typed StackOutputs proto]
+    E --> G[typed Outputs proto]
 ```
 
 Map keys pass through verbatim (they may contain hyphens and dots); hyphenated *field names* are normalized per segment at lookup time instead of by whole-key rewrite. Covered by the conformance case and proven live (`7/8 proto fields populated` in the E2E VERIFY-OUT phase, all four mount-target maps landing).
@@ -68,7 +68,7 @@ Map keys pass through verbatim (they may contain hyphens and dots); hyphenated *
 ## Impact
 
 - **Users**: EFS resource policies deploy (previously a guaranteed Terraform failure); the full modern EFS surface (DR replication, dual-stack, protection) is configurable; Lambda/ECS wire EFS access by clean references instead of hand-typed map paths; both engines produce identical physical resources.
-- **Platform**: every kind with map-typed stack outputs now gets real values in typed status outputs — a whole silent-data-loss class closed.
+- **Platform**: every kind with map-typed outputs now gets real values in typed status outputs — a whole silent-data-loss class closed.
 - **Catalog shape**: the access-point split follows the settled decompose test (independent identity + many-per-parent + FK-referenced), consistent with listeners, SNS subscriptions, and Cognito clients.
 
 ## Related Work

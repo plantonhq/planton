@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: gcpprojectiammember
 spec:
   billing_model: free
   free_tier: "Google's IAM billing-questions page states it outright: Identity and Access Management is offered at no additional charge for all Google Cloud customers -- you are charged only for use of other Google Cloud services. The IAM product page adds that all use of the IAM API is free of charge, with no additional cost per user or identity. This resource is exactly that -- one additive (role, member) entry in a project's IAM policy -- so creating it, holding it, evaluating it on every authorization check, and attaching an IAM Condition to it costs nothing at any grant count."
-  notes: "No field on this spec starts a meter. The real spend lives behind the grant, not in it: the role names what the member may do, and everything the member then does bills on the resources it touches under the project's billing account -- a storage.objectAdmin grant is free, the objects the member writes are not. Removal is free too, and revokes access the moment the pair is subtracted. Adjacent paid surfaces this component can never trigger: Cloud Identity Premium licensing and Identity Platform MAU pricing are separate products billed on identities, not on grants."
+  notes: "No field on this spec starts a meter. The real spend lives behind the grant, not in it: the role names what the member may do, and everything the member then does bills on the resources it touches under the project's billing account -- a storage.objectAdmin grant is free, the objects the member writes are not. Removal is free too, and revokes access the moment the pair is subtracted. Adjacent paid surfaces this kind can never trigger: Cloud Identity Premium licensing and Identity Platform MAU pricing are separate products billed on identities, not on grants."

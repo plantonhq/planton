@@ -10,7 +10,7 @@ routing children -- `network.VirtualHubRouteTable` (routes inline),
 
 The Azure provider is built through the shared provider builder, which
 resolves the right credential mechanism (static client secret, keyless
-web identity, or ambient chain) from the stack input.
+web identity, or ambient chain) from the IaC input.
 
 ## Design Decisions
 
@@ -30,7 +30,7 @@ web identity, or ambient chain) from the stack input.
 
 ## Inputs
 
-The module receives an `AzureVirtualHubStackInput` containing:
+The module receives an `AzureVirtualHubIacInput` containing:
 
 - `target.spec.region` / `target.spec.resource_group` / `target.spec.name` -- the hub's ARM identity (references resolved to literals by the platform)
 - `target.spec.virtual_wan_id` -- the WAN the hub belongs to

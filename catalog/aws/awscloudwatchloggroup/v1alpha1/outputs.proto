@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.aws.awscloudwatchloggroup.v1alpha1;
 
-// AwsCloudwatchLogGroupStackOutputs captures observable identifiers from a
+// AwsCloudwatchLogGroupOutputs captures observable identifiers from a
 // provisioned CloudWatch Logs log group.
 //
 // The primary output is `log_group_arn`, which downstream resources use to wire
@@ -13,7 +13,7 @@ package dev.planton.aws.awscloudwatchloggroup.v1alpha1;
 // Note: The ARN returned here does NOT include the `:*` suffix that the AWS API
 // sometimes appends. Services that require the `:*` suffix (e.g., Step Functions)
 // should handle this in their IaC module, not in the log group outputs.
-message AwsCloudwatchLogGroupStackOutputs {
+message AwsCloudwatchLogGroupOutputs {
   // The Amazon Resource Name (ARN) of the log group. This is the primary
   // identifier used to reference the log group in other AWS resources such
   // as Step Functions logging, API Gateway access logs, and OpenSearch log

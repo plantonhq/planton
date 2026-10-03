@@ -4,12 +4,12 @@ package dev.planton.digitalocean.digitaloceandatabaseuser.v1alpha1;
 
 import "shared/options/options.proto";
 
-// DigitalOceanDatabaseUserStackOutputs captures the key outputs after
+// DigitalOceanDatabaseUserOutputs captures the key outputs after
 // provisioning a DigitalOcean database user. The cluster id and user name
 // are echoed here so consumers (and verification tooling) can address the
 // user directly -- the DigitalOcean API has no standalone user id; the
 // (cluster, name) pair IS the identity.
-message DigitalOceanDatabaseUserStackOutputs {
+message DigitalOceanDatabaseUserOutputs {
   // UUID of the database cluster the user belongs to.
   string cluster_id = 1;
 

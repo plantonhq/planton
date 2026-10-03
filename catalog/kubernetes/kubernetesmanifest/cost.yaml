@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: kubernetesmanifest
 spec:
@@ -16,4 +16,4 @@ spec:
     - "manifest_yaml is an opaque string to this catalog -- even resource requests written inside it are invisible to the catalog's derivation grammar, exactly as they are for the values of a KubernetesHelmRelease"
     - "the typed fields govern apply MECHANICS only -- the anchor namespace, its creation, and readiness waiting -- none of them declares capacity"
     - the price of whatever the manifest reserves is the target cluster's node and storage-class economics, which this catalog cannot know
-  notes: "This is the catalog's bring-your-own-manifest escape hatch -- raw YAML applied exactly as written, for the vendor install manifest, CRD bundle, or exotic custom resource the catalog has no component for. A typed catalog component always wins where one exists: it validates configuration before deploy, exports composable outputs, and carries a real cost profile -- raw YAML, by design, can promise none of that. The component itself adds nothing to the bill: every reservation is the manifest author's own declaration."
+  notes: "This is the catalog's bring-your-own-manifest escape hatch -- raw YAML applied exactly as written, for the vendor install manifest, CRD bundle, or exotic custom resource the catalog has no component for. A typed catalog kind always wins where one exists: it validates configuration before deploy, exports composable outputs, and carries a real cost profile -- raw YAML, by design, can promise none of that. The component itself adds nothing to the bill: every reservation is the manifest author's own declaration."

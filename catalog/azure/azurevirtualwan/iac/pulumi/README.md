@@ -9,7 +9,7 @@ networking, which virtual hubs and their gateways reference.
 
 The Azure provider is built through the shared provider builder, which
 resolves the right credential mechanism (static client secret, keyless
-web identity, or ambient chain) from the stack input.
+web identity, or ambient chain) from the IaC input.
 
 ## Design Decisions
 
@@ -23,7 +23,7 @@ web identity, or ambient chain) from the stack input.
 
 ## Inputs
 
-The module receives an `AzureVirtualWanStackInput` containing:
+The module receives an `AzureVirtualWanIacInput` containing:
 
 - `target.spec.region` / `target.spec.resource_group` / `target.spec.name` -- the WAN's ARM identity (references resolved to literals by the platform)
 - `target.spec.disable_vpn_encryption` / `allow_branch_to_branch_traffic` -- transit policy

@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -26,7 +26,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -66,7 +66,7 @@ var _ = ginkgo.Describe("KubernetesTrino Validation Tests", func() {
 		input = &KubernetesTrino{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesTrino",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "trino",
 			},
 			Spec: &KubernetesTrinoSpec{
@@ -85,10 +85,10 @@ var _ = ginkgo.Describe("KubernetesTrino Validation Tests", func() {
 				Postgres: []*KubernetesTrinoPostgresCatalog{
 					{
 						Name:     "analytics",
-						Host:     valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "analytics-pg", "status.outputs.rw_service"),
+						Host:     valueFrom(catalogkind.CatalogKind_KubernetesPostgres, "analytics-pg", "status.outputs.rw_service"),
 						Database: "analytics",
 						PasswordSecret: &KubernetesTrinoPostgresPasswordSecret{
-							SecretName: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "analytics-pg", "status.outputs.password_secret.name"),
+							SecretName: valueFrom(catalogkind.CatalogKind_KubernetesPostgres, "analytics-pg", "status.outputs.password_secret.name"),
 						},
 					},
 				},

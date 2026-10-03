@@ -5,7 +5,7 @@ import (
 
 	awseksclusterv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsekscluster/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -16,10 +16,10 @@ type Locals struct {
 }
 
 // initializeLocals creates and populates the Locals struct with computed values
-// such as AWS tags based on the stack input.
-func initializeLocals(ctx *pulumi.Context, stackInput *awseksclusterv1alpha1.AwsEksClusterStackInput) *Locals {
+// such as AWS tags based on the IaC input.
+func initializeLocals(ctx *pulumi.Context, iacInput *awseksclusterv1alpha1.AwsEksClusterIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsEksCluster = stackInput.Target
+	locals.AwsEksCluster = iacInput.Target
 
 	// Build standard AWS tags for the cluster
 	locals.AwsTags = map[string]string{
@@ -27,7 +27,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *awseksclusterv1alpha1.Aws
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.AwsEksCluster.Metadata.Org,
 		awstagkeys.Environment:  locals.AwsEksCluster.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsEksCluster.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsEksCluster.String(),
 		awstagkeys.ResourceId:   locals.AwsEksCluster.Metadata.Id,
 	}
 

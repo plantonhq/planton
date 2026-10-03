@@ -41,7 +41,7 @@ var _ = ginkgo.Describe("GcpSccNotificationConfigSpec", func() {
 		return &GcpSccNotificationConfig{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpSccNotificationConfig",
-			Metadata:   &shared.CloudResourceMetadata{Name: "high-findings"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "high-findings"},
 			Spec: &GcpSccNotificationConfigSpec{
 				ConfigId:    "high-findings",
 				PubsubTopic: litRef("projects/sec/topics/scc-findings"),

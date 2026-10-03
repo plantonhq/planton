@@ -105,7 +105,7 @@ src/components/meetings/decks/[guest-slug]/
 mkdir -p src/components/meetings/decks/[guest-slug]/slides
 ```
 
-### Step 2: Create Slide Components
+### Step 2: Create Slide Kinds
 
 Each slide is a separate React component using shared primitives.
 
@@ -156,7 +156,7 @@ export const [guestSlug]Slides: SlideConfig[] = [
   {
     id: 'cover',
     name: 'Cover',
-    component: S01Cover,
+    kind: S01Cover,
     presenterNotes: [
       'Opening talking point',
       'Key message to emphasize',
@@ -166,7 +166,7 @@ export const [guestSlug]Slides: SlideConfig[] = [
   {
     id: 'topic-slug',
     name: 'Display Name',
-    component: S02Topic,
+    kind: S02Topic,
     presenterNotes: [
       'Note 1',
       'Note 2',
@@ -204,11 +204,11 @@ const meetingDeckRegistry: Record<string, MeetingDeckConfig> = {
 
 ## Shared Primitives Reference
 
-All slides should use components from `src/components/deck/primitives.tsx`:
+All slides should use kinds from `src/components/deck/primitives.tsx`:
 
 ### Layout Components
 
-| Component | Purpose | Props |
+| Kind | Purpose | Props |
 |-----------|---------|-------|
 | `Slide` | Base wrapper | `variant`, `className` |
 | `SlideHeader` | Section tag + title + subtitle | `sectionTag`, `title`, `subtitle` |
@@ -217,7 +217,7 @@ All slides should use components from `src/components/deck/primitives.tsx`:
 
 ### Typography
 
-| Component | Purpose |
+| Kind | Purpose |
 |-----------|---------|
 | `SlideTitle` | Main heading (responsive) |
 | `SlideSubtitle` | Secondary heading |
@@ -227,7 +227,7 @@ All slides should use components from `src/components/deck/primitives.tsx`:
 
 ### Content Containers
 
-| Component | Purpose | Props |
+| Kind | Purpose | Props |
 |-----------|---------|-------|
 | `Card` | Content container | `variant` (default, highlight, success, danger, purple, pink) |
 | `QuoteBox` | Blockquote with attribution | `attribution` |
@@ -235,7 +235,7 @@ All slides should use components from `src/components/deck/primitives.tsx`:
 
 ### Data Display
 
-| Component | Purpose | Props |
+| Kind | Purpose | Props |
 |-----------|---------|-------|
 | `Metric` | Large number + label | `value`, `label`, `sublabel`, `highlight` |
 | `StatsGrid` | Multiple stats in grid | `stats` array |
@@ -244,14 +244,14 @@ All slides should use components from `src/components/deck/primitives.tsx`:
 
 ### Lists
 
-| Component | Purpose | Props |
+| Kind | Purpose | Props |
 |-----------|---------|-------|
 | `Checklist` | Checkmark items | `items` array |
 | `IconList` | Icon + title + description | `items` array with `icon`, `title`, `description` |
 
 ### Badges
 
-| Component | Purpose |
+| Kind | Purpose |
 |-----------|---------|
 | `Badge` | Status label with variants |
 | `DemoBadge` | Live demo indicator |
@@ -293,7 +293,7 @@ presenterNotes: [
 
 - `S01Cover.tsx` - Two-digit number + descriptive name
 - Numbers allow reordering without renaming
-- Use PascalCase for component names
+- Use PascalCase for kind names
 - Descriptive suffixes: `S12DemoInfraHub.tsx`, `S19ROI.tsx`
 
 ---
@@ -307,7 +307,7 @@ Before completing the implementation:
 - [ ] Config file exports both slides array and config object
 - [ ] Registry entry added with correct key format (`guest/yyyy-mm-dd-hhmm`)
 - [ ] Imports use correct relative paths
-- [ ] Component names match file names
+- [ ] Kind names match file names
 - [ ] Slide IDs are unique and URL-friendly (kebab-case)
 - [ ] Guest-specific content is accurate and relevant
 - [ ] Narrative flows logically from problem to solution to ask
@@ -408,7 +408,7 @@ After successful build, I will create a changelog entry documenting the new deck
 
 **Date:** [Current date]
 **Type:** Feature
-**Components:** Meets Micro-App, [Guest Slug] Presentation
+**Kinds:** Meets Micro-App, [Guest Slug] Presentation
 
 ## Summary
 
@@ -557,7 +557,7 @@ Study this implementation for patterns and conventions.
 This rule transforms meeting preparation materials into production-ready web presentations through a complete workflow:
 
 1. **Phase 1: Information Gathering** - Understanding guest context, meeting details, and presentation goals
-2. **Phase 2: Implementation** - Creating guest folder, slide components, config, and registry entry
+2. **Phase 2: Implementation** - Creating guest folder, slide kinds, config, and registry entry
 3. **Phase 3: Review and Iteration** - Using dev server (`make run`) for live preview and iterating on feedback
 4. **Phase 4: Build Verification** - Running `make build` iteratively until it succeeds
 5. **Phase 5: Changelog** - Documenting the new deck creation

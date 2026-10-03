@@ -9,7 +9,7 @@ provider.tf   — Cloudflare provider configuration
 variables.tf  — Input variables mirroring CloudflareQueueSpec
 locals.tf     — Resource naming
 main.tf       — cloudflare_queue + cloudflare_queue_consumer resources
-outputs.tf    — Stack outputs (queue_id, queue_name, created_on, modified_on)
+outputs.tf    — outputs (queue_id, queue_name, created_on, modified_on)
 ```
 
 ## Usage

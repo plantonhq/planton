@@ -20,7 +20,7 @@ func validQueue() *CloudflareQueue {
 	return &CloudflareQueue{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareQueue",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-queue"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-queue"},
 		Spec: &CloudflareQueueSpec{
 			AccountId: validAccountID,
 			QueueName: "orders-queue",

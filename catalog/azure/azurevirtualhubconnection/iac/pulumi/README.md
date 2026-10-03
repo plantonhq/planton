@@ -10,7 +10,7 @@ topologies are expressed.
 
 The Azure provider is built through the shared provider builder, which
 resolves the right credential mechanism (static client secret, keyless
-web identity, or ambient chain) from the stack input.
+web identity, or ambient chain) from the IaC input.
 
 ## Design Decisions
 
@@ -27,7 +27,7 @@ web identity, or ambient chain) from the stack input.
 
 ## Inputs
 
-The module receives an `AzureVirtualHubConnectionStackInput` containing:
+The module receives an `AzureVirtualHubConnectionIacInput` containing:
 
 - `target.spec.name` -- the connection's name (2-80 chars, the provider's regex)
 - `target.spec.virtual_hub_id` / `target.spec.remote_virtual_network_id` -- the two sides of the attachment

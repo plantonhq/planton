@@ -20,8 +20,8 @@ type Locals struct {
 	IsRegional bool
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *gcpbackendservicev1alpha1.GcpBackendServiceStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(ctx *pulumi.Context, iacInput *gcpbackendservicev1alpha1.GcpBackendServiceIacInput) *Locals {
+	target := iacInput.Target
 
 	backendServiceName := target.Spec.BackendServiceName
 	if backendServiceName == "" {

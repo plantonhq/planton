@@ -42,7 +42,7 @@ For self-managed pipelines, the build stage runs your custom Tekton pipeline ins
 
 The deploy stage rolls out the built artifact to each configured environment. Environments are deployed sequentially, following your organization's promotion policy (for example: dev, then staging, then production).
 
-For each environment, the deploy stage creates a Stack Job — an atomic infrastructure operation that provisions the cloud resource for that deployment target. The pipeline waits for each environment to complete before proceeding to the next. If a deployment fails, subsequent environments are skipped.
+For each environment, the deploy stage creates an Infra Job — an atomic infrastructure operation that provisions the infra component for that deployment target. The pipeline waits for each environment to complete before proceeding to the next. If a deployment fails, subsequent environments are skipped.
 
 This sequential model exists for a reason: each environment can depend on the previous one succeeding (you do not want a broken build reaching production), and failure at any stage stops the rollout cleanly rather than leaving partial deployments across environments.
 
@@ -66,7 +66,7 @@ A service that should never walk every environment from a branch push sets `buil
 Pull request pipelines can be configured independently for two levels:
 
 - **Build only** — The pipeline builds the artifact but does not deploy it. Useful for validating that the code compiles and the image builds successfully before merging.
-- **Build and deploy** — Every pull request gets its own **preview environment**: a real, short-lived environment named `{service}-pr-{number}`, born from the environment the PR's target branch deploys to. The changed service deploys into it alone — configuration references resolve against the base environment's stable instances — and rollout verification stamps a working URL that you, or the agent that authored the pull request, can check before review. Closing the PR destroys the preview's cloud resources first and its records after; an untouched preview expires on its own (72 hours by default, tunable per service with `previewTtlHours`), so an abandoned pull request never leaks cloud spend.
+- **Build and deploy** — Every pull request gets its own **preview environment**: a real, short-lived environment named `{service}-pr-{number}`, born from the environment the PR's target branch deploys to. The changed service deploys into it alone — configuration references resolve against the base environment's stable instances — and rollout verification stamps a working URL that you, or the agent that authored the pull request, can check before review. Closing the PR destroys the preview's infra components first and its records after; an untouched preview expires on its own (72 hours by default, tunable per service with `previewTtlHours`), so an abandoned pull request never leaks cloud spend.
 
 For kustomize-maintained services, preview deploys open when the repository authors a `previews/<env>` directory in its `_kustomize` tree declaring what previews change. Without one, PR pipelines build and skip the deploy, naming the exact path to author. Check any pull request's preview with one call:
 

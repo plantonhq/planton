@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuremongoclusteruser
 spec:
@@ -9,8 +9,8 @@ spec:
   values:
     - name: mongo_cluster_user_id
       derivations:
-        - from_stack_output: mongo_cluster_user_id
+        - from_output: mongo_cluster_user_id
       where_to_find: >-
         Compose {cluster_id}/users/{object_id} from the cluster's ARM
         ID and the granted principal's object id, or use the
-        component's own mongo_cluster_user_id stack output.
+        component's own mongo_cluster_user_id output.

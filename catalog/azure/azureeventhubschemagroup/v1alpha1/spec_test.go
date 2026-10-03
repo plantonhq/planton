@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -21,7 +21,7 @@ func minimalSchemaGroup() *AzureEventHubSchemaGroup {
 	return &AzureEventHubSchemaGroup{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureEventHubSchemaGroup",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-schema-group",
 		},
 		Spec: &AzureEventHubSchemaGroupSpec{
@@ -51,7 +51,7 @@ var _ = ginkgo.Describe("AzureEventHubSchemaGroupSpec Validation Tests", func() 
 				input.Spec.NamespaceId = &foreignkeyv1.StringValueOrRef{
 					LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 						ValueFrom: &foreignkeyv1.ValueFromRef{
-							Kind:      cloudresourcekind.CloudResourceKind_AzureEventHubNamespace,
+							Kind:      catalogkind.CatalogKind_AzureEventHubNamespace,
 							Name:      "shared-eventhubs",
 							FieldPath: "status.outputs.namespace_id",
 						},

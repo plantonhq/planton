@@ -4,7 +4,7 @@ Grants a Microsoft Entra ID principal access to an Azure Cosmos DB for MongoDB v
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Mongo cluster user grant** -- the Entra principal's binding on the cluster, with its database role grants. The identity provider is pinned to `MicrosoftEntraID` (the only value Azure accepts today), so it never appears in the spec -- both engines send it explicitly. The grant carries no tags: ARM data-plane user entries are untagged.
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **The target cluster** -- reference an AzureMongoCluster's `mongo_cluster_id` output, or pass an existing cluster's ARM ID.
 - **The principal** -- for workload identities, reference the AzureUserAssignedIdentity's `principal_id` output; for humans or app registrations, the object ID from Entra.
 
@@ -53,7 +53,7 @@ spec:
 planton apply -f mongo-cluster-user.yaml
 ```
 
-This grants the service principal behind the object ID cluster-wide access -- root on the admin database -- to the named Mongo vCore cluster. A Stack Job tracks the provisioning in real time.
+This grants the service principal behind the object ID cluster-wide access -- root on the admin database -- to the named Mongo vCore cluster. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -97,16 +97,16 @@ These are the most important decisions when configuring a Mongo cluster user gra
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureMongoCluster** | `mongoClusterId` | `status.outputs.mongo_cluster_id` |
 | **AzureUserAssignedIdentity** (workload identities) | `objectId` | `status.outputs.principal_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-This component has no consumable outputs. `status.outputs` records the grant's ARM ID (`mongo_cluster_user_id`, shaped `{cluster_id}/users/{object_id}`) and its ARM name (`mongo_cluster_user_name`, which is the granted principal's object ID back), but both derive from the inputs -- applications connect to the CLUSTER's endpoints under the granted identity, not to the grant, so nothing downstream references these values.
+This kind has no consumable outputs. `status.outputs` records the grant's ARM ID (`mongo_cluster_user_id`, shaped `{cluster_id}/users/{object_id}`) and its ARM name (`mongo_cluster_user_name`, which is the granted principal's object ID back), but both derive from the inputs -- applications connect to the CLUSTER's endpoints under the granted identity, not to the grant, so nothing downstream references these values.
 
 ## Common Patterns
 
@@ -118,5 +118,5 @@ This component has no consumable outputs. `status.outputs` records the grant's A
 
 ## Works With
 
-- [**Azure Mongo Cluster (Cosmos DB for MongoDB vCore)**](/cloud-catalog/azure-mongo-cluster) -- the cluster the principal is granted access to; it must list "MicrosoftEntraID" in its authentication methods
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- the workload identity whose principal the grant binds, referenced by its `principal_id` output
+- [**Azure Mongo Cluster (Cosmos DB for MongoDB vCore)**](/infra-catalog/azure-mongo-cluster) -- the cluster the principal is granted access to; it must list "MicrosoftEntraID" in its authentication methods
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- the workload identity whose principal the grant binds, referenced by its `principal_id` output

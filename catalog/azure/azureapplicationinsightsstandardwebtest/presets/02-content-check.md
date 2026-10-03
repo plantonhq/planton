@@ -26,5 +26,5 @@ false instead to fail when an error string appears.
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<resource-group-name>` | The resource group to create the test in | The resource group's `status.outputs.resource_group_name` |
-| `<application-insights>` | The AzureApplicationInsights component storing results | Your component's Planton resource name |
+| `<application-insights>` | The AzureApplicationInsights kind storing results | Your component's Planton resource name |
 | `<https://your-api/status>` | The status endpoint to check | Your API's status URL |

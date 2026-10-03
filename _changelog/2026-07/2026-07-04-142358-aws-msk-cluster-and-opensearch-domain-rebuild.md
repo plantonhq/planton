@@ -15,7 +15,7 @@
 - **MSK carried the retired embedded-SG pattern** — `allowed_cidr_blocks`, `associate_security_group_ids`, and a `vpc_id` that existed only to feed a module-managed shadow security group. Every other data kind had already converged to referenced first-class security groups.
 - **MSK was missing real provider surface**: no PrivateLink (`vpc_connectivity`), no dual-stack (`network_type`), no Express-broker rebalancing, no SCRAM secret association, no cluster policy — the mechanism behind cross-account PrivateLink access.
 - **OpenSearch was ~10 blocks short of the provider**: no Cognito, no JWT/anonymous FGAC, no Identity Center, no AI/ML options, no `node_options`, no off-peak window, an Auto-Tune boolean instead of the real options block, and no V2 endpoint outputs.
-- **Structural debt on both**: OpenSearch's TF contract was a hand-written `type = any`; both kinds keyed cloud names off `metadata.id` on one engine (the cross-engine identity class); MSK's Pulumi entrypoint lacked its Makefile and stack-input template; neither kind had any E2E coverage.
+- **Structural debt on both**: OpenSearch's TF contract was a hand-written `type = any`; both kinds keyed cloud names off `metadata.id` on one engine (the cross-engine identity class); MSK's Pulumi entrypoint lacked its Makefile and iac-input template; neither kind had any E2E coverage.
 
 ## Solution / What's New
 
@@ -34,7 +34,7 @@
 
 ### Both kinds, one contract
 
-- Generator-owned `variables.tf` under the drift guard (OpenSearch's `type = any` legacy is gone); provider floors on the v6 line (MSK `>= 6.41.0`, OpenSearch `>= 6.31.0`); naming basis `metadata.name` on both engines with the cloud name argument set explicitly; Pulumi entrypoint anatomy completed (Makefile, stack-input template); presets, catalog pages, READMEs, and deep docs rewritten to the new shapes (the stale `autoTuneEnabled` and embedded-SG narratives are gone everywhere).
+- Generator-owned `variables.tf` under the drift guard (OpenSearch's `type = any` legacy is gone); provider floors on the v6 line (MSK `>= 6.41.0`, OpenSearch `>= 6.31.0`); naming basis `metadata.name` on both engines with the cloud name argument set explicitly; Pulumi entrypoint anatomy completed (Makefile, iac-input template); presets, catalog pages, READMEs, and deep docs rewritten to the new shapes (the stale `autoTuneEnabled` and embedded-SG narratives are gone everywhere).
 - Outputs-conformance enrollment for both kinds (all 17 MSK outputs, all 8 OpenSearch outputs flatten onto their protos).
 
 ### E2E (first-ever for both; preview/plan lanes per session decision)
@@ -46,7 +46,7 @@
 
 ## Validation
 
-- Offline gate green: spec/CEL tests for both kinds, outputs conformance (2 new cases), TF drift guard, `validate-refs`, `secret-coverage`, kind-map regeneration, crkreflect + E2E-runner test suites, `go vet` on the e2e-tagged test package, and all 11 touched manifests (presets, scenarios, prerequisites, hack manifests) CLI-validated.
+- Offline gate green: spec/CEL tests for both kinds, outputs conformance (2 new cases), TF drift guard, `validate-refs`, `secret-coverage`, kind-map regeneration, catalogkindreflect + E2E-runner test suites, `go vet` on the e2e-tagged test package, and all 11 touched manifests (presets, scenarios, prerequisites, hack manifests) CLI-validated.
 - `tofu validate`/`plan` + `pulumi preview` green on both kinds (the tofu validate pass caught and fixed one block-name defect: the broker-log S3 destination is `s3`, not `s3_logs`).
 - NOT run (recorded): live deploy → verify → destroy lanes for both kinds — deferred by owner decision; the artifacts are live-ready.
 

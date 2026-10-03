@@ -4,7 +4,7 @@ Deploys a production-grade MongoDB cluster reconciled by the Percona Operator fo
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **PerconaServerMongoDB** — a `psmdb.percona.com/v1` custom resource named `metadata.name`. The operator derives every object from it: member pods (`{name}-{rs}-0..N`), the per-replica-set headless Services (`{name}-{rs}`), the mongos Service (`{name}-mongos`, sharding only), and the system-users Secret (`{name}-secrets`, operator-generated passwords for the built-in accounts)
 - **Credential Secrets** — every declared password or key materializes as a deterministic Secret (`{name}-user-{username}` for declarative users, per-storage Secrets for backup-store credentials); the keyless S3 posture needs none
@@ -17,7 +17,7 @@ Applications connect through the SERVICES, never a pod: for replica-set clusters
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** — an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** — an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Kubernetes Cluster
 
@@ -76,11 +76,11 @@ spec:
 planton apply -f mongodb.yaml
 ```
 
-This creates a three-member replica set with automated failover, a declared application user with an operator-managed password Secret, a nightly logical backup to S3 (keyless — the pods' ambient AWS identity) pruned after 14 runs, and continuous oplog archiving for point-in-time recovery. A Stack Job tracks the provisioning in real time.
+This creates a three-member replica set with automated failover, a declared application user with an operator-managed password Secret, a nightly logical backup to S3 (keyless — the pods' ambient AWS identity) pruned after 14 runs, and continuous oplog archiving for point-in-time recovery. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire placement and storage to resources managed by other Cloud Resources:
+When deploying as part of a multi-resource environment, wire placement and storage to resources managed by other Infra Components:
 
 ```yaml
 spec:
@@ -129,7 +129,7 @@ These are the most important decisions when configuring a MongoDB cluster. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -137,7 +137,7 @@ These are the most important decisions when configuring a MongoDB cluster. Explo
 | **KubernetesStorageClass** | `replicaSets[].storage.storageClass` / `sharding.configServer.storage.storageClass` | `status.outputs.storage_class_name` |
 | **KubernetesClusterIssuer** | `tls.issuer` (or a namespaced KubernetesIssuer when `issuerKind: Issuer`) | `metadata.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains values that applications and downstream resources can consume:
 
@@ -165,8 +165,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Percona Operator for MongoDB**](/cloud-catalog/kubernetes-percona-mongo-operator) — the prerequisite: reconciles the PerconaServerMongoDB resource and must watch the database's namespace
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — the placement target
-- [**Kubernetes StorageClass**](/cloud-catalog/kubernetes-storage-class) — backs the member and config-server volumes
-- [**Cert Manager Cluster Issuer**](/cloud-catalog/kubernetes-cluster-issuer) — the cert-manager seam for organization-trusted TLS
-- [**PostgreSQL**](/cloud-catalog/kubernetes-postgres) — the relational sibling in a typical polyglot data layer
+- [**Percona Operator for MongoDB**](/infra-catalog/kubernetes-percona-mongo-operator) — the prerequisite: reconciles the PerconaServerMongoDB resource and must watch the database's namespace
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — the placement target
+- [**Kubernetes StorageClass**](/infra-catalog/kubernetes-storage-class) — backs the member and config-server volumes
+- [**Cert Manager Cluster Issuer**](/infra-catalog/kubernetes-cluster-issuer) — the cert-manager seam for organization-trusted TLS
+- [**PostgreSQL**](/infra-catalog/kubernetes-postgres) — the relational sibling in a typical polyglot data layer

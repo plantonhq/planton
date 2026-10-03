@@ -21,8 +21,8 @@ type Locals struct {
 	GroupLabels map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudidentitygroupv1alpha1.GcpCloudIdentityGroupStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcpcloudidentitygroupv1alpha1.GcpCloudIdentityGroupIacInput) *Locals {
+	target := iacInput.Target
 
 	displayName := target.Spec.DisplayName
 	if displayName == "" {

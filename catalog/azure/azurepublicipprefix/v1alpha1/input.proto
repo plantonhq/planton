@@ -5,10 +5,10 @@ package dev.planton.azure.azurepublicipprefix.v1alpha1;
 import "catalog/azure/azurepublicipprefix/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzurePublicIpPrefixStackInput is the input to the IaC modules
+// AzurePublicIpPrefixIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and Azure
 // provider credentials.
-message AzurePublicIpPrefixStackInput {
+message AzurePublicIpPrefixIacInput {
   // The public IP prefix resource to deploy.
   AzurePublicIpPrefix target = 1;
 

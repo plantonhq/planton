@@ -9,12 +9,12 @@ import (
 
 // Resources orchestrates creation of the schedule (and optionally its
 // group) and exports outputs.
-func Resources(ctx *pulumi.Context, stackInput *awseventbridgeschedulerv1alpha1.AwsEventBridgeSchedulerStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awseventbridgeschedulerv1alpha1.AwsEventBridgeSchedulerIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which resolves
+	// Build the AWS provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static keys, keyless web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.Target.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.Target.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

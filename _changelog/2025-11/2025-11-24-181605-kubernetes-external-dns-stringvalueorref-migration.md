@@ -10,7 +10,7 @@ Migrated `dns_zone_id` fields in `KubernetesExternalDnsAksConfig` and `Kubernete
 
 ## Problem Statement / Motivation
 
-The KubernetesExternalDns component had an inconsistency in how DNS zone IDs were handled across different cloud providers. GKE and EKS configurations already supported `StringValueOrRef` for their zone ID fields, allowing users to either provide literal zone IDs or reference them from other resources. However, AKS and Cloudflare configurations were still using plain `string` types, limiting flexibility and creating an inconsistent API surface.
+The KubernetesExternalDns kind had an inconsistency in how DNS zone IDs were handled across different cloud providers. GKE and EKS configurations already supported `StringValueOrRef` for their zone ID fields, allowing users to either provide literal zone IDs or reference them from other resources. However, AKS and Cloudflare configurations were still using plain `string` types, limiting flexibility and creating an inconsistent API surface.
 
 ### Pain Points
 
@@ -300,7 +300,7 @@ spec:
       value: abc123
 ```
 
-### Components Affected
+### Kinds Affected
 
 - **Proto Schema**: `spec.proto` changed for AKS and Cloudflare configs
 - **Go Stubs**: Auto-generated from proto changes
@@ -314,7 +314,7 @@ spec:
 All changes validated through:
 
 1. **Proto compilation**: `make protos` completed successfully
-2. **Component tests**: All 13 tests passing (13/13 ✓)
+2. **Kind tests**: All 13 tests passing (13/13 ✓)
 3. **Build validation**: `make build` completed successfully
 4. **Code review**: All accessor patterns verified for consistency
 

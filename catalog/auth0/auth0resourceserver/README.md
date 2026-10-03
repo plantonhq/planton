@@ -1,6 +1,6 @@
 # Auth0 Resource Server
 
-The Auth0ResourceServer component configures a Resource Server (API) in Auth0. Resource Servers represent the APIs that your applications can request access to, defining the audience parameter used in authorization requests and the scopes (permissions) that can be granted.
+The Auth0ResourceServer kind configures a Resource Server (API) in Auth0. Resource Servers represent the APIs that your applications can request access to, defining the audience parameter used in authorization requests and the scopes (permissions) that can be granted.
 
 ## Why Use Auth0 Resource Server?
 

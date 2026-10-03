@@ -37,7 +37,7 @@ var _ = ginkgo.Describe("GcpVertexAiPersistentResourceSpec", func() {
 		return &GcpVertexAiPersistentResource{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpVertexAiPersistentResource",
-			Metadata:   &shared.CloudResourceMetadata{Name: "training-pool"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "training-pool"},
 			Spec: &GcpVertexAiPersistentResourceSpec{
 				Location: "us-central1",
 				ResourcePools: []*GcpVertexAiPersistentResourceResourcePool{

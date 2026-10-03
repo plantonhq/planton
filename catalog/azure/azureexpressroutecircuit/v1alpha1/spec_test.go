@@ -28,7 +28,7 @@ func validResource() *AzureExpressRouteCircuit {
 	return &AzureExpressRouteCircuit{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureExpressRouteCircuit",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-erc",
 		},
 		Spec: &AzureExpressRouteCircuitSpec{

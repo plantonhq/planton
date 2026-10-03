@@ -74,7 +74,7 @@ function useLoggedIn(): boolean {
 }
 ```
 
-Separate `DesktopAuthButtons` and `MobileAuthButtons` components handle the two layouts. All `target="_blank"` attributes removed; auth links are now same-tab relative paths (`/login`, `/signup`, `/dashboard`).
+Separate `DesktopAuthButtons` and `MobileAuthButtons` kinds handle the two layouts. All `target="_blank"` attributes removed; auth links are now same-tab relative paths (`/login`, `/signup`, `/dashboard`).
 
 ## Benefits
 
@@ -87,7 +87,7 @@ Separate `DesktopAuthButtons` and `MobileAuthButtons` components handle the two 
 
 - **Logged-in users**: GitHub-style auto-redirect to dashboard
 - **Logged-out users**: No change -- see marketing page with sign in/up buttons
-- **Mobile users**: Same behavior via `MobileAuthButtons` component
+- **Mobile users**: Same behavior via `MobileAuthButtons` kind
 
 ## Related Work
 

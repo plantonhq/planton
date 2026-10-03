@@ -27,7 +27,7 @@ Subnets are not tracked ARM resources, so they carry no tags.
 
 ## Inputs
 
-The module receives an `AzureSubnetStackInput` containing:
+The module receives an `AzureSubnetIacInput` containing:
 
 - `target.spec.virtual_network_id` -- ARM ID of the parent network (reference resolved to a literal by the platform); resource group and network name are parsed from it
 - `target.spec.name` -- the subnet's name, unique within the network

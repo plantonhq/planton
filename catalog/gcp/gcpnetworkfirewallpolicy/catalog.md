@@ -4,7 +4,7 @@ Creates a network firewall policy: an ordered set of firewall rules owned by a p
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Firewall policy** -- the `compute_network_firewall_policy` (global) or `compute_region_network_firewall_policy` (regional), chosen by `region`
 - **Rules** -- one `..._rule` per `rules` entry, keyed by priority
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with `roles/compute.securityAdmin` on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with `roles/compute.securityAdmin` on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### GCP Network
 
@@ -78,7 +78,7 @@ spec:
 planton apply -f baseline.yaml
 ```
 
-This creates a global policy in the provider's project with three rules -- allow Identity-Aware Proxy SSH, allow Google's health-check probers, deny and log everything else -- attached to the `main` network. A Stack Job tracks the provisioning in real time.
+This creates a global policy in the provider's project with three rules -- allow Identity-Aware Proxy SSH, allow Google's health-check probers, deny and log everything else -- attached to the `main` network. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -132,7 +132,7 @@ These are the most important decisions when configuring a network firewall polic
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -142,9 +142,9 @@ These are the most important decisions when configuring a network firewall polic
 | **GcpServiceAccount** | `rules[].targetServiceAccounts[]` | `status.outputs.email` |
 | **GcpGlobalForwardingRule** | `rules[].targetForwardingRules[]` | `status.outputs.self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -167,8 +167,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Hierarchical Firewall Policy**](/cloud-catalog/gcp-hierarchical-firewall-policy) -- organization- and folder-level policies evaluated before this one
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- the networks the policy attaches to
-- [**GCP Tag Value**](/cloud-catalog/gcp-tag-value) -- the secure tags rules key on
-- [**GCP Global Forwarding Rule**](/cloud-catalog/gcp-global-forwarding-rule) -- the load balancers `targetForwardingRules` reference
-- [**GCP Firewall Rule**](/cloud-catalog/gcp-firewall-rule) -- legacy per-network rules, evaluated last
+- [**GCP Hierarchical Firewall Policy**](/infra-catalog/gcp-hierarchical-firewall-policy) -- organization- and folder-level policies evaluated before this one
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- the networks the policy attaches to
+- [**GCP Tag Value**](/infra-catalog/gcp-tag-value) -- the secure tags rules key on
+- [**GCP Global Forwarding Rule**](/infra-catalog/gcp-global-forwarding-rule) -- the load balancers `targetForwardingRules` reference
+- [**GCP Firewall Rule**](/infra-catalog/gcp-firewall-rule) -- legacy per-network rules, evaluated last

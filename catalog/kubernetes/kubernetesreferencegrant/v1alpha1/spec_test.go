@@ -30,7 +30,7 @@ var _ = ginkgo.Describe("KubernetesReferenceGrant Validation Tests", func() {
 		input = &KubernetesReferenceGrant{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesReferenceGrant",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-reference-grant",
 			},
 			Spec: &KubernetesReferenceGrantSpec{

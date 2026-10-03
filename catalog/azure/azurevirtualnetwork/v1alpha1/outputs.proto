@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package dev.planton.azure.azurevirtualnetwork.v1alpha1;
 
-// AzureVirtualNetworkStackOutputs captures the outputs of provisioning an
+// AzureVirtualNetworkOutputs captures the outputs of provisioning an
 // Azure Virtual Network.
 //
 // The primary output is `virtual_network_id`, the join key for everything
 // that lives inside or attaches to the network: AzureSubnet partitions it,
 // AzurePrivateDnsZoneVirtualNetworkLink makes private DNS zones resolvable
 // from it, and AzureVnetPeering connects it to other networks.
-message AzureVirtualNetworkStackOutputs {
+message AzureVirtualNetworkOutputs {
   // The Azure Resource Manager ID of the virtual network.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/virtualNetworks/{name}
   // This is the primary output referenced by downstream resources via StringValueOrRef.

@@ -1,4 +1,4 @@
-// Package capacityestimator evaluates a component's capacity derivation
+// Package capacityestimator evaluates a kind's capacity derivation
 // against one typed manifest. It is the execution engine of the
 // capacity-derivation standard, the cluster-capacity twin of the cost
 // estimator: workload bindings locate the manifest's ContainerResources
@@ -26,9 +26,9 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 
 	"github.com/plantonhq/planton/catalog/kubernetes"
-	capacityv1 "github.com/plantonhq/planton/finops/componentcapacityderivation/v1"
-	costestimatev1 "github.com/plantonhq/planton/finops/componentcostestimate/v1"
-	estimatemodelv1 "github.com/plantonhq/planton/finops/componentcostestimatemodel/v1"
+	capacityv1 "github.com/plantonhq/planton/finops/catalogkindcapacityderivation/v1"
+	costestimatev1 "github.com/plantonhq/planton/finops/catalogkindcostestimate/v1"
+	estimatemodelv1 "github.com/plantonhq/planton/finops/catalogkindcostestimatemodel/v1"
 	"github.com/plantonhq/planton/pkg/finops/costestimator"
 	"github.com/plantonhq/planton/pkg/specpath"
 	sharedoptions "github.com/plantonhq/planton/shared/options"
@@ -43,7 +43,7 @@ import (
 // quantity outside the grammar).
 func Evaluate(
 	manifest proto.Message,
-	spec *capacityv1.ComponentCapacityDerivationSpec,
+	spec *capacityv1.CatalogKindCapacityDerivationSpec,
 ) (*estimatemodelv1.PresetEstimateModel, *costestimator.Refusal, error) {
 	specMsg, err := costestimator.ManifestSpec(manifest)
 	if err != nil {

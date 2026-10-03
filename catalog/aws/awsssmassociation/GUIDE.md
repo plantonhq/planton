@@ -1,4 +1,4 @@
-# AwsSsmAssociation — Component Guide
+# AwsSsmAssociation — Kind Guide
 
 Authored operational judgment for the association component: the
 design decisions behind the spec's shape, and what to know before
@@ -18,7 +18,7 @@ operating associations in production.
   reference's `valueFrom` arm.
 - **Identity is the AWS-generated UUID**, not the name —
   `association_name` is console display metadata, and the import map
-  derives `association_id` from the stack outputs.
+  derives `association_id` from the outputs.
 
 ## Operating associations in production
 

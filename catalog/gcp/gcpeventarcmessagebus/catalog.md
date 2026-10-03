@@ -4,7 +4,7 @@ Creates an Eventarc ADVANCED message bus with its satellites — the enterprise 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Message bus** -- an `eventarc.MessageBus` (the central conduit)
 - **Google API sources** -- one `eventarc.GoogleApiSource` per spec entry, auto-wired to THIS bus
@@ -61,7 +61,7 @@ spec:
 planton apply -f message-bus.yaml
 ```
 
-This creates the bus, one pipeline publishing to a Pub/Sub topic, and one enrollment routing every bus message to it. A Stack Job tracks the provisioning in real time.
+This creates the bus, one pipeline publishing to a Pub/Sub topic, and one enrollment routing every bus message to it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,7 +102,7 @@ These are the most important decisions when configuring a message bus. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -112,9 +112,9 @@ These are the most important decisions when configuring a message bus. Explore t
 | **GcpServiceAccount** (auth) | `pipelines[].authentication.*.serviceAccount` | `status.outputs.email` |
 | **GcpKmsKey** (optional) | `cryptoKey` (bus/source/pipeline) | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -130,8 +130,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Pub/Sub Topic**](/cloud-catalog/gcp-pub-sub-topic) -- pipeline topic destinations
-- [**GCP Workflow**](/cloud-catalog/gcp-workflow) -- pipeline workflow destinations
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- pipeline auth identities
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- CMEK on bus and satellites
-- [**GCP Eventarc Trigger**](/cloud-catalog/gcp-eventarc-trigger) -- Eventarc Standard, for single-type point-to-point routes
+- [**GCP Pub/Sub Topic**](/infra-catalog/gcp-pub-sub-topic) -- pipeline topic destinations
+- [**GCP Workflow**](/infra-catalog/gcp-workflow) -- pipeline workflow destinations
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- pipeline auth identities
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- CMEK on bus and satellites
+- [**GCP Eventarc Trigger**](/infra-catalog/gcp-eventarc-trigger) -- Eventarc Standard, for single-type point-to-point routes

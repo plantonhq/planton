@@ -10,10 +10,10 @@ import (
 
 // Resources is the Pulumi program entry-point for the GcpCloudFunction
 // component.
-func Resources(ctx *pulumi.Context, stackInput *gcpcloudfunctionv1alpha1.GcpCloudFunctionStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *gcpcloudfunctionv1alpha1.GcpCloudFunctionIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, stackInput.ProviderConfig)
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

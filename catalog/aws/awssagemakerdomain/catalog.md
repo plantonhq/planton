@@ -4,7 +4,7 @@ Deploys an Amazon SageMaker Domain providing a shared workspace for JupyterLab n
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SageMaker Domain** -- a Studio workspace configured with the specified authentication mode, VPC placement, two inheritance planes (default user settings and default shared-space settings), per-IDE app defaults (JupyterLab, Code Editor, classic Jupyter Server, KernelGateway, TensorBoard), Canvas capabilities, optional RStudio Workbench, and domain-wide governance dials (Docker access, Studio UI hiding, tag propagation)
 - **User Profiles** -- one per `userProfiles` entry: the per-person workspaces inside the domain, each inheriting the domain's defaults with optional per-user overrides (adding a teammate is adding one list entry)
@@ -17,15 +17,15 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **A VPC** with DNS resolution and DNS hostnames enabled. All domain network interfaces are placed in this VPC. Provide the VPC ID directly or reference an AwsVpc Cloud Resource via ValueFromRef. Changing the VPC forces domain replacement.
-- **At least one subnet** (two recommended for high availability) in the target VPC. Private subnets are required for `VpcOnly` network mode. Provide subnet IDs directly or reference an AwsVpc Cloud Resource via ValueFromRef. Changing subnets forces domain replacement.
-- **An IAM execution role** with a trust policy allowing `sagemaker.amazonaws.com` to assume it. This role governs what AWS resources users can access from Studio sessions. Provide the ARN directly or reference an AwsIamRole Cloud Resource via ValueFromRef.
-- **Security groups** (optional) for domain-level and user-level network isolation. Provide IDs directly or reference AwsSecurityGroup Cloud Resources via ValueFromRef.
+- **A VPC** with DNS resolution and DNS hostnames enabled. All domain network interfaces are placed in this VPC. Provide the VPC ID directly or reference an AwsVpc Infra Component via ValueFromRef. Changing the VPC forces domain replacement.
+- **At least one subnet** (two recommended for high availability) in the target VPC. Private subnets are required for `VpcOnly` network mode. Provide subnet IDs directly or reference an AwsVpc Infra Component via ValueFromRef. Changing subnets forces domain replacement.
+- **An IAM execution role** with a trust policy allowing `sagemaker.amazonaws.com` to assume it. This role governs what AWS resources users can access from Studio sessions. Provide the ARN directly or reference an AwsIamRole Infra Component via ValueFromRef.
+- **Security groups** (optional) for domain-level and user-level network isolation. Provide IDs directly or reference AwsSecurityGroup Infra Components via ValueFromRef.
 - **A KMS key** (optional) for encrypting the EFS home directory volume. If omitted, AWS uses the default `aws/elasticfilesystem` service key. Changing the KMS key forces domain replacement.
 - **AWS IAM Identity Center** (required for SSO auth mode) configured in the account with user assignments.
 
@@ -63,7 +63,7 @@ spec:
 planton apply -f sagemaker-domain.yaml
 ```
 
-This creates a SageMaker Domain with IAM authentication, public internet network access, default JupyterLab settings, and AWS-managed EFS encryption. No idle shutdown, custom images, or Docker access is configured. A Stack Job tracks the provisioning in real time.
+This creates a SageMaker Domain with IAM authentication, public internet network access, default JupyterLab settings, and AWS-managed EFS encryption. No idle shutdown, custom images, or Docker access is configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -131,7 +131,7 @@ These are the most important decisions when configuring a SageMaker Domain. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -151,9 +151,9 @@ These are the most important decisions when configuring a SageMaker Domain. Expl
 | **AwsKmsKey** (optional) | `defaultUserSettings.canvasAppSettings.workspaceSettings.s3KmsKeyId` | `status.outputs.key_arn` |
 | **AwsElasticFileSystem** (optional) | `defaultUserSettings.customFileSystemConfigs.[*].efsFileSystemConfig.fileSystemId` (and the `defaultSpaceSettings` twin) | `status.outputs.file_system_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -181,8 +181,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS VPC**](/cloud-catalog/aws-vpc) -- provides the VPC and subnets for domain network interfaces
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- provides the execution roles for Studio sessions, shared spaces, RStudio licensing, EMR access, and the Canvas service capabilities
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- provides domain-level, user-level, and space-level network isolation
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for EFS encryption, notebook output encryption, and the Canvas workspace
-- [**AWS Elastic File System**](/cloud-catalog/aws-elastic-file-system) -- provides additional shared file systems mounted into user and space apps beyond the domain's own home EFS
+- [**AWS VPC**](/infra-catalog/aws-vpc) -- provides the VPC and subnets for domain network interfaces
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- provides the execution roles for Studio sessions, shared spaces, RStudio licensing, EMR access, and the Canvas service capabilities
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- provides domain-level, user-level, and space-level network isolation
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for EFS encryption, notebook output encryption, and the Canvas workspace
+- [**AWS Elastic File System**](/infra-catalog/aws-elastic-file-system) -- provides additional shared file systems mounted into user and space apps beyond the domain's own home EFS

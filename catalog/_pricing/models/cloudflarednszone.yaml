@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -6,9 +6,9 @@
 # subscription block and stays on the free plan, so no preset carries a
 # committed line -- the conditional paid arm (spec.subscription.rate_plan)
 # is named per preset in exclusions instead of being priced into a
-# commitment no preset makes. Schema: finops/componentcostestimatemodel/v1.
+# commitment no preset makes. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: cloudflarednszone
 spec:

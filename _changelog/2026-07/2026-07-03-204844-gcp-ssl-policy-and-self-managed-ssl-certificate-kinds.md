@@ -50,15 +50,15 @@ Empty `region` creates the global resource; a set region creates the regional on
 
 ## Validation
 
-- Offline: `make protos` ×2 + kind-map regen; spec tests 21 + 20 green; release-equivalent Pulumi builds; `tofu validate` + offline `planton tofu plan` through the real tfvars converter (plans inspected; both PEM fields render sensitive in the certificate plan); `secret-coverage --check`; `validate-refs --check`; `validate-outputs` dry-runs fully populated on BOTH module dirs for both kinds; two new `pkg/outputs` conformance cases (incl. repeated `enabled_features`); every preset/hack/scenario/prerequisite manifest through `planton validate`; `make build-go`; `make reset-gazelle`; framework tests (outputs/refcheck/crkreflect/runner).
+- Offline: `make protos` ×2 + kind-map regen; spec tests 21 + 20 green; release-equivalent Pulumi builds; `tofu validate` + offline `planton tofu plan` through the real tfvars converter (plans inspected; both PEM fields render sensitive in the certificate plan); `secret-coverage --check`; `validate-refs --check`; `validate-outputs` dry-runs fully populated on BOTH module dirs for both kinds; two new `pkg/outputs` conformance cases (incl. repeated `enabled_features`); every preset/hack/scenario/prerequisite manifest through `planton validate`; `make build-go`; `make reset-gazelle`; framework tests (outputs/refcheck/catalogkindreflect/runner).
 - Live (project `planton-e2e`, dual-engine, create → verify → destroy): SSL policy 113s/87s (global + regional scenarios), certificate 35s/50s, and the hardened-frontend + minimal HTTPS-proxy chains 13m11s/12m09s (7 transitive prerequisites each). Zero orphans after per-type sweeps across all LB resource types.
 - Audits: both kinds Fully Complete with cross-engine PARITY, zero parity exceptions (`docs/audit/2026-07-03-183500.md` in each kind).
 
 ## Related Cleanup
 
 - Retired-kind link sweep: dead links to the removed Secrets Manager and Cloud CDN catalog pages dropped from the GCP catalog index, cloud-function, and project site pages; the GCS-bucket static-website preset now points at the composed `GcpBackendBucket` + HTTPS load balancer path instead of a retired kind's preset.
-- The delete-component rule now mandates an inbound-link sweep (site catalog + sibling presets/docs) so removing a kind can never strand dead links again.
-- `site/scripts/copy-component-docs.ts` title map gains SSL Policy / SSL Certificate entries.
+- The delete-kind rule now mandates an inbound-link sweep (site catalog + sibling presets/docs) so removing a kind can never strand dead links again.
+- `site/scripts/copy-kind-docs.ts` title map gains SSL Policy / SSL Certificate entries.
 
 ## Impact
 

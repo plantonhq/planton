@@ -30,7 +30,7 @@ iac/pulumi/
     ├── main.go       # Module coordinator
     ├── instance.go   # Instance + settings + replica construction
     ├── locals.go     # Local values and labels
-    └── outputs.go    # Stack output constants
+    └── outputs.go    # Output constants
 ```
 
 ## Quick Start
@@ -44,7 +44,7 @@ pulumi stack init dev
 
 ### 2. Create Input File
 
-Provide a `stack-input.yaml` with the instance specification:
+Provide a `iac-input.yaml` with the instance specification:
 
 ```yaml
 target:
@@ -79,7 +79,7 @@ make destroy
 
 - `rootPassword`, `replicaConfiguration.password`, and `replicaConfiguration.clientKey` flow from `(sensitive)`-annotated spec fields and are wrapped with `pulumi.ToSecret` — encrypted in Pulumi state, never exported in outputs.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

@@ -6,7 +6,7 @@ Creates a namespaced Kubernetes Gateway API `ListenerSet` -- a set of additional
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **A namespaced ListenerSet** named after `metadata.name` in `spec.namespace`, attached to the Gateway in `spec.parentRef`, merging the listeners declared in `spec.listeners` into it.
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking.
@@ -17,7 +17,7 @@ The Gateway controller merges listeners from the Gateway and all attached Listen
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -66,7 +66,7 @@ spec:
 planton apply -f listener-set.yaml
 ```
 
-This merges an HTTPS listener for `team-a.example.com` into `shared-gateway` (in `platform-ingress`), terminating with the `team-a-tls` Secret from the ListenerSet's own `team-a` namespace. A Stack Job tracks the provisioning in real time.
+This merges an HTTPS listener for `team-a.example.com` into `shared-gateway` (in `platform-ingress`), terminating with the `team-a-tls` Secret from the ListenerSet's own `team-a` namespace. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -114,7 +114,7 @@ These are the most important decisions when configuring a ListenerSet. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -124,9 +124,9 @@ These are the most important decisions when configuring a ListenerSet. Explore t
 
 Literal names cover targets created outside Planton; certificate references typically wire against a KubernetesCertificate's `status.outputs.secret_name` instead, terminating with cert-manager-issued material the moment it is issued.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -144,12 +144,12 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Gateway API CRDs**](/cloud-catalog/kubernetes-gateway-api-crds) -- installs the Gateway API CRDs (v1.5.0+ standard channel carries ListenerSet); deploy first
-- [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) -- the parent Gateway (`spec.parentRef`) whose `allowedListeners` policy must admit this namespace; install first
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the namespace (`spec.namespace`) the ListenerSet runs in
-- [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) -- issues the TLS Secrets terminating listeners reference (via its `secret_name` output)
-- [**Kubernetes HTTPRoute**](/cloud-catalog/kubernetes-http-route) -- attaches to this ListenerSet by naming it as a parentRef (optionally one listener via `sectionName`)
-- [**Kubernetes TLSRoute**](/cloud-catalog/kubernetes-tls-route) -- pairs with a Passthrough TLS listener so the backend terminates TLS itself
-- [**Kubernetes TCPRoute**](/cloud-catalog/kubernetes-tcp-route) -- attaches raw TCP forwarding to a merged listener
-- [**Kubernetes UDPRoute**](/cloud-catalog/kubernetes-udp-route) -- attaches UDP forwarding to a merged listener
-- [**Kubernetes GRPCRoute**](/cloud-catalog/kubernetes-grpc-route) -- attaches gRPC method routing to a merged HTTPS listener
+- [**Kubernetes Gateway API CRDs**](/infra-catalog/kubernetes-gateway-api-crds) -- installs the Gateway API CRDs (v1.5.0+ standard channel carries ListenerSet); deploy first
+- [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) -- the parent Gateway (`spec.parentRef`) whose `allowedListeners` policy must admit this namespace; install first
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the namespace (`spec.namespace`) the ListenerSet runs in
+- [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) -- issues the TLS Secrets terminating listeners reference (via its `secret_name` output)
+- [**Kubernetes HTTPRoute**](/infra-catalog/kubernetes-http-route) -- attaches to this ListenerSet by naming it as a parentRef (optionally one listener via `sectionName`)
+- [**Kubernetes TLSRoute**](/infra-catalog/kubernetes-tls-route) -- pairs with a Passthrough TLS listener so the backend terminates TLS itself
+- [**Kubernetes TCPRoute**](/infra-catalog/kubernetes-tcp-route) -- attaches raw TCP forwarding to a merged listener
+- [**Kubernetes UDPRoute**](/infra-catalog/kubernetes-udp-route) -- attaches UDP forwarding to a merged listener
+- [**Kubernetes GRPCRoute**](/infra-catalog/kubernetes-grpc-route) -- attaches gRPC method routing to a merged HTTPS listener

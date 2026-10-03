@@ -4,7 +4,7 @@ package dev.planton.gcp.gcpvertexaiindexendpoint.v1alpha1;
 
 // Outputs produced after provisioning a GCP Vertex AI Vector Search
 // index endpoint.
-message GcpVertexAiIndexEndpointStackOutputs {
+message GcpVertexAiIndexEndpointOutputs {
   // Fully qualified index endpoint resource path — the value a
   // GcpVertexAiDeployedIndex passes as its `index_endpoint` reference.
   // Format: projects/{project}/locations/{location}/indexEndpoints/{id}

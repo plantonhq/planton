@@ -37,7 +37,7 @@ func validResource() *AzureContainerAppEnvironmentCertificate {
 	return &AzureContainerAppEnvironmentCertificate{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureContainerAppEnvironmentCertificate",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "app-tls-cert",
 		},
 		Spec: &AzureContainerAppEnvironmentCertificateSpec{

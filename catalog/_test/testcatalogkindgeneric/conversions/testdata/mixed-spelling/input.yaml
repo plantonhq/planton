@@ -1,0 +1,15 @@
+# Golden corpus: BOTH legal spellings in one document -- e.g. a manifest
+# hand-edited from a stored-document export. Protobuf JSON accepts the mix;
+# canonicalization at the lane entry absorbs it, and the conversion lands.
+apiVersion: _test.planton.dev/v1alpha1
+kind: TestCatalogKindGeneric
+metadata:
+  name: torture-mixed
+spec:
+  string_field: renamed-on-upgrade
+  stringNoDefault: lost-on-upgrade-with-declaration
+  required_ref:
+    value: literal-required-value
+  commands:
+    - first
+    - second

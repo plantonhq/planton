@@ -33,7 +33,7 @@ var _ = ginkgo.Describe("KubernetesMetricsServer Validation Tests", func() {
 		input = &KubernetesMetricsServer{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesMetricsServer",
-			Metadata:   &shared.CloudResourceMetadata{Name: "metrics-server"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "metrics-server"},
 			Spec: &KubernetesMetricsServerSpec{
 				Namespace: literal("kube-system"),
 			},

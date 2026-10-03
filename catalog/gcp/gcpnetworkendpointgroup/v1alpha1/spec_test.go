@@ -43,7 +43,7 @@ var _ = ginkgo.Describe("GcpNetworkEndpointGroupSpec", func() {
 		return &GcpNetworkEndpointGroup{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpNetworkEndpointGroup",
-			Metadata:   &shared.CloudResourceMetadata{Name: "web-neg"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "web-neg"},
 			Spec: &GcpNetworkEndpointGroupSpec{
 				Zone:        "us-central1-a",
 				Network:     nameRef("main-vpc"),
@@ -60,7 +60,7 @@ var _ = ginkgo.Describe("GcpNetworkEndpointGroupSpec", func() {
 		return &GcpNetworkEndpointGroup{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpNetworkEndpointGroup",
-			Metadata:   &shared.CloudResourceMetadata{Name: "origin-neg"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "origin-neg"},
 			Spec: &GcpNetworkEndpointGroupSpec{
 				NetworkEndpointType: "INTERNET_FQDN_PORT",
 				DefaultPort:         proto.Int32(443),

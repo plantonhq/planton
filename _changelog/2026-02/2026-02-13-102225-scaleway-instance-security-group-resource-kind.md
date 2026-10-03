@@ -22,7 +22,7 @@ The Scaleway cloud provider expansion requires firewall capabilities before Inst
 
 A complete ScalewayInstanceSecurityGroup resource kind with:
 
-- **Proto schemas**: spec with `ScalewaySecurityGroupInboundRule`/`OutboundRule` messages, api, stack_input, stack_outputs
+- **Proto schemas**: spec with `ScalewaySecurityGroupInboundRule`/`OutboundRule` messages, api, iac_input, outputs
 - **Pulumi Go module**: Maps proto rules to `instance.SecurityGroupInboundRuleArgs`/`OutboundRuleArgs`, creates `instance.SecurityGroup`
 - **Terraform HCL module**: Uses `dynamic` blocks for inline inbound/outbound rules
 - **Documentation**: README.md with configuration reference, security best practices, and infra chart integration guide; examples.md with 8 real-world patterns
@@ -44,8 +44,8 @@ A complete ScalewayInstanceSecurityGroup resource kind with:
 **Proto schemas (4)**:
 - `apis/dev/planton/provider/scaleway/scalewayinstancesecuritygroup/v1/spec.proto`
 - `apis/dev/planton/provider/scaleway/scalewayinstancesecuritygroup/v1/api.proto`
-- `apis/dev/planton/provider/scaleway/scalewayinstancesecuritygroup/v1/stack_input.proto`
-- `apis/dev/planton/provider/scaleway/scalewayinstancesecuritygroup/v1/stack_outputs.proto`
+- `apis/dev/planton/provider/scaleway/scalewayinstancesecuritygroup/v1/iac_input.proto`
+- `apis/dev/planton/provider/scaleway/scalewayinstancesecuritygroup/v1/outputs.proto`
 
 **Pulumi Go module (7)**:
 - `apis/.../iac/pulumi/main.go` -- Entry point
@@ -71,7 +71,7 @@ A complete ScalewayInstanceSecurityGroup resource kind with:
 ### Verification Results
 
 - `make protos` -- Zero warnings
-- `make generate-cloud-resource-kind-map` -- ScalewayInstanceSecurityGroup registered (15 remaining skip)
+- `make generate-catalog-kind-map` -- ScalewayInstanceSecurityGroup registered (15 remaining skip)
 - `go build` -- Clean
 - `go vet` -- Clean
 - `go test` -- All tests pass

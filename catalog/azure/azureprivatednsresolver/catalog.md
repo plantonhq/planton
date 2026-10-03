@@ -4,7 +4,7 @@ Deploys Azure DNS Private Resolver -- the managed DNS proxy that resolves names 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **DNS Private Resolver** -- the managed proxy, anchored to one virtual network
 - **Inbound endpoints** (optional, up to 5) -- private IPs that answer DNS queries sent to them with the network's private DNS view; one per dedicated delegated subnet
@@ -62,11 +62,11 @@ spec:
 planton apply -f resolver.yaml
 ```
 
-This creates the resolver anchored to `hub-vnet` with one inbound endpoint (a dynamically assigned private IP that answers with Azure's private DNS view) and one outbound endpoint (the egress point forwarding rulesets bind). A Stack Job tracks the provisioning in real time.
+This creates the resolver anchored to `hub-vnet` with one inbound endpoint (a dynamically assigned private IP that answers with Azure's private DNS view) and one outbound endpoint (the egress point forwarding rulesets bind). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When the network stack is Cloud Resources in the same chart, wire everything by reference:
+When the network stack is Infra Components in the same chart, wire everything by reference:
 
 ```yaml
 spec:
@@ -112,7 +112,7 @@ These are the most important decisions when configuring an Azure DNS Private Res
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |---|---|---|
@@ -120,9 +120,9 @@ These are the most important decisions when configuring an Azure DNS Private Res
 | Azure Virtual Network | `virtualNetworkId` | `status.outputs.virtual_network_id` |
 | Azure Subnet (one per endpoint) | `inboundEndpoints[].subnetId`, `outboundEndpoints[].subnetId` | `status.outputs.subnet_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -141,8 +141,8 @@ Multi-endpoint deployments also get `inbound_endpoint_ips` and `outbound_endpoin
 
 ## Works With
 
-- [**Azure Virtual Network**](/cloud-catalog/azure-virtual-network) -- the anchor network; one resolver per network, so this is usually the hub.
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- each endpoint's dedicated delegated subnet; reference its `subnet_id` output.
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- where the resolver lives; reference its `resource_group_name` output.
-- [**Azure DNS Forwarding Ruleset**](/cloud-catalog/azure-private-dns-resolver-forwarding-ruleset) -- binds the outbound endpoint and decides which domains forward where.
-- [**Azure DNS Resolver Virtual Network Link**](/cloud-catalog/azure-private-dns-resolver-virtual-network-link) -- attaches a ruleset's rules to consuming networks, including spokes.
+- [**Azure Virtual Network**](/infra-catalog/azure-virtual-network) -- the anchor network; one resolver per network, so this is usually the hub.
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- each endpoint's dedicated delegated subnet; reference its `subnet_id` output.
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- where the resolver lives; reference its `resource_group_name` output.
+- [**Azure DNS Forwarding Ruleset**](/infra-catalog/azure-private-dns-resolver-forwarding-ruleset) -- binds the outbound endpoint and decides which domains forward where.
+- [**Azure DNS Resolver Virtual Network Link**](/infra-catalog/azure-private-dns-resolver-virtual-network-link) -- attaches a ruleset's rules to consuming networks, including spokes.

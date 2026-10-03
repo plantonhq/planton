@@ -6,9 +6,9 @@
 # are selected by the manifest's own values (storage class, throughput tier,
 # HDD read-cache decision) through the price book's attribute identities.
 # Prices live in the provider's price book (../pricebook/).
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsfsxlustrefilesystem
 spec:

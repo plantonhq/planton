@@ -21,7 +21,7 @@ rg -il "redis" <provider directories>
    carries the asked-for name.
 
 2. **Propose the catalog's alternative and say what you did.** Add the
-   compatible component to the architecture, then tell the user explicitly:
+   compatible kind to the architecture, then tell the user explicitly:
    what was added instead of what they asked for, and why it serves the same
    purpose (client compatibility, protocol compatibility). Never silently
    substitute — the user asked for Redis and should hear "you got Valkey,
@@ -29,18 +29,18 @@ rg -il "redis" <provider directories>
 
 3. **Only if the catalog truly has nothing** — no direct kind, no compatible
    alternative — fall back to a generic mechanism (a Helm release), and say
-   plainly that the catalog has no first-class component for it yet.
+   plainly that the catalog has no first-class kind for it yet.
 
 ## Verified alternatives
 
 Compatible substitutes for well-known names, each verified against the
-component's own documentation:
+kind's own documentation:
 
 | If asked for | Use | Compatibility |
 |---|---|---|
 | Redis | KubernetesValkey | Redis-compatible in-memory store; every Redis client library speaks to it natively (open-source successor) |
 | Elasticsearch | KubernetesOpensearch | Apache-2.0 fork; drop-in replacement for the Elasticsearch APIs at the 7.10 fork line — existing clients and integrations connect unchanged |
-| Kibana | KubernetesOpensearch | OpenSearch Dashboards — the Kibana-role console — is a section of the same spec (`dashboards`), not a separate component |
+| Kibana | KubernetesOpensearch | OpenSearch Dashboards — the Kibana-role console — is a section of the same spec (`dashboards`), not a separate kind |
 | Vault | KubernetesOpenBao | Linux Foundation-governed secrets manager, MPL-2.0 fork of Vault; auto-unseal interoperates with the OpenBao/Vault transit engine family |
 | Confluent Schema Registry | KubernetesKarapace | Apache-2.0, Confluent-API-compatible schema registry — existing Confluent SR clients work unchanged |
 | MinIO / in-cluster S3 | KubernetesSeaweedFs | Not a MinIO fork — an S3-compatible object store whose S3 gateway is on by default; clients speaking the S3 API connect to it |
@@ -72,4 +72,4 @@ indexes are the authoritative list.
 Like every `GUIDE.md` and pattern, this file is authored, openly improvable
 through pull requests, and checked by CI (kind names must resolve, embedded
 manifests must validate). When you verify a new alternative, add its row
-with the compatibility statement grounded in the component's documentation.
+with the compatibility statement grounded in the kind's documentation.

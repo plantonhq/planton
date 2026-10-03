@@ -6,7 +6,7 @@
 
 ## Summary
 
-The `Auth0Connection` Terraform module deployed with three "advanced password options" (`password_history_size`, `password_no_personal_info`, `password_dictionary`) enabled by default. Those features require Auth0's paid `password-advanced-options` entitlement, so on a free/lower-tier tenant Auth0 rejected the deploy with a `403 Forbidden: Subscription missing entitlement: password-advanced-options`. This broke the `e2e-auth0` pipeline (`TestAuth0Connection_Terraform/minimal`). The Pulumi module never applied these defaults, so the two engines also diverged. This change flips those three defaults to disabled in Terraform, bringing it to parity with Pulumi and letting the component deploy on any Auth0 plan.
+The `Auth0Connection` Terraform module deployed with three "advanced password options" (`password_history_size`, `password_no_personal_info`, `password_dictionary`) enabled by default. Those features require Auth0's paid `password-advanced-options` entitlement, so on a free/lower-tier tenant Auth0 rejected the deploy with a `403 Forbidden: Subscription missing entitlement: password-advanced-options`. This broke the `e2e-auth0` pipeline (`TestAuth0Connection_Terraform/minimal`). The Pulumi module never applied these defaults, so the two engines also diverged. This change flips those three defaults to disabled in Terraform, bringing it to parity with Pulumi and letting the kind deploy on any Auth0 plan.
 
 ## Problem Statement / Motivation
 

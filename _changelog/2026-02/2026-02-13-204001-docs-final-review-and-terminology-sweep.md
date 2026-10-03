@@ -17,7 +17,7 @@ After 15 documentation overhaul sessions producing 50 pages, the site had never 
 - `cli.md` was the only page never touched during the overhaul — it retained 4 "Planton" references, an author block, and marketing language
 - `openmcf.md` had an unresolved TODO comment and protobuf message type names in user-facing prose
 - Several pages used "simplest" or "enterprise-grade" — marketing language prohibited by project guidelines
-- Runner IP preservation violations: "proprietary reverse tunnel", "Runner Tunnel" component name, protocol implementation details
+- Runner IP preservation violations: "proprietary reverse tunnel", "Runner Tunnel" kind name, protocol implementation details
 - Duplicate links in Related Documentation sections of 3 pages
 - Protobuf field names and RPC method names in `ingress.md` and `self-managed-pipelines.md`
 
@@ -25,7 +25,7 @@ After 15 documentation overhaul sessions producing 50 pages, the site had never 
 
 ### Automated Sweep
 
-Ran pattern-based searches across all 50 pages for: "Planton", "Planton", author blocks, TODO/FIXME markers, emoji, marketing buzzwords (seamless, revolutionary, game-changing, cutting-edge, magic), Mermaid style attributes, custom anchor syntax, .md link extensions, Lego Block references. Most categories were already clean from previous sessions.
+Ran pattern-based searches across all 50 pages for: "Planton", "Planton", author blocks, TODO/FIXME markers, emoji, marketing buzzwords (seamless, revolutionary, game-changing, cutting-edge, magic), Mermaid style attributes, custom anchor syntax, .md link extensions, Catalog Kind references. Most categories were already clean from previous sessions.
 
 ### Section-by-Section Deep Read
 
@@ -37,9 +37,9 @@ Four parallel review agents read all 50 pages checking against 12 quality criter
 
 **platform/index.md** (2 fixes): Fixed Mermaid diagram labels from "InfraHub"/"ServiceHub" to "Infra Hub"/"Service Hub".
 
-**infra-hub/openmcf.md** (6 fixes): Removed unresolved TODO comment (verified provider counts are accurate with "and more" phrasing). Replaced 6 protobuf type names and package paths with user-facing descriptions in the "How Planton Uses OpenMCF" section. Removed duplicate Cloud Resource Kinds link.
+**infra-hub/openmcf.md** (6 fixes): Removed unresolved TODO comment (verified provider counts are accurate with "and more" phrasing). Replaced 6 protobuf type names and package paths with user-facing descriptions in the "How Planton Uses OpenMCF" section. Removed duplicate Catalog Kinds link.
 
-**infra-hub/cloud-resources.md** (1 fix): Removed duplicate Cloud Resource Kinds link.
+**infra-hub/infra-components.md** (1 fix): Removed duplicate Catalog Kinds link.
 
 **infra-hub/infra-charts.md** (1 fix): "most powerful feature" to "key feature".
 

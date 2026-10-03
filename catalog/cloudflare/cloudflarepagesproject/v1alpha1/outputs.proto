@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarepagesproject.v1alpha1;
 
-// CloudflarePagesProjectStackOutputs captures the outputs after deploying a
+// CloudflarePagesProjectOutputs captures the outputs after deploying a
 // Cloudflare Pages project. Deployment-specific values (per-build URLs, ids) are
 // not exported: they do not exist until the first deployment is produced
 // out-of-band (git push or `wrangler pages deploy`), so they are never populated
 // at provision time.
-message CloudflarePagesProjectStackOutputs {
+message CloudflarePagesProjectOutputs {
   // The project name (echoed; downstream resources reference this value).
   string project_name = 1;
 

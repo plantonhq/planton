@@ -50,7 +50,7 @@ func domainExists(ctx context.Context, client *godo.Client, name string) (bool, 
 
 // dnsRecordVerifier verifies a DigitalOceanDnsRecord. The API addresses
 // records as /v2/domains/{domain}/records/{id}, so a single id is not enough:
-// the verifier reads both record_id and domain from the stack outputs (the
+// the verifier reads both record_id and domain from the outputs (the
 // OutputsVerifier extension exists for exactly this shape).
 type dnsRecordVerifier struct{}
 

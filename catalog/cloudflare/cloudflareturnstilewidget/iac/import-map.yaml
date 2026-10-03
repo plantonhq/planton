@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflareturnstilewidget
 spec:
@@ -16,7 +16,7 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: sitekey
       derivations:
-        - from_stack_output: sitekey
+        - from_output: sitekey
       where_to_find: >-
         Cloudflare dashboard -> Turnstile -> the widget (the Site Key on
         the widget card), or `GET /accounts/<account_id>/challenges/widgets`

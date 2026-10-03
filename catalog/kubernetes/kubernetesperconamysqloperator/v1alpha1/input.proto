@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesperconamysqloperator.v1alpha1;
 import "catalog/kubernetes/kubernetesperconamysqloperator/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//kubernetes-percona-mysql-operator-kubernetes stack-input
-message KubernetesPerconaMysqlOperatorStackInput {
-  //target cloud-resource
+//kubernetes-percona-mysql-operator-kubernetes iac-input
+message KubernetesPerconaMysqlOperatorIacInput {
+  //target infra-component
   KubernetesPerconaMysqlOperator target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

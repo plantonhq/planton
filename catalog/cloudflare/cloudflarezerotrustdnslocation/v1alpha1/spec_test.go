@@ -21,7 +21,7 @@ func validLocation(spec *CloudflareZeroTrustDnsLocationSpec) *CloudflareZeroTrus
 	return &CloudflareZeroTrustDnsLocation{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZeroTrustDnsLocation",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-location",
 		},
 		Spec: spec,

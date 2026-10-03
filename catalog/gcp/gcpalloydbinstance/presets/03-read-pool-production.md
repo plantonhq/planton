@@ -13,6 +13,6 @@ This preset creates a regional three-node READ_POOL with connector enforcement, 
 - **queryInsightsConfig** — captures plans, application tags, and client addresses for slow-query diagnosis
 - **nodeCount: 3** — headroom for read-heavy production traffic
 
-## Related Components
+## Related Kinds
 
 - [GcpAlloydbUser](/docs/catalog/gcp/gcpalloydbuser) — pair read pools with per-application credentials

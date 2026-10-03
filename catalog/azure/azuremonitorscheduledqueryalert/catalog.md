@@ -4,7 +4,7 @@ Deploys an Azure Monitor scheduled query alert rule -- the log-search alert. It 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Scheduled Query Rule** -- a `Microsoft.Insights/scheduledQueryRules` resource (REGIONAL -- it must live in the queried workspace's region) carrying the KQL conditions, cadence, severity, noise dials, optional managed identity, and action wiring
 - **Azure Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically, merged with any user tags (user values win on key conflicts)
@@ -13,12 +13,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the rule will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the rule will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 - **A Log Analytics Workspace** (or Application Insights resource) for the query to run against -- in the SAME region as the rule. Reference the workspace's `workspace_id` output.
 - **Logs flowing into the workspace** -- a query alert on an empty workspace never fires; diagnostic settings are how resource logs arrive.
 - **An action group** to notify (optional but recommended).
@@ -71,7 +71,7 @@ spec:
 planton apply -f query-alert.yaml
 ```
 
-This creates a rule on the platform defaults: the query runs every 5 minutes over the last 5 minutes; each firing is its own alert (Azure's default for query rules). A Stack Job tracks the provisioning in real time.
+This creates a rule on the platform defaults: the query runs every 5 minutes over the last 5 minutes; each firing is its own alert (Azure's default for query rules). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -108,7 +108,7 @@ These are the most important decisions when configuring a scheduled query alert.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -117,15 +117,15 @@ These are the most important decisions when configuring a scheduled query alert.
 | **AzureUserAssignedIdentity** | `identity.userAssignedIdentityIds[]` | `status.outputs.identity_id` |
 | **AzureMonitorActionGroup** | `action.actionGroupIds[]` | `status.outputs.action_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
 | `identity_principal_id` | The system-assigned principal ID (when the identity is configured) | The workspace-access grant target -- the second step a system-assigned query identity requires |
 
-The rule's own identifiers (`scheduled_query_alert_id`, `scheduled_query_alert_name`) are also exported for alert-history filtering and CLI reference; no downstream Cloud Resource consumes them.
+The rule's own identifiers (`scheduled_query_alert_id`, `scheduled_query_alert_name`) are also exported for alert-history filtering and CLI reference; no downstream Infra Component consumes them.
 
 ## Common Patterns
 
@@ -139,7 +139,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Log Analytics Workspace**](/cloud-catalog/azure-log-analytics-workspace) -- the workspace the query runs against
-- [**Azure Monitor Diagnostic Setting**](/cloud-catalog/azure-monitor-diagnostic-setting) -- routes resource logs INTO the workspace this rule watches
-- [**Azure Monitor Action Group**](/cloud-catalog/azure-monitor-action-group) -- the notification hub the rule fires into
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- the pre-grantable query identity
+- [**Azure Log Analytics Workspace**](/infra-catalog/azure-log-analytics-workspace) -- the workspace the query runs against
+- [**Azure Monitor Diagnostic Setting**](/infra-catalog/azure-monitor-diagnostic-setting) -- routes resource logs INTO the workspace this rule watches
+- [**Azure Monitor Action Group**](/infra-catalog/azure-monitor-action-group) -- the notification hub the rule fires into
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- the pre-grantable query identity

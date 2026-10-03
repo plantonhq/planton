@@ -18,7 +18,7 @@ func destination(spec *StripeEventDestinationSpec) *StripeEventDestination {
 	return &StripeEventDestination{
 		ApiVersion: "stripe.planton.dev/v1alpha1",
 		Kind:       "StripeEventDestination",
-		Metadata:   &shared.CloudResourceMetadata{Name: "billing-thin-events"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "billing-thin-events"},
 		Spec:       spec,
 	}
 }

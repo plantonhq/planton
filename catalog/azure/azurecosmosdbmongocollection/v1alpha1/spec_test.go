@@ -32,7 +32,7 @@ func minimalSpec() *AzureCosmosdbMongoCollection {
 	return &AzureCosmosdbMongoCollection{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureCosmosdbMongoCollection",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-mongo-collection",
 		},
 		Spec: &AzureCosmosdbMongoCollectionSpec{

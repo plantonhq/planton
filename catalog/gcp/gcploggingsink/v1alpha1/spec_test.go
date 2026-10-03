@@ -42,7 +42,7 @@ var _ = ginkgo.Describe("GcpLoggingSinkSpec", func() {
 		return &GcpLoggingSink{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpLoggingSink",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-logging-sink",
 			},
 			Spec: &GcpLoggingSinkSpec{

@@ -2,7 +2,7 @@
 
 This preset applies a multi-document manifest — a ConfigMap and a Secret — anchored in a single namespace. Neither document declares its own `metadata.namespace`, so both land in the anchor namespace from `spec.namespace`, which the component creates first (`create_namespace: true`). It is the smallest useful demonstration of the component's namespace anchoring: write plain documents once, point the whole bundle at a namespace from the outside.
 
-Before reaching for this preset, check the catalog: a single ConfigMap belongs in the first-class **KubernetesConfigMap** component, which validates configuration before deploy and exports composable outputs. KubernetesManifest is the escape hatch — this preset earns its place only when the documents must travel together as one raw bundle and no typed component covers the set.
+Before reaching for this preset, check the catalog: a single ConfigMap belongs in the first-class **KubernetesConfigMap** component, which validates configuration before deploy and exports composable outputs. KubernetesManifest is the escape hatch — this preset earns its place only when the documents must travel together as one raw bundle and no typed kind covers the set.
 
 ## When to Use
 

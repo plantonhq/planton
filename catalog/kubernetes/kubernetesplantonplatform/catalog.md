@@ -4,7 +4,7 @@ Declares a complete self-hosted Planton platform — control plane, web console,
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** — created only when `createNamespace` is `true`; otherwise the namespace must already exist
 - **PlantonPlatform CR** — the one declaration; the OPERATOR then creates the platform from it (workloads, Services, Secrets, volumes — all in the platform's namespace, all named from this resource's name and owner-referenced to the declaration)
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** — an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** — an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Kubernetes Cluster
 
@@ -49,7 +49,7 @@ spec:
 planton apply -f planton.yaml
 ```
 
-This declares a full zero-config platform: the operator brings up the control plane, console, identity server, databases, secrets manager, and runner in the `planton` namespace. Watch it come up (`kubectl get plantonplatforms -A` — phase, version, URL), then use the `port_forward_command` output to open the door and the `setup_code_command` output for the first-visit setup page. A Stack Job tracks the provisioning in real time.
+This declares a full zero-config platform: the operator brings up the control plane, console, identity server, databases, secrets manager, and runner in the `planton` namespace. Watch it come up (`kubectl get plantonplatforms -A` — phase, version, URL), then use the `port_forward_command` output to open the door and the `setup_code_command` output for the first-visit setup page. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -96,7 +96,7 @@ These are the most important decisions when configuring a Planton Platform. Expl
 
 **Size any component, one quantity at a time** — every component runs the operator's measured default until its `resources` says otherwise: the control plane, console, runner, gateway, identity server, database, store, vault, graph database, OpenFGA, and Temporal's four server services. A quantity you set wins and every other keeps its default, so raising the control plane's memory limit — the one parallel deploys grow, whose heap is 60% of that limit — never means restating its requests. A size the platform cannot run (a request above its limit, Neo4j under its chart's 500m CPU and 2Gi floor, the store's `maxMemory` at or above its memory limit) is refused before anything changes, naming the field and its fix, and `status.components.<component>.sizing` shows every size in effect. Each change rolls that component's pods — a single-instance database restarts. Requires a planton-operator chart 0.23.0 or later.
 
-**Storage is one dial with per-component overrides** — `storage.storageClassName` and `storage.size` govern every platform volume unless a component overrides them; one `size` value lifts every volume above a backend's minimum-size floor. On EKS, `storage.storageClassName: gp3` moves the whole platform off the legacy gp2 class in one line.
+**Storage is one dial with per-kind overrides** — `storage.storageClassName` and `storage.size` govern every platform volume unless a component overrides them; one `size` value lifts every volume above a backend's minimum-size floor. On EKS, `storage.storageClassName: gp3` moves the whole platform off the legacy gp2 class in one line.
 
 **Back up the platform's own database, by reference** — without `database.postgresql.backup` every record the platform keeps lives on one volume in the cluster, and the `BACKUP` column says `NotConfigured`. Declaring it turns on continuous WAL archiving plus a base backup on a schedule (the first one immediately) into an S3, GCS, Azure Blob, or Cloudflare R2 bucket you own, with a retention the store enforces. On R2 the declaration is composed from a `CloudflareR2Bucket` and a `CloudflareAccountApiToken` scoped to it — the arm references the bucket's `accountId` and `jurisdiction` outputs and the token's S3 key pair, and the module materializes the credential as a Secret before the platform so the database is born archiving. `database.postgresql.recoverFrom` declares a new platform restored from such an archive (the same store plus the source's `status.backup.serverName`), honored when its database is first created; the restored platform archives under a new name and never writes over its source. The archive carries the bundled secrets manager too — it stores in the same database — so every connection credential, managed secret, and signing key comes back with the records; what it cannot carry is the keys that open the vault, so a backup requires `vault.autoUnseal` (a cloud key opens the restored vault by itself) or `vault.initSecretName` (a Secret you own holds the keys; keep a copy outside the cluster), and the declaration is refused with neither. `status.backup.vault` states the coverage and names the Secret to keep.
 
@@ -106,7 +106,7 @@ These are the most important decisions when configuring a Planton Platform. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -114,9 +114,9 @@ These are the most important decisions when configuring a Planton Platform. Expl
 | **CloudflareR2Bucket** | `database.postgresql.backup.objectStore.r2.accountId`, `.jurisdiction` (and the same under `recoverFrom`) | `status.outputs.account_id`, `status.outputs.jurisdiction` |
 | **CloudflareAccountApiToken** | `database.postgresql.backup.objectStore.r2.credentials.accessKeyId`, `.secretAccessKey` (and the same under `recoverFrom`) | `status.outputs.r2_access_key_id`, `status.outputs.r2_secret_access_key` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef (all derive from the declaration itself — the operator's naming is deterministic per platform name, so they are stable from the first apply):
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef (all derive from the declaration itself — the operator's naming is deterministic per platform name, so they are stable from the first apply):
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -142,8 +142,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Planton Operator**](/cloud-catalog/kubernetes-planton-operator) — the hard prerequisite: the manager that reconciles this declaration; one per cluster serves every platform
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — provides the platform's namespace when composed in an InfraChart
-- [**Cert Manager**](/cloud-catalog/kubernetes-cert-manager) — issues and renews the ingress certificate when `ingress.tls.issuer` is used, and secures the operator's link to the database backup plugin when a backup is declared
-- [**Cloudflare R2 Bucket**](/cloud-catalog/cloudflare-r2-bucket) — the archive the platform's database backs up to on the `r2` arm; its `account_id` and `jurisdiction` outputs are referenced, never typed
-- [**Cloudflare Account API Token**](/cloud-catalog/cloudflare-account-api-token) — the bucket-scoped credential for that archive, exported as the S3 key pair the `r2` arm references
+- [**Planton Operator**](/infra-catalog/kubernetes-planton-operator) — the hard prerequisite: the manager that reconciles this declaration; one per cluster serves every platform
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — provides the platform's namespace when composed in an InfraChart
+- [**Cert Manager**](/infra-catalog/kubernetes-cert-manager) — issues and renews the ingress certificate when `ingress.tls.issuer` is used, and secures the operator's link to the database backup plugin when a backup is declared
+- [**Cloudflare R2 Bucket**](/infra-catalog/cloudflare-r2-bucket) — the archive the platform's database backs up to on the `r2` arm; its `account_id` and `jurisdiction` outputs are referenced, never typed
+- [**Cloudflare Account API Token**](/infra-catalog/cloudflare-account-api-token) — the bucket-scoped credential for that archive, exported as the S3 key pair the `r2` arm references

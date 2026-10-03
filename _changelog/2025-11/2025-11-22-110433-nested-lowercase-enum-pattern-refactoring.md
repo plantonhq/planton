@@ -6,7 +6,7 @@
 
 ## Summary
 
-Refactored all enums in the KubernetesNamespace component to use nested enums with lowercase values, significantly improving user experience with cleaner YAML manifests. Updated the forge system and specification guidelines to enforce this pattern for all future components, establishing a consistent enum design standard across Planton.
+Refactored all enums in the KubernetesNamespace kind to use nested enums with lowercase values, significantly improving user experience with cleaner YAML manifests. Updated the forge system and specification guidelines to enforce this pattern for all future kinds, establishing a consistent enum design standard across Planton.
 
 ## Problem Statement / Motivation
 
@@ -29,12 +29,12 @@ This verbosity was particularly problematic for the 80/20 design philosophy - we
 
 Top-level enums in protobuf can cause naming collisions across the package namespace. While we used prefixes to avoid this (`BUILT_IN_PROFILE_*`, `SERVICE_MESH_TYPE_*`), these prefixes made values even more verbose and didn't solve the real problem - enums should be scoped to where they're used.
 
-### Inconsistency Across Components
+### Inconsistency Across Kinds
 
 There was no established pattern for enum design, leading to:
-- Inconsistent naming styles across different components
-- No clear guidelines for new component development
-- Technical debt that would be harder to fix later as more components adopted the verbose pattern
+- Inconsistent naming styles across different kinds
+- No clear guidelines for new kind development
+- Technical debt that would be harder to fix later as more kinds adopted the verbose pattern
 
 ## Solution / What's New
 
@@ -75,7 +75,7 @@ service_mesh_config:
 
 ### Three Enums Refactored
 
-**KubernetesNamespace component**:
+**KubernetesNamespace kind**:
 1. `KubernetesNamespaceBuiltInProfile` - Nested in `KubernetesNamespaceResourceProfile`
 2. `KubernetesNamespaceServiceMeshType` - Nested in `KubernetesNamespaceServiceMeshConfig`
 3. `KubernetesNamespacePodSecurityStandard` - Nested in `KubernetesNamespaceSpec`
@@ -198,14 +198,14 @@ Updated 4 documentation files:
 
 Created comprehensive enum guidelines in three locations:
 
-**1. Component Developer Guide** (`/.cursor/info/spec_proto.md`):
+**1. Kind Developer Guide** (`/.cursor/info/spec_proto.md`):
 - Added "Enum Guidelines" section with nesting patterns
 - Documented naming conventions with examples
 - Explained when to deviate (external standards)
 
-**2. Forge Flow Rule** (`/_rules/deployment-component/forge/flow/001-spec-proto.mdc`):
+**2. Forge Flow Rule** (`/_rules/catalog-kind/forge/flow/001-spec-proto.mdc`):
 - Added enum guidelines to NOTES section
-- Ensures all new components follow the pattern
+- Ensures all new kinds follow the pattern
 
 **3. Architecture Documentation** (`/architecture/specification-guidelies.md`):
 - Added "Enum Design Patterns" section
@@ -234,7 +234,7 @@ Created comprehensive enum guidelines in three locations:
 1. **Cleaner Code**: Enum references in Go/TypeScript are shorter and clearer
 2. **IDE Support**: Better code completion with nested enums
 3. **No Collisions**: Automatic namespacing prevents enum value conflicts
-4. **Consistent Pattern**: All components follow the same style
+4. **Consistent Pattern**: All kinds follow the same style
 
 ### Terraform Simplification
 
@@ -252,7 +252,7 @@ Less code, fewer bugs, clearer intent.
 
 ### Future-Proof Pattern
 
-All future components will automatically follow this pattern thanks to:
+All future kinds will automatically follow this pattern thanks to:
 - Documentation in `spec_proto.md`
 - Forge rule enforcement
 - Architecture guidelines
@@ -264,14 +264,14 @@ All future components will automatically follow this pattern thanks to:
 
 **Immediate**: KubernetesNamespace users
 - Existing manifests with old enum values will need updates
-- However, this is a new component (just released), so minimal impact
+- However, this is a new kind (just released), so minimal impact
 - Better to fix early than accumulate technical debt
 
-**Future**: All component users
-- Every new component will have cleaner enum values
+**Future**: All kind users
+- Every new kind will have cleaner enum values
 - Consistent pattern across all of Planton
 
-### Components Affected
+### Kinds Affected
 
 **Modified** (12 files):
 - `spec.proto` - Enum nesting and value updates
@@ -331,7 +331,7 @@ All future components will automatically follow this pattern thanks to:
 **Rationale**:
 - Makes zero value explicit and searchable
 - Distinguishes "not set" from "set to a value"
-- Consistent pattern across all components
+- Consistent pattern across all kinds
 - Grep-friendly: `grep "unspecified"` finds all zero values
 
 ## Testing Strategy
@@ -379,9 +379,9 @@ sed -i '' 's/POD_SECURITY_STANDARD_BASELINE/baseline/g' *.yaml
 sed -i '' 's/POD_SECURITY_STANDARD_RESTRICTED/restricted/g' *.yaml
 ```
 
-### For Component Developers
+### For Kind Developers
 
-When creating new components with `@forge-planton-component`:
+When creating new kinds with `@forge-catalog-kind`:
 1. Nest enums inside their containing messages
 2. Use lowercase values (except `{enum_name}_unspecified`)
 3. Refer to `.cursor/info/spec_proto.md` for examples
@@ -404,10 +404,10 @@ When creating new components with `@forge-planton-component`:
 
 ### Previous Changelog
 
-This builds on the KubernetesNamespace component created in:
-- `2025-11-22-102910-kubernetes-namespace-component-and-forge-script-fixes.md`
+This builds on the KubernetesNamespace kind created in:
+- `2025-11-22-102910-kubernetes-namespace-kind-and-forge-script-fixes.md`
 
-That changelog documented the component creation with the old enum pattern. This refactoring fixes the enum design before wider adoption.
+That changelog documented the kind creation with the old enum pattern. This refactoring fixes the enum design before wider adoption.
 
 ### Architecture Alignment
 
@@ -415,16 +415,16 @@ Aligns with specification design principles in `architecture/specification-guide
 - ✅ Intuitive user experience
 - ✅ 80/20 principle (simple things are simple)
 - ✅ Deployment-agnostic (enum values work same in YAML, JSON, TOML)
-- ✅ Future-proof (pattern scales to all components)
+- ✅ Future-proof (pattern scales to all kinds)
 
-### Future Components
+### Future Kinds
 
-All future components created with the forge system will automatically follow this pattern, ensuring consistency across:
-- Kubernetes provider components
-- AWS provider components
-- GCP provider components
-- Azure provider components
-- SaaS integration components
+All future kinds created with the forge system will automatically follow this pattern, ensuring consistency across:
+- Kubernetes provider kinds
+- AWS provider kinds
+- GCP provider kinds
+- Azure provider kinds
+- SaaS integration kinds
 
 ## Known Considerations
 
@@ -433,7 +433,7 @@ All future components created with the forge system will automatically follow th
 **Breaking Change**: Existing KubernetesNamespace manifests with uppercase enum values will fail validation.
 
 **Mitigation**: 
-- Component is newly released (November 22, 2025)
+- Kind is newly released (November 22, 2025)
 - Limited production usage
 - Clear migration guide provided
 - Better to fix early than accumulate tech debt
@@ -448,12 +448,12 @@ Go and TypeScript stubs use the new enum names, but this is expected and correct
 
 ## Future Enhancements
 
-### Apply to Existing Components
+### Apply to Existing Kinds
 
-Consider refactoring enums in other components:
-1. **Priority 1**: Components actively being developed
-2. **Priority 2**: Components with high usage
-3. **Priority 3**: Legacy components (if worth the migration cost)
+Consider refactoring enums in other kinds:
+1. **Priority 1**: Kinds actively being developed
+2. **Priority 2**: Kinds with high usage
+3. **Priority 3**: Legacy kinds (if worth the migration cost)
 
 ### Automated Migration Tool
 
@@ -477,7 +477,7 @@ lint:
 
 **Status**: ✅ Production Ready  
 **Timeline**: Single session implementation (2-3 hours)  
-**Next Steps**: Monitor usage, consider applying pattern to other components  
+**Next Steps**: Monitor usage, consider applying pattern to other kinds  
 **Breaking Change**: Yes, but early in component lifecycle with clear migration path
 
 

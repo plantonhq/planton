@@ -4,7 +4,7 @@ Deploys a standing Planton runner appliance on a Kubernetes cluster -- an always
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true` (with the standard Planton governance labels) and deleted with the resource; otherwise the runner installs into an existing namespace
 - **Runner token Secret** -- the `<name>-token` Opaque Secret holding the runner token, created before the release; the chart reads it by name (its existingSecret form), so the token never rides rendered chart values
@@ -54,11 +54,11 @@ spec:
 planton apply -f runner.yaml
 ```
 
-This minimal manifest installs chart version 0.9.0 tracking the latest runner release from the official image repository, at the chart's own default sizing (requests 100m/256Mi, limits 1/1Gi). The runner registers itself as `prod-cluster-runner` (`<env>-<metadata.name>`) the moment it joins, and `planton runner list` shows it. A Stack Job tracks the provisioning in real time.
+This minimal manifest installs chart version 0.9.0 tracking the latest runner release from the official image repository, at the chart's own default sizing (requests 100m/256Mi, limits 1/1Gi). The runner registers itself as `prod-cluster-runner` (`<env>-<metadata.name>`) the moment it joins, and `planton runner list` shows it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire the runner to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire the runner to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -93,15 +93,15 @@ These are the most important decisions when configuring the runner. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -122,4 +122,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- own the runner's namespace as a first-class resource and wire it through ValueFromRef
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- own the runner's namespace as a first-class resource and wire it through ValueFromRef

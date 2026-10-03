@@ -1,4 +1,4 @@
-# KubernetesTektonOperator Deployment Component
+# KubernetesTektonOperator Catalog Kind
 
 **Date**: December 19, 2025
 **Type**: Feature
@@ -6,11 +6,11 @@
 
 ## Summary
 
-Created a complete new deployment component `KubernetesTektonOperator` for deploying the Tekton CI/CD framework operator on Kubernetes clusters. The component follows the Planton forge workflow, implementing all proto API definitions, validation rules, unit tests, Pulumi and Terraform IaC modules, and comprehensive documentation.
+Created a complete new catalog kind `KubernetesTektonOperator` for deploying the Tekton CI/CD framework operator on Kubernetes clusters. The kind follows the Planton forge workflow, implementing all proto API definitions, validation rules, unit tests, Pulumi and Terraform IaC modules, and comprehensive documentation.
 
 ## Problem Statement / Motivation
 
-Organizations adopting Kubernetes-native CI/CD need a standardized, declarative way to deploy and manage Tekton components. Tekton is a powerful Kubernetes-native CI/CD framework, but its installation involves multiple components (Pipelines, Triggers, Dashboard) that need to be managed together.
+Organizations adopting Kubernetes-native CI/CD need a standardized, declarative way to deploy and manage Tekton components. Tekton is a powerful Kubernetes-native CI/CD framework, but its installation involves multiple kinds (Pipelines, Triggers, Dashboard) that need to be managed together.
 
 ### Pain Points
 
@@ -22,9 +22,9 @@ Organizations adopting Kubernetes-native CI/CD need a standardized, declarative 
 
 ## Solution / What's New
 
-Created the `KubernetesTektonOperator` deployment component using the Planton forge workflow. The component deploys the Tekton Operator, which then manages Tekton components via the TektonConfig CRD.
+Created the `KubernetesTektonOperator` catalog kind using the Planton forge workflow. The kind deploys the Tekton Operator, which then manages Tekton components via the TektonConfig CRD.
 
-### Component Architecture
+### Kind Architecture
 
 ```
 KubernetesTektonOperator (Planton)
@@ -46,17 +46,17 @@ KubernetesTektonOperator (Planton)
 
 ### Key Features
 
-1. **Component Selection**: Users can enable/disable individual Tekton components:
+1. **Kind Selection**: Users can enable/disable individual Tekton components:
    - Pipelines (core CI/CD execution)
    - Triggers (event-driven automation)
    - Dashboard (web UI)
 
-2. **Profile-Based Installation**: Maps component selection to Tekton profiles:
+2. **Profile-Based Installation**: Maps kind selection to Tekton profiles:
    - `all`: Pipelines + Triggers + Dashboard
    - `basic`: Pipelines + Triggers
    - `lite`: Pipelines only
 
-3. **Validation Rules**: CEL validation ensures at least one component is enabled
+3. **Validation Rules**: CEL validation ensures at least one kind is enabled
 
 4. **Container Resources**: Configurable operator pod resource allocation
 
@@ -71,16 +71,16 @@ Created four proto files following KRM conventions:
 message KubernetesTektonOperatorSpec {
   KubernetesClusterSelector target_cluster = 1;
   KubernetesTektonOperatorSpecContainer container = 2;
-  KubernetesTektonOperatorComponents components = 3;
+  KubernetesTektonOperatorKinds kinds = 3;
 }
 
-message KubernetesTektonOperatorComponents {
+message KubernetesTektonOperatorKinds {
   bool pipelines = 1;
   bool triggers = 2;
   bool dashboard = 3;
 
   option (buf.validate.message).cel = {
-    id: "components.at_least_one"
+    id: "kinds.at_least_one"
     expression: "this.pipelines || this.triggers || this.dashboard"
     message: "at least one Tekton component must be enabled"
   };
@@ -92,23 +92,23 @@ message KubernetesTektonOperatorComponents {
 message KubernetesTektonOperator {
   string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1'];
   string kind = 2 [(buf.validate.field).string.const = 'KubernetesTektonOperator'];
-  CloudResourceMetadata metadata = 3;
+  CatalogObjectMetadata metadata = 3;
   KubernetesTektonOperatorSpec spec = 4;
   KubernetesTektonOperatorStatus status = 5;
 }
 ```
 
-**stack_outputs.proto** - Deployment outputs:
+**outputs.proto** - Deployment outputs:
 - Namespace
 - TektonConfig name
-- Service names for enabled components
+- Service names for enabled kinds
 - Dashboard port-forward command
 
-**stack_input.proto** - IaC module inputs
+**iac_input.proto** - IaC module inputs
 
 ### Registry Entry
 
-Added to `cloud_resource_kind.proto`:
+Added to `catalog_kind.proto`:
 ```protobuf
 KubernetesTektonOperator = 838 [(kind_meta) = {
   provider: kubernetes
@@ -127,7 +127,7 @@ operatorManifests, err := yaml.NewConfigFile(ctx, "tekton-operator", &yaml.Confi
     File: vars.OperatorReleaseURL,
 }, pulumi.Provider(k8sProvider))
 
-// Create TektonConfig to configure components
+// Create TektonConfig to configure kinds
 tektonConfigYAML := buildTektonConfigYAML(locals, profile)
 _, err = yaml.NewConfigGroup(ctx, "tekton-config", &yaml.ConfigGroupArgs{
     YAML: []string{tektonConfigYAML},
@@ -165,14 +165,14 @@ resource "kubectl_manifest" "tekton_config" {
 ### Validation Tests
 
 Created `spec_test.go` with Ginkgo/Gomega tests covering:
-- Valid configurations with different component combinations
-- Required field validations (container, components)
-- CEL validation for at least one component enabled
+- Valid configurations with different kind combinations
+- Required field validations (container, kinds)
+- CEL validation for at least one kind enabled
 
 ```go
-ginkgo.Context("with no components enabled", func() {
+ginkgo.Context("with no kinds enabled", func() {
     ginkgo.It("should return a validation error", func() {
-        spec.Components = &KubernetesTektonOperatorComponents{
+        spec.Components = &KubernetesTektonOperatorKinds{
             Pipelines: false,
             Triggers:  false,
             Dashboard: false,
@@ -190,8 +190,8 @@ apis/dev/planton/provider/kubernetes/kubernetestektonoperator/v1/
 ├── Proto Files
 │   ├── spec.proto              # Configuration schema
 │   ├── api.proto               # KRM wiring
-│   ├── stack_input.proto       # IaC inputs
-│   ├── stack_outputs.proto     # Deployment outputs
+│   ├── iac_input.proto       # IaC inputs
+│   ├── outputs.proto     # Deployment outputs
 │   └── spec_test.go            # Validation tests
 │
 ├── Documentation
@@ -243,7 +243,7 @@ spec:
       limits:
         cpu: "500m"
         memory: "512Mi"
-  components:
+  kinds:
     pipelines: true
     triggers: true
     dashboard: true
@@ -260,7 +260,7 @@ planton apply -f tekton-operator.yaml
 
 - **Declarative Management**: Define Tekton deployments as code
 - **Consistent Deployments**: Same configuration across environments
-- **Component Flexibility**: Enable only needed components
+- **Kind Flexibility**: Enable only needed kinds
 - **Unified Tooling**: Manage Tekton alongside other Planton resources
 
 ### For Developers
@@ -272,7 +272,7 @@ planton apply -f tekton-operator.yaml
 ### For Operations
 
 - **Resource Control**: Configurable operator resource allocation
-- **Visibility**: Stack outputs provide service endpoints
+- **Visibility**: Outputs provide service endpoints
 - **Dual IaC Support**: Choose Pulumi or Terraform based on team preferences
 
 ## Impact
@@ -303,28 +303,28 @@ planton apply -f tekton-operator.yaml
 
 - **KubernetesElasticOperator**: Reference implementation for operator pattern
 - **KubernetesStrimziKafkaOperator**: Similar operator deployment pattern
-- **Forge Workflow**: Used `_rules/deployment-component/forge/` rules
+- **Forge Workflow**: Used `_rules/catalog-kind/forge/` rules
 
 ## Design Decisions
 
 ### Why Tekton Operator vs Direct Installation?
 
-**Decision**: Deploy via Tekton Operator rather than applying component manifests directly.
+**Decision**: Deploy via Tekton Operator rather than applying kind manifests directly.
 
 **Rationale**:
-- Operator handles version compatibility between components
+- Operator handles version compatibility between kinds
 - TektonConfig CRD provides unified configuration
 - Automatic reconciliation and self-healing
 - Simpler upgrade path through operator
 
-### Why Profile-Based Component Selection?
+### Why Profile-Based Kind Selection?
 
-**Decision**: Map boolean component flags to Tekton profiles (all/basic/lite).
+**Decision**: Map boolean kind flags to Tekton profiles (all/basic/lite).
 
 **Rationale**:
 - Aligns with Tekton Operator's native design
 - Reduces complexity in IaC modules
-- Ensures correct component dependencies
+- Ensures correct kind dependencies
 - Single configuration point via TektonConfig
 
 ### Why YAML Manifests vs Helm?

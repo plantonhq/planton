@@ -1,11 +1,11 @@
 apiVersion: qa.planton.dev/v1
-kind: ComponentE2EProfile
+kind: CatalogKindE2EProfile
 metadata:
   name: digitaloceandatabaseuser
 spec:
   # Live-proven on BOTH engines, both scenarios, full lifecycle under the
   # idempotency gate, plus the blind import round-trip on every Terraform
-  # lane (`{cluster_id},{user_name}` from the stack outputs). TWO
+  # lane (`{cluster_id},{user_name}` from the outputs). TWO
   # scenarios: `minimal` is a PostgreSQL user on the cluster registry
   # prerequisite (`planton-oss-e2e-dodb-min`) proving the lifecycle, the
   # (cluster_id, user_name) identity outputs, and the server-generated

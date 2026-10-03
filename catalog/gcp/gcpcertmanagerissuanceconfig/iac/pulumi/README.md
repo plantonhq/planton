@@ -14,10 +14,10 @@ planton pulumi up --manifest issuance-config.yaml
 
 ### Standalone Usage
 
-1. Set the stack input as an environment variable:
+1. Set the IaC input as an environment variable:
 
 ```bash
-export PLANTON_CLOUD_RESOURCE_MANIFEST=$(cat <<EOT
+export PLANTON_CATALOG_OBJECT_MANIFEST=$(cat <<EOT
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpCertManagerIssuanceConfig
 metadata:
@@ -48,7 +48,7 @@ pulumi up
 
 ## Inputs
 
-The module reads its configuration from the `GcpCertManagerIssuanceConfigStackInput` proto message:
+The module reads its configuration from the `GcpCertManagerIssuanceConfigIacInput` proto message:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|

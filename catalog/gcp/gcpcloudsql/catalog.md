@@ -4,7 +4,7 @@ Deploys a fully managed MySQL, PostgreSQL, or SQL Server database instance on Go
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cloud SQL Database Instance** -- a managed `google_sql_database_instance` in the specified GCP project and region, configured with the chosen engine (MySQL, PostgreSQL, or SQL Server), machine tier, edition, and data disk
 - **Connectivity** -- public IPv4 (optionally restricted by authorized-network CIDR rules), private IP inside a VPC (requires private services access on the network), and/or Private Service Connect exposure; TLS posture and server CA mode per your spec
@@ -19,13 +19,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the Cloud SQL instance will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
-- **Private Services Access** (if using private IP) -- the VPC network must already carry a service networking connection: compose a [GcpGlobalAddress](/cloud-catalog/gcp-global-address) with `purpose: VPC_PEERING` and a [GcpServiceNetworkingConnection](/cloud-catalog/gcp-service-networking-connection) on the network. This is a one-time setup per VPC; instance creation fails without it.
+- **A GCP project** where the Cloud SQL instance will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
+- **Private Services Access** (if using private IP) -- the VPC network must already carry a service networking connection: compose a [GcpGlobalAddress](/infra-catalog/gcp-global-address) with `purpose: VPC_PEERING` and a [GcpServiceNetworkingConnection](/infra-catalog/gcp-service-networking-connection) on the network. This is a one-time setup per VPC; instance creation fails without it.
 - **Cloud SQL Admin API** enabled in the target project (the IaC module enables it).
 
 ## Deploy
@@ -64,7 +64,7 @@ spec:
 planton apply -f cloud-sql.yaml
 ```
 
-This creates a PostgreSQL 16 instance with GCP's safe connectivity default (public IPv4 reachable only through the Auth Proxy / connectors), daily backups, and point-in-time recovery. A Stack Job tracks the provisioning in real time.
+This creates a PostgreSQL 16 instance with GCP's safe connectivity default (public IPv4 reachable only through the Auth Proxy / connectors), daily backups, and point-in-time recovery. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -109,7 +109,7 @@ These are the most important decisions when configuring a Cloud SQL instance. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -118,9 +118,9 @@ These are the most important decisions when configuring a Cloud SQL instance. Ex
 | **GcpKmsKey** (if CMEK) | `encryptionKeyName` | `status.outputs.key_id` |
 | **GcpCloudSql** (if read replica) | `masterInstanceName` | `status.outputs.instance_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -145,10 +145,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the Cloud SQL instance is created
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- provides the VPC network for private IP connectivity (requires private services access)
-- [**GCP Service Networking Connection**](/cloud-catalog/gcp-service-networking-connection) -- the private services access peering that private IP depends on
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- customer-managed encryption for the instance's storage
-- [**GCP Cloud SQL Database**](/cloud-catalog/gcp-cloud-sql-database) -- create application databases on this instance
-- [**GCP Cloud SQL User**](/cloud-catalog/gcp-cloud-sql-user) -- create per-application users instead of sharing the admin user
-- [**GCP Cloud Run**](/cloud-catalog/gcp-cloud-run) -- mounts this instance via Cloud SQL volumes using the connection name output
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the Cloud SQL instance is created
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- provides the VPC network for private IP connectivity (requires private services access)
+- [**GCP Service Networking Connection**](/infra-catalog/gcp-service-networking-connection) -- the private services access peering that private IP depends on
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- customer-managed encryption for the instance's storage
+- [**GCP Cloud SQL Database**](/infra-catalog/gcp-cloud-sql-database) -- create application databases on this instance
+- [**GCP Cloud SQL User**](/infra-catalog/gcp-cloud-sql-user) -- create per-application users instead of sharing the admin user
+- [**GCP Cloud Run**](/infra-catalog/gcp-cloud-run) -- mounts this instance via Cloud SQL volumes using the connection name output

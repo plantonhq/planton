@@ -38,7 +38,7 @@ func validResource() *AzureTrafficManagerEndpoint {
 	return &AzureTrafficManagerEndpoint{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureTrafficManagerEndpoint",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-endpoint",
 		},
 		Spec: &AzureTrafficManagerEndpointSpec{

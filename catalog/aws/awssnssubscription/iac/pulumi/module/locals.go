@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 //
 // A subscription has no cloud-side name and is untaggable in AWS — it is
 // identified by a server-assigned ARN — so unlike sibling modules there is no
@@ -16,7 +16,7 @@ type Locals struct {
 	Spec   *awssnssubscriptionv1alpha1.AwsSnsSubscriptionSpec
 }
 
-func initializeLocals(_ *pulumi.Context, in *awssnssubscriptionv1alpha1.AwsSnsSubscriptionStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, in *awssnssubscriptionv1alpha1.AwsSnsSubscriptionIacInput) *Locals {
 	return &Locals{
 		Target: in.Target,
 		Spec:   in.Target.Spec,

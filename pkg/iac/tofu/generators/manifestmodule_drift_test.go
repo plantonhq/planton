@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/kubernetes/manifestprojection"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // manifestModuleGaps names the projection kinds whose committed module the
@@ -41,7 +41,7 @@ func TestManifestModuleDrift(t *testing.T) {
 	regenerate := os.Getenv("PLANTON_REGEN_MANIFEST_MODULES") == "1"
 
 	enrolled := 0
-	for _, kind := range crkreflect.KindsList() {
+	for _, kind := range catalogkindreflect.KindsList() {
 		if manifestprojection.ProjectionOf(kind) == nil {
 			if _, listed := manifestModuleGaps[kind.String()]; listed {
 				t.Errorf("manifestModuleGaps names %s, which is not a projection kind; remove the stale entry", kind)
@@ -59,7 +59,7 @@ func TestManifestModuleDrift(t *testing.T) {
 		}
 		enrolled++
 		t.Run(kind.String(), func(t *testing.T) {
-			msg, err := crkreflect.NewInstance(kind)
+			msg, err := catalogkindreflect.NewInstance(kind)
 			if err != nil {
 				t.Fatalf("NewInstance(%s): %v", kind, err)
 			}
@@ -110,9 +110,9 @@ func TestManifestModuleDrift(t *testing.T) {
 // moduleMatchesGenerator reports whether a kind's committed module equals the
 // generator's output (backend.tf aside). A kind the generator refuses never
 // matches.
-func moduleMatchesGenerator(t *testing.T, root string, kind cloudresourcekind.CloudResourceKind) bool {
+func moduleMatchesGenerator(t *testing.T, root string, kind catalogkind.CatalogKind) bool {
 	t.Helper()
-	msg, err := crkreflect.NewInstance(kind)
+	msg, err := catalogkindreflect.NewInstance(kind)
 	if err != nil {
 		t.Fatalf("NewInstance(%s): %v", kind, err)
 	}

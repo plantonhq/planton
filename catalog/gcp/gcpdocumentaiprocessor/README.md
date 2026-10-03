@@ -4,7 +4,7 @@ A Document AI processor -- a managed model that turns documents (PDFs, scans, ph
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `documentai.googleapis.com` on the project (never disabled on destroy)
 - **Processor** -- a `document_ai_processor` of the chosen type, location, and encryption
@@ -63,7 +63,7 @@ planton apply -f document-ai-processor.yaml
 - `type` is an upper-case identifier.
 - `defaultVersion` is a concrete version id: not `stable`, not `rc`, not a full path.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -93,7 +93,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpKmsKey** -- customer-managed encryption for the processor
 - **GcpGcsBucket** -- where batch-processing input and output documents live

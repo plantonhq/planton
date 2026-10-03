@@ -45,7 +45,7 @@ beside their operator), not a limitation to work around.
 
 None — this preset deploys as-is.
 
-## Related Components
+## Related Kinds
 
 - **KubernetesMysql** — the databases this operator reconciles, one
   resource per XtraDB Cluster, declared in the watched namespace

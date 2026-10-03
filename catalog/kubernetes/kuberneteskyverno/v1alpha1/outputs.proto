@@ -5,7 +5,7 @@ package dev.planton.kubernetes.kuberneteskyverno.v1alpha1;
 /**
  * Outputs exported after installing the Kyverno policy engine.
  */
-message KubernetesKyvernoStackOutputs {
+message KubernetesKyvernoOutputs {
   /**
    * Namespace the engine runs in.
    */

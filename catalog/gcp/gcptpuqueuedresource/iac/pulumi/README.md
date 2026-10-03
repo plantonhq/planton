@@ -7,7 +7,7 @@ This directory contains the Pulumi implementation for a Cloud TPU queued resourc
 | File | Purpose |
 |------|---------|
 | `main.go` | Module entry point; invokes `Resources()` which wires locals, provider, and `queuedResource` |
-| `module/locals.go` | Stack input holder |
+| `module/locals.go` | IaC input holder |
 | `module/queued_resource.go` | Resolves the node parent, enables the API, maps the node specs, exports the outputs |
 | `module/outputs.go` | Output key constants (`name`, `queued_resource_id`, `zone`) |
 

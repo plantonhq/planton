@@ -23,7 +23,7 @@
 ## Usage
 
 ```bash
-export STACK_INPUT=$(cat ../../e2e/manifest.yaml | base64)
+export IAC_INPUT=$(cat ../../e2e/manifest.yaml | base64)
 pulumi up
 ```
 

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azureapplicationsecuritygroup.v1alpha1;
 
-// **AzureApplicationSecurityGroupStackOutputs** captures the outputs of
+// **AzureApplicationSecurityGroupOutputs** captures the outputs of
 // provisioning an Azure Application Security Group.
-message AzureApplicationSecurityGroupStackOutputs {
+message AzureApplicationSecurityGroupOutputs {
   // The Azure Resource Manager ID of the application security group. This
   // is the composition seam: network interfaces
   // (application_security_group_ids), VM scale set IP configurations, and

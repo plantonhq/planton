@@ -4,7 +4,7 @@ Creates a geo-disaster-recovery pairing between two Event Hubs namespaces: metad
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Geo-DR pairing** -- under the primary namespace, replicating metadata continuously to the partner
 - **The alias** -- the failover-stable DNS name, globally unique in the namespace name scope
@@ -15,7 +15,7 @@ The provider manages the pairing's lifecycle choreography: creation waits for th
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -57,7 +57,7 @@ spec:
 planton apply -f geo-dr.yaml
 ```
 
-This creates a geo-DR pairing under the `telemetry-hubs` namespace, replicating its metadata to `telemetry-hubs-dr` and fronting both with the `myorg-telemetry-alias` DNS name. A Stack Job tracks the provisioning in real time.
+This creates a geo-DR pairing under the `telemetry-hubs` namespace, replicating its metadata to `telemetry-hubs-dr` and fronting both with the `myorg-telemetry-alias` DNS name. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -88,16 +88,16 @@ These are the most important decisions when configuring a geo-DR pairing. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureEventHubNamespace** | `primaryNamespaceId` | `status.outputs.namespace_id` |
 | **AzureEventHubNamespace** | `partnerNamespaceId` | `status.outputs.namespace_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -114,7 +114,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Event Hub Namespace**](/cloud-catalog/azure-event-hub-namespace) -- both sides of the pairing; their `*_alias` connection-string outputs populate once paired
-- [**Azure Event Hub Authorization Rule**](/cloud-catalog/azure-event-hub-authorization-rule) -- rules replicate to the partner, and their alias-addressed connection strings are what DR-aware clients hold
-- [**Azure Event Hub**](/cloud-catalog/azure-event-hub) -- hub structure replicates; event data does not
-- [**Azure Event Hub Consumer Group**](/cloud-catalog/azure-event-hub-consumer-group) -- group structure replicates; offsets are per-namespace
+- [**Azure Event Hub Namespace**](/infra-catalog/azure-event-hub-namespace) -- both sides of the pairing; their `*_alias` connection-string outputs populate once paired
+- [**Azure Event Hub Authorization Rule**](/infra-catalog/azure-event-hub-authorization-rule) -- rules replicate to the partner, and their alias-addressed connection strings are what DR-aware clients hold
+- [**Azure Event Hub**](/infra-catalog/azure-event-hub) -- hub structure replicates; event data does not
+- [**Azure Event Hub Consumer Group**](/infra-catalog/azure-event-hub-consumer-group) -- group structure replicates; offsets are per-namespace

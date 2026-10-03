@@ -5,9 +5,9 @@ package dev.planton.cloudflare.cloudflareemailroutingzone.v1alpha1;
 import "catalog/cloudflare/cloudflareemailroutingzone/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-//cloudflare-email-routing-zone stack-input
-message CloudflareEmailRoutingZoneStackInput {
-  //target cloud-resource
+//cloudflare-email-routing-zone iac-input
+message CloudflareEmailRoutingZoneIacInput {
+  //target infra-component
   CloudflareEmailRoutingZone target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

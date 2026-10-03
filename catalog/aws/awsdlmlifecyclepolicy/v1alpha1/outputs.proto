@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsdlmlifecyclepolicy.v1alpha1;
 
-// AwsDlmLifecyclePolicyStackOutputs captures the observable state of
+// AwsDlmLifecyclePolicyOutputs captures the observable state of
 // the policy after apply.
-message AwsDlmLifecyclePolicyStackOutputs {
+message AwsDlmLifecyclePolicyOutputs {
   // The policy's id (policy-...) - the provider's import ID.
   string policy_id = 1;
 

@@ -6,17 +6,17 @@
 
 ## Summary
 
-Enhanced the OpenFGA Relationship Tuple component to support foreign key references in `user.id` and `object.id` fields. Both fields now accept `StringValueOrRef` instead of plain strings, enabling dynamic ID resolution from other deployed resources while maintaining backward compatibility through direct value specification.
+Enhanced the OpenFGA Relationship Tuple kind to support foreign key references in `user.id` and `object.id` fields. Both fields now accept `StringValueOrRef` instead of plain strings, enabling dynamic ID resolution from other deployed resources while maintaining backward compatibility through direct value specification.
 
 ## Problem Statement / Motivation
 
-The OpenFGA Relationship Tuple component required users to hardcode user and object IDs as plain strings. This was inconsistent with other fields in the same proto (`store_id` and `authorization_model_id`) which already supported `StringValueOrRef` for foreign key references.
+The OpenFGA Relationship Tuple kind required users to hardcode user and object IDs as plain strings. This was inconsistent with other fields in the same proto (`store_id` and `authorization_model_id`) which already supported `StringValueOrRef` for foreign key references.
 
 ### Pain Points
 
 - **Hardcoded IDs**: Users couldn't reference dynamically-provisioned resource IDs
 - **Inconsistent API**: `store_id` supported references while `user.id` and `object.id` did not
-- **Limited flexibility**: No way to create tuples that reference other deployment component outputs
+- **Limited flexibility**: No way to create tuples that reference other catalog kind outputs
 - **Manual coordination**: Required users to manually look up and paste IDs from other resources
 
 ## Solution / What's New

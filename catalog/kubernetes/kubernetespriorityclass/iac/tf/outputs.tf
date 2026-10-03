@@ -1,4 +1,4 @@
-# Stack outputs — must flatten onto KubernetesPriorityClassStackOutputs
+# Outputs — must flatten onto KubernetesPriorityClassOutputs
 # (outputs.proto) identically to the Pulumi module's exports.
 
 output "priority_class_name" {

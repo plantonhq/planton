@@ -4,7 +4,7 @@ Deploys a Serverless VPC Access connector — the managed bridge that lets serve
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **VPC Access API enablement** on the target project (never disabled on destroy)
 - **Serverless VPC Access Connector** -- a `google_vpc_access_connector` occupying a dedicated /28: either carved directly out of the chosen VPC (network placement) or an existing /28 subnetwork (subnet placement — the Shared VPC shape), with the configured machine type and scaling window
@@ -13,12 +13,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the connector will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
+- **A GCP project** where the connector will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
 - **IAM permissions** -- `roles/vpcaccess.admin` (or equivalent) on the target project.
 - **Address space** -- an unused /28 in the target VPC (network placement), or a dedicated /28 GcpSubnetwork (subnet placement; on Shared VPC it lives in the host project).
 
@@ -56,7 +56,7 @@ spec:
 planton apply -f connector.yaml
 ```
 
-This carves a dedicated /28 out of the VPC and stands up the forwarding fleet; Cloud Run services then attach by the connector's full resource name. A Stack Job tracks the provisioning in real time.
+This carves a dedicated /28 out of the VPC and stands up the forwarding fleet; Cloud Run services then attach by the connector's full resource name. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -91,7 +91,7 @@ These are the most important decisions when configuring a connector. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -99,9 +99,9 @@ These are the most important decisions when configuring a connector. Explore the
 | **GcpVpcNetwork** (network placement) | `network` | `status.outputs.network_name` |
 | **GcpSubnetwork** (subnet placement) | `subnet.name` | `status.outputs.subnetwork_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -122,10 +122,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Cloud Run**](/cloud-catalog/gcp-cloud-run) -- attaches by the connector's resource name to reach private IPs
-- [**GCP Cloud Function**](/cloud-catalog/gcp-cloud-function) -- same attachment for Cloud Functions egress
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- the network the connector bridges into
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- provides the dedicated /28 in subnet placement (Shared VPC)
-- [**GCP Cloud SQL**](/cloud-catalog/gcp-cloud-sql) -- the classic private-IP destination behind the connector
-- [**GCP Memorystore Instance**](/cloud-catalog/gcp-memorystore-instance) -- private Redis reached through the connector
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the connector is created
+- [**GCP Cloud Run**](/infra-catalog/gcp-cloud-run) -- attaches by the connector's resource name to reach private IPs
+- [**GCP Cloud Function**](/infra-catalog/gcp-cloud-function) -- same attachment for Cloud Functions egress
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- the network the connector bridges into
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- provides the dedicated /28 in subnet placement (Shared VPC)
+- [**GCP Cloud SQL**](/infra-catalog/gcp-cloud-sql) -- the classic private-IP destination behind the connector
+- [**GCP Memorystore Instance**](/infra-catalog/gcp-memorystore-instance) -- private Redis reached through the connector
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the connector is created

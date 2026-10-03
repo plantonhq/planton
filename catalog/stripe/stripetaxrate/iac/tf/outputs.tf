@@ -1,5 +1,5 @@
 # StripeTaxRate Outputs
-# Maps to the StripeTaxRateStackOutputs protobuf message.
+# Maps to the StripeTaxRateOutputs protobuf message.
 
 output "id" {
   description = "The tax rate's Stripe id (txr_...); it changes when the rate is replaced"

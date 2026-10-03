@@ -9,7 +9,7 @@ provider.tf   — Cloudflare provider configuration
 variables.tf  — Input variables mirroring CloudflareTurnstileWidgetSpec
 locals.tf     — Resource naming
 main.tf       — cloudflare_turnstile_widget resource
-outputs.tf    — Stack outputs (sitekey, secret, created_on, modified_on)
+outputs.tf    — outputs (sitekey, secret, created_on, modified_on)
 ```
 
 ## Usage

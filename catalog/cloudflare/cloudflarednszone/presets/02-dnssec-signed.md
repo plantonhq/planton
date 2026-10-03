@@ -6,7 +6,7 @@ display_name: DNSSEC Signed
 
 Creates a zone with DNSSEC enabled. Cloudflare signs the zone, and the DS record
 material (digest, key tag, algorithm, and the full DS record) is published as
-stack outputs for you to enter at your domain registrar to complete the chain of
+outputs for you to enter at your domain registrar to complete the chain of
 trust.
 
 ## Deploy in two phases — DNSSEC cannot be enabled on a brand-new zone
@@ -23,7 +23,7 @@ working sequence:
    `status.outputs.nameservers` and wait for the zone to report `active`
    (typically 1–24h of registrar propagation).
 3. Set `dnssec.enabled: true` (this preset's shape) and re-apply. Then enter the
-   DS material from the stack outputs at the registrar.
+   DS material from the outputs at the registrar.
 
 Apply this preset directly only to a domain whose zone is already active on
 your account.
@@ -39,7 +39,7 @@ your account.
 - **dnssec.enabled: true** (`dnssec.enabled`) -- Turns on Cloudflare DNSSEC
   signing. Active zones only — see the two-phase sequence above.
 - **DS outputs** -- After apply, read `dnssec_ds` (and the individual digest/key-tag
-  fields) from the stack outputs and enter them at your registrar.
+  fields) from the outputs and enter them at your registrar.
 - For multi-provider or secondary-DNS setups, also set `dnssec.multi_signer`,
   `dnssec.presigned`, or `dnssec.use_nsec3`.
 

@@ -4,7 +4,7 @@ Deploys an EventBridge Pipe — the managed point-to-point integration that read
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **EventBridge Pipe** — named after `metadata.name`, wired from the source ARN to the target ARN under the execution role, consuming immediately unless `desiredState` says otherwise
 - **Source tuning** — the family block matching the source's service: batching and windows for SQS, starting positions and retry/bisect/DLQ policy for Kinesis and DynamoDB streams, topics and Secrets Manager credential references for Kafka, queue names for MQ brokers
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with EventBridge Pipes permissions and `iam:PassRole` on the execution role. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with EventBridge Pipes permissions and `iam:PassRole` on the execution role. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -74,7 +74,7 @@ spec:
 planton apply -f eventbridge-pipe.yaml
 ```
 
-This creates a running pipe that drains order-typed messages from the intake queue into the processing queue in batches of 10, under the referenced execution role. A Stack Job tracks the provisioning in real time.
+This creates a running pipe that drains order-typed messages from the intake queue into the processing queue in batches of 10, under the referenced execution role. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -122,7 +122,7 @@ These are the most important decisions when configuring a pipe. Explore the full
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 `source`, `target`, and `enrichment` range over many services, so they carry no default kind — a valueFrom on them states its kind explicitly. The common wirings:
 
@@ -137,9 +137,9 @@ These are the most important decisions when configuring a pipe. Explore the full
 | **AwsKmsKey** | `kmsKeyIdentifier` | `status.outputs.key_arn` |
 | **AwsCloudwatchLogGroup** | `logConfiguration.cloudwatchLogs.logGroupArn` | `status.outputs.log_group_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -161,11 +161,11 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS SQS Queue**](/cloud-catalog/aws-sqs-queue) — the classic source and target, and the DLQ for stream sources
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) — target or enrichment step, invoked per batch
-- [**AWS DynamoDB**](/cloud-catalog/aws-dynamodb) — its stream feeds the pipe for change-data capture
-- [**AWS Kinesis Data Stream**](/cloud-catalog/aws-kinesis-stream) — high-throughput source or target with partition-key shaping
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the pipes-trusting execution role wired via `roleArn`
-- [**AWS EventBridge Bus**](/cloud-catalog/aws-event-bridge-bus) — target that fans pipe traffic out to rule-based routing
-- [**AWS EventBridge API Destination**](/cloud-catalog/aws-event-bridge-api-destination) — authenticated HTTP target or enrichment endpoint
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption of pipe data at rest via `kmsKeyIdentifier`
+- [**AWS SQS Queue**](/infra-catalog/aws-sqs-queue) — the classic source and target, and the DLQ for stream sources
+- [**AWS Lambda**](/infra-catalog/aws-lambda) — target or enrichment step, invoked per batch
+- [**AWS DynamoDB**](/infra-catalog/aws-dynamodb) — its stream feeds the pipe for change-data capture
+- [**AWS Kinesis Data Stream**](/infra-catalog/aws-kinesis-stream) — high-throughput source or target with partition-key shaping
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the pipes-trusting execution role wired via `roleArn`
+- [**AWS EventBridge Bus**](/infra-catalog/aws-event-bridge-bus) — target that fans pipe traffic out to rule-based routing
+- [**AWS EventBridge API Destination**](/infra-catalog/aws-event-bridge-api-destination) — authenticated HTTP target or enrichment endpoint
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption of pipe data at rest via `kmsKeyIdentifier`

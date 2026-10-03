@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpregionnetworkendpointgroup.v1alpha1;
 
 // Outputs produced after provisioning a GCP regional network endpoint group.
-message GcpRegionNetworkEndpointGroupStackOutputs {
+message GcpRegionNetworkEndpointGroupOutputs {
   // Self-link URI of the network endpoint group. This is the value a backend
   // service references in backends[].group — the composition handle that puts
   // this NEG behind a load balancer.

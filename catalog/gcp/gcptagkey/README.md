@@ -4,7 +4,7 @@ Creates a Google Cloud Resource Manager tag key — the NAME half of a tag such 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Tag key** -- the `tags_tag_key` under the organization or project, with its short name, description, optional purpose, and optional allowed-values regex
 
@@ -70,7 +70,7 @@ planton apply -f tag-key.yaml
 - **`purpose`**: empty, `GCE_FIREWALL`, or `DATA_GOVERNANCE`; **`purposeData`** only with a purpose.
 - **`deletionPolicy`**: `DELETE`, `PREVENT`, or `ABANDON`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -99,7 +99,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpTagValue](/docs/catalog/gcp/gcptagvalue) — the values under this key
 - [GcpTagBinding](/docs/catalog/gcp/gcptagbinding) — attaches a value to a resource

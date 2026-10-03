@@ -21,7 +21,7 @@
 # Entry format: <repo-relative path>:<token>
 # Regenerate gaps with:  PLANTON_REGEN_PRICE_BASELINE=1 go test ./pkg/priceprovenance/
 allowed:
-  # AwsCostAnomalyMonitor is a dollar-typed component: the alert threshold IS
+  # AwsCostAnomalyMonitor is a dollar-typed kind: the alert threshold IS
   # a user-chosen dollar value (ANOMALY_TOTAL_IMPACT_ABSOLUTE), not a rate.
   - "catalog/aws/awscostanomalymonitor/GUIDE.md:$100"
   - "catalog/aws/awscostanomalymonitor/presets/01-service-monitor.md:$100"

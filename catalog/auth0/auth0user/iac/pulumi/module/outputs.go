@@ -5,8 +5,8 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// exportOutputs exports the stack outputs for the Auth0 User, mapping onto
-// Auth0UserStackOutputs field by field.
+// exportOutputs exports the outputs for the Auth0 User, mapping onto
+// Auth0UserOutputs field by field.
 func exportOutputs(ctx *pulumi.Context, user *auth0.User, mintedPassword pulumi.StringOutput, minted bool) error {
 	// The resource ID is the full subject, connection prefix included
 	// ("auth0|..."), for every user -- whether Auth0 assigned the id or the

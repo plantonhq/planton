@@ -13,8 +13,8 @@ type Locals struct {
 	GcpIdentityPlatformTenant *gcpidentityplatformtenantv1alpha1.GcpIdentityPlatformTenant
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpidentityplatformtenantv1alpha1.GcpIdentityPlatformTenantStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpidentityplatformtenantv1alpha1.GcpIdentityPlatformTenantIacInput) *Locals {
 	return &Locals{
-		GcpIdentityPlatformTenant: stackInput.Target,
+		GcpIdentityPlatformTenant: iacInput.Target,
 	}
 }

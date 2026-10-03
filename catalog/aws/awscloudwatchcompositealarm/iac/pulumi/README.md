@@ -17,7 +17,7 @@ alerting dependencies, and gate actions behind maintenance suppression.
 
 ## Usage
 
-The module is executed by the Planton runtime with a stack input carrying the
+The module is executed by the Planton runtime with an IaC input carrying the
 target resource and provider config. For a local run:
 
 ```shell

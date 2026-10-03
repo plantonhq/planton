@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -26,7 +26,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -60,7 +60,7 @@ var _ = ginkgo.Describe("KubernetesSuperset Validation Tests", func() {
 		input = &KubernetesSuperset{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesSuperset",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "superset",
 			},
 			Spec: &KubernetesSupersetSpec{
@@ -77,9 +77,9 @@ var _ = ginkgo.Describe("KubernetesSuperset Validation Tests", func() {
 
 		ginkgo.It("metadata database with FK references should be valid", func() {
 			input.Spec.MetadataDatabase = &KubernetesSupersetMetadataDatabase{
-				Host: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "superset-pg", "status.outputs.rw_service"),
+				Host: valueFrom(catalogkind.CatalogKind_KubernetesPostgres, "superset-pg", "status.outputs.rw_service"),
 				PasswordSecret: &KubernetesSupersetPostgresPasswordSecret{
-					SecretName: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "superset-pg", "status.outputs.password_secret.name"),
+					SecretName: valueFrom(catalogkind.CatalogKind_KubernetesPostgres, "superset-pg", "status.outputs.password_secret.name"),
 				},
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
@@ -87,9 +87,9 @@ var _ = ginkgo.Describe("KubernetesSuperset Validation Tests", func() {
 
 		ginkgo.It("a cache composing a KubernetesValkey with its password Secret should be valid", func() {
 			input.Spec.Cache = &KubernetesSupersetCache{
-				Host: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesValkey, "superset-cache", "status.outputs.service"),
+				Host: valueFrom(catalogkind.CatalogKind_KubernetesValkey, "superset-cache", "status.outputs.service"),
 				PasswordSecret: &KubernetesSupersetCachePasswordSecret{
-					SecretName: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesValkey, "superset-cache", "status.outputs.password_secret.name"),
+					SecretName: valueFrom(catalogkind.CatalogKind_KubernetesValkey, "superset-cache", "status.outputs.password_secret.name"),
 				},
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())

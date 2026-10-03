@@ -6,7 +6,7 @@
 
 ## Summary
 
-Enhanced the forge workflow with automated validation steps that ensure proto stubs are generated, code compiles, and tests pass at critical points during resource creation. Added four new rules (016-019) that automate previously manual steps (`make protos`, `make build`, `make test`) and ensure cloud resources are properly registered in the `cloud_resource_kind.proto` enum.
+Enhanced the forge workflow with automated validation steps that ensure proto stubs are generated, code compiles, and tests pass at critical points during resource creation. Added four new rules (016-019) that automate previously manual steps (`make protos`, `make build`, `make test`) and ensure infra components are properly registered in the `catalog_kind.proto` enum.
 
 ## Problem Statement / Motivation
 
@@ -20,7 +20,7 @@ The previous forge workflow had several manual steps and gaps that could lead to
 
 - **Test Failures Discovered Late**: Unit tests created by rule 003 were not automatically executed, so test failures might not be discovered until much later in development.
 
-- **Manual Enum Registration**: After forging a new cloud resource, developers had to manually add it to `cloud_resource_kind.proto` enum, a step that was easy to forget and error-prone.
+- **Manual Enum Registration**: After forging a new infra component, developers had to manually add it to `catalog_kind.proto` enum, a step that was easy to forget and error-prone.
 
 - **Compound Errors**: Issues in proto files, code, or tests would compound, making it harder to identify the root cause when discovered late.
 
@@ -30,9 +30,9 @@ The previous forge workflow had several manual steps and gaps that could lead to
 
 The forge workflow now includes four new validation rules that automate critical checkpoints:
 
-### Rule 016: Cloud Resource Kind Registration
+### Rule 016: Catalog Kind Registration
 
-**Purpose**: Automatically register new cloud resources in the `cloud_resource_kind.proto` enum.
+**Purpose**: Automatically register new infra components in the `catalog_kind.proto` enum.
 
 **What It Does**:
 - Identifies the provider and kind name from the resource being forged
@@ -57,7 +57,7 @@ GcpCertManagerCert = 619 [(kind_meta) = {
 **When**: After all proto files are created (rules 001-006, 016)
 
 **What It Does**:
-- Verifies all required proto files exist (api.proto, spec.proto, stack_input.proto, stack_outputs.proto)
+- Verifies all required proto files exist (api.proto, spec.proto, iac_input.proto, outputs.proto)
 - Runs `make protos` from project root
 - Validates proto compilation succeeds
 - Confirms `.pb.go` files are generated
@@ -118,7 +118,7 @@ GcpCertManagerCert = 619 [(kind_meta) = {
 ### File Locations
 
 **New Rules Created**:
-1. `.cursor/rules/forge/016-cloud-resource-kind.mdc` (39 lines)
+1. `.cursor/rules/forge/016-catalog-kind.mdc` (39 lines)
 2. `.cursor/rules/forge/017-generate-proto-stubs.mdc` (125 lines)
 3. `.cursor/rules/forge/018-build-validation.mdc` (169 lines)
 4. `.cursor/rules/forge/019-test-validation.mdc` (213 lines)
@@ -175,10 +175,10 @@ The complete forge workflow is now:
 **1. Proto Definition Phase:**
 - 001: spec.proto (no validations)
 - 002: spec.proto (add validations)
-- 004: stack_outputs.proto
+- 004: outputs.proto
 - 005: api.proto
-- 006: stack_input.proto
-- 016: cloud_resource_kind.proto ← **NEW**
+- 006: iac_input.proto
+- 016: catalog_kind.proto ← **NEW**
 - 017: make protos ← **NEW**
 
 **2. Testing Phase:**
@@ -203,7 +203,7 @@ The complete forge workflow is now:
 
 ### Provider-Specific Ranges
 
-Rule 016 documents the following provider ranges for cloud resource kinds:
+Rule 016 documents the following provider ranges for catalog kinds:
 
 | Provider | Range | ID Prefix Pattern | Example |
 |----------|-------|-------------------|---------|
@@ -280,8 +280,8 @@ Each rule provides clear, structured output:
 ✅ Prerequisites verified
    - api.proto exists
    - spec.proto exists
-   - stack_input.proto exists
-   - stack_outputs.proto exists
+   - iac_input.proto exists
+   - outputs.proto exists
 
 🔨 Running: make protos
 
@@ -292,8 +292,8 @@ Each rule provides clear, structured output:
 📁 Generated files:
    - apis/.../api.pb.go
    - apis/.../spec.pb.go
-   - apis/.../stack_input.pb.go
-   - apis/.../stack_outputs.proto
+   - apis/.../iac_input.pb.go
+   - apis/.../outputs.proto
 
 ✅ Proto stub generation complete
 ```
@@ -326,8 +326,8 @@ These rules were applied during the creation of the `GcpCertManagerCert` resourc
 ✅ Generated 4 .pb.go files
    - api.pb.go (1,245 lines)
    - spec.pb.go (2,103 lines)
-   - stack_input.pb.go (428 lines)
-   - stack_outputs.pb.go (315 lines)
+   - iac_input.pb.go (428 lines)
+   - outputs.pb.go (315 lines)
 ```
 
 **Rule 018 (Build)**:
@@ -420,7 +420,7 @@ For new resources being forged:
 
 1. **After Proto Authoring** (rules 001-006):
    ```
-   @016-cloud-resource-kind  # Register in enum
+   @016-catalog-kind  # Register in enum
    @017-generate-proto-stubs  # Generate stubs
    ```
 
@@ -541,7 +541,7 @@ Each new rule was tested during the `GcpCertManagerCert` resource creation:
 ```bash
 # Verified enum entry added correctly
 grep -A 4 "GcpCertManagerCert" \
-  apis/project/planton/shared/cloudresourcekind/cloud_resource_kind.proto
+  apis/project/planton/shared/catalogkind/catalog_kind.proto
 # Result: Correct enum value, id_prefix, and metadata
 ```
 
@@ -572,7 +572,7 @@ make test
 The complete workflow (rules 001-019) was executed to create `GcpCertManagerCert`:
 
 - ✅ All proto files created successfully
-- ✅ Enum registered in cloud_resource_kind.proto
+- ✅ Enum registered in catalog_kind.proto
 - ✅ Proto stubs generated without errors
 - ✅ Go code compiled successfully
 - ✅ All unit tests passed

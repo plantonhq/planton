@@ -8,11 +8,11 @@ installs the ENGINE that reconciles it. The operator must watch this
 cluster's namespace. Deploy the operator first, Connect clusters
 after.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want a connector (a data pipe)** — connectors are first-class
   resources: KubernetesKafkaConnector, declared in THIS cluster's
-  namespace and bound to it by name. This component is the worker
+  namespace and bound to it by name. This kind is the worker
   fleet the connectors run on.
 - **You plan to manage connectors through the Connect REST API** —
   the module always stamps the
@@ -140,7 +140,7 @@ other's state.
 - **`spec.resources` / `spec.jvm` / `spec.rack` / `spec.metrics` /
   `spec.node_selector` / `spec.tolerations`**
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

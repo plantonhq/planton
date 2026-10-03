@@ -15,7 +15,7 @@ Planton needed a professional, reusable system for delivering tailored presentat
 1. **Prospect-specific customization**: Each prospect gets a personalized deck with their company context
 2. **Version control**: Multiple presentations per prospect (by date) with history
 3. **Presenter support**: Built-in notes, keyboard navigation, direct slide linking
-4. **Reusability**: Foundation components usable across all future prospect decks
+4. **Reusability**: Foundation kinds usable across all future prospect decks
 5. **Web-native**: No PowerPoint exports—live web presentations with URLs for follow-up
 
 ### Pain Points
@@ -54,7 +54,7 @@ src/
         ├── index.ts            # Prospect registry
         └── sep/
             ├── config.ts       # Slide array + metadata
-            └── slides/         # 24 individual slide components
+            └── slides/         # 24 individual slide kinds
 ```
 
 ### URL Structure
@@ -68,7 +68,7 @@ src/
 
 Created a comprehensive design system for presentations:
 
-| Component | Purpose |
+| Kind | Purpose |
 |-----------|---------|
 | `Slide` | Base wrapper with consistent padding, animations |
 | `SlideHeader` | Section tag + title combo |
@@ -183,7 +183,7 @@ Slide content pulls from actual customer data in `planton/_business/sales/custom
 
 ### For Engineering
 - **Slide-per-file**: Easy to find, edit, or reorder individual slides
-- **Reusable primitives**: 20+ components accelerate future deck creation
+- **Reusable primitives**: 20+ catalog kinds accelerate future deck creation
 - **Type-safe**: Full TypeScript throughout with proper interfaces
 - **Static export**: Works with `output: 'export'` for CDN deployment
 
@@ -193,8 +193,8 @@ Slide content pulls from actual customer data in `planton/_business/sales/custom
 
 | Category | Count |
 |----------|-------|
-| Slide components | 24 |
-| Shared primitives | 3 files, 20+ components |
+| Slide kinds | 24 |
+| Shared primitives | 3 files, 20+ catalog kinds |
 | Route handlers | 4 |
 | Configuration | 2 |
 | **Total** | **33 files** |

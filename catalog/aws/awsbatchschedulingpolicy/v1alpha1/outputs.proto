@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbatchschedulingpolicy.v1alpha1;
 
-// AwsBatchSchedulingPolicyStackOutputs captures the observable identifiers
+// AwsBatchSchedulingPolicyOutputs captures the observable identifiers
 // of the AWS Batch scheduling policy.
-message AwsBatchSchedulingPolicyStackOutputs {
+message AwsBatchSchedulingPolicyOutputs {
   // The Amazon Resource Name (ARN) of the scheduling policy -- what job
   // queues reference through their scheduling_policy field.
   string scheduling_policy_arn = 1;

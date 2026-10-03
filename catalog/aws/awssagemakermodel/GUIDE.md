@@ -1,4 +1,4 @@
-# AwsSagemakerModel — Component Guide
+# AwsSagemakerModel — Kind Guide
 
 Authored operational judgment for the SageMaker model component: the
 design decisions behind the spec's shape, and what to know before

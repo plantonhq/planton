@@ -5,9 +5,9 @@ package dev.planton.aws.awscloudtrail.v1alpha1;
 import "catalog/aws/awscloudtrail/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsCloudTrailStackInput is the input for the IaC modules that
+// AwsCloudTrailIacInput is the input for the IaC modules that
 // manage a CloudTrail trail.
-message AwsCloudTrailStackInput {
+message AwsCloudTrailIacInput {
   // target is the AwsCloudTrail resource to deploy.
   AwsCloudTrail target = 1;
   // provider_config contains the AWS provider credentials and configuration.

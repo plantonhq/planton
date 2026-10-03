@@ -5,9 +5,9 @@ package dev.planton.azure.azurestorageobjectreplication.v1alpha1;
 import "catalog/azure/azurestorageobjectreplication/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-storage-object-replication stack-input
-message AzureStorageObjectReplicationStackInput {
-  //target cloud-resource
+//azure-storage-object-replication iac-input
+message AzureStorageObjectReplicationIacInput {
+  //target infra-component
   AzureStorageObjectReplication target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

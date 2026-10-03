@@ -5,7 +5,7 @@ package dev.planton.digitalocean.digitaloceanapp.v1alpha1;
 import "catalog/digitalocean/digitaloceanapp/v1alpha1/api.proto";
 import "catalog/digitalocean/provider.proto";
 
-message DigitalOceanAppStackInput {
+message DigitalOceanAppIacInput {
   DigitalOceanApp target = 1;
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;
 }

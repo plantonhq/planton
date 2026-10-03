@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpartifactregistryrepo.v1alpha1;
 
-//gcp-artifact-registry-repo stack outputs
-message GcpArtifactRegistryRepoStackOutputs {
+//gcp-artifact-registry-repo outputs
+message GcpArtifactRegistryRepoOutputs {
   // Short name of the repository (the repository ID), e.g. "app-images".
   string name = 1;
 

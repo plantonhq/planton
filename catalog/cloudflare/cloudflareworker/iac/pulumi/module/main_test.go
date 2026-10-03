@@ -66,10 +66,10 @@ func (m *bundleMocks) Call(args pulumi.MockCallArgs) (resource.PropertyMap, erro
 	return result, nil
 }
 
-func bundleStackInput() *cloudflareworkerv1alpha1.CloudflareWorkerStackInput {
-	return &cloudflareworkerv1alpha1.CloudflareWorkerStackInput{
+func bundleIacInput() *cloudflareworkerv1alpha1.CloudflareWorkerIacInput {
+	return &cloudflareworkerv1alpha1.CloudflareWorkerIacInput{
 		Target: &cloudflareworkerv1alpha1.CloudflareWorker{
-			Metadata: &shared.CloudResourceMetadata{Name: "bundled-api"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "bundled-api"},
 			Spec: &cloudflareworkerv1alpha1.CloudflareWorkerSpec{
 				AccountId:  testAccountID,
 				WorkerName: "bundled-api",
@@ -115,7 +115,7 @@ func TestResources_R2Bundle_DeploysTheBundleBytesWithTheConnectionsR2Pair(t *tes
 	mocks := &bundleMocks{bundle: []byte(testBundleSource)}
 
 	err := pulumi.RunErr(func(ctx *pulumi.Context) error {
-		return Resources(ctx, bundleStackInput())
+		return Resources(ctx, bundleIacInput())
 	}, pulumi.WithMocks("cloudflare-worker", "test", mocks))
 	if err != nil {
 		t.Fatalf("the program must run to completion: %v", err)
@@ -159,7 +159,7 @@ func TestResources_R2Bundle_EmptyBundleStopsTheProgramByName(t *testing.T) {
 	mocks := &bundleMocks{bundle: nil}
 
 	err := pulumi.RunErr(func(ctx *pulumi.Context) error {
-		return Resources(ctx, bundleStackInput())
+		return Resources(ctx, bundleIacInput())
 	}, pulumi.WithMocks("cloudflare-worker", "test", mocks))
 	if err == nil {
 		t.Fatal("an empty bundle must stop the program, never deploy a Worker with no code")

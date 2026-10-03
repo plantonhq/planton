@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: stripecoupon
 spec:
@@ -12,6 +12,6 @@ spec:
   values:
     - name: coupon_id
       derivations:
-        - from_stack_output: id
+        - from_output: id
       where_to_find: >-
         Stripe Dashboard -> Product catalog -> Coupons (the coupon's id, on its page), or `GET /v1/coupons`.

@@ -7,7 +7,7 @@ of which components run (Pipelines, Triggers, Dashboard, Chains), their
 feature flags, execution defaults and cleanup policy. Exactly one per
 cluster (the operator's own admission rule).
 
-Not the right component when:
+Not the right kind when:
 
 - **The operator is missing** — `KubernetesTektonOperator` is the
   registry prerequisite; this resource is the declaration it

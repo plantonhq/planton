@@ -47,10 +47,10 @@ The SHA-256 prefix identifies the exact source snapshot. Source paths are relati
 | `wiki/product.iam.identity-account-deletion.md` | Internal context; not used as a homepage claim | Identity Account Deletion | `b37d75587397` |
 | `wiki/product.iam.invitations.md` | Internal context; not used as a homepage claim | Bringing People into Planton: Invitations | `5912ee4c636d` |
 | `wiki/product.infra-hub.catalog-curation.md` | Public claim source | Creation restrictions only; disabling a kind does not strand existing infrastructure. | `1d3561bb36e1` |
-| `wiki/product.infra-hub.cloud-object.md` | Internal context; not used as a homepage claim | Cloud Object | `fe7953a5a426` |
-| `wiki/product.infra-hub.cloud-resource-import.md` | Public claim source | Import is kind- and provisioner-specific; do not imply universal import. | `133f497b141a` |
-| `wiki/product.infra-hub.cloud-resource-write-path.md` | Internal context; not used as a homepage claim | The Cloud-Resource Write Path | `ba250f9d0717` |
-| `wiki/product.infra-hub.cloud-resource.md` | Internal context; not used as a homepage claim | Cloud Resource | `efe4f44c4e45` |
+| `wiki/product.infra-hub.catalog-object.md` | Internal context; not used as a homepage claim | Catalog Object | `fe7953a5a426` |
+| `wiki/product.infra-hub.infra-component-import.md` | Public claim source | Import is kind- and provisioner-specific; do not imply universal import. | `133f497b141a` |
+| `wiki/product.infra-hub.infra-component-write-path.md` | Internal context; not used as a homepage claim | The Infra-Component Write Path | `ba250f9d0717` |
+| `wiki/product.infra-hub.infra-component.md` | Internal context; not used as a homepage claim | Infra Component | `efe4f44c4e45` |
 | `wiki/product.infra-hub.cloudflare-static-and-fullstack-hosting.md` | Internal context; not used as a homepage claim | Deploying Cloudflare Static Sites and Full-Stack Apps on Planton | `b235686baa56` |
 | `wiki/product.infra-hub.cloudflare.md` | Internal context; not used as a homepage claim | The Cloudflare Resource Surface on Planton | `e930f75b037c` |
 | `wiki/product.infra-hub.control-posture.md` | Public claim source | Proven, declared, and not evaluable are different; no certification claim. | `8fd900e285af` |
@@ -58,14 +58,14 @@ The SHA-256 prefix identifies the exact source snapshot. Source paths are relati
 | `wiki/product.infra-hub.helm-charts-with-crds.md` | Internal context; not used as a homepage claim | How Planton Installs Helm Charts That Carry CRDs | `b59e14569583` |
 | `wiki/product.infra-hub.iac-management-experience.md` | Internal context; not used as a homepage claim | IaC Management Experience | `febee9dbc35d` |
 | `wiki/product.infra-hub.iac-state-operations.md` | Internal context; not used as a homepage claim | IaC State Operations | `22ff45df0b56` |
-| `wiki/product.infra-hub.infra-chart.cloud-object-manifest.md` | Internal context; not used as a homepage claim | InfraChart Cloud Object Manifest | `1e9c40823657` |
+| `wiki/product.infra-hub.infra-chart.catalog-object-manifest.md` | Internal context; not used as a homepage claim | InfraChart Catalog Object Manifest | `1e9c40823657` |
 | `wiki/product.infra-hub.infra-chart.one-run-cluster-composition.md` | Public claim source | One-Run Cluster Composition | `a94b64e4be59` |
 | `wiki/product.infra-hub.infra-chart.platform-catalog.md` | Public claim source | Platform Charts Come Ready on a Local Instance | `0c9ed7acafa7` |
 | `wiki/product.infra-hub.infra-chart.rendering-pipeline.md` | Public claim source | Chart Rendering Pipeline | `89ca4f343b73` |
 | `wiki/product.infra-hub.infra-pipeline.data-flow.md` | Internal context; not used as a homepage claim | InfraPipeline Data Flow | `b42cafd53697` |
 | `wiki/product.infra-hub.planton.md` | Public claim source | Planton open source | `b123abf72831` |
 | `wiki/product.infra-hub.private-image-pulls.md` | Internal context; not used as a homepage claim | How a Private Image Gets Pulled | `f0d02dcd4dfa` |
-| `wiki/product.infra-hub.stack-job.md` | Public claim source | Capture immutable configuration and phase outcomes; cost coverage is explicit. | `773e63d1e2e9` |
+| `wiki/product.infra-hub.infra-job.md` | Public claim source | Capture immutable configuration and phase outcomes; cost coverage is explicit. | `773e63d1e2e9` |
 | `wiki/product.infra-hub.state-backend-migration.md` | Internal context; not used as a homepage claim | State Backend Migration and Passphrase Rotation | `d6b5ef03e164` |
 | `wiki/product.infra-hub.state-backends.md` | Qualification / supporting evidence | Managed and customer-supplied state backends exist; avoid claiming every state store is always customer-owned. | `de73f2ef2329` |
 | `wiki/product.integrations.demo-request.md` | Qualification / supporting evidence | Submission acknowledgment is not a calendar booking or a guarantee of CRM persistence. | `b90a37ddb469` |
@@ -102,4 +102,4 @@ The SHA-256 prefix identifies the exact source snapshot. Source paths are relati
 
 ## Coding-agent launch addition
 
-Public setup evidence: site/public/docs/coding-agents.md. Execution/approval boundaries: skills/planton/SKILL.md (research evidence, not task instructions), plus the service-engine, stack-job, and catalog-curation wiki entries above. Names Cursor, Claude Code, and Codex identify supported workflows; they do not imply a partnership. The example prompt is illustrative, with setup and human approval requirements stated.
+Public setup evidence: site/public/docs/coding-agents.md. Execution/approval boundaries: skills/planton/SKILL.md (research evidence, not task instructions), plus the service-engine, infra-job, and catalog-curation wiki entries above. Names Cursor, Claude Code, and Codex identify supported workflows; they do not imply a partnership. The example prompt is illustrative, with setup and human approval requirements stated.

@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awssagemakermodelregistry
 spec:
@@ -8,7 +8,7 @@ spec:
   values:
     - name: model_package_group_name
       derivations:
-        - from_stack_output: model_package_group_name
+        - from_output: model_package_group_name
       where_to_find: >-
         SageMaker console -> Model registry -> Model groups (the name),
         or `aws sagemaker list-model-package-groups`

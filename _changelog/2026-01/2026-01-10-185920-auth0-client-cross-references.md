@@ -6,32 +6,32 @@
 
 ## Summary
 
-Enhanced Auth0Client deployment component to support cross-references to other Auth0 components using the `StringValueOrRef` pattern. This enables establishing relationships between Auth0Client, Auth0ResourceServer, and Auth0Connection components.
+Enhanced Auth0Client catalog kind to support cross-references to other Auth0 kinds using the `StringValueOrRef` pattern. This enables establishing relationships between Auth0Client, Auth0ResourceServer, and Auth0Connection kinds.
 
 ## Problem Statement / Motivation
 
-With the addition of Auth0ResourceServer as a deployment component, there was an opportunity to establish explicit relationships between Auth0 components:
+With the addition of Auth0ResourceServer as a catalog kind, there was an opportunity to establish explicit relationships between Auth0 kinds:
 
 1. **Auth0Client → Auth0ResourceServer**: The `api_grants[].audience` field IS the Resource Server's `identifier`. Previously this was a plain string.
 2. **Auth0Client → Auth0Connection**: The `enabled_connections` field limits which connections a client can use. Previously this was `repeated string`.
 
 Without cross-references:
-- Users had to manually copy/paste identifiers between components
+- Users had to manually copy/paste identifiers between kinds
 - No compile-time validation of references
-- Hard to track dependencies between components
+- Hard to track dependencies between kinds
 - Potential for drift when values change
 
 ## Solution / What's New
 
 Implemented `StringValueOrRef` pattern for both fields, allowing users to:
 - Use direct values: `{value: "https://api.example.com/"}`
-- Reference other components: `{value_from: {name: "my-api"}}`
+- Reference other kinds: `{value_from: {name: "my-api"}}`
 
 ### Relationship Diagram
 
 ```mermaid
 flowchart TB
-    subgraph Auth0Components
+    subgraph Auth0Kinds
         RS[Auth0ResourceServer<br/>outputs: identifier]
         CLIENT[Auth0Client]
         CONN[Auth0Connection<br/>outputs: name]
@@ -175,16 +175,16 @@ spec:
 ## Benefits
 
 ### For Infrastructure Teams
-- **Explicit Dependencies**: Clear relationship between Auth0 components
+- **Explicit Dependencies**: Clear relationship between Auth0 kinds
 - **Reduced Errors**: No manual copy/paste of identifiers
 - **Better Traceability**: Easy to track which clients use which APIs/connections
 
 ### For Developers
 - **Simpler Configuration**: Reference by name instead of looking up identifiers
-- **Consistency**: Same pattern used across Auth0 components (Auth0Connection already uses this for `enabled_clients`)
+- **Consistency**: Same pattern used across Auth0 kinds (Auth0Connection already uses this for `enabled_clients`)
 
 ### For Operations
-- **Dependency Graph**: Platform can understand component relationships
+- **Dependency Graph**: Platform can understand kind relationships
 - **Validation**: References can be validated before deployment
 
 ## Impact
@@ -240,7 +240,7 @@ Users must update their manifests to use the new structure.
 
 ## Related Work
 
-- **Auth0ResourceServer Component**: `2026-01-10-065012-auth0-resource-server-component.md` - Added the component that can now be referenced
+- **Auth0ResourceServer Kind**: `2026-01-10-065012-auth0-resource-server-component.md` - Added the kind that can now be referenced
 - **Auth0Connection.enabled_clients**: Already uses `StringValueOrRef` pattern (established pattern)
 
 ---

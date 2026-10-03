@@ -12,7 +12,7 @@ import (
 // DigitalOceanDatabaseConnectionPool via
 // GET /v2/databases/{cluster_id}/pools/{name}. The API has no standalone
 // pool id -- the (cluster, name) pair is the identity -- so the verifier
-// reads both from the stack outputs.
+// reads both from the outputs.
 //
 // Connection URIs are never asserted: the provider assembles them from
 // state credentials, so byte equality with the live API is not a contract
@@ -40,7 +40,7 @@ func (v *databaseConnectionPoolVerifier) VerifyExistsFromOutputs(ctx context.Con
 		return pkgerrors.Errorf("digitaloceandatabaseconnectionpool %q not found after deploy", StringOutput(outputs, "pool_name"))
 	}
 
-	// Assert connection posture only when the stack outputs claim it.
+	// Assert connection posture only when the outputs claim it.
 	if pool.Connection != nil {
 		if host := StringOutput(outputs, "host"); host != "" && pool.Connection.Host != host {
 			return pkgerrors.Errorf("digitaloceandatabaseconnectionpool %q host mismatch: output %q, live %q",

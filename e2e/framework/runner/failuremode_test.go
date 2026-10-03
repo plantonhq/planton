@@ -30,7 +30,7 @@ type causeHarness struct {
 	fail     bool
 }
 
-func (h *causeHarness) VerifyRuntimeFailureCause(_ context.Context, _ *provider.ComponentTestContext, cause string) error {
+func (h *causeHarness) VerifyRuntimeFailureCause(_ context.Context, _ *provider.KindTestContext, cause string) error {
 	h.gotCause = cause
 	if h.fail {
 		return errors.New("cause mismatch")
@@ -39,7 +39,7 @@ func (h *causeHarness) VerifyRuntimeFailureCause(_ context.Context, _ *provider.
 }
 
 func TestRunVerifyRuntimeCause(t *testing.T) {
-	tc := &provider.ComponentTestContext{Component: "x", Provider: "azure"}
+	tc := &provider.KindTestContext{Kind: "x", Provider: "azure"}
 
 	// A harness without the capability must fail loudly, naming the gap.
 	err := runVerifyRuntimeCause(context.Background(), tc, bareHarness{}, "refused-join")
@@ -66,7 +66,7 @@ func TestRunVerifyRuntimeCause(t *testing.T) {
 func TestRunExpectDeployFailure_CapabilityGate(t *testing.T) {
 	// The capability check fires BEFORE any deploy is attempted, so a
 	// mis-wired scenario fails in milliseconds, not after a cloud apply.
-	tc := &provider.ComponentTestContext{Component: "x", Provider: "gcp"}
+	tc := &provider.KindTestContext{Kind: "x", Provider: "gcp"}
 	err := runExpectDeployFailure(context.Background(), tc, bareHarness{}, "revision-readiness")
 	if err == nil || !strings.Contains(err.Error(), "DeployFailureVerifier") {
 		t.Fatalf("expected a capability-missing error, got %v", err)
@@ -91,14 +91,14 @@ spec: {}
 
 	// RepoRoot empty skips dependency deployment, so the run reaches the
 	// annotation gate hermetically.
-	tc := &provider.ComponentTestContext{
-		Component:    "azureplantonrunner",
+	tc := &provider.KindTestContext{
+		Kind:         "azureplantonrunner",
 		Provider:     "azure",
 		Engine:       "pulumi",
 		ManifestPath: manifest,
 		RunID:        "t1",
 	}
-	res := RunComponentTest(context.Background(), tc, bareHarness{})
+	res := RunKindTest(context.Background(), tc, bareHarness{})
 	if res.Passed {
 		t.Fatal("expected the run to fail on mutually exclusive annotations")
 	}

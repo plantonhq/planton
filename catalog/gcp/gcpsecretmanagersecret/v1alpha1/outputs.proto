@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpsecretmanagersecret.v1alpha1;
 
 // Outputs produced after provisioning a Secret Manager secret.
-message GcpSecretManagerSecretStackOutputs {
+message GcpSecretManagerSecretOutputs {
   // The full resource name of the secret.
   // Global: projects/{project}/secrets/{secret_id}
   // Regional: projects/{project}/locations/{region}/secrets/{secret_id}

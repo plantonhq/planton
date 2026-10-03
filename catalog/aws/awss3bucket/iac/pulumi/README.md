@@ -55,7 +55,7 @@ planton pulumi preview \
 
 ## Introduction
 
-This Pulumi module (Go) deploys an Amazon S3 bucket from an `AwsS3Bucket` API resource definition. It provisions the bucket root resource plus one satellite resource per configured spec block, mirroring how AWS itself models bucket behavior — and implements the exact same contract as the Terraform module, with identical stack outputs.
+This Pulumi module (Go) deploys an Amazon S3 bucket from an `AwsS3Bucket` API resource definition. It provisions the bucket root resource plus one satellite resource per configured spec block, mirroring how AWS itself models bucket behavior — and implements the exact same contract as the Terraform module, with identical outputs.
 
 ## What It Creates
 
@@ -69,10 +69,10 @@ The module code is organized by concern (`bucket.go`, `lifecycle.go`, `replicati
 
 ## Module Structure
 
-- **`main.go` (module root)** — loads the stack input and delegates to `module.Resources`
-- **`module/main.go`** — orchestrates the bucket and its satellites, exports stack outputs (website outputs are exported as empty strings when hosting is not configured so the output contract stays shape-stable across engines)
+- **`main.go` (module root)** — loads the IaC input and delegates to `module.Resources`
+- **`module/main.go`** — orchestrates the bucket and its satellites, exports outputs (website outputs are exported as empty strings when hosting is not configured so the output contract stays shape-stable across engines)
 - **`module/locals.go`** — identity tags and normalized views of the spec
-- **AWS Provider** — built via the shared provider builder from the stack input's `provider_config`, resolving static keys, keyless web identity, or the ambient credential chain
+- **AWS Provider** — built via the shared provider builder from the IaC input's `provider_config`, resolving static keys, keyless web identity, or the ambient credential chain
 
 ## Usage
 

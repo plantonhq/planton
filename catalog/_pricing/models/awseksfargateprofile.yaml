@@ -1,13 +1,13 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. Both presets are genuinely zero-committed: a Fargate
 # profile is a free routing rule, and every dollar it routes bills by the
 # matched pods' own resource requests -- stated in exclusions, never padded
-# into fabricated dollars. Schema: finops/componentcostestimatemodel/v1.
+# into fabricated dollars. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awseksfargateprofile
 spec:
@@ -18,8 +18,8 @@ spec:
       hours_per_month: 730
       exclusions:
         - EVERY pod in the selected namespace runs on Fargate, billing its requested vCPU and memory per second -- a deliberate blank cheque whose size is the namespace's workload, invisible in this manifest
-        - matched pods' internet egress rides the VPC's NAT gateway, billed on its AwsNatGateway component
-        - the cluster management fee bills on the AwsEksCluster component
+        - matched pods' internet egress rides the VPC's NAT gateway, billed on its AwsNatGateway kind
+        - the cluster management fee bills on the AwsEksCluster kind
       notes: Zero committed cost -- the profile spends nothing; the namespace it routes decides everything.
     - preset: 02-labeled-workloads
       region_assumption: us-east-1
@@ -27,5 +27,5 @@ spec:
       hours_per_month: 730
       exclusions:
         - only pods carrying compute=fargate labels match -- each bills its requested vCPU and memory at Fargate rates while it runs
-        - unmatched pods stay on the cluster's node capacity, billed on the node-group components
+        - unmatched pods stay on the cluster's node capacity, billed on the node-group kinds
       notes: Zero committed cost -- the label selector is the scoped alternative to preset 01's whole-namespace commitment.

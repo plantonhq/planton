@@ -26,7 +26,7 @@ iac/pulumi/
     ├── main.go                    # Module coordinator
     ├── identity_platform_config.go # Config + composed IdP configs
     ├── locals.go                  # Resolved resource
-    └── outputs.go                 # Stack output constants
+    └── outputs.go                 # Output constants
 ```
 
 ## Quick Start
@@ -36,7 +36,7 @@ cd iac/pulumi
 pulumi stack init dev
 ```
 
-Provide a `stack-input.yaml`:
+Provide a `iac-input.yaml`:
 
 ```yaml
 target:
@@ -60,7 +60,7 @@ pulumi up
 
 ## Inputs
 
-The module consumes `GcpIdentityPlatformConfigStackInput`:
+The module consumes `GcpIdentityPlatformConfigIacInput`:
 
 | Field | Required | Description |
 |-------|----------|-------------|

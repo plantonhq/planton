@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpbigquerycapacitycommitment.v1alpha1;
 
-// GcpBigQueryCapacityCommitmentStackOutputs captures the commitment's
+// GcpBigQueryCapacityCommitmentOutputs captures the commitment's
 // identity and term.
-message GcpBigQueryCapacityCommitmentStackOutputs {
+message GcpBigQueryCapacityCommitmentOutputs {
   // Full resource name --
   // projects/{project}/locations/{location}/capacityCommitments/{id}.
   string name = 1;

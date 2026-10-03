@@ -10,9 +10,9 @@ The event source (ARN or self-managed Kafka bootstrap servers) is create-time im
 
 ## Usage
 
-The module is invoked from the entry point in `main.go`, which loads an `AwsLambdaEventSourceMappingStackInput` and calls `module.Resources()`.
+The module is invoked from the entry point in `main.go`, which loads an `AwsLambdaEventSourceMappingIacInput` and calls `module.Resources()`.
 
-### Stack Input
+### IaC Input
 
 - `target` — the `AwsLambdaEventSourceMapping` resource (metadata + spec).
 - `provider_config` — AWS credentials (static keys, keyless web identity, or ambient chain), resolved by the shared provider builder.
@@ -29,7 +29,7 @@ pulumi stack output mapping_arn
 | File | Purpose |
 |------|---------|
 | `Pulumi.yaml` | Pulumi project metadata (name: `aws-lambda-event-source-mapping`, runtime: Go) |
-| `main.go` | Entry point — loads stack input, runs the Pulumi program |
+| `main.go` | Entry point — loads IaC input, runs the Pulumi program |
 | `module/main.go` | Orchestrator — provider setup, mapping creation, output exports |
 | `module/locals.go` | Planton identity tags |
 | `module/mapping.go` | The event source mapping resource |
@@ -40,4 +40,4 @@ pulumi stack output mapping_arn
 - Go 1.21+
 - Pulumi CLI v3+
 - `pulumi-aws` plugin v7
-- AWS credentials (ambient or via stack input)
+- AWS credentials (ambient or via IaC input)

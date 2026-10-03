@@ -30,12 +30,12 @@ var identityTypeStrings = map[azureeventgrideventsubscriptionv1alpha1.AzureEvent
 // pinned Terraform provider renamed them to eventhub_id /
 // hybrid_connection_id / service_bus_queue_id / service_bus_topic_id
 // at v5. Both engines write the identical ARM destination object.
-func Resources(ctx *pulumi.Context, stackInput *azureeventgrideventsubscriptionv1alpha1.AzureEventgridEventSubscriptionStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureeventgrideventsubscriptionv1alpha1.AzureEventgridEventSubscriptionIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}

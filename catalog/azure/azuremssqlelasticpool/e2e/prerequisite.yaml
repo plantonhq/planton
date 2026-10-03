@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuremssqlelasticpool
+    e2e-catalog-kind: azuremssqlelasticpool
   annotations:
     planton.dev/e2e: "true"
   tags:

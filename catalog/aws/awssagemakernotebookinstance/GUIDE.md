@@ -1,4 +1,4 @@
-# AwsSagemakerNotebookInstance — Component Guide
+# AwsSagemakerNotebookInstance — Kind Guide
 
 Authored operational judgment for the SageMaker notebook instance
 component: the design decisions behind the spec's shape, and what to

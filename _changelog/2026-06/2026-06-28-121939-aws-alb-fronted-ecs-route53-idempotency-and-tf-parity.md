@@ -81,21 +81,21 @@ flowchart TB
     TG --> RULE
 ```
 
-No `spec.proto` / `stack_outputs.proto` changes — this is an IaC-module-body fix only. Component
+No `spec.proto` / `outputs.proto` changes — this is an IaC-module-body fix only. Kind
 `spec_test.go`, `go build`, `tofu validate`, and the secret-coverage gate all pass.
 
 ## Benefits
 
 - ALB-fronted ECS services deploy to a running task on OpenTofu, not just Pulumi.
 - Re-runs after a partial failure self-heal (records are adopted, not collided with).
-- Terraform and Pulumi now behave identically for these components — no provider divergence.
+- Terraform and Pulumi now behave identically for these kinds — no provider divergence.
 - HTTP-only (`httpsEnabled: false`) environments work on both engines.
 
 ## Impact
 
 Anyone deploying `AwsEcsService` behind an `AwsAlb` (including the platform `aws-ecs-environment`
 chart) on the Terraform/OpenTofu provisioner. Cert/ALB/NLB idempotency improvements apply to every
-consumer of those components on re-deploys.
+consumer of those kinds on re-deploys.
 
 ## Related Work
 

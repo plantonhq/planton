@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -6,9 +6,9 @@
 # no ECS cluster fee (unlike EKS), every capacity dollar flows through the
 # services and instances the cluster hosts, and Container Insights bills by
 # ingested volume -- stated in exclusions, never padded into fabricated
-# dollars. Schema: finops/componentcostestimatemodel/v1.
+# dollars. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awsecscluster
 spec:
@@ -19,7 +19,7 @@ spec:
       hours_per_month: 730
       exclusions:
         - no cluster fee exists -- an empty ECS cluster bills exactly nothing
-        - tasks placed by services bill Fargate vCPU and memory rates on their AwsEcsService/AwsEcsTaskDefinition components
+        - tasks placed by services bill Fargate vCPU and memory rates on their AwsEcsService/AwsEcsTaskDefinition kinds
         - enhanced Container Insights ingests per-container performance events at CloudWatch rates as workloads run
       notes: Zero committed cost -- the free control plane is ECS's structural price advantage over EKS's hourly fee.
     - preset: 02-fargate-cost-optimized
@@ -35,10 +35,10 @@ spec:
       currency: USD
       hours_per_month: 730
       exclusions:
-        - the referenced Auto Scaling Group's instances bill EC2 rates on that component -- this cluster only decides when they scale
+        - the referenced Auto Scaling Group's instances bill EC2 rates on that kind -- this cluster only decides when they scale
         - managed scaling's 80% target keeps one instance in five as warm headroom -- paid idle capacity on the ASG's bill
         - enhanced Container Insights ingests per-container events at CloudWatch rates
-      notes: Zero committed cost on this manifest -- the EC2 capacity's committed spend is the referenced ASG's floor, visible on that component.
+      notes: Zero committed cost on this manifest -- the EC2 capacity's committed spend is the referenced ASG's floor, visible on that kind.
     - preset: 04-managed-instances
       region_assumption: us-east-1
       currency: USD

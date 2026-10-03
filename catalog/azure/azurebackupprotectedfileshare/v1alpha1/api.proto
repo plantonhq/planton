@@ -19,17 +19,17 @@ message AzureBackupProtectedFileShare {
   string kind = 2 [(buf.validate.field).string.const = 'AzureBackupProtectedFileShare'];
 
   // Standard Planton metadata (name, org, env, labels, tags).
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // Protected file share specification.
   AzureBackupProtectedFileShareSpec spec = 4 [(buf.validate.field).required = true];
 
-  // Deployment status containing stack outputs. Populated after deployment.
+  // Deployment status containing outputs. Populated after deployment.
   AzureBackupProtectedFileShareStatus status = 5;
 }
 
 // AzureBackupProtectedFileShareStatus holds the deployment outputs.
 message AzureBackupProtectedFileShareStatus {
-  // Stack outputs from the IaC deployment.
-  AzureBackupProtectedFileShareStackOutputs outputs = 1;
+  // Outputs from the IaC deployment.
+  AzureBackupProtectedFileShareOutputs outputs = 1;
 }

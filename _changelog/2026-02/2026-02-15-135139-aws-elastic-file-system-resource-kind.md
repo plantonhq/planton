@@ -6,22 +6,22 @@
 
 ## Summary
 
-Added AwsElasticFileSystem as a new AWS resource kind in Planton, providing managed NFS file storage that bundles the file system with mount targets, access points, backup policy, and resource policy into a single deployable component. This is the thirteenth new AWS resource kind in the expansion project (R11).
+Added AwsElasticFileSystem as a new AWS resource kind in Planton, providing managed NFS file storage that bundles the file system with mount targets, access points, backup policy, and resource policy into a single deployable kind. This is the thirteenth new AWS resource kind in the expansion project (R11).
 
 ## Problem Statement / Motivation
 
-AWS Elastic File System (EFS) is the standard solution for shared persistent storage across EKS pods, ECS tasks, Lambda functions, and EC2 instances. Without an EFS component in Planton, users had no declarative way to provision shared file storage that multiple compute resources could mount simultaneously.
+AWS Elastic File System (EFS) is the standard solution for shared persistent storage across EKS pods, ECS tasks, Lambda functions, and EC2 instances. Without an EFS kind in Planton, users had no declarative way to provision shared file storage that multiple compute resources could mount simultaneously.
 
 ### Pain Points
 
-- No shared storage component for Kubernetes workloads (EFS CSI driver requires `file_system_id`)
+- No shared storage kind for Kubernetes workloads (EFS CSI driver requires `file_system_id`)
 - Lambda functions needing persistent file access had no EFS provisioning path
 - ECS tasks sharing data between containers lacked a declarative EFS option
 - Mount target creation (one per AZ) was manual and error-prone
 
 ## Solution / What's New
 
-A complete AwsElasticFileSystem deployment component that bundles 5 AWS resources into a single declarative manifest:
+A complete AwsElasticFileSystem catalog kind that bundles 5 AWS resources into a single declarative manifest:
 
 - `aws_efs_file_system` — the file system with encryption, throughput mode, lifecycle policies
 - `aws_efs_mount_target` — one per subnet, auto-created from `subnet_ids`
@@ -34,9 +34,9 @@ A complete AwsElasticFileSystem deployment component that bundles 5 AWS resource
 ### Proto API (4 files)
 
 - `spec.proto`: 14 top-level fields, 4 nested messages, 10 CEL validations
-- `stack_outputs.proto`: 8 outputs including 4 map outputs (mount target and access point data keyed by subnet_id and name)
+- `outputs.proto`: 8 outputs including 4 map outputs (mount target and access point data keyed by subnet_id and name)
 - `api.proto`: KRM wiring (apiVersion, kind, metadata, spec, status)
-- `stack_input.proto`: Target + AWS provider config
+- `iac_input.proto`: Target + AWS provider config
 
 ### Key Spec Fields
 

@@ -8,7 +8,7 @@ ENGINE that reconciles it. The default operator posture watches its
 OWN namespace — install the operator in the cluster's namespace, or
 widen its watch. Deploy the operator first, clusters after.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want the operator itself** — installing and configuring the
   Strimzi cluster operator is KubernetesStrimziKafkaOperator; this
@@ -23,7 +23,7 @@ Also not the right component when:
   ZooKeeper does not exist in this architecture; Strimzi removed
   ZooKeeper support in 0.46.
 - **You want a managed cloud Kafka** — use the host cloud provider's
-  managed streaming kinds; this component is for running Kafka ON the
+  managed streaming kinds; this kind is for running Kafka ON the
   Kubernetes cluster itself.
 - **You want HTTP-style exposure baked in** — Kafka is not HTTP.
   Listeners ARE the exposure surface here (internal, nodeport,
@@ -151,7 +151,7 @@ resources to this cluster.
 - **`spec.maintenance_time_windows`**: cron expressions fencing WHEN
   certificate-renewal rolling updates may run
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

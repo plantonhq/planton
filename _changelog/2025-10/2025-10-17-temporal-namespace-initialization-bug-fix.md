@@ -20,7 +20,7 @@ error: an unhandled error occurred: program failed:
 
 ### Root Cause
 
-The namespace initialization logic in `locals.go` used an `else` clause that would unconditionally set the namespace to `stackInput.KubernetesNamespace` when no custom namespace label was present:
+The namespace initialization logic in `locals.go` used an `else` clause that would unconditionally set the namespace to `iacInput.KubernetesNamespace` when no custom namespace label was present:
 
 ```go
 locals.Namespace = target.Metadata.Name
@@ -28,11 +28,11 @@ if target.Metadata.Labels != nil &&
     target.Metadata.Labels[kuberneteslabels.NamespaceLabelKey] != "" {
     locals.Namespace = target.Metadata.Labels[kuberneteslabels.NamespaceLabelKey]
 } else {
-    locals.Namespace = stackInput.KubernetesNamespace  // ❌ Empty value overwrites valid default!
+    locals.Namespace = iacInput.KubernetesNamespace  // ❌ Empty value overwrites valid default!
 }
 ```
 
-When `stackInput.KubernetesNamespace` was empty (the common case), it would overwrite the valid default namespace (`target.Metadata.Name`) with an empty string, causing the namespace resource creation to fail.
+When `iacInput.KubernetesNamespace` was empty (the common case), it would overwrite the valid default namespace (`target.Metadata.Name`) with an empty string, causing the namespace resource creation to fail.
 
 ### Symptoms
 
@@ -48,7 +48,7 @@ Changed the `else` clause to a separate `if` statement with a non-empty check, m
 // Priority order:
 // 1. Default: metadata.name
 // 2. Override with custom label if provided
-// 3. Override with stackInput if provided
+// 3. Override with iacInput if provided
 
 locals.Namespace = target.Metadata.Name
 
@@ -57,15 +57,15 @@ if target.Metadata.Labels != nil &&
     locals.Namespace = target.Metadata.Labels[kuberneteslabels.NamespaceLabelKey]
 }
 
-if stackInput.KubernetesNamespace != "" {
-    locals.Namespace = stackInput.KubernetesNamespace
+if iacInput.KubernetesNamespace != "" {
+    locals.Namespace = iacInput.KubernetesNamespace
 }
 ```
 
 ### Key Improvements
 
 1. **Preserves default**: The namespace now correctly defaults to `metadata.name` when no overrides are provided
-2. **Conditional override**: `stackInput.KubernetesNamespace` only overrides when it has a non-empty value
+2. **Conditional override**: `iacInput.KubernetesNamespace` only overrides when it has a non-empty value
 3. **Consistent pattern**: Matches the namespace initialization logic used across all other Kubernetes workload resources
 4. **Clear priority**: Added comments documenting the three-level priority order
 
@@ -98,8 +98,8 @@ if stackInput.KubernetesNamespace != "" {
 
 - ✅ **Default behavior**: Namespace defaults to `metadata.name` when no overrides provided
 - ✅ **Label override**: Custom namespace label (`kubernetes.planton.dev/namespace`) correctly overrides default
-- ✅ **StackInput override**: Non-empty `stackInput.KubernetesNamespace` takes precedence over both defaults and labels
-- ✅ **Empty StackInput**: Empty `stackInput.KubernetesNamespace` does not overwrite valid defaults
+- ✅ **IacInput override**: Non-empty `iacInput.KubernetesNamespace` takes precedence over both defaults and labels
+- ✅ **Empty IacInput**: Empty `iacInput.KubernetesNamespace` does not overwrite valid defaults
 
 ## Impact
 
@@ -131,7 +131,7 @@ The corrected pattern is consistent with namespace initialization in:
 The namespace priority order is now explicitly documented in comments:
 1. **Default**: Uses `metadata.name` as the namespace
 2. **Label override**: Uses `kubernetes.planton.dev/namespace` label if present and non-empty
-3. **StackInput override**: Uses `stackInput.KubernetesNamespace` if present and non-empty (highest precedence)
+3. **IacInput override**: Uses `iacInput.KubernetesNamespace` if present and non-empty (highest precedence)
 
 ## Notes
 

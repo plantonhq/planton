@@ -10,7 +10,7 @@ go_library(
     visibility = ["//:__subpackages__"],
     deps = [
         "//pkg/e2e/profile",
-        "//qa/componente2eprofile/v1:componente2eprofile",
+        "//qa/catalogkinde2eprofile/v1:catalogkinde2eprofile",
         "//shared",
         "@com_github_charmbracelet_bubbletea//:bubbletea",
         "@com_github_charmbracelet_lipgloss//:lipgloss",

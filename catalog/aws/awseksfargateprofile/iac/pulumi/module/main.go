@@ -17,13 +17,13 @@ import (
 // The entire profile is create-time immutable in AWS, and AWS serializes
 // profile operations per cluster (one create or delete at a time) --
 // both engines simply wait; no ordering knobs are needed here.
-func Resources(ctx *pulumi.Context, stackInput *awseksfargateprofilev1alpha1.AwsEksFargateProfileStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awseksfargateprofilev1alpha1.AwsEksFargateProfileIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which
+	// Build the AWS provider from the IaC input via the shared builder, which
 	// resolves the right credential mechanism (static keys, keyless web identity,
 	// or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsEksFargateProfile.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsEksFargateProfile.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

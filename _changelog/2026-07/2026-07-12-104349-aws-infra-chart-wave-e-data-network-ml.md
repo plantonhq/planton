@@ -7,7 +7,7 @@
 ## Summary
 
 The final four AWS infra-charts, forged from first principles against the
-rebuilt 90/10 component surface: `data-lakehouse`, `kafka-streaming`,
+rebuilt 90/10 kind surface: `data-lakehouse`, `kafka-streaming`,
 `private-network-hub`, and `ml-workbench`. The AWS chart catalog is now
 complete at 17. Every chart passed the full offline gate — structure
 guard, working-tree CLI `chart validate` across defaults plus every

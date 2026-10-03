@@ -5,7 +5,7 @@ import (
 
 	azurerediscachev1alpha1 "github.com/plantonhq/planton/catalog/azure/azurerediscache/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -14,7 +14,7 @@ type Locals struct {
 	ResourceGroupName string
 	AzureTags         map[string]string
 	// SkuName is ARM's tier value, materialized from the spec enum with
-	// the documented STANDARD default (stack inputs never carry proto
+	// the documented STANDARD default (IaC inputs never carry proto
 	// defaults).
 	SkuName string
 	// Family is Azure's size-family letter, fully determined by the tier:
@@ -54,16 +54,16 @@ var identityTypeStrings = map[azurerediscachev1alpha1.AzureRedisCacheIdentityTyp
 	azurerediscachev1alpha1.AzureRedisCacheIdentityType_SYSTEM_AND_USER_ASSIGNED: "SystemAssigned, UserAssigned",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurerediscachev1alpha1.AzureRedisCacheStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurerediscachev1alpha1.AzureRedisCacheIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureRedisCache = stackInput.Target
-	target := stackInput.Target
+	locals.AzureRedisCache = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
 	// Materialize the tier default: unspecified deploys STANDARD (the
-	// spec's documented default -- stack inputs never carry proto
+	// spec's documented default -- IaC inputs never carry proto
 	// defaults), then derive the size-family letter from the tier.
 	locals.SkuName = skuStrings[target.Spec.SkuName]
 	if locals.SkuName == "" {
@@ -81,7 +81,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurerediscachev1alpha1.A
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureRedisCache.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureRedisCache.String()),
 	}
 
 	if target.Metadata.Id != "" {

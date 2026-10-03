@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpserviceconnectionpolicy.v1alpha1;
 
 // Outputs produced after provisioning a GCP service connection policy.
-message GcpServiceConnectionPolicyStackOutputs {
+message GcpServiceConnectionPolicyOutputs {
   // Fully qualified policy resource path
   // (projects/{project}/locations/{location}/serviceConnectionPolicies/{name}).
   // The canonical identifier for API calls and audit tooling.

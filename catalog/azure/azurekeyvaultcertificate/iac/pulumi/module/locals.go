@@ -5,7 +5,7 @@ import (
 
 	azurekeyvaultcertificatev1alpha1 "github.com/plantonhq/planton/catalog/azure/azurekeyvaultcertificate/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -69,11 +69,11 @@ var keyUsageStrings = map[azurekeyvaultcertificatev1alpha1.AzureKeyVaultCertific
 	azurekeyvaultcertificatev1alpha1.AzureKeyVaultCertificateKeyUsage_NON_REPUDIATION:   "nonRepudiation",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurekeyvaultcertificatev1alpha1.AzureKeyVaultCertificateStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurekeyvaultcertificatev1alpha1.AzureKeyVaultCertificateIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureKeyVaultCertificate = stackInput.Target
-	target := stackInput.Target
+	locals.AzureKeyVaultCertificate = iacInput.Target
+	target := iacInput.Target
 
 	locals.KeyVaultId = target.Spec.KeyVaultId.GetValue()
 
@@ -84,7 +84,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurekeyvaultcertificatev
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureKeyVaultCertificate.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureKeyVaultCertificate.String()),
 	}
 
 	if target.Metadata.Id != "" {

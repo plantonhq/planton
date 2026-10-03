@@ -25,7 +25,7 @@ iac/pulumi/
     ├── main.go        # Module coordinator
     ├── deny_policy.go # Policy creation + parent encoding
     ├── locals.go      # Resolved resource + derived values
-    └── outputs.go     # Stack output constants
+    └── outputs.go     # Output constants
 ```
 
 ## Quick Start
@@ -35,7 +35,7 @@ cd iac/pulumi
 pulumi stack init dev
 ```
 
-Provide a `stack-input.yaml`:
+Provide a `iac-input.yaml`:
 
 ```yaml
 target:
@@ -60,7 +60,7 @@ pulumi up
 
 ## Inputs
 
-The module consumes `GcpIamDenyPolicyStackInput`:
+The module consumes `GcpIamDenyPolicyIacInput`:
 
 | Field | Required | Description |
 |-------|----------|-------------|

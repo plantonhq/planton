@@ -25,9 +25,9 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 func valuesFor(t *testing.T, spec *kubernetesvalkeyv1alpha1.KubernetesValkeySpec) map[string]interface{} {
 	t.Helper()
 	spec.Namespace = literal("cache")
-	locals := initializeLocals(nil, &kubernetesvalkeyv1alpha1.KubernetesValkeyStackInput{
+	locals := initializeLocals(nil, &kubernetesvalkeyv1alpha1.KubernetesValkeyIacInput{
 		Target: &kubernetesvalkeyv1alpha1.KubernetesValkey{
-			Metadata: &shared.CloudResourceMetadata{Name: "sessions"},
+			Metadata: &shared.CatalogObjectMetadata{Name: "sessions"},
 			Spec:     spec,
 		},
 	})

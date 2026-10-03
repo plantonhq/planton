@@ -34,7 +34,7 @@ Cannot find field: nonExistentField in message …AwsKmsKeySpec
 **Symptom:**
 
 ```
-Invalid valueFrom references: Field 'no_such_output' not found in …StackOutputs for kind: AwsIamRole
+Invalid valueFrom references: Field 'no_such_output' not found in …Outputs for kind: AwsIamRole
 ```
 
 **Fix:**
@@ -82,7 +82,7 @@ spec.containers[0].env[1].value (STRIPE_KEY) holds a secret reference, but its v
 ```
 
 **Cause:** the field is marked `(no secrets: use <field>)` on the
-component's page. The runner resolves a `$secret/...` to its plain value
+kind's page. The runner resolves a `$secret/...` to its plain value
 before the module runs, so in this field the secret itself would be written
 into the revision, task definition, or pod spec.
 
@@ -167,7 +167,7 @@ defaults in values.yaml when they look numeric.
 pipeline node starts):
 
 ```
-No provider connection available for CloudResource creation.
+No provider connection available for InfraComponent creation.
 ```
 
 **Fix:** The resource carries no `planton.dev/connection` annotation and the

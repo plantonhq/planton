@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbatchcomputeenvironment.v1alpha1;
 
-// AwsBatchComputeEnvironmentStackOutputs captures the observable identifiers
+// AwsBatchComputeEnvironmentOutputs captures the observable identifiers
 // of the AWS Batch compute environment.
 //
 // The primary join key is `compute_environment_arn`: an AwsBatchJobQueue's
 // compute_environment_order entries reference it to map the queue onto this
 // environment.
-message AwsBatchComputeEnvironmentStackOutputs {
+message AwsBatchComputeEnvironmentOutputs {
   // The Amazon Resource Name (ARN) of the compute environment -- what job
   // queues reference in their compute_environment_order.
   string compute_environment_arn = 1;

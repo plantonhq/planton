@@ -1,4 +1,4 @@
-# AwsIamGroup — Component Guide
+# AwsIamGroup — Kind Guide
 
 Authored operational judgment for the IAM group component: the design
 decisions behind the spec's shape, and what to know before operating

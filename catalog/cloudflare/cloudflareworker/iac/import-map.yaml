@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflareworker
 spec:
@@ -7,7 +7,7 @@ spec:
   # and cron share {account_id}/{script_name}. Custom domains import as
   # {account_id}/{domain_id} keyed by hostname. Routes import as
   # {zone_id}/{route_id} keyed by list index. account_id is spec-relative
-  # (from_spec_field: account_id), never a stack output — the harness
+  # (from_spec_field: account_id), never an output — the harness
   # already knows the account.
   values:
     - name: account_id
@@ -18,26 +18,26 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: script_name
       derivations:
-        - from_stack_output: script_name
+        - from_output: script_name
       where_to_find: >-
         Cloudflare dashboard -> Workers & Pages -> the Worker (the script
         name in the URL and the header), or `GET /accounts/<account_id>/workers/services`.
     - name: domain_id
       derivations:
-        - from_stack_output_keyed_by_address: custom_domain_ids
+        - from_output_keyed_by_address: custom_domain_ids
       where_to_find: >-
         Cloudflare dashboard -> Workers & Pages -> the Worker -> Settings
         -> Domains (the domain id is in the API, not the UI), or
         `GET /accounts/<account_id>/workers/domains`.
     - name: route_id
       derivations:
-        - from_stack_output_keyed_by_address: route_ids
+        - from_output_keyed_by_address: route_ids
       where_to_find: >-
         Cloudflare dashboard -> the zone -> Workers Routes, or
         `GET /zones/<zone_id>/workers/routes` (the id field).
     - name: zone_id
       derivations:
-        - from_stack_output_keyed_by_address: route_zone_ids
+        - from_output_keyed_by_address: route_zone_ids
       where_to_find: >-
         Cloudflare dashboard -> the zone's Overview page (Zone ID in the
         right-hand API panel), or `GET /zones?name=<domain>`.

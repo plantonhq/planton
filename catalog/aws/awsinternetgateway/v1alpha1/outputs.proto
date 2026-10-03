@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awsinternetgateway.v1alpha1;
 
-// AwsInternetGatewayStackOutputs contains the values produced by deploying an
+// AwsInternetGatewayOutputs contains the values produced by deploying an
 // AwsInternetGateway. Downstream components reference these via StringValueOrRef
 // -- most commonly an AwsSubnet route whose target is this gateway's id.
-message AwsInternetGatewayStackOutputs {
+message AwsInternetGatewayOutputs {
   // The internet gateway's id (e.g. "igw-0abc123"). This is the value a subnet
   // route uses as its target_id when target_type is internet_gateway.
   string internet_gateway_id = 1;

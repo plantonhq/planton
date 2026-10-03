@@ -11,7 +11,7 @@ Added five production-ready InfraCharts for Oracle Cloud Infrastructure, coverin
 
 ## Problem Statement / Motivation
 
-OCI had 37 fully implemented Planton deployment components (merged via PR #422 in the planton repo) but zero InfraCharts. Without charts, users had to manually compose individual resources -- wiring VCN outputs to subnets, subnets to NSGs, NSGs to clusters, etc. This is exactly the friction InfraCharts are designed to eliminate.
+OCI had 37 fully implemented Planton catalog kinds (merged via PR #422 in the planton repo) but zero InfraCharts. Without charts, users had to manually compose individual resources -- wiring VCN outputs to subnets, subnets to NSGs, NSGs to clusters, etc. This is exactly the friction InfraCharts are designed to eliminate.
 
 ### Pain Points
 
@@ -137,7 +137,7 @@ params:
 
 ## Related Work
 
-- OCI Planton components: 37 resource kinds merged via planton PR #422
+- OCI Planton kinds: 37 resource kinds merged via planton PR #422
 - Quality audit: 36/37 EXCELLENT, 1/37 GOOD (2026-03-31)
 - Existing chart families: `aws/eks-environment`, `gcp/gke-environment`, `azure/web-app-environment`
 

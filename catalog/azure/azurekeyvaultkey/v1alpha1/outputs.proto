@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.azure.azurekeyvaultkey.v1alpha1;
 
-// **AzureKeyVaultKeyStackOutputs** captures the outputs of provisioning a
+// **AzureKeyVaultKeyOutputs** captures the outputs of provisioning a
 // Key Vault key -- the identifiers downstream resources reference to encrypt
 // with it.
-message AzureKeyVaultKeyStackOutputs {
+message AzureKeyVaultKeyOutputs {
   // The key's versioned data-plane ID:
   // https://{vault}.vault.azure.net/keys/{name}/{version}. Pins consumers
   // to THIS version -- rotation does not follow. Reference it only when a

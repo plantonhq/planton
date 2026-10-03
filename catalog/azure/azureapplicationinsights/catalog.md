@@ -4,7 +4,7 @@ Deploys an Azure Application Insights resource backed by a Log Analytics Workspa
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Application Insights Resource** -- a workspace-based Application Insights instance in the specified Azure region and resource group, configured with the chosen application type, retention period, daily data cap, and sampling percentage
 - **Log Analytics Integration** -- telemetry data is stored in the referenced Log Analytics Workspace (classic non-workspace mode is not supported)
@@ -14,13 +14,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where Application Insights will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
-- **A Log Analytics Workspace** to store telemetry data. Workspace-based mode is required; classic mode is deprecated. Provide the workspace resource ID directly or reference an AzureLogAnalyticsWorkspace Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where Application Insights will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
+- **A Log Analytics Workspace** to store telemetry data. Workspace-based mode is required; classic mode is deprecated. Provide the workspace resource ID directly or reference an AzureLogAnalyticsWorkspace Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -53,7 +53,7 @@ spec:
 planton apply -f app-insights.yaml
 ```
 
-This creates an Application Insights resource on Azure's defaults -- the WEB application type, 100% sampling, 90-day retention, and a 100 GB daily cap -- storing telemetry in the referenced workspace. A Stack Job tracks the provisioning in real time.
+This creates an Application Insights resource on Azure's defaults -- the WEB application type, 100% sampling, 90-day retention, and a 100 GB daily cap -- storing telemetry in the referenced workspace. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -91,16 +91,16 @@ These are the most important decisions when configuring Application Insights. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 | **AzureLogAnalyticsWorkspace** | `workspaceId` | `status.outputs.workspace_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,6 +120,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where Application Insights is created
-- [**Azure Log Analytics Workspace**](/cloud-catalog/azure-log-analytics-workspace) -- provides the workspace that stores telemetry data
-- [**Azure Application Insights Standard Web Test**](/cloud-catalog/azure-application-insights-standard-web-test) -- availability probes that store their results in this resource via `application_insights_id`
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where Application Insights is created
+- [**Azure Log Analytics Workspace**](/infra-catalog/azure-log-analytics-workspace) -- provides the workspace that stores telemetry data
+- [**Azure Application Insights Standard Web Test**](/infra-catalog/azure-application-insights-standard-web-test) -- availability probes that store their results in this resource via `application_insights_id`

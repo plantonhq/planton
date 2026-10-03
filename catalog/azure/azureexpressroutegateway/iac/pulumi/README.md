@@ -9,7 +9,7 @@ under the gateway and joining a circuit's private peering to the hub.
 
 The Azure provider is built through the shared provider builder, which
 resolves the right credential mechanism (static client secret, keyless
-web identity, or ambient chain) from the stack input.
+web identity, or ambient chain) from the IaC input.
 
 ## Design Decisions
 
@@ -25,7 +25,7 @@ web identity, or ambient chain) from the stack input.
 
 ## Inputs
 
-The module receives an `AzureExpressRouteGatewayStackInput` containing:
+The module receives an `AzureExpressRouteGatewayIacInput` containing:
 
 - `target.spec.region` / `target.spec.resource_group` / `target.spec.name` -- the gateway's ARM identity (references resolved to literals by the platform)
 - `target.spec.virtual_hub_id` -- the hub the gateway deploys into

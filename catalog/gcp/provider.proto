@@ -6,7 +6,7 @@ import "buf/validate/validate.proto";
 
 // GcpProviderConfig contains the authentication configuration for a Google Cloud Platform provider.
 //
-// Used as the provider_config in stack inputs for all GCP-based IaC modules. The runner or
+// Used as the provider_config in IaC inputs for all GCP-based IaC modules. The runner or
 // IaC module uses this to configure the Pulumi/Terraform GCP provider.
 // The credential is supplied by exactly one of {service_account_key, web_identity,
 // access_token}. If none is set, providers fall back to the ambient Google Application
@@ -54,7 +54,7 @@ message GcpProviderConfig {
 // GitLab CI, etc.).
 //
 // The token is carried in memory (web_identity_token) and never written to disk: each pulumi
-// operation re-mints a fresh JWT before it runs, so a stack job's runtime is never bound by a
+// operation re-mints a fresh JWT before it runs, so an infra job's runtime is never bound by a
 // single token's TTL and no file-based credential refresh is needed.
 //
 // These provider-config fields are constructed by the caller (e.g. the Planton runner) at deploy

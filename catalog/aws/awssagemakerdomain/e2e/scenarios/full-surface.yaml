@@ -39,7 +39,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awssagemakerdomain
+    e2e-catalog-kind: awssagemakerdomain
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AwsS3Bucket,AwsSecurityGroup"

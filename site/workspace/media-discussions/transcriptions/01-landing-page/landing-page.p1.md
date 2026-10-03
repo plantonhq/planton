@@ -61,7 +61,7 @@ Suresh Attaluri  26:44
 like that. So let's keep the prompt. User will ask, I need a Eks cluster, and that will trigger a Stackdriver will show the
 
 Swarup Donepudi  26:54  
-Okay, we'll try it out. I don't know. Again, limitations of what can Sameer put there within those technical exercise limitations. So the story that we want to say is even, yeah, stack job again. I think we you and I have been so close to this product. We think multi cloud deployments is the only thing in the product so far, and I think we are still stuck there. The very first thing that comes to mind is, again, deploy something and then stack job. I'm just critical questioning here. I'm pushing beyond which is, is that DevOps? Is that, will that truly represent,
+Okay, we'll try it out. I don't know. Again, limitations of what can Sameer put there within those technical exercise limitations. So the story that we want to say is even, yeah, infra job again. I think we you and I have been so close to this product. We think multi cloud deployments is the only thing in the product so far, and I think we are still stuck there. The very first thing that comes to mind is, again, deploy something and then infra job. I'm just critical questioning here. I'm pushing beyond which is, is that DevOps? Is that, will that truly represent,
 
 Unknown Speaker  27:39  
 yeah, the DevOps perspective.
@@ -70,7 +70,7 @@ Swarup Donepudi  27:42
 So this is from insider perspective, right? That is what we feel like showing, because we feel like that's the that's like 80% of time we spent, and that's like 80% of the core of the product. So we want to show that, but that doesn't mean that is DevOps, right? So that is where I'm questioning, like I won't deploy something, and then showing a pulumi stack within the chat, okay? It seems like divorce, again, just critical question, yes or no, yeah, even I am on the same page as you, because we both are, like, so close to the product, right? I can't even, I can't think of anything, anything. So maybe we'll try with Samir,
 
 Suresh Attaluri  28:30  
-or forget about stack job blocks. We can just show that AKs cluster a message is sent to plant, or they create an Eks cluster. Next response that you get is, Eks cluster has been created, yeah, if possible, we can. We can. Another view is the AWS side of it being created.
+or forget about infra job blocks. We can just show that AKs cluster a message is sent to plant, or they create an Eks cluster. Next response that you get is, Eks cluster has been created, yeah, if possible, we can. We can. Another view is the AWS side of it being created.
 
 Swarup Donepudi  28:58  
 Yeah, I think that all of that is not necessary. This is what I kind of got stuck in for a very long time, which is you want to tell as big of a story as possible all the time, like the complete stories, but understand that there is more, right? So we have more. So in that case, it is not necessary that it the story need to be told here and the user is going to show the page.

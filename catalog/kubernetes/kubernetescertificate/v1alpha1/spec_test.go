@@ -29,7 +29,7 @@ var _ = ginkgo.Describe("KubernetesCertificate Validation Tests", func() {
 		input = &KubernetesCertificate{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesCertificate",
-			Metadata:   &shared.CloudResourceMetadata{Name: "test-certificate"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "test-certificate"},
 			Spec: &KubernetesCertificateSpec{
 				Namespace:  literal("team-a"),
 				SecretName: "test-certificate-tls",

@@ -3,12 +3,12 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesstorageclass.v1alpha1;
 
 /**
- * **KubernetesStorageClassStackOutputs** captures the observable handles of a
+ * **KubernetesStorageClassOutputs** captures the observable handles of a
  * deployed StorageClass. `storage_class_name` is the composition handle:
  * PersistentVolumeClaims (and workload volume-claim templates) reference it to
  * pin their storage characteristics to this class.
  */
-message KubernetesStorageClassStackOutputs {
+message KubernetesStorageClassOutputs {
   // The name of the StorageClass object as created in the cluster — the value
   // claims put in their `storage_class_name`.
   string storage_class_name = 1;

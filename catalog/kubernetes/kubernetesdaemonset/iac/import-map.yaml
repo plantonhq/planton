@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesdaemonset
 spec:
@@ -10,19 +10,19 @@ spec:
   values:
     - name: daemon_set_name
       derivations:
-        - from_stack_output: daemon_set_name
+        - from_output: daemon_set_name
         - from_metadata_name: true
       where_to_find: >-
         `kubectl get daemonsets -A` (NAME column).
     - name: daemon_set_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `kubectl get daemonsets -A` (NAMESPACE column).
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Only imported when create_namespace is true; the workload's namespace.
@@ -33,7 +33,7 @@ spec:
         literal secret env values.
     - name: secret_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the workload.

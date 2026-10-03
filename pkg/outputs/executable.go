@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/pkg/errors"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 const executableTimeout = 30 * time.Second
@@ -30,7 +30,7 @@ type executableInput struct {
 // an error; stderr is included in the error message for diagnostics.
 func runTransformExecutable(
 	moduleDir string,
-	kind cloudresourcekind.CloudResourceKind,
+	kind catalogkind.CatalogKind,
 	rawOutputs map[string]interface{},
 ) (map[string]string, error) {
 	absModuleDir, err := filepath.Abs(moduleDir)

@@ -1,10 +1,10 @@
 # Stripe Billing Portal Configuration
 
-Declares what Stripe's customer portal lets your customers do -- cancel, update payment methods and details, download invoices -- as a configuration of your own that every portal session names. One Cloud Resource per configuration.
+Declares what Stripe's customer portal lets your customers do -- cancel, update payment methods and details, download invoices -- as a configuration of your own that every portal session names. One Infra Component per configuration.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the OpenTofu module creates one portal configuration in the Stripe account your Stripe connection's key belongs to:
+When you deploy this Infra Component, the OpenTofu module creates one portal configuration in the Stripe account your Stripe connection's key belongs to:
 
 - **The features** -- exactly what a customer may do, each off unless enabled
 - **The policies** -- cancellation timing and reasons, what a customer may change on a subscription, how changes are prorated
@@ -56,7 +56,7 @@ spec:
 planton apply -f stripe-billing-portal-configuration.yaml
 ```
 
-Name `status.outputs.id` as `configuration` when your application opens a portal session. A Stack Job tracks the change in real time.
+Name `status.outputs.id` as `configuration` when your application opens a portal session. An Infra Job tracks the change in real time.
 
 ### InfraChart
 
@@ -91,7 +91,7 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Field | Kind | Output |
 |-------|------|--------|
@@ -99,7 +99,7 @@ These are the decisions that matter. Explore the full field reference in the [AP
 | `features.subscriptionUpdate.products[].product` | Stripe Product | `status.outputs.id` |
 | `features.subscriptionUpdate.products[].prices[]` | Stripe Price | `status.outputs.id` |
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -120,6 +120,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Stripe Payment Method Configuration**](/cloud-catalog/stripe-payment-method-configuration) -- the methods a customer may add in the portal.
-- [**Stripe Webhook Endpoint**](/cloud-catalog/stripe-webhook-endpoint) -- where the subscription changes customers make here arrive as events.
-- [**Stripe Product**](/cloud-catalog/stripe-product) and [**Stripe Price**](/cloud-catalog/stripe-price) -- the plans a customer subscribes to. A portal can't name them as plans to switch between on the pinned provider.
+- [**Stripe Payment Method Configuration**](/infra-catalog/stripe-payment-method-configuration) -- the methods a customer may add in the portal.
+- [**Stripe Webhook Endpoint**](/infra-catalog/stripe-webhook-endpoint) -- where the subscription changes customers make here arrive as events.
+- [**Stripe Product**](/infra-catalog/stripe-product) and [**Stripe Price**](/infra-catalog/stripe-price) -- the plans a customer subscribes to. A portal can't name them as plans to switch between on the pinned provider.

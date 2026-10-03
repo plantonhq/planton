@@ -17,17 +17,17 @@ import (
 // The release name is FIXED ("velero"): Velero's CRDs and node-agent are
 // cluster-scoped and one server owns the backup records in the store —
 // one installation per cluster is an upstream constraint.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesvelerov1alpha1.KubernetesVeleroStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesvelerov1alpha1.KubernetesVeleroIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

@@ -27,7 +27,7 @@ func baseBinding() *GcpGkeWorkloadIdentityBinding {
 	return &GcpGkeWorkloadIdentityBinding{
 		ApiVersion: "gcp.planton.dev/v1alpha1",
 		Kind:       "GcpGkeWorkloadIdentityBinding",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-workload-identity-binding",
 		},
 		Spec: &GcpGkeWorkloadIdentityBindingSpec{

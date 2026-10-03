@@ -1,25 +1,25 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsrestapiusageplan
 spec:
   values:
     - name: usage_plan_id
       derivations:
-        - from_stack_output: usage_plan_id
+        - from_output: usage_plan_id
       where_to_find: >-
         API Gateway console -> Usage plans (the ID), or
         `aws apigateway get-usage-plans` (id).
     - name: usage_plan_key_id
       derivations:
-        - from_stack_output_keyed_by_address: api_key_ids
+        - from_output_keyed_by_address: api_key_ids
       where_to_find: >-
         `aws apigateway get-usage-plan-keys --usage-plan-id <id>` (id)
         -- the attached key's id, matched to each spec.api_keys entry
         by name.
     - name: api_key_id
       derivations:
-        - from_stack_output_keyed_by_address: api_key_ids
+        - from_output_keyed_by_address: api_key_ids
       where_to_find: >-
         `aws apigateway get-api-keys` (id), matched to each
         spec.api_keys entry by name.

@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpbackendbucket.v1alpha1;
 
 // Outputs produced after provisioning a GCP Compute Engine backend bucket.
-message GcpBackendBucketStackOutputs {
+message GcpBackendBucketOutputs {
   // Self-link URI of the backend bucket. This is the value URL maps
   // reference as a default service or path-rule target — the composition
   // handle for routing static content.

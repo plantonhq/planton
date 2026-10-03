@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflaresecretsstoresecret.v1alpha1;
 
-// CloudflareSecretsStoreSecretStackOutputs captures the observable outputs
+// CloudflareSecretsStoreSecretOutputs captures the observable outputs
 // after creating the secret. The secret VALUE is deliberately absent --
 // Cloudflare never returns it.
-message CloudflareSecretsStoreSecretStackOutputs {
+message CloudflareSecretsStoreSecretOutputs {
   // The secret's ID within its store.
   string secret_id = 1;
 

@@ -1,5 +1,5 @@
 # StripeEventDestination Outputs
-# Maps to the StripeEventDestinationStackOutputs protobuf message: the destination's id, a
+# Maps to the StripeEventDestinationOutputs protobuf message: the destination's id, a
 # webhook destination's signing secret, and the cloud-side source an EventBridge or Event Grid
 # destination waits on.
 

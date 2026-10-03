@@ -13,12 +13,12 @@ import (
 // factory, the linked service reference, description, annotations,
 // parameters, additional_properties, folder) travel identically on
 // every shape; each builder adds only its variant's own arguments.
-func Resources(ctx *pulumi.Context, stackInput *azuredatafactorydatasetv1alpha1.AzureDataFactoryDatasetStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuredatafactorydatasetv1alpha1.AzureDataFactoryDatasetIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}

@@ -5,9 +5,9 @@
 # crossing it: Azure bills peered traffic per GB at BOTH ends of the link
 # (egress at the sending network, ingress at the receiving one), with
 # same-region and cross-region (global) peering on different rate classes.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurevirtualnetworkpeering
 spec:

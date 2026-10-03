@@ -5,10 +5,10 @@ package dev.planton.azure.azureeventgridsystemtopic.v1alpha1;
 import "catalog/azure/azureeventgridsystemtopic/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureEventgridSystemTopicStackInput is the input to the IaC modules
+// AzureEventgridSystemTopicIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureEventgridSystemTopicStackInput {
+message AzureEventgridSystemTopicIacInput {
   // The Event Grid system topic resource to deploy.
   AzureEventgridSystemTopic target = 1;
 

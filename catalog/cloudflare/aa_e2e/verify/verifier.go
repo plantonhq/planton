@@ -4,7 +4,7 @@
 // per-kind GET paths -- no cloud CLI).
 //
 // Standing convention: verification reads everything it needs from the
-// component's stack outputs. A zone-scoped kind's outputs must therefore
+// component's outputs. A zone-scoped kind's outputs must therefore
 // carry the zone_id alongside the resource's own identifier (a Cloudflare
 // resource's API identity is compound -- zones/{zone_id}/<collection>/{id}).
 // When enrolling a kind whose outputs lack its scope, add the output to the
@@ -81,9 +81,9 @@ type API interface {
 }
 
 // Verifier checks a single component's Cloudflare resource for
-// existence/absence from its stack outputs.
+// existence/absence from its outputs.
 type Verifier interface {
-	// IDOutputKey is the stack-output key carrying the resource's primary
+	// IDOutputKey is the output key carrying the resource's primary
 	// identifier -- used to confirm the deploy produced a verifiable handle.
 	IDOutputKey() string
 	// VerifyExists returns an error unless the resource exists.
@@ -93,7 +93,7 @@ type Verifier interface {
 }
 
 // apiPathVerifier is the common implementation: one GET path template whose
-// placeholders are filled, in order, from the named stack-output keys.
+// placeholders are filled, in order, from the named output keys.
 // Account-scoped resources set accountScoped, which prepends the harness
 // account to the path ("accounts/%s/..." with the first placeholder filled
 // from API.AccountID(), never from outputs -- account IDs are harness scope,

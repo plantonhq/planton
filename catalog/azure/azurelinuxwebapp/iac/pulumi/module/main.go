@@ -11,12 +11,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurelinuxwebappv1alpha1.AzureLinuxWebAppStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurelinuxwebappv1alpha1.AzureLinuxWebAppIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -66,7 +66,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurelinuxwebappv1alpha1.AzureLi
 		webAppArgs.StickySettings = stickyArgs
 	}
 
-	// Presence-guarded proto defaults: stack inputs never materialize
+	// Presence-guarded proto defaults: IaC inputs never materialize
 	// them, so an unset field must deploy the spec's documented default,
 	// not the Go zero value.
 
@@ -181,7 +181,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurelinuxwebappv1alpha1.AzureLi
 		return errors.Wrapf(err, "failed to create Linux Web App %s", spec.WebAppName)
 	}
 
-	// Export stack outputs. Azure reports the outbound IP sets as
+	// Export outputs. Azure reports the outbound IP sets as
 	// comma-joined strings; both engines export them as real lists so
 	// they flatten onto the repeated proto outputs identically.
 	ctx.Export(OpWebAppId, webApp.ID())

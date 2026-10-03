@@ -4,7 +4,7 @@ Deploys a security policy inside an Azure Front Door (Standard/Premium) profile 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Front Door Security Policy** -- a named child of the profile binding one WAF policy to a domain list
 - **Live enforcement** -- from the moment it deploys, the WAF's rules run on every request to the associated domains
@@ -61,7 +61,7 @@ spec:
 planton apply -f front-door-security-policy.yaml
 ```
 
-This turns the WAF on for the endpoint's generated hostname; custom domains join the same list as they validate, and the list updates in place. A Stack Job tracks the provisioning in real time.
+This turns the WAF on for the endpoint's generated hostname; custom domains join the same list as they validate, and the list updates in place. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -107,7 +107,7 @@ These are the most important decisions when configuring a Front Door security po
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -116,7 +116,7 @@ These are the most important decisions when configuring a Front Door security po
 | **AzureFrontDoorEndpoint** | `domainIds[]` | `status.outputs.endpoint_id` |
 | **AzureFrontDoorCustomDomain** | `domainIds[]` | `status.outputs.custom_domain_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
 Nothing composes on a security policy -- it is itself the association, the terminal node of the WAF wiring. `status.outputs` carries `security_policy_id` and `security_policy_name` for operational addressing (diagnostics, RBAC scoping, ARM reads), not for downstream ValueFromRef wiring.
 
@@ -130,7 +130,7 @@ Nothing composes on a security policy -- it is itself the association, the termi
 
 ## Works With
 
-- [**Azure Front Door Firewall Policy**](/cloud-catalog/azure-front-door-firewall-policy) -- the WAF rule set this association enforces, referenced by `firewallPolicyId`; its sku must match the profile's
-- [**Azure Front Door Profile**](/cloud-catalog/azure-front-door-profile) -- the parent container whose sku also caps the domain list (100 on STANDARD, 500 on PREMIUM)
-- [**Azure Front Door Endpoint**](/cloud-catalog/azure-front-door-endpoint) -- a protectable target: its `endpoint_id` covers the generated `*.azurefd.net` hostname
-- [**Azure Front Door Custom Domain**](/cloud-catalog/azure-front-door-custom-domain) -- a protectable target: its `custom_domain_id` covers the branded hostname
+- [**Azure Front Door Firewall Policy**](/infra-catalog/azure-front-door-firewall-policy) -- the WAF rule set this association enforces, referenced by `firewallPolicyId`; its sku must match the profile's
+- [**Azure Front Door Profile**](/infra-catalog/azure-front-door-profile) -- the parent container whose sku also caps the domain list (100 on STANDARD, 500 on PREMIUM)
+- [**Azure Front Door Endpoint**](/infra-catalog/azure-front-door-endpoint) -- a protectable target: its `endpoint_id` covers the generated `*.azurefd.net` hostname
+- [**Azure Front Door Custom Domain**](/infra-catalog/azure-front-door-custom-domain) -- a protectable target: its `custom_domain_id` covers the branded hostname

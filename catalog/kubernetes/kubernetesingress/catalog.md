@@ -1,10 +1,10 @@
 # Kubernetes Ingress
 
-Creates a namespaced Kubernetes `networking/v1` Ingress -- the object that declares HTTP(S) exposure for in-cluster Services: host rules and path matches routing to Service backends, with optional TLS termination from certificate Secrets. Exposure in Planton is composed, never embedded: a workload exports its Service, this kind routes a hostname to it, and a certificate Secret (often issued by cert-manager) terminates TLS -- every piece a visible, independently managed node in the resource graph. This component covers the complete `networking/v1` IngressSpec surface with proto validation, typed SDKs, and InfraChart composability.
+Creates a namespaced Kubernetes `networking/v1` Ingress -- the object that declares HTTP(S) exposure for in-cluster Services: host rules and path matches routing to Service backends, with optional TLS termination from certificate Secrets. Exposure in Planton is composed, never embedded: a workload exports its Service, this kind routes a hostname to it, and a certificate Secret (often issued by cert-manager) terminates TLS -- every piece a visible, independently managed node in the resource graph. This kind covers the complete `networking/v1` IngressSpec surface with proto validation, typed SDKs, and InfraChart composability.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **A namespaced Ingress** named `spec.name` in `spec.namespace`, carrying the host/path rules, the optional default backend, the TLS blocks, and your annotations (merged with the standard governance labels).
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking.
@@ -15,7 +15,7 @@ Both IaC modules deliberately create the object **without waiting for an ingress
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -67,7 +67,7 @@ spec:
 planton apply -f ingress.yaml
 ```
 
-This creates an Ingress in `payments` served by the `nginx` controller: requests for `app.example.com` route to the `web-svc` Service on port 80 over HTTPS, with cert-manager issuing the certificate into the `app-tls` Secret. A Stack Job tracks the provisioning in real time.
+This creates an Ingress in `payments` served by the `nginx` controller: requests for `app.example.com` route to the `web-svc` Service on port 80 over HTTPS, with cert-manager issuing the certificate into the `app-tls` Secret. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -115,7 +115,7 @@ These are the most important decisions when configuring an Ingress. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -125,9 +125,9 @@ These are the most important decisions when configuring an Ingress. Explore the 
 
 All three also accept plain literals for resources managed outside Planton.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -151,9 +151,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Ingress NGINX**](/cloud-catalog/kubernetes-ingress-nginx) -- installs the ingress-nginx controller (and its `nginx` IngressClass) that serves this Ingress.
-- [**Kubernetes Service**](/cloud-catalog/kubernetes-service) -- the backend Services (`rules` / `defaultBackend`) receiving the routed traffic; workload kinds export the Service this Ingress references.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the namespace (`spec.namespace`) the Ingress and its backends run in.
-- [**Cert Manager**](/cloud-catalog/kubernetes-cert-manager) and [**Cert Manager Cluster Issuer**](/cloud-catalog/kubernetes-cluster-issuer) -- issue and renew the TLS certificates into the Secrets the `tls` block names.
-- [**ExternalDNS**](/cloud-catalog/kubernetes-external-dns) -- creates DNS records pointing at this Ingress's load-balancer address automatically.
-- [**Kubernetes Secret**](/cloud-catalog/kubernetes-secret) -- pre-existing certificate Secrets referenced by `tls[].secretName`.
+- [**Ingress NGINX**](/infra-catalog/kubernetes-ingress-nginx) -- installs the ingress-nginx controller (and its `nginx` IngressClass) that serves this Ingress.
+- [**Kubernetes Service**](/infra-catalog/kubernetes-service) -- the backend Services (`rules` / `defaultBackend`) receiving the routed traffic; workload kinds export the Service this Ingress references.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the namespace (`spec.namespace`) the Ingress and its backends run in.
+- [**Cert Manager**](/infra-catalog/kubernetes-cert-manager) and [**Cert Manager Cluster Issuer**](/infra-catalog/kubernetes-cluster-issuer) -- issue and renew the TLS certificates into the Secrets the `tls` block names.
+- [**ExternalDNS**](/infra-catalog/kubernetes-external-dns) -- creates DNS records pointing at this Ingress's load-balancer address automatically.
+- [**Kubernetes Secret**](/infra-catalog/kubernetes-secret) -- pre-existing certificate Secrets referenced by `tls[].secretName`.

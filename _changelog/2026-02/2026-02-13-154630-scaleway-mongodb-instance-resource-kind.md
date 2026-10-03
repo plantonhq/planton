@@ -66,11 +66,11 @@ This results in a 2-type composite (vs RDB's 5 types).
 **Proto schemas** (4 files):
 - `api.proto` -- Standard Planton API wrapper
 - `spec.proto` -- ScalewayMongodbInstanceSpec with users, roles, and CEL validations
-- `stack_outputs.proto` -- 7 outputs (instance_id, public/private endpoints, TLS cert)
-- `stack_input.proto` -- Standard stack input
+- `outputs.proto` -- 7 outputs (instance_id, public/private endpoints, TLS cert)
+- `iac_input.proto` -- Standard IaC input
 
 **Pulumi Go module** (7 files):
-- Entry point (`iac/pulumi/main.go`) loading stack input
+- Entry point (`iac/pulumi/main.go`) loading IaC input
 - Module orchestrator (`module/main.go`) creating instance then users
 - Instance creation (`module/instance.go`) with endpoint output extraction
 - User creation (`module/users.go`) with role assembly

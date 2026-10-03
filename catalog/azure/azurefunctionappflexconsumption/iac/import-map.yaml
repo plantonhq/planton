@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azurefunctionappflexconsumption
 spec:
@@ -12,7 +12,7 @@ spec:
   values:
     - name: function_app_id
       derivations:
-        - from_stack_output: function_app_id
+        - from_output: function_app_id
       where_to_find: >-
         Portal -> Function App -> the app -> Properties -> Resource ID,
         or `az functionapp show --name <name> -g <rg> --query id`.

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesexternalsecret.v1alpha1;
 
-// KubernetesExternalSecretStackOutputs captures observable outputs after the
+// KubernetesExternalSecretOutputs captures observable outputs after the
 // ExternalSecret is created.
-message KubernetesExternalSecretStackOutputs {
+message KubernetesExternalSecretOutputs {
   // Name of the created ExternalSecret (equals metadata.name).
   string external_secret_name = 1;
 

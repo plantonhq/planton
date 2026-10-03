@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awss3tablebucket
 spec:
@@ -60,7 +60,7 @@ spec:
       notes: The spec exposes no audit dial. Control-plane operations (bucket, namespace, table lifecycle) land in AWS CloudTrail as account-level management events; capturing table DATA access is account CloudTrail territory -- none of it configurable on this component.
     - control_id: monitoring-integration
       status: not_applicable
-      notes: The spec exposes no monitoring surface. The service's own action inventory accepts metrics configurations (PutTableBucketMetricsConfiguration), so the gap is this component's spec, not the service's capability; maintenance-job status is readable per table through the S3 Tables API.
+      notes: The spec exposes no monitoring surface. The service's own action inventory accepts metrics configurations (PutTableBucketMetricsConfiguration), so the gap is this kind's spec, not the service's capability; maintenance-job status is readable per table through the S3 Tables API.
     - control_id: backup-recovery
       status: configurable
       field_path: replication

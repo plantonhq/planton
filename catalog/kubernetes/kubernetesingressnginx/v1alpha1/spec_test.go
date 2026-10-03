@@ -30,7 +30,7 @@ var _ = ginkgo.Describe("KubernetesIngressNginx Validation Tests", func() {
 		input = &KubernetesIngressNginx{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesIngressNginx",
-			Metadata:   &shared.CloudResourceMetadata{Name: "ingress-nginx"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "ingress-nginx"},
 			Spec: &KubernetesIngressNginxSpec{
 				Namespace:       literal("ingress-nginx"),
 				CreateNamespace: true,

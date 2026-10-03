@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package dev.planton.auth0.auth0clientfrommetadatadocument.v1alpha1;
 
-// Auth0ClientFromMetadataDocumentStackOutputs contains the application as Auth0
+// Auth0ClientFromMetadataDocumentOutputs contains the application as Auth0
 // registered it: its Management API id, what Auth0 took from the metadata
 // document, and the document's validation result as of the last read.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/client_cimd#read-only
 // https://www.pulumi.com/registry/packages/auth0/api-docs/clientcimd/#outputs
-message Auth0ClientFromMetadataDocumentStackOutputs {
+message Auth0ClientFromMetadataDocumentOutputs {
   // client_id is the application's id in the Management API ("tpc_...", the
   // prefix of every third-party application). A client grant authorizing the
   // application for an API, and an Auth0Connection's enabled_clients, name the

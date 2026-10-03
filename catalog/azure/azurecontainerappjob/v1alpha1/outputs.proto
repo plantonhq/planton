@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azurecontainerappjob.v1alpha1;
 
-// **AzureContainerAppJobStackOutputs** captures the outputs of provisioning
+// **AzureContainerAppJobOutputs** captures the outputs of provisioning
 // an Azure Container App Job.
 //
 // This is a leaf workload resource -- no downstream Planton resources
@@ -10,7 +10,7 @@ package dev.planton.azure.azurecontainerappjob.v1alpha1;
 // manual executions (`job_id`), event-stream consumers
 // (`event_stream_endpoint`), and firewall allowlists
 // (`outbound_ip_addresses`).
-message AzureContainerAppJobStackOutputs {
+message AzureContainerAppJobOutputs {
   // The Azure Resource Manager ID of the Container App Job.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.App/jobs/{name}
   //

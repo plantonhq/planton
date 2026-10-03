@@ -5,10 +5,10 @@ package dev.planton.azure.azuremachinelearningonlinedeployment.v1alpha1;
 import "catalog/azure/azuremachinelearningonlinedeployment/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureMachineLearningOnlineDeploymentStackInput is the input to the
+// AzureMachineLearningOnlineDeploymentIacInput is the input to the
 // IaC modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-message AzureMachineLearningOnlineDeploymentStackInput {
+message AzureMachineLearningOnlineDeploymentIacInput {
   // The online deployment resource to deploy.
   AzureMachineLearningOnlineDeployment target = 1;
 

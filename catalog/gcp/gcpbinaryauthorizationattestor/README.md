@@ -4,7 +4,7 @@ A Binary Authorization attestor with the Artifact Analysis note its attestations
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `binaryauthorization.googleapis.com` and `containeranalysis.googleapis.com` on the project (never disabled on destroy)
 - **Note** (when `note` is set) -- the attestor's own `container_analysis_note` (ATTESTATION_AUTHORITY)
@@ -70,7 +70,7 @@ planton apply -f binary-authorization-attestor.yaml
 - A PKIX key is exactly one of `publicKeyPem` (with `signatureAlgorithm`) or `kmsKeyVersion`.
 - `signatureAlgorithm` takes Google's values; `kmsKeyVersion` names a key version.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -100,7 +100,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpBinaryAuthorizationPolicy** -- requires the attestor
 - **GcpKmsKey** -- an asymmetric signing key held in Cloud KMS

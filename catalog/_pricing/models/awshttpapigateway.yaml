@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -6,9 +6,9 @@
 # API's existence is free, no preset enables detailed metrics, access logs,
 # or a VPC Link, and every meter follows traffic -- stated in exclusions,
 # never padded into fabricated dollars. Schema:
-# finops/componentcostestimatemodel/v1.
+# finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awshttpapigateway
 spec:
@@ -19,7 +19,7 @@ spec:
       hours_per_month: 730
       exclusions:
         - requests bill per million at the HTTP API rate (about a third of REST API pricing); the first million each month is free for a new account's first year
-        - the proxied Lambda's invocations and duration bill on its AwsLambda component
+        - the proxied Lambda's invocations and duration bill on its AwsLambda kind
         - data transfer out bills per GB
       notes: Zero committed cost -- a catch-all route to one function, billing nothing until traffic arrives.
     - preset: 02-multi-route-lambda
@@ -29,7 +29,7 @@ spec:
       exclusions:
         - five CRUD routes to five functions bill identically per request -- route count changes the surface, not the rate
         - the one-hour CORS preflight cache (max_age_seconds 3600) keeps browsers from repeating billed OPTIONS requests
-        - the five backend functions bill on their AwsLambda components
+        - the five backend functions bill on their AwsLambda kinds
       notes: Zero committed cost -- neither detailed metrics nor access logs are enabled, so no per-route meters exist.
     - preset: 03-jwt-authorized-api
       region_assumption: us-east-1
@@ -38,5 +38,5 @@ spec:
       exclusions:
         - JWT authorization validates Cognito tokens for free -- unlike a Lambda authorizer, no function invocation bills per request
         - requests bill per million as traffic arrives; rejected tokens still count as requests
-        - the backend functions bill on their AwsLambda components
+        - the backend functions bill on their AwsLambda kinds
       notes: Zero committed cost -- the JWT authorizer is the cost-conscious authorization choice, and this preset shows it.

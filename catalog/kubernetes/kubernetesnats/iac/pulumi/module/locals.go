@@ -6,7 +6,7 @@ import (
 
 	kubernetesnatsv1alpha1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesnats/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -20,7 +20,7 @@ type authUser struct {
 	EnvVar   string
 }
 
-// Locals holds computed values derived from the stack input for use across
+// Locals holds computed values derived from the IaC input for use across
 // the module. Every resolution here has an exact twin in the Terraform
 // module's locals.tf — keep them in lockstep.
 type Locals struct {
@@ -79,14 +79,14 @@ type Locals struct {
 
 // initializeLocals extracts and transforms spec fields into module-local
 // values.
-func initializeLocals(_ *pulumi.Context, stackInput *kubernetesnatsv1alpha1.KubernetesNatsStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *kubernetesnatsv1alpha1.KubernetesNatsIacInput) *Locals {
+	target := iacInput.Target
 	spec := target.Spec
 
 	labels := map[string]string{
 		kuberneteslabelkeys.Resource:     strconv.FormatBool(true),
 		kuberneteslabelkeys.ResourceName: target.Metadata.Name,
-		kuberneteslabelkeys.ResourceKind: cloudresourcekind.CloudResourceKind_KubernetesNats.String(),
+		kuberneteslabelkeys.ResourceKind: catalogkind.CatalogKind_KubernetesNats.String(),
 	}
 	if target.Metadata.Id != "" {
 		labels[kuberneteslabelkeys.ResourceId] = target.Metadata.Id

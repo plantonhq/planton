@@ -4,7 +4,7 @@ Requests one signed X.509 certificate from a cert-manager issuer and keeps it re
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Certificate** -- the cert-manager custom resource in the specified namespace, wired to the selected issuer
 - **TLS Secret** -- created and kept renewed by cert-manager (keys: `tls.crt`, `tls.key`, `ca.crt`), optionally extended with JKS/PKCS#12 keystores, DER, or combined-PEM entries
@@ -55,11 +55,11 @@ spec:
 planton apply -f certificate.yaml
 ```
 
-This requests a certificate for `api.example.com` from the platform ClusterIssuer and keeps it renewed into the `api-example-com-tls` Secret — everything else (lifetime, key parameters, usages) deliberately left to the issuer's defaults. A Stack Job tracks the provisioning in real time.
+This requests a certificate for `api.example.com` from the platform ClusterIssuer and keeps it renewed into the `api-example-com-tls` Secret — everything else (lifetime, key parameters, usages) deliberately left to the issuer's defaults. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire the namespace and issuer to resources managed by other Cloud Resources:
+When deploying as part of a multi-resource environment, wire the namespace and issuer to resources managed by other Infra Components:
 
 ```yaml
 spec:
@@ -102,7 +102,7 @@ These are the most important decisions when configuring a Certificate. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -110,9 +110,9 @@ These are the most important decisions when configuring a Certificate. Explore t
 | **KubernetesClusterIssuer** | `issuerRef.clusterIssuer.name` | `status.outputs.cluster_issuer_name` |
 | **KubernetesIssuer** | `issuerRef.issuer.name` | `status.outputs.issuer_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -132,7 +132,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cert Manager**](/cloud-catalog/kubernetes-cert-manager) -- must be installed first; provides the controller and CRDs.
-- [**Cert Manager Cluster Issuer**](/cloud-catalog/kubernetes-cluster-issuer) -- the cluster-scoped signing authority; [**Cert Manager Issuer**](/cloud-catalog/kubernetes-issuer) is the namespace-scoped alternative, and a CA-backend Issuer also consumes this resource's Secret output for the CA bootstrap.
-- [**Ingress NGINX**](/cloud-catalog/kubernetes-ingress-nginx) -- terminates HTTPS with the output Secret; [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) listeners reference it through `certificateRefs`.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- reference it so infra charts create the namespace and this certificate in dependency order.
+- [**Cert Manager**](/infra-catalog/kubernetes-cert-manager) -- must be installed first; provides the controller and CRDs.
+- [**Cert Manager Cluster Issuer**](/infra-catalog/kubernetes-cluster-issuer) -- the cluster-scoped signing authority; [**Cert Manager Issuer**](/infra-catalog/kubernetes-issuer) is the namespace-scoped alternative, and a CA-backend Issuer also consumes this resource's Secret output for the CA bootstrap.
+- [**Ingress NGINX**](/infra-catalog/kubernetes-ingress-nginx) -- terminates HTTPS with the output Secret; [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) listeners reference it through `certificateRefs`.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference it so infra charts create the namespace and this certificate in dependency order.

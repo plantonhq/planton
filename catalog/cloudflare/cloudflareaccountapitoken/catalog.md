@@ -4,7 +4,7 @@ Deploys an account-owned Cloudflare API token: a scoped credential that belongs 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Account API Token** — one `cloudflare_account_token` carrying the name, permission policies, validity window, client-IP condition, and administrative status from the spec. Each policy's `resources` map travels to Cloudflare as a single raw JSON object; the module serializes the typed spec entries (whole-resource grant or nested sub-resource scoping) back to the API's shape.
 
@@ -55,7 +55,7 @@ spec:
 planton apply -f account-api-token.yaml
 ```
 
-This mints one active, never-expiring token whose single policy grants one permission group across the whole account. A Stack Job tracks the provisioning in real time.
+This mints one active, never-expiring token whose single policy grants one permission group across the whole account. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -77,13 +77,13 @@ These are the most important decisions when configuring an account API token. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. The owning account travels as a literal 32-hex `accountId` string, and permission groups are Cloudflare-defined UUIDs rather than catalog resources.
+This kind has no foreign key dependencies. The owning account travels as a literal 32-hex `accountId` string, and permission groups are Cloudflare-defined UUIDs rather than catalog resources.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -100,9 +100,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 **Time-boxed auditor access** — read-only permission groups with a whole-account grant, alive for exactly one quarter via `notBefore` and `expiresOn`, then dead on its own. Start from the **Expiring read-only audit token** preset.
 
-**Rotation without a gap** — deploy the replacement token as a second Cloud Resource, move consumers to it, then set the old token to `status: disabled` and watch for stragglers before destroying it.
+**Rotation without a gap** — deploy the replacement token as a second Infra Component, move consumers to it, then set the old token to `status: disabled` and watch for stragglers before destroying it.
 
 ## Works With
 
-- [**Cloudflare Secrets Store Secret**](/cloud-catalog/cloudflare-secrets-store-secret) — where the minted `value` can live so Workers and pipelines consume it without re-handling the credential
-- [**Cloudflare Zero Trust Access Service Token**](/cloud-catalog/cloudflare-zero-trust-access-service-token) — machine credentials for Access-protected applications, a different trust domain from API tokens
+- [**Cloudflare Secrets Store Secret**](/infra-catalog/cloudflare-secrets-store-secret) — where the minted `value` can live so Workers and pipelines consume it without re-handling the credential
+- [**Cloudflare Zero Trust Access Service Token**](/infra-catalog/cloudflare-zero-trust-access-service-token) — machine credentials for Access-protected applications, a different trust domain from API tokens

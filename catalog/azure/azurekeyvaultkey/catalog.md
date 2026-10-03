@@ -4,7 +4,7 @@ Deploys a cryptographic key inside an Azure Key Vault -- the customer-managed-ke
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Key Vault Key** -- in the referenced vault, with the chosen algorithm family (RSA or EC, optionally HSM-backed on a Premium vault) and strength (modulus size or curve)
 - **Capability boundary** -- the permitted-operations list (`keyOpts`): Azure rejects any cryptographic operation not listed
@@ -17,12 +17,12 @@ The key lives entirely inside the referenced vault, whose authorization mode, ne
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Key Vault** for the key to live in. Reference an AzureKeyVault Cloud Resource via ValueFromRef, or provide the vault ARM ID directly. HSM key types (RSA_HSM/EC_HSM) require the vault on the PREMIUM SKU.
+- **An Azure Key Vault** for the key to live in. Reference an AzureKeyVault Infra Component via ValueFromRef, or provide the vault ARM ID directly. HSM key types (RSA_HSM/EC_HSM) require the vault on the PREMIUM SKU.
 - **Data-plane key permissions** for the deploying credential -- subscription Owner alone is not enough; the deployer needs data-plane key permissions on the vault (the "Key Vault Administrator" or "Key Vault Crypto Officer" RBAC role, or key permissions in a legacy access policy).
 
 ## Deploy
@@ -65,7 +65,7 @@ spec:
 planton apply -f key-vault-key.yaml
 ```
 
-This creates a rotating RSA 2048 CMK -- the shape every Azure CMK integration accepts, rotating roughly quarterly with versionless consumers following automatically. A Stack Job tracks the provisioning in real time.
+This creates a rotating RSA 2048 CMK -- the shape every Azure CMK integration accepts, rotating roughly quarterly with versionless consumers following automatically. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -96,15 +96,15 @@ These are the most important decisions when configuring a Key Vault key. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureKeyVault** | `keyVaultId` | `status.outputs.key_vault_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -129,8 +129,8 @@ The key outputs no secret material -- the private part never leaves the vault.
 
 ## Works With
 
-- [**Azure Key Vault**](/cloud-catalog/azure-key-vault) -- the parent vault whose governance this key inherits
-- [**Azure Disk Encryption Set**](/cloud-catalog/azure-disk-encryption-set) -- bridges this key to server-side disk encryption
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- encrypts under this key via its customer-managed-key block
-- [**Azure Service Bus Namespace**](/cloud-catalog/azure-service-bus-namespace) -- Premium namespaces encrypt messaging data under this key
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- grants consumers crypto access on the vault
+- [**Azure Key Vault**](/infra-catalog/azure-key-vault) -- the parent vault whose governance this key inherits
+- [**Azure Disk Encryption Set**](/infra-catalog/azure-disk-encryption-set) -- bridges this key to server-side disk encryption
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- encrypts under this key via its customer-managed-key block
+- [**Azure Service Bus Namespace**](/infra-catalog/azure-service-bus-namespace) -- Premium namespaces encrypt messaging data under this key
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- grants consumers crypto access on the vault

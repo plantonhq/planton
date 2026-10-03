@@ -5,10 +5,10 @@ package dev.planton.azure.azuredisksnapshot.v1alpha1;
 import "catalog/azure/azuredisksnapshot/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureDiskSnapshotStackInput is the input to the IaC modules
+// AzureDiskSnapshotIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureDiskSnapshotStackInput {
+message AzureDiskSnapshotIacInput {
   // The disk snapshot resource to deploy.
   AzureDiskSnapshot target = 1;
 

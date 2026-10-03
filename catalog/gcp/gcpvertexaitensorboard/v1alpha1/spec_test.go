@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpVertexAiTensorboardSpec", func() {
 		return &GcpVertexAiTensorboard{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpVertexAiTensorboard",
-			Metadata:   &shared.CloudResourceMetadata{Name: "training-metrics"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "training-metrics"},
 			Spec: &GcpVertexAiTensorboardSpec{
 				Location: "us-central1",
 			},

@@ -191,14 +191,14 @@ spec:
 
 See `GUIDE.md` for the full composability rationale.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `service_entry_name` | Name of the created ServiceEntry (equals metadata.name). |
 | `namespace` | Namespace the ServiceEntry was created in. |
 
-## Related Components
+## Related Kinds
 
 - [Kubernetes Istio](../kubernetesistio)
 - [Kubernetes Istio Base CRDs](../kubernetesistiobasecrds)

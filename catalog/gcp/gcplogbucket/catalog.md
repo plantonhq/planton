@@ -4,7 +4,7 @@ Creates a Cloud Logging bucket — the container where log entries are STORED: h
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Log bucket** -- exactly ONE of `google_logging_{project|folder|organization|billing_account}_bucket_config`, selected by the spec's `scope`
 - **Log views** (optional) -- one `google_logging_log_view` per `logViews[]` entry
@@ -53,7 +53,7 @@ spec:
 planton apply -f log-bucket.yaml
 ```
 
-A 400-day project bucket with a status-code index — pair it with a GcpLoggingSink routing audit entries in. A Stack Job tracks the provisioning in real time.
+A 400-day project bucket with a status-code index — pair it with a GcpLoggingSink routing audit entries in. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -96,7 +96,7 @@ These are the most important decisions when configuring a log bucket. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -104,9 +104,9 @@ These are the most important decisions when configuring a log bucket. Explore th
 | **GcpFolder** (optional) | `scope.folderId` | `status.outputs.folder_id` |
 | **GcpKmsKey** (optional) | `cmekKmsKey`, `scopeSettings.kmsKey` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -125,7 +125,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Logging Sink**](/cloud-catalog/gcp-logging-sink) -- routes matching entries INTO this bucket
-- [**GCP Log Metric**](/cloud-catalog/gcp-log-metric) -- bucket-scoped metrics count entries as they land here
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- supplies the CMEK key
-- [**GCP BigQuery Dataset**](/cloud-catalog/gcp-big-query-dataset) -- the linked dataset appears beside your other datasets
+- [**GCP Logging Sink**](/infra-catalog/gcp-logging-sink) -- routes matching entries INTO this bucket
+- [**GCP Log Metric**](/infra-catalog/gcp-log-metric) -- bucket-scoped metrics count entries as they land here
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- supplies the CMEK key
+- [**GCP BigQuery Dataset**](/infra-catalog/gcp-big-query-dataset) -- the linked dataset appears beside your other datasets

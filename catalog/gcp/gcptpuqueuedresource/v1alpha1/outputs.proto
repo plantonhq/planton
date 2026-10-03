@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcptpuqueuedresource.v1alpha1;
 
-// GcpTpuQueuedResourceStackOutputs carries the request's identity.
-message GcpTpuQueuedResourceStackOutputs {
+// GcpTpuQueuedResourceOutputs carries the request's identity.
+message GcpTpuQueuedResourceOutputs {
   // Full resource name:
   // projects/{project}/locations/{zone}/queuedResources/{queued_resource_id}.
   string name = 1;

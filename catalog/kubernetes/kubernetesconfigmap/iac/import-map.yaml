@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesconfigmap
 spec:
@@ -8,13 +8,13 @@ spec:
   values:
     - name: config_map_name
       derivations:
-        - from_stack_output: configmap_name
+        - from_output: configmap_name
         - from_spec_field: name
       where_to_find: >-
         `kubectl get configmaps -A` (NAME column).
     - name: config_map_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `kubectl get configmaps -A` (NAMESPACE column); "default" when the

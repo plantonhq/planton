@@ -6,7 +6,7 @@
 
 ## Summary
 
-Extended the black-and-white theme redesign to every micro-app on planton.ai — invest, tour, demo, meets, blog, tutorials, hackathon, legal, and common components. Deleted the ACME fictional customer section entirely. 254 files changed across 9 phases, eliminating all pink/violet/indigo/cyan/amber/blue/orange gradients and accent colors from the marketing site and micro-apps.
+Extended the black-and-white theme redesign to every micro-app on planton.ai — invest, tour, demo, meets, blog, tutorials, hackathon, legal, and common kinds. Deleted the ACME fictional customer section entirely. 254 files changed across 9 phases, eliminating all pink/violet/indigo/cyan/amber/blue/orange gradients and accent colors from the marketing site and micro-apps.
 
 ## Problem Statement / Motivation
 
@@ -16,29 +16,29 @@ The landing page and main marketing site were redesigned to a monochrome black-a
 
 - Invest decks used a pink/violet/cyan gradient system with `#7c3aed` → `#0ea5e9` accent colors
 - Tour had full-screen `from-purple-900 via-purple-600 to-pink-500` backgrounds
-- Demo components used `#110D1F` dark-purple backgrounds and violet gradient buttons
+- Demo kinds used `#110D1F` dark-purple backgrounds and violet gradient buttons
 - Meets decks mirrored the invest color system with pink/violet/emerald/blue accents
 - Blog and tutorials used blue badges, links, and active states
 - Hackathon used a pervasive purple/pink/rose/indigo gradient system
 - Legal investor-updates had emerald/pink/cyan badge colors
 - ACME section (fictional customer demo) was no longer needed
-- Common components (sidebar, Mermaid diagrams, menus) had blue decorative accents
+- Common kinds (sidebar, Mermaid diagrams, menus) had blue decorative accents
 
 ## Solution / What's New
 
 ### Phase 0: ACME Deletion
 
-Removed the entire ACME fictional customer section — `src/app/(acme)/` (layout, CSS, 8 page routes) and `src/components/acme/` (9 component files). Will be replaced with a more robust customer showcase in the future.
+Removed the entire ACME fictional customer section — `src/app/(acme)/` (layout, CSS, 8 page routes) and `src/components/acme/` (9 kind files). Will be replaced with a more robust customer showcase in the future.
 
 ### Phase 1: Foundation — CSS and Shared Tokens
 
-Rewrote the central style hubs that downstream components consume:
+Rewrote the central style hubs that downstream kinds consume:
 
 - **invest.css**: `.highlight-gradient` from pink-to-violet gradient text to solid `#ededed`; roadmap borders to brightness-based hierarchy (white/gray/dark); slide backgrounds to neutral `#0a0a0a`; progress bar fill to solid white
 - **meets.css**: All 315 lines neutralized — gradient text, flow arrows, quote boxes, stat values, demo badges, presenter notes, slide backgrounds. Comparison before/after borders preserved as semantic (red/green)
 - **demo.css**: `.btn-gradient` from violet-to-purple gradient to solid white
-- **invest/v2/shared.tsx**: Complete design token rewrite — `Card`, `Badge`, `Metric`, `RoadmapItem`, `Callout`, `TeamMember`, `CustomerCard`, `FundsItem` components all use monochrome palette
-- **invest/explainer/shared.tsx**: Complete design token rewrite — `SectionTitle`, `GradientText`, `Section`, `Card`, `Callout`, `Badge`, `Metric`, `Step`, `List`, `Table` components neutralized
+- **invest/v2/shared.tsx**: Complete design token rewrite — `Card`, `Badge`, `Metric`, `RoadmapItem`, `Callout`, `TeamMember`, `CustomerCard`, `FundsItem` kinds all use monochrome palette
+- **invest/explainer/shared.tsx**: Complete design token rewrite — `SectionTitle`, `GradientText`, `Section`, `Card`, `Callout`, `Badge`, `Metric`, `Step`, `List`, `Table` kinds neutralized
 
 ### Phase 2: Tour (2 files)
 
@@ -62,9 +62,9 @@ MeetsDeck, primitives, navigation, presenter-notes, and all 21 SEP slide files s
 
 ### Phase 7: Demo (58 files)
 
-Fully monochrome including interactive console simulation panels: `#110D1F` dark-purple backgrounds → `#0a0a0a`; StackJobLogger dark-blue panels (`#242F5E`, `#242C4B`) → neutral darks; SVG strokes in LegoCatalog and InfraVisualization from blue/violet/cyan to white/gray; all form, deployment, infrastructure, and log viewer components neutralized.
+Fully monochrome including interactive console simulation panels: `#110D1F` dark-purple backgrounds → `#0a0a0a`; InfraJobLogger dark-blue panels (`#242F5E`, `#242C4B`) → neutral darks; SVG strokes in LegoCatalog and InfraVisualization from blue/violet/cyan to white/gray; all form, deployment, infrastructure, and log viewer kinds neutralized.
 
-### Phase 8: Common Components (3 files)
+### Phase 8: Common Kinds (3 files)
 
 Selective monochrome preserving semantic colors: content-sidebar blue active states → white/gray; MermaidDiagram blue primary color → `#ededed` (red error styling preserved); ActionsMenu blue hover → white/10. Green success states in CodeBlock, CopyButton, MarkdownViewDialog preserved.
 

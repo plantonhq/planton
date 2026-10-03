@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflareloadbalancerpool
 spec:
@@ -15,7 +15,7 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: pool_id
       derivations:
-        - from_stack_output: pool_id
+        - from_output: pool_id
       where_to_find: >-
         Cloudflare dashboard -> Traffic -> Load Balancing -> Pools (open
         the pool; the id is in the URL), or

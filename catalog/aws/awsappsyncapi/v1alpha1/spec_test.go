@@ -37,7 +37,7 @@ var _ = ginkgo.Describe("AwsAppSyncApi", func() {
 		input = &AwsAppSyncApi{
 			ApiVersion: "aws.planton.dev/v1alpha1",
 			Kind:       "AwsAppSyncApi",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "a-test-name",
 			},
 			Spec: &AwsAppSyncApiSpec{

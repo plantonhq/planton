@@ -1,4 +1,4 @@
-# AwsRestApiUsagePlan — Component Guide
+# AwsRestApiUsagePlan — Kind Guide
 
 Authored operational judgment for the REST API usage-plan component:
 the design decisions behind the spec's shape, and what to know before

@@ -18,7 +18,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsplantonrunner
+    e2e-catalog-kind: awsplantonrunner
   annotations:
     planton.dev/e2e: "true"
     # The fake token's task crash-loop is DESIGNED -- the lane pins the

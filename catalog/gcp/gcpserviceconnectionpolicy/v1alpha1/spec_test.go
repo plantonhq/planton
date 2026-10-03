@@ -35,7 +35,7 @@ var _ = ginkgo.Describe("GcpServiceConnectionPolicySpec", func() {
 		return &GcpServiceConnectionPolicy{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpServiceConnectionPolicy",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-scp",
 			},
 			Spec: &GcpServiceConnectionPolicySpec{

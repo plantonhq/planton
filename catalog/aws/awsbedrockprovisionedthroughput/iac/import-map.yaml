@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsbedrockprovisionedthroughput
 spec:
@@ -8,7 +8,7 @@ spec:
   values:
     - name: provisioned_model_arn
       derivations:
-        - from_stack_output: provisioned_model_arn
+        - from_output: provisioned_model_arn
       where_to_find: >-
         `aws bedrock list-provisioned-model-throughputs`
         (provisionedModelArn), or Bedrock console -> Provisioned

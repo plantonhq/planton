@@ -177,7 +177,7 @@ Define a monitor and pool once, then reference the pool from any number of load
 balancers across zones. Origins can themselves reference compute outputs, so the
 whole traffic path is expressible as a dependency graph.
 
-## Related components
+## Related kinds
 
 - `CloudflareLoadBalancerPool` — referenced by `defaultPools`/`fallbackPool`/geo maps.
 - `CloudflareLoadBalancerMonitor` — referenced by a pool's `monitor`.

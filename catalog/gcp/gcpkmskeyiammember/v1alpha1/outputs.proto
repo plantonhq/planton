@@ -6,7 +6,7 @@ package dev.planton.gcp.gcpkmskeyiammember.v1alpha1;
 // The grant itself has no server-generated identity beyond its inputs; the
 // outputs echo the fully-resolved grant tuple so downstream tooling and audits
 // can see exactly what was applied without re-resolving references.
-message GcpKmsKeyIamMemberStackOutputs {
+message GcpKmsKeyIamMemberOutputs {
   // The fully-qualified resource path of the crypto key whose IAM policy
   // received the grant
   // (projects/<project>/locations/<location>/keyRings/<ring>/cryptoKeys/<key>),

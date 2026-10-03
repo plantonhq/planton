@@ -10,8 +10,8 @@ import (
 
 	"github.com/plantonhq/planton/pkg/iac/specprojection"
 
-	testgenericv1 "github.com/plantonhq/planton/catalog/_test/testcloudresourcegeneric/v1alpha1"
-	testkubernetesv1 "github.com/plantonhq/planton/catalog/_test/testcloudresourcekubernetes/v1alpha1"
+	testgenericv1 "github.com/plantonhq/planton/catalog/_test/testcatalogkindgeneric/v1alpha1"
+	testkubernetesv1 "github.com/plantonhq/planton/catalog/_test/testcatalogkindkubernetes/v1alpha1"
 	auth0resourceserverv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0resourceserver/v1alpha1"
 	awsecrrepov1alpha1 "github.com/plantonhq/planton/catalog/aws/awsecrrepo/v1alpha1"
 	awsiamrolev1alpha1 "github.com/plantonhq/planton/catalog/aws/awsiamrole/v1alpha1"
@@ -86,7 +86,7 @@ func TestProtoToVariablesTF_RefMapVariablesIsMapString(t *testing.T) {
 	// The _test torture kind carries ref_map (map<string, StringValueOrRef>)
 	// specifically to pin the map-value flatten rule; live catalog specs drop
 	// and rename their map fields over time, but this fixture cannot move.
-	msg := &testkubernetesv1.TestCloudResourceKubernetes{}
+	msg := &testkubernetesv1.TestCatalogKindKubernetes{}
 
 	got, err := ProtoToVariablesTF(msg)
 	if err != nil {
@@ -110,7 +110,7 @@ func TestProtoToVariablesTF_RefMapVariablesIsMapString(t *testing.T) {
 // the tfvars converter never sends it, so a declared attribute would be dead
 // on every module. Its unmarked sibling is declared as usual.
 func TestProtoToVariablesTF_ManifestOnlyFieldHasNoVariable(t *testing.T) {
-	got, err := ProtoToVariablesTF(&testkubernetesv1.TestCloudResourceKubernetes{})
+	got, err := ProtoToVariablesTF(&testkubernetesv1.TestCatalogKindKubernetes{})
 	if err != nil {
 		t.Fatalf("ProtoToVariablesTF: %v", err)
 	}
@@ -189,8 +189,8 @@ func TestProtoToVariablesTF_CronJob_ValidHCL(t *testing.T) {
 }
 
 func TestProtoToVariablesTF_SimpleMessage_BackwardCompatible(t *testing.T) {
-	// Test with CloudResourceMetadata directly to verify basic object generation.
-	msg := &shared.CloudResourceMetadata{}
+	// Test with CatalogObjectMetadata directly to verify basic object generation.
+	msg := &shared.CatalogObjectMetadata{}
 
 	got, err := ProtoToVariablesTF(msg)
 	if err != nil {
@@ -218,7 +218,7 @@ func TestProtoToVariablesTF_SimpleMessage_BackwardCompatible(t *testing.T) {
 // defaults so a null-pruned tfvars validates. This is the contract the runtime
 // renderer (ProtoToTFVars, EmitUnpopulated=false) depends on.
 const canonicalMetadataBlock = `variable "metadata" {
-  description = "Cloud resource metadata"
+  description = "Catalog object metadata"
   type = object({
     name        = string
     id          = optional(string, "")
@@ -475,11 +475,11 @@ func TestProtoToVariablesTF_IsFormatterFixedPoint(t *testing.T) {
 // permanent test kind's annotated_ref is the fixture: a documented
 // StringValueOrRef that no depth work can rename.
 func TestProtoToVariablesTF_FieldDocumentationIsEmitted(t *testing.T) {
-	msg := &testgenericv1.TestCloudResourceGeneric{}
+	msg := &testgenericv1.TestCatalogKindGeneric{}
 	spec := extractBlock(generateVariables(t, msg), `variable "spec"`)
 	fd := msg.ProtoReflect().Descriptor().Fields().ByName("spec").Message().Fields().ByName("annotated_ref")
 	if fd == nil {
-		t.Fatal("fixture field annotated_ref is gone from TestCloudResourceGenericSpec")
+		t.Fatal("fixture field annotated_ref is gone from TestCatalogKindGenericSpec")
 	}
 	doc := strings.TrimSpace(protodocs.Lookup(fd.FullName()))
 	if doc == "" {

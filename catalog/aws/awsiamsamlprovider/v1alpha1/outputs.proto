@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsiamsamlprovider.v1alpha1;
 
-// AwsIamSamlProviderStackOutputs captures the observable state of the
+// AwsIamSamlProviderOutputs captures the observable state of the
 // SAML provider after apply.
-message AwsIamSamlProviderStackOutputs {
+message AwsIamSamlProviderOutputs {
   // The provider's ARN (also the provider's import ID, and the value
   // role trust policies reference via the SAML principal).
   string provider_arn = 1;

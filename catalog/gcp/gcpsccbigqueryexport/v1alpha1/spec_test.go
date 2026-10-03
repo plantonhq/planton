@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpSccBigQueryExportSpec", func() {
 		return &GcpSccBigQueryExport{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpSccBigQueryExport",
-			Metadata:   &shared.CloudResourceMetadata{Name: "findings-history"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "findings-history"},
 			Spec: &GcpSccBigQueryExportSpec{
 				BigQueryExportId: "findings-history",
 				Dataset:          litRef("projects/sec/datasets/scc_findings"),

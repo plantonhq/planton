@@ -4,7 +4,7 @@ Deploys a Vertex AI Deployed Index: the resource that places a GcpVertexAiIndex 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Deployed Index** -- the placement of the referenced index onto the referenced endpoint, addressed by your chosen deployment ID
 - **Serving Compute** -- either Vertex-managed automatic resources (machine types chosen by GCP, replicas scaling between your bounds) or dedicated resources (a pinned machine type); omitting both deploys with GCP's automatic defaults
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
@@ -56,7 +56,7 @@ spec:
 planton apply -f deployed-index.yaml
 ```
 
-This places the referenced index onto the referenced endpoint with Vertex-managed compute scaling between 2 and 10 replicas — after which nearest-neighbor queries can be served. A Stack Job tracks the provisioning in real time.
+This places the referenced index onto the referenced endpoint with Vertex-managed compute scaling between 2 and 10 replicas — after which nearest-neighbor queries can be served. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,7 +92,7 @@ These are the most important decisions when configuring a deployed index. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -101,7 +101,7 @@ These are the most important decisions when configuring a deployed index. Explor
 | **GcpGlobalAddress** (optional, repeated) | `reservedIpRanges` | `status.outputs.name` |
 | **GcpServiceAccount** (optional, repeated) | `authConfig.allowedIssuers` | `status.outputs.email` |
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains values that downstream consumers and query clients use:
 
@@ -126,7 +126,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Vertex AI Index**](/cloud-catalog/gcp-vertex-ai-index) -- the vector index this deployment serves
-- [**GCP Vertex AI Index Endpoint**](/cloud-catalog/gcp-vertex-ai-index-endpoint) -- the serving surface this deployment lives on
-- [**GCP Global Address**](/cloud-catalog/gcp-global-address) -- the reserved VPC_PEERING ranges a peered deployment pins its IP space to
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the JWT issuers the private query endpoint trusts
+- [**GCP Vertex AI Index**](/infra-catalog/gcp-vertex-ai-index) -- the vector index this deployment serves
+- [**GCP Vertex AI Index Endpoint**](/infra-catalog/gcp-vertex-ai-index-endpoint) -- the serving surface this deployment lives on
+- [**GCP Global Address**](/infra-catalog/gcp-global-address) -- the reserved VPC_PEERING ranges a peered deployment pins its IP space to
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the JWT issuers the private query endpoint trusts

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Enhanced the KubernetesDaemonSet component to support creating ConfigMaps from inline content, mounting volumes (ConfigMap, Secret, HostPath, EmptyDir, PVC), creating ServiceAccounts, and configuring RBAC permissions. This enables deploying DaemonSets that require configuration files and cluster-level permissions—a common pattern for log collectors (Vector), node monitoring agents, and security scanners.
+Enhanced the KubernetesDaemonSet kind to support creating ConfigMaps from inline content, mounting volumes (ConfigMap, Secret, HostPath, EmptyDir, PVC), creating ServiceAccounts, and configuring RBAC permissions. This enables deploying DaemonSets that require configuration files and cluster-level permissions—a common pattern for log collectors (Vector), node monitoring agents, and security scanners.
 
 ## Problem Statement / Motivation
 
@@ -15,7 +15,7 @@ Deploying DaemonSets like Vector log collectors requires:
 - ServiceAccounts with RBAC permissions to read pods/nodes/namespaces
 - HostPath mounts for accessing container logs on nodes
 
-Previously, KubernetesDaemonSet only supported basic hostPath volume mounts with a component-specific message type. Users had to either:
+Previously, KubernetesDaemonSet only supported basic hostPath volume mounts with a kind-specific message type. Users had to either:
 - Pre-create ConfigMaps, ServiceAccounts, and RBAC resources outside the deployment workflow
 - Bake configuration into container images (violating 12-factor app principles)
 - Use KubernetesManifest with raw YAML (losing type safety)
@@ -26,11 +26,11 @@ Previously, KubernetesDaemonSet only supported basic hostPath volume mounts with
 - **Limited volume mount types**: Only hostPath was supported, no ConfigMap/Secret mounts
 - **No ServiceAccount support**: Pods ran with default service account
 - **No RBAC configuration**: Required separate kubectl commands or manifests for permissions
-- **Inconsistency with KubernetesDeployment**: Different volume mount types between components
+- **Inconsistency with KubernetesDeployment**: Different volume mount types between kinds
 
 ## Solution / What's New
 
-Added comprehensive ConfigMap, ServiceAccount, and RBAC support to KubernetesDaemonSet, leveraging the shared `volume_mount.proto` definitions for consistency across workload components.
+Added comprehensive ConfigMap, ServiceAccount, and RBAC support to KubernetesDaemonSet, leveraging the shared `volume_mount.proto` definitions for consistency across workload kinds.
 
 ### New Proto Fields
 
@@ -60,7 +60,7 @@ message KubernetesDaemonSetRbacRule {
 
 ### Supported Volume Types
 
-The component now uses the shared `VolumeMount` type supporting:
+The kind now uses the shared `VolumeMount` type supporting:
 
 | Volume Type | Use Case |
 |-------------|----------|
@@ -78,7 +78,7 @@ The component now uses the shared `VolumeMount` type supporting:
 
 1. Added import for shared volume mount definitions
 2. Added 4 new fields to `KubernetesDaemonSetSpec` (fields 9-12)
-3. Replaced component-specific `KubernetesDaemonSetVolumeMount` with shared `VolumeMount`
+3. Replaced kind-specific `KubernetesDaemonSetVolumeMount` with shared `VolumeMount`
 4. Added `KubernetesDaemonSetRbac` and `KubernetesDaemonSetRbacRule` messages
 5. RBAC rules include validation requiring at least one item in apiGroups, resources, and verbs
 
@@ -122,7 +122,7 @@ func rbac(ctx *pulumi.Context, locals *Locals, serviceAccountName string,
 ### For Platform Teams
 
 - **Reduced operational overhead**: No need to manage separate RBAC manifests
-- **Standardized patterns**: All Kubernetes workload components share volume mount definitions
+- **Standardized patterns**: All Kubernetes workload kinds share volume mount definitions
 - **Audit-friendly**: RBAC permissions declared alongside the workload they serve
 
 ### Concrete Example
@@ -256,7 +256,7 @@ All validation steps passed:
 
 ## Related Work
 
-- **KubernetesDeployment ConfigMap Support**: Same pattern applied earlier today, enabling feature parity between Deployment and DaemonSet components
+- **KubernetesDeployment ConfigMap Support**: Same pattern applied earlier today, enabling feature parity between Deployment and DaemonSet kinds
 - **Shared Volume Mount Proto**: `volume_mount.proto` provides consistent volume mount definitions across KubernetesDeployment, KubernetesDaemonSet, KubernetesStatefulSet, and KubernetesCronJob
 
 ---

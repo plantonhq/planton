@@ -7,9 +7,9 @@ import (
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"google.golang.org/protobuf/reflect/protoregistry"
 
-	// Registers every cloud-resource kind's proto files in the global
+	// Registers every catalog kind's proto files in the global
 	// registry so the coverage check below sees the full compiled-in surface.
-	_ "github.com/plantonhq/planton/pkg/crkreflect"
+	_ "github.com/plantonhq/planton/pkg/catalogkindreflect"
 )
 
 // TestIndexCoversCompiledInProtos is the freshness gate for the committed

@@ -44,7 +44,7 @@ func validResource() *AzureContainerInstance {
 	return &AzureContainerInstance{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureContainerInstance",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-container-group",
 		},
 		Spec: &AzureContainerInstanceSpec{

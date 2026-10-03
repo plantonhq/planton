@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflaresnippetrules.v1alpha1;
 
-// CloudflareSnippetRulesStackOutputs captures the observable outputs after
+// CloudflareSnippetRulesOutputs captures the observable outputs after
 // applying a zone's snippet routing table.
-message CloudflareSnippetRulesStackOutputs {
+message CloudflareSnippetRulesOutputs {
   // The zone whose snippet routing table is managed. The table is a zone
   // singleton -- the zone ID is its identity.
   string zone_id = 1;

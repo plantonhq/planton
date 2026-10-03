@@ -10,11 +10,11 @@ import (
 	"github.com/plantonhq/planton/internal/cli/cliprint"
 	"github.com/plantonhq/planton/internal/cli/staging"
 	"github.com/plantonhq/planton/internal/cli/version"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/fileutil"
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumibinary"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // GetPathResult contains the module path and a cleanup function
@@ -89,7 +89,7 @@ func GetPath(moduleDir string, stackFqdn, kindName string, moduleVersion string,
 // tryBinaryApproach attempts to use pre-built binary for execution.
 // releaseVersion can be:
 // - CLI version like "v0.3.2" (downloads from main planton release)
-// - Module version like "v0.3.1-pulumi-awsecsservice-20260107.01" (downloads from component-specific release)
+// - Module version like "v0.3.1-pulumi-awsecsservice-20260107.01" (downloads from kind-specific release)
 // Returns an error if binary is not available or download fails.
 func tryBinaryApproach(stackFqdn, kindName, releaseVersion string, noCleanup bool) (*GetPathResult, error) {
 	cliprint.PrintStep(fmt.Sprintf("Checking for Pulumi module: %s (%s)...", kindName, releaseVersion))
@@ -257,13 +257,13 @@ func IsPulumiModuleDirectory(moduleDir string) (bool, error) {
 }
 
 func getPulumiModulePath(moduleRepoDir, kindName string) (string, error) {
-	kind := crkreflect.KindFromString(kindName)
-	kindProvider := crkreflect.GetProvider(kind)
-	if kindProvider == cloudresourcekind.CloudResourceProvider_cloud_resource_provider_unspecified {
+	kind := catalogkindreflect.KindFromString(kindName)
+	kindProvider := catalogkindreflect.GetProvider(kind)
+	if kindProvider == catalogkind.CatalogProvider_catalog_provider_unspecified {
 		return "", errors.New("failed to get kind provider")
 	}
 
-	// One live module set per component: modules live at the component root
+	// One live module set per kind: modules live at the kind root
 	// (catalog/{provider}/{kind}/iac/pulumi), fully derivable from the registry.
 	kindDirPath := filepath.Join(
 		moduleRepoDir,

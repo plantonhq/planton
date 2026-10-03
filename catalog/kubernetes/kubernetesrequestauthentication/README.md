@@ -188,14 +188,14 @@ spec:
 
 See `GUIDE.md` for the full composability rationale.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `request_authentication_name` | Name of the created RequestAuthentication (equals metadata.name). |
 | `namespace` | Namespace the RequestAuthentication was created in. |
 
-## Related Components
+## Related Kinds
 
 - [Kubernetes Peer Authentication](../kubernetespeerauthentication)
 - [Kubernetes Istio](../kubernetesistio)

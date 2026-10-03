@@ -2,9 +2,9 @@
 
 ## Overview
 
-**KubernetesNetworkPolicy** is a Planton component that creates and manages Kubernetes NetworkPolicies — the in-cluster firewall — as first-class, declaratively managed resources. A NetworkPolicy selects a set of pods with `pod_selector` and declares which network traffic is allowed to (`ingress_rules`) and from (`egress_rules`) those pods.
+**KubernetesNetworkPolicy** is a catalog kind that creates and manages Kubernetes NetworkPolicies — the in-cluster firewall — as first-class, declaratively managed resources. A NetworkPolicy selects a set of pods with `pod_selector` and declares which network traffic is allowed to (`ingress_rules`) and from (`egress_rules`) those pods.
 
-The component covers the complete `networking/v1` NetworkPolicySpec surface: pod and namespace label selectors (exact-match and set-based expressions), IP blocks with exceptions, TCP/UDP/SCTP ports, named ports, and port ranges. There is nothing an upstream NetworkPolicy can express that this spec cannot.
+The kind covers the complete `networking/v1` NetworkPolicySpec surface: pod and namespace label selectors (exact-match and set-based expressions), IP blocks with exceptions, TCP/UDP/SCTP ports, named ports, and port ranges. There is nothing an upstream NetworkPolicy can express that this spec cannot.
 
 ## Purpose
 
@@ -79,7 +79,7 @@ NetworkPolicy objects are only **enforced** by a CNI plugin that implements them
 - **`spec.ingress_rules`** / **`spec.egress_rules`**: The allow rules
 - **`spec.labels`** / **`spec.annotations`**: Merged with standard Planton labels for tracking and governance
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -89,7 +89,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Resolve the target namespace (literal value or resolved reference)
 2. Merge user labels and annotations with standard Planton tracking labels

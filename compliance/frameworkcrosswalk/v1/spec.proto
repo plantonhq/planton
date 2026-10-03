@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.compliance.frameworkcrosswalk.v1;
 
-import "shared/cloudresourcekind/cloud_resource_provider.proto";
+import "shared/catalogkind/catalog_provider.proto";
 
 // FrameworkCrosswalkSpec maps framework requirements to catalog controls.
 // A crosswalk need not cover a framework exhaustively: it covers the
@@ -16,17 +16,17 @@ message FrameworkCrosswalkSpec {
   // The framework version or revision this crosswalk was authored against,
   // e.g. "v3.0.0" or "45 CFR Part 164, Subpart C (2013 Omnibus)". A
   // framework rev bumps this string and updates mappings in this one file
-  // -- components are untouched.
+  // -- kinds are untouched.
   string framework_version = 2;
   repeated RequirementMapping mappings = 3;
   // The providers this framework names in its own scope. A benchmark whose
   // title names a provider declares it here (CIS AWS -> [aws]) and then
-  // appears ONLY on that provider's components; every consumer surface
+  // appears ONLY on that provider's kinds; every consumer surface
   // filters by this list. EMPTY means provider-neutral: the framework
   // applies to every provider (HIPAA, SOC 2), and stating no scope IS the
   // statement. Values are the platform's one provider vocabulary -- a
   // misspelled provider refuses at parse time by construction.
-  repeated dev.planton.shared.cloudresourcekind.CloudResourceProvider providers = 4;
+  repeated dev.planton.shared.catalogkind.CatalogProvider providers = 4;
 }
 
 // RequirementMapping links one framework requirement to the catalog

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpsccnotificationconfig.v1alpha1;
 
-// GcpSccNotificationConfigStackOutputs carries the config's identity and
+// GcpSccNotificationConfigOutputs carries the config's identity and
 // the publisher it needs on its topic.
-message GcpSccNotificationConfigStackOutputs {
+message GcpSccNotificationConfigOutputs {
   // Full resource name:
   // {parent}/locations/{location}/notificationConfigs/{config_id}.
   string name = 1;

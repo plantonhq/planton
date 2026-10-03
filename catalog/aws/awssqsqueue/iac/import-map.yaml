@@ -1,16 +1,16 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awssqsqueue
 spec:
   # SQS queues import by their full queue URL
   # ("https://sqs.<region>.amazonaws.com/<account>/<name>") -- a value the
-  # platform records as a stack output on deploy but cannot assemble from
+  # platform records as an output on deploy but cannot assemble from
   # the spec alone (it embeds the account id).
   values:
     - name: queue_url
       derivations:
-        - from_stack_output: queue_url
+        - from_output: queue_url
       where_to_find: >-
         SQS console -> Queues -> <queue> (the URL field), or
         `aws sqs get-queue-url --queue-name <name>` (QueueUrl).

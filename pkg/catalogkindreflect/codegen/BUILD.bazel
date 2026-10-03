@@ -1,0 +1,19 @@
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
+
+go_library(
+    name = "codegen_lib",
+    srcs = ["main.go"],
+    importpath = "github.com/plantonhq/planton/pkg/catalogkindreflect/codegen",
+    visibility = ["//visibility:private"],
+    deps = [
+        "//pkg/catalogkindreflect",
+        "//shared/catalogkind",
+        "@com_github_pkg_errors//:errors",
+    ],
+)
+
+go_binary(
+    name = "codegen",
+    embed = [":codegen_lib"],
+    visibility = ["//visibility:public"],
+)

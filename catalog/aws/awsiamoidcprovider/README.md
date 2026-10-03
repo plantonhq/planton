@@ -8,12 +8,12 @@ An AWS IAM OpenID Connect (OIDC) identity provider is the trust anchor that lets
 - client_id_list: The allowed client IDs / audiences (the `aud` claim); for EKS IRSA this is `sts.amazonaws.com`
 - thumbprint_list: Optional SHA-1 thumbprints of the issuer's root CA; omit for well-known CAs and AWS derives them
 
-## Stack outputs
+## Outputs
 - provider_arn: ARN of the OIDC provider; referenced as a `Federated` principal in IAM role trust policies
 - provider_url: The issuer URL AWS stored, with the `https://` scheme stripped (used to build `<url>:sub` / `<url>:aud` trust conditions)
 
 ## How it works
-This resource is orchestrated by the Planton CLI as part of a stack-update. The CLI validates your manifest, generates stack inputs, and invokes IaC backends in this repo:
+This resource is orchestrated by the Planton CLI as part of a stack-update. The CLI validates your manifest, generates IaC inputs, and invokes IaC backends in this repo:
 - Pulumi (Go modules under iac/pulumi)
 - Terraform (modules under iac/tf)
 

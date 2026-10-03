@@ -28,10 +28,10 @@ planton apply -f manifest.yaml
 
 ### Standalone Usage
 
-1. Set up the stack input as a base64-encoded environment variable:
+1. Set up the IaC input as a base64-encoded environment variable:
 
 ```bash
-export STACK_INPUT=$(cat manifest.yaml | base64)
+export IAC_INPUT=$(cat manifest.yaml | base64)
 ```
 
 2. Run Pulumi:
@@ -44,8 +44,8 @@ pulumi up
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `STACK_INPUT` | Base64-encoded CloudflareDnsRecordStackInput | Yes |
-| `CLOUDFLARE_API_TOKEN` | Cloudflare API token (alternative to stack input credentials) | No |
+| `IAC_INPUT` | Base64-encoded CloudflareDnsRecordIacInput | Yes |
+| `CLOUDFLARE_API_TOKEN` | Cloudflare API token (alternative to IaC input credentials) | No |
 
 ## Build
 
@@ -97,7 +97,7 @@ Use the debug script for local testing:
 
 ### "missing required configuration"
 
-Ensure `STACK_INPUT` environment variable is set with base64-encoded manifest.
+Ensure `IAC_INPUT` environment variable is set with base64-encoded manifest.
 
 ### "authentication failed"
 

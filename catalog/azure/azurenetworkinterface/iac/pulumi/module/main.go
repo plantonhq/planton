@@ -10,12 +10,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurenetworkinterfacev1alpha1.AzureNetworkInterfaceStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurenetworkinterfacev1alpha1.AzureNetworkInterfaceIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -188,7 +188,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurenetworkinterfacev1alpha1.Az
 		}
 	}
 
-	// Export stack outputs from the created resource.
+	// Export outputs from the created resource.
 	ctx.Export(OpNetworkInterfaceId, createdNetworkInterface.ID())
 	ctx.Export(OpNetworkInterfaceName, createdNetworkInterface.Name)
 	ctx.Export(OpPrivateIpAddress, createdNetworkInterface.PrivateIpAddress)

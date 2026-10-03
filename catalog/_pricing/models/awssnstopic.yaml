@@ -1,13 +1,13 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. All three presets are genuinely zero-committed: a topic's
 # existence is free and every meter (publishes, deliveries, archive growth)
 # follows traffic -- stated in exclusions, never padded into fabricated
-# dollars. Schema: finops/componentcostestimatemodel/v1.
+# dollars. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awssnstopic
 spec:
@@ -18,7 +18,7 @@ spec:
       hours_per_month: 730
       exclusions:
         - publishes bill per million requests after the always-free first million
-        - per-protocol delivery cost (HTTP, email, SMS, mobile push) bills on the AwsSnsSubscription components that attach endpoints
+        - per-protocol delivery cost (HTTP, email, SMS, mobile push) bills on the AwsSnsSubscription kinds that attach endpoints
         - data transfer out of the region bills per GB
       notes: Zero committed cost -- an idle standard topic bills nothing.
     - preset: 02-fifo-with-deduplication
@@ -27,7 +27,7 @@ spec:
       hours_per_month: 730
       exclusions:
         - FIFO publishes and deliveries bill per message and per payload GB -- a different pricing shape from standard topics, entirely traffic-driven
-        - subscriber-side delivery cost bills on the subscription components
+        - subscriber-side delivery cost bills on the subscription kinds
       notes: Zero committed cost -- FIFO ordering changes the usage rates, never the (zero) baseline.
     - preset: 03-fifo-with-archive
       region_assumption: us-east-1

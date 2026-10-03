@@ -5,9 +5,9 @@ package dev.planton.auth0.auth0role.v1alpha1;
 import "catalog/auth0/auth0role/v1alpha1/api.proto";
 import "catalog/auth0/provider.proto";
 
-// Auth0RoleStackInput is the input to the Auth0Role IaC module.
+// Auth0RoleIacInput is the input to the Auth0Role IaC module.
 // It contains the target resource and the Auth0 provider configuration.
-message Auth0RoleStackInput {
+message Auth0RoleIacInput {
   // target is the Auth0Role resource to be deployed.
   Auth0Role target = 1;
 

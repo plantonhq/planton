@@ -18,10 +18,10 @@ The Auth0Client Pulumi module creates and manages Auth0 applications (clients), 
 
 ## Environment Variables
 
-The module reads stack input from the `STACK_INPUT_FILE` environment variable:
+The module reads IaC input from the `IAC_INPUT_FILE` environment variable:
 
 ```bash
-export STACK_INPUT_FILE=/path/to/manifest.yaml
+export IAC_INPUT_FILE=/path/to/manifest.yaml
 ```
 
 Alternatively, Auth0 credentials can be provided via environment variables:
@@ -56,20 +56,20 @@ make test
 pulumi stack init local
 
 # Preview changes
-STACK_INPUT_FILE=../../e2e/manifest.yaml pulumi preview
+IAC_INPUT_FILE=../../e2e/manifest.yaml pulumi preview
 
 # Apply changes
-STACK_INPUT_FILE=../../e2e/manifest.yaml pulumi up
+IAC_INPUT_FILE=../../e2e/manifest.yaml pulumi up
 
 # Destroy resources
-STACK_INPUT_FILE=../../e2e/manifest.yaml pulumi destroy
+IAC_INPUT_FILE=../../e2e/manifest.yaml pulumi destroy
 ```
 
 ## Module Structure
 
 ```
 pulumi/
-├── main.go           # Entry point, loads stack input and calls module
+├── main.go           # Entry point, loads IaC input and calls module
 ├── Pulumi.yaml       # Pulumi project configuration
 ├── Makefile          # Build and test automation
 ├── debug.sh          # Debug helper script
@@ -78,11 +78,11 @@ pulumi/
 └── module/
     ├── main.go       # Resources orchestration
     ├── locals.go     # Local value initialization
-    ├── outputs.go    # Stack output exports
+    ├── outputs.go    # Output exports
     └── client.go     # Auth0 client resource creation
 ```
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available:
 
@@ -101,7 +101,7 @@ After deployment, the following outputs are available:
 ### "failed to create Auth0 provider"
 
 Ensure Auth0 credentials are correctly configured either via:
-- Provider config in stack input
+- Provider config in IaC input
 - Environment variables
 
 ### "client already exists"

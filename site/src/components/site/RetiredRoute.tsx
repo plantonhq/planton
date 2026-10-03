@@ -13,7 +13,7 @@ import { retiredRoute } from '@/data/retired-routes';
  * the sitemap read, so the three cannot disagree.
  *
  * On the apex domain the edge answers with a true redirect before this ever
- * renders; this component is the fallback for any origin that serves the
+ * renders; this kind is the fallback for any origin that serves the
  * export directly.
  */
 export function RetiredRoute({ from }: { from: string }) {

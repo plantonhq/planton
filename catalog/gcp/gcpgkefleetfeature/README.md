@@ -4,7 +4,7 @@ Turns on one GKE fleet feature and configures it: Config Sync (`configmanagement
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `gkehub.googleapis.com` and the feature's own API (never disabled on destroy)
 - **Feature** -- one `gke_hub_feature`
@@ -88,7 +88,7 @@ planton apply -f gke-fleet-feature.yaml
 - `membershipConfigs` only on `configmanagement`, `servicemesh`, and `policycontroller`; exactly one block per entry; a membership at most once.
 - Config Sync syncs from `git` or `oci`, with a required `secretType` and `syncRepo`; Policy Controller requires `installSpec`; Mesh requires `management`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -115,7 +115,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpGkeFleet** -- the fleet the feature configures
 - **GcpGkeFleetScope** -- `customRole` bindings need the `rbacrolebindingactuation` allowlist

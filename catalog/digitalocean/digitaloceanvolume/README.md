@@ -2,7 +2,7 @@
 
 A DigitalOcean block storage volume described once in a Planton manifest: expandable network-attached storage for Droplets, optionally pre-formatted (ext4/xfs) with a filesystem label, created empty or from a snapshot, and tagged. Attachment is a property of the Droplet — its `volumeIds` list consumes this kind's `volume_id` output — never of the volume itself.
 
-## What this component models
+## What this kind models
 
 The spec maps onto DigitalOcean's `digitalocean_volume` in full:
 

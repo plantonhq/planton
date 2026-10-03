@@ -103,7 +103,7 @@ deploy) and the per-branch tightening recipe.
   source scan always banned it; the rule prose now matches the code) and
   Chart.yaml guidance now includes verifying the `iconUrl` resolves, with
   the kind-logo URL convention documented.
-- Site stats regenerated (44 charts, 444 components).
+- Site stats regenerated (44 charts, 444 kinds).
 
 ## Validation
 

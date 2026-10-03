@@ -4,7 +4,7 @@ Creates an IAM group -- the container that grants a set of users one shared perm
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **IAM Group** -- the group itself, named from `metadata.name`, under the IAM path from `path` (default `/`)
 - **Group Membership** -- created only when `users` is non-empty; ONE membership resource carrying the whole users list, which is what makes membership authoritative
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with IAM permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with IAM permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -53,7 +53,7 @@ spec:
 planton apply -f aws-iam-group.yaml
 ```
 
-This creates an `auditors` group under `/teams/` whose membership is exactly alice and bob, with AWS's maintained ReadOnlyAccess policy attached -- members see everything and touch nothing. A Stack Job tracks the provisioning in real time.
+This creates an `auditors` group under `/teams/` whose membership is exactly alice and bob, with AWS's maintained ReadOnlyAccess policy attached -- members see everything and touch nothing. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,16 +95,16 @@ These are the most important decisions when configuring an IAM group. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsIamUser** | `users[]` | `status.outputs.user_name` |
 | **AwsIamPolicy** | `managedPolicyArns[]` | `status.outputs.policy_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -125,6 +125,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS IAM User**](/cloud-catalog/aws-iam-user) -- the members, wired via `users[]` references to their `user_name` outputs
-- [**AWS IAM Policy**](/cloud-catalog/aws-iam-policy) -- reusable permission sets attached via `managedPolicyArns[]`
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the workload-identity counterpart; roles cannot join groups, but share the same managed policies
+- [**AWS IAM User**](/infra-catalog/aws-iam-user) -- the members, wired via `users[]` references to their `user_name` outputs
+- [**AWS IAM Policy**](/infra-catalog/aws-iam-policy) -- reusable permission sets attached via `managedPolicyArns[]`
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the workload-identity counterpart; roles cannot join groups, but share the same managed policies

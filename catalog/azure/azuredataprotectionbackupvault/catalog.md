@@ -4,7 +4,7 @@ Creates a Data Protection backup vault -- the safe that modern Azure Backup data
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Data Protection Backup Vault** -- with its datastore tier, redundancy, soft-delete, immutability, and managed-identity posture
 - **Customer-Managed-Key Encryption** (optional) -- backup data encrypted with your own Key Vault key, when the `encryption` block is set
@@ -60,7 +60,7 @@ spec:
 planton apply -f backup-vault.yaml
 ```
 
-This creates the everyday production vault: the standard vault-store tier on geo-redundant backup storage with cross-region restore, soft delete at its 14-day default, Microsoft-managed encryption, and a system-assigned identity ready for datasource grants. A Stack Job tracks the provisioning in real time.
+This creates the everyday production vault: the standard vault-store tier on geo-redundant backup storage with cross-region restore, soft delete at its 14-day default, Microsoft-managed encryption, and a system-assigned identity ready for datasource grants. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -103,7 +103,7 @@ These are the most important decisions when configuring a backup vault. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -111,9 +111,9 @@ These are the most important decisions when configuring a backup vault. Explore 
 | **AzureKeyVaultKey** (CMK encryption) | `encryption.keyId` | `status.outputs.versionless_id` |
 | **AzureUserAssignedIdentity** (user-assigned identity) | `identity.identityIds` | `status.outputs.identity_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -135,9 +135,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- where the vault is created
-- [**Azure Data Protection Backup Policy**](/cloud-catalog/azure-data-protection-backup-policy) -- the schedules and retention contracts living on this vault
-- [**Azure Data Protection Backup Instance**](/cloud-catalog/azure-data-protection-backup-instance) -- the bindings that put datasources under this vault's protection
-- [**Azure Data Protection Resource Guard**](/cloud-catalog/azure-data-protection-resource-guard) -- multi-user authorization gating this vault's destructive operations
-- [**Azure Key Vault Key**](/cloud-catalog/azure-key-vault-key) -- the customer-managed key behind the encryption block
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- the datasource grants the vault's identity carries
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- where the vault is created
+- [**Azure Data Protection Backup Policy**](/infra-catalog/azure-data-protection-backup-policy) -- the schedules and retention contracts living on this vault
+- [**Azure Data Protection Backup Instance**](/infra-catalog/azure-data-protection-backup-instance) -- the bindings that put datasources under this vault's protection
+- [**Azure Data Protection Resource Guard**](/infra-catalog/azure-data-protection-resource-guard) -- multi-user authorization gating this vault's destructive operations
+- [**Azure Key Vault Key**](/infra-catalog/azure-key-vault-key) -- the customer-managed key behind the encryption block
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- the datasource grants the vault's identity carries

@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -25,7 +25,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -53,7 +53,7 @@ var _ = ginkgo.Describe("KubernetesListenerSet Validation Tests", func() {
 		input = &KubernetesListenerSet{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesListenerSet",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-listener-set",
 			},
 			Spec: &KubernetesListenerSetSpec{
@@ -77,12 +77,12 @@ var _ = ginkgo.Describe("KubernetesListenerSet Validation Tests", func() {
 
 		ginkgo.Context("with the full surface exercised", func() {
 			ginkgo.It("should not return a validation error", func() {
-				input.Spec.Namespace = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "team-ns", "spec.name")
+				input.Spec.Namespace = valueFrom(catalogkind.CatalogKind_KubernetesNamespace, "team-ns", "spec.name")
 				input.Spec.ParentRef = &kubernetes.KubernetesGatewayApiParentGatewayReference{
 					Group:     stringPtr("gateway.networking.k8s.io"),
 					Kind:      stringPtr("Gateway"),
 					Namespace: stringPtr("ingress"),
-					Name:      valueFrom(cloudresourcekind.CloudResourceKind_KubernetesGateway, "shared-gateway", "status.outputs.gateway_name"),
+					Name:      valueFrom(catalogkind.CatalogKind_KubernetesGateway, "shared-gateway", "status.outputs.gateway_name"),
 				}
 				input.Spec.Listeners = []*KubernetesListenerSetListener{
 					{

@@ -6,7 +6,7 @@ import (
 
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
 	"github.com/plantonhq/planton/pkg/iac/tofu/backendconfig"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // fakeProbes verifies everything by default; tests flip individual outcomes.
@@ -16,7 +16,7 @@ type fakeProbes struct {
 	module          ProbeResult
 	tofuBackend     ProbeResult
 	pulumiBackend   ProbeResult
-	credentials     map[cloudresourcekind.CloudResourceProvider]ProbeResult
+	credentials     map[catalogkind.CatalogProvider]ProbeResult
 	kubeContext     ProbeResult
 	tofuBackendSeen []*backendconfig.TofuBackendConfig
 }
@@ -28,7 +28,7 @@ func newFakeProbes() *fakeProbes {
 		module:        verified("module published"),
 		tofuBackend:   verified("state backend reachable"),
 		pulumiBackend: verified("pulumi backend reachable"),
-		credentials:   map[cloudresourcekind.CloudResourceProvider]ProbeResult{},
+		credentials:   map[catalogkind.CatalogProvider]ProbeResult{},
 		kubeContext:   verified("kube context exists"),
 	}
 }
@@ -43,7 +43,7 @@ func (f *fakeProbes) TofuBackend(cfg *backendconfig.TofuBackendConfig) ProbeResu
 	return f.tofuBackend
 }
 func (f *fakeProbes) PulumiBackend(string) ProbeResult { return f.pulumiBackend }
-func (f *fakeProbes) ProviderCredentials(p cloudresourcekind.CloudResourceProvider) ProbeResult {
+func (f *fakeProbes) ProviderCredentials(p catalogkind.CatalogProvider) ProbeResult {
 	if r, ok := f.credentials[p]; ok {
 		return r
 	}
@@ -74,7 +74,7 @@ func docsOf(t *testing.T, sources map[string]string) []Doc {
 }
 
 const producerYaml = `apiVersion: _test.planton.dev/v1alpha2
-kind: TestCloudResourceGeneric
+kind: TestCatalogKindGeneric
 metadata:
   name: producer
   env: dev
@@ -84,7 +84,7 @@ spec:
 `
 
 const consumerYaml = `apiVersion: _test.planton.dev/v1alpha2
-kind: TestCloudResourceGeneric
+kind: TestCatalogKindGeneric
 metadata:
   name: consumer
   env: dev
@@ -163,7 +163,7 @@ func TestPreflight_SchemaViolationRefusesWithFieldLine(t *testing.T) {
 	// a per-field refusal under load-and-schema, and the healthy remainder
 	// still flows through the graph checks.
 	broken := `apiVersion: _test.planton.dev/v1alpha2
-kind: TestCloudResourceGeneric
+kind: TestCatalogKindGeneric
 metadata:
   name: broken
   env: dev
@@ -191,7 +191,7 @@ func TestPreflight_ExternalValueFromRefuses(t *testing.T) {
 
 func TestPreflight_BackendResolvedValueRefuses(t *testing.T) {
 	withSecret := `apiVersion: _test.planton.dev/v1alpha2
-kind: TestCloudResourceGeneric
+kind: TestCatalogKindGeneric
 metadata:
   name: secretful
   env: dev
@@ -208,7 +208,7 @@ spec:
 
 func TestPreflight_CycleRefusesNamingChain(t *testing.T) {
 	a := `apiVersion: _test.planton.dev/v1alpha2
-kind: TestCloudResourceGeneric
+kind: TestCatalogKindGeneric
 metadata:
   name: alpha
   env: dev
@@ -220,7 +220,7 @@ spec:
       name: beta
 `
 	b := `apiVersion: _test.planton.dev/v1alpha2
-kind: TestCloudResourceGeneric
+kind: TestCatalogKindGeneric
 metadata:
   name: beta
   env: dev
@@ -248,7 +248,7 @@ func TestPreflight_RemoteBackendMissingKeyRefusesNamingAnnotation(t *testing.T) 
 func TestPreflight_StateKeyCollisionRefuses(t *testing.T) {
 	sharedKey := func(name string) string {
 		return `apiVersion: _test.planton.dev/v1alpha2
-kind: TestCloudResourceGeneric
+kind: TestCatalogKindGeneric
 metadata:
   name: ` + name + `
   env: dev
@@ -290,7 +290,7 @@ func TestPreflight_LocalStateIsStatedWithCiNotice(t *testing.T) {
 
 func TestPreflight_PulumiNodeNeedsStackIdentity(t *testing.T) {
 	pulumiNode := `apiVersion: _test.planton.dev/v1alpha2
-kind: TestCloudResourceGeneric
+kind: TestCatalogKindGeneric
 metadata:
   name: pnode
   env: dev
@@ -308,7 +308,7 @@ spec:
 func TestPreflight_PulumiStackCollisionRefuses(t *testing.T) {
 	pulumiNode := func(name string) string {
 		return `apiVersion: _test.planton.dev/v1alpha2
-kind: TestCloudResourceGeneric
+kind: TestCatalogKindGeneric
 metadata:
   name: ` + name + `
   env: dev
@@ -353,7 +353,7 @@ func TestPreflight_ModuleFallbackAssumptionRendersAsWarning(t *testing.T) {
 func TestPreflight_TestProviderNeedsNoCredentials(t *testing.T) {
 	docs := docsOf(t, map[string]string{"01-producer.yaml": producerYaml})
 	probes := newFakeProbes()
-	probes.credentials[cloudresourcekind.CloudResourceProvider__test] = refused("must never be called")
+	probes.credentials[catalogkind.CatalogProvider__test] = refused("must never be called")
 	plan := Preflight(docs, Flags{}, probes)
 	creds := checkByName(t, plan.Report, "provider-credentials")
 	if creds.refusals() != 0 {

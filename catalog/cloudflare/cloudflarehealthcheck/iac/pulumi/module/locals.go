@@ -12,10 +12,10 @@ type Locals struct {
 	CloudflareHealthcheck    *cloudflarehealthcheckv1alpha1.CloudflareHealthcheck
 }
 
-// initializeLocals copies stack-input fields into the Locals struct.
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflarehealthcheckv1alpha1.CloudflareHealthcheckStackInput) *Locals {
+// initializeLocals copies iac-input fields into the Locals struct.
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflarehealthcheckv1alpha1.CloudflareHealthcheckIacInput) *Locals {
 	locals := &Locals{}
-	locals.CloudflareHealthcheck = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareHealthcheck = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

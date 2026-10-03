@@ -11,10 +11,10 @@ type Locals struct {
 	GcpKmsAutokeyConfig *gcpkmsautokeyconfigv1alpha1.GcpKmsAutokeyConfig
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpkmsautokeyconfigv1alpha1.GcpKmsAutokeyConfigStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpkmsautokeyconfigv1alpha1.GcpKmsAutokeyConfigIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpKmsAutokeyConfig = stackInput.Target
+	locals.GcpKmsAutokeyConfig = iacInput.Target
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

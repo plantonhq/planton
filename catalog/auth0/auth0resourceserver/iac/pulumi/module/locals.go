@@ -4,7 +4,7 @@ import (
 	auth0resourceserverv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0resourceserver/v1alpha1"
 )
 
-// Locals holds the values the module computes from the stack input. It mirrors
+// Locals holds the values the module computes from the IaC input. It mirrors
 // the Terraform module's locals.tf -- keep them in lockstep.
 type Locals struct {
 	Auth0ResourceServer *auth0resourceserverv1alpha1.Auth0ResourceServer
@@ -49,15 +49,15 @@ type Locals struct {
 	DefaultGrants []*auth0resourceserverv1alpha1.Auth0ResourceServerThirdPartyClientDefaultGrant
 }
 
-// initializeLocals creates and populates the Locals struct from stack input
-func initializeLocals(stackInput *auth0resourceserverv1alpha1.Auth0ResourceServerStackInput) *Locals {
+// initializeLocals creates and populates the Locals struct from IaC input
+func initializeLocals(iacInput *auth0resourceserverv1alpha1.Auth0ResourceServerIacInput) *Locals {
 	locals := &Locals{}
 
 	// Store the target resource
-	locals.Auth0ResourceServer = stackInput.Target
+	locals.Auth0ResourceServer = iacInput.Target
 
-	spec := stackInput.Target.Spec
-	metadata := stackInput.Target.Metadata
+	spec := iacInput.Target.Spec
+	metadata := iacInput.Target.Metadata
 
 	// Core configuration
 	locals.ResourceName = metadata.Name

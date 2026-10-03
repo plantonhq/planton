@@ -28,7 +28,7 @@ spec does not pin one.
   onto them would fight the service.
 - **Presence guards on every optional-with-default field** (version,
   backup_retention_days, storage auto_grow_enabled, database
-  charset/collation): stack inputs built from a manifest do not
+  charset/collation): IaC inputs built from a manifest do not
   materialize proto defaults, so unset falls back to the documented
   default explicitly.
 - **`replication_role` is day-2 only** -- Azure rejects it at creation; the
@@ -47,7 +47,7 @@ spec does not pin one.
 ## Provider
 
 The Azure provider is built by the shared
-`pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)` builder, which
+`pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)` builder, which
 dispatches static client-secret, keyless (web identity), and ambient
 credential chains. Never construct the provider inline.
 

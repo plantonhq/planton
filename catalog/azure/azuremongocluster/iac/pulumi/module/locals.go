@@ -5,7 +5,7 @@ import (
 
 	azuremongoclusterv1alpha1 "github.com/plantonhq/planton/catalog/azure/azuremongocluster/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -18,11 +18,11 @@ type Locals struct {
 	AzureTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuremongoclusterv1alpha1.AzureMongoClusterStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuremongoclusterv1alpha1.AzureMongoClusterIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureMongoCluster = stackInput.Target
-	target := stackInput.Target
+	locals.AzureMongoCluster = iacInput.Target
+	target := iacInput.Target
 
 	// Metadata-derived tags first, then the user's spec tags merged over
 	// them: user tags deliberately win so an org's governance conventions
@@ -31,7 +31,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azuremongoclusterv1alpha1
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureMongoCluster.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureMongoCluster.String()),
 	}
 
 	if target.Metadata.Id != "" {

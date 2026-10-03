@@ -134,14 +134,14 @@ spec:
 
 See `GUIDE.md` for the full composability rationale.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `peer_authentication_name` | Name of the created PeerAuthentication (equals metadata.name). |
 | `namespace` | Namespace the PeerAuthentication was created in. |
 
-## Related Components
+## Related Kinds
 
 - [Kubernetes Istio](../kubernetesistio)
 - [Kubernetes Istio Base CRDs](../kubernetesistiobasecrds)

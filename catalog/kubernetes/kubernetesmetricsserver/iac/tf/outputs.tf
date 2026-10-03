@@ -1,4 +1,4 @@
-# Stack outputs — flattened onto KubernetesMetricsServerStackOutputs by the
+# Outputs — flattened onto KubernetesMetricsServerOutputs by the
 # platform. Keep in lockstep with the Pulumi module's exports.
 
 output "namespace" {

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added `GcpGlobalAddress` as a new deployment component to Planton, covering static IP address reservations at global scope in Google Cloud Platform. The component supports external static IPs for HTTP(S) load balancers, internal IP ranges for VPC peering (Cloud SQL, Redis, AlloyDB private networking), and Private Service Connect addresses. Includes proto API with CEL cross-field validation, dual IaC backends (Pulumi + Terraform), 20 passing validation tests, 3 presets, and production-quality documentation.
+Added `GcpGlobalAddress` as a new catalog kind to Planton, covering static IP address reservations at global scope in Google Cloud Platform. The kind supports external static IPs for HTTP(S) load balancers, internal IP ranges for VPC peering (Cloud SQL, Redis, AlloyDB private networking), and Private Service Connect addresses. Includes proto API with CEL cross-field validation, dual IaC backends (Pulumi + Terraform), 20 passing validation tests, 3 presets, and production-quality documentation.
 
 ## Problem Statement / Motivation
 
@@ -21,21 +21,21 @@ Platform engineers provisioning GCP infrastructure through Planton could create 
 
 ## Solution / What's New
 
-A complete `GcpGlobalAddress` deployment component covering the `google_compute_global_address` GCP resource with full lifecycle management.
+A complete `GcpGlobalAddress` catalog kind covering the `google_compute_global_address` GCP resource with full lifecycle management.
 
-### Component Structure
+### Kind Structure
 
 ```
 apis/dev/planton/provider/gcp/gcpglobaladdress/v1/
 ├── spec.proto              # 9 fields, 3 CEL cross-field rules
-├── stack_outputs.proto     # address, self_link, creation_timestamp
+├── outputs.proto     # address, self_link, creation_timestamp
 ├── api.proto               # KRM envelope (GcpGlobalAddress + Status)
-├── stack_input.proto       # target + GcpProviderConfig
+├── iac_input.proto       # target + GcpProviderConfig
 ├── spec_test.go            # 20 tests (7 positive, 13 negative)
 ├── *.pb.go                 # Generated Go stubs
 ├── README.md               # User-facing overview
 ├── examples.md             # 6 copy-paste YAML examples
-├── catalog-page.md         # Component catalog entry
+├── catalog-page.md         # Kind catalog entry
 ├── docs/README.md          # Comprehensive research document
 ├── presets/                 # 3 presets (YAML + MD each)
 │   ├── 01-external-static-ip.*
@@ -92,7 +92,7 @@ The implementation refined the T01 plan spec in 6 ways:
 
 ### Enum Registration
 
-Registered as `GcpGlobalAddress = 621` with id_prefix `gcpgip` in `cloud_resource_kind.proto` (GCP range 600-799).
+Registered as `GcpGlobalAddress = 621` with id_prefix `gcpgip` in `catalog_kind.proto` (GCP range 600-799).
 
 ## Benefits
 

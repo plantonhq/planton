@@ -1,10 +1,10 @@
 # AWS MemoryDB User
 
-Deploys a MemoryDB user — one identity in MemoryDB's Access Control List (ACL) authentication system. MemoryDB has exactly one authentication model: every cluster attaches an ACL, and an ACL is a set of users. If an application should reach a MemoryDB cluster with credentials, a user is how that identity exists. Each user carries a Redis ACL access string scoping which commands and keys it may touch, so per-application least-privilege access is the natural shape: one user per application, grouped into ACLs ([AwsMemorydbAcl](/cloud-catalog/aws-memorydb-acl)), with the ACL attached to the cluster. Password material lives in managed secrets referenced from the spec — never in the manifest.
+Deploys a MemoryDB user — one identity in MemoryDB's Access Control List (ACL) authentication system. MemoryDB has exactly one authentication model: every cluster attaches an ACL, and an ACL is a set of users. If an application should reach a MemoryDB cluster with credentials, a user is how that identity exists. Each user carries a Redis ACL access string scoping which commands and keys it may touch, so per-application least-privilege access is the natural shape: one user per application, grouped into ACLs ([AwsMemorydbAcl](/infra-catalog/aws-memorydb-acl)), with the ACL attached to the cluster. Password material lives in managed secrets referenced from the spec — never in the manifest.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **MemoryDB User** -- one ACL identity whose user name is the resource name (create-time immutable, unique per region, max 40 characters), carrying its Redis `ACL SETUSER` access string (scoping keys and command categories; tightening it later applies in place) and exactly one authentication mode: password (1–2 secrets, enabling zero-downtime rotation) or IAM-signed tokens
 - **AWS Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically for tracking and governance
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Managed secrets for passwords** -- when using password authentication, create the password as an org secret first; the spec carries a `$secret/<slug>` reference and the runner resolves it just-in-time at deploy. Each password's value must be 16–128 characters.
 
 ### AWS Account
@@ -51,7 +51,7 @@ spec:
 planton apply -f memorydb-user.yaml
 ```
 
-This creates a password-authenticated user scoped to the `orders:` key prefix with read/write command categories. A Stack Job tracks the provisioning in real time.
+This creates a password-authenticated user scoped to the `orders:` key prefix with read/write command categories. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -67,13 +67,13 @@ These are the most important decisions when configuring a MemoryDB user. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. It is a leaf the access-control graph builds on: in a chart, users deploy first, then the ACL that collects them (referencing this user's `user_name` output), then the cluster that attaches the ACL.
+This kind has no foreign key dependencies. It is a leaf the access-control graph builds on: in a chart, users deploy first, then the ACL that collects them (referencing this user's `user_name` output), then the cluster that attaches the ACL.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -91,5 +91,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS MemoryDB ACL**](/cloud-catalog/aws-memorydb-acl) -- collects users into the attachment unit clusters consume (references `user_name`)
-- [**AWS MemoryDB Cluster**](/cloud-catalog/aws-memorydb-cluster) -- the durable database the user ultimately authenticates against, via its attached ACL
+- [**AWS MemoryDB ACL**](/infra-catalog/aws-memorydb-acl) -- collects users into the attachment unit clusters consume (references `user_name`)
+- [**AWS MemoryDB Cluster**](/infra-catalog/aws-memorydb-cluster) -- the durable database the user ultimately authenticates against, via its attached ACL

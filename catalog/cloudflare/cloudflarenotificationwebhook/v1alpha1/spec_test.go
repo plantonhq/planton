@@ -27,7 +27,7 @@ func validWebhook(spec *CloudflareNotificationWebhookSpec) *CloudflareNotificati
 	return &CloudflareNotificationWebhook{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareNotificationWebhook",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-notification-webhook",
 		},
 		Spec: spec,

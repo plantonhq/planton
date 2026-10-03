@@ -43,7 +43,7 @@ Every field is create-only at the API: any change replaces the upload and the ce
 | `name` | string | Display name in the dashboard. |
 | `private_key` | StringValueOrRef (sensitive) | Only when Cloudflare must present this certificate itself (leaf). CA uploads validating clients carry no key. The API never returns it. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

@@ -9,7 +9,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureservicebustopic
+    e2e-catalog-kind: azureservicebustopic
   annotations:
     planton.dev/e2e: "true"
   tags:

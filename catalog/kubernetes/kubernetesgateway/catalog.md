@@ -4,18 +4,18 @@ Creates a namespaced Kubernetes Gateway API `Gateway` -- an instance of traffic-
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **A namespaced Gateway** named after `metadata.name` in `spec.namespace`, attached to the `spec.gatewayClassName` GatewayClass, with the listeners (and any requested addresses, infrastructure attributes, and gateway-wide TLS) you configure.
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking.
 
-The controller behind the GatewayClass reconciles the Gateway asynchronously: it assigns addresses and reports per-listener conditions in the Gateway's status, which you observe with `kubectl` (these controller-managed values are intentionally not stored as stack outputs).
+The controller behind the GatewayClass reconciles the Gateway asynchronously: it assigns addresses and reports per-listener conditions in the Gateway's status, which you observe with `kubectl` (these controller-managed values are intentionally not stored as outputs).
 
 ## Before You Deploy
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -68,11 +68,11 @@ spec:
 planton apply -f gateway.yaml
 ```
 
-This creates a Gateway in `istio-ingress` with one HTTPS listener on port 443 that terminates TLS using the `app-tls` Secret and accepts `HTTPRoute`s from its own namespace. A Stack Job tracks the provisioning in real time.
+This creates a Gateway in `istio-ingress` with one HTTPS listener on port 443 that terminates TLS using the `app-tls` Secret and accepts `HTTPRoute`s from its own namespace. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire the class and the TLS certificate to resources managed by other Cloud Resources:
+When deploying as part of a multi-resource environment, wire the class and the TLS certificate to resources managed by other Infra Components:
 
 ```yaml
 spec:
@@ -123,7 +123,7 @@ These are the most important decisions when configuring a Gateway. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -134,9 +134,9 @@ These are the most important decisions when configuring a Gateway. Explore the f
 
 Certificate Secrets are typically produced by a **Cert Manager Certificate** — reference its `status.outputs.secret_name` instead of the Secret directly. Literal names cover material created outside Planton; cross-namespace references require a ReferenceGrant.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -156,13 +156,13 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Gateway API CRDs**](/cloud-catalog/kubernetes-gateway-api-crds) -- installs the Gateway API CRDs (prerequisite, install first)
-- [**Kubernetes GatewayClass**](/cloud-catalog/kubernetes-gateway-class) -- the class (`gatewayClassName`) that selects the controller (install first)
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the namespace the Gateway runs in
-- [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) -- commonly produces the TLS Secrets referenced by HTTPS listeners
-- [**Kubernetes ReferenceGrant**](/cloud-catalog/kubernetes-reference-grant) -- authorizes cross-namespace TLS Secret / CA references from this Gateway
-- [**Kubernetes HTTPRoute**](/cloud-catalog/kubernetes-http-route) -- the most common Route kind attaching to HTTP/HTTPS listeners
-- [**Kubernetes GRPCRoute**](/cloud-catalog/kubernetes-grpc-route) -- gRPC traffic attaching to HTTPS listeners
-- [**Kubernetes TLSRoute**](/cloud-catalog/kubernetes-tls-route) -- the Route kind behind Passthrough TLS listeners
-- [**Kubernetes TCPRoute**](/cloud-catalog/kubernetes-tcp-route) -- raw TCP forwarding from TCP listeners
-- [**Kubernetes ListenerSet**](/cloud-catalog/kubernetes-listener-set) -- merges additional listeners into this Gateway when `allowedListeners` opts in
+- [**Kubernetes Gateway API CRDs**](/infra-catalog/kubernetes-gateway-api-crds) -- installs the Gateway API CRDs (prerequisite, install first)
+- [**Kubernetes GatewayClass**](/infra-catalog/kubernetes-gateway-class) -- the class (`gatewayClassName`) that selects the controller (install first)
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the namespace the Gateway runs in
+- [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) -- commonly produces the TLS Secrets referenced by HTTPS listeners
+- [**Kubernetes ReferenceGrant**](/infra-catalog/kubernetes-reference-grant) -- authorizes cross-namespace TLS Secret / CA references from this Gateway
+- [**Kubernetes HTTPRoute**](/infra-catalog/kubernetes-http-route) -- the most common Route kind attaching to HTTP/HTTPS listeners
+- [**Kubernetes GRPCRoute**](/infra-catalog/kubernetes-grpc-route) -- gRPC traffic attaching to HTTPS listeners
+- [**Kubernetes TLSRoute**](/infra-catalog/kubernetes-tls-route) -- the Route kind behind Passthrough TLS listeners
+- [**Kubernetes TCPRoute**](/infra-catalog/kubernetes-tcp-route) -- raw TCP forwarding from TCP listeners
+- [**Kubernetes ListenerSet**](/infra-catalog/kubernetes-listener-set) -- merges additional listeners into this Gateway when `allowedListeners` opts in

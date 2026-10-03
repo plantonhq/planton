@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package dev.planton._test.testcatalogkindgeneric.v1alpha1;
+
+import "catalog/_test/testcatalogkindgeneric/v1alpha1/api.proto";
+
+// TestCatalogKindGenericIacInput is the IaC input for the hermetic test
+// kind. Unlike real kinds there is deliberately NO provider configuration:
+// the kind's modules provision nothing outside the IaC engine's own state,
+// so the full manifest -> iac-input -> module -> outputs pipeline can be
+// exercised with zero credentials, zero network, and zero cost.
+message TestCatalogKindGenericIacInput {
+  // The target test resource to "deploy".
+  TestCatalogKindGeneric target = 1;
+}

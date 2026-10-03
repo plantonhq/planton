@@ -4,7 +4,7 @@ Deploys an Auth0 User -- an identity in one of your tenant's database or passwor
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Auth0 User** -- the user in the connection you reference, with the profile fields, verification flags, and metadata documents you declare
 - **Initial Password** -- generated only when no password is declared on a database connection (24 characters, letters and digits), reported once in the outputs
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Auth0 Provider Connection** -- an active connection in the Connect module with Auth0 domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource. The Machine-to-Machine application behind it needs the `create:users`, `read:users`, `update:users`, and `delete:users` scopes, plus `read:roles` when roles are assigned.
+- **Auth0 Provider Connection** -- an active connection in the Connect module with Auth0 domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Infra Component. The Machine-to-Machine application behind it needs the `create:users`, `read:users`, `update:users`, and `delete:users` scopes, plus `read:roles` when roles are assigned.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Auth0 Account
@@ -62,7 +62,7 @@ spec:
 planton apply -f auth0-user.yaml
 ```
 
-This creates a verified user in the `users` connection, mints its initial password, and assigns it the administrator role. A Stack Job tracks the provisioning in real time; read `status.outputs.password` once into the credential store that owns it.
+This creates a verified user in the `users` connection, mints its initial password, and assigns it the administrator role. An Infra Job tracks the provisioning in real time; read `status.outputs.password` once into the credential store that owns it.
 
 ### InfraChart
 
@@ -109,7 +109,7 @@ These are the most important decisions when configuring an Auth0 User. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Reference | Kind | Field | Purpose |
 |-----------|------|-------|---------|
@@ -117,9 +117,9 @@ These are the most important decisions when configuring an Auth0 User. Explore t
 | `roles[]` | Auth0Role | `status.outputs.id` | Roles assigned to the user |
 | `permissions[].resourceServerIdentifier` | Auth0ResourceServer | `status.outputs.identifier` | The API that defines a directly granted scope |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -142,6 +142,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Auth0 Connection (Identity Provider)**](/cloud-catalog/auth0-connection) -- the database or passwordless connection the user is created in; referenced by name.
-- [**Auth0 Role**](/cloud-catalog/auth0-role) -- the roles assigned to the user; referenced by id.
-- [**Auth0 Resource Server (API)**](/cloud-catalog/auth0-resource-server) -- defines the scopes a direct permission grants; referenced by identifier.
+- [**Auth0 Connection (Identity Provider)**](/infra-catalog/auth0-connection) -- the database or passwordless connection the user is created in; referenced by name.
+- [**Auth0 Role**](/infra-catalog/auth0-role) -- the roles assigned to the user; referenced by id.
+- [**Auth0 Resource Server (API)**](/infra-catalog/auth0-resource-server) -- defines the scopes a direct permission grants; referenced by identifier.

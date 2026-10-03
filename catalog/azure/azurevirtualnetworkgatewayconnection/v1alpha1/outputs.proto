@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.azure.azurevirtualnetworkgatewayconnection.v1alpha1;
 
-// **AzureVirtualNetworkGatewayConnectionStackOutputs** captures the
+// **AzureVirtualNetworkGatewayConnectionOutputs** captures the
 // outputs of provisioning a gateway connection. (The tunnel's live
 // state -- Connecting/Connected -- is runtime telemetry, not a
 // provisioning output; read it from Azure Monitor or `az network
 // vpn-connection show`.)
-message AzureVirtualNetworkGatewayConnectionStackOutputs {
+message AzureVirtualNetworkGatewayConnectionOutputs {
   // The Azure Resource Manager ID of the connection.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/connections/{name}
   string connection_id = 1;

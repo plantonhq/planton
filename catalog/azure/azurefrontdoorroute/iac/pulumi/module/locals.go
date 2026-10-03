@@ -37,11 +37,11 @@ var queryStringCachingBehaviorStrings = map[azurefrontdoorroutev1alpha1.AzureFro
 	azurefrontdoorroutev1alpha1.AzureFrontDoorRouteQueryStringCachingBehavior_INCLUDE_SPECIFIED_QUERY_STRINGS: "IncludeSpecifiedQueryStrings",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurefrontdoorroutev1alpha1.AzureFrontDoorRouteStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurefrontdoorroutev1alpha1.AzureFrontDoorRouteIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureFrontDoorRoute = stackInput.Target
-	spec := stackInput.Target.Spec
+	locals.AzureFrontDoorRoute = iacInput.Target
+	spec := iacInput.Target.Spec
 
 	locals.EndpointId = spec.EndpointId.GetValue()
 	locals.OriginGroupId = spec.OriginGroupId.GetValue()

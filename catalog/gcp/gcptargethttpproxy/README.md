@@ -52,7 +52,7 @@ This creates a proxy ready for a port-80 global forwarding rule to bind.
 | `proxyBind` | Bind to Traffic Director mesh VIPs instead of Google's edge (`INTERNAL_SELF_MANAGED` only). Global proxies only — rejected when `region` is set. Immutable |
 | `deletionPolicy` | What destroy does: `DELETE` (default) removes the proxy, `PREVENT` fails the destroy to protect a production frontend, `ABANDON` leaves it serving unmanaged |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -79,7 +79,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 - **The pair pattern**: point this proxy at a redirect-only URL map (`defaultUrlRedirect` with `httpsRedirect: true`) and let a `GcpTargetHttpsProxy` serve the real application — two forwarding rules share one static IP on ports 80 and 443.
 - **TLS never lives here** — for HTTPS termination use `GcpTargetHttpsProxy`.
 
-## Related Components
+## Related Kinds
 
 - [GcpUrlMap](/docs/catalog/gcp/gcpurlmap) — the routing table this proxy consults
 - [GcpGlobalForwardingRule](/docs/catalog/gcp/gcpglobalforwardingrule) — the VIP that binds to this proxy

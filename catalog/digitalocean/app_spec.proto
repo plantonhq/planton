@@ -434,7 +434,7 @@ message DigitalOceanAppLogDestination {
 }
 
 // -----------------------------------------------------------------------------
-// Ingress (replaces the deprecated per-component routes and cors blocks)
+// Ingress (replaces the deprecated per-kind routes and cors blocks)
 // -----------------------------------------------------------------------------
 
 message DigitalOceanAppCorsAllowOrigins {

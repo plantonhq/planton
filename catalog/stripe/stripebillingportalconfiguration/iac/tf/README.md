@@ -16,7 +16,7 @@ OpenTofu module that declares what Stripe's customer portal lets a customer do. 
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `features` (required: `customer_update`, `invoice_history`, `payment_method_update`, `subscription_cancel`, `subscription_update`); `name`, `business_profile`, `default_return_url`, `login_page`, `active` (default `true`), `metadata` (optional) |
 
 ## Outputs

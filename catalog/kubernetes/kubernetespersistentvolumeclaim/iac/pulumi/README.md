@@ -8,7 +8,7 @@ This Pulumi module creates and manages a Kubernetes `core/v1` PersistentVolumeCl
 
 ```
 iac/pulumi/
-├── main.go                    # Entrypoint: loads stack input, calls module
+├── main.go                    # Entrypoint: loads IaC input, calls module
 ├── Pulumi.yaml                # Pulumi project configuration
 ├── Makefile                   # Make targets for preview/up/down/refresh
 └── module/
@@ -20,7 +20,7 @@ iac/pulumi/
 
 ## How It Works
 
-1. **Stack Input Loading**: The entrypoint loads `KubernetesPersistentVolumeClaimStackInput` from Pulumi config
+1. **IaC Input Loading**: The entrypoint loads `KubernetesPersistentVolumeClaimIacInput` from Pulumi config
 2. **Locals Initialization**: `locals.go` computes:
    - Standard Planton labels merged with user labels (identity keys cannot be overridden)
    - Annotations, always including `pulumi.com/skipAwait: "true"` (see binding note below), merged with user annotations
@@ -30,7 +30,7 @@ iac/pulumi/
    - The three-valued `storageClassName`: the resolved class name, `""` when `disable_dynamic_provisioning` is set, or nil (unset — cluster default applies)
 3. **Provider Creation**: Kubernetes provider is initialized from `provider_config`
 4. **PersistentVolumeClaim Creation**: A single `core/v1` PersistentVolumeClaim is created with resources, static-binding fields, selector, and data source
-5. **Output Export**: Claim name, namespace, and storage request are exported as stack outputs
+5. **Output Export**: Claim name, namespace, and storage request are exported as outputs
 
 ## Semantics Preserved by the Module
 
@@ -77,4 +77,4 @@ go build ./module/...
 go build .
 ```
 
-> **Note**: A claim under a `wait_for_first_consumer` StorageClass stays Pending until a pod uses it — correct behavior, not an error. The stack outputs deliberately avoid bind-time status (bound volume name, phase) for the same reason.
+> **Note**: A claim under a `wait_for_first_consumer` StorageClass stays Pending until a pod uses it — correct behavior, not an error. The outputs deliberately avoid bind-time status (bound volume name, phase) for the same reason.

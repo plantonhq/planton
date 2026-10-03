@@ -64,7 +64,7 @@ All content was sourced from three tiers:
 - **5 ADRs** — DefaultProviderConnection, ProviderConnectionAuthorization, CloudFormation AWS, auth modes, default runner binding
 - **20+ changelogs** — AWS wizard phases 1-6, connection environments, authorization API
 - **Co-located micro-docs** — `backend/services/connect/docs/` (security, quick-reference, downstream-services)
-- **Web console** — Mission Control layout categories from `utils.ts`, wizard components, Provider Matrix
+- **Web console** — Mission Control layout categories from `utils.ts`, wizard kinds, Provider Matrix
 - **CLI commands** — `planton connect aws`, `planton connection authorization *`, `planton connection default *`
 
 The Connect pages are the first exemplar of the revised documentation philosophy. They contain zero protobuf field name leakage, lead with "why" context from ADRs, and describe workflows from the user's perspective.

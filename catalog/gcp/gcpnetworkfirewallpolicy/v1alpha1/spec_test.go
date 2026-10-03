@@ -64,7 +64,7 @@ var _ = ginkgo.Describe("GcpNetworkFirewallPolicySpec", func() {
 		return &GcpNetworkFirewallPolicy{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpNetworkFirewallPolicy",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "baseline",
 			},
 			Spec: &GcpNetworkFirewallPolicySpec{

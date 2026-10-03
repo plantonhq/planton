@@ -15,7 +15,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurefunctionapp
+    e2e-catalog-kind: azurefunctionapp
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/azure/azurefunctionapp/e2e/minimal-account.yaml"

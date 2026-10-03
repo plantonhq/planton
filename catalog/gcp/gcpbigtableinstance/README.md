@@ -1,6 +1,6 @@
 # GcpBigtableInstance
 
-Planton component for provisioning Google Cloud Bigtable instances with one or more clusters.
+Catalog kind for provisioning Google Cloud Bigtable instances with one or more clusters.
 
 ## Overview
 
@@ -78,7 +78,7 @@ The following cannot be changed after creation; changing them requires recreatin
 
 `deletionProtection` defaults to `true`. Set to `false` before destroying an instance that contains data.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

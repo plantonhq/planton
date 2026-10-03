@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpspannerinstance.v1alpha1;
 import "catalog/gcp/gcpspannerinstance/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-spanner-instance stack-input
-message GcpSpannerInstanceStackInput {
-  //target cloud-resource
+//gcp-spanner-instance iac-input
+message GcpSpannerInstanceIacInput {
+  //target infra-component
   GcpSpannerInstance target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

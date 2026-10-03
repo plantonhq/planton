@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package dev.planton.aws.awswafipset.v1alpha1;
 
-// AwsWafIpSetStackOutputs captures observable identifiers from a provisioned
+// AwsWafIpSetOutputs captures observable identifiers from a provisioned
 // WAFv2 IP set.
 //
 // The primary output is `ip_set_arn` — the value a web ACL's
 // ip_set_reference statement (AwsWafWebAcl) points at to match requests
 // against this set's addresses.
-message AwsWafIpSetStackOutputs {
+message AwsWafIpSetOutputs {
   // The Amazon Resource Name of the IP set
   // (arn:aws:wafv2:<region>:<account>:<scope>/ipset/<name>/<id>).
   // The identifier web ACL rules reference.

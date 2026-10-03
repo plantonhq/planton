@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.aws.awselasticacheusergroup.v1alpha1;
 
-// AwsElasticacheUserGroupStackOutputs captures observable identifiers from a
+// AwsElasticacheUserGroupOutputs captures observable identifiers from a
 // provisioned ElastiCache user group. These outputs are used by downstream
 // resources to wire dependencies via StringValueOrRef — most importantly the
 // replication group's `user_group_ids` and the serverless cache's
 // `user_group_id`.
-message AwsElasticacheUserGroupStackOutputs {
+message AwsElasticacheUserGroupOutputs {
   // The group's AWS identifier (the user group id). This is what caches
   // reference to attach RBAC and what the AWS CLI/API address.
   string user_group_id = 1;

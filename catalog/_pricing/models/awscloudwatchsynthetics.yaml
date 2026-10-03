@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -6,9 +6,9 @@
 # count lives inside schedule.expression (a rate or cron string), and
 # deriving runs per month requires interpreting that expression --
 # arithmetic the derivation grammar cannot do, so each preset's cadence is
-# read and defended by hand. Schema: finops/componentcostestimatemodel/v1.
+# read and defended by hand. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awscloudwatchsynthetics
 spec:
@@ -26,7 +26,7 @@ spec:
         - "every run also executes the Synthetics-managed Lambda at the pinned 960 MB (memory_in_mb): Lambda request and GB-second duration charges follow the script's actual runtime per run"
         - every run writes logs to CloudWatch Logs (ingestion plus storage) and artifacts under canary/checkout in the referenced S3 bucket (PUT requests plus GB-month storage, trimmed by the 7-day success retention)
         - maxRetries 1 bills one extra run (plus its cascade) after each FAILED run -- failure frequency is the endpoint's behavior, unknowable here
-        - the canary's CloudWatch custom metrics and any alarms watching them bill on their own meters and components
+        - the canary's CloudWatch custom metrics and any alarms watching them bill on their own meters and kinds
       notes: "The account's first 100 canary runs each month are free (permanent CloudWatch free-tier allowance) -- about 8 hours of this cadence, so the estimate prices the full 8,760 runs. start_canary true commits the meter from apply; stopping the canary is the off switch, and delete_lambda true keeps teardown clean."
     - preset: 02-canary-fleet-groups
       region_assumption: us-east-1

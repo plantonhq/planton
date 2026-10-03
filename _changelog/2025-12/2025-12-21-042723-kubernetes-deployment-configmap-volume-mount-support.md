@@ -6,7 +6,7 @@
 
 ## Summary
 
-Enhanced the KubernetesDeployment component to support creating ConfigMaps from inline content and mounting them (along with Secrets, HostPaths, EmptyDirs, and PVCs) as volumes into containers. This enables deploying applications that require configuration files without baking them into container images—a common production pattern for Kubernetes workloads.
+Enhanced the KubernetesDeployment kind to support creating ConfigMaps from inline content and mounting them (along with Secrets, HostPaths, EmptyDirs, and PVCs) as volumes into containers. This enables deploying applications that require configuration files without baking them into container images—a common production pattern for Kubernetes workloads.
 
 ## Problem Statement / Motivation
 
@@ -24,7 +24,7 @@ Deploying applications like the Tekton CloudEvents Router requires configuration
 
 ## Solution / What's New
 
-Added comprehensive volume mount support to KubernetesDeployment, including inline ConfigMap creation. The solution leverages the existing shared `volume_mount.proto` definitions for consistency across workload components.
+Added comprehensive volume mount support to KubernetesDeployment, including inline ConfigMap creation. The solution leverages the existing shared `volume_mount.proto` definitions for consistency across workload kinds.
 
 ### New Proto Fields
 
@@ -154,7 +154,7 @@ spec:
 ### Who Is Affected
 
 - **KubernetesDeployment users**: New capabilities for configuration management
-- **Other workload components**: Pattern established for adding volume support to KubernetesDaemonSet, KubernetesCronJob, etc.
+- **Other workload kinds**: Pattern established for adding volume support to KubernetesDaemonSet, KubernetesCronJob, etc.
 
 ### Backward Compatibility
 

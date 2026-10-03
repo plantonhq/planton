@@ -6,11 +6,11 @@
 
 ## Summary
 
-Completed the KubernetesKafka component from 97.8% to 100% by expanding the Terraform main.tf from a minimal 135 bytes to comprehensive 4KB documentation and creating 14KB of Terraform-specific examples. The component was already production-ready; these final improvements provide complete documentation parity between Pulumi and Terraform.
+Completed the KubernetesKafka kind from 97.8% to 100% by expanding the Terraform main.tf from a minimal 135 bytes to comprehensive 4KB documentation and creating 14KB of Terraform-specific examples. The kind was already production-ready; these final improvements provide complete documentation parity between Pulumi and Terraform.
 
 ## Problem Statement / Motivation
 
-The KubernetesKafka component was at 97.8% completion with minor documentation gaps:
+The KubernetesKafka kind was at 97.8% completion with minor documentation gaps:
 - **Terraform main.tf insufficient**: Only 135 bytes (below 1KB requirement), suggesting incomplete documentation
 - **No Terraform examples**: Pulumi had comprehensive examples, but Terraform lacked equivalent documentation
 - **Documentation asymmetry**: Terraform users had less guidance than Pulumi users
@@ -56,7 +56,7 @@ resource "kubernetes_namespace_v1" "kafka_namespace" {
 # cluster on Kubernetes using the Strimzi Operator with
 # the following capabilities:
 #
-# Infrastructure Components:
+# Infrastructure Kinds:
 #  1. Kubernetes Namespace (defined here)
 #  2. Kafka Cluster (kafka_cluster.tf)
 #     - Kafka brokers with configurable replicas
@@ -156,14 +156,14 @@ iac/tf/
 ├── kowl.tf - Kafka UI deployment
 ├── locals.tf (2.8KB) - Computed values
 ├── variables.tf (5.7KB) - Input variables
-├── outputs.tf (572 bytes) - Stack outputs
+├── outputs.tf (572 bytes) - Outputs
 ├── README.md (636 bytes) - Module documentation
 └── examples.md (14KB) - Usage examples
 ```
 
 This modular pattern:
 - Separates concerns for maintainability
-- Makes each component independently understandable
+- Makes each kind independently understandable
 - Allows selective customization
 - Follows Terraform best practices for large modules
 
@@ -171,7 +171,7 @@ This modular pattern:
 
 **main.tf Documentation Sections**:
 1. Module overview (what it deploys)
-2. Infrastructure components list
+2. Infrastructure kinds list
 3. Production features
 4. Module structure explanation
 5. Design philosophy (Strimzi Operator approach)
@@ -233,9 +233,9 @@ This modular pattern:
 - Pulumi: ✅ README + overview + examples
 - Terraform: ✅ README + main.tf docs + examples
 
-## Component Architecture
+## Kind Architecture
 
-### Kafka Deployment Components
+### Kafka Catalog Kinds
 
 The module deploys a complete Kafka ecosystem:
 

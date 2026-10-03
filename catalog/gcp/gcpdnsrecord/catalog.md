@@ -4,7 +4,7 @@ Deploys a DNS record set in an existing Google Cloud DNS Managed Zone — one (n
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cloud DNS API enablement** -- `dns.googleapis.com` is enabled in the target project (never disabled on destroy, so tearing down one record cannot break the rest of the project)
 - **Cloud DNS Record Set** -- a record set in the specified Managed Zone, configured with the chosen record type, fully qualified domain name, and TTL
@@ -15,13 +15,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** containing the Cloud DNS Managed Zone where the record will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef; the module enables the Cloud DNS API itself.
-- **An existing Cloud DNS Managed Zone** for the target domain. Provide the zone's RESOURCE name (e.g. `prod-example-zone`, not the DNS name) directly or reference a GcpDnsZone Cloud Resource via ValueFromRef.
+- **A GCP project** containing the Cloud DNS Managed Zone where the record will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef; the module enables the Cloud DNS API itself.
+- **An existing Cloud DNS Managed Zone** for the target domain. Provide the zone's RESOURCE name (e.g. `prod-example-zone`, not the DNS name) directly or reference a GcpDnsZone Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -56,7 +56,7 @@ spec:
 planton apply -f dns-record.yaml
 ```
 
-This creates an A record pointing `api.example.com.` to `34.120.0.1` with the default 300-second TTL. A Stack Job tracks the provisioning in real time.
+This creates an A record pointing `api.example.com.` to `34.120.0.1` with the default 300-second TTL. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,7 +94,7 @@ These are the most important decisions when configuring a DNS record. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -106,9 +106,9 @@ These are the most important decisions when configuring a DNS record. Explore th
 | **GcpVpcNetwork** (per ILB target) | `routingPolicy.*.healthCheckedTargets.internalLoadBalancers[].networkUrl` | `status.outputs.network_self_link` |
 | **GcpProject** (per ILB target) | `routingPolicy.*.healthCheckedTargets.internalLoadBalancers[].project` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -130,9 +130,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project containing the DNS Managed Zone
-- [**GCP DNS Zone**](/cloud-catalog/gcp-dns-zone) -- provides the Managed Zone where the record is created
-- [**GCP Cert Manager DNS Authorization**](/cloud-catalog/gcp-cert-manager-dns-authorization) -- exports the validation CNAME this record serves
-- [**GCP Health Check**](/cloud-catalog/gcp-health-check) -- probes external endpoints for routing-policy health withdrawal
-- [**GCP Address**](/cloud-catalog/gcp-address) -- the reserved internal VIP a health-checked load-balancer target answers on
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- the network an internal load-balancer target belongs to
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project containing the DNS Managed Zone
+- [**GCP DNS Zone**](/infra-catalog/gcp-dns-zone) -- provides the Managed Zone where the record is created
+- [**GCP Cert Manager DNS Authorization**](/infra-catalog/gcp-cert-manager-dns-authorization) -- exports the validation CNAME this record serves
+- [**GCP Health Check**](/infra-catalog/gcp-health-check) -- probes external endpoints for routing-policy health withdrawal
+- [**GCP Address**](/infra-catalog/gcp-address) -- the reserved internal VIP a health-checked load-balancer target answers on
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- the network an internal load-balancer target belongs to

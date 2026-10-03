@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpcloudsql.v1alpha1;
 import "catalog/gcp/gcpcloudsql/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-cloud-sql stack-input
-message GcpCloudSqlStackInput {
-  //target cloud-resource
+//gcp-cloud-sql iac-input
+message GcpCloudSqlIacInput {
+  //target infra-component
   GcpCloudSql target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

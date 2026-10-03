@@ -1,4 +1,4 @@
-# Stack outputs — flattened onto KubernetesFlinkOperatorStackOutputs by
+# Outputs — flattened onto KubernetesFlinkOperatorOutputs by
 # the platform. Keep in lockstep with the Pulumi module's exports.
 
 output "namespace" {

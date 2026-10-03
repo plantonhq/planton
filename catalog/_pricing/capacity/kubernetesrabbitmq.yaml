@@ -6,10 +6,10 @@
 # evaluate the same rules against live manifests. Every RabbitMQ node
 # carries the declared resources plus its own data volume. The operand
 # only -- the RabbitMQ Cluster Operator that reconciles it is a
-# separate component (KubernetesRabbitMqOperator) with its own
-# footprint. Schema: finops/componentcapacityderivation/v1.
+# separate kind (KubernetesRabbitMqOperator) with its own
+# footprint. Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesrabbitmq
 spec:

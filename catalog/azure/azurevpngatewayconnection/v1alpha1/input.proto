@@ -5,10 +5,10 @@ package dev.planton.azure.azurevpngatewayconnection.v1alpha1;
 import "catalog/azure/azurevpngatewayconnection/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureVpnGatewayConnectionStackInput is the input to the IaC modules
+// AzureVpnGatewayConnectionIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureVpnGatewayConnectionStackInput {
+message AzureVpnGatewayConnectionIacInput {
   // The VPN gateway connection resource to deploy.
   AzureVpnGatewayConnection target = 1;
 

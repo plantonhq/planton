@@ -4,8 +4,8 @@
 // account, and resource verification runs through the DigitalOcean REST API
 // via godo.
 //
-// Credentials are intentionally NOT plumbed through the stack input. The E2E
-// framework builds every stack input with a nil provider config, so both IaC
+// Credentials are intentionally NOT plumbed through the IaC input. The E2E
+// framework builds every IaC input with a nil provider config, so both IaC
 // engines resolve credentials from the environment -- DIGITALOCEAN_TOKEN for
 // the API (the exact variable the terraform provider and the pulumi bridge
 // read), plus SPACES_ACCESS_KEY_ID / SPACES_SECRET_ACCESS_KEY for Spaces
@@ -37,7 +37,7 @@ type Harness struct {
 }
 
 // deployedResource records what VerifyDeployed observed so VerifyDestroyed can
-// re-probe the same resource after the DESTROY phase, when stack outputs are
+// re-probe the same resource after the DESTROY phase, when outputs are
 // no longer available.
 type deployedResource struct {
 	id      string
@@ -84,21 +84,21 @@ func (h *Harness) Teardown(ctx context.Context) error {
 	return nil
 }
 
-// VerifyDeployed confirms the component's resource exists via its registered
-// verifier, using the resource id carried in the stack outputs.
-func (h *Harness) VerifyDeployed(ctx context.Context, component string, outputs map[string]interface{}) error {
-	v, err := verify.GetVerifier(component)
+// VerifyDeployed confirms the kind's resource exists via its registered
+// verifier, using the resource id carried in the outputs.
+func (h *Harness) VerifyDeployed(ctx context.Context, kindDir string, outputs map[string]interface{}) error {
+	v, err := verify.GetVerifier(kindDir)
 	if err != nil {
 		return err
 	}
 
 	id := verify.StringOutput(outputs, v.IDOutputKey())
 	if id == "" {
-		return errors.Errorf("no %q in outputs for %s -- cannot verify", v.IDOutputKey(), component)
+		return errors.Errorf("no %q in outputs for %s -- cannot verify", v.IDOutputKey(), kindDir)
 	}
 
 	h.mu.Lock()
-	h.deployed[componentKey(ctx, component)] = deployedResource{id: id, outputs: outputs}
+	h.deployed[kindKey(ctx, kindDir)] = deployedResource{id: id, outputs: outputs}
 	h.mu.Unlock()
 
 	if ov, ok := v.(verify.OutputsVerifier); ok {
@@ -130,18 +130,18 @@ const (
 // every other error -- credentials, rate limits, a broken lookup -- fails the
 // phase on the first probe, so an API problem can never be polled into a
 // timeout that reads like a leak.
-func (h *Harness) VerifyDestroyed(ctx context.Context, component string) error {
-	v, err := verify.GetVerifier(component)
+func (h *Harness) VerifyDestroyed(ctx context.Context, kindDir string) error {
+	v, err := verify.GetVerifier(kindDir)
 	if err != nil {
 		return err
 	}
 
 	h.mu.Lock()
-	res := h.deployed[componentKey(ctx, component)]
+	res := h.deployed[kindKey(ctx, kindDir)]
 	h.mu.Unlock()
 
 	if res.id == "" && res.outputs == nil {
-		return errors.Errorf("no stored resource id for %s -- VerifyDeployed may not have run", component)
+		return errors.Errorf("no stored resource id for %s -- VerifyDeployed may not have run", kindDir)
 	}
 
 	probe := func() error {
@@ -156,7 +156,7 @@ func (h *Harness) VerifyDestroyed(ctx context.Context, component string) error {
 		err := probe()
 		if err == nil {
 			if attempt > 1 {
-				fmt.Printf("  [verify] %s absent after %d probes (DigitalOcean read-after-delete lag)\n", component, attempt)
+				fmt.Printf("  [verify] %s absent after %d probes (DigitalOcean read-after-delete lag)\n", kindDir, attempt)
 			}
 			return nil
 		}
@@ -171,13 +171,13 @@ func (h *Harness) VerifyDestroyed(ctx context.Context, component string) error {
 	}
 }
 
-// componentKey combines the manifest path (from context) with the component name
-// so concurrent scenarios of the same component type do not collide in the map.
-func componentKey(ctx context.Context, component string) string {
+// kindKey combines the manifest path (from context) with the kind name
+// so concurrent scenarios of the same kind do not collide in the map.
+func kindKey(ctx context.Context, kindDir string) string {
 	if mp, ok := ctx.Value(provider.ManifestPathKey{}).(string); ok && mp != "" {
-		return mp + "::" + component
+		return mp + "::" + kindDir
 	}
-	return component
+	return kindDir
 }
 
 func firstNonEmpty(values ...string) string {

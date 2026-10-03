@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurecontainerinstance.v1alpha1;
 
-// **AzureContainerInstanceStackOutputs** captures the outputs from
+// **AzureContainerInstanceOutputs** captures the outputs from
 // provisioning a container group.
-message AzureContainerInstanceStackOutputs {
+message AzureContainerInstanceOutputs {
   // The container group's Azure Resource Manager ID.
   string container_group_id = 1;
 

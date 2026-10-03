@@ -11,7 +11,7 @@ tags:
 
 # Default Connections
 
-When you create a Cloud Resource or deploy a service, you can explicitly specify which credential to use. But in practice, most organizations have a primary credential per provider — one main AWS account, one main GCP project — and specifying it on every deployment is tedious and error-prone.
+When you create an Infra Component or deploy a service, you can explicitly specify which credential to use. But in practice, most organizations have a primary credential per provider — one main AWS account, one main GCP project — and specifying it on every deployment is tedious and error-prone.
 
 Default connections solve this. You designate one credential as the default for a provider, and Planton uses it automatically when no credential is explicitly specified. This reduces configuration overhead while keeping the explicit option available for cases that need it.
 
@@ -201,7 +201,7 @@ Nothing ran: environment staging may not use the aws connection aws-prod. Author
 --environments staging), or make it the organization's (--scope organization), then run the job again.
 ```
 
-Following an infra pipeline, the CLI adds: `Refused before any resource ran: no stack job started, so nothing in the cloud changed.`
+Following an infra pipeline, the CLI adds: `Refused before any resource ran: no infra job started, so nothing in the cloud changed.`
 
 **Fix**:
 1. Authorize the connection: `planton connection auth create --provider <provider> --connection <slug> --scope environment --environments <env>` (or `--scope organization`). If the connection already has an environment-scoped authorization, `planton connection auth delete --provider <provider> --connection <slug>` first, then create it again with every environment it should reach.

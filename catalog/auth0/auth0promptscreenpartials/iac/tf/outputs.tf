@@ -1,5 +1,5 @@
 # Auth0PromptScreenPartials Outputs
-# Maps to the Auth0PromptScreenPartialsStackOutputs protobuf message: the
+# Maps to the Auth0PromptScreenPartialsOutputs protobuf message: the
 # prompt managed.
 
 output "prompt_type" {

@@ -12,15 +12,15 @@ import (
 // create-time immutable (ForceNew); the address list itself updates in place,
 // which is the point of the resource — rules referencing the set's ARN see
 // address changes without a web ACL redeploy.
-func Resources(ctx *pulumi.Context, stackInput *awswafipsetv1alpha1.AwsWafIpSetStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awswafipsetv1alpha1.AwsWafIpSetIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 	spec := locals.AwsWafIpSet.Spec
 
-	// Build the AWS provider from the stack input via the shared builder, which
+	// Build the AWS provider from the IaC input via the shared builder, which
 	// resolves the right credential mechanism (static keys, keyless web
 	// identity, or ambient chain). For CLOUDFRONT scope the spec's CEL pins
 	// region to us-east-1 — the WAF global region.
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

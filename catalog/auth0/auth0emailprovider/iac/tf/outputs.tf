@@ -1,5 +1,5 @@
 # Auth0EmailProvider Outputs
-# Maps to the Auth0EmailProviderStackOutputs protobuf message: the provider as
+# Maps to the Auth0EmailProviderOutputs protobuf message: the provider as
 # applied.
 
 output "name" {

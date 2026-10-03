@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceandatabasedb.v1alpha1;
 
-// DigitalOceanDatabaseDbStackOutputs captures the key outputs after
+// DigitalOceanDatabaseDbOutputs captures the key outputs after
 // provisioning a logical database in a DigitalOcean database cluster. The
 // DigitalOcean API has no standalone database id -- the (cluster, name)
 // pair IS the identity -- so both halves are exported for consumers and
 // verification tooling.
-message DigitalOceanDatabaseDbStackOutputs {
+message DigitalOceanDatabaseDbOutputs {
   // UUID of the database cluster the logical database lives in.
   string cluster_id = 1;
 

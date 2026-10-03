@@ -1,11 +1,11 @@
 package module
 
 const (
-	// OpZoneId is the exported stack output containing the zone ID.
+	// OpZoneId is the exported output containing the zone ID.
 	OpZoneId = "zone_id"
-	// OpNameservers is the exported stack output containing the assigned nameservers.
+	// OpNameservers is the exported output containing the assigned nameservers.
 	OpNameservers = "nameservers"
-	// OpStatus is the exported stack output containing the zone status.
+	// OpStatus is the exported output containing the zone status.
 	OpStatus = "status"
 	// OpDnssecStatus is the exported DNSSEC status.
 	OpDnssecStatus = "dnssec_status"

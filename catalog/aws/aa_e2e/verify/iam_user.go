@@ -13,7 +13,7 @@ import (
 // returns the typed NoSuchEntity error, which is the "absent" signal; any
 // other error is a genuine failure and must surface.
 //
-// When the stack outputs report an access key (access_key_id -- present
+// When the outputs report an access key (access_key_id -- present
 // exactly when the spec asked for one), existence asserts the key exists on
 // the user via ListAccessKeys: CreateUser succeeding says nothing about the
 // key satellite. The key's Active/Inactive STATUS is a spec-authored

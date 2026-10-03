@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kuberneteskafkamirrormaker2.v1alpha1;
 import "catalog/kubernetes/kuberneteskafkamirrormaker2/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//kubernetes-kafka-mirror-maker2 stack-input
-message KubernetesKafkaMirrorMaker2StackInput {
-  //target cloud-resource
+//kubernetes-kafka-mirror-maker2 iac-input
+message KubernetesKafkaMirrorMaker2IacInput {
+  //target infra-component
   KubernetesKafkaMirrorMaker2 target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

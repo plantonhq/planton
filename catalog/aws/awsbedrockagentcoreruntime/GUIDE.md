@@ -1,4 +1,4 @@
-# AwsBedrockAgentCoreRuntime — Component Guide
+# AwsBedrockAgentCoreRuntime — Kind Guide
 
 Authored operational judgment for the AgentCore runtime component: the
 design decisions behind the spec's shape, and what to know before

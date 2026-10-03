@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarezerotrustaccesspolicy.v1alpha1;
 
-// CloudflareZeroTrustAccessPolicyStackOutputs captures the outputs after
+// CloudflareZeroTrustAccessPolicyOutputs captures the outputs after
 // deploying a Cloudflare Zero Trust Access policy.
-message CloudflareZeroTrustAccessPolicyStackOutputs {
+message CloudflareZeroTrustAccessPolicyOutputs {
   // The Cloudflare-assigned identifier of the policy. Reference this from a
   // CloudflareZeroTrustAccessApplication's policies list to attach the policy.
   string policy_id = 1;

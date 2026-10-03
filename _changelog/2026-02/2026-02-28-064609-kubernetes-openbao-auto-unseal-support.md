@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added auto-unseal configuration to the `KubernetesOpenBao` component, enabling automatic master key decryption via external KMS providers on pod startup. Supports GCP Cloud KMS, AWS KMS, Azure Key Vault, and Transit seal types with a `oneof`-based proto design. GCP KMS fields use `StringValueOrRef` for infra-chart composability with existing `GcpProject`, `GcpKmsKeyRing`, `GcpKmsKey`, and `GcpServiceAccount` resource kinds.
+Added auto-unseal configuration to the `KubernetesOpenBao` kind, enabling automatic master key decryption via external KMS providers on pod startup. Supports GCP Cloud KMS, AWS KMS, Azure Key Vault, and Transit seal types with a `oneof`-based proto design. GCP KMS fields use `StringValueOrRef` for infra-chart composability with existing `GcpProject`, `GcpKmsKeyRing`, `GcpKmsKey`, and `GcpServiceAccount` resource kinds.
 
 ## Problem Statement / Motivation
 
@@ -106,7 +106,7 @@ autoUnseal:
 | `spec.proto` | +126 | 6 new messages, 1 new field on KubernetesOpenBaoSpec |
 | `spec.pb.go` | +546 | Regenerated Go protobuf code |
 | `helm_chart.go` | +87/-26 | sealConfigHcl(), workloadIdentityServiceAccount(), SA annotation injection |
-| `stack-input.yaml` | +11 | Updated stack input schema |
+| `iac-input.yaml` | +11 | Updated IaC input schema |
 
 ## Benefits
 

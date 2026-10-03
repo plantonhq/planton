@@ -6,22 +6,22 @@
 
 ## Summary
 
-Migrated the `GcpSecretsManager` component's `project_id` field from a plain `string` type to `StringValueOrRef`, enabling cross-resource references. This allows users to either specify a literal project ID or reference another resource's output (e.g., a `GcpProject` resource), enabling declarative infrastructure composition.
+Migrated the `GcpSecretsManager` kind's `project_id` field from a plain `string` type to `StringValueOrRef`, enabling cross-resource references. This allows users to either specify a literal project ID or reference another resource's output (e.g., a `GcpProject` resource), enabling declarative infrastructure composition.
 
 ## Problem Statement / Motivation
 
-The `GcpSecretsManager` component previously required users to hard-code GCP project IDs as literal strings. This created tight coupling between resources and made it difficult to:
+The `GcpSecretsManager` kind previously required users to hard-code GCP project IDs as literal strings. This created tight coupling between resources and made it difficult to:
 
 ### Pain Points
 
 - **No cross-resource dependencies**: Users couldn't reference a project ID from a `GcpProject` resource they were managing
 - **Manual coordination**: When project IDs changed, all dependent manifests needed manual updates
-- **Inconsistent with other components**: Components like `GcpVpc`, `GcpGkeCluster`, and `GcpSubnetwork` already supported `StringValueOrRef`
+- **Inconsistent with other kinds**: Kinds like `GcpVpc`, `GcpGkeCluster`, and `GcpSubnetwork` already supported `StringValueOrRef`
 - **Limited infrastructure composition**: Users couldn't build declarative dependency chains between resources
 
 ## Solution / What's New
 
-Updated the `GcpSecretsManager` spec to use `StringValueOrRef` for the `project_id` field, following the established pattern from compliant components like `GcpVpc`.
+Updated the `GcpSecretsManager` spec to use `StringValueOrRef` for the `project_id` field, following the established pattern from compliant kinds like `GcpVpc`.
 
 ### Two Usage Patterns Now Supported
 
@@ -108,7 +108,7 @@ project = var.spec.project_id.value
 
 **File**: `apis/dev/planton/provider/gcp/gcpsecretsmanager/v1/spec_test.go`
 
-- Added imports for `foreignkeyv1` and `cloudresourcekind`
+- Added imports for `foreignkeyv1` and `catalogkind`
 - Updated all test cases to use `StringValueOrRef` type
 - Added new test case for `value_from` reference pattern
 - 11 tests, all passing
@@ -146,7 +146,7 @@ project = var.spec.project_id.value
 
 - **Infrastructure Composition**: Secrets can now be automatically created in projects managed by other resources
 - **Reduced Manual Coordination**: Project ID changes propagate through references
-- **Consistency**: Aligns with other GCP components (`GcpVpc`, `GcpGkeCluster`, etc.)
+- **Consistency**: Aligns with other GCP kinds (`GcpVpc`, `GcpGkeCluster`, etc.)
 - **Future-Ready**: Foundation for full reference resolution implementation
 
 ## Impact
@@ -172,9 +172,9 @@ Reference resolution (`value_from`) is not yet fully implemented in the IAC laye
 ## Related Work
 
 This change is part of the broader GCP ValueFrom migration effort documented in:
-- `apis/gcp-value-from-analysis.md` - Analysis of all GCP components requiring migration
+- `apis/gcp-value-from-analysis.md` - Analysis of all GCP kinds requiring migration
 
-Other components already migrated:
+Other kinds already migrated:
 - `GcpVpc`
 - `GcpSubnetwork`
 - `GcpGkeCluster`
@@ -185,4 +185,4 @@ Other components already migrated:
 ---
 
 **Status**: ✅ Production Ready
-**Validation**: Proto generation ✅ | Component tests (11/11) ✅ | Build ✅
+**Validation**: Proto generation ✅ | Kind tests (11/11) ✅ | Build ✅

@@ -10,7 +10,7 @@ tags:
   - "ecs"
   - "infra-chart"
   - "vpc"
-  - "cloud-catalog"
+  - "infra-catalog"
 category: "aws"
 excerpt: "Deploy a complete AWS ECS environment -- VPC, load balancer, container registry, and ECS cluster -- from a single Infra Chart using the Planton CLI."
 ---
@@ -22,13 +22,13 @@ A production-ready ECS environment on AWS requires a VPC with subnets across mul
 This tutorial deploys all of it from a single Infra Chart with one command. You will customize a handful of parameters, run `planton chart install`, and watch the platform provision seven interdependent AWS resources in the correct order. By the end, you will have a running ECS environment with a sample nginx service accessible through the ALB.
 
 > **Note**: The Planton web console provides a guided creation wizard for Infra Charts
-> and other Cloud Resources. This tutorial uses the CLI/YAML approach for stability
+> and other Infra Components. This tutorial uses the CLI/YAML approach for stability
 > and reproducibility. The console UI evolves frequently — always check it for the
 > latest experience.
 
 ## What You Will Learn
 
-- What Infra Charts are and how they differ from deploying individual Cloud Resources
+- What Infra Charts are and how they differ from deploying individual Infra Components
 - How to install the AWS ECS Environment chart with customized parameters
 - How the dependency graph determines deployment order and enables parallel execution
 - How to monitor a multi-resource deployment through an Infra Pipeline
@@ -47,7 +47,7 @@ The AWS provider connection must have permissions to create VPCs, subnets, NAT g
 
 ## How Infra Charts Work
 
-An Infra Chart bundles multiple Cloud Resources into a single deployable unit with a dependency graph -- similar to a Helm chart for infrastructure. You install it with `planton chart install`, customize it with a values file, and Planton provisions all resources in the correct order through an Infra Pipeline. For more on Infra Charts, see the [Infra Charts documentation](/docs/infrastructure/infra-charts).
+An Infra Chart bundles multiple Infra Components into a single deployable unit with a dependency graph -- similar to a Helm chart for infrastructure. You install it with `planton chart install`, customize it with a values file, and Planton provisions all resources in the correct order through an Infra Pipeline. For more on Infra Charts, see the [Infra Charts documentation](/docs/infrastructure/infra-charts).
 
 ## Step 1: Clone the Chart Repository
 
@@ -63,7 +63,7 @@ The chart lives at `infra-charts/aws/ecs-environment/` with this structure:
 aws/ecs-environment/
 ├── Chart.yaml          # Chart metadata (name, description, icon)
 ├── values.yaml         # Parameters with default values
-├── templates/          # Cloud Resource templates with Jinja variables
+├── templates/          # Infra Component templates with Jinja variables
 │   ├── network.yaml        # VPC, security group, ALB
 │   ├── ecs-cluster.yaml    # ECS cluster with Fargate
 │   ├── ecs-service.yaml    # ECS service and task definition
@@ -150,7 +150,7 @@ Here is what to customize:
 
 ## Step 3: Install the Chart
 
-Run the following command to create the Infra Project and trigger the deployment pipeline:
+Run the following command to create the Infra Stack and trigger the deployment pipeline:
 
 ```bash
 planton chart install my-ecs-env \
@@ -162,12 +162,12 @@ planton chart install my-ecs-env \
 
 Replace `your-org` with your Planton organization slug and `production` with your target environment slug.
 
-The command creates an Infra Project named `my-ecs-env` from the chart, renders the templates with your parameter values, builds the dependency graph, and triggers an Infra Pipeline to deploy all seven resources. The output includes the Infra Project details and a console URL for monitoring:
+The command creates an Infra Stack named `my-ecs-env` from the chart, renders the templates with your parameter values, builds the dependency graph, and triggers an Infra Pipeline to deploy all seven resources. The output includes the Infra Stack details and a console URL for monitoring:
 
 ```text
-infra-project 'my-ecs-env' applied
+infra-stack 'my-ecs-env' applied
 
-  Follow live: https://planton.ai/your-org/infra-project/my-ecs-env?ipid=infpipe_...
+  Follow live: https://planton.ai/your-org/infra-stack/my-ecs-env?ipid=infpipe_...
 ```
 
 Open the console URL to see the deployment pipeline in real time, including the DAG visualization showing which resources are deploying and which are waiting on dependencies.
@@ -195,7 +195,7 @@ Total deployment time is typically 10-20 minutes. The parallel execution in Laye
 
 ## Step 5: Verify the Environment
 
-After the pipeline completes, verify the individual Cloud Resources that were created. Each resource has its own status and outputs.
+After the pipeline completes, verify the individual Infra Components that were created. Each resource has its own status and outputs.
 
 To find the ALB's DNS name (which you need to access the sample service):
 
@@ -221,7 +221,7 @@ planton get AwsEcsCluster production-ecs-cluster -o yaml
 planton get AwsEcrRepo ecr-repo -o yaml
 ```
 
-The resource names follow the pattern `{env}-{resource-type}` as defined in the chart templates. The environment slug (`production` in this example) is injected by the Infra Project.
+The resource names follow the pattern `{env}-{resource-type}` as defined in the chart templates. The environment slug (`production` in this example) is injected by the Infra Stack.
 
 ## Adding DNS and HTTPS (Optional)
 
@@ -253,26 +253,26 @@ planton chart install my-ecs-env \
   -f my-values.yaml
 ```
 
-Using the same name (`my-ecs-env`) updates the existing Infra Project rather than creating a new one. The pipeline will create two additional resources:
+Using the same name (`my-ecs-env`) updates the existing Infra Stack rather than creating a new one. The pipeline will create two additional resources:
 
 - **AwsRoute53Zone**: A hosted zone for your domain. After creation, you need to update your domain registrar's nameservers to point to the Route 53 nameservers in the zone's outputs.
 - **AwsCertManagerCert**: A DNS-validated ACM certificate for your load balancer domain. ACM creates a CNAME validation record in the Route 53 zone automatically. Certificate validation can take a few minutes.
 
 The ALB is updated with the certificate and DNS configuration. Once the certificate validates and DNS propagates, your ECS service is accessible at `https://app.yourdomain.com`.
 
-**Important**: DNS validation requires the Route 53 zone's nameservers to be authoritative for your domain. If you are using a new domain, update nameserver delegation at your registrar before enabling HTTPS. If validation fails, the ACM certificate resource will report the issue in its Stack Job logs.
+**Important**: DNS validation requires the Route 53 zone's nameservers to be authoritative for your domain. If you are using a new domain, update nameserver delegation at your registrar before enabling HTTPS. If validation fails, the ACM certificate resource will report the issue in its Infra Job logs.
 
 ## Tearing Down the Environment
 
 When you are done, tear down the environment to stop incurring AWS charges. The platform offers two options:
 
-**Uninstall** destroys all cloud resources but keeps the Infra Project record in Planton. This is useful if you want to redeploy later with the same configuration:
+**Uninstall** destroys all infra components but keeps the Infra Stack record in Planton. This is useful if you want to redeploy later with the same configuration:
 
 ```bash
 planton chart uninstall my-ecs-env
 ```
 
-**Purge** destroys all cloud resources AND deletes the Infra Project from the database:
+**Purge** destroys all infra components AND deletes the Infra Stack from the database:
 
 ```bash
 planton chart purge my-ecs-env

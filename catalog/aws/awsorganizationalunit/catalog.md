@@ -4,7 +4,7 @@ Creates an organizational unit in an AWS Organization's account tree -- the cont
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Organizational Unit** -- one OU (AWS `ou-...` ID) under the parent named by `parentId`, carrying the display name from `ouName`. Creation retries through the organization's finalization window, so an OU deployed immediately after its organization lands cleanly.
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module whose credentials belong to the organization's MANAGEMENT account, with Organizations permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module whose credentials belong to the organization's MANAGEMENT account, with Organizations permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -49,7 +49,7 @@ spec:
 planton apply -f aws-organizational-unit.yaml
 ```
 
-This creates a first-level Workloads OU directly under the organization root, with the parent resolved from the referenced AWS Organization -- no hand-copied IDs. A Stack Job tracks the provisioning in real time.
+This creates a first-level Workloads OU directly under the organization root, with the parent resolved from the referenced AWS Organization -- no hand-copied IDs. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -84,16 +84,16 @@ These are the most important decisions when configuring an organizational unit. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsOrganization** | `parentId` (first-level OU) | `status.outputs.root_id` |
 | **AwsOrganizationalUnit** | `parentId` (nested OU) | `status.outputs.ou_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -113,6 +113,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Organization**](/cloud-catalog/aws-organization) -- the organization whose root first-level OUs hang off, wired via the `parentId` reference
-- [**AWS Organization Account**](/cloud-catalog/aws-organization-account) -- member accounts placed in this OU (`parentId` → this OU's `ou_id` output)
-- [**AWS Organization Policy**](/cloud-catalog/aws-organization-policy) -- guardrails attached to this OU, inherited by everything beneath it
+- [**AWS Organization**](/infra-catalog/aws-organization) -- the organization whose root first-level OUs hang off, wired via the `parentId` reference
+- [**AWS Organization Account**](/infra-catalog/aws-organization-account) -- member accounts placed in this OU (`parentId` → this OU's `ou_id` output)
+- [**AWS Organization Policy**](/infra-catalog/aws-organization-policy) -- guardrails attached to this OU, inherited by everything beneath it

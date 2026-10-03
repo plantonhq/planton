@@ -1,5 +1,5 @@
-# Stack outputs — identical names and derivations in the Pulumi module
-# (KubernetesGatekeeperStackOutputs).
+# Outputs — identical names and derivations in the Pulumi module
+# (KubernetesGatekeeperOutputs).
 
 output "namespace" {
   description = "Namespace the engine is installed into"

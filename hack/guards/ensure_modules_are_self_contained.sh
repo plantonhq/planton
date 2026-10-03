@@ -99,7 +99,7 @@ if [[ ${#unexpected[@]} -gt 0 ]]; then
   echo "ERROR: ${#unexpected[@]} module(s) read outside their own directory." >&2
   echo "Observed: a parent-path read in the module source (first offending line shown)." >&2
   echo "Meaning: every published form of the module (module.zip, source.zip, the Pulumi binary workspace) lacks that path, so the read returns nothing or fails at apply while the working tree passes." >&2
-  echo "Next step: derive the payload from the pinned artifact at apply time (render the pinned chart or fetch the pinned bundle) instead of reading a sibling file; see the CRD decision tree in _rules/component/forge/forge-planton-component.mdc." >&2
+  echo "Next step: derive the payload from the pinned artifact at apply time (render the pinned chart or fetch the pinned bundle) instead of reading a sibling file; see the CRD decision tree in _rules/catalog-kind/forge/forge-catalog-kind.mdc." >&2
   printf '  - %s\n' "${unexpected[@]}" >&2
   echo >&2
   failed=1

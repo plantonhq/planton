@@ -100,7 +100,7 @@ Not wired to CI since 2026-09-04: module auto-tags are dispatch-only by founder 
 ### package_content.sh
 
 Packages the content distribution zips (presets, IaC source, catalog pages,
-proto source, the component reference pack) for the release's R2 upload.
+proto source, the kind reference pack) for the release's R2 upload.
 
 ## Required GitHub Secrets
 

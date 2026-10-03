@@ -20,7 +20,7 @@ func validList(spec *CloudflareZeroTrustListSpec) *CloudflareZeroTrustList {
 	return &CloudflareZeroTrustList{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZeroTrustList",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-zt-list",
 		},
 		Spec: spec,

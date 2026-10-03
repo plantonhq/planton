@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpsharedvpcserviceproject
+    e2e-catalog-kind: gcpsharedvpcserviceproject
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-required-env: PLANTON_E2E_GCP_SECOND_PROJECT_ID

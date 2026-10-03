@@ -1,4 +1,4 @@
-# AliCloudKubernetesCluster Component Added
+# AliCloudKubernetesCluster Kind Added
 
 **Date**: 2026-02-20
 **Component**: AliCloudKubernetesCluster
@@ -7,15 +7,15 @@
 
 ## Summary
 
-Added the AliCloudKubernetesCluster deployment component -- an ACK Managed Kubernetes cluster with dual CNI support, RRSA, control plane logging, and maintenance window configuration.
+Added the AliCloudKubernetesCluster catalog kind -- an ACK Managed Kubernetes cluster with dual CNI support, RRSA, control plane logging, and maintenance window configuration.
 
-This component wraps a single provider resource (`alicloud_cs_managed_kubernetes` / `cs.ManagedKubernetes`). Worker nodes are managed separately through AliCloudKubernetesNodePool (R25).
+This kind wraps a single provider resource (`alicloud_cs_managed_kubernetes` / `cs.ManagedKubernetes`). Worker nodes are managed separately through AliCloudKubernetesNodePool (R25).
 
 ## What Was Created
 
 ### API Definition
-- `apis/dev/planton/provider/alicloud/alicloudkubernetescluster/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AliCloudKubernetesCluster = 3091` in `CloudResourceKind` enum under the Containers category
+- `apis/dev/planton/provider/alicloud/alicloudkubernetescluster/v1/` -- Full proto API (spec, api, iac_input, outputs)
+- Registered `AliCloudKubernetesCluster = 3091` in `CatalogKind` enum under the Containers category
 - 6 proto messages: spec, addon, logging, maintenance window, auto-upgrade, plus the API/status wrappers
 
 ### IaC Modules
@@ -26,7 +26,7 @@ This component wraps a single provider resource (`alicloud_cs_managed_kubernetes
 - Ginkgo/Gomega spec validation tests: 30 specs covering valid inputs (minimal, Flannel, Terway, security config, addons, logging, maintenance, auto-upgrade, full production config), invalid inputs (wrong api_version/kind, missing metadata/spec, empty required fields, out-of-range values, invalid enum values)
 
 ### Documentation
-- README.md with component overview and directory structure
+- README.md with kind overview and directory structure
 - examples.md with 3 YAML examples (minimal Flannel, Terway with RRSA, full production)
 
 ## Design Decisions

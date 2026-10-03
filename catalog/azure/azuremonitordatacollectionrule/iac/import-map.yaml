@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuremonitordatacollectionrule
 spec:
@@ -7,8 +7,8 @@ spec:
   values:
     - name: data_collection_rule_id
       derivations:
-        - from_stack_output: data_collection_rule_id
+        - from_output: data_collection_rule_id
       where_to_find: >-
         `az monitor data-collection rule show -g <resource-group> -n
         <name> --query id`, or the component's own
-        data_collection_rule_id stack output.
+        data_collection_rule_id output.

@@ -1,4 +1,4 @@
-# AwsRestApiVpcLink — Component Guide
+# AwsRestApiVpcLink — Kind Guide
 
 Authored operational judgment for the REST API VPC-link component: the
 design decisions behind the spec's shape, and what to know before

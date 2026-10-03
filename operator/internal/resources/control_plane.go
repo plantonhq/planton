@@ -44,7 +44,7 @@ const (
 	controlPlaneTerminationGracePeriodSeconds = 60
 
 	// controlPlaneIacModulesVersionEnv is the control plane's per-install
-	// OVERRIDE of the release its stack jobs download official IaC modules
+	// OVERRIDE of the release its infra jobs download official IaC modules
 	// from. Rendered only when the platform resource declares
 	// spec.controlPlane.iacModulesVersion; absent otherwise, because the
 	// control plane resolves modules at its own catalog release -- the pin
@@ -846,20 +846,20 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		{Name: "TEMPORAL_NAMESPACE", Value: controlPlaneDefaultTemporalNamespace},
 		{Name: "TEMPORAL_TASK_QUEUE_AWS_CLOUDFORMATION_SETUP", Value: "aws-cloudformation-setup"},
 		{Name: "TEMPORAL_TASK_QUEUE_BILLING_CLEANUP", Value: "billing-cleanup"},
-		{Name: "TEMPORAL_TASK_QUEUE_CLOUD_RESOURCE_PURGE", Value: "cloud-resource-purge"},
+		{Name: "TEMPORAL_TASK_QUEUE_INFRA_COMPONENT_PURGE", Value: "infra-component-purge"},
 		{Name: "TEMPORAL_TASK_QUEUE_GIT_WEBHOOKS", Value: "git-webhooks"},
 		{Name: "TEMPORAL_TASK_QUEUE_INFRA_HUB_CLEANUP", Value: "infra-hub-cleanup"},
 		{Name: "TEMPORAL_TASK_QUEUE_INFRA_PIPELINE_DEPLOY_STAGE", Value: "infra-pipeline-deploy-stage"},
-		{Name: "TEMPORAL_TASK_QUEUE_INFRA_PROJECT_PURGE", Value: "infra-project-purge"},
+		{Name: "TEMPORAL_TASK_QUEUE_INFRA_STACK_PURGE", Value: "infra-stack-purge"},
 		{Name: "TEMPORAL_TASK_QUEUE_ORGANIZATION_ESTATE_REINDEX", Value: "estate-organization-reindex"},
 		{Name: "TEMPORAL_TASK_QUEUE_PROVIDER_CONNECTION_AUTHORIZATION", Value: "provider_connection_authorization"},
 		{Name: "TEMPORAL_TASK_QUEUE_RESOURCE_MANAGER_CLEANUP", Value: "resource-manager-cleanup"},
 		{Name: "TEMPORAL_TASK_QUEUE_SERVICE_PIPELINE_BUILD_STAGE", Value: "service-pipeline-build-stage"},
 		{Name: "TEMPORAL_TASK_QUEUE_SERVICE_PIPELINE_DEPLOY_STAGE", Value: "service-pipeline-deploy-stage"},
 		{Name: "TEMPORAL_TASK_QUEUE_SERVICE_CLEANUP", Value: "service-cleanup"},
-		{Name: "TEMPORAL_TASK_QUEUE_STACK_JOB", Value: "stack-job"},
+		{Name: "TEMPORAL_TASK_QUEUE_INFRA_JOB", Value: "infra-job"},
 		{Name: "TEMPORAL_TASK_QUEUE_TEKTON_CONNECTION_VERIFY", Value: "tekton-connection-verify"},
-		{Name: "TEMPORAL_TASK_QUEUE_STACK_JOB_IAC_OPERATION", Value: "stack-job-iac-operation"},
+		{Name: "TEMPORAL_TASK_QUEUE_INFRA_JOB_IAC_OPERATION", Value: "infra-job-iac-operation"},
 		{Name: "TEMPORAL_TASK_QUEUE_STATE_BACKEND_MIGRATION", Value: "state-backend-migration"},
 		{Name: "TEMPORAL_TASK_QUEUE_STORED_DOCUMENT_MIGRATION", Value: "stored-document-migration"},
 		// Self-hosted installs upgrade without a platform operator watching:

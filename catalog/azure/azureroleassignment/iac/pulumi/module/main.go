@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureroleassignmentv1alpha1.AzureRoleAssignmentStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureroleassignmentv1alpha1.AzureRoleAssignmentIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -77,7 +77,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureroleassignmentv1alpha1.Azur
 		return errors.Wrapf(err, "failed to create role assignment %s", locals.AzureRoleAssignment.Metadata.Name)
 	}
 
-	// Export stack outputs. RoleDefinitionId and PrincipalType are exported
+	// Export outputs. RoleDefinitionId and PrincipalType are exported
 	// from the created resource (not the spec) so they carry the values Azure
 	// resolved -- the definition ID behind a role name, the inferred principal
 	// type -- which downstream automation can rely on.

@@ -16,19 +16,19 @@ import (
 // ServiceAccount referenced in spec.pod.service_account, and API permissions
 // come from KubernetesRbac grants targeting that identity. This module never
 // creates ServiceAccounts, RBAC objects, certificates, gateways, or routes.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesdaemonsetv1alpha1.KubernetesDaemonSetStackInput) error {
-	locals, err := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesdaemonsetv1alpha1.KubernetesDaemonSetIacInput) error {
+	locals, err := initializeLocals(ctx, iacInput)
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize locals")
 	}
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

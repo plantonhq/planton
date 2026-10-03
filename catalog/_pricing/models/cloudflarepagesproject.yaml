@@ -1,15 +1,15 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. Both presets are genuinely zero-committed: a Pages project
-# with no traffic costs nothing per the component's own cost profile, static
+# with no traffic costs nothing per the kind's own cost profile, static
 # asset requests are free and unlimited on every plan, and the only Pages
 # dollar meter (Functions requests billed as Workers requests) waits for
 # dynamic traffic -- stated in exclusions, never padded into fabricated
-# dollars. Schema: finops/componentcostestimatemodel/v1.
+# dollars. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: cloudflarepagesproject
 spec:
@@ -21,7 +21,7 @@ spec:
       exclusions:
         - the "Workers requests and CPU time" meter (Workers Paid 10 million requests and 30 million CPU-ms included, then $0.30/million requests and $0.02/million CPU-ms) bills only Functions invocations -- this preset ships build config and env vars, and whether the connected repo contains Functions and how much dynamic traffic arrives is unknowable from the manifest
         - static asset requests never bill -- free and unlimited on every plan
-        - no binding meters exist on this preset (it declares no KV, D1, R2, or Queue bindings), so no downstream component metering starts
+        - no binding meters exist on this preset (it declares no KV, D1, R2, or Queue bindings), so no downstream kind metering starts
         - git-connected builds consume the plan's build quota (500/month on Free), a limit rather than a dollar meter
         - the $5/mo Workers Paid subscription is account-level plan spend -- no field in this spec pins it
       notes: "Zero committed cost -- the project is configuration; Cloudflare builds on push against plan quotas, serves static assets free, and bills only if Functions exist and receive traffic."
@@ -32,6 +32,6 @@ spec:
       exclusions:
         - the "Workers requests and CPU time" meter (Workers Paid 10 million requests and 30 million CPU-ms included, then $0.30/million requests and $0.02/million CPU-ms) bills only Functions invocations -- deployment content arrives out-of-band via wrangler pages deploy, and dynamic traffic is unknowable from the manifest
         - static asset requests never bill -- free and unlimited on every plan
-        - the "Workers KV operations and storage" meter routed through the CONFIG binding bills on the bound CloudflareKvNamespace component (reads at $0.50/million past the Paid plan's 10 million included), driven by what the site's Functions actually read
+        - the "Workers KV operations and storage" meter routed through the CONFIG binding bills on the bound CloudflareKvNamespace kind (reads at $0.50/million past the Paid plan's 10 million included), driven by what the site's Functions actually read
         - the $5/mo Workers Paid subscription is account-level plan spend -- no field in this spec pins it
       notes: "Zero committed cost -- the KV binding is a capability grant, not a meter; it starts billing (on the bound namespace) only when deployed Functions use it."

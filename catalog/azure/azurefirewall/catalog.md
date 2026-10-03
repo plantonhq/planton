@@ -4,18 +4,18 @@ Deploys an Azure Firewall — the managed, stateful network firewall data plane 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Azure Firewall** -- the firewall instance with its deployment model, tier, zones, IP configurations (or Virtual WAN hub binding), optional management path, and policy attachment
 - **Azure Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied automatically and merged with the user tags
 
-The subnet, public IPs, and policy are NOT created here — they are referenced Cloud Resources with their own lifecycles. Azure Firewall provisions and deletes SLOWLY (10-20+ minutes each way) — design changes to avoid replacement.
+The subnet, public IPs, and policy are NOT created here — they are referenced Infra Components with their own lifecycles. Azure Firewall provisions and deletes SLOWLY (10-20+ minutes each way) — design changes to avoid replacement.
 
 ## Before You Deploy
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -69,7 +69,7 @@ spec:
 planton apply -f firewall.yaml
 ```
 
-This creates a zone-redundant STANDARD VNet firewall in the hub, enforcing the `egress-baseline` policy through one public IP. A Stack Job tracks the provisioning in real time. After deploy, point spoke route tables' 0.0.0.0/0 at the firewall's `private_ip_address` output — the last step that closes the hub-spoke loop.
+This creates a zone-redundant STANDARD VNet firewall in the hub, enforcing the `egress-baseline` policy through one public IP. An Infra Job tracks the provisioning in real time. After deploy, point spoke route tables' 0.0.0.0/0 at the firewall's `private_ip_address` output — the last step that closes the hub-spoke loop.
 
 ### InfraChart
 
@@ -116,7 +116,7 @@ These are the most important decisions when configuring an Azure Firewall. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -125,9 +125,9 @@ These are the most important decisions when configuring an Azure Firewall. Explo
 | **AzurePublicIp** | `ipConfigurations[].publicIpAddressId`, `managementIpConfiguration.publicIpAddressId` | `status.outputs.public_ip_id` |
 | **AzureFirewallPolicy** | `firewallPolicyId` | `status.outputs.firewall_policy_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -148,9 +148,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the firewall is created
-- [**Azure Virtual Network**](/cloud-catalog/azure-virtual-network) -- hosts the dedicated AzureFirewallSubnet
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- the exact-name firewall (and management) subnets
-- [**Azure Public IP**](/cloud-catalog/azure-public-ip) -- the Standard-SKU static addresses the firewall fronts
-- [**Azure Firewall Policy**](/cloud-catalog/azure-firewall-policy) -- the rule-and-inspection document this instance enforces
-- [**Azure Route Table**](/cloud-catalog/azure-route-table) -- steers spoke traffic to this firewall's private IP (the VIRTUAL_APPLIANCE next hop)
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the firewall is created
+- [**Azure Virtual Network**](/infra-catalog/azure-virtual-network) -- hosts the dedicated AzureFirewallSubnet
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- the exact-name firewall (and management) subnets
+- [**Azure Public IP**](/infra-catalog/azure-public-ip) -- the Standard-SKU static addresses the firewall fronts
+- [**Azure Firewall Policy**](/infra-catalog/azure-firewall-policy) -- the rule-and-inspection document this instance enforces
+- [**Azure Route Table**](/infra-catalog/azure-route-table) -- steers spoke traffic to this firewall's private IP (the VIRTUAL_APPLIANCE next hop)

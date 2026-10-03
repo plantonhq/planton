@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurenatgateway.v1alpha1;
 
-// **AzureNatGatewayStackOutputs** captures the outputs of provisioning an
+// **AzureNatGatewayOutputs** captures the outputs of provisioning an
 // Azure NAT Gateway.
-message AzureNatGatewayStackOutputs {
+message AzureNatGatewayOutputs {
   // The Azure Resource Manager ID of the NAT gateway. This is the primary
   // output: AzureSubnet's nat_gateway_id references it to attach the
   // gateway to a subnet.

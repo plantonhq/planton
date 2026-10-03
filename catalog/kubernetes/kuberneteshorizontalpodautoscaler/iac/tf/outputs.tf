@@ -1,5 +1,5 @@
-# Stack outputs — must flatten onto
-# KubernetesHorizontalPodAutoscalerStackOutputs (outputs.proto)
+# Outputs — must flatten onto
+# KubernetesHorizontalPodAutoscalerOutputs (outputs.proto)
 # identically to the Pulumi module's exports.
 
 output "horizontal_pod_autoscaler_name" {

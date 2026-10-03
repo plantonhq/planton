@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awscloudwatchdashboard.v1alpha1;
 
-// AwsCloudwatchDashboardStackOutputs captures the observable state of
+// AwsCloudwatchDashboardOutputs captures the observable state of
 // the dashboard after apply.
-message AwsCloudwatchDashboardStackOutputs {
+message AwsCloudwatchDashboardOutputs {
   // The dashboard's name (the provider's import ID).
   string dashboard_name = 1;
 

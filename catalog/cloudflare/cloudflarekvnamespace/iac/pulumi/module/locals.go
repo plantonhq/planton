@@ -13,9 +13,9 @@ type Locals struct {
 }
 
 // initializeLocals copies stack‑input fields into the Locals struct.
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflarekvnamespacev1alpha1.CloudflareKvNamespaceStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflarekvnamespacev1alpha1.CloudflareKvNamespaceIacInput) *Locals {
 	locals := &Locals{}
-	locals.CloudflareKvNamespace = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareKvNamespace = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

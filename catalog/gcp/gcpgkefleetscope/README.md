@@ -4,7 +4,7 @@ Declares a team scope in a GKE fleet together with the team's slice of it: fleet
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `gkehub.googleapis.com` on the fleet host project (never disabled on destroy)
 - **Scope** -- one `gke_hub_scope`
@@ -86,7 +86,7 @@ planton apply -f gke-fleet-scope.yaml
 - A role binding names exactly one principal and exactly one role form.
 - A literal membership is `projects/{project}/locations/{location}/memberships/{id}`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -115,7 +115,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpGkeFleet** -- the fleet the scope lives in
 - **GcpGkeCluster** -- clusters that join through `fleetProject` (bind through `fleet_membership`)

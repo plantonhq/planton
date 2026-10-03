@@ -38,7 +38,7 @@ func validResource() *AzureFirewallPolicy {
 	return &AzureFirewallPolicy{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureFirewallPolicy",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-firewall-policy",
 		},
 		Spec: &AzureFirewallPolicySpec{

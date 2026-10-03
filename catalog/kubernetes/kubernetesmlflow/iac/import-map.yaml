@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesmlflow
 spec:
@@ -25,27 +25,27 @@ spec:
         `kubectl get deployments -n <namespace>`.
     - name: deployment_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `kubectl get deployments -A` (NAMESPACE column).
     - name: service_name
       derivations:
         - from_metadata_name: true
-        - from_stack_output: service
+        - from_output: service
       where_to_find: >-
         The Service shares the resource's name —
         `kubectl get services -n <namespace>`.
     - name: service_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the server.
     # ── the optional anchor namespace ──────────────────────────────────
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Only imported when create_namespace is true; the installation
@@ -61,7 +61,7 @@ spec:
     - name: pvc_namespace
       tofu_resource_name: data
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the server.
@@ -75,7 +75,7 @@ spec:
     - name: pvc_namespace
       tofu_resource_name: artifacts
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the server.
@@ -92,7 +92,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: admin_auth
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the server.
@@ -110,7 +110,7 @@ spec:
     - name: secret_name
       tofu_resource_name: backend_uri
       derivations:
-        - from_stack_output: backend_store_uri_secret_name
+        - from_output: backend_store_uri_secret_name
         - from_metadata_name_suffix: "-backend-uri"
       where_to_find: >-
         "<resource-name>-backend-uri" on the postgres/mysql backend
@@ -119,7 +119,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: backend_uri
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the server.
@@ -134,7 +134,7 @@ spec:
     - name: secret_namespace
       tofu_resource_name: auth_config
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the server.
@@ -159,7 +159,7 @@ spec:
         `kubectl get configmaps -n <namespace>`.
     - name: config_map_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the server.
@@ -172,7 +172,7 @@ spec:
         `kubectl get cronjobs -n <namespace>`.
     - name: cron_job_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the server.
@@ -195,7 +195,7 @@ spec:
         `kubectl get servicemonitors -n <namespace>`.
     - name: namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the server.

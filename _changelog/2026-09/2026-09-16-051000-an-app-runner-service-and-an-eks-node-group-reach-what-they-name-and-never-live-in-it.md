@@ -13,6 +13,6 @@
 ## How to check
 
 ```bash
-go test ./shared/cloudresourcekind/ -run TestContainmentDecisions   # green; the golden carries the three exempt lines
+go test ./shared/catalogkind/ -run TestContainmentDecisions   # green; the golden carries the three exempt lines
 grep -n containment_exempt catalog/aws/awsapprunnerservice/v1alpha1/spec.proto catalog/aws/awseksnodegroup/v1alpha1/spec.proto catalog/aws/awseksfargateprofile/v1alpha1/spec.proto
 ```

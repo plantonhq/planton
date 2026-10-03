@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -6,9 +6,9 @@
 # free at rest, and the per-GB delivery meters a preset switches on bill
 # only as the producing resource actually vends logs -- stated in
 # exclusions, never padded into fabricated dollars.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awscloudwatchlogdelivery
 spec:
@@ -28,6 +28,6 @@ spec:
       hours_per_month: 730
       exclusions:
         - the cross-account destination object and its access policy are free at any volume -- no CloudWatch Logs meter exists for the endpoint itself
-        - forwarded log events bill on the referenced AwsKinesisStream's own meters (shard hours or on-demand throughput, per that component's profile) at a volume controlled by the two allowed SENDER accounts' subscription filters, invisible to this manifest
+        - forwarded log events bill on the referenced AwsKinesisStream's own meters (shard hours or on-demand throughput, per that kind's profile) at a volume controlled by the two allowed SENDER accounts' subscription filters, invisible to this manifest
         - the delivery role is an AwsIamRole, which never bills
-      notes: Zero committed cost -- and the zero here is structural as well as commitment-shaped; the endpoint carries no meter, so this component's line stays $0 while the real spend rides the Kinesis stream behind it.
+      notes: Zero committed cost -- and the zero here is structural as well as commitment-shaped; the endpoint carries no meter, so this kind's line stays $0 while the real spend rides the Kinesis stream behind it.

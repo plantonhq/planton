@@ -37,7 +37,7 @@ func validResource() *AzureFirewall {
 	return &AzureFirewall{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureFirewall",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-firewall",
 		},
 		Spec: &AzureFirewallSpec{

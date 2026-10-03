@@ -9,7 +9,7 @@ reachable address space, device metadata, and O365 breakout policy.
 
 The Azure provider is built through the shared provider builder, which
 resolves the right credential mechanism (static client secret, keyless
-web identity, or ambient chain) from the stack input.
+web identity, or ambient chain) from the IaC input.
 
 ## Design Decisions
 
@@ -26,7 +26,7 @@ web identity, or ambient chain) from the stack input.
 
 ## Inputs
 
-The module receives an `AzureVpnSiteStackInput` containing:
+The module receives an `AzureVpnSiteIacInput` containing:
 
 - `target.spec.name` -- the site's name (the provider's character rule)
 - `target.spec.virtual_wan_id` -- the WAN the site belongs to

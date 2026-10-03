@@ -7,7 +7,7 @@
 ## Summary
 
 The AWS infra-chart catalog starts over. All 12 legacy `charts/aws/*` charts —
-authored against a much thinner component surface and carrying that era's
+authored against a much thinner kind surface and carrying that era's
 quality floor — are removed, and the catalog is being rebuilt as a curated
 collection where every chart maps to a real-world architecture teams actually
 want to deploy. This change lands the durable authoring bar
@@ -17,7 +17,7 @@ new catalog: the get-started specials `aws/terraform-state-backend` and
 
 ## Problem Statement / Motivation
 
-The legacy AWS charts were written when the AWS components they compose exposed
+The legacy AWS charts were written when the AWS kinds they compose exposed
 a fraction of today's surface. The gap showed everywhere:
 
 - **Stale contracts**: the Terraform backend chart hardcoded a PROVISIONED 5/5
@@ -42,7 +42,7 @@ for every provider:
 - **Desirability as the entry test** — a chart earns its slot by mapping to a
   real architecture and invoking "I want this"; never a demo or filler.
 - **Each provider's charts stand on their own merit** — chart composition,
-  naming, defaults, and docs derive from that provider's component surface and
+  naming, defaults, and docs derive from that provider's kind surface and
   that cloud's real architectures; never from another provider's charts.
 - **Richly-commented templates** — inline YAML comments teach the WHY of every
   non-obvious choice, to the same bar as IaC module comments.
@@ -52,7 +52,7 @@ for every provider:
 - **Typed, documented values** — `string`/`number`/`bool`/`list` params with
   dense descriptions; bool toggles must render valid charts in BOTH branches
   independently (the offline validator flips each toggle once).
-- **A component-docs-grade README** — architecture, resource table, parameter
+- **A kind-docs-grade README** — architecture, resource table, parameter
   table, post-deploy wiring, day-2 guidance.
 - **The offline gate** — the structure guard plus a working-tree-built
   `planton chart validate` before any commit.

@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azureeventgridsystemtopic
 spec:
@@ -7,8 +7,8 @@ spec:
   values:
     - name: system_topic_id
       derivations:
-        - from_stack_output: system_topic_id
+        - from_output: system_topic_id
       where_to_find: >-
         `az eventgrid system-topic show --name <topic-name>
         --resource-group <rg> --query id`, or the component's own
-        system_topic_id stack output.
+        system_topic_id output.

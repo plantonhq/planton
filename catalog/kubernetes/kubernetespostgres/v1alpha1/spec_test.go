@@ -9,7 +9,7 @@ import (
 	"github.com/onsi/gomega"
 	kubernetes "github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -29,7 +29,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -77,11 +77,11 @@ func r2Store(path string) *KubernetesPostgresObjectStore {
 	return &KubernetesPostgresObjectStore{
 		DestinationPath: path,
 		Backend: &KubernetesPostgresObjectStore_R2{R2: &KubernetesPostgresR2ObjectStore{
-			AccountId:    valueFrom(cloudresourcekind.CloudResourceKind_CloudflareR2Bucket, "pg-archive", "status.outputs.account_id"),
-			Jurisdiction: valueFrom(cloudresourcekind.CloudResourceKind_CloudflareR2Bucket, "pg-archive", "status.outputs.jurisdiction"),
+			AccountId:    valueFrom(catalogkind.CatalogKind_CloudflareR2Bucket, "pg-archive", "status.outputs.account_id"),
+			Jurisdiction: valueFrom(catalogkind.CatalogKind_CloudflareR2Bucket, "pg-archive", "status.outputs.jurisdiction"),
 			Credentials: &KubernetesPostgresR2Credentials{
-				AccessKeyId:     valueFrom(cloudresourcekind.CloudResourceKind_CloudflareAccountApiToken, "pg-archive-writer", "status.outputs.r2_access_key_id"),
-				SecretAccessKey: valueFrom(cloudresourcekind.CloudResourceKind_CloudflareAccountApiToken, "pg-archive-writer", "status.outputs.r2_secret_access_key"),
+				AccessKeyId:     valueFrom(catalogkind.CatalogKind_CloudflareAccountApiToken, "pg-archive-writer", "status.outputs.r2_access_key_id"),
+				SecretAccessKey: valueFrom(catalogkind.CatalogKind_CloudflareAccountApiToken, "pg-archive-writer", "status.outputs.r2_secret_access_key"),
 			},
 		}},
 	}
@@ -102,7 +102,7 @@ var _ = ginkgo.Describe("KubernetesPostgres Validation Tests", func() {
 		input = &KubernetesPostgres{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesPostgres",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-postgres",
 			},
 			Spec: &KubernetesPostgresSpec{
@@ -118,7 +118,7 @@ var _ = ginkgo.Describe("KubernetesPostgres Validation Tests", func() {
 		})
 
 		ginkgo.It("namespace as a reference should be valid", func() {
-			input.Spec.Namespace = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "databases", "spec.name")
+			input.Spec.Namespace = valueFrom(catalogkind.CatalogKind_KubernetesNamespace, "databases", "spec.name")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -143,7 +143,7 @@ var _ = ginkgo.Describe("KubernetesPostgres Validation Tests", func() {
 		})
 
 		ginkgo.It("storage class as a reference with resize disabled should be valid", func() {
-			input.Spec.Storage.StorageClass = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesStorageClass, "fast-ssd", "status.outputs.storage_class_name")
+			input.Spec.Storage.StorageClass = valueFrom(catalogkind.CatalogKind_KubernetesStorageClass, "fast-ssd", "status.outputs.storage_class_name")
 			input.Spec.Storage.ResizeInUseVolumes = boolPtr(false)
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
@@ -481,7 +481,7 @@ var _ = ginkgo.Describe("KubernetesPostgres Validation Tests", func() {
 
 		ginkgo.It("server TLS secret paired with its CA secret should be valid (tls_needs_ca)", func() {
 			input.Spec.Certificates = &KubernetesPostgresCertificates{
-				ServerTlsSecret: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesCertificate, "pg-server-cert", "status.outputs.secret_name"),
+				ServerTlsSecret: valueFrom(catalogkind.CatalogKind_KubernetesCertificate, "pg-server-cert", "status.outputs.secret_name"),
 				ServerCaSecret:  "pg-server-ca",
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())

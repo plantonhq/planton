@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: digitaloceandatabasefirewall
+    e2e-catalog-kind: digitaloceandatabasefirewall
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "DigitalOceanDroplet"

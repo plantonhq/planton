@@ -5,7 +5,7 @@ import (
 
 	gcpprojectv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpproject/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -23,11 +23,11 @@ type Locals struct {
 	DeletionPolicy string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpprojectv1alpha1.GcpProjectStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpprojectv1alpha1.GcpProjectIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpProject = stackInput.Target
+	locals.GcpProject = iacInput.Target
 
-	target := stackInput.Target
+	target := iacInput.Target
 
 	locals.DisplayName = target.Spec.DisplayName
 	if locals.DisplayName == "" {
@@ -47,7 +47,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpprojectv1alpha1.GcpProje
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = target.Metadata.Name
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpProject.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpProject.String())
 
 	if target.Metadata.Id != "" {
 		locals.GcpLabels[gcplabelkeys.ResourceId] = target.Metadata.Id

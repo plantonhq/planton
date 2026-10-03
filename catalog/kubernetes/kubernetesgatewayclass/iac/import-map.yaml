@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesgatewayclass
 spec:
@@ -21,7 +21,7 @@ spec:
     - name: name
       derivations:
         - from_metadata_name: true
-        - from_stack_output: gateway_class_name
+        - from_output: gateway_class_name
       where_to_find: >-
         The GatewayClass's metadata.name (equals the Planton resource name) —
         `kubectl get gatewayclasss` (NAME column).

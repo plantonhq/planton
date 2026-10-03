@@ -4,7 +4,7 @@ Deploys a subnet inside an AWS VPC -- a contiguous range of IP addresses pinned 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Subnet** -- the IP range in the chosen VPC and availability zone: an explicit IPv4 CIDR or an IPAM-pool allocation, an optional IPv6 `/64` (explicit or IPAM), or an IPv6-only subnet (`ipv6Native`)
 - **Launch behaviour** -- map-public-IP-on-launch, IPv6 auto-assignment, DNS64, and resource-name DNS A/AAAA records, applied to instances started in the subnet
@@ -18,8 +18,8 @@ To build a working network, compose the companion components listed under [Works
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
-- **A VPC** -- the subnet must reference a VPC. Deploy an [AWS VPC](/cloud-catalog/aws-vpc) first, or reference an existing one by id.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **A VPC** -- the subnet must reference a VPC. Deploy an [AWS VPC](/infra-catalog/aws-vpc) first, or reference an existing one by id.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -69,7 +69,7 @@ spec:
 planton apply -f subnet.yaml
 ```
 
-This creates a public subnet whose dedicated route table sends all IPv4 traffic to an internet gateway, both wired by reference to other Planton resources. A Stack Job tracks the provisioning in real time.
+This creates a public subnet whose dedicated route table sends all IPv4 traffic to an internet gateway, both wired by reference to other Planton resources. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -112,7 +112,7 @@ These are the most important decisions when configuring a subnet. Explore the fu
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -123,9 +123,9 @@ These are the most important decisions when configuring a subnet. Explore the fu
 
 `routeTableId` and the IPAM pool fields (`ipv4IpamPoolId`, `ipv6IpamPoolId`) take literal IDs -- no catalog kind produces them.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -150,7 +150,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 A subnet sits between the VPC and the gateways that give it reachability:
 
-- [**AWS VPC**](/cloud-catalog/aws-vpc) -- the network the subnet draws its range from, referenced by `status.outputs.vpc_id`
-- [**AWS Internet Gateway**](/cloud-catalog/aws-internet-gateway) -- the default-route target that makes a subnet public
-- [**AWS NAT Gateway**](/cloud-catalog/aws-nat-gateway) -- the default-route target that gives a private subnet outbound IPv4 access
-- [**AWS Egress-Only Internet Gateway**](/cloud-catalog/aws-egress-only-internet-gateway) -- the `::/0` target for outbound-only IPv6 from a private dual-stack subnet
+- [**AWS VPC**](/infra-catalog/aws-vpc) -- the network the subnet draws its range from, referenced by `status.outputs.vpc_id`
+- [**AWS Internet Gateway**](/infra-catalog/aws-internet-gateway) -- the default-route target that makes a subnet public
+- [**AWS NAT Gateway**](/infra-catalog/aws-nat-gateway) -- the default-route target that gives a private subnet outbound IPv4 access
+- [**AWS Egress-Only Internet Gateway**](/infra-catalog/aws-egress-only-internet-gateway) -- the `::/0` target for outbound-only IPv6 from a private dual-stack subnet

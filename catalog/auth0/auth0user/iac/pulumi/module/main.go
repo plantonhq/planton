@@ -8,16 +8,16 @@ import (
 )
 
 // Resources creates an Auth0 User, sets its authoritative roles and direct
-// permissions, and exports the outputs, from the stack input.
-func Resources(ctx *pulumi.Context, stackInput *auth0userv1alpha1.Auth0UserStackInput) error {
-	locals, err := initializeLocals(ctx, stackInput)
+// permissions, and exports the outputs, from the IaC input.
+func Resources(ctx *pulumi.Context, iacInput *auth0userv1alpha1.Auth0UserIacInput) error {
+	locals, err := initializeLocals(ctx, iacInput)
 	if err != nil {
 		return errors.Wrap(err, "failed to initialize locals")
 	}
 
 	// Setup Auth0 provider with credentials from provider config.
 	var provider *auth0.Provider
-	providerConfig := stackInput.ProviderConfig
+	providerConfig := iacInput.ProviderConfig
 
 	if providerConfig == nil {
 		// Use default provider (assumes credentials from environment variables).
@@ -54,6 +54,6 @@ func Resources(ctx *pulumi.Context, stackInput *auth0userv1alpha1.Auth0UserStack
 		return errors.Wrap(err, "failed to set Auth0 user permissions")
 	}
 
-	// Export stack outputs.
+	// Export outputs.
 	return exportOutputs(ctx, user, mintedPassword, minted)
 }

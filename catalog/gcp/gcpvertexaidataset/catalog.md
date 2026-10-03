@@ -4,7 +4,7 @@ Registers a Vertex AI managed dataset -- the container Vertex AI training, AutoM
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `aiplatform.googleapis.com` on the project
 - **Dataset** -- a `vertex.AiDataset` with the chosen data type, display name, labels, and optional CMEK
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Vertex AI admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Vertex AI admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Optional Dependencies
@@ -47,7 +47,7 @@ spec:
 planton apply -f vertex-ai-dataset.yaml
 ```
 
-This registers an empty image dataset in `us-central1`, ready for imports and labeling. A Stack Job tracks the provisioning in real time.
+This registers an empty image dataset in `us-central1`, ready for imports and labeling. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -65,16 +65,16 @@ These are the most important decisions when configuring a dataset. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpKmsKey** | `kmsKeyName` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -92,7 +92,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- customer-managed encryption
-- [**GCP GCS Bucket**](/cloud-catalog/gcp-gcs-bucket) -- where image, text, and video items are imported from
-- [**GCP BigQuery Table**](/cloud-catalog/gcp-big-query-table) -- where tabular rows are imported from
-- [**GCP Vertex AI TensorBoard**](/cloud-catalog/gcp-vertex-ai-tensorboard) -- where the training runs over the dataset stream their metrics
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- customer-managed encryption
+- [**GCP GCS Bucket**](/infra-catalog/gcp-gcs-bucket) -- where image, text, and video items are imported from
+- [**GCP BigQuery Table**](/infra-catalog/gcp-big-query-table) -- where tabular rows are imported from
+- [**GCP Vertex AI TensorBoard**](/infra-catalog/gcp-vertex-ai-tensorboard) -- where the training runs over the dataset stream their metrics

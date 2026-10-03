@@ -4,18 +4,18 @@ import (
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/catalog/azure/azurecontainerappjob/iac/pulumi/module"
 	azurecontainerappjobv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurecontainerappjob/v1alpha1"
-	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/stackinput"
+	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/iacinput"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
-		stackInput := &azurecontainerappjobv1alpha1.AzureContainerAppJobStackInput{}
+		iacInput := &azurecontainerappjobv1alpha1.AzureContainerAppJobIacInput{}
 
-		if err := stackinput.LoadStackInput(ctx, stackInput); err != nil {
-			return errors.Wrap(err, "failed to load stack-input")
+		if err := iacinput.LoadIacInput(ctx, iacInput); err != nil {
+			return errors.Wrap(err, "failed to load iac-input")
 		}
 
-		return module.Resources(ctx, stackInput)
+		return module.Resources(ctx, iacInput)
 	})
 }

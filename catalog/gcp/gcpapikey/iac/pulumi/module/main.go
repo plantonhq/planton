@@ -7,8 +7,8 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *gcpapikeyv1alpha1.GcpApiKeyStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *gcpapikeyv1alpha1.GcpApiKeyIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// The API Keys API attributes quota to the caller's project on
 	// user-credential calls: under plain ADC (`gcloud auth
@@ -16,8 +16,8 @@ func Resources(ctx *pulumi.Context, stackInput *gcpapikeyv1alpha1.GcpApiKeyStack
 	// fails with 403 "requires a quota project" -- the same behavior the
 	// Identity Toolkit API shows, and the same fix. The override attributes
 	// quota to the key's own project under every credential mode.
-	gcpProvider, err := pulumigoogleprovider.GetWithQuotaProject(ctx, stackInput.ProviderConfig,
-		stackInput.Target.GetSpec().GetProjectId().GetValue())
+	gcpProvider, err := pulumigoogleprovider.GetWithQuotaProject(ctx, iacInput.ProviderConfig,
+		iacInput.Target.GetSpec().GetProjectId().GetValue())
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

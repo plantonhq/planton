@@ -5,9 +5,9 @@ package dev.planton.aws.awsssmparameter.v1alpha1;
 import "catalog/aws/awsssmparameter/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsSsmParameterStackInput is the input for the IaC modules that
+// AwsSsmParameterIacInput is the input for the IaC modules that
 // manage an SSM Parameter Store entry.
-message AwsSsmParameterStackInput {
+message AwsSsmParameterIacInput {
   // target is the AwsSsmParameter resource to deploy.
   AwsSsmParameter target = 1;
   // provider_config contains the AWS provider credentials and configuration.

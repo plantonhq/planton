@@ -13,12 +13,12 @@ var Tofu = &cobra.Command{
 }
 
 func init() {
-	Tofu.PersistentFlags().String(string(flag.Manifest), "", "path of the component manifest file")
+	Tofu.PersistentFlags().String(string(flag.Manifest), "", "path of the kind manifest file")
 
 	// The shared manifest resolver reads this flag on every source-resolution
 	// path, so every IaC command group must register it (the pulumi group does
 	// the same); without it, `tofu <cmd> --manifest ...` fails before running.
-	Tofu.PersistentFlags().StringP(string(flag.StackInput), "i", "", "path to a YAML file containing the stack input (extracts manifest from target field)")
+	Tofu.PersistentFlags().StringP(string(flag.IacInput), "i", "", "path to a YAML file containing the IaC input (extracts manifest from target field)")
 
 	Tofu.PersistentFlags().String(string(flag.InputDir), "", "directory containing target.yaml and credential yaml files")
 	Tofu.PersistentFlags().String(string(flag.KustomizeDir), "", "directory containing kustomize configuration")

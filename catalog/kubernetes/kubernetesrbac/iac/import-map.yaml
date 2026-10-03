@@ -1,52 +1,52 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesrbac
 spec:
   # An RBAC grant creates at most one role object and one binding object. The
   # role's name is the explicit create_role.name when set, otherwise the
   # component's metadata.name (the module's naming rule); the binding is
-  # always named after the component. Stack outputs carry the actual names
+  # always named after the component. Outputs carry the actual names
   # from a prior deploy and take precedence.
   values:
     - name: role_name
       derivations:
-        - from_stack_output: role_name
+        - from_output: role_name
         - from_spec_field: create_role.name
       where_to_find: >-
         `kubectl get roles -n <namespace>` (NAME column); when create_role
         omits a name the module uses the component's metadata.name.
     - name: role_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace_scope.namespace.value
       where_to_find: >-
         `kubectl get roles -A` (NAMESPACE column); "default" when
         namespace_scope omits the namespace.
     - name: role_binding_name
       derivations:
-        - from_stack_output: binding_name
+        - from_output: binding_name
         - from_metadata_name: true
       where_to_find: >-
         `kubectl get rolebindings -n <namespace>` (NAME column); the module
         names the binding after the component's metadata.name.
     - name: role_binding_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace_scope.namespace.value
       where_to_find: >-
         `kubectl get rolebindings -A` (NAMESPACE column); "default" when
         namespace_scope omits the namespace.
     - name: cluster_role_name
       derivations:
-        - from_stack_output: role_name
+        - from_output: role_name
         - from_spec_field: create_role.name
       where_to_find: >-
         `kubectl get clusterroles` (NAME column); when create_role omits a
         name the module uses the component's metadata.name.
     - name: cluster_role_binding_name
       derivations:
-        - from_stack_output: binding_name
+        - from_output: binding_name
         - from_metadata_name: true
       where_to_find: >-
         `kubectl get clusterrolebindings` (NAME column); the module names the

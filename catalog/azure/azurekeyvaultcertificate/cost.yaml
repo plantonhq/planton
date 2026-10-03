@@ -6,9 +6,9 @@
 # certificate operation on the vault's per-10,000-transactions meter -- so
 # an idle certificate bills nothing, and the money follows enrollments,
 # renewals, and the reads consumers make against its faces.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurekeyvaultcertificate
 spec:

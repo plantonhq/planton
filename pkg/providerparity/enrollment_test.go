@@ -8,7 +8,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // writeParityPage writes a minimal committed parity page carrying the
@@ -38,8 +38,8 @@ func TestDiscoverEnrollmentsReadsCommittedPages(t *testing.T) {
 		t.Fatal(err)
 	}
 	want := []Enrollment{
-		{Provider: cloudresourcekind.CloudResourceProvider_aws, GASchema: "aws"},
-		{Provider: cloudresourcekind.CloudResourceProvider_gcp, GASchema: "google"},
+		{Provider: catalogkind.CatalogProvider_aws, GASchema: "aws"},
+		{Provider: catalogkind.CatalogProvider_gcp, GASchema: "google"},
 	}
 	if len(enrollments) != len(want) {
 		t.Fatalf("discovered %d enrollments, want %d", len(enrollments), len(want))

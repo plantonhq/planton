@@ -1,4 +1,4 @@
-# AwsCostAnomalyMonitor — Component Guide
+# AwsCostAnomalyMonitor — Kind Guide
 
 Authored operational judgment for the anomaly-monitor component: the
 design decisions behind the spec's shape, and what to know before

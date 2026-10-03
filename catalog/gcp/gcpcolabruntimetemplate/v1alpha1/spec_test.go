@@ -35,7 +35,7 @@ var _ = ginkgo.Describe("GcpColabRuntimeTemplateSpec", func() {
 		return &GcpColabRuntimeTemplate{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpColabRuntimeTemplate",
-			Metadata:   &shared.CloudResourceMetadata{Name: "standard-runtime"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "standard-runtime"},
 			Spec:       &GcpColabRuntimeTemplateSpec{Location: "us-central1"},
 		}
 	}

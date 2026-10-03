@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbedrockflow.v1alpha1;
 
-// AwsBedrockFlowStackOutputs captures observable identifiers from a
+// AwsBedrockFlowOutputs captures observable identifiers from a
 // provisioned Bedrock flow.
-message AwsBedrockFlowStackOutputs {
+message AwsBedrockFlowOutputs {
   // The unique flow identifier (e.g. "ABCDEFGHIJ").
   string flow_id = 1;
 

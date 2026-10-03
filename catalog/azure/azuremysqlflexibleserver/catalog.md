@@ -4,7 +4,7 @@ Deploys an Azure Database for MySQL Flexible Server with configurable compute ti
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **MySQL Flexible Server** -- a managed MySQL server in the specified Azure region and resource group, with configurable compute SKU (Burstable, General Purpose, or Memory Optimized), storage with optional auto-grow / provisioned IOPS / elastic IO scaling, MySQL version, password authentication, backup retention, and optional geo-redundant backups
 - **High Availability Standby** -- created only when `highAvailability` is configured; a standby server in `ZONE_REDUNDANT` mode (different availability zone) or `SAME_ZONE` mode (same zone, faster failover)
@@ -19,13 +19,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the MySQL server will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
-- **A delegated subnet** (optional, for VNet integration) -- a subnet delegated to `Microsoft.DBforMySQL/flexibleServers`. When provided, public access must not be ENABLED. Use the AzureSubnet component with a delegation block. Provide the subnet ID directly or reference via ValueFromRef. This is a ForceNew field.
+- **An Azure Resource Group** where the MySQL server will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
+- **A delegated subnet** (optional, for VNet integration) -- a subnet delegated to `Microsoft.DBforMySQL/flexibleServers`. When provided, public access must not be ENABLED. Use the AzureSubnet kind with a delegation block. Provide the subnet ID directly or reference via ValueFromRef. This is a ForceNew field.
 - **A Private DNS Zone** (optional, for VNet integration) -- enables FQDN resolution to the server's private IP within the VNet. This is a ForceNew field.
 
 ## Deploy
@@ -64,7 +64,7 @@ spec:
 planton apply -f mysql-server.yaml
 ```
 
-This creates a MySQL Flexible Server with public access, MySQL 8.0.21, General Purpose compute (2 vCPU, 8 GiB), 32 GB storage with auto-grow enabled (Azure's MySQL default), and one database. No firewall rules or high availability are configured. A Stack Job tracks the provisioning in real time.
+This creates a MySQL Flexible Server with public access, MySQL 8.0.21, General Purpose compute (2 vCPU, 8 GiB), 32 GB storage with auto-grow enabled (Azure's MySQL default), and one database. No firewall rules or high availability are configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -109,7 +109,7 @@ These are the most important decisions when configuring a MySQL Flexible Server.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -120,9 +120,9 @@ These are the most important decisions when configuring a MySQL Flexible Server.
 | **AzureUserAssignedIdentity** (optional) | `userAssignedIdentityIds`, `aadAdministrator.identityId` / `objectId`, `customerManagedKey.primaryUserAssignedIdentityId` | `status.outputs.identity_id` / `status.outputs.client_id` |
 | **AzureKeyVaultKey** (optional) | `customerManagedKey.keyVaultKeyId` | `status.outputs.versionless_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -144,8 +144,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the MySQL server is created
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- provides the delegated subnet for VNet-integrated private access
-- [**Azure Private DNS Zone**](/cloud-catalog/azure-private-dns-zone) -- provides the private DNS zone for FQDN resolution in VNet mode
-- [**Azure Key Vault Key**](/cloud-catalog/azure-key-vault-key) -- the customer-managed encryption key (`customerManagedKey.keyVaultKeyId`)
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- unwraps the CMK and serves as the Entra administrator principal
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the MySQL server is created
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- provides the delegated subnet for VNet-integrated private access
+- [**Azure Private DNS Zone**](/infra-catalog/azure-private-dns-zone) -- provides the private DNS zone for FQDN resolution in VNet mode
+- [**Azure Key Vault Key**](/infra-catalog/azure-key-vault-key) -- the customer-managed encryption key (`customerManagedKey.keyVaultKeyId`)
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- unwraps the CMK and serves as the Entra administrator principal

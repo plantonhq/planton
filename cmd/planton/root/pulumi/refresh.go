@@ -9,9 +9,9 @@ import (
 	climanifest "github.com/plantonhq/planton/internal/cli/manifest"
 	"github.com/plantonhq/planton/internal/cli/ui"
 	"github.com/plantonhq/planton/internal/manifest"
+	"github.com/plantonhq/planton/pkg/iac/iacinput/iacinputproviderconfig"
 	"github.com/plantonhq/planton/pkg/iac/localmodule"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumistack"
-	"github.com/plantonhq/planton/pkg/iac/stackinput/stackinputproviderconfig"
 	"github.com/plantonhq/planton/pkg/kubernetes/kubecontext"
 	"github.com/plantonhq/planton/shared"
 	"github.com/plantonhq/planton/shared/iac/pulumi"
@@ -97,7 +97,7 @@ func refreshHandler(cmd *cobra.Command, args []string) {
 	}
 
 	cliprint.PrintStep("Preparing Pulumi execution...")
-	providerConfig, err := stackinputproviderconfig.GetFromFlagsSimple(cmd.Flags())
+	providerConfig, err := iacinputproviderconfig.GetFromFlagsSimple(cmd.Flags())
 	if err != nil {
 		cliprint.PrintError(fmt.Sprintf("Failed to get provider config: %v", err))
 		os.Exit(1)
@@ -123,10 +123,10 @@ func refreshHandler(cmd *cobra.Command, args []string) {
 	showDiff, _ := cmd.Flags().GetBool(string(flag.Diff))
 	noCleanup, _ := cmd.Flags().GetBool(string(flag.NoCleanup))
 	moduleVersion, _ := cmd.Flags().GetString(string(flag.ModuleVersion))
-	stackInputFilePath, _ := cmd.Flags().GetString(string(flag.StackInput))
+	iacInputFilePath, _ := cmd.Flags().GetString(string(flag.IacInput))
 
 	err = pulumistack.Run(moduleDir, stackFqdn, targetManifestPath,
-		pulumi.PulumiOperationType_refresh, false, true, valueOverrides, showDiff, moduleVersion, noCleanup, kubeCtx, stackInputFilePath, providerConfig)
+		pulumi.PulumiOperationType_refresh, false, true, valueOverrides, showDiff, moduleVersion, noCleanup, kubeCtx, iacInputFilePath, providerConfig)
 	if err != nil {
 		ui.EngineExecutionFailed("Pulumi", err)
 		os.Exit(1)

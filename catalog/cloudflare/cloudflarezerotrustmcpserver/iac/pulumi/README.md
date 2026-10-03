@@ -5,11 +5,11 @@ Pulumi (Go) IaC module for MCP server registrations behind Access AI Controls.
 ## Architecture
 
 ```
-main.go                   — Entrypoint loading the stack input
+main.go                   — Entrypoint loading the IaC input
 module/main.go            — Resources(): provider setup, resource, outputs
 module/locals.go          — Locals initialization
 module/mcp_server.go      — cloudflare.ZeroTrustAccessAiControlsMcpServer
-module/outputs.go         — Stack output keys
+module/outputs.go         — output keys
 ```
 
 ## Behavior

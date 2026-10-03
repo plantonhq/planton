@@ -1,5 +1,5 @@
-# Stack outputs — identical names and derivations in the Pulumi module
-# (KubernetesKyvernoStackOutputs).
+# Outputs — identical names and derivations in the Pulumi module
+# (KubernetesKyvernoOutputs).
 
 output "namespace" {
   description = "Namespace the engine is installed into"

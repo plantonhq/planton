@@ -43,7 +43,7 @@ At least one of `zone_enabled` / `hostname_associations` must be set -- an empty
 | `zone_enabled` | bool | The zone-wide toggle. Unset = not managed; set = asserted. |
 | `hostname_associations` | list | Rows of `{hostname, certificate_id, enabled}`. `certificate_id` is REQUIRED and references a `CloudflareAuthenticatedOriginPullsCertificate` -- Cloudflare rejects an association write without a certificate id (400 code 1404), even when zone-level certificate material exists. `enabled` unset means active -- both engines send true, because Cloudflare treats null as "void the association". |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

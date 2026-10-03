@@ -5,7 +5,7 @@
 `.../azurecontainerapp/v1`, `.../azurecontainerappjob/v1` (new),
 `.../azurecontainerappenvironmentstorage/v1` (new),
 `.../azurecontainerappenvironmentdaprcomponent/v1` (new),
-`cloud_resource_kind.proto`, `pkg/crkreflect`, `pkg/outputs`,
+`catalog_kind.proto`, `pkg/catalogkindreflect`, `pkg/outputs`,
 `aa_e2e` + `e2e/azure`, forge rule 009, `e2e/README.md`
 
 ## Summary
@@ -80,7 +80,7 @@ zero orphans.
 - Live-caught and fixed: the environment modules sent
   `internal_load_balancer_enabled`/`zone_redundancy_enabled` without the
   subnet — the provider rejects a SPECIFIED false without its RequiredWith
-  pairing (manifest-driven stack inputs materialize proto defaults). Both
+  pairing (manifest-driven IaC inputs materialize proto defaults). Both
   engines now gate the pair on subnet presence.
 
 ## Validation

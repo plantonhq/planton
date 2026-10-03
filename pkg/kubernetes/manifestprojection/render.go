@@ -4,7 +4,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/pkg/iac/specprojection"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
@@ -13,7 +13,7 @@ import (
 type Manifest interface {
 	proto.Message
 	GetKind() string
-	GetMetadata() *shared.CloudResourceMetadata
+	GetMetadata() *shared.CatalogObjectMetadata
 }
 
 // Object is the custom resource a projection kind's manifest renders to.
@@ -33,11 +33,11 @@ type Object struct {
 // apply. References in the spec must already be resolved to literal values,
 // which the platform does before any module runs.
 func Render(m Manifest) (*Object, error) {
-	kind, ok := cloudresourcekind.CloudResourceKind_value[m.GetKind()]
+	kind, ok := catalogkind.CatalogKind_value[m.GetKind()]
 	if !ok {
 		return nil, errors.Errorf("unknown kind %q", m.GetKind())
 	}
-	proj := ProjectionOf(cloudresourcekind.CloudResourceKind(kind))
+	proj := ProjectionOf(catalogkind.CatalogKind(kind))
 	if proj == nil {
 		return nil, errors.Errorf("%s is not a Kubernetes manifest projection kind", m.GetKind())
 	}
@@ -90,12 +90,12 @@ func Render(m Manifest) (*Object, error) {
 // ProjectionOf returns a kind's kubernetes_manifest_projection, or nil when
 // the kind is not a projection kind. It reads the kind enum's options
 // directly, so callers need not link the registry's message map.
-func ProjectionOf(kind cloudresourcekind.CloudResourceKind) *cloudresourcekind.KubernetesManifestProjection {
+func ProjectionOf(kind catalogkind.CatalogKind) *catalogkind.KubernetesManifestProjection {
 	value := kind.Descriptor().Values().ByNumber(kind.Number())
 	if value == nil || value.Options() == nil {
 		return nil
 	}
-	meta, _ := proto.GetExtension(value.Options(), cloudresourcekind.E_KindMeta).(*cloudresourcekind.CloudResourceKindMeta)
+	meta, _ := proto.GetExtension(value.Options(), catalogkind.E_KindMeta).(*catalogkind.CatalogKindMeta)
 	return meta.GetKubernetesManifestProjection()
 }
 

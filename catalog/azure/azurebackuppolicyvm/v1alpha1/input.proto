@@ -5,10 +5,10 @@ package dev.planton.azure.azurebackuppolicyvm.v1alpha1;
 import "catalog/azure/azurebackuppolicyvm/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureBackupPolicyVmStackInput is the input to the IaC modules
+// AzureBackupPolicyVmIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureBackupPolicyVmStackInput {
+message AzureBackupPolicyVmIacInput {
   // The backup policy resource to deploy.
   AzureBackupPolicyVm target = 1;
 

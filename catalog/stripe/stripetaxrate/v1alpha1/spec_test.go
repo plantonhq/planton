@@ -18,7 +18,7 @@ func taxRate(spec *StripeTaxRateSpec) *StripeTaxRate {
 	return &StripeTaxRate{
 		ApiVersion: "stripe.planton.dev/v1alpha1",
 		Kind:       "StripeTaxRate",
-		Metadata:   &shared.CloudResourceMetadata{Name: "de-vat"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "de-vat"},
 		Spec:       spec,
 	}
 }

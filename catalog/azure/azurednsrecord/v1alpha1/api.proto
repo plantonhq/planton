@@ -18,7 +18,7 @@ message AzureDnsRecord {
   string kind = 2 [(buf.validate.field).string.const = 'AzureDnsRecord'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   AzureDnsRecordSpec spec = 4 [(buf.validate.field).required = true];
@@ -29,7 +29,7 @@ message AzureDnsRecord {
 
 // AzureDnsRecordStatus represents the status of an Azure DNS Record deployment.
 message AzureDnsRecordStatus {
-  //stack-outputs
-  //  azure-dns-record stack-outputs
-  AzureDnsRecordStackOutputs outputs = 1;
+  //outputs
+  //  azure-dns-record outputs
+  AzureDnsRecordOutputs outputs = 1;
 }

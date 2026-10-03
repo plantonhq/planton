@@ -17,7 +17,7 @@ component, at 100% behavioral parity with the Terraform module.
   never sends the empty string; the firewall's default action has no
   fallback row because the spec requires an explicit choice.
 - `local_authentication_enabled` and `public_network_access_enabled` are
-  presence-guarded to Azure's defaults (true) -- direct stack-input
+  presence-guarded to Azure's defaults (true) -- direct iac-input
   paths do not materialize proto defaults.
 - `capacity`, `auto_inflate_enabled`, and `maximum_throughput_units` are
   sent only when present so Azure's defaults apply otherwise.

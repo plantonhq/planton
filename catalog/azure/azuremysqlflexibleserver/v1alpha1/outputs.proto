@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azuremysqlflexibleserver.v1alpha1;
 
-// **AzureMysqlFlexibleServerStackOutputs** captures the outputs of
+// **AzureMysqlFlexibleServerOutputs** captures the outputs of
 // provisioning an Azure Database for MySQL Flexible Server.
 //
 // `fqdn` + `administrator_login` are what applications need to construct
@@ -10,7 +10,7 @@ package dev.planton.azure.azuremysqlflexibleserver.v1alpha1;
 // attaches to or derives from the server: AzurePrivateEndpoint's
 // private_connection_resource_id, and another AzureMysqlFlexibleServer's
 // source_server_id when composing read replicas or restores.
-message AzureMysqlFlexibleServerStackOutputs {
+message AzureMysqlFlexibleServerOutputs {
   // The Azure Resource Manager ID of the server.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.DBforMySQL/flexibleServers/{name}
   // Referenced by AzurePrivateEndpoint (private_connection_resource_id)

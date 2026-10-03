@@ -32,7 +32,7 @@ func buildHelmValues(locals *Locals) (map[string]interface{}, error) {
 	// chart object then carries a deterministic, manifest-derived name —
 	// the write Service renders as `<name>`, pod discovery as
 	// `<name>-headless`, and the replication read Service as `<name>-read`,
-	// which is exactly what the stack outputs promise and what lets several
+	// which is exactly what the outputs promise and what lets several
 	// Valkey instances coexist in one cluster.
 	values["fullnameOverride"] = locals.ReleaseName
 

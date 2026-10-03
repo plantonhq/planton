@@ -1,14 +1,14 @@
 # Where each placeholder in this component's import-ID formats comes
 # from (the formats themselves live in aa_import/catalog.yaml).
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awss3directorybucket
 spec:
   values:
     - name: bucket_name
       derivations:
-        - from_stack_output: bucket_name
+        - from_output: bucket_name
       where_to_find: >-
         S3 console -> Directory buckets (the full
         "{base}--{zone_id}--x-s3" name), or `aws s3api

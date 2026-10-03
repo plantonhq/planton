@@ -4,7 +4,7 @@ Deploys an Azure Files share inside an Azure Storage Account -- the SMB/NFS file
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Azure Files Share** -- a share on the referenced storage account (by ARM ID -- the control-plane path), with your chosen provisioned quota, protocol, performance tier, stored access policies, and data-plane metadata
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -52,7 +52,7 @@ spec:
 planton apply -f share.yaml
 ```
 
-This creates an SMB share -- what Windows mounts natively and Linux mounts via cifs -- with a 500 GB provisioned quota. A Stack Job tracks the provisioning in real time.
+This creates an SMB share -- what Windows mounts natively and Linux mounts via cifs -- with a 500 GB provisioned quota. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,15 +87,15 @@ These are the most important decisions when configuring a share. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureStorageAccount** | `storageAccountId` | `status.outputs.storage_account_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -118,5 +118,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- the parent account and the source of the file endpoint mount paths compose from
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- share-scoped data-plane grants targeting `rbac_scope_id`
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- the parent account and the source of the file endpoint mount paths compose from
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- share-scoped data-plane grants targeting `rbac_scope_id`

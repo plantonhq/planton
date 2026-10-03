@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflareauthenticatedoriginpulls.v1alpha1;
 
-// CloudflareAuthenticatedOriginPullsStackOutputs captures the observable
+// CloudflareAuthenticatedOriginPullsOutputs captures the observable
 // outputs after managing a zone's Authenticated Origin Pulls surface.
-message CloudflareAuthenticatedOriginPullsStackOutputs {
+message CloudflareAuthenticatedOriginPullsOutputs {
   // The zone whose Authenticated Origin Pulls surface is managed. The surface
   // is zone-singleton shaped -- the zone id IS its identity.
   string zone_id = 1;

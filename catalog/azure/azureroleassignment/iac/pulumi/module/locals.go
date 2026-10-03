@@ -23,11 +23,11 @@ type Locals struct {
 // Note: role assignments carry no tags -- Microsoft.Authorization resources do
 // not support ARM tags, so the usual metadata-derived tag map is intentionally
 // absent from these locals.
-func initializeLocals(ctx *pulumi.Context, stackInput *azureroleassignmentv1alpha1.AzureRoleAssignmentStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureroleassignmentv1alpha1.AzureRoleAssignmentIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureRoleAssignment = stackInput.Target
-	spec := stackInput.Target.Spec
+	locals.AzureRoleAssignment = iacInput.Target
+	spec := iacInput.Target.Spec
 
 	locals.Scope = spec.Scope.GetValue()
 	locals.PrincipalId = spec.PrincipalId.GetValue()

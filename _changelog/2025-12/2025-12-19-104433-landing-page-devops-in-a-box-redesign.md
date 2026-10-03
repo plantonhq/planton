@@ -43,7 +43,7 @@ Three-column layout targeting key audiences:
 ### 3. Infra Hub Section
 - Zero-config CI/CD with live Terraform visualization mock
 - Infra Charts explanation (DAG orchestration)
-- Deployment Component Store by cloud provider (AWS, GCP, Azure)
+- Catalog Kind Store by cloud provider (AWS, GCP, Azure)
 - Customer proof point: iorta TechNext
 
 ### 4. Service Hub Section
@@ -98,13 +98,13 @@ Three-column layout targeting key audiences:
 
 ## Implementation Details
 
-### New Component Architecture
+### New Kind Architecture
 
 Created `/src/components/landing-page-v2/` with:
 
 ```
 landing-page-v2/
-├── index.ts              # Exports all components
+├── index.ts              # Exports all kinds
 ├── shared.tsx            # Design system (colors, Section, Typography, Buttons, Cards, Badges, Icons)
 ├── HeroSection.tsx       # Hero with animated mock dashboard
 ├── ProblemSolution.tsx   # Three-column target audience cards
@@ -130,7 +130,7 @@ Created a consistent design system in `shared.tsx`:
 - Background: `#0a0a0a` with gradient variants
 - Text: White primary, `#a0a0a0` secondary, `#666` muted
 
-**Components:**
+**Kinds:**
 - `Section` - Wrapper with variant support (default, dark, gradient)
 - `SectionTitle`, `SectionSubtitle`, `FeatureTitle`, `BodyText` - Typography hierarchy
 - `PrimaryButton`, `SecondaryButton` - Gradient and outlined styles
@@ -152,7 +152,7 @@ All CTAs properly linked:
 ### Files Modified
 
 ```
-src/app/(root)/page.tsx          # Updated to use new components
+src/app/(root)/page.tsx          # Updated to use new kinds
 src/components/index.ts          # Added landing-page-v2 export
 ```
 
@@ -173,7 +173,7 @@ src/components/index.ts          # Added landing-page-v2 export
 ### For Development
 - **Component library**: Reusable design system for future pages
 - **Clean architecture**: Separate v2 folder, no breaking changes to existing pages
-- **Type-safe**: Full TypeScript with MUI components
+- **Type-safe**: Full TypeScript with MUI kinds
 
 ## Impact
 
@@ -227,4 +227,4 @@ Potential improvements for follow-up work:
 **Status**: ✅ Live (development)  
 **Timeline**: Single session (~2 hours)  
 **Files Created**: 14 new files in `landing-page-v2/`  
-**Lines of Code**: ~2,500 lines of new component code
+**Lines of Code**: ~2,500 lines of new kind code

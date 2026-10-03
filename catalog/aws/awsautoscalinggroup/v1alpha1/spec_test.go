@@ -27,7 +27,7 @@ func minimalValidGroup() *AwsAutoScalingGroup {
 	return &AwsAutoScalingGroup{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsAutoScalingGroup",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "web",
 		},
 		Spec: &AwsAutoScalingGroupSpec{

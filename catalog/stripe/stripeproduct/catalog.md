@@ -1,10 +1,10 @@
 # Stripe Product
 
-Declares one thing your Stripe account sells -- a subscription plan, a seat, a physical good -- exactly as customers see it, and the entitlement features a purchase grants. Prices are separate Cloud Resources that name the product. One Cloud Resource per product.
+Declares one thing your Stripe account sells -- a subscription plan, a seat, a physical good -- exactly as customers see it, and the entitlement features a purchase grants. Prices are separate Infra Components that name the product. One Infra Component per product.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the OpenTofu module creates, in the Stripe account your Stripe connection's key belongs to:
+When you deploy this Infra Component, the OpenTofu module creates, in the Stripe account your Stripe connection's key belongs to:
 
 - **The product** -- its name, description, images and pricing-table lines
 - **One feature link per granted feature** -- each attaches a Stripe Entitlement Feature, so subscribers hold it
@@ -51,7 +51,7 @@ spec:
 planton apply -f stripe-product.yaml
 ```
 
-A Stack Job tracks the change in real time.
+An Infra Job tracks the change in real time.
 
 ### InfraChart
 
@@ -82,13 +82,13 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Field | Kind | Output |
 |-------|------|--------|
 | `features` | Stripe Entitlement Feature | `status.outputs.id` |
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -109,6 +109,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Stripe Price**](/cloud-catalog/stripe-price) -- how much, how often and in which currencies the product is charged.
-- [**Stripe Entitlement Feature**](/cloud-catalog/stripe-entitlement-feature) -- the capabilities the product grants.
-- [**Stripe Billing Portal Configuration**](/cloud-catalog/stripe-billing-portal-configuration) -- lets customers switch between products and their prices.
+- [**Stripe Price**](/infra-catalog/stripe-price) -- how much, how often and in which currencies the product is charged.
+- [**Stripe Entitlement Feature**](/infra-catalog/stripe-entitlement-feature) -- the capabilities the product grants.
+- [**Stripe Billing Portal Configuration**](/infra-catalog/stripe-billing-portal-configuration) -- lets customers switch between products and their prices.

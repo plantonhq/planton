@@ -59,7 +59,7 @@ requires `field` and `value`; an `all` matcher requires neither.
 | `rule_id` | The routing rule identifier |
 | `zone_id` | The zone the rule belongs to |
 
-## Related components
+## Related kinds
 
 - `CloudflareEmailRoutingZone` — must enable Email Routing on the zone first.
 - `CloudflareEmailRoutingAddress` — the verified destinations a rule forwards to.

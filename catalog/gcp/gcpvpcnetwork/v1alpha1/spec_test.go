@@ -30,7 +30,7 @@ var _ = ginkgo.Describe("GcpVpcNetworkSpec Custom Validation Tests", func() {
 		return &GcpVpcNetwork{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpVpcNetwork",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-gcp-vpc-network",
 			},
 			Spec: &GcpVpcNetworkSpec{

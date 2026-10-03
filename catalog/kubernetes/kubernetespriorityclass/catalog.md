@@ -4,7 +4,7 @@ Deploys a cluster-scoped Kubernetes PriorityClass — one step of the workload i
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes PriorityClass** -- a cluster-scoped scheduling.k8s.io/v1 PriorityClass carrying the priority value, preemption policy, optional global-default flag, and description
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -48,7 +48,7 @@ spec:
 planton apply -f priorityclass.yaml
 ```
 
-This creates a preempting class at value 1,000,000 that pods opt into via `priorityClassName: critical`. A Stack Job tracks the provisioning in real time.
+This creates a preempting class at value 1,000,000 that pods opt into via `priorityClassName: critical`. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -64,13 +64,13 @@ These are the most important decisions when configuring a Kubernetes PriorityCla
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign-key dependencies -- it is cluster-scoped and references nothing.
+This kind has no foreign-key dependencies -- it is cluster-scoped and references nothing.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -85,5 +85,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) and [**Kubernetes StatefulSet**](/cloud-catalog/kubernetes-stateful-set) -- pods opt into the class via `priorityClassName` in their pod scheduling configuration
-- [**Kubernetes ResourceQuota**](/cloud-catalog/kubernetes-resource-quota) -- a priority-class-scoped quota budgets how much a tier may consume, so the critical tier can neither starve nor be starved
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) and [**Kubernetes StatefulSet**](/infra-catalog/kubernetes-stateful-set) -- pods opt into the class via `priorityClassName` in their pod scheduling configuration
+- [**Kubernetes ResourceQuota**](/infra-catalog/kubernetes-resource-quota) -- a priority-class-scoped quota budgets how much a tier may consume, so the critical tier can neither starve nor be starved

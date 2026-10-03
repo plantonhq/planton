@@ -45,7 +45,7 @@ func observabilityConfiguration(ctx *pulumi.Context, locals *Locals, provider *a
 		return errors.Wrap(err, "failed to create observability configuration")
 	}
 
-	// Export outputs matching AwsAppRunnerObservabilityConfigurationStackOutputs.
+	// Export outputs matching AwsAppRunnerObservabilityConfigurationOutputs.
 	ctx.Export(OpConfigurationArn, createdConfiguration.Arn)
 	ctx.Export(OpConfigurationRevision, createdConfiguration.ObservabilityConfigurationRevision)
 	ctx.Export(OpLatest, createdConfiguration.Latest)

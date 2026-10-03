@@ -1,6 +1,6 @@
 # Internal VPC Peering Range
 
-This preset reserves a `/20` internal IP range for VPC peering with Google managed services. Cloud SQL, Memorystore (Redis), AlloyDB, and Filestore all use this mechanism to assign private IPs from your VPC, keeping traffic off the public internet. The reserved range is consumed by a `google_service_networking_connection` (typically created by the GcpVpcNetwork component's Private Services Access feature or manually).
+This preset reserves a `/20` internal IP range for VPC peering with Google managed services. Cloud SQL, Memorystore (Redis), AlloyDB, and Filestore all use this mechanism to assign private IPs from your VPC, keeping traffic off the public internet. The reserved range is consumed by a `google_service_networking_connection` (typically created by the GcpVpcNetwork kind's Private Services Access feature or manually).
 
 ## When to Use
 

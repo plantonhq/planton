@@ -5,9 +5,9 @@ package dev.planton.cloudflare.cloudflareturnstilewidget.v1alpha1;
 import "catalog/cloudflare/cloudflareturnstilewidget/v1alpha1/api.proto";
 import "catalog/cloudflare/provider.proto";
 
-//cloudflare-turnstile-widget stack-input
-message CloudflareTurnstileWidgetStackInput {
-  //target cloud-resource
+//cloudflare-turnstile-widget iac-input
+message CloudflareTurnstileWidgetIacInput {
+  //target infra-component
   CloudflareTurnstileWidget target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

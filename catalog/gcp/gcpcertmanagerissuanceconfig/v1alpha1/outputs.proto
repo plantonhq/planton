@@ -4,7 +4,7 @@ package dev.planton.gcp.gcpcertmanagerissuanceconfig.v1alpha1;
 
 // Outputs produced after provisioning a Certificate Manager certificate
 // issuance config.
-message GcpCertManagerIssuanceConfigStackOutputs {
+message GcpCertManagerIssuanceConfigOutputs {
   // Full resource name of the issuance config
   // (projects/{project}/locations/{location}/certificateIssuanceConfigs/{name})
   // -- the value a GcpCertManagerCert's managed.issuance_config takes.

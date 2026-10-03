@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awssagemakerimage
 spec:
   billing_model: free
   free_tier: "A SageMaker AI image is a registry entry -- a named pointer that makes your own ECR container images selectable in Studio and notebook surfaces -- and neither the image nor its versions carries any meter on SageMaker AI's published price sheet. The pricing page's stated model is pay-only-for-what-you-use across instance usage, storage, data processing, model deployment, and MLOps features: what bills is the compute that RUNS an image, never the catalog entry describing it. An image with a hundred registered versions costs exactly what an image with none costs: nothing."
-  notes: "No field of this spec buys anything: role_arn, display_name, the version entries and all their compatibility metadata (job_type, processor, ml_framework, aliases) are SageMaker control-plane configuration. The real spend lives in two places this object points at. First, the container layers behind each version's base_image bill as ECR storage on the AwsEcrRepo component holding them -- an image version is a pointer to that repository, not a copy. Second, the compute that pulls and runs a version bills per instance-hour on its own kind: Studio kernel apps through AwsSagemakerDomain, notebook instances through AwsSagemakerNotebookInstance, and training jobs or endpoints that reference the image. Nothing about the image object itself ever appears on an invoice."
+  notes: "No field of this spec buys anything: role_arn, display_name, the version entries and all their compatibility metadata (job_type, processor, ml_framework, aliases) are SageMaker control-plane configuration. The real spend lives in two places this object points at. First, the container layers behind each version's base_image bill as ECR storage on the AwsEcrRepo kind holding them -- an image version is a pointer to that repository, not a copy. Second, the compute that pulls and runs a version bills per instance-hour on its own kind: Studio kernel apps through AwsSagemakerDomain, notebook instances through AwsSagemakerNotebookInstance, and training jobs or endpoints that reference the image. Nothing about the image object itself ever appears on an invoice."

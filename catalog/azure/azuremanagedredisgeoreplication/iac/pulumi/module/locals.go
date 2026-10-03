@@ -11,13 +11,13 @@ type Locals struct {
 	LinkedManagedRedisIds           []string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuremanagedredisgeoreplicationv1alpha1.AzureManagedRedisGeoReplicationStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuremanagedredisgeoreplicationv1alpha1.AzureManagedRedisGeoReplicationIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureManagedRedisGeoReplication = stackInput.Target
-	locals.ManagedRedisId = stackInput.Target.Spec.ManagedRedisId.GetValue()
+	locals.AzureManagedRedisGeoReplication = iacInput.Target
+	locals.ManagedRedisId = iacInput.Target.Spec.ManagedRedisId.GetValue()
 
-	for _, linkedId := range stackInput.Target.Spec.LinkedManagedRedisIds {
+	for _, linkedId := range iacInput.Target.Spec.LinkedManagedRedisIds {
 		locals.LinkedManagedRedisIds = append(locals.LinkedManagedRedisIds, linkedId.GetValue())
 	}
 

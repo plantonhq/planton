@@ -39,9 +39,9 @@ const (
 	messyBucketName   = "orders-archive-planton-eval"
 )
 
-// messyComponents mirrors the suite's member components (deduplicated) for
+// messyKinds mirrors the suite's member kinds (deduplicated) for
 // ScoreOptionsFromCatalog.
-var messyComponents = []string{
+var messyKinds = []string{
 	"awsvpc", "awsinternetgateway", "awssubnet", "awskmskey",
 	"awssecuritygroup", "awsdynamodb", "awssqsqueue", "awsecrrepo",
 	"awss3bucket",
@@ -266,7 +266,7 @@ func loadMessyFixtureScan(t *testing.T) *mappingeval.Scan {
 
 // buildMessyGroundTruth assembles the answer key from the suite's real
 // manifests with the claims a deploy of the fixture identifiers would
-// record. Keyed by member NAME (not component -- this suite deliberately
+// record. Keyed by member NAME (not kind -- this suite deliberately
 // carries two VPCs and two subnets).
 func buildMessyGroundTruth(t *testing.T, root string) *mappingeval.GroundTruth {
 	t.Helper()
@@ -297,11 +297,11 @@ func buildMessyGroundTruth(t *testing.T, root string) *mappingeval.GroundTruth {
 			t.Fatalf("suite member %q has no fixture claims -- update the test fixture alongside the suite", member.Name)
 		}
 		gt.Instances = append(gt.Instances, mappingeval.GroundTruthInstance{
-			Component: member.Component,
-			Kind:      member.Kind,
-			Name:      member.Name,
-			Manifest:  member.Manifest,
-			Claims:    claims,
+			KindDir:  member.KindDir,
+			Kind:     member.Kind,
+			Name:     member.Name,
+			Manifest: member.Manifest,
+			Claims:   claims,
 		})
 	}
 	return gt
@@ -322,7 +322,7 @@ func scoreMessyBaseline(t *testing.T, root string, gt *mappingeval.GroundTruth, 
 	if err != nil {
 		t.Fatalf("baseline proposal violates the contract: %v", err)
 	}
-	opts, err := mappingeval.ScoreOptionsFromCatalog(root, "aws", messyComponents)
+	opts, err := mappingeval.ScoreOptionsFromCatalog(root, "aws", messyKinds)
 	if err != nil {
 		t.Fatalf("score options: %v", err)
 	}

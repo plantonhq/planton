@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awssagemakermlflowserver.v1alpha1;
 
-// AwsSagemakerMlflowServerStackOutputs captures observable identifiers
+// AwsSagemakerMlflowServerOutputs captures observable identifiers
 // from a provisioned MLflow tracking server.
-message AwsSagemakerMlflowServerStackOutputs {
+message AwsSagemakerMlflowServerOutputs {
   // The tracking server name (the AWS identity).
   string tracking_server_name = 1;
 

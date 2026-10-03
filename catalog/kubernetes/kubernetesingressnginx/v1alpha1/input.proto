@@ -6,8 +6,8 @@ import "catalog/kubernetes/kubernetesingressnginx/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
 //input for kubernetes-ingress-nginx stack
-message KubernetesIngressNginxStackInput {
-  //target cloud-resource
+message KubernetesIngressNginxIacInput {
+  //target infra-component
   KubernetesIngressNginx target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

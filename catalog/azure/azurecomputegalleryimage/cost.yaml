@@ -7,9 +7,9 @@
 # snapshots, per GB-month of the version's occupied size, times replicas,
 # times regions -- and the occupied size is a build artifact this manifest
 # cannot see, so a dollar figure here would be a guess wearing a dollar
-# sign. Schema: finops/componentcostprofile/v1.
+# sign. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurecomputegalleryimage
 spec:

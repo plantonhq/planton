@@ -1,8 +1,8 @@
 package manifestgraph
 
 import (
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // The connection-placement edge source reads a two-ended contract written in
@@ -33,8 +33,8 @@ const (
 // the one place, shared with the platform, that says a cluster kind's deploy
 // publishes a Kubernetes provider connection. A kind without the flag (or
 // unknown to the registry) publishes none.
-func publishesKubernetesConnection(kind cloudresourcekind.CloudResourceKind) bool {
-	meta, err := crkreflect.KindMeta(kind)
+func publishesKubernetesConnection(kind catalogkind.CatalogKind) bool {
+	meta, err := catalogkindreflect.KindMeta(kind)
 	return err == nil && meta.GetPublishesKubernetesConnection()
 }
 
@@ -67,7 +67,7 @@ func PublishedConnectionSlug(node *Node) string {
 // default connection — a backend fact this lane cannot see, and does not
 // guess.
 func ConsumedConnectionSlug(node *Node) string {
-	if crkreflect.GetProvider(node.Identity.Kind) != cloudresourcekind.CloudResourceProvider_kubernetes {
+	if catalogkindreflect.GetProvider(node.Identity.Kind) != catalogkind.CatalogProvider_kubernetes {
 		return ""
 	}
 	return node.Metadata().GetAnnotations()[AnnotationConnection]

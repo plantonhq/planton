@@ -5,9 +5,9 @@ package dev.planton.azure.azurerediscacheaccesspolicy.v1alpha1;
 import "catalog/azure/azurerediscacheaccesspolicy/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-redis-cache-access-policy stack-input
-message AzureRedisCacheAccessPolicyStackInput {
-  //target cloud-resource
+//azure-redis-cache-access-policy iac-input
+message AzureRedisCacheAccessPolicyIacInput {
+  //target infra-component
   AzureRedisCacheAccessPolicy target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

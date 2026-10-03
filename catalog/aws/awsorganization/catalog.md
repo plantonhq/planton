@@ -4,7 +4,7 @@ Creates the AWS Organization for the deploying account, making that account the 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Organization** -- the organization itself (AWS `o-...` ID), created with the chosen feature set, trusted service principals, and enabled policy types; the deploying account becomes the management account
 - **Delegated Administrator registrations** -- one per `delegatedAdministrators` entry, each naming a member account as the org-wide administrator for one AWS service
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module whose credentials belong to the account you intend to become the management account, with permission to call the Organizations APIs (and IAM's organization features when `rootAccessManagement` is used). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module whose credentials belong to the account you intend to become the management account, with permission to call the Organizations APIs (and IAM's organization features when `rootAccessManagement` is used). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -56,7 +56,7 @@ spec:
 planton apply -f aws-organization.yaml
 ```
 
-This creates an all-features organization with trusted access for CloudTrail, Config, and Account Management, and with SCP and tag-policy types enabled on the root -- attachments work immediately. A Stack Job tracks the provisioning in real time.
+This creates an all-features organization with trusted access for CloudTrail, Config, and Account Management, and with SCP and tag-policy types enabled on the root -- attachments work immediately. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -78,13 +78,13 @@ These are the most important decisions when configuring an organization. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. It is the root of the multi-account estate -- everything else in the Organizations family references it, not the other way around.
+This kind has no foreign key dependencies. It is the root of the multi-account estate -- everything else in the Organizations family references it, not the other way around.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -106,7 +106,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Organizational Unit**](/cloud-catalog/aws-organizational-unit) -- the OU tree hangs off this organization's `root_id`
-- [**AWS Organization Account**](/cloud-catalog/aws-organization-account) -- member accounts created into the organization's OUs
-- [**AWS Organization Policy**](/cloud-catalog/aws-organization-policy) -- SCPs and their siblings, gated by this resource's `enabledPolicyTypes`
-- [**AWS Config Aggregator**](/cloud-catalog/aws-config-aggregator) -- organization-wide Config aggregation, enabled by `config.amazonaws.com` trusted access and typically run from a delegated administrator account
+- [**AWS Organizational Unit**](/infra-catalog/aws-organizational-unit) -- the OU tree hangs off this organization's `root_id`
+- [**AWS Organization Account**](/infra-catalog/aws-organization-account) -- member accounts created into the organization's OUs
+- [**AWS Organization Policy**](/infra-catalog/aws-organization-policy) -- SCPs and their siblings, gated by this resource's `enabledPolicyTypes`
+- [**AWS Config Aggregator**](/infra-catalog/aws-config-aggregator) -- organization-wide Config aggregation, enabled by `config.amazonaws.com` trusted access and typically run from a delegated administrator account

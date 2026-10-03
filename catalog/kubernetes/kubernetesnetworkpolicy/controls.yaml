@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: kubernetesnetworkpolicy
 spec:
@@ -27,7 +27,7 @@ spec:
       evidence:
         type: spec_default
         reference: Once a policy with ingress in policy_types selects a pod, all inbound traffic is denied except what ingress_rules allow -- each rule enumerates declared sources (pod selectors, namespace selectors, ip_block CIDRs) and ports, and an empty rule list denies everything inbound.
-      notes: "This component IS the in-cluster ingress-restriction instrument. Presets: 01-default-deny-all denies both directions namespace-wide, 02-allow-same-namespace and 03-allow-from-namespace layer targeted allows on top; egress_rules restrict outbound the same way (04-allow-dns-egress). Two caveats a reviewer should hear: policies are additive-allow across all policies selecting the same pods, and enforcement requires a CNI that implements NetworkPolicy -- on a CNI that ignores them (including default kind/kindnet clusters) the object exists but all traffic still flows."
+      notes: "This kind IS the in-cluster ingress-restriction instrument. Presets: 01-default-deny-all denies both directions namespace-wide, 02-allow-same-namespace and 03-allow-from-namespace layer targeted allows on top; egress_rules restrict outbound the same way (04-allow-dns-egress). Two caveats a reviewer should hear: policies are additive-allow across all policies selecting the same pods, and enforcement requires a CNI that implements NetworkPolicy -- on a CNI that ignores them (including default kind/kindnet clusters) the object exists but all traffic still flows."
     - control_id: edge-protection
       status: not_applicable
       notes: A NetworkPolicy filters at L3/L4 (peers and ports), not at the request layer -- it inspects no HTTP. WAF-style filtering belongs to edge components in front of the workloads.

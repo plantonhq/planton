@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpvertexaiagentengine.v1alpha1;
 import "catalog/gcp/gcpvertexaiagentengine/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-vertex-ai-agent-engine stack-input
-message GcpVertexAiAgentEngineStackInput {
-  //target cloud-resource
+//gcp-vertex-ai-agent-engine iac-input
+message GcpVertexAiAgentEngineIacInput {
+  //target infra-component
   GcpVertexAiAgentEngine target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: gcplogmetric
 spec:
@@ -50,7 +50,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: "This component IS the logs-to-monitoring bridge: every matching entry becomes a Cloud Monitoring time-series point addressable as logging.googleapis.com/user/{metric_name}, chartable and alertable the moment the metric exists. Logging additionally exports the metric's own health signals (logs_based_metrics_error_count, metric_throttled, time_series_count) to Monitoring automatically."
+        reference: "This kind IS the logs-to-monitoring bridge: every matching entry becomes a Cloud Monitoring time-series point addressable as logging.googleapis.com/user/{metric_name}, chartable and alertable the moment the metric exists. Logging additionally exports the metric's own health signals (logs_based_metrics_error_count, metric_throttled, time_series_count) to Monitoring automatically."
       notes: disabled=true pauses ingestion -- the safe way to silence a misconfigured extractor -- and a paused metric feeds no charts or alerts until re-enabled.
     - control_id: backup-recovery
       status: not_applicable

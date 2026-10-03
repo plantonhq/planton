@@ -68,7 +68,7 @@ The AWS S3 Object Set Pulumi Module provides a standardized way to upload and ma
 
 ## Architecture
 
-The module iterates over the `objects` list in the spec and creates one `s3.BucketObjectv2` Pulumi resource per entry, named by the object's S3 key. Tags are merged hierarchically: labels, set-level tags, then object-level tags. ARNs, ETags, and version IDs are collected into maps and exported as stack outputs.
+The module iterates over the `objects` list in the spec and creates one `s3.BucketObjectv2` Pulumi resource per entry, named by the object's S3 key. Tags are merged hierarchically: labels, set-level tags, then object-level tags. ARNs, ETags, and version IDs are collected into maps and exported as outputs.
 
 ## Usage
 

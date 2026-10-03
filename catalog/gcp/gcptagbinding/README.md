@@ -4,7 +4,7 @@ Attaches one Google Cloud Resource Manager tag value to one resource — the act
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Tag binding** -- the `tags_tag_binding` between the value and the resource's full resource name; for a regional or zonal resource (set `location`), the `tags_location_tag_binding` served from that location instead
 
@@ -69,7 +69,7 @@ With no `parent`, the value is bound to the project the credentials are configur
 - **`location`** only with `resourceName`, and shaped like a region (`us-central1`) or zone (`us-central1-a`).
 - **`deletionPolicy`**: `DELETE`, `PREVENT`, or `ABANDON`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -97,7 +97,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpTagValue](/docs/catalog/gcp/gcptagvalue) — the value being bound
 - [GcpTagKey](/docs/catalog/gcp/gcptagkey) — the key the value belongs to

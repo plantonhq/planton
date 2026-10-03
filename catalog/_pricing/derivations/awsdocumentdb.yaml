@@ -9,9 +9,9 @@
 # never pauses to zero -- the scaling floor bills DCU-hours around the
 # clock, so a serverless cluster's committed spend is min_capacity x 730
 # (0.5 DCU is the service minimum when the floor is unset).
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsdocumentdb
 spec:

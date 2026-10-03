@@ -5,7 +5,7 @@ import (
 
 	azureaifoundryv1alpha1 "github.com/plantonhq/planton/catalog/azure/azureaifoundry/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -40,11 +40,11 @@ var isolationModeWire = map[azureaifoundryv1alpha1.AzureAiFoundryIsolationMode]s
 	azureaifoundryv1alpha1.AzureAiFoundryIsolationMode_ALLOW_ONLY_APPROVED_OUTBOUND: "AllowOnlyApprovedOutbound",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureaifoundryv1alpha1.AzureAiFoundryStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureaifoundryv1alpha1.AzureAiFoundryIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureAiFoundry = stackInput.Target
-	target := stackInput.Target
+	locals.AzureAiFoundry = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -55,7 +55,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureaifoundryv1alpha1.Az
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureAiFoundry.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureAiFoundry.String()),
 	}
 
 	if target.Metadata.Id != "" {

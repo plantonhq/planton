@@ -31,7 +31,7 @@ var _ = ginkgo.Describe("GcpBigtableInstanceSpec", func() {
 		return &GcpBigtableInstance{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpBigtableInstance",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-bigtable",
 			},
 			Spec: &GcpBigtableInstanceSpec{

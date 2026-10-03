@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesoteloperator
 spec:
@@ -12,14 +12,14 @@ spec:
   values:
     - name: release_name
       derivations:
-        - from_stack_output: release_name
+        - from_output: release_name
         - from_metadata_name: true
       where_to_find: >-
         `helm list -n <namespace>` (NAME column) — the release shares the
         resource's name.
     - name: release_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `helm list -A` (NAMESPACE column); conventionally
@@ -58,7 +58,7 @@ spec:
     # ── the optional anchor namespace ────────────────────────────────────
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Only imported when create_namespace is true; the installation

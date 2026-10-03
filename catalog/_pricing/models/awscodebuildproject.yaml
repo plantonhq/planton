@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -7,9 +7,9 @@
 # per-second Docker image server (the two always-billing arms), and every
 # meter is build minutes that follow commits -- stated in exclusions,
 # never padded into fabricated dollars.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awscodebuildproject
 spec:
@@ -30,7 +30,7 @@ spec:
       exclusions:
         - builds bill per minute at the general1.large rate -- the large type costs several times the small one, and the 30-minute timeout caps each build's worst-case spend
         - the LOCAL Docker-layer and source caches live on the build host at no storage charge, repaying themselves in shortened billed minutes -- unlike an S3 cache, nothing bills between builds
-        - image pushes to ECR bill data transfer and storage on the ECR repository component; build logs bill CloudWatch ingestion
+        - image pushes to ECR bill data transfer and storage on the ECR repository kind; build logs bill CloudWatch ingestion
       notes: Zero committed cost -- privileged mode and BuildKit change what a build can do, not what it costs at rest; the per-minute meter starts with a push to main or a release branch.
     - preset: 03-codepipeline-stage
       region_assumption: us-east-1
@@ -38,8 +38,8 @@ spec:
       hours_per_month: 730
       exclusions:
         - builds bill per minute at the general1.medium rate each time the owning pipeline invokes this stage; the 20-minute timeout and 3-build concurrency cap bound both per-build and burst spend
-        - artifacts flow through the pipeline's S3 artifact store, billing on that bucket via the AwsCodePipeline component
-        - the pipeline's own action-execution charges bill on the AwsCodePipeline component
+        - artifacts flow through the pipeline's S3 artifact store, billing on that bucket via the AwsCodePipeline kind
+        - the pipeline's own action-execution charges bill on the AwsCodePipeline kind
       notes: Zero committed cost -- a stage that is never invoked bills nothing; the meter runs exactly as often as the pipeline does.
     - preset: 04-fork-pr-gated-oss-ci
       region_assumption: us-east-1

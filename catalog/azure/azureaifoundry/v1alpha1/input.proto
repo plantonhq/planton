@@ -5,10 +5,10 @@ package dev.planton.azure.azureaifoundry.v1alpha1;
 import "catalog/azure/azureaifoundry/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureAiFoundryStackInput is the input to the IaC modules
+// AzureAiFoundryIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureAiFoundryStackInput {
+message AzureAiFoundryIacInput {
   // The AI Foundry hub resource to deploy.
   AzureAiFoundry target = 1;
 

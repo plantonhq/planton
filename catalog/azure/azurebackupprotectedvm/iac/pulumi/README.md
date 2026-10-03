@@ -8,7 +8,7 @@ Registers one virtual machine under a backup policy's protection in a Recovery S
 
 - `backup.ProtectedVM` -- the protected item (ARM derives its name from the VM's group and name: `VM;iaasvmcontainerv2;{vm-rg};{vm-name}`)
 
-## Stack Outputs
+## Outputs
 
 - `backup_protected_vm_id` -- the protected item's full ARM ID
 

@@ -35,7 +35,7 @@ var _ = ginkgo.Describe("GcpIamOauthClientSpec", func() {
 		return &GcpIamOauthClient{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpIamOauthClient",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-oauth-client",
 			},
 			Spec: &GcpIamOauthClientSpec{

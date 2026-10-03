@@ -5,9 +5,9 @@ package dev.planton.stripe.stripecoupon.v1alpha1;
 import "catalog/stripe/provider.proto";
 import "catalog/stripe/stripecoupon/v1alpha1/api.proto";
 
-// StripeCouponStackInput is the input to the StripeCoupon IaC module.
+// StripeCouponIacInput is the input to the StripeCoupon IaC module.
 // It contains the target resource and the Stripe provider configuration.
-message StripeCouponStackInput {
+message StripeCouponIacInput {
   // target is the StripeCoupon resource to be deployed.
   StripeCoupon target = 1;
 

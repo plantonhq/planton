@@ -4,7 +4,7 @@ Sets the minimum AI safety screening for a whole project, folder, or organizatio
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `modelarmor.googleapis.com` on the floor's project (project floors)
 - **Floor setting** -- the scope's `modelarmor.Floorsetting`
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Model Armor floor-setting admin permissions at the floor's scope. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Model Armor floor-setting admin permissions at the floor's scope. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ## Deploy
@@ -50,7 +50,7 @@ spec:
 planton apply -f model-armor-floor-setting.yaml
 ```
 
-This puts every Vertex AI model call in the project behind prompt-injection screening in report-only mode. A Stack Job tracks the provisioning in real time.
+This puts every Vertex AI model call in the project behind prompt-injection screening in report-only mode. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -70,16 +70,16 @@ These are the most important decisions when configuring a floor. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `scope.projectId` | `status.outputs.project_id` |
 | **GcpFolder** | `scope.folderId` | `status.outputs.folder_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -96,6 +96,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Model Armor Template**](/cloud-catalog/gcp-model-armor-template) -- the templates the floor governs
-- [**GCP Folder**](/cloud-catalog/gcp-folder) -- a floor inherited by every project in the folder
-- [**GCP Project**](/cloud-catalog/gcp-project) -- a project floor
+- [**GCP Model Armor Template**](/infra-catalog/gcp-model-armor-template) -- the templates the floor governs
+- [**GCP Folder**](/infra-catalog/gcp-folder) -- a floor inherited by every project in the folder
+- [**GCP Project**](/infra-catalog/gcp-project) -- a project floor

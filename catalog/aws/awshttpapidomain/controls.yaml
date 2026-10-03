@@ -2,16 +2,16 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awshttpapidomain
 spec:
   controls:
     - control_id: enc-at-rest
       status: not_applicable
-      notes: The domain stores no data. The certificate private key it serves with is held and protected by ACM (the AwsCertManagerCert component's at-rest posture), and the mTLS truststore is an S3 object whose at-rest encryption belongs to its bucket.
+      notes: The domain stores no data. The certificate private key it serves with is held and protected by ACM (the AwsCertManagerCert kind's at-rest posture), and the mTLS truststore is an S3 object whose at-rest encryption belongs to its bucket.
     - control_id: enc-at-rest-cmk
       status: not_applicable
       notes: No data at rest exists at this level (see enc-at-rest), so no key choice arises here.
@@ -23,7 +23,7 @@ spec:
       notes: The optional mutual_tls block upgrades termination to mutually-authenticated TLS -- clients must present a certificate anchored in the S3 truststore. When enabling it, disable the mapped APIs' default execute-api endpoints (a field on the API components) so callers cannot bypass the mTLS front door.
     - control_id: no-public-access
       status: not_applicable
-      notes: Publishing APIs at a public hostname is this component's purpose -- API Gateway v2 custom domains are regional public endpoints, and no private variant exists on this surface (private custom domains are a REST API v1 feature). Keeping backends private is the AwsHttpApiVpcLink component's job.
+      notes: Publishing APIs at a public hostname is this component's purpose -- API Gateway v2 custom domains are regional public endpoints, and no private variant exists on this surface (private custom domains are a REST API v1 feature). Keeping backends private is the AwsHttpApiVpcLink kind's job.
     - control_id: restricted-ingress
       status: not_applicable
       notes: The domain has no network-source filtering surface -- HTTP APIs support neither resource policies nor WAF, so IP allow-listing must happen upstream (e.g. CloudFront in front of the domain) or inside the APIs' authorizers.

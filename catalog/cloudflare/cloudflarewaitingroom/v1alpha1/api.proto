@@ -18,7 +18,7 @@ message CloudflareWaitingRoom {
   string kind = 2 [(buf.validate.field).string.const = 'CloudflareWaitingRoom'];
 
   // metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
   CloudflareWaitingRoomSpec spec = 4 [(buf.validate.field).required = true];
@@ -29,6 +29,6 @@ message CloudflareWaitingRoom {
 
 // CloudflareWaitingRoomStatus represents the observed state of a waiting room.
 message CloudflareWaitingRoomStatus {
-  // stack-outputs from the IaC deployment
-  CloudflareWaitingRoomStackOutputs outputs = 1;
+  // outputs from the IaC deployment
+  CloudflareWaitingRoomOutputs outputs = 1;
 }

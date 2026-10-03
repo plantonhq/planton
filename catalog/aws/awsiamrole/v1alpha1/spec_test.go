@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/types/known/structpb"
 )
@@ -46,7 +46,7 @@ func minimalValidRole() *AwsIamRole {
 	return &AwsIamRole{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsIamRole",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-role",
 		},
 		Spec: &AwsIamRoleSpec{
@@ -105,7 +105,7 @@ var _ = ginkgo.Describe("AwsIamRoleSpec Validation Tests", func() {
 					ProviderArn: &foreignkeyv1.StringValueOrRef{
 						LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 							ValueFrom: &foreignkeyv1.ValueFromRef{
-								Kind: cloudresourcekind.CloudResourceKind_AwsIamOidcProvider,
+								Kind: catalogkind.CatalogKind_AwsIamOidcProvider,
 								Name: "eks-oidc",
 							},
 						},
@@ -113,7 +113,7 @@ var _ = ginkgo.Describe("AwsIamRoleSpec Validation Tests", func() {
 					ProviderUrl: &foreignkeyv1.StringValueOrRef{
 						LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 							ValueFrom: &foreignkeyv1.ValueFromRef{
-								Kind:      cloudresourcekind.CloudResourceKind_AwsIamOidcProvider,
+								Kind:      catalogkind.CatalogKind_AwsIamOidcProvider,
 								Name:      "eks-oidc",
 								FieldPath: "status.outputs.provider_url",
 							},
@@ -177,7 +177,7 @@ var _ = ginkgo.Describe("AwsIamRoleSpec Validation Tests", func() {
 
 			ginkgo.It("should not return a validation error with full metadata set", func() {
 				input := minimalValidRole()
-				input.Metadata = &shared.CloudResourceMetadata{
+				input.Metadata = &shared.CatalogObjectMetadata{
 					Name:   "full-role",
 					Org:    "acme-corp",
 					Env:    "production",
@@ -217,7 +217,7 @@ var _ = ginkgo.Describe("AwsIamRoleSpec Validation Tests", func() {
 				input := &AwsIamRole{
 					ApiVersion: "aws.planton.dev/v1alpha1",
 					Kind:       "AwsIamRole",
-					Metadata:   &shared.CloudResourceMetadata{Name: "test-role"},
+					Metadata:   &shared.CatalogObjectMetadata{Name: "test-role"},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).ToNot(gomega.BeNil())

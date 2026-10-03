@@ -1,7 +1,7 @@
 # Where each placeholder in this component's import-ID formats comes
 # from (the formats themselves live in aa_import/catalog.yaml).
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsauroradsql
 spec:
@@ -10,7 +10,7 @@ spec:
   values:
     - name: dsql_cluster_identifier
       derivations:
-        - from_stack_output: identifier
+        - from_output: identifier
       where_to_find: >-
         Aurora DSQL console -> Clusters (the identifier column), or
         `aws dsql list-clusters` (identifier - the ARN's tail).

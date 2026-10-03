@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.stripe.striperadarvaluelist.v1alpha1;
 
-// StripeRadarValueListStackOutputs identifies the list and each of its items.
+// StripeRadarValueListOutputs identifies the list and each of its items.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/radar_value_list
-message StripeRadarValueListStackOutputs {
+message StripeRadarValueListOutputs {
   // id is the list's Stripe id (rsl_...).
   string id = 1;
 

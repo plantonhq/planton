@@ -3,9 +3,9 @@
 # Every entry is `derived` (static analysis of the module sources plus the
 # pinned v0.80.0 release manifest's document census, cited in notes) until
 # the live capture lane upgrades it to `proven`. Schema:
-# iac/componentpermissions/v1.
+# iac/catalogkindpermissions/v1.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: kubernetestektonoperator
 spec:

@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: kubernetesargocd
 spec:
@@ -32,7 +32,7 @@ spec:
       evidence:
         type: module_default
         reference: "The pinned chart (10.2.1) defaults global.networkPolicy.create to true, so every install renders six NetworkPolicies scoping each component's ingress to its expected peers -- the repo server admits only the server, application controller, notifications and ApplicationSet controllers; Dex admits only the server; Redis admits only its Argo CD clients; metrics ports stay reachable for scraping. The server's own policy admits all ingress (it is the front door; fence it at the composed exposure)."
-      notes: NetworkPolicies restrict traffic only on clusters whose CNI enforces them. global.networkPolicy.defaultDenyIngress stays false by chart default; tighten or disable the policies via helm_values (global.networkPolicy, per-component networkPolicy blocks).
+      notes: NetworkPolicies restrict traffic only on clusters whose CNI enforces them. global.networkPolicy.defaultDenyIngress stays false by chart default; tighten or disable the policies via helm_values (global.networkPolicy, per-kind networkPolicy blocks).
     - control_id: edge-protection
       status: not_applicable
       notes: This module serves no HTTP edge traffic of its own; when the server is exposed through a composed ingress, web application firewalls belong to that resource.

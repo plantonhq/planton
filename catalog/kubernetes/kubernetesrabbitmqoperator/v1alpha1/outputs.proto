@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesrabbitmqoperator.v1alpha1;
 
-//kubernetes-rabbit-mq-operator stack outputs
-message KubernetesRabbitMqOperatorStackOutputs {
+//kubernetes-rabbit-mq-operator outputs
+message KubernetesRabbitMqOperatorOutputs {
   //namespace the operator is installed into (always rabbitmq-system —
   //the release manifest's fixed namespace).
   string namespace = 1;

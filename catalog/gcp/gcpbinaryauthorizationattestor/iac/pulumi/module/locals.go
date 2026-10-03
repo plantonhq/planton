@@ -11,10 +11,10 @@ type Locals struct {
 	GcpBinaryAuthorizationAttestor *gcpbinaryauthorizationattestorv1alpha1.GcpBinaryAuthorizationAttestor
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpbinaryauthorizationattestorv1alpha1.GcpBinaryAuthorizationAttestorStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpbinaryauthorizationattestorv1alpha1.GcpBinaryAuthorizationAttestorIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpBinaryAuthorizationAttestor = stackInput.Target
+	locals.GcpBinaryAuthorizationAttestor = iacInput.Target
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

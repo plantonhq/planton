@@ -7,8 +7,8 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/reflect/protoreflect"
 )
 
@@ -37,8 +37,8 @@ import (
 //     addressed through a dot path -- name sub-resources accordingly;
 //   - every non-terminal segment must be a message, and the terminal value must be a
 //     string (a valueFrom always feeds a string-valued reference).
-func ResolveValueFromPath(kind cloudresourcekind.CloudResourceKind, fieldPath string) string {
-	inst, err := crkreflect.NewInstance(kind)
+func ResolveValueFromPath(kind catalogkind.CatalogKind, fieldPath string) string {
+	inst, err := catalogkindreflect.NewInstance(kind)
 	if err != nil {
 		return "kind " + kind.String() + " is not a registered/implemented kind"
 	}

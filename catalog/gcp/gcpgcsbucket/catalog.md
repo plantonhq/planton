@@ -4,7 +4,7 @@ Deploys a Google Cloud Storage bucket — the durable object store behind static
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cloud Storage Bucket** -- a GCS bucket in the specified project and location, with the configured placement shape, storage class or Autoclass, access model, data-protection posture (versioning, retention, soft delete, holds), and optional features (website, CORS, logging, IP filter)
 - **IAM Grants** -- created only when `iamMembers` are provided; each entry additively grants one role to one member at the bucket level (optionally scoped by an IAM condition) and composes safely with grants made elsewhere
@@ -19,12 +19,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the bucket will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
+- **A GCP project** where the bucket will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
 - **A globally unique bucket name** -- GCS bucket names must be unique across all GCP projects worldwide. Must be 3-63 characters, lowercase letters, numbers, hyphens, or dots.
 - **For CMEK**: a Cloud KMS key whose key the GCS service agent can use (`roles/cloudkms.cryptoKeyEncrypterDecrypter`).
 
@@ -58,7 +58,7 @@ spec:
 planton apply -f gcs-bucket.yaml
 ```
 
-This creates a STANDARD storage bucket in `us-central1` with the modern security posture: IAM-only access control and public access impossible. A Stack Job tracks the provisioning in real time.
+This creates a STANDARD storage bucket in `us-central1` with the modern security posture: IAM-only access control and public access impossible. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,7 +102,7 @@ These are the most important decisions when configuring a GCS bucket. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -113,9 +113,9 @@ These are the most important decisions when configuring a GCS bucket. Explore th
 | **GcpVpcNetwork** | `ipFilter.vpcNetworkSources[].network` | `status.outputs.network_id` |
 | **GcpPubSubTopic** | `notifications[].topic` | `status.outputs.topic_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -140,9 +140,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the bucket is created
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- customer-managed encryption for objects at rest
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- workload identities receiving bucket IAM grants
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- VPC sources for the bucket IP filter
-- [**GCP Pub/Sub Topic**](/cloud-catalog/gcp-pub-sub-topic) -- destination for bucket notification events
-- [**GCP Backend Bucket**](/cloud-catalog/gcp-backend-bucket) -- serves this bucket through the HTTPS load-balancer chain with CDN
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the bucket is created
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- customer-managed encryption for objects at rest
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- workload identities receiving bucket IAM grants
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- VPC sources for the bucket IP filter
+- [**GCP Pub/Sub Topic**](/infra-catalog/gcp-pub-sub-topic) -- destination for bucket notification events
+- [**GCP Backend Bucket**](/infra-catalog/gcp-backend-bucket) -- serves this bucket through the HTTPS load-balancer chain with CDN

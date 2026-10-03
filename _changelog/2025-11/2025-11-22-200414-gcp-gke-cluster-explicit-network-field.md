@@ -254,7 +254,7 @@ Files Modified: 6
 
 Total: +17 lines added
 Duration: ~5 minutes
-Component Tests: ✅ PASS
+Kind Tests: ✅ PASS
 Build Validation: ✅ PASS (2x)
 Full Test Suite: ✅ PASS (2x)
 ```

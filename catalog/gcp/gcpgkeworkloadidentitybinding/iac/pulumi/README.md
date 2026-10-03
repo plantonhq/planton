@@ -17,10 +17,10 @@ planton pulumi up --manifest workload-identity-binding.yaml
 
 ### Standalone Usage
 
-1. Set the stack input as an environment variable:
+1. Set the IaC input as an environment variable:
 
 ```bash
-export PLANTON_CLOUD_RESOURCE_MANIFEST=$(cat <<EOF
+export PLANTON_CATALOG_OBJECT_MANIFEST=$(cat <<EOF
 apiVersion: gcp.planton.dev/v1alpha1
 kind: GcpGkeWorkloadIdentityBinding
 metadata:
@@ -50,7 +50,7 @@ pulumi up
 
 ## Inputs
 
-The module reads its configuration from the `GcpGkeWorkloadIdentityBindingStackInput` proto message:
+The module reads its configuration from the `GcpGkeWorkloadIdentityBindingIacInput` proto message:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|

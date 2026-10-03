@@ -52,7 +52,7 @@ var _ = ginkgo.Describe("GcpMonitoringAlertPolicySpec", func() {
 		return &GcpMonitoringAlertPolicy{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpMonitoringAlertPolicy",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-alert-policy",
 			},
 			Spec: &GcpMonitoringAlertPolicySpec{

@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpbigquerydataset.v1alpha1;
 
 // Outputs produced after provisioning a GCP BigQuery dataset.
-message GcpBigQueryDatasetStackOutputs {
+message GcpBigQueryDatasetOutputs {
   // The short dataset ID (same as the spec's dataset_id input).
   // This is the identifier used in BigQuery SQL queries, job configurations,
   // and API calls (e.g., SELECT * FROM `project.dataset.table`).

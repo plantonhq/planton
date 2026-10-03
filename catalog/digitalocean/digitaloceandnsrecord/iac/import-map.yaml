@@ -1,22 +1,22 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceandnsrecord
 spec:
   # The record imports as "{domain},{record_id}" -- the provider's importer
   # splits on the comma, requires the second part to be the numeric record
   # id, and seeds the domain into state (the API never returns it). Both
-  # parts are stack outputs, so a blind round-trip needs zero user input.
+  # parts are outputs, so a blind round-trip needs zero user input.
   values:
     - name: domain
       derivations:
-        - from_stack_output: domain
+        - from_output: domain
       where_to_find: >-
         The DNS zone's domain name: DigitalOcean control panel -> Networking
         -> Domains, or `doctl compute domain list`.
     - name: record_id
       derivations:
-        - from_stack_output: record_id
+        - from_output: record_id
       where_to_find: >-
         The numeric record id: `doctl compute domain records list <domain>`
         (the ID column) -- the control panel does not display record ids.

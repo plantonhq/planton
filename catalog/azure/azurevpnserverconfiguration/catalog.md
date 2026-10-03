@@ -4,7 +4,7 @@ Deploys a VPN Server Configuration -- the reusable "who may connect and how" pol
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **VPN Server Configuration** -- the authentication policy object (Entra ID / certificate / RADIUS parameters, IPsec proposal, tunnel protocols)
 - **Policy Groups** (optional) -- one ARM child per `policyGroups` entry, keyed by name (the `policy_group_ids` output republishes each group's ARM ID)
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -59,7 +59,7 @@ spec:
 planton apply -f azure-vpn-server-configuration.yaml
 ```
 
-This creates an Entra ID-only policy offering OpenVPN -- the audience is the Microsoft-published Azure VPN Client application ID, and the issuer and tenant URLs embed your directory (tenant) ID. The configuration is free and provisions in seconds. A Stack Job tracks the provisioning in real time.
+This creates an Entra ID-only policy offering OpenVPN -- the audience is the Microsoft-published Azure VPN Client application ID, and the issuer and tenant URLs embed your directory (tenant) ID. The configuration is free and provisions in seconds. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -90,15 +90,15 @@ These are the most important decisions when configuring the policy. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -117,6 +117,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Point-to-Site VPN Gateway**](/cloud-catalog/azure-point-to-site-vpn-gateway) -- the hub gateway that attaches this policy
-- [**Azure Virtual Hub**](/cloud-catalog/azure-virtual-hub) -- where the gateway lives
-- [**Azure Virtual WAN**](/cloud-catalog/azure-virtual-wan) -- the managed network umbrella
+- [**Azure Point-to-Site VPN Gateway**](/infra-catalog/azure-point-to-site-vpn-gateway) -- the hub gateway that attaches this policy
+- [**Azure Virtual Hub**](/infra-catalog/azure-virtual-hub) -- where the gateway lives
+- [**Azure Virtual WAN**](/infra-catalog/azure-virtual-wan) -- the managed network umbrella

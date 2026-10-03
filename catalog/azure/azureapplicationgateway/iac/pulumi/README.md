@@ -29,7 +29,7 @@ redirects, rewrite rule sets, Private Link, and custom error pages.
   resource's computed sub-object IDs and keyed by name (the load-balancer
   precedent).
 - **Presence guards on optional-with-default fields** (request timeout,
-  L4 backend timeout, HTTP/2): stack inputs built from a manifest do not
+  L4 backend timeout, HTTP/2): IaC inputs built from a manifest do not
   materialize proto defaults, so unset falls back to the documented
   default explicitly.
 - **Optional strings forwarded only when non-empty** so the ARM payload
@@ -38,7 +38,7 @@ redirects, rewrite rule sets, Private Link, and custom error pages.
 ## Provider
 
 The Azure provider is built by the shared
-`pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)` builder, which
+`pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)` builder, which
 dispatches static client-secret, keyless (web identity), and ambient
 credential chains. Never construct the provider inline.
 

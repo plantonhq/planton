@@ -5,9 +5,9 @@ package dev.planton.azure.azurestoragequeue.v1alpha1;
 import "catalog/azure/azurestoragequeue/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-storage-queue stack-input
-message AzureStorageQueueStackInput {
-  //target cloud-resource
+//azure-storage-queue iac-input
+message AzureStorageQueueIacInput {
+  //target infra-component
   AzureStorageQueue target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

@@ -44,7 +44,7 @@ spec:
       memory: 4Gi
   # Basic auth bootstrapped by the operator: security.json plus the
   # admin/solr/k8s-oper users, credentials written to the
-  # <name>-solrcloud-basic-auth Secret (see stack outputs). No
+  # <name>-solrcloud-basic-auth Secret (see outputs). No
   # credential appears in this manifest. If you later rotate the
   # password through Solr's security API, update that Secret too — the
   # operator locks itself out otherwise.

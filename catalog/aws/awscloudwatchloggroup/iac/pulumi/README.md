@@ -15,7 +15,7 @@ and a field index policy.
 
 ## Inputs
 
-Accepts `AwsCloudwatchLogGroupStackInput` which includes:
+Accepts `AwsCloudwatchLogGroupIacInput` which includes:
 - `target` — The AwsCloudwatchLogGroup KRM resource (metadata + spec)
 - `provider_config` — AWS provider credentials and region
 

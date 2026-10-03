@@ -15,7 +15,7 @@ Pulumi Go module that customizes one of the emails an Auth0 tenant sends.
 
 ## Environment Variables
 
-When `provider_config` is not set in the stack input, the module falls back to environment variables:
+When `provider_config` is not set in the IaC input, the module falls back to environment variables:
 
 | Variable | Description |
 |---|---|

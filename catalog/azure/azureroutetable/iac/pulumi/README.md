@@ -22,7 +22,7 @@ serves many subnets without listing them.
 
 ## Inputs
 
-The module receives an `AzureRouteTableStackInput` containing:
+The module receives an `AzureRouteTableIacInput` containing:
 
 - `target.spec.region` / `target.spec.resource_group` / `target.spec.name` -- the table's ARM identity (references resolved to literals by the platform)
 - `target.spec.routes` -- the user-defined routes; VIRTUAL_APPLIANCE routes carry the appliance IP (pairing enforced by spec validation)

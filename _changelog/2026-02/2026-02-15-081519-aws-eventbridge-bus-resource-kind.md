@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added `AwsEventBridgeBus` (enum 227, R03) as the third new AWS resource kind in the cloud provider expansion project. This component provisions custom EventBridge event buses with KMS encryption, dead letter queue routing, and configurable logging — the foundational building block for event-driven architectures on AWS.
+Added `AwsEventBridgeBus` (enum 227, R03) as the third new AWS resource kind in the cloud provider expansion project. This kind provisions custom EventBridge event buses with KMS encryption, dead letter queue routing, and configurable logging — the foundational building block for event-driven architectures on AWS.
 
 ## Problem Statement / Motivation
 
-EventBridge is the backbone of event-driven architectures on AWS. Without a custom bus component in Planton, users building event-driven infra charts had to fall back to the default bus or manage custom buses outside the framework, breaking the declarative model.
+EventBridge is the backbone of event-driven architectures on AWS. Without a custom bus kind in Planton, users building event-driven infra charts had to fall back to the default bus or manage custom buses outside the framework, breaking the declarative model.
 
 ### Pain Points
 
@@ -20,9 +20,9 @@ EventBridge is the backbone of event-driven architectures on AWS. Without a cust
 
 ## Solution / What's New
 
-Added a complete `AwsEventBridgeBus` deployment component following the Planton forge workflow.
+Added a complete `AwsEventBridgeBus` catalog kind following the Planton forge workflow.
 
-### Component Overview
+### Kind Overview
 
 ```mermaid
 flowchart TB
@@ -33,7 +33,7 @@ flowchart TB
         dlc[deadLetterConfig.arn - StringValueOrRef]
         log[logConfig - level, includeDetail]
     end
-    subgraph outputs [StackOutputs]
+    subgraph outputs [Outputs]
         bn[bus_name]
         ba[bus_arn]
     end
@@ -65,7 +65,7 @@ flowchart TB
 ### Terraform Module (Core Features)
 
 - Supports: name, event_source_name, tags
-- **Note**: `dead_letter_config`, `log_config`, `description`, and `kms_key_identifier` require AWS provider >= 6.x. The TF module pins to 5.82.0 for consistency with other Planton components. Pulumi module provides full feature support.
+- **Note**: `dead_letter_config`, `log_config`, `description`, and `kms_key_identifier` require AWS provider >= 6.x. The TF module pins to 5.82.0 for consistency with other Planton kinds. Pulumi module provides full feature support.
 
 ### Documentation
 

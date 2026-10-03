@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.azure.azurekeyvaultsecret.v1alpha1;
 
-// **AzureKeyVaultSecretStackOutputs** captures the outputs of
+// **AzureKeyVaultSecretOutputs** captures the outputs of
 // provisioning a Key Vault secret -- the identifiers consumers
 // reference to read it. The secret's VALUE is never an output.
-message AzureKeyVaultSecretStackOutputs {
+message AzureKeyVaultSecretOutputs {
   // The secret's versioned data-plane ID:
   // https://{vault}.vault.azure.net/secrets/{name}/{version}. Pins
   // consumers to THIS version -- value updates do not follow.

@@ -52,7 +52,7 @@ func RunPulumi(ctx *Context, cmd *cobra.Command, operation pulumi.PulumiOperatio
 		ctx.ModuleVersion,
 		ctx.NoCleanup,
 		ctx.KubeContext,
-		ctx.StackInputFilePath,
+		ctx.IacInputFilePath,
 		ctx.ProviderConfig,
 		runOpts...,
 	)
@@ -61,6 +61,6 @@ func RunPulumi(ctx *Context, cmd *cobra.Command, operation pulumi.PulumiOperatio
 		os.Exit(1)
 	}
 	cliprint.PrintPulumiSuccess()
-	ui.StackOutputsSummary(captured)
+	ui.OutputsSummary(captured)
 	return nil
 }

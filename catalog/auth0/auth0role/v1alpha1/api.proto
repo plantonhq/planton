@@ -65,12 +65,12 @@ message Auth0Role {
   // Must be "Auth0Role" for this resource type.
   string kind = 2 [(buf.validate.field).string.const = 'Auth0Role'];
 
-  // metadata contains standard cloud resource metadata.
+  // metadata contains standard catalog object metadata.
   // - name: Unique identifier for the role within Planton (default role name when spec.name is empty)
   // - org: Organization that owns this role
   // - env: Environment (development, staging, production)
   // - labels: Key-value pairs for filtering and organization
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec contains the desired configuration for the Auth0 role.
   // This includes the role name, description, and the set of granted permissions.
@@ -85,8 +85,8 @@ message Auth0Role {
 // Auth0RoleStatus represents the current state of an Auth0 Role resource.
 // This is populated by the deployment system and contains read-only outputs.
 message Auth0RoleStatus {
-  // outputs contains the stack outputs from the Auth0 role deployment.
+  // outputs contains the outputs from the Auth0 role deployment.
   // These values are populated after successful deployment and include
   // the role ID, name, and description.
-  Auth0RoleStackOutputs outputs = 1;
+  Auth0RoleOutputs outputs = 1;
 }

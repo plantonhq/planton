@@ -5,11 +5,11 @@ package dev.planton.shared;
 import "buf/validate/validate.proto";
 import "shared/relationship/v1/relationship.proto";
 
-//metadata of a cloud-resource
-message CloudResourceMetadata {
-  // name of the cloud-resource
+//metadata of an infra-component
+message CatalogObjectMetadata {
+  // name of the infra-component
   string name = 1;
-  // slug for the cloud-resource: its handle in references (valueFrom, $secret/<slug>), the CLI
+  // slug for the infra-component: its handle in references (valueFrom, $secret/<slug>), the CLI
   // and the names Planton creates from it. lowercase letters and digits joined by single hyphens
   // (my-app-2) -- the one alphabet every system a slug is written into accepts: DNS labels,
   // secret store names (GCP joins segments with '_', Azure allows only letters, digits and '-'),
@@ -34,8 +34,8 @@ message CloudResourceMetadata {
   map<string, string> annotations = 7;
   // tags for the resource
   repeated string tags = 8;
-  //explicit relationships for the cloud-resource with other cloud-resources
-  repeated dev.planton.shared.relationship.v1.CloudResourceRelationship relationships = 9;
+  //explicit relationships for the infra-component with other infra-components
+  repeated dev.planton.shared.relationship.v1.InfraComponentRelationship relationships = 9;
   // group for visual organization in DAG (e.g., "app/services", "infrastructure/networking")
   string group = 10;
 }

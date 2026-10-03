@@ -3,11 +3,11 @@ syntax = "proto3";
 package dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1;
 
 /**
- * **KubernetesHelmReleaseStackOutputs** captures the observable handles of an
+ * **KubernetesHelmReleaseOutputs** captures the observable handles of an
  * installed Helm release — what `helm list` and `helm status` would show,
  * exported identically by both engines.
  */
-message KubernetesHelmReleaseStackOutputs {
+message KubernetesHelmReleaseOutputs {
   // The namespace the release is installed in.
   string namespace = 1;
 

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azurecontainerappenvironmentcertificate.v1alpha1;
 
-// **AzureContainerAppEnvironmentCertificateStackOutputs** captures the
+// **AzureContainerAppEnvironmentCertificateOutputs** captures the
 // outputs of storing a certificate on a Container App Environment.
 //
 // `certificate_id` is the binding seam: AzureContainerAppCustomDomain's
@@ -10,7 +10,7 @@ package dev.planton.azure.azurecontainerappenvironmentcertificate.v1alpha1;
 // certificate facts Azure reads back from the uploaded material --
 // useful for expiry monitoring and for confirming the right certificate
 // landed.
-message AzureContainerAppEnvironmentCertificateStackOutputs {
+message AzureContainerAppEnvironmentCertificateOutputs {
   // The Azure Resource Manager ID of the certificate.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.App/managedEnvironments/{env}/certificates/{name}
   // Consumed by AzureContainerAppCustomDomain to bind the certificate to

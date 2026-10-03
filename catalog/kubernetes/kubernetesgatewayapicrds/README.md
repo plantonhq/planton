@@ -4,7 +4,7 @@ Install Kubernetes Gateway API Custom Resource Definitions (CRDs) on any Kuberne
 
 ## Overview
 
-**KubernetesGatewayApiCrds** is a Planton component that installs the [Kubernetes Gateway API](https://gateway-api.sigs.k8s.io/) CRDs on any Kubernetes cluster. The Gateway API is the next evolution of Kubernetes ingress, providing a more expressive, role-oriented API for managing HTTP, TLS, and TCP routing.
+**KubernetesGatewayApiCrds** is a catalog kind that installs the [Kubernetes Gateway API](https://gateway-api.sigs.k8s.io/) CRDs on any Kubernetes cluster. The Gateway API is the next evolution of Kubernetes ingress, providing a more expressive, role-oriented API for managing HTTP, TLS, and TCP routing.
 
 Once installed, users can create Gateway, HTTPRoute, GRPCRoute, and other Gateway API resources that work with any conformant implementation (Istio, Envoy Gateway, NGINX Gateway Fabric, Traefik, etc.).
 

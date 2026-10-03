@@ -11,10 +11,10 @@ type Locals struct {
 	GcpCloudTasksQueue *gcpcloudtasksqueuev1alpha1.GcpCloudTasksQueue
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpcloudtasksqueuev1alpha1.GcpCloudTasksQueueStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpcloudtasksqueuev1alpha1.GcpCloudTasksQueueIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpCloudTasksQueue = stackInput.Target
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpCloudTasksQueue = iacInput.Target
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	// Note: Cloud Tasks queues do NOT support GCP labels.
 	// No label computation needed (unlike most GCP components).
 	return locals

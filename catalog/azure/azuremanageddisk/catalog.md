@@ -4,7 +4,7 @@ Deploys an Azure Managed Disk — the standalone block storage volume whose data
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Managed Disk** -- the block volume with its origin (empty, cloned from a snapshot/disk, stamped from an image, imported from a VHD, restored from a backup recovery point, or a direct-upload target), storage SKU, size, and optional zone pinning
 - **Performance configuration** -- fixed per-size tiers on standard/premium SKUs, or independently dialed IOPS/throughput on Premium SSD v2 and Ultra; optional premium tier override and on-demand bursting
@@ -18,12 +18,12 @@ The VM-side attachment is NOT created here — which VM mounts this disk, at whi
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Resource Group** where the disk will be created. Provide the name directly or reference an AzureResourceGroup Cloud Resource via ValueFromRef.
+- **An Azure Resource Group** where the disk will be created. Provide the name directly or reference an AzureResourceGroup Infra Component via ValueFromRef.
 - **For non-EMPTY origins**: the source the origin consumes — a snapshot/disk ARM ID (COPY), an image or gallery version (FROM_IMAGE), a VHD blob and its storage account (IMPORT), or a recovery point (RESTORE).
 - **For customer-managed keys**: an AzureDiskEncryptionSet in the SAME region, whose identity holds wrap/unwrap access on the vault key.
 
@@ -59,7 +59,7 @@ spec:
 planton apply -f managed-disk.yaml
 ```
 
-This creates a 512 GiB Premium SSD data volume pinned to zone 1 — name the data, not the VM: the volume will outlive every machine it attaches to. A Stack Job tracks the provisioning in real time.
+This creates a 512 GiB Premium SSD data volume pinned to zone 1 — name the data, not the VM: the volume will outlive every machine it attaches to. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -99,16 +99,16 @@ These are the most important decisions when configuring a Managed Disk. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 | **AzureDiskEncryptionSet** (optional) | `diskEncryptionSetId`, `secureVmDiskEncryptionSetId` | `status.outputs.disk_encryption_set_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -128,6 +128,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group where the disk is created
-- [**Azure Virtual Machine**](/cloud-catalog/azure-virtual-machine) -- attaches this disk by its `disk_id` output (with a LUN and caching mode), or boots from it as a golden OS disk
-- [**Azure Disk Encryption Set**](/cloud-catalog/azure-disk-encryption-set) -- provides customer-managed keys for encryption at rest and confidential guest state
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group where the disk is created
+- [**Azure Virtual Machine**](/infra-catalog/azure-virtual-machine) -- attaches this disk by its `disk_id` output (with a LUN and caching mode), or boots from it as a golden OS disk
+- [**Azure Disk Encryption Set**](/infra-catalog/azure-disk-encryption-set) -- provides customer-managed keys for encryption at rest and confidential guest state

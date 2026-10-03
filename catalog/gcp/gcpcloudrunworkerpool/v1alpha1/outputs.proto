@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpcloudrunworkerpool.v1alpha1;
 
-// GcpCloudRunWorkerPoolStackOutputs captures the observable values of a
+// GcpCloudRunWorkerPoolOutputs captures the observable values of a
 // Cloud Run worker pool after provisioning. A worker pool has no URL: it
 // receives no requests, so there is nothing to reach it at -- the outputs
 // identify it and report the revision that is running.
-message GcpCloudRunWorkerPoolStackOutputs {
+message GcpCloudRunWorkerPoolOutputs {
   // Full resource name
   // (projects/{project}/locations/{region}/workerPools/{name}).
   string name = 1;

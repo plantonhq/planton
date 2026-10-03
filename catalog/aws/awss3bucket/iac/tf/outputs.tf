@@ -30,7 +30,7 @@ output "bucket_domain_name" {
 
 # Website outputs come from the website satellite and are empty when static
 # website hosting is not configured — stated as empty strings (not null) so
-# the stack-output contract is shape-stable across both engines.
+# the output contract is shape-stable across both engines.
 output "website_endpoint" {
   description = "S3 website endpoint, populated only when website hosting is configured."
   value       = length(aws_s3_bucket_website_configuration.this) > 0 ? aws_s3_bucket_website_configuration.this[0].website_endpoint : ""

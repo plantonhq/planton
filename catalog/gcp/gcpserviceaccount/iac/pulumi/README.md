@@ -17,13 +17,13 @@ planton pulumi up --manifest ../../e2e/manifest.yaml --module-dir .
 planton pulumi destroy --manifest ../../e2e/manifest.yaml --module-dir .
 ```
 
-Credentials are provided via stack input (by the CLI), not in the manifest `spec`. Manifest file: `../../e2e/manifest.yaml`.
+Credentials are provided via IaC input (by the CLI), not in the manifest `spec`. Manifest file: `../../e2e/manifest.yaml`.
 
 ## Module Layout
 
-- `main.go` — Pulumi entrypoint (loads the stack input, calls the module)
+- `main.go` — Pulumi entrypoint (loads the IaC input, calls the module)
 - `module/main.go` — provider setup + orchestration
-- `module/locals.go` — stack-input container
+- `module/locals.go` — iac-input container
 - `module/service_account.go` — the account + the optional key
 - `module/iam.go` — additive project/organization role grants
 - `module/outputs.go` — output key constants

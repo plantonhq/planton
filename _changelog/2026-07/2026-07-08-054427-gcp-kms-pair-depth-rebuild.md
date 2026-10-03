@@ -60,7 +60,7 @@ Cloud KMS rings and keys have **no delete API** — destroy removes a ring from 
 
 - Two verifiers on the Cloud KMS API. The key's exists-check asserts the `planton-ai_resource` label (the closed parity break is a permanently guarded live regression) and an `ENABLED` primary version; its absent-check asserts the honest destroyed posture — every version `DESTROYED`/`DESTROY_SCHEDULED` and rotation disabled — rather than absence.
 - Run-scoped `${E2E_RUN_ID}` names everywhere (permanent resources make fixed names unusable), ring leaf scenario + published ring prerequisite + one composed key scenario folding rotation and the HSM version-template arm together.
-- **One live scenario per undeletable-prerequisite component by design**: prerequisites redeploy per scenario under the same engine-scoped run id, so a second scenario would 409 on the just-"destroyed" (state-only) ring. Documented in `e2e/README.md` alongside the redefined zero-orphan contract for this class ("no ACTIVE material", not "no objects").
+- **One live scenario per undeletable-prerequisite kind by design**: prerequisites redeploy per scenario under the same engine-scoped run id, so a second scenario would 409 on the just-"destroyed" (state-only) ring. Documented in `e2e/README.md` alongside the redefined zero-orphan contract for this class ("no ACTIVE material", not "no objects").
 
 ## Validation
 
@@ -75,4 +75,4 @@ Cloud KMS rings and keys have **no delete API** — destroy removes a ring from 
 
 ## Impact
 
-Every CMEK edge in the catalog now terminates at a floor-complete, parity-proven key with live verification — and the undeletable-resource E2E contract this session established covers the entire GCP resource class (key handles share it) for every future component.
+Every CMEK edge in the catalog now terminates at a floor-complete, parity-proven key with live verification — and the undeletable-resource E2E contract this session established covers the entire GCP resource class (key handles share it) for every future kind.

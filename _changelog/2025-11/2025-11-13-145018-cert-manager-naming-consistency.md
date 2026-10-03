@@ -6,7 +6,7 @@
 
 ## Summary
 
-Completed a comprehensive rename of the cert-manager Kubernetes addon component, removing the redundant "Kubernetes" suffix from `CertManagerKubernetes` to `CertManager` across all layers: proto message types, cloud resource registry enum, implementation code, tests, and documentation. This refactoring aligns with Planton's naming conventions where the `provider/kubernetes/addon/` path context already makes the Kubernetes association clear, eliminating unnecessary verbosity throughout the codebase and in user-facing manifests.
+Completed a comprehensive rename of the cert-manager Kubernetes addon component, removing the redundant "Kubernetes" suffix from `CertManagerKubernetes` to `CertManager` across all layers: proto message types, catalog kind registry enum, implementation code, tests, and documentation. This refactoring aligns with Planton's naming conventions where the `provider/kubernetes/addon/` path context already makes the Kubernetes association clear, eliminating unnecessary verbosity throughout the codebase and in user-facing manifests.
 
 ## Problem Statement / Motivation
 
@@ -14,14 +14,14 @@ The cert-manager addon was structured with "Kubernetes" appearing redundantly in
 
 ### Pain Points
 
-- **Proto Message Names**: `CertManagerKubernetes`, `CertManagerKubernetesSpec`, `CertManagerKubernetesStatus`, `CertManagerKubernetesStackInput`, `CertManagerKubernetesStackOutputs` - all included redundant suffix
+- **Proto Message Names**: `CertManagerKubernetes`, `CertManagerKubernetesSpec`, `CertManagerKubernetesStatus`, `CertManagerKubernetesIacInput`, `CertManagerKubernetesOutputs` - all included redundant suffix
 - **API Kind**: `kind: CertManagerKubernetes` - verbose in user manifests
-- **Cloud Resource Enum**: `CertManagerKubernetes = 821` - inconsistent with other addons
+- **Infra Component Enum**: `CertManagerKubernetes = 821` - inconsistent with other addons
 - **Code References**: Every Go import and type reference included the redundant suffix
-- **Path Context Ignored**: The component lives under `provider/kubernetes/addon/certmanager/v1/` - the "kubernetes" suffix in the type name added no information
+- **Path Context Ignored**: The kind lives under `provider/kubernetes/addon/certmanager/v1/` - the "kubernetes" suffix in the type name added no information
 - **Inconsistency**: Other recent addons (AltinityOperator, ElasticOperator) already followed the simpler naming pattern
 
-The component's location under `provider/kubernetes/addon/` already establishes it as a Kubernetes component. The "Kubernetes" suffix in type names was pure redundancy.
+The kind's location under `provider/kubernetes/addon/` already establishes it as a Kubernetes kind. The "Kubernetes" suffix in type names was pure redundancy.
 
 ## Solution / What's New
 
@@ -32,11 +32,11 @@ Performed a systematic, multi-layer refactoring following the established patter
 **Proto Definitions** (4 files):
 - `api.proto` - Main resource definition
 - `spec.proto` - Configuration specification  
-- `stack_outputs.proto` - Output definition
-- `stack_input.proto` - Stack input definition
+- `outputs.proto` - Output definition
+- `iac_input.proto` - IaC input definition
 
-**Cloud Resource Registry** (1 file):
-- `cloud_resource_kind.proto` - Enum value update
+**Catalog Kind Registry** (1 file):
+- `catalog_kind.proto` - Enum value update
 
 **Implementation Code** (2 files):
 - `iac/pulumi/main.go` - Pulumi entry point
@@ -64,8 +64,8 @@ message CertManagerKubernetes {
 
 message CertManagerKubernetesSpec { ... }
 message CertManagerKubernetesStatus { ... }
-message CertManagerKubernetesStackInput { ... }
-message CertManagerKubernetesStackOutputs { ... }
+message CertManagerKubernetesIacInput { ... }
+message CertManagerKubernetesOutputs { ... }
 
 // After
 message CertManager {
@@ -76,8 +76,8 @@ message CertManager {
 
 message CertManagerSpec { ... }
 message CertManagerStatus { ... }
-message CertManagerStackInput { ... }
-message CertManagerStackOutputs { ... }
+message CertManagerIacInput { ... }
+message CertManagerOutputs { ... }
 ```
 
 ## Implementation Details
@@ -96,7 +96,7 @@ message CertManager {
   string kind = 2 [(buf.validate.field).string.const = 'CertManager'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //spec
   CertManagerSpec spec = 4 [(buf.validate.field).required = true];
@@ -107,8 +107,8 @@ message CertManager {
 
 //cert-manager status.
 message CertManagerStatus {
-  //stack-outputs
-  CertManagerStackOutputs outputs = 1;
+  //outputs
+  CertManagerOutputs outputs = 1;
 }
 ```
 
@@ -127,23 +127,23 @@ message CertManagerSpec {
 }
 ```
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/certmanager/v1/stack_input.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/certmanager/v1/iac_input.proto`
 
 ```protobuf
 //input for cert-manager stack
-message CertManagerStackInput {
-  //target cloud-resource
+message CertManagerIacInput {
+  //target infra-component
   CertManager target = 1;
   //provider-config
   dev.planton.provider.kubernetes.KubernetesProviderConfig provider_config = 2;
 }
 ```
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/certmanager/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/certmanager/v1/outputs.proto`
 
 ```protobuf
 // Outputs emitted after cert‑manager installation.
-message CertManagerStackOutputs {
+message CertManagerOutputs {
   string namespace = 1;
   string release_name = 2;
   string solver_identity = 3;
@@ -151,9 +151,9 @@ message CertManagerStackOutputs {
 }
 ```
 
-### Cloud Resource Registry Update
+### Catalog Kind Registry Update
 
-**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/catalogkind/catalog_kind.proto`
 
 ```protobuf
 // Before
@@ -180,13 +180,13 @@ CertManager = 821 [(kind_meta) = {
 ```go
 func main() {
 	pulumi.Run(func(ctx *pulumi.Context) error {
-		stackInput := &certmanagerv1.CertManagerStackInput{}
+		iacInput := &certmanagerv1.CertManagerIacInput{}
 
-		if err := stackinput.LoadStackInput(ctx, stackInput); err != nil {
-			return errors.Wrap(err, "failed to load stack-input")
+		if err := iacinput.LoadIacInput(ctx, iacInput); err != nil {
+			return errors.Wrap(err, "failed to load iac-input")
 		}
 
-		return module.Resources(ctx, stackInput)
+		return module.Resources(ctx, iacInput)
 	})
 }
 ```
@@ -195,8 +195,8 @@ func main() {
 
 ```go
 // Resources create all Pulumi resources for the Cert‑Manager Kubernetes add‑on.
-func Resources(ctx *pulumi.Context, stackInput *certmanagerv1.CertManagerStackInput) error {
-	// ... implementation using stackInput.Target.Spec
+func Resources(ctx *pulumi.Context, iacInput *certmanagerv1.CertManagerIacInput) error {
+	// ... implementation using iacInput.Target.Spec
 }
 
 func createClusterIssuerForDomain(
@@ -229,7 +229,7 @@ var _ = ginkgo.Describe("CertManager Custom Validation Tests", func() {
 		input = &CertManager{
 			ApiVersion: "kubernetes.planton.dev/v1",
 			Kind:       "CertManager",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-cert-manager",
 			},
 			Spec: &CertManagerSpec{
@@ -346,8 +346,8 @@ Result: ✅ Build successful with no errors
 - `CertManagerKubernetes` → `CertManager`
 - `CertManagerKubernetesSpec` → `CertManagerSpec`
 - `CertManagerKubernetesStatus` → `CertManagerStatus`
-- `CertManagerKubernetesStackInput` → `CertManagerStackInput`
-- `CertManagerKubernetesStackOutputs` → `CertManagerStackOutputs`
+- `CertManagerKubernetesIacInput` → `CertManagerIacInput`
+- `CertManagerKubernetesOutputs` → `CertManagerOutputs`
 
 **User Manifests**:
 ```yaml
@@ -358,12 +358,12 @@ kind: CertManager  # vs. kind: CertManagerKubernetes
 **Go Code Readability**:
 ```go
 // Before
-stackInput := &certmanagerv1.CertManagerKubernetesStackInput{}
-spec := stackInput.Target.Spec  // type: *CertManagerKubernetesSpec
+iacInput := &certmanagerv1.CertManagerKubernetesIacInput{}
+spec := iacInput.Target.Spec  // type: *CertManagerKubernetesSpec
 
 // After
-stackInput := &certmanagerv1.CertManagerStackInput{}
-spec := stackInput.Target.Spec  // type: *CertManagerSpec
+iacInput := &certmanagerv1.CertManagerIacInput{}
+spec := iacInput.Target.Spec  // type: *CertManagerSpec
 ```
 
 ### Naming Consistency
@@ -435,14 +435,14 @@ import (
 // Before
 var cm *certmanagerv1.CertManagerKubernetes
 var spec *certmanagerv1.CertManagerKubernetesSpec
-var input *certmanagerv1.CertManagerKubernetesStackInput
-var outputs *certmanagerv1.CertManagerKubernetesStackOutputs
+var input *certmanagerv1.CertManagerKubernetesIacInput
+var outputs *certmanagerv1.CertManagerKubernetesOutputs
 
 // After
 var cm *certmanagerv1.CertManager
 var spec *certmanagerv1.CertManagerSpec
-var input *certmanagerv1.CertManagerStackInput
-var outputs *certmanagerv1.CertManagerStackOutputs
+var input *certmanagerv1.CertManagerIacInput
+var outputs *certmanagerv1.CertManagerOutputs
 ```
 
 #### 3. Proto Consumers
@@ -466,7 +466,7 @@ CertManagerSpec spec = 2;
 
 ### Non-Breaking Aspects
 
-- **Enum Value**: Still `821` in `cloud_resource_kind.proto`
+- **Enum Value**: Still `821` in `catalog_kind.proto`
 - **ID Prefix**: Still `cmk8s` for resource ID generation
 - **API Version**: Still `kubernetes.planton.dev/v1`
 - **Provider**: Still `kubernetes`
@@ -480,7 +480,7 @@ CertManagerSpec spec = 2;
 **Implementation**: 2 files (Pulumi main.go and module)  
 **Tests**: 1 file  
 **Documentation**: 1 file  
-**Registry**: 1 file (cloud_resource_kind.proto)  
+**Registry**: 1 file (catalog_kind.proto)  
 **Build Files**: Multiple `BUILD.bazel` files (auto-updated via Gazelle)
 
 **Total**: ~15 files manually updated + generated artifacts
@@ -570,11 +570,11 @@ import (
 - var spec *certmanagerv1.CertManagerKubernetesSpec
 + var spec *certmanagerv1.CertManagerSpec
 
-- var input *certmanagerv1.CertManagerKubernetesStackInput
-+ var input *certmanagerv1.CertManagerStackInput
+- var input *certmanagerv1.CertManagerKubernetesIacInput
++ var input *certmanagerv1.CertManagerIacInput
 
-- var outputs *certmanagerv1.CertManagerKubernetesStackOutputs
-+ var outputs *certmanagerv1.CertManagerStackOutputs
+- var outputs *certmanagerv1.CertManagerKubernetesOutputs
++ var outputs *certmanagerv1.CertManagerOutputs
 ```
 
 **Step 2**: Update go.mod

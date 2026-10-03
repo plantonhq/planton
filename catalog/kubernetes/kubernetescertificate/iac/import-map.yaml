@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetescertificate
 spec:
@@ -18,13 +18,13 @@ spec:
     - name: name
       derivations:
         - from_metadata_name: true
-        - from_stack_output: certificate_name
+        - from_output: certificate_name
       where_to_find: >-
         The Certificate's metadata.name (equals the Planton resource name) —
         `kubectl get certificates -A` (NAME column).
     - name: namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         The namespace the Certificate lives in — `kubectl get certificates -A`

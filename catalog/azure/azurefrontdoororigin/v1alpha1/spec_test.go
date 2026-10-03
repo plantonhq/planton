@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/proto"
 )
@@ -43,7 +43,7 @@ func minimalSpec() *AzureFrontDoorOrigin {
 	return &AzureFrontDoorOrigin{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureFrontDoorOrigin",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-front-door-origin",
 		},
 		Spec: &AzureFrontDoorOriginSpec{
@@ -228,7 +228,7 @@ var _ = ginkgo.Describe("AzureFrontDoorOriginSpec Validation Tests", func() {
 			input.Spec.PrivateLink = &AzureFrontDoorOriginPrivateLink{
 				Location: "eastus",
 				PrivateLinkTargetId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
-					ValueFrom: &foreignkeyv1.ValueFromRef{Kind: cloudresourcekind.CloudResourceKind_AzurePrivateLinkService, Name: "internal-api-pls"},
+					ValueFrom: &foreignkeyv1.ValueFromRef{Kind: catalogkind.CatalogKind_AzurePrivateLinkService, Name: "internal-api-pls"},
 				}},
 			}
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
@@ -239,7 +239,7 @@ var _ = ginkgo.Describe("AzureFrontDoorOriginSpec Validation Tests", func() {
 			input.Spec.PrivateLink = &AzureFrontDoorOriginPrivateLink{
 				Location: "eastus",
 				PrivateLinkTargetId: &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
-					ValueFrom: &foreignkeyv1.ValueFromRef{Kind: cloudresourcekind.CloudResourceKind_AzureLinuxWebApp, Name: "api"},
+					ValueFrom: &foreignkeyv1.ValueFromRef{Kind: catalogkind.CatalogKind_AzureLinuxWebApp, Name: "api"},
 				}},
 			}
 			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())

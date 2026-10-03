@@ -14,7 +14,7 @@ go_test(
     srcs = ["docs_test.go"],
     embed = [":protodocs"],
     deps = [
-        "//pkg/crkreflect",
+        "//pkg/catalogkindreflect",
         "@org_golang_google_protobuf//reflect/protoreflect",
         "@org_golang_google_protobuf//reflect/protoregistry",
     ],

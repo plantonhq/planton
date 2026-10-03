@@ -6,18 +6,18 @@
 
 ## Summary
 
-Expanded the hand-written catalog page inventory from 5 exemplars to 29 total, covering every active cloud provider in the Planton framework. Each page is source-verified against spec.proto, stack_outputs.proto, and the Pulumi IaC module, following the 9-section standard established in the catalog page rewrite system. The expansion was executed in 3 rounds of 4 parallel agents, each handling 2 components, completing in a single session.
+Expanded the hand-written catalog page inventory from 5 exemplars to 29 total, covering every active cloud provider in the Planton framework. Each page is source-verified against spec.proto, outputs.proto, and the Pulumi IaC module, following the 9-section standard established in the catalog page rewrite system. The expansion was executed in 3 rounds of 4 parallel agents, each handling 2 kinds, completing in a single session.
 
 ## Problem Statement / Motivation
 
-The catalog page rewrite system (2026-02-13) established a standard for hand-written, source-verified catalog pages and produced 5 exemplars. However, 5 pages out of ~178 components left the vast majority of the catalog using the old auto-generated research documents — multi-hundred-line essays about deployment maturity spectrums and technology comparisons that bury the actual Planton-specific content.
+The catalog page rewrite system (2026-02-13) established a standard for hand-written, source-verified catalog pages and produced 5 exemplars. However, 5 pages out of ~178 kinds left the vast majority of the catalog using the old auto-generated research documents — multi-hundred-line essays about deployment maturity spectrums and technology comparisons that bury the actual Planton-specific content.
 
 ### Pain Points
 
-- Only 5 of ~178 components had the new catalog page experience
+- Only 5 of ~178 kinds had the new catalog page experience
 - Developers landing on unmigrated catalog pages saw research documents instead of actionable deployment guides
 - No reference exemplars existed for 8 of the 13 providers (Azure, DigitalOcean, Civo, OpenStack, OpenFGA, Auth0, Scaleway, Snowflake, Confluent)
-- Future automated migration of the remaining ~149 components lacked provider-specific reference material to guide AI agents
+- Future automated migration of the remaining ~149 kinds lacked provider-specific reference material to guide AI agents
 - The complexity spectrum was narrow — exemplars only covered low-to-high complexity, missing the extremes (1-field specs like OpenfgaStore, 29-field specs like Auth0Client)
 
 ## Solution / What's New
@@ -57,7 +57,7 @@ flowchart LR
 
 ### Selection Criteria
 
-Components were chosen to maximize reference value across three dimensions:
+Kinds were chosen to maximize reference value across three dimensions:
 
 1. **Complexity spectrum** — from 1-field (OpenfgaStore) to 29-field/9-nested (Auth0Client)
 2. **Infrastructure patterns** — managed K8s (5 providers), databases (5), compute (2), serverless (1), storage (2), networking (2), DNS (2), secrets (1), identity/auth (4), streaming (1), data warehouse (1)
@@ -65,9 +65,9 @@ Components were chosen to maximize reference value across three dimensions:
 
 ## Implementation Details
 
-### Components Written
+### Kinds Written
 
-| Provider | Component | Complexity | Fields | Nested Messages |
+| Provider | Kind | Complexity | Fields | Nested Messages |
 |----------|-----------|-----------|--------|-----------------|
 | AWS | AwsEksCluster | High | 7 | 0 |
 | AWS | AwsRdsInstance | Medium | 16 | 0 |
@@ -123,9 +123,9 @@ flowchart TB
 
 Each agent followed the same workflow:
 
-1. Read `write-planton-component-catalog-page.mdc` rule
+1. Read `write-catalog-kind-catalog-page.mdc` rule
 2. Read AWS ALB exemplar as gold standard
-3. Read component source files (api.proto, spec.proto, stack_outputs.proto, Pulumi module)
+3. Read kind source files (api.proto, spec.proto, outputs.proto, Pulumi module)
 4. Write catalog page following the 9-section structure
 5. Run 6-point verification protocol
 
@@ -138,13 +138,13 @@ All 24 pages passed all 6 verification checks:
 | Source Code | Every field, resource, and output traced to proto/Go source | Pass (24/24) |
 | Command | CLI commands verified against `cmd/planton/` | Pass (24/24) |
 | Manifest | KRM structure, camelCase fields, valid values | Pass (24/24) |
-| Link | Internal catalog links point to existing components | Pass (24/24) |
+| Link | Internal catalog links point to existing kinds | Pass (24/24) |
 | Planton | Zero references to Planton/SaaS/commercial platform | Pass (24/24) |
-| Webapp | Zero references to webapp/cloud-resource/credential commands | Pass (24/24) |
+| Webapp | Zero references to webapp/infra-component/credential commands | Pass (24/24) |
 
 ### Notable Findings During Writing
 
-- **OpenFGA components use `tofu` provisioner** — the OpenFGA Pulumi modules are pass-through wrappers; these components are natively OpenTofu/Terraform-based. The catalog pages correctly use `planton.dev/provisioner: tofu` labels.
+- **OpenFGA kinds use `tofu` provisioner** — the OpenFGA Pulumi modules are pass-through wrappers; these kinds are natively OpenTofu/Terraform-based. The catalog pages correctly use `planton.dev/provisioner: tofu` labels.
 - **Auth0Client is the densest spec** — 29 fields across 9 nested messages, requiring careful organization of the Configuration Reference into logical sub-sections (OAuth, JWT, Refresh Tokens, Mobile, etc.)
 - **CloudflareR2Bucket has implementation notes** — `publicAccess` requires manual dashboard enablement, `versioningEnabled` is accepted but silently ignored. Both documented from source code comments.
 - **OpenfgaStore demonstrates minimal spec handling** — 1 field, 3 examples. The examples find meaningful variation through naming patterns for different isolation strategies (dev, per-app, production).
@@ -152,24 +152,24 @@ All 24 pages passed all 6 verification checks:
 ## Benefits
 
 - **Full provider coverage** — every developer evaluating Planton for any of the 13 supported providers now finds at least 1-2 hand-written, source-verified catalog pages
-- **Rich reference set for automation** — the 29 pages cover every complexity level and infrastructure pattern, providing AI agents comprehensive reference material for migrating the remaining ~149 components
+- **Rich reference set for automation** — the 29 pages cover every complexity level and infrastructure pattern, providing AI agents comprehensive reference material for migrating the remaining ~149 kinds
 - **Consistent quality** — all pages follow the same 9-section structure, persona, and tone established by the original exemplars
-- **Parallelization validated** — the 3-round execution pattern proved that the `write-planton-component-catalog-page.mdc` rule is self-contained enough for parallel agent execution
+- **Parallelization validated** — the 3-round execution pattern proved that the `write-catalog-kind-catalog-page.mdc` rule is self-contained enough for parallel agent execution
 
 ## Impact
 
 ### Users
-- Developers evaluating Planton now see professional, source-verified documentation for flagship components across all providers
+- Developers evaluating Planton now see professional, source-verified documentation for flagship kinds across all providers
 - The catalog pages provide copy-pasteable manifests, complete field references, and progressive examples
 
 ### Documentation System
-- 29 of ~178 components (16%) now use the new catalog page format
-- The remaining ~149 components can be migrated using the same rule and agent pattern
+- 29 of ~178 kinds (16%) now use the new catalog page format
+- The remaining ~149 kinds can be migrated using the same rule and agent pattern
 - Provider-specific patterns are now documented (SaaS providers, identity providers, private cloud, edge)
 
 ### Future Work
-- ~149 components remain to be migrated from legacy research docs to hand-written catalog pages
-- The established parallelization pattern (4 agents, 2 components each) can process ~8 components per round
+- ~149 kinds remain to be migrated from legacy research docs to hand-written catalog pages
+- The established parallelization pattern (4 agents, 2 kinds each) can process ~8 kinds per round
 
 ## Related Work
 

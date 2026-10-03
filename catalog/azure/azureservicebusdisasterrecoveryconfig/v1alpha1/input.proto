@@ -5,9 +5,9 @@ package dev.planton.azure.azureservicebusdisasterrecoveryconfig.v1alpha1;
 import "catalog/azure/azureservicebusdisasterrecoveryconfig/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-service-bus-disaster-recovery-config stack-input
-message AzureServiceBusDisasterRecoveryConfigStackInput {
-  //target cloud-resource
+//azure-service-bus-disaster-recovery-config iac-input
+message AzureServiceBusDisasterRecoveryConfigIacInput {
+  //target infra-component
   AzureServiceBusDisasterRecoveryConfig target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

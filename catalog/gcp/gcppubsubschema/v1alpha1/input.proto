@@ -5,9 +5,9 @@ package dev.planton.gcp.gcppubsubschema.v1alpha1;
 import "catalog/gcp/gcppubsubschema/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-pub-sub-schema stack-input
-message GcpPubSubSchemaStackInput {
-  //target cloud-resource
+//gcp-pub-sub-schema iac-input
+message GcpPubSubSchemaIacInput {
+  //target infra-component
   GcpPubSubSchema target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

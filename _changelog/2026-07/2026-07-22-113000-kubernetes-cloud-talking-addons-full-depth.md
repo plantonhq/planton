@@ -1,7 +1,7 @@
 # Kubernetes cloud-talking addons rebuilt: ExternalDNS and the External Secrets family at full depth on both engines
 
 **Date**: 2026-07-22
-**Scope**: `apis/dev/planton/provider/kubernetes` (kubernetesexternaldns rebuilt; kubernetesexternalsecrets renamed to kubernetesexternalsecretsoperator and rebuilt; kubernetesclustersecretstore, kubernetessecretstore, kubernetesexternalsecret forged; new shared `external_secrets_store.proto`), `cloudresourcekind` (foundation-addons band widened to 830–869, three family-adjacent inserts, observability/security kinds renumbered), `aa_e2e/verify` (external-dns + external-secrets verifiers), `e2e` + Makefile Tier-1, `pkg/outputs`, `pkg/iac/importmap` (two proven maps + ledger), `pkg/iac/pulumi/pulumimodule/provider/kubernetes/externalsecretsstore` (new shared builder), `pkg/kubernetes/kubernetestypes` (external-secrets pin v0.9.20 → v2.8.0, types regenerated at `external-secrets.io/v1`), site catalog, `_rules/deployment-component` (forge + update lessons)
+**Scope**: `apis/dev/planton/provider/kubernetes` (kubernetesexternaldns rebuilt; kubernetesexternalsecrets renamed to kubernetesexternalsecretsoperator and rebuilt; kubernetesclustersecretstore, kubernetessecretstore, kubernetesexternalsecret forged; new shared `external_secrets_store.proto`), `catalogkind` (foundation-addons band widened to 830–869, three family-adjacent inserts, observability/security kinds renumbered), `aa_e2e/verify` (external-dns + external-secrets verifiers), `e2e` + Makefile Tier-1, `pkg/outputs`, `pkg/iac/importmap` (two proven maps + ledger), `pkg/iac/pulumi/pulumimodule/provider/kubernetes/externalsecretsstore` (new shared builder), `pkg/kubernetes/kubernetestypes` (external-secrets pin v0.9.20 → v2.8.0, types regenerated at `external-secrets.io/v1`), site catalog, `_rules/catalog-kind` (forge + update lessons)
 
 ## What changed
 
@@ -54,7 +54,7 @@ including a real end-to-end secret sync.
   annotation the chart forwards onto CRDs (the chart itself has no keep
   knob and would cascade-delete every ESO object on uninstall) — HA with
   enforced leader election, reconcile concurrency, controller-class
-  sharding, namespace scoping with scoped RBAC, per-component tuning
+  sharding, namespace scoping with scoped RBAC, per-kind tuning
   (webhook, cert-controller), ambient workload identity for the controller
   ServiceAccount, scheduling, PDB, ServiceMonitor, image override,
   `helm_values` escape hatch.

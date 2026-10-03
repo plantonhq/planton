@@ -5,7 +5,7 @@ import (
 
 	azurefunctionappv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurefunctionapp/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -105,11 +105,11 @@ var cookieExpirationConventionStrings = map[azurefunctionappv1alpha1.AzureFuncti
 	azurefunctionappv1alpha1.AzureFunctionAppCookieExpirationConvention_IDENTITY_PROVIDER_DERIVED: "IdentityProviderDerived",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurefunctionappv1alpha1.AzureFunctionAppStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurefunctionappv1alpha1.AzureFunctionAppIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureFunctionApp = stackInput.Target
-	target := stackInput.Target
+	locals.AzureFunctionApp = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -120,7 +120,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurefunctionappv1alpha1.
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureFunctionApp.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureFunctionApp.String()),
 	}
 
 	if target.Metadata.Id != "" {

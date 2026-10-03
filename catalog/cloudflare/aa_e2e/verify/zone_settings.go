@@ -40,7 +40,7 @@ type settingsSingletonVerifier struct {
 	// pathFormat is the settings surface's GET path with one %s for the
 	// scope id.
 	pathFormat string
-	// idKey names the stack output carrying the scope id. Empty means
+	// idKey names the output carrying the scope id. Empty means
 	// "zone_id" (the original zone-singleton class -- existing
 	// registrations stay untouched).
 	idKey string

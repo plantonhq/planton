@@ -5,11 +5,11 @@ import (
 
 	awssesemailidentityv1alpha1 "github.com/plantonhq/planton/catalog/aws/awssesemailidentity/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 type Locals struct {
 	AwsSesEmailIdentity *awssesemailidentityv1alpha1.AwsSesEmailIdentity
 	AwsTags             map[string]string
@@ -21,16 +21,16 @@ type Locals struct {
 	Policies map[string]*awssesemailidentityv1alpha1.AwsSesEmailIdentityPolicy
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *awssesemailidentityv1alpha1.AwsSesEmailIdentityStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *awssesemailidentityv1alpha1.AwsSesEmailIdentityIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsSesEmailIdentity = stackInput.Target
+	locals.AwsSesEmailIdentity = iacInput.Target
 
 	locals.AwsTags = map[string]string{
 		awstagkeys.Name:         locals.AwsSesEmailIdentity.Metadata.Name,
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.AwsSesEmailIdentity.Metadata.Org,
 		awstagkeys.Environment:  locals.AwsSesEmailIdentity.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsSesEmailIdentity.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsSesEmailIdentity.String(),
 		awstagkeys.ResourceId:   locals.AwsSesEmailIdentity.Metadata.Id,
 	}
 

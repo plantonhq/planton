@@ -96,7 +96,7 @@ env:
     secretValue: $secret/@production/stripe-key
 ```
 
-A `$secret/` reference in a configuration field is refused before anything deploys, and the message names the field to move it to. The secret field keeps its copy in your cloud's own store, readable only by the workload's runtime identity, and removed with the workload. The workload is pinned to the version it was deployed with, so a changed secret reaches it on the next deployment. Every component's reference page marks these fields: `(sensitive)` for a field that holds secret material, and `(no secrets: use <field>)` for a configuration field that names where a secret belongs.
+A `$secret/` reference in a configuration field is refused before anything deploys, and the message names the field to move it to. The secret field keeps its copy in your cloud's own store, readable only by the workload's runtime identity, and removed with the workload. The workload is pinned to the version it was deployed with, so a changed secret reaches it on the next deployment. Every kind's reference page marks these fields: `(sensitive)` for a field that holds secret material, and `(no secrets: use <field>)` for a configuration field that names where a secret belongs.
 
 For local development the CLI mirrors the same resolution:
 
@@ -108,7 +108,7 @@ planton service env check   # per-reference resolution report
 
 ## The Read Story
 
-Every read of a secret's **value** — a console reveal, a CLI read, a deploy-time resolution — writes one immutable audit entry in the same breath as serving the value. Each entry records who (the person, the API key, or the exact platform work such as a specific stack job), through which surface, when, and **exactly which version was served**. A read whose record cannot be written is refused.
+Every read of a secret's **value** — a console reveal, a CLI read, a deploy-time resolution — writes one immutable audit entry in the same breath as serving the value. Each entry records who (the person, the API key, or the exact platform work such as a specific infra job), through which surface, when, and **exactly which version was served**. A read whose record cannot be written is refused.
 
 The feed rides the same permission as reading the value itself:
 

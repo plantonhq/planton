@@ -628,7 +628,7 @@ resource "azurerm_orchestrated_virtual_machine_scale_set" "main" {
   # pinned pulumi-azure v6 SDK bridges the legacy sku_profile shape (plain
   # vm_sizes, no ranks) and fails loudly on any ranked profile. Sizes
   # deploy identically on both engines; output-neutral (sku_profile never
-  # feeds stack outputs); revisit when the SDK catches up.
+  # feeds outputs); revisit when the SDK catches up.
   dynamic "sku_profile" {
     for_each = var.spec.sku_profile != null ? [var.spec.sku_profile] : []
     content {

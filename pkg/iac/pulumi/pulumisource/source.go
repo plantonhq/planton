@@ -1,4 +1,4 @@
-// Package pulumisource downloads and caches Pulumi component module SOURCE
+// Package pulumisource downloads and caches Pulumi kind module SOURCE
 // from the release artifacts, the structural twin of tofuzip for the
 // terraform half.
 //
@@ -6,7 +6,7 @@
 // serves the flows that need the module's code itself — ejecting an official
 // module into a user-owned copy, and rendering module source without a git
 // clone. Cache layout mirrors the sibling caches:
-// ~/.planton/pulumi/sources/{version}/{component}/.
+// ~/.planton/pulumi/sources/{version}/{kind}/.
 package pulumisource
 
 import (
@@ -20,7 +20,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/internal/cli/cliprint"
 	"github.com/plantonhq/planton/internal/cli/version"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/downloads"
 	"github.com/plantonhq/planton/pkg/fileutil"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumibinary"
@@ -48,36 +48,36 @@ func GetSourceCacheDir(releaseVersion string) (string, error) {
 }
 
 // GetSourcePath returns the expected path for a cached source folder
-// (~/.planton/pulumi/sources/{version}/{component}/)
-func GetSourcePath(componentName, releaseVersion string) (string, error) {
+// (~/.planton/pulumi/sources/{version}/{kind}/)
+func GetSourcePath(kindName, releaseVersion string) (string, error) {
 	cacheDir, err := GetSourceCacheDir(releaseVersion)
 	if err != nil {
 		return "", err
 	}
-	return filepath.Join(cacheDir, strings.ToLower(componentName)), nil
+	return filepath.Join(cacheDir, strings.ToLower(kindName)), nil
 }
 
 // BuildDownloadURL constructs the Cloudflare R2 download URL for a Pulumi
-// component's source zip.
+// kind's source zip.
 //
-// The key is versionless (one live module set per component); the release tag
+// The key is versionless (one live module set per kind); the release tag
 // segment versions the artifact. Known skew edge: a tag whose release
 // predates the pulumi source lane never uploaded a source.zip, so the
 // download 404s and the caller falls back to a git checkout of that tag,
 // which self-corrects.
-func BuildDownloadURL(componentName, releaseVersion string) (string, error) {
+func BuildDownloadURL(kindName, releaseVersion string) (string, error) {
 	// Validate against the registry before composing: an unknown kind must
 	// fail plainly here, not as a 404 the fallback path silently absorbs.
-	if _, err := crkreflect.ComponentVersionDir(componentName); err != nil {
-		return "", errors.Wrapf(err, "cannot build the download URL for the %s pulumi module source", componentName)
+	if _, err := catalogkindreflect.KindVersionDir(kindName); err != nil {
+		return "", errors.Wrapf(err, "cannot build the download URL for the %s pulumi module source", kindName)
 	}
-	return downloads.BuildPulumiSourceDownloadURL(componentName, releaseVersion), nil
+	return downloads.BuildPulumiSourceDownloadURL(kindName, releaseVersion), nil
 }
 
-// IsSourceCached checks if a component's source is already cached and holds
+// IsSourceCached checks if a kind's source is already cached and holds
 // Go files.
-func IsSourceCached(componentName, releaseVersion string) (bool, error) {
-	sourcePath, err := GetSourcePath(componentName, releaseVersion)
+func IsSourceCached(kindName, releaseVersion string) (bool, error) {
+	sourcePath, err := GetSourcePath(kindName, releaseVersion)
 	if err != nil {
 		return false, err
 	}
@@ -100,15 +100,15 @@ func IsSourceCached(componentName, releaseVersion string) (bool, error) {
 	return false, nil
 }
 
-// EnsureSource ensures the source for a component is downloaded and cached.
+// EnsureSource ensures the source for a kind is downloaded and cached.
 // Returns the path to the source folder.
-func EnsureSource(componentName, releaseVersion string) (string, error) {
-	cached, err := IsSourceCached(componentName, releaseVersion)
+func EnsureSource(kindName, releaseVersion string) (string, error) {
+	cached, err := IsSourceCached(kindName, releaseVersion)
 	if err != nil {
 		return "", errors.Wrap(err, "failed to check source cache")
 	}
 
-	sourcePath, err := GetSourcePath(componentName, releaseVersion)
+	sourcePath, err := GetSourcePath(kindName, releaseVersion)
 	if err != nil {
 		return "", err
 	}
@@ -118,18 +118,18 @@ func EnsureSource(componentName, releaseVersion string) (string, error) {
 		return sourcePath, nil
 	}
 
-	cliprint.PrintStep(fmt.Sprintf("Downloading Pulumi module source for %s...", componentName))
+	cliprint.PrintStep(fmt.Sprintf("Downloading Pulumi module source for %s...", kindName))
 
-	if err := downloadAndExtract(componentName, releaseVersion, sourcePath); err != nil {
-		return "", errors.Wrapf(err, "failed to download module source for %s", componentName)
+	if err := downloadAndExtract(kindName, releaseVersion, sourcePath); err != nil {
+		return "", errors.Wrapf(err, "failed to download module source for %s", kindName)
 	}
 
 	cliprint.PrintSuccess(fmt.Sprintf("Module source downloaded: %s", filepath.Base(sourcePath)))
 	return sourcePath, nil
 }
 
-func downloadAndExtract(componentName, releaseVersion, sourcePath string) error {
-	downloadURL, err := BuildDownloadURL(componentName, releaseVersion)
+func downloadAndExtract(kindName, releaseVersion, sourcePath string) error {
+	downloadURL, err := BuildDownloadURL(kindName, releaseVersion)
 	if err != nil {
 		return err
 	}

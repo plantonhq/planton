@@ -509,7 +509,7 @@ Successfully tested Gateway API integration with Istio:
 
 ## Architecture
 
-### Component Interaction
+### Kind Interaction
 
 ```
 ┌─────────────────────────────────────┐

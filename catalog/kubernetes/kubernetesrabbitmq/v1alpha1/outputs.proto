@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesrabbitmq.v1alpha1;
 
-//kubernetes-rabbit-mq stack outputs
-message KubernetesRabbitMqStackOutputs {
+//kubernetes-rabbit-mq outputs
+message KubernetesRabbitMqOutputs {
   //namespace the cluster runs in.
   string namespace = 1;
 

@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awslambdaeventsourcemapping.v1alpha1;
 
-// AwsLambdaEventSourceMappingStackOutputs captures the observable
+// AwsLambdaEventSourceMappingOutputs captures the observable
 // identifiers of a deployed event source mapping.
-message AwsLambdaEventSourceMappingStackOutputs {
+message AwsLambdaEventSourceMappingOutputs {
   // The server-assigned mapping UUID -- the identity AWS APIs
   // (GetEventSourceMapping, UpdateEventSourceMapping) key on.
   string uuid = 1;

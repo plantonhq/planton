@@ -22,7 +22,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurefrontdoorsecret
+    e2e-catalog-kind: azurefrontdoorsecret
   annotations:
     planton.dev/e2e: "true"
     # The certificate fixture resolves through its kind's minimal

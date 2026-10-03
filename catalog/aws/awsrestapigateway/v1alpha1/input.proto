@@ -5,9 +5,9 @@ package dev.planton.aws.awsrestapigateway.v1alpha1;
 import "catalog/aws/awsrestapigateway/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsRestApiGatewayStackInput is the input for the IaC modules that
+// AwsRestApiGatewayIacInput is the input for the IaC modules that
 // deploy the REST API.
-message AwsRestApiGatewayStackInput {
+message AwsRestApiGatewayIacInput {
   // target is the AwsRestApiGateway resource to deploy.
   AwsRestApiGateway target = 1;
   // provider_config contains the AWS provider credentials and configuration.

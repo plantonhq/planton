@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awssnssubscription.v1alpha1;
 
-// AwsSnsSubscriptionStackOutputs captures observable identifiers from a
+// AwsSnsSubscriptionOutputs captures observable identifiers from a
 // provisioned SNS subscription.
-message AwsSnsSubscriptionStackOutputs {
+message AwsSnsSubscriptionOutputs {
   // The Amazon Resource Name (ARN) of the subscription. The identifier used
   // for sns:Unsubscribe/SetSubscriptionAttributes permissions and for
   // auditing which subscriptions exist on a topic.

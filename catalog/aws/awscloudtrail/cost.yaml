@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awscloudtrail
 spec:
@@ -35,7 +35,7 @@ spec:
     - field_path: cloudwatch_logs
       sku_meter: CloudWatch Logs event delivery
       pricing_unit: GB
-      impact: The mirror bills twice -- CloudTrail meters each GB delivered to the log group, and the group then meters its own ingestion on the AwsCloudwatchLogGroup component. Full event volume flows through both.
+      impact: The mirror bills twice -- CloudTrail meters each GB delivered to the log group, and the group then meters its own ingestion on the AwsCloudwatchLogGroup kind. Full event volume flows through both.
     - field_path: enable_logging
       sku_meter: management events delivered
       pricing_unit: events

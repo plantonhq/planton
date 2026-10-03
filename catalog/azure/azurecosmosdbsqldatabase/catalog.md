@@ -4,7 +4,7 @@ Deploys a SQL (NoSQL) API database inside an Azure Cosmos DB account — the nam
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cosmos DB SQL Database** -- a named database inside the referenced Cosmos DB account (which must speak the SQL/NoSQL API)
 - **Shared Throughput** (optional) -- fixed RU/s or an autoscale ceiling that every container in the database shares, when either is declared; omit both to let each container bring its own dedicated throughput (or on serverless accounts, where provisioned throughput is rejected)
@@ -13,12 +13,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **A Cosmos DB account** speaking the SQL (NoSQL) API. Reference an AzureCosmosdbAccount Cloud Resource via ValueFromRef, or provide the account's ARM ID directly.
+- **A Cosmos DB account** speaking the SQL (NoSQL) API. Reference an AzureCosmosdbAccount Infra Component via ValueFromRef, or provide the account's ARM ID directly.
 
 ## Deploy
 
@@ -50,7 +50,7 @@ spec:
 planton apply -f cosmosdb-sql-database.yaml
 ```
 
-This creates a database with no shared throughput — each container brings its own. Add `throughput` (fixed RU/s) or `autoscaleMaxThroughput` (a ceiling) for the shared model. A Stack Job tracks the provisioning in real time.
+This creates a database with no shared throughput — each container brings its own. Add `throughput` (fixed RU/s) or `autoscaleMaxThroughput` (a ceiling) for the shared model. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -66,15 +66,15 @@ These are the most important decisions when configuring a SQL database. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | AzureCosmosdbAccount | `cosmosdbAccountId` | `status.outputs.cosmosdb_account_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -94,6 +94,6 @@ There are deliberately no endpoint or credential outputs here: connectivity and 
 
 ## Works With
 
-- [**Azure Cosmos DB Account**](/cloud-catalog/azure-cosmosdb-account) — the SQL-API account this database lives in, referenced via `cosmosdb_account_id`
-- [**Azure Cosmos DB SQL Container**](/cloud-catalog/azure-cosmosdb-sql-container) — the containers inside, referencing this database's `sql_database_id` output
-- [**Azure Cosmos DB SQL Role Assignment**](/cloud-catalog/azure-cosmosdb-sql-role-assignment) — data-plane grants scoped to this database (`{account-id}/dbs/{database-name}`)
+- [**Azure Cosmos DB Account**](/infra-catalog/azure-cosmosdb-account) — the SQL-API account this database lives in, referenced via `cosmosdb_account_id`
+- [**Azure Cosmos DB SQL Container**](/infra-catalog/azure-cosmosdb-sql-container) — the containers inside, referencing this database's `sql_database_id` output
+- [**Azure Cosmos DB SQL Role Assignment**](/infra-catalog/azure-cosmosdb-sql-role-assignment) — data-plane grants scoped to this database (`{account-id}/dbs/{database-name}`)

@@ -8,12 +8,12 @@ import (
 )
 
 // Resources orchestrates VPC link creation and exports outputs.
-func Resources(ctx *pulumi.Context, stackInput *awshttpapivpclinkv1alpha1.AwsHttpApiVpcLinkStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awshttpapivpclinkv1alpha1.AwsHttpApiVpcLinkIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder, which resolves
+	// Build the AWS provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static keys, keyless web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsHttpApiVpcLink.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsHttpApiVpcLink.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

@@ -10,7 +10,7 @@ author:
     title: Founder
 ---
 
-Cloudflare Rulesets are now a first-class cloud resource in Infra Hub. You can create, configure, and deploy rulesets that control how Cloudflare handles traffic for your domains — origin routing, caching, security, request transforms, and more — all managed through the same workflow you use for every other cloud resource on the platform.
+Cloudflare Rulesets are now a first-class infra component in Infra Hub. You can create, configure, and deploy rulesets that control how Cloudflare handles traffic for your domains — origin routing, caching, security, request transforms, and more — all managed through the same workflow you use for every other infra component on the platform.
 
 ## What You Can Do
 
@@ -29,7 +29,7 @@ Each phase supports specific actions (block, challenge, redirect, rewrite, route
 
 CloudflareRuleset follows the standard Infra Hub workflow:
 
-1. Navigate to **Infra Hub → Create Cloud Resource → Cloudflare → Ruleset**
+1. Navigate to **Infra Hub → Create Infra Component → Cloudflare → Ruleset**
 2. Select a **ruleset kind** (Zone for a single domain, Custom for reusable rules, Managed for Cloudflare-maintained rules, or Root for account-level entry points)
 3. Choose the **phase** that matches what you want to control
 4. Define one or more **rules** with wirefilter expressions and actions

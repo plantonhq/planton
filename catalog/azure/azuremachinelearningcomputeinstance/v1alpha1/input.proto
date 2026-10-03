@@ -5,10 +5,10 @@ package dev.planton.azure.azuremachinelearningcomputeinstance.v1alpha1;
 import "catalog/azure/azuremachinelearningcomputeinstance/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureMachineLearningComputeInstanceStackInput is the input to the
+// AzureMachineLearningComputeInstanceIacInput is the input to the
 // IaC modules (Pulumi/Terraform). It contains the target resource
 // definition and Azure provider credentials.
-message AzureMachineLearningComputeInstanceStackInput {
+message AzureMachineLearningComputeInstanceIacInput {
   // The compute instance resource to deploy.
   AzureMachineLearningComputeInstance target = 1;
 

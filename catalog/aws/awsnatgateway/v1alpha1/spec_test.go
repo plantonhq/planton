@@ -35,7 +35,7 @@ func minimalValidPublicNatGateway() *AwsNatGateway {
 	return &AwsNatGateway{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsNatGateway",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-nat-gateway",
 		},
 		Spec: &AwsNatGatewaySpec{
@@ -51,7 +51,7 @@ func minimalValidPrivateNatGateway() *AwsNatGateway {
 	return &AwsNatGateway{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsNatGateway",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-private-nat-gateway",
 		},
 		Spec: &AwsNatGatewaySpec{
@@ -110,7 +110,7 @@ var _ = ginkgo.Describe("AwsNatGatewaySpec Validation Tests", func() {
 
 			ginkgo.It("should not return a validation error with full metadata set", func() {
 				input := minimalValidPublicNatGateway()
-				input.Metadata = &shared.CloudResourceMetadata{
+				input.Metadata = &shared.CatalogObjectMetadata{
 					Name: "full-nat-gateway",
 					Org:  "acme-corp",
 					Env:  "production",
@@ -201,7 +201,7 @@ var _ = ginkgo.Describe("AwsNatGatewaySpec Validation Tests", func() {
 				input := &AwsNatGateway{
 					ApiVersion: "aws.planton.dev/v1alpha1",
 					Kind:       "AwsNatGateway",
-					Metadata:   &shared.CloudResourceMetadata{Name: "test-nat-gateway"},
+					Metadata:   &shared.CatalogObjectMetadata{Name: "test-nat-gateway"},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).ToNot(gomega.BeNil())

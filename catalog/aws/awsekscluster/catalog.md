@@ -4,7 +4,7 @@ Deploys a managed Kubernetes control plane on Amazon EKS — the API server, etc
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **EKS Cluster** -- a managed Kubernetes control plane attached to your subnets (at least two Availability Zones) and cluster IAM role, with the endpoint exposure, authentication mode, encryption, logging, upgrade, and zonal-shift posture you declare
 - **Secrets Encryption Configuration** -- configured only when `kmsKeyArn` is provided; enables envelope encryption of Kubernetes secrets using your customer-managed KMS key (a one-way door: it cannot be disabled on a live cluster)
@@ -18,14 +18,14 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **At least two subnets** in distinct Availability Zones. Private subnets are recommended for production. Provide subnet IDs directly or reference AwsSubnet Cloud Resources via ValueFromRef.
-- **An IAM role** trusting `eks.amazonaws.com` with the `AmazonEKSClusterPolicy` managed policy attached — attach it on the role itself; this component never modifies a role it merely references. Provide the ARN directly or reference an AwsIamRole Cloud Resource.
-- **A KMS key** (optional) for envelope encryption of Kubernetes secrets. Provide the ARN directly or reference an AwsKmsKey Cloud Resource. Decide this before deploying — it cannot be added to a live cluster.
+- **At least two subnets** in distinct Availability Zones. Private subnets are recommended for production. Provide subnet IDs directly or reference AwsSubnet Infra Components via ValueFromRef.
+- **An IAM role** trusting `eks.amazonaws.com` with the `AmazonEKSClusterPolicy` managed policy attached — attach it on the role itself; this component never modifies a role it merely references. Provide the ARN directly or reference an AwsIamRole Infra Component.
+- **A KMS key** (optional) for envelope encryption of Kubernetes secrets. Provide the ARN directly or reference an AwsKmsKey Infra Component. Decide this before deploying — it cannot be added to a live cluster.
 
 ## Deploy
 
@@ -61,7 +61,7 @@ spec:
 planton apply -f eks-cluster.yaml
 ```
 
-This creates a cluster on the current default Kubernetes version with the public endpoint open (AWS default), private in-VPC access enabled, access-entry authentication, and the two highest-signal log streams. A Stack Job tracks the provisioning in real time.
+This creates a cluster on the current default Kubernetes version with the public endpoint open (AWS default), private in-VPC access enabled, access-entry authentication, and the two highest-signal log streams. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -111,7 +111,7 @@ These are the most important decisions when configuring an EKS cluster. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -121,9 +121,9 @@ These are the most important decisions when configuring an EKS cluster. Explore 
 | **AwsKmsKey** (optional) | `kmsKeyArn` | `status.outputs.key_arn` |
 | **AwsIamRole** (optional) | `autoMode.nodeRoleArn` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -149,8 +149,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS EKS Node Group**](/cloud-catalog/aws-eks-node-group) -- managed worker fleets that register with this cluster's `name` output
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- provides the subnets for control plane network interface placement
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- provides the cluster service role (and the Auto Mode node role)
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for Kubernetes secrets encryption
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- provides additional control-plane security groups
+- [**AWS EKS Node Group**](/infra-catalog/aws-eks-node-group) -- managed worker fleets that register with this cluster's `name` output
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- provides the subnets for control plane network interface placement
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- provides the cluster service role (and the Auto Mode node role)
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for Kubernetes secrets encryption
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- provides additional control-plane security groups

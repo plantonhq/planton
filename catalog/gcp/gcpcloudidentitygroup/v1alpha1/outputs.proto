@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpcloudidentitygroup.v1alpha1;
 
-// GcpCloudIdentityGroupStackOutputs captures the group after provisioning.
-message GcpCloudIdentityGroupStackOutputs {
+// GcpCloudIdentityGroupOutputs captures the group after provisioning.
+message GcpCloudIdentityGroupOutputs {
   // The group's resource name, `groups/{group_id}` -- the handle the Cloud
   // Identity API addresses it by.
   string name = 1;

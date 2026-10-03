@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azuremonitordiagnosticsetting.v1alpha1;
 
-// **AzureMonitorDiagnosticSettingStackOutputs** captures the outputs of
+// **AzureMonitorDiagnosticSettingOutputs** captures the outputs of
 // provisioning an Azure Monitor diagnostic setting.
-message AzureMonitorDiagnosticSettingStackOutputs {
+message AzureMonitorDiagnosticSettingOutputs {
   // The Azure Resource Manager ID of the diagnostic setting -- an extension
   // resource ID scoped under the target resource. Format:
   // {target_resource_id}/providers/Microsoft.Insights/diagnosticSettings/{name}

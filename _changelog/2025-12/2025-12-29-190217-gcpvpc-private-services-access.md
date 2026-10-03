@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added Private Services Access support to the GcpVpc component, enabling VPC peering with Google's service network. This allows Google managed services like Cloud SQL, Memorystore, and Filestore to use private IP addresses, providing secure connectivity without exposing databases to the public internet. The implementation spans proto schema, Pulumi module, Terraform module, and documentation.
+Added Private Services Access support to the GcpVpc kind, enabling VPC peering with Google's service network. This allows Google managed services like Cloud SQL, Memorystore, and Filestore to use private IP addresses, providing secure connectivity without exposing databases to the public internet. The implementation spans proto schema, Pulumi module, Terraform module, and documentation.
 
 ## Problem Statement / Motivation
 
@@ -162,12 +162,12 @@ message GcpVpcSpec {
 }
 ```
 
-**File**: `apis/dev/planton/provider/gcp/gcpvpc/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/gcp/gcpvpc/v1/outputs.proto`
 
 Added new outputs:
 
 ```protobuf
-message GcpVpcStackOutputs {
+message GcpVpcOutputs {
   string network_self_link = 1;
   string private_services_ip_range_name = 2;  // NEW
   string private_services_ip_range_cidr = 3;  // NEW
@@ -284,7 +284,7 @@ flowchart TD
 
 ### For Operations
 - **Consistent deployments**: Same configuration works across Pulumi and Terraform
-- **Auditable outputs**: Stack outputs include IP range name and CIDR for reference
+- **Auditable outputs**: Outputs include IP range name and CIDR for reference
 - **Safe design**: No risk of accidentally disabling APIs across VPCs
 
 ### For Security
@@ -340,7 +340,7 @@ sequenceDiagram
 | File | Change Type |
 |------|-------------|
 | `apis/.../gcpvpc/v1/spec.proto` | Added `GcpVpcPrivateServicesAccess` message |
-| `apis/.../gcpvpc/v1/stack_outputs.proto` | Added output fields |
+| `apis/.../gcpvpc/v1/outputs.proto` | Added output fields |
 | `apis/.../gcpvpc/v1/iac/pulumi/module/vpc.go` | Added `privateServicesAccess()` |
 | `apis/.../gcpvpc/v1/iac/pulumi/module/outputs.go` | Added output constants |
 | `apis/.../gcpvpc/v1/iac/tf/main.tf` | Added Private Services Access resources |

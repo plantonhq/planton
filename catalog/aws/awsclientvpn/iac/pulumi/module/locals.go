@@ -5,7 +5,7 @@ import (
 
 	awsclientvpnv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsclientvpn/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -20,11 +20,11 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *awsclientvpnv1alpha1.AwsClientVpnStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *awsclientvpnv1alpha1.AwsClientVpnIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsClientVpn = stackInput.Target
+	locals.AwsClientVpn = iacInput.Target
 
-	metadata := stackInput.Target.Metadata
+	metadata := iacInput.Target.Metadata
 	locals.EndpointName = metadata.Name
 
 	// Resource-identity tags match the Terraform module key-for-key.
@@ -33,7 +33,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *awsclientvpnv1alpha1.AwsCli
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsClientVpn.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsClientVpn.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

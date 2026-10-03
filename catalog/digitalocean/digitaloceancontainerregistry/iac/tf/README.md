@@ -42,4 +42,4 @@ module "registry" {
 
 ## Outputs
 
-Exactly the kind's stack-output contract, identical to the Pulumi module: `registry_name`, `server_url`, `endpoint`, `region`, `docker_credentials` (sensitive), `credential_expiration_time`.
+Exactly the kind's output contract, identical to the Pulumi module: `registry_name`, `server_url`, `endpoint`, `region`, `docker_credentials` (sensitive), `credential_expiration_time`.

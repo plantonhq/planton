@@ -10,9 +10,9 @@ The resource is effectively immutable: everything except tags is create-time (Fo
 
 ## Usage
 
-The module is invoked from the entry point in `main.go`, which loads an `AwsMskServerlessClusterStackInput` and calls `module.Resources()`.
+The module is invoked from the entry point in `main.go`, which loads an `AwsMskServerlessClusterIacInput` and calls `module.Resources()`.
 
-### Stack Input
+### IaC Input
 
 - `target` — the `AwsMskServerlessCluster` resource (metadata + spec).
 - `provider_config` — AWS credentials (static keys, keyless web identity, or ambient chain), resolved by the shared provider builder.
@@ -29,7 +29,7 @@ pulumi stack output bootstrap_brokers_sasl_iam
 | File | Purpose |
 |------|---------|
 | `Pulumi.yaml` | Pulumi project metadata (name: `aws-msk-serverless-cluster`, runtime: Go) |
-| `main.go` | Entry point — loads stack input, runs the Pulumi program |
+| `main.go` | Entry point — loads IaC input, runs the Pulumi program |
 | `module/main.go` | Orchestrator — provider setup, cluster creation, output exports |
 | `module/locals.go` | Naming basis (metadata.name) and resource-identity tags |
 | `module/cluster.go` | The MSK Serverless cluster resource |
@@ -40,4 +40,4 @@ pulumi stack output bootstrap_brokers_sasl_iam
 - Go 1.21+
 - Pulumi CLI v3+
 - `pulumi-aws` plugin v7
-- AWS credentials (ambient or via stack input)
+- AWS credentials (ambient or via IaC input)

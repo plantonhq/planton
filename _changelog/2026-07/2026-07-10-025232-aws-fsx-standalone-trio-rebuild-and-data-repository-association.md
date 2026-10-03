@@ -10,7 +10,7 @@ The three standalone FSx file-system kinds — `AwsFsxLustreFileSystem`, `AwsFsx
 
 ## Problem Statement / Motivation
 
-The three FSx kinds predated the current component anatomy: hand-written Terraform contracts (`type = any` on two of them), pinned `= 5.82.0` providers, no E2E artifacts, and no drift or outputs-conformance enrollment.
+The three FSx kinds predated the current kind anatomy: hand-written Terraform contracts (`type = any` on two of them), pinned `= 5.82.0` providers, no E2E artifacts, and no drift or outputs-conformance enrollment.
 
 ### Pain Points
 
@@ -100,4 +100,4 @@ Breaking for existing `AwsFsxLustreFileSystem` and `AwsFsxOpenzfsFileSystem` man
 
 ---
 
-**Status**: ✅ Production Ready (live E2E lanes recorded as deferred in the component profiles; re-runnable at any time)
+**Status**: ✅ Production Ready (live E2E lanes recorded as deferred in the kind profiles; re-runnable at any time)

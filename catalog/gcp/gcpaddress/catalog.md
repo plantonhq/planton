@@ -4,7 +4,7 @@ Deploys a regional Compute Engine address reservation — a static IP (or reserv
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute Engine API enablement** on the target project (never disabled on destroy)
 - **Regional Address Reservation** -- a `google_compute_address` pinning a public IP (EXTERNAL) or a private IP / CIDR range (INTERNAL) in the specified region, with the purpose-appropriate network or subnetwork anchor
@@ -13,12 +13,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the reservation will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
+- **A GCP project** where the reservation will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
 - **IAM permissions** -- `roles/compute.networkAdmin` on the target project.
 - **For internal purposes** -- an existing VPC network (peering/interconnect ranges) or a subnetwork in the reservation's region (GCE endpoints, DNS resolvers), referenced directly or via ValueFromRef.
 
@@ -53,7 +53,7 @@ spec:
 planton apply -f address.yaml
 ```
 
-This reserves a public IPv4 address GCP assigns — the reservation pins it permanently, so the NAT gateway that consumes it keeps a stable, allow-listable egress address. A Stack Job tracks the provisioning in real time.
+This reserves a public IPv4 address GCP assigns — the reservation pins it permanently, so the NAT gateway that consumes it keeps a stable, allow-listable egress address. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -88,7 +88,7 @@ These are the most important decisions when configuring an address reservation. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -96,9 +96,9 @@ These are the most important decisions when configuring an address reservation. 
 | **GcpVpcNetwork** (optional) | `network` (VPC_PEERING / IPSEC_INTERCONNECT) | `status.outputs.network_self_link` |
 | **GcpSubnetwork** (optional) | `subnetwork` (GCE_ENDPOINT / DNS_RESOLVER) | `status.outputs.subnetwork_self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -119,10 +119,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Compute Instance**](/cloud-catalog/gcp-compute-instance) -- consumes reserved internal (networkIp) and external (natIp) addresses on its NICs
-- [**GCP Router NAT**](/cloud-catalog/gcp-router-nat) -- consumes external reservations (by self link) as its NAT IPs
-- [**GCP DNS Record**](/cloud-catalog/gcp-dns-record) -- targets the reserved address for internal load balancer records
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the reservation is created
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- anchors peering and interconnect ranges
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- anchors endpoint and resolver addresses
-- [**GCP Global Address**](/cloud-catalog/gcp-global-address) -- the global-scope sibling for HTTP(S) LB frontends and PSA ranges
+- [**GCP Compute Instance**](/infra-catalog/gcp-compute-instance) -- consumes reserved internal (networkIp) and external (natIp) addresses on its NICs
+- [**GCP Router NAT**](/infra-catalog/gcp-router-nat) -- consumes external reservations (by self link) as its NAT IPs
+- [**GCP DNS Record**](/infra-catalog/gcp-dns-record) -- targets the reserved address for internal load balancer records
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the reservation is created
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- anchors peering and interconnect ranges
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- anchors endpoint and resolver addresses
+- [**GCP Global Address**](/infra-catalog/gcp-global-address) -- the global-scope sibling for HTTP(S) LB frontends and PSA ranges

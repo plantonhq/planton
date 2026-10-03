@@ -4,7 +4,7 @@ Deploys a ClickHouse cluster — the open-source columnar OLAP database — decl
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **ClickHouseInstallation custom resource** — one single-pod StatefulSet per shard×replica host, the cluster-wide client Service `clickhouse-<name>` (ClusterIP), per-cluster and per-host Services, and the generated ConfigMaps, all reconciled by the operator
 - **Kubernetes Namespace** — created only when `createNamespace` is true; otherwise the namespace must already exist
@@ -64,7 +64,7 @@ spec:
 planton apply -f clickhouse.yaml
 ```
 
-This creates the smallest declarable ClickHouse that actually serves: one host, a PVC, a pinned server version, and one named user. No Keeper deploys because a 1×1 topology needs no coordination — which also means no replication: a lost volume loses the data. A Stack Job tracks the provisioning in real time.
+This creates the smallest declarable ClickHouse that actually serves: one host, a PVC, a pinned server version, and one named user. No Keeper deploys because a 1×1 topology needs no coordination — which also means no replication: a lost volume loses the data. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -104,7 +104,7 @@ These are the most important decisions when configuring a ClickHouse cluster. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Field | References | Purpose |
 |-------|-----------|---------|
@@ -113,9 +113,9 @@ These are the most important decisions when configuring a ClickHouse cluster. Ex
 | `spec.coordination.keeper.storage_class` | KubernetesStorageClass (`status.outputs.storage_class_name`) | Managed Keeper volume class |
 | `spec.users[].password` | Organization secrets or other resources' outputs | User credentials (never plaintext in the CHI) |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|

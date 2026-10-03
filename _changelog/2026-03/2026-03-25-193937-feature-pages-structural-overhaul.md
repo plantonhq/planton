@@ -6,11 +6,11 @@
 
 ## Summary
 
-Complete structural redesign of all 7 product feature pages (InfraHub, ServiceHub, Runner, Security, Agent Fleet, CLI, Open Source). Replaced the monotonous repeating `CapabilitySection` pattern — identical across every page — with a varied, visually rich section structure using animated terminals, tabbed code viewers, metrics strips, bento grids, flow step visualizations, and scroll-triggered animations. Built a new shared component toolkit (`src/components/product/shared/`) that serves as the foundation for all product pages. Additionally moved Agent Fleet and CLI pages under the `/features/*` route group so they receive the sticky sub-navigation header.
+Complete structural redesign of all 7 product feature pages (InfraHub, ServiceHub, Runner, Security, Agent Fleet, CLI, Open Source). Replaced the monotonous repeating `CapabilitySection` pattern — identical across every page — with a varied, visually rich section structure using animated terminals, tabbed code viewers, metrics strips, bento grids, flow step visualizations, and scroll-triggered animations. Built a new shared kind toolkit (`src/components/product/shared/`) that serves as the foundation for all product pages. Additionally moved Agent Fleet and CLI pages under the `/features/*` route group so they receive the sticky sub-navigation header.
 
 ## Problem Statement / Motivation
 
-The previous copywriting overhaul (same day) updated content to reflect the current product, but the structural presentation remained poor. Every product page rendered identically: Hero, then 6 `CapabilitySection` rows alternating left/right, then CTA. The `CapabilitySection` component was copy-pasted verbatim into 7 separate files. Each row was the same layout: icon + title + paragraph + bullet list + optional `Card + pre` code block.
+The previous copywriting overhaul (same day) updated content to reflect the current product, but the structural presentation remained poor. Every product page rendered identically: Hero, then 6 `CapabilitySection` rows alternating left/right, then CTA. The `CapabilitySection` kind was copy-pasted verbatim into 7 separate files. Each row was the same layout: icon + title + paragraph + bullet list + optional `Card + pre` code block.
 
 The homepage (v3) used 18 distinct section types across its 18 sections. The product pages used exactly 1.
 
@@ -27,11 +27,11 @@ The homepage (v3) used 18 distinct section types across its 18 sections. The pro
 
 ## Solution / What's New
 
-### New Shared Component Toolkit
+### New Shared Kind Toolkit
 
-Built 7 reusable components in `src/components/product/shared/`:
+Built 7 reusable kinds in `src/components/product/shared/`:
 
-| Component | Purpose |
+| Kind | Purpose |
 |-----------|---------|
 | `ScrollReveal` | Framer Motion scroll-triggered fade-up animation with configurable direction, delay, distance |
 | `StaggerContainer` / `StaggerItem` | Staggered entrance animations for lists and grids |
@@ -79,7 +79,7 @@ Updated all references in: features layout sub-nav, header navigation, product o
 
 ## Implementation Details
 
-### Component Architecture
+### Kind Architecture
 
 Each product page follows a 3-file pattern (unchanged from before):
 
@@ -91,12 +91,12 @@ src/components/product/<module>/
   └── cta.tsx           (Divider + ScrollReveal wrapper)
 ```
 
-The `capabilities.tsx` file in each module now renders a React Fragment containing multiple distinct `Section` components, each using different shared primitives. This replaced the single `capabilities` array mapped over identical `CapabilitySection` rows.
+The `capabilities.tsx` file in each module now renders a React Fragment containing multiple distinct `Section` kinds, each using different shared primitives. This replaced the single `capabilities` array mapped over identical `CapabilitySection` rows.
 
 ### Key Technical Decisions
 
 - **Framer Motion for animations**: `useInView` with `once: true` for scroll-triggered reveals. Line-by-line typewriter via `AnimatePresence` with staggered delays. Count-up metrics via `requestAnimationFrame` (not Framer, to avoid the `set-state-in-effect` lint rule).
-- **CSS architecture diagrams over SVG**: The Runner page's architecture diagram uses styled `Box` components with borders and chips rather than SVG or ASCII art. Consistent with the design system, theme-aware, responsive.
+- **CSS architecture diagrams over SVG**: The Runner page's architecture diagram uses styled `Box` kinds with borders and chips rather than SVG or ASCII art. Consistent with the design system, theme-aware, responsive.
 - **Equal-height cards**: `className="h-full"` on both `StaggerItem` (Framer Motion `motion.div`) and `FeatureCard` to work with CSS Grid's default `align-items: stretch`.
 - **No new dependencies**: All animations use the existing `framer-motion@^11.15.0` dependency. No new packages added.
 
@@ -115,7 +115,7 @@ The `capabilities.tsx` file in each module now renders a React Fragment containi
 - **Developer authenticity**: AnimatedTerminals showing real CLI output and deployment flows demonstrate the product working, not just describing it
 - **Space filling without screenshots**: Bento grids, flow visualizations, architecture diagrams, and metrics strips create visual substance without requiring product screenshots
 - **Consistent but unique**: Shared skeleton ensures coherence across pages while per-page customizations give each module its own personality
-- **Reusable foundation**: The 7 shared components can be used for any future product page or marketing section
+- **Reusable foundation**: The 7 shared kinds can be used for any future product page or marketing section
 
 ## Impact
 
@@ -129,7 +129,7 @@ The `capabilities.tsx` file in each module now renders a React Fragment containi
 ### Files Changed
 
 ~30 files across:
-- `src/components/product/shared/` — 8 new files (7 components + barrel)
+- `src/components/product/shared/` — 8 new files (7 kinds + barrel)
 - `src/components/product/{infra-hub,service-hub,runner,security,agent-fleet,cli,open-source}/` — 3 files each (hero, capabilities, cta)
 - `src/app/(root)/features/{agent-fleet,cli}/page.tsx` — 2 new route files
 - `src/app/(root)/{agents,cli}/page.tsx` — 2 redirect conversions

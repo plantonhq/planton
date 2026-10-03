@@ -24,7 +24,7 @@ func validGroup() *CloudflareZeroTrustAccessGroup {
 	return &CloudflareZeroTrustAccessGroup{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareZeroTrustAccessGroup",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-group"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-group"},
 		Spec: &CloudflareZeroTrustAccessGroupSpec{
 			AccountId: validAccountID,
 			Name:      "engineering",

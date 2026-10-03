@@ -12,9 +12,9 @@ type Locals struct {
 	DigitalOceanMonitorAlert *digitaloceanmonitoralertv1alpha1.DigitalOceanMonitorAlert
 }
 
-// initializeLocals copies stack-input fields into the Locals struct.
-func initializeLocals(_ *pulumi.Context, stackInput *digitaloceanmonitoralertv1alpha1.DigitalOceanMonitorAlertStackInput) *Locals {
+// initializeLocals copies iac-input fields into the Locals struct.
+func initializeLocals(_ *pulumi.Context, iacInput *digitaloceanmonitoralertv1alpha1.DigitalOceanMonitorAlertIacInput) *Locals {
 	return &Locals{
-		DigitalOceanMonitorAlert: stackInput.Target,
+		DigitalOceanMonitorAlert: iacInput.Target,
 	}
 }

@@ -4,7 +4,7 @@ Enables a Google Cloud project as a Shared VPC HOST: the project whose VPC netwo
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Shared VPC host enablement** -- the `compute_shared_vpc_host_project` flag on the project
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module whose identity holds `roles/compute.xpnAdmin` on the organization (or a folder above the project). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module whose identity holds `roles/compute.xpnAdmin` on the organization (or a folder above the project). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### GCP Project
 
@@ -47,7 +47,7 @@ spec:
 planton apply -f shared-vpc-host.yaml
 ```
 
-This enables `acme-network-host` as the organization's network host, guarded against accidental destroy. A Stack Job tracks the provisioning in real time.
+This enables `acme-network-host` as the organization's network host, guarded against accidental destroy. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -74,15 +74,15 @@ These are the most important decisions when configuring a Shared VPC host. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -96,7 +96,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Shared VPC Service Project**](/cloud-catalog/gcp-shared-vpc-service-project) -- attaches a service project to this host
-- [**GCP Project**](/cloud-catalog/gcp-project) -- the project being enabled
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- the networks the host shares
-- [**GCP Project IAM Member**](/cloud-catalog/gcp-project-iam-member) -- the `networkUser` grants service projects need
+- [**GCP Shared VPC Service Project**](/infra-catalog/gcp-shared-vpc-service-project) -- attaches a service project to this host
+- [**GCP Project**](/infra-catalog/gcp-project) -- the project being enabled
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- the networks the host shares
+- [**GCP Project IAM Member**](/infra-catalog/gcp-project-iam-member) -- the `networkUser` grants service projects need

@@ -53,8 +53,8 @@ Optional fields cover autoscaling, autohealing, container runtime, root volume, 
 **Proto schemas** (`apis/dev/planton/provider/scaleway/scalewaykapsulepool/v1/`):
 - `api.proto` -- Resource wrapper with api_version and kind constants
 - `spec.proto` -- Full spec with labels, taints, and comprehensive documentation
-- `stack_input.proto` -- StackInput (target + ScalewayProviderConfig)
-- `stack_outputs.proto` -- Outputs: pool_id, pool_version, current_size
+- `iac_input.proto` -- IacInput (target + ScalewayProviderConfig)
+- `outputs.proto` -- Outputs: pool_id, pool_version, current_size
 
 **Pulumi Go module** (`iac/pulumi/`):
 - `main.go` -- Entry point

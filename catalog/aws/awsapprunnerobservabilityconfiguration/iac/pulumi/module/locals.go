@@ -5,7 +5,7 @@ import (
 
 	awsapprunnerobservabilityconfigurationv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsapprunnerobservabilityconfiguration/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -16,16 +16,16 @@ type Locals struct {
 	AwsTags                                map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *awsapprunnerobservabilityconfigurationv1alpha1.AwsAppRunnerObservabilityConfigurationStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *awsapprunnerobservabilityconfigurationv1alpha1.AwsAppRunnerObservabilityConfigurationIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsAppRunnerObservabilityConfiguration = stackInput.Target
+	locals.AwsAppRunnerObservabilityConfiguration = iacInput.Target
 
 	locals.AwsTags = map[string]string{
 		awstagkeys.Name:         locals.AwsAppRunnerObservabilityConfiguration.Metadata.Name,
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: locals.AwsAppRunnerObservabilityConfiguration.Metadata.Org,
 		awstagkeys.Environment:  locals.AwsAppRunnerObservabilityConfiguration.Metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsAppRunnerObservabilityConfiguration.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsAppRunnerObservabilityConfiguration.String(),
 		awstagkeys.ResourceId:   locals.AwsAppRunnerObservabilityConfiguration.Metadata.Id,
 	}
 

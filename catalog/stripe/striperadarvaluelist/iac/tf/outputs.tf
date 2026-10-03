@@ -1,5 +1,5 @@
 # StripeRadarValueList Outputs
-# Maps to the StripeRadarValueListStackOutputs protobuf message.
+# Maps to the StripeRadarValueListOutputs protobuf message.
 
 output "id" {
   description = "The list's Stripe id (rsl_...)"

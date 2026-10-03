@@ -1,4 +1,4 @@
-# AwsBedrockAgentCoreIdentity — Component Guide
+# AwsBedrockAgentCoreIdentity — Kind Guide
 
 Authored operational judgment for the AgentCore identity component: the
 design decisions behind the spec's shape, and what to know before

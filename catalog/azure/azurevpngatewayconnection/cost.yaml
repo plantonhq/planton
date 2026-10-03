@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurevpngatewayconnection
 spec:
@@ -14,5 +14,5 @@ spec:
       description: Every branch connected to a Virtual WAN VPN gateway bills one site-to-site connection unit per deployment hour, from the connection's creation until its deletion -- the meter counts branch memberships, and this resource IS one membership.
   estimate_exclusions:
     - data leaving Azure through the tunnels bills at standard data-transfer rates and follows traffic
-    - the gateway's scale units (capacity) bill on the AzureVpnGateway component; the hub's deployment hours and data processing bill on the AzureVirtualHub
+    - the gateway's scale units (capacity) bill on the AzureVpnGateway kind; the hub's deployment hours and data processing bill on the AzureVirtualHub
   notes: "The connection unit is flat per branch, not per tunnel: a two-link active-active connection (one vpn_link per site link) bills exactly what a single-link connection bills -- Microsoft's own definition is that a site-to-site connection unit 'implies branches'. No field of this spec changes the rate; bandwidth is bought gateway-side as scale units, and per-tunnel choices (IPsec proposals, BGP, NAT opt-ins, rate limits) are free configuration. The one spend lever this manifest holds is existence itself."

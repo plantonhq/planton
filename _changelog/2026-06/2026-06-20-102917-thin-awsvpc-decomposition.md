@@ -6,10 +6,10 @@
 
 ## Summary
 
-`AwsVpc` is now a **thin** component: a real AWS VPC (an IP address space plus
+`AwsVpc` is now a **thin** kind: a real AWS VPC (an IP address space plus
 network-wide settings) and nothing else. The internet gateway, subnets, NAT
 gateways, and route tables it used to bundle are removed — they are composed from
-the standalone `AwsSubnet`, `AwsInternetGateway`, and `AwsNatGateway` components
+the standalone `AwsSubnet`, `AwsInternetGateway`, and `AwsNatGateway` kinds
 that reference the VPC. The spec is rebuilt to a 90/10 real-VPC field set (primary
 and secondary IPv4 CIDRs, IPv4/IPv6 IPAM, Amazon-provided IPv6, tenancy, DNS, and
 NAU metrics) with cross-field validation mirroring AWS, on both Pulumi and
@@ -20,7 +20,7 @@ VPC already had a gateway — is now activated.
 ## Problem Statement / Motivation
 
 AWS was the only provider in the catalog that bundled networking sub-resources
-inside its VPC component, so subnets, NAT gateways, and the internet gateway could
+inside its VPC kind, so subnets, NAT gateways, and the internet gateway could
 not be standalone, independently referenceable graph nodes. With the three
 networking primitives now forged and live-proven, the VPC itself must become a
 clean building block so a topology is composed from first-class nodes rather than
@@ -57,7 +57,7 @@ flowchart LR
   AWS enforces (primary-source required; explicit-CIDR vs IPAM-netmask exclusive;
   the three-way IPv6 mode exclusivity; netmask ranges; border-group requires
   Amazon-provided).
-- **Stack outputs**: `vpc_id`, `vpc_arn`, `cidr_block`, `ipv6_cidr_block`,
+- **Outputs**: `vpc_id`, `vpc_arn`, `cidr_block`, `ipv6_cidr_block`,
   `owner_id`, `main_route_table_id`, `default_security_group_id`,
   `default_network_acl_id`, `default_route_table_id`, `region`. The bundled
   subnet/NAT output messages are removed.
@@ -92,7 +92,7 @@ declared prerequisite of `AwsNatGateway`, so the deploy order is
 - Rewrote `pkg/outputs` fixtures: `TestTransform_AwsVpc` to the thin shape, the
   bracket-index transform/populate tests repointed to `GcpSubnetwork`, and a new
   thin `AwsVpc` conformance case.
-- Removed stale component artifacts (`iac/pulumi/Pulumi.e2e-dep-*.yaml`,
+- Removed stale kind artifacts (`iac/pulumi/Pulumi.e2e-dep-*.yaml`,
   `iac/pulumi/{debug.sh,README.md}`) to match the current sibling layout.
 - Added `AwsVpc` e2e `profile.yaml` + `scenarios/minimal.yaml` + entry funcs, and
   `awsinternetgateway/v1/e2e/prerequisite.yaml` for its new prerequisite role.
@@ -101,10 +101,10 @@ declared prerequisite of `AwsNatGateway`, so the deploy order is
 
 - `AwsVpcSpec` is restructured: `availability_zones`,
   `subnets_per_availability_zone`, `subnet_size`, and `is_nat_gateway_enabled` are
-  removed; `vpc_cidr` is renamed to `cidr_block`. `AwsVpcStackOutputs` drops the
+  removed; `vpc_cidr` is renamed to `cidr_block`. `AwsVpcOutputs` drops the
   embedded `private_subnets`/`public_subnets`/`internet_gateway_id`. There are no
   persisted consumers to protect; subnets/gateways are now composed from the
-  standalone components.
+  standalone kinds.
 
 ## Verification
 
@@ -124,14 +124,14 @@ declared prerequisite of `AwsNatGateway`, so the deploy order is
 `AwsVpc` is now a clean, composable root node. Authors and coding agents build a
 network by composing `AwsSubnet`, `AwsInternetGateway`, and `AwsNatGateway`
 against the VPC's `vpc_id`, with the VPC's own depth (secondary CIDRs, IPv6, IPAM)
-available from day one. The ~31 components that still reference the VPC's old
+available from day one. The ~31 kinds that still reference the VPC's old
 subnet outputs migrate to `AwsSubnet` refs in the follow-on slice.
 
 ## Related Work
 
-- `2026-06-20-091451-aws-nat-gateway-component-and-deep-composition-e2e.md`
-- `2026-06-20-083110-aws-internet-gateway-component-and-go-1.26-sdk.md`
-- `2026-06-20-070523-aws-subnet-component-and-e2e-fk-resolution.md`
+- `2026-06-20-091451-aws-nat-gateway-kind-and-deep-composition-e2e.md`
+- `2026-06-20-083110-aws-internet-gateway-kind-and-go-1.26-sdk.md`
+- `2026-06-20-070523-aws-subnet-kind-and-e2e-fk-resolution.md`
 
 ---
 

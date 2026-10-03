@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpcloudarmorpolicy.v1alpha1;
 
 // Outputs produced after provisioning a GCP Cloud Armor security policy.
-message GcpCloudArmorPolicyStackOutputs {
+message GcpCloudArmorPolicyOutputs {
   // Fully qualified resource ID of the security policy.
   // Format: projects/{project}/global/securityPolicies/{name} for a global
   // policy, projects/{project}/regions/{region}/securityPolicies/{name}

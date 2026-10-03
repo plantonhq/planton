@@ -4,7 +4,7 @@ Deploys a managed Amazon Redshift data warehouse cluster with configurable node 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Redshift Cluster** -- a columnar data warehouse cluster running the Redshift engine with the specified node type and count, placed in the configured subnets with configurable public or private access
 - **Subnet Group** -- created from the provided `subnetIds` spanning at least two Availability Zones; skipped when an existing `clusterSubnetGroupName` is specified instead
@@ -23,16 +23,16 @@ Security groups are composed, never created: the cluster attaches the referenced
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **At least two subnets** in distinct Availability Zones. Private subnets are recommended for production. Reference AwsSubnet Cloud Resources via ValueFromRef or provide subnet IDs directly. Alternatively, provide an existing `clusterSubnetGroupName`.
-- **Security groups** (optional) governing who reaches the warehouse port. Reference AwsSecurityGroup Cloud Resources or provide security group IDs; empty keeps the VPC's default group.
-- **IAM roles** (optional) for COPY, UNLOAD, and Redshift Spectrum queries that access S3, DynamoDB, or the Glue Data Catalog. Provide role ARNs directly or reference AwsIamRole Cloud Resources.
-- **A KMS key** (optional) for customer-managed encryption of cluster data and the managed master password. Provide the ARN directly or reference an AwsKmsKey Cloud Resource.
-- **An Elastic IP** (optional) for a stable public address on a publicly accessible cluster. Reference an AwsElasticIp Cloud Resource's `public_ip` output or provide the IP address directly.
+- **At least two subnets** in distinct Availability Zones. Private subnets are recommended for production. Reference AwsSubnet Infra Components via ValueFromRef or provide subnet IDs directly. Alternatively, provide an existing `clusterSubnetGroupName`.
+- **Security groups** (optional) governing who reaches the warehouse port. Reference AwsSecurityGroup Infra Components or provide security group IDs; empty keeps the VPC's default group.
+- **IAM roles** (optional) for COPY, UNLOAD, and Redshift Spectrum queries that access S3, DynamoDB, or the Glue Data Catalog. Provide role ARNs directly or reference AwsIamRole Infra Components.
+- **A KMS key** (optional) for customer-managed encryption of cluster data and the managed master password. Provide the ARN directly or reference an AwsKmsKey Infra Component.
+- **An Elastic IP** (optional) for a stable public address on a publicly accessible cluster. Reference an AwsElasticIp Infra Component's `public_ip` output or provide the IP address directly.
 
 ## Deploy
 
@@ -69,7 +69,7 @@ spec:
 planton apply -f redshift-cluster.yaml
 ```
 
-This creates a two-node RA3 Redshift cluster with a managed master password (stored in Secrets Manager), encrypted storage using the default AWS-managed key, and a final-snapshot deletion contract. A Stack Job tracks the provisioning in real time.
+This creates a two-node RA3 Redshift cluster with a managed master password (stored in Secrets Manager), encrypted storage using the default AWS-managed key, and a final-snapshot deletion contract. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -132,7 +132,7 @@ These are the most important decisions when configuring a Redshift cluster. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -147,9 +147,9 @@ These are the most important decisions when configuring a Redshift cluster. Expl
 | **AwsSecurityGroup** (optional) | `endpointAccesses[].vpcSecurityGroupIds` | `status.outputs.security_group_id` |
 | **AwsVpc** (optional) | `endpointAuthorizations[].vpcIds` | `status.outputs.vpc_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -180,9 +180,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- provides the subnets the Redshift subnet group is built from
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- provides network access control for the cluster endpoint
-- [**AWS Elastic IP**](/cloud-catalog/aws-elastic-ip) -- provides a stable public address for a publicly accessible cluster
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for cluster encryption and Secrets Manager password encryption
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- provides service roles for COPY, UNLOAD, and Redshift Spectrum access to S3 and Glue, and the scheduler-trusting role scheduled actions assume
-- [**AWS VPC**](/cloud-catalog/aws-vpc) -- scopes cross-account endpoint authorizations to specific grantee VPCs
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- provides the subnets the Redshift subnet group is built from
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- provides network access control for the cluster endpoint
+- [**AWS Elastic IP**](/infra-catalog/aws-elastic-ip) -- provides a stable public address for a publicly accessible cluster
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for cluster encryption and Secrets Manager password encryption
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- provides service roles for COPY, UNLOAD, and Redshift Spectrum access to S3 and Glue, and the scheduler-trusting role scheduled actions assume
+- [**AWS VPC**](/infra-catalog/aws-vpc) -- scopes cross-account endpoint authorizations to specific grantee VPCs

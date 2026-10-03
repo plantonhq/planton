@@ -155,14 +155,14 @@ Full ingress stack DAG:
 KubernetesGatewayApiCrds -> KubernetesGateway -> KubernetesUdpRoute
 ```
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `routeName` | Name of the created UDPRoute (equals metadata.name). |
 | `namespace` | Namespace the UDPRoute was created in. |
 
-## Related Components
+## Related Kinds
 
 - [Kubernetes Gateway](../kubernetesgateway)
 - [Kubernetes Gateway Class](../kubernetesgatewayclass)

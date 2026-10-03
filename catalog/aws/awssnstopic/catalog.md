@@ -4,7 +4,7 @@ Deploys an SNS topic (Standard or FIFO) with KMS encryption, IAM access and data
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SNS Topic** -- a Standard or FIFO topic named from your manifest's `metadata.name`, with configurable display name, signature version, and tracing
 - **FIFO Configuration** -- created only when `fifoTopic` is `true`; enables content-based deduplication, per-message-group throughput scope, and message archiving. FIFO topic names automatically receive the `.fifo` suffix
@@ -19,12 +19,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **A KMS key** (optional) -- required when encrypting messages at rest. Unlike SQS, SNS has no managed SSE option -- encryption requires an explicit KMS key. Provide the key ID or ARN directly, or reference an AwsKmsKey Cloud Resource via ValueFromRef.
+- **A KMS key** (optional) -- required when encrypting messages at rest. Unlike SQS, SNS has no managed SSE option -- encryption requires an explicit KMS key. Provide the key ID or ARN directly, or reference an AwsKmsKey Infra Component via ValueFromRef.
 - **IAM logging roles** (optional) -- required for delivery status logging. Each role needs CloudWatch Logs write permissions (`logs:CreateLogGroup`, `logs:CreateLogStream`, `logs:PutLogEvents`) and a trust policy allowing `sns.amazonaws.com` to assume it.
 
 ## Deploy
@@ -53,7 +53,7 @@ spec:
 planton apply -f sns-topic.yaml
 ```
 
-This creates a Standard topic with SHA-256 message signatures. No encryption, custom policies, or delivery logging are configured. A Stack Job tracks the provisioning in real time.
+This creates a Standard topic with SHA-256 message signatures. No encryption, custom policies, or delivery logging are configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -90,7 +90,7 @@ These are the most important decisions when configuring an SNS topic. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -98,9 +98,9 @@ These are the most important decisions when configuring an SNS topic. Explore th
 | **AwsIamRole** (optional) | `deliveryFeedback.<protocol>.successFeedbackRole` | `status.outputs.role_arn` |
 | **AwsIamRole** (optional) | `deliveryFeedback.<protocol>.failureFeedbackRole` | `status.outputs.role_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -121,6 +121,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS SNS Subscription**](/cloud-catalog/aws-sns-subscription) -- delivers this topic's messages to an SQS queue, Lambda function, HTTP/S endpoint, or other target
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for message encryption at rest
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- provides the CloudWatch logging roles for delivery status feedback
+- [**AWS SNS Subscription**](/infra-catalog/aws-sns-subscription) -- delivers this topic's messages to an SQS queue, Lambda function, HTTP/S endpoint, or other target
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for message encryption at rest
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- provides the CloudWatch logging roles for delivery status feedback

@@ -63,7 +63,7 @@ chore(repo): <change1>, <change2>, and <change3>
 ### Title examples
 
 ```text
-chore(repo): add AWS DNS records component, refactor CLI manifest loading, and 3 more changes
+chore(repo): add AWS DNS records kind, refactor CLI manifest loading, and 3 more changes
 ```
 
 ```text
@@ -177,12 +177,12 @@ Each change section should:
 
 Use the same scope heuristics as `@pr-info`:
 
-- Catalog (components)
+- Catalog (kinds)
   - `catalog/<provider>/<kind>/**` → `catalog/<provider>/<kind>`
   - Multiple kinds under the same provider → `catalog/<provider>`
   - Shared proto surfaces (`shared/**`, `qa/**`, `iac/**`) → `shared`, `qa`, or `iac`
 
-- Charts (multi-cloud Lego blocks)
+- Charts (multi-catalog kinds)
   - `charts/<provider>/<chart>/**` → `charts/<provider>/<chart>`
     - Examples: `charts/aws/eks-platform`, `charts/gcp/gke-environment`, `charts/azure/aks-environment`, `charts/digital-ocean/doks-environment`
   - Multiple charts under the same provider → `charts/<provider>`
@@ -228,7 +228,7 @@ Include Mermaid diagrams within individual change sections when they clarify:
 - Workflow or process changes (before/after flows)
 - Architecture modifications
 - State machine or status transitions
-- Multi-component interactions
+- Multi-kind interactions
 - Data flow changes
 
 ### Example: Change section with diagram

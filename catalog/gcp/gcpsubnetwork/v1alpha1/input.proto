@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpsubnetwork.v1alpha1;
 import "catalog/gcp/gcpsubnetwork/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-subnetwork stack-input
-message GcpSubnetworkStackInput {
-  //target cloud-resource
+//gcp-subnetwork iac-input
+message GcpSubnetworkIacInput {
+  //target infra-component
   GcpSubnetwork target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

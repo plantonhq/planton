@@ -1,4 +1,4 @@
-# AwsBedrockAgentCoreGateway — Component Guide
+# AwsBedrockAgentCoreGateway — Kind Guide
 
 Authored operational judgment for the AgentCore gateway component: the
 design decisions behind the spec's shape, and what to know before

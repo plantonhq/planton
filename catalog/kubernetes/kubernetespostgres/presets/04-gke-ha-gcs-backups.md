@@ -5,7 +5,7 @@ recovery built in: three instances with quorum synchronous replication and
 hard anti-affinity, a dedicated WAL volume, and continuous backups — WAL
 archiving plus a nightly base backup — landing KEYLESSLY in a GCS bucket
 through GKE Workload Identity. This is the production half of the DR
-resource set in the component guide; the restore half is a second
+resource set in the kind guide; the restore half is a second
 `KubernetesPostgres` with a `bootstrap.recovery` block pointing at this
 archive and referencing this cluster's `-app` Secret.
 

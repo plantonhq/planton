@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azureprivatednsresolvervirtualnetworklink
 spec:
@@ -8,8 +8,8 @@ spec:
   values:
     - name: virtual_network_link_id
       derivations:
-        - from_stack_output: virtual_network_link_id
+        - from_output: virtual_network_link_id
       where_to_find: >-
         `az dns-resolver vnet-link show -g <resource-group>
         --ruleset-name <ruleset> -n <name> --query id`, or the
-        component's own virtual_network_link_id stack output.
+        component's own virtual_network_link_id output.

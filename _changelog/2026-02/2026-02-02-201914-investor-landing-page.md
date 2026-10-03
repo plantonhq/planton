@@ -69,7 +69,7 @@ Added a Home button (using Lucide's Home icon) to the top-right corner of all in
 |------|---------|
 | `src/app/(micro-apps)/invest/deck/page.tsx` | Route for pitch deck at new URL |
 | `src/components/invest/landing/InvestLandingPage.tsx` | Main landing page component |
-| `src/components/invest/InvestHeader.tsx` | Home button component |
+| `src/components/invest/InvestHeader.tsx` | Home button kind |
 
 ### Modified Files
 
@@ -80,7 +80,7 @@ Added a Home button (using Lucide's Home icon) to the top-right corner of all in
 | `src/app/(micro-apps)/legal/layout.tsx` | Added InvestHeader with alwaysShow |
 | `src/components/invest/explainer/layout/Footer.tsx` | Added "Home" link, updated "Deck" to `/invest/deck` |
 
-### Component Architecture
+### Kind Architecture
 
 ```
 src/components/invest/
@@ -126,7 +126,7 @@ The landing page is built with these internal sections:
 
 ### Technical Benefits
 - **Consistent patterns**: Reuses existing design system components
-- **Clean architecture**: Dedicated landing component, separate header component
+- **Clean architecture**: Dedicated landing kind, separate header kind
 - **Maintainable**: Footer links auto-updated with new structure
 
 ## Impact

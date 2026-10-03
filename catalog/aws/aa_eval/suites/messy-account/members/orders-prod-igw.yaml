@@ -11,7 +11,7 @@ metadata:
   env: prod
   labels:
     managed-by: planton-e2e
-    e2e-component: awsinternetgateway
+    e2e-catalog-kind: awsinternetgateway
   annotations:
     planton.dev/e2e: "true"
   tags:

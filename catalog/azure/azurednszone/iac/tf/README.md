@@ -2,7 +2,7 @@
 
 Creates an Azure public DNS zone (`azurerm_dns_zone`) in the referenced resource group, with optional Start of Authority customization and merged governance tags.
 
-The module receives its inputs from the Planton stack-input contract (`metadata` + `spec` variables); `StringValueOrRef` fields arrive pre-resolved as strings. Records are separate `AzureDnsRecord` resources -- this module deliberately creates only the zone.
+The module receives its inputs from the Planton iac-input contract (`metadata` + `spec` variables); `StringValueOrRef` fields arrive pre-resolved as strings. Records are separate `AzureDnsRecord` resources -- this module deliberately creates only the zone.
 
 Key behaviors, documented inline in `main.tf`:
 

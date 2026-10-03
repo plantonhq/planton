@@ -25,12 +25,12 @@ type Locals struct {
 	VaultName              string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azuredataprotectionbackuppolicyv1alpha1.AzureDataProtectionBackupPolicyStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azuredataprotectionbackuppolicyv1alpha1.AzureDataProtectionBackupPolicyIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureDataProtectionBackupPolicy = stackInput.Target
+	locals.AzureDataProtectionBackupPolicy = iacInput.Target
 
-	locals.VaultId = stackInput.Target.Spec.VaultId.GetValue()
+	locals.VaultId = iacInput.Target.Spec.VaultId.GetValue()
 
 	// Note: policies carry NO tags argument (they are pure
 	// configuration objects on the vault) -- there is no tag map here,

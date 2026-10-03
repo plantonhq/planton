@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcptagkey.v1alpha1;
 
-// GcpTagKeyStackOutputs captures the tag key's identity after
+// GcpTagKeyOutputs captures the tag key's identity after
 // provisioning.
-message GcpTagKeyStackOutputs {
+message GcpTagKeyOutputs {
   // The key's resource name, `tagKeys/{numeric_id}` -- what a
   // GcpTagValue's tag_key references, what a GcpFolder's or GcpProject's
   // create-time `tags` map uses as its key, and what

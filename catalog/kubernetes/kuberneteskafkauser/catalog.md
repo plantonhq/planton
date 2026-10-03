@@ -4,7 +4,7 @@ Declares ONE Kafka client identity on a Strimzi-managed cluster. The target clus
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **KafkaUser** -- the Strimzi custom resource, named after this resource, placed in the Kafka cluster's own namespace and bound to the cluster through the `strimzi.io/cluster` label (rendered from `kafkaCluster`)
 - **Credentials Secret** (materialized by the cluster's user operator, not the module) -- named after the user: keys `password` + `sasl.jaas.config` for `scram-sha-512` users; `user.crt` / `user.key` plus `user.p12` / `user.password` for `tls` users. NO Secret for `tls-external` users -- their certificates are issued outside the cluster
@@ -59,7 +59,7 @@ spec:
 planton apply -f kafka-user.yaml
 ```
 
-This declares a SCRAM producer identity: the user operator generates the password into a Secret named `order-service` and grants Write + Describe on the `order-events` topic. A Stack Job tracks the provisioning in real time.
+This declares a SCRAM producer identity: the user operator generates the password into a Secret named `order-service` and grants Write + Describe on the `order-events` topic. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,16 +95,16 @@ These are the most important decisions when declaring a Kafka user. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 | **KubernetesKafka** | `kafkaCluster` | `status.outputs.cluster_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -124,6 +124,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Apache Kafka**](/cloud-catalog/kubernetes-kafka) -- the owning cluster; its user operator reconciles this resource, and its `internal_bootstrap_endpoint` output completes the client wiring
-- [**Kafka Topic**](/cloud-catalog/kubernetes-kafka-topic) -- declare the topics these ACLs govern as code
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) -- mount or env-reference this resource's `secret_name` output instead of hardcoding credentials (the same wiring applies to StatefulSets and CronJobs)
+- [**Apache Kafka**](/infra-catalog/kubernetes-kafka) -- the owning cluster; its user operator reconciles this resource, and its `internal_bootstrap_endpoint` output completes the client wiring
+- [**Kafka Topic**](/infra-catalog/kubernetes-kafka-topic) -- declare the topics these ACLs govern as code
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- mount or env-reference this resource's `secret_name` output instead of hardcoding credentials (the same wiring applies to StatefulSets and CronJobs)

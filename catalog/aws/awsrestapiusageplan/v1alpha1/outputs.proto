@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsrestapiusageplan.v1alpha1;
 
-// AwsRestApiUsagePlanStackOutputs captures observable identifiers from
+// AwsRestApiUsagePlanOutputs captures observable identifiers from
 // a provisioned usage plan and its API keys. Key VALUES are secrets
 // and deliberately not exported - read them from the AWS API/console
 // when distributing to consumers.
-message AwsRestApiUsagePlanStackOutputs {
+message AwsRestApiUsagePlanOutputs {
   // The usage plan ID.
   string usage_plan_id = 1;
 

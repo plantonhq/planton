@@ -17,8 +17,8 @@ import (
 	"google.golang.org/protobuf/reflect/protoregistry"
 	yamlv3 "gopkg.in/yaml.v3"
 
-	componentv1 "github.com/plantonhq/planton/iac/componentimportmap/v1"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	kindv1 "github.com/plantonhq/planton/iac/catalogkindimportmap/v1"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 )
 
 // requireStrictYAML fails the test when a file does not survive a strict YAML
@@ -49,17 +49,17 @@ var cloudControlTypeNamePattern = regexp.MustCompile(`^[A-Za-z0-9]{2,64}::[A-Za-
 // TestImportMapConformance validates every authored import recipe against the
 // module sources it maps, offline:
 //
-//  1. The provider catalog and each component map parse against their proto
+//  1. The provider catalog and each kind map parse against their proto
 //     schemas.
-//  2. Every resource type the component's OpenTofu module declares has an
+//  2. Every resource type the kind's OpenTofu module declares has an
 //     id_format in the provider catalog -- an unmapped type would surface as
 //     an unimportable enumerated address.
 //  3. Every {placeholder} those formats reference is declared by the
-//     component map, and every declared value either derives from somewhere
+//     kind map, and every declared value either derives from somewhere
 //     or tells the user where to find it.
 //  4. from_spec_field paths resolve to scalar leaves on the kind's spec
-//     proto; from_stack_output keys are real fields on the kind's
-//     StackOutputs proto. A typo'd path would silently downgrade a zero-input
+//     proto; from_output keys are real fields on the kind's
+//     Outputs proto. A typo'd path would silently downgrade a zero-input
 //     import to a manual one.
 //
 // Enrollment is the import-map file itself: every discovered
@@ -72,15 +72,15 @@ var cloudControlTypeNamePattern = regexp.MustCompile(`^[A-Za-z0-9]{2,64}::[A-Za-
 func TestImportMapConformance(t *testing.T) {
 	root := repoRoot(t)
 
-	mappedKinds, err := DiscoverComponentImportMaps(root)
+	mappedKinds, err := DiscoverCatalogKindImportMaps(root)
 	if err != nil {
-		t.Fatalf("discovering component import maps: %v", err)
+		t.Fatalf("discovering catalog kind import maps: %v", err)
 	}
 	if len(mappedKinds) == 0 {
-		t.Fatal("no component import maps discovered -- wrong repo root?")
+		t.Fatal("no catalog kind import maps discovered -- wrong repo root?")
 	}
 
-	for provider, components := range mappedKinds {
+	for provider, kindDirs := range mappedKinds {
 		requireStrictYAML(t, ProviderCatalogPath(root, provider))
 		catalog, err := LoadProviderCatalog(root, provider)
 		if err != nil {
@@ -151,24 +151,24 @@ func TestImportMapConformance(t *testing.T) {
 			cloudControlClaims[ccType] = rt.GetTerraformType()
 		}
 
-		for _, component := range components {
-			component := component
-			t.Run(provider+"/"+component, func(t *testing.T) {
-				m, err := LoadComponentImportMap(root, provider, component)
+		for _, kindDir := range kindDirs {
+			kindDir := kindDir
+			t.Run(provider+"/"+kindDir, func(t *testing.T) {
+				m, err := LoadCatalogKindImportMap(root, provider, kindDir)
 				if err != nil {
-					t.Fatalf("component import map: %v", err)
+					t.Fatalf("catalog kind import map: %v", err)
 				}
-				if m.GetMetadata().GetName() != component {
-					t.Errorf("metadata.name is %q, want %q", m.GetMetadata().GetName(), component)
+				if m.GetMetadata().GetName() != kindDir {
+					t.Errorf("metadata.name is %q, want %q", m.GetMetadata().GetName(), kindDir)
 				}
 
-				mapRelPath, err := ComponentImportMapPath("", provider, component)
+				mapRelPath, err := CatalogKindImportMapPath("", provider, kindDir)
 				if err != nil {
-					t.Fatalf("component import map path: %v", err)
+					t.Fatalf("catalog kind import map path: %v", err)
 				}
 				requireStrictYAML(t, filepath.Join(root, mapRelPath))
 
-				declaredValues := map[string]*componentv1.ImportValue{}
+				declaredValues := map[string]*kindv1.ImportValue{}
 				for _, v := range m.GetSpec().GetValues() {
 					if v.GetName() == "" {
 						t.Error("import value with empty name")
@@ -183,7 +183,7 @@ func TestImportMapConformance(t *testing.T) {
 				}
 
 				// Every module-declared resource type must be importable.
-				moduleTypes, moduleNames := terraformResourceTypes(t, filepath.Join(root, "catalog", provider, component, "iac/tf"))
+				moduleTypes, moduleNames := terraformResourceTypes(t, filepath.Join(root, "catalog", provider, kindDir, "iac/tf"))
 				if len(moduleTypes) == 0 {
 					t.Fatal("module declares no resources -- wrong path?")
 				}
@@ -236,12 +236,12 @@ func TestImportMapConformance(t *testing.T) {
 							"the module gained a resource type its import recipes don't cover; add a %s entry "+
 							"(with its provider import-ID format, or not_importable_upstream_reason if the upstream resource ships no importer) to %s, then re-run the live round-trip lane for %s",
 							resourceType, provider, resourceType,
-							ProviderCatalogPath("", provider), component)
+							ProviderCatalogPath("", provider), kindDir)
 						continue
 					}
 					for _, placeholder := range Placeholders(idFormat) {
 						if _, declared := declaredValues[placeholder]; !declared {
-							t.Errorf("placeholder {%s} (id_format of %s) not declared in the component map -- "+
+							t.Errorf("placeholder {%s} (id_format of %s) not declared in the kind map -- "+
 								"add a value entry for it to %s (prefer a derivable source; where_to_find is mandatory when nothing derives)",
 								placeholder, resourceType,
 								mapRelPath)
@@ -250,39 +250,39 @@ func TestImportMapConformance(t *testing.T) {
 				}
 
 				// Derivation paths must resolve against the kind's protos.
-				kind := crkreflect.KindFromString(component)
-				apiMessage, err := crkreflect.NewInstance(kind)
+				kind := catalogkindreflect.KindFromString(kindDir)
+				apiMessage, err := catalogkindreflect.NewInstance(kind)
 				if err != nil {
-					t.Fatalf("NewInstance(%s): %v", component, err)
+					t.Fatalf("NewInstance(%s): %v", kindDir, err)
 				}
 				specDescriptor := specMessageDescriptor(t, apiMessage)
-				outputsDescriptor := stackOutputsDescriptor(t, apiMessage)
+				outputsDescriptor := outputsDescriptor(t, apiMessage)
 				for _, v := range m.GetSpec().GetValues() {
 					for _, d := range v.GetDerivations() {
 						switch source := d.GetSource().(type) {
-						case *componentv1.ImportValueDerivation_FromSpecField:
+						case *kindv1.ImportValueDerivation_FromSpecField:
 							if err := validateScalarPath(specDescriptor, source.FromSpecField); err != nil {
 								t.Errorf("value %q from_spec_field %q: %v", v.GetName(), source.FromSpecField, err)
 							}
-						case *componentv1.ImportValueDerivation_FromStackOutput:
-							if outputsDescriptor.Fields().ByName(protoreflect.Name(source.FromStackOutput)) == nil {
-								t.Errorf("value %q from_stack_output %q: no such field on %s",
-									v.GetName(), source.FromStackOutput, outputsDescriptor.FullName())
+						case *kindv1.ImportValueDerivation_FromOutput:
+							if outputsDescriptor.Fields().ByName(protoreflect.Name(source.FromOutput)) == nil {
+								t.Errorf("value %q from_output %q: no such field on %s",
+									v.GetName(), source.FromOutput, outputsDescriptor.FullName())
 							}
-						case *componentv1.ImportValueDerivation_FromStackOutputKeyedByAddress:
+						case *kindv1.ImportValueDerivation_FromOutputKeyedByAddress:
 							// The arm names a map output whose entries are keyed by
 							// the resource's for_each keys -- a scalar field here
 							// means the map author reached for the wrong arm (plain
-							// from_stack_output serves scalars).
-							field := outputsDescriptor.Fields().ByName(protoreflect.Name(source.FromStackOutputKeyedByAddress))
+							// from_output serves scalars).
+							field := outputsDescriptor.Fields().ByName(protoreflect.Name(source.FromOutputKeyedByAddress))
 							if field == nil {
-								t.Errorf("value %q from_stack_output_keyed_by_address %q: no such field on %s",
-									v.GetName(), source.FromStackOutputKeyedByAddress, outputsDescriptor.FullName())
+								t.Errorf("value %q from_output_keyed_by_address %q: no such field on %s",
+									v.GetName(), source.FromOutputKeyedByAddress, outputsDescriptor.FullName())
 							} else if !field.IsMap() {
-								t.Errorf("value %q from_stack_output_keyed_by_address %q: field on %s is not a map -- the arm exists for per-instance entries keyed by the for_each key; use from_stack_output for scalar outputs",
-									v.GetName(), source.FromStackOutputKeyedByAddress, outputsDescriptor.FullName())
+								t.Errorf("value %q from_output_keyed_by_address %q: field on %s is not a map -- the arm exists for per-instance entries keyed by the for_each key; use from_output for scalar outputs",
+									v.GetName(), source.FromOutputKeyedByAddress, outputsDescriptor.FullName())
 							}
-						case *componentv1.ImportValueDerivation_FromArnPart:
+						case *kindv1.ImportValueDerivation_FromArnPart:
 							switch source.FromArnPart {
 							case "resource_id", "resource_name", "account_id", "region", "arn":
 							default:
@@ -337,9 +337,9 @@ func specMessageDescriptor(t *testing.T, apiMessage proto.Message) protoreflect.
 	return specField.Message()
 }
 
-// stackOutputsDescriptor locates the kind's StackOutputs message from the
+// outputsDescriptor locates the kind's Outputs message from the
 // sibling outputs.proto of the kind's api.proto.
-func stackOutputsDescriptor(t *testing.T, apiMessage proto.Message) protoreflect.MessageDescriptor {
+func outputsDescriptor(t *testing.T, apiMessage proto.Message) protoreflect.MessageDescriptor {
 	t.Helper()
 	apiPath := apiMessage.ProtoReflect().Descriptor().ParentFile().Path()
 	outputsPath := filepath.Join(filepath.Dir(apiPath), "outputs.proto")
@@ -349,11 +349,11 @@ func stackOutputsDescriptor(t *testing.T, apiMessage proto.Message) protoreflect
 	}
 	for i := 0; i < file.Messages().Len(); i++ {
 		msg := file.Messages().Get(i)
-		if strings.HasSuffix(string(msg.Name()), "StackOutputs") {
+		if strings.HasSuffix(string(msg.Name()), "Outputs") {
 			return msg
 		}
 	}
-	t.Fatalf("%s declares no *StackOutputs message", outputsPath)
+	t.Fatalf("%s declares no *Outputs message", outputsPath)
 	return nil
 }
 

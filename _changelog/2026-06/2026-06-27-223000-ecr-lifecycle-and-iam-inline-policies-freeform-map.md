@@ -20,7 +20,7 @@ Two real-cloud deploy failures from the `aws-ecs-environment` chart are fixed at
 ## Problem Statement / Motivation
 
 A real (post-`tofu apply`) deploy of the `aws-ecs-environment` chart failed on two kinds (confirmed
-from the stack jobs' diagnostics):
+from the infra jobs' diagnostics):
 
 - `AwsEcrRepo` / `ecr-repo`:
   ```

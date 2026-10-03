@@ -11,8 +11,8 @@ type Locals struct {
 	GcpKmsKeyIamMember *gcpkmskeyiammemberv1alpha1.GcpKmsKeyIamMember
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *gcpkmskeyiammemberv1alpha1.GcpKmsKeyIamMemberStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *gcpkmskeyiammemberv1alpha1.GcpKmsKeyIamMemberIacInput) *Locals {
 	return &Locals{
-		GcpKmsKeyIamMember: stackInput.Target,
+		GcpKmsKeyIamMember: iacInput.Target,
 	}
 }

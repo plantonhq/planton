@@ -47,7 +47,7 @@ func (v *databaseReplicaVerifier) VerifyExistsFromOutputs(ctx context.Context, c
 			replica.Name, id, replica.ID)
 	}
 
-	// Assert connection posture only when the stack outputs claim it.
+	// Assert connection posture only when the outputs claim it.
 	if replica.Connection != nil {
 		if host := StringOutput(outputs, "host"); host != "" && replica.Connection.Host != host {
 			return pkgerrors.Errorf("digitaloceandatabasereplica %q host mismatch: output %q, live %q",

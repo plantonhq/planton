@@ -20,12 +20,12 @@ type Locals struct {
 	TtlSeconds  int
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpdnsrecordv1alpha1.GcpDnsRecordStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpdnsrecordv1alpha1.GcpDnsRecordIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.GcpDnsRecord = stackInput.Target
+	locals.GcpDnsRecord = iacInput.Target
 
-	target := stackInput.Target
+	target := iacInput.Target
 
 	locals.ProjectId = target.Spec.ProjectId.GetValue()
 	locals.ManagedZone = target.Spec.ManagedZone.GetValue()

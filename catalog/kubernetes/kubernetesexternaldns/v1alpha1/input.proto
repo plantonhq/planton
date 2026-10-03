@@ -6,8 +6,8 @@ import "catalog/kubernetes/kubernetesexternaldns/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
 //input for kubernetes-external-dns stack
-message KubernetesExternalDnsStackInput {
-  //target cloud-resource
+message KubernetesExternalDnsIacInput {
+  //target infra-component
   KubernetesExternalDns target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

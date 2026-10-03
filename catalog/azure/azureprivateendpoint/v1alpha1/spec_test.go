@@ -35,7 +35,7 @@ func validResource() *AzurePrivateEndpoint {
 	return &AzurePrivateEndpoint{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzurePrivateEndpoint",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "pg-pe",
 		},
 		Spec: &AzurePrivateEndpointSpec{

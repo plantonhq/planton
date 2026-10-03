@@ -20,4 +20,4 @@ The simplest possible Kinesis stream for development, prototyping, or variable-t
 
 ## Cost
 
-Pay-per-use: ON_DEMAND streams bill per GB written and per GB read, with writes the pricier of the two. No idle cost when no data is flowing. The verified figure for this preset lives in the component's generated estimate at `catalog/_pricing/estimates/awskinesisstream.yaml` — computed from the pinned price book, never hand-typed here.
+Pay-per-use: ON_DEMAND streams bill per GB written and per GB read, with writes the pricier of the two. No idle cost when no data is flowing. The verified figure for this preset lives in the kind's generated estimate at `catalog/_pricing/estimates/awskinesisstream.yaml` — computed from the pinned price book, never hand-typed here.

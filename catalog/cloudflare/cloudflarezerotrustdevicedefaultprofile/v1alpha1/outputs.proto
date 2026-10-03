@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarezerotrustdevicedefaultprofile.v1alpha1;
 
-// CloudflareZeroTrustDeviceDefaultProfileStackOutputs captures the
+// CloudflareZeroTrustDeviceDefaultProfileOutputs captures the
 // observable outputs after applying the default device profile.
-message CloudflareZeroTrustDeviceDefaultProfileStackOutputs {
+message CloudflareZeroTrustDeviceDefaultProfileOutputs {
   // The Cloudflare account the profile belongs to -- the profile is an
   // account singleton, so the account IS its identity.
   string account_id = 1;

@@ -4,7 +4,7 @@ Deploys an Amazon Managed Prometheus (AMP) workspace — a PromQL-compatible met
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Prometheus Workspace** — the AMP workspace with optional alias, optional customer-managed KMS encryption, and workspace event logging to CloudWatch when `logging` is set
 - **Workspace Configuration** — created only when `configuration` is set; metric retention, out-of-order ingest window, rule query offset, and per-label-set active-series caps. AWS creates this object via update and offers no delete: removing the block later leaves the last-applied values in place
@@ -18,7 +18,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with permissions to manage AMP workspaces, plus CloudWatch Logs when the logging arms are set and KMS when encrypting with a customer-managed key. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with permissions to manage AMP workspaces, plus CloudWatch Logs when the logging arms are set and KMS when encrypting with a customer-managed key. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -72,7 +72,7 @@ spec:
 planton apply -f aws-managed-prometheus.yaml
 ```
 
-This creates a workspace with 90-day retention, one recording-rules namespace, and Alertmanager routing to the named SNS topic. A Stack Job tracks the provisioning in real time.
+This creates a workspace with 90-day retention, one recording-rules namespace, and Alertmanager routing to the named SNS topic. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -112,7 +112,7 @@ These are the most important decisions when configuring a workspace. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -120,9 +120,9 @@ These are the most important decisions when configuring a workspace. Explore the
 | **AwsCloudwatchLogGroup** | `logging.logGroupArn` | `status.outputs.log_group_arn` |
 | **AwsCloudwatchLogGroup** | `queryLogging.destinations[].logGroupArn` | `status.outputs.log_group_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -144,8 +144,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Managed Prometheus Scraper**](/cloud-catalog/aws-managed-prometheus-scraper) — the agentless collector that scrapes EKS or VPC targets into this workspace, wired via `workspace_arn`
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) — the destination for workspace event logging and query logging, wired via the `logGroupArn` references
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — customer-managed encryption for metric data via `kmsKeyArn`
-- [**AWS SNS Topic**](/cloud-catalog/aws-sns-topic) — the one receiver the managed Alertmanager delivers to; fan out to on-call tooling from there
-- [**AWS EKS Cluster**](/cloud-catalog/aws-eks-cluster) — the typical metrics source, scraped in-VPC or remote-writing through in-cluster agents
+- [**AWS Managed Prometheus Scraper**](/infra-catalog/aws-managed-prometheus-scraper) — the agentless collector that scrapes EKS or VPC targets into this workspace, wired via `workspace_arn`
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) — the destination for workspace event logging and query logging, wired via the `logGroupArn` references
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — customer-managed encryption for metric data via `kmsKeyArn`
+- [**AWS SNS Topic**](/infra-catalog/aws-sns-topic) — the one receiver the managed Alertmanager delivers to; fan out to on-call tooling from there
+- [**AWS EKS Cluster**](/infra-catalog/aws-eks-cluster) — the typical metrics source, scraped in-VPC or remote-writing through in-cluster agents

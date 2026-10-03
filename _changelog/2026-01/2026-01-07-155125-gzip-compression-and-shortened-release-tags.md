@@ -6,7 +6,7 @@
 
 ## Summary
 
-Enhanced the Pulumi module auto-release workflow with gzip compression to reduce release artifact sizes by ~75% (from 56MB to ~14MB), and simplified the release tag naming pattern from `pulumi-module-{component}` to `pulumi-{component}` for cleaner, more concise identifiers.
+Enhanced the Pulumi module auto-release workflow with gzip compression to reduce release artifact sizes by ~75% (from 56MB to ~14MB), and simplified the release tag naming pattern from `pulumi-module-{kind}` to `pulumi-{kind}` for cleaner, more concise identifiers.
 
 ## Problem Statement / Motivation
 
@@ -37,14 +37,14 @@ The workflow now compresses binaries with `gzip -9` before uploading:
 # Build the binary
 CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
   -ldflags="-s -w -X main.Version=${VERSION}" \
-  -o "pulumi-${COMPONENT}" \
+  -o "pulumi-${KIND}" \
   "./${PATH}"
 
 # Compress with maximum compression
-gzip -9 -k "pulumi-${COMPONENT}"
+gzip -9 -k "pulumi-${KIND}"
 
 # Upload compressed artifact
-gh release create "${TAG}" "pulumi-${COMPONENT}.gz"
+gh release create "${TAG}" "pulumi-${KIND}.gz"
 ```
 
 The workflow now reports compression statistics:
@@ -102,7 +102,7 @@ Key modifications:
    ```yaml
    - name: Build and compress binary
      run: |
-       BINARY_NAME="pulumi-${{ matrix.component }}"
+       BINARY_NAME="pulumi-${{ matrix.kind }}"
        # ... build command ...
        
        echo "=== Compressing binary with gzip ==="
@@ -120,7 +120,7 @@ Key modifications:
    ```yaml
    - name: Create GitHub Release
      run: |
-       BINARY_NAME="pulumi-${{ matrix.component }}"
+       BINARY_NAME="pulumi-${{ matrix.kind }}"
        ARTIFACT_NAME="${BINARY_NAME}.gz"
        # ... release creation with ARTIFACT_NAME ...
    ```
@@ -128,10 +128,10 @@ Key modifications:
 4. **Tag generation** simplified:
    ```bash
    # Before
-   TAG_PREFIX="pulumi-module-${COMPONENT}-${TODAY}"
+   TAG_PREFIX="pulumi-module-${KIND}-${TODAY}"
    
    # After
-   TAG_PREFIX="pulumi-${COMPONENT}-${TODAY}"
+   TAG_PREFIX="pulumi-${KIND}-${TODAY}"
    ```
 
 ### IaC Runner Impact
@@ -140,14 +140,14 @@ The IaC runner will need to decompress binaries after download:
 
 ```bash
 # Download
-curl -LO "${RELEASE_URL}/pulumi-${COMPONENT}.gz"
+curl -LO "${RELEASE_URL}/pulumi-${KIND}.gz"
 
 # Decompress (fast, ~0.5 seconds for 56MB)
-gunzip "pulumi-${COMPONENT}.gz"
+gunzip "pulumi-${KIND}.gz"
 
 # Execute
-chmod +x "pulumi-${COMPONENT}"
-./pulumi-${COMPONENT}
+chmod +x "pulumi-${KIND}"
+./pulumi-${KIND}
 ```
 
 The gunzip operation adds negligible time (~0.5s) compared to the download time savings:
@@ -198,9 +198,9 @@ The gunzip operation adds negligible time (~0.5s) compared to the download time 
 
 ## Testing Verification
 
-Triggered parallel builds for 6 components across 4 providers:
+Triggered parallel builds for 6 kinds across 4 providers:
 
-| Provider | Component | Expected Tag |
+| Provider | Kind | Expected Tag |
 |----------|-----------|--------------|
 | AWS | awsclientvpn | `pulumi-awsclientvpn-20260107.0` |
 | AWS | awscloudfront | `pulumi-awscloudfront-20260107.0` |
@@ -211,7 +211,7 @@ Triggered parallel builds for 6 components across 4 providers:
 
 ## Related Work
 
-- **ADR**: `docs/adr/2026-01/2026-01-07-150453-per-component-binary-releases-for-pulumi-modules.md`
+- **ADR**: `docs/adr/2026-01/2026-01-07-150453-per-kind-binary-releases-for-pulumi-modules.md`
 - **Prior changelog**: `_changelog/2026-01/2026-01-07-152159-pulumi-module-auto-release-workflow.md`
 - **Part of**: IaC Runner Distribution Strategy project
 

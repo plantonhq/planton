@@ -22,7 +22,7 @@ go_library(
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
         "//pkg/kubernetes/kubernetestypes/altinityoperator/kubernetes/clickhouse/v1:clickhouse",
         "//pkg/kubernetes/kubernetestypes/altinityoperator/kubernetes/clickhouse_keeper/v1:clickhouse_keeper",
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/core/v1:core",
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/meta/v1:meta",

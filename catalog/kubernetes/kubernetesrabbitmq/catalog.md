@@ -6,7 +6,7 @@ Deploys a RabbitMQ cluster — the queue-messaging broker behind task queues, wo
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **RabbitmqCluster custom resource** (`rabbitmq.com/v1beta1`, named `metadata.name`) — topology, storage, TLS, configuration, and placement, reconciled by the operator
 - **Kubernetes Namespace** — created only when `createNamespace` is true; otherwise the namespace must already exist
@@ -52,7 +52,7 @@ spec:
 planton apply -f rabbitmq.yaml
 ```
 
-Every field has a working default: a single node on a 10Gi volume (the cluster's default StorageClass), the operator's default `-management` image, operator-default sizing. Workloads connect at `orders-mq.messaging.svc.cluster.local:5672` with the credentials from the `orders-mq-default-user` Secret (it even carries a ready-made `connection_string`); the management UI is on port 15672. A Stack Job tracks the provisioning in real time.
+Every field has a working default: a single node on a 10Gi volume (the cluster's default StorageClass), the operator's default `-management` image, operator-default sizing. Workloads connect at `orders-mq.messaging.svc.cluster.local:5672` with the credentials from the `orders-mq-default-user` Secret (it even carries a ready-made `connection_string`); the management UI is on port 15672. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,7 +94,7 @@ These are the most important decisions when configuring a RabbitMQ cluster. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -103,9 +103,9 @@ These are the most important decisions when configuring a RabbitMQ cluster. Expl
 | **KubernetesCertificate** | `tls.secretName` | `status.outputs.secret_name` |
 | **KubernetesSecret** | `tls.caSecretName` | `metadata.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -130,10 +130,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**RabbitMQ Cluster Operator**](/cloud-catalog/kubernetes-rabbit-mq-operator) — the engine that reconciles this cluster; deploy it first, keep the cluster inside its watched namespaces, and never destroy the operator while clusters exist (its CRD cascade-deletes them).
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — referenced placement; the InfraPipeline orders namespace-first.
-- [**Kubernetes StorageClass**](/cloud-catalog/kubernetes-storage-class) — SSD-backed classes for the per-node data volumes.
-- [**Cert Manager**](/cloud-catalog/kubernetes-cert-manager) and [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) — issue the TLS Secret the `tls` block references; the certificate must cover the client Service DNS names.
-- [**External Secret**](/cloud-catalog/kubernetes-external-secret) — materializes default-user credentials from a cloud secret manager; reference its target Secret in `secretBackend.externalSecretName`.
-- [**Apache Kafka**](/cloud-catalog/kubernetes-kafka) — the event-streaming sibling for append-only, replayable logs at scale; reach for it when consumers replay history instead of acknowledging work.
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) and [**Kubernetes CronJob**](/cloud-catalog/kubernetes-cron-job) — the workloads that consume the exported `amqp_endpoint` and the default-user Secret for task queues, work distribution, and RPC.
+- [**RabbitMQ Cluster Operator**](/infra-catalog/kubernetes-rabbit-mq-operator) — the engine that reconciles this cluster; deploy it first, keep the cluster inside its watched namespaces, and never destroy the operator while clusters exist (its CRD cascade-deletes them).
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — referenced placement; the InfraPipeline orders namespace-first.
+- [**Kubernetes StorageClass**](/infra-catalog/kubernetes-storage-class) — SSD-backed classes for the per-node data volumes.
+- [**Cert Manager**](/infra-catalog/kubernetes-cert-manager) and [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) — issue the TLS Secret the `tls` block references; the certificate must cover the client Service DNS names.
+- [**External Secret**](/infra-catalog/kubernetes-external-secret) — materializes default-user credentials from a cloud secret manager; reference its target Secret in `secretBackend.externalSecretName`.
+- [**Apache Kafka**](/infra-catalog/kubernetes-kafka) — the event-streaming sibling for append-only, replayable logs at scale; reach for it when consumers replay history instead of acknowledging work.
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) and [**Kubernetes CronJob**](/infra-catalog/kubernetes-cron-job) — the workloads that consume the exported `amqp_endpoint` and the default-user Secret for task queues, work distribution, and RPC.

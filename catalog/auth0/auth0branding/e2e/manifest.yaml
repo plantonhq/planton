@@ -1,5 +1,5 @@
 # Auth0 Branding Test Manifest
-# This file is used for testing the Auth0Branding component.
+# This file is used for testing the Auth0Branding kind.
 #
 # Applying it REWRITES the look of every login page of the tenant the
 # credential belongs to: run it only against a test tenant nobody signs in to.

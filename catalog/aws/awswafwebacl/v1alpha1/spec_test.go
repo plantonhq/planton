@@ -22,7 +22,7 @@ func minimalAcl(spec *AwsWafWebAclSpec) *AwsWafWebAcl {
 	return &AwsWafWebAcl{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsWafWebAcl",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-acl"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-acl"},
 		Spec:       spec,
 	}
 }

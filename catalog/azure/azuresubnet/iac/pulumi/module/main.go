@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azuresubnetv1alpha1.AzureSubnetStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuresubnetv1alpha1.AzureSubnetIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -160,7 +160,7 @@ func Resources(ctx *pulumi.Context, stackInput *azuresubnetv1alpha1.AzureSubnetS
 		}
 	}
 
-	// Export stack outputs from the created resource. address_prefixes comes
+	// Export outputs from the created resource. address_prefixes comes
 	// from the resource (not the spec) so IPAM-allocated subnets surface the
 	// ranges the pool actually provisioned.
 	ctx.Export(OpSubnetId, createdSubnet.ID())

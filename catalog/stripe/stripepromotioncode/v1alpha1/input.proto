@@ -5,9 +5,9 @@ package dev.planton.stripe.stripepromotioncode.v1alpha1;
 import "catalog/stripe/provider.proto";
 import "catalog/stripe/stripepromotioncode/v1alpha1/api.proto";
 
-// StripePromotionCodeStackInput is the input to the StripePromotionCode IaC module.
+// StripePromotionCodeIacInput is the input to the StripePromotionCode IaC module.
 // It contains the target resource and the Stripe provider configuration.
-message StripePromotionCodeStackInput {
+message StripePromotionCodeIacInput {
   // target is the StripePromotionCode resource to be deployed.
   StripePromotionCode target = 1;
 

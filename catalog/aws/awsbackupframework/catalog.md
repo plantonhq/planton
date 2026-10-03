@@ -4,7 +4,7 @@ Deploys a Backup Audit Manager framework: a set of controls that continuously ev
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Backup Framework** — the Audit Manager framework holding every control with its parameters and scopes. Controls come from AWS's Backup Audit Manager vocabulary (e.g. `BACKUP_RESOURCES_PROTECTED_BY_BACKUP_PLAN`, `BACKUP_RECOVERY_POINT_MINIMUM_RETENTION_CHECK`); AWS derives one Config rule per control from it
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with AWS Backup and AWS Config permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with AWS Backup and AWS Config permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -55,7 +55,7 @@ spec:
 planton apply -f backup-framework.yaml
 ```
 
-This creates a framework named `backup_posture` that continuously checks whether EBS volumes and RDS databases are covered by a backup plan and whether every recovery point is retained at least 35 days. A Stack Job tracks the provisioning in real time.
+This creates a framework named `backup_posture` that continuously checks whether EBS volumes and RDS databases are covered by a backup plan and whether every recovery point is retained at least 35 days. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -75,13 +75,13 @@ These are the most important decisions when configuring a backup framework. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. A framework audits the account's backup posture as a whole — it has no schema edges to backup plans or vaults, and deploys with zero of either.
+This kind has no foreign key dependencies. A framework audits the account's backup posture as a whole — it has no schema edges to backup plans or vaults, and deploys with zero of either.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -100,7 +100,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Config Recorder**](/cloud-catalog/aws-config-recorder) — the hard prerequisite: framework evaluations run on Config, and the region's recorder must be active
-- [**AWS Backup Report Plan**](/cloud-catalog/aws-backup-report-plan) — consumes `framework_arn` to produce scheduled compliance reports
-- [**AWS Backup Plan**](/cloud-catalog/aws-backup-plan) — the coverage controls evaluate whether resources are protected by a plan
-- [**AWS Backup Vault**](/cloud-catalog/aws-backup-vault) — the vault-lock control verifies recovery points sit behind Vault Lock
+- [**AWS Config Recorder**](/infra-catalog/aws-config-recorder) — the hard prerequisite: framework evaluations run on Config, and the region's recorder must be active
+- [**AWS Backup Report Plan**](/infra-catalog/aws-backup-report-plan) — consumes `framework_arn` to produce scheduled compliance reports
+- [**AWS Backup Plan**](/infra-catalog/aws-backup-plan) — the coverage controls evaluate whether resources are protected by a plan
+- [**AWS Backup Vault**](/infra-catalog/aws-backup-vault) — the vault-lock control verifies recovery points sit behind Vault Lock

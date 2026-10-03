@@ -59,7 +59,7 @@ Removed `overflow: scroll`, `height: 100%`, and `overflow-hidden` from the Cal.c
 
 ### New Files
 
-None — all changes are modifications to existing components.
+None — all changes are modifications to existing kinds.
 
 ### Modified Files
 
@@ -77,7 +77,7 @@ None — all changes are modifications to existing components.
 
 **Minimum loading duration over instant error**: When a fetch fails in <100ms, the rapid `idle → submitting → error` transition creates a jarring flicker. Holding the spinner for 800ms gives the user time to register "something is happening" before the outcome appears. The fetch still runs immediately — the delay is purely visual.
 
-**Native `<form>` over MUI `<Box component="form">`**: MUI's polymorphic `component` prop can silently fail to attach event handlers depending on the version. A native `<form>` element eliminates the abstraction layer entirely.
+**Native `<form>` over MUI `<Box kind="form">`**: MUI's polymorphic `kind` prop can silently fail to attach event handlers depending on the version. A native `<form>` element eliminates the abstraction layer entirely.
 
 ## Benefits
 

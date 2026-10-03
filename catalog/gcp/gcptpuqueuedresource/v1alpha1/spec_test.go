@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpTpuQueuedResourceSpec", func() {
 		return &GcpTpuQueuedResource{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpTpuQueuedResource",
-			Metadata:   &shared.CloudResourceMetadata{Name: "train-request"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "train-request"},
 			Spec: &GcpTpuQueuedResourceSpec{
 				Zone: "us-central1-a",
 				NodeSpecs: []*GcpTpuQueuedResourceNodeSpec{

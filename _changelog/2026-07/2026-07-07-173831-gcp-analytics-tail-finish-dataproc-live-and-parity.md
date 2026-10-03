@@ -85,7 +85,7 @@ folded GKE arms, every node group, security, metastore/metric/auxiliary), the
 autoscaling policy (explicit-presence scale factors flow `0.0` identically), the
 Composer environment (all config blocks + Composer-3 flags), and the
 user-workloads pair (the Secret's sensitive map handled as `ToSecret` on Pulumi
-and a provider-sensitive attribute on OpenTofu, never in outputs). Stack outputs
+and a provider-sensitive attribute on OpenTofu, never in outputs). Outputs
 match on every kind.
 
 ## Implementation Details

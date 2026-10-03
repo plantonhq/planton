@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awssagemakerpipeline
 spec:
@@ -10,7 +10,7 @@ spec:
   values:
     - name: pipeline_name
       derivations:
-        - from_stack_output: pipeline_name
+        - from_output: pipeline_name
       where_to_find: >-
         SageMaker console -> Pipelines (the name), or
         `aws sagemaker list-pipelines` (PipelineName).

@@ -2,7 +2,7 @@
 
 **Date**: November 13, 2025  
 **Type**: Refactoring  
-**Components**: API Definitions, Cloud Resource Registry, Documentation, Pulumi CLI Integration
+**Components**: API Definitions, Catalog Kind Registry, Documentation, Pulumi CLI Integration
 
 ## Summary
 
@@ -18,11 +18,11 @@ The Postgres operator resource was originally named `PostgresOperatorKubernetes`
 - **Ambiguous Identity**: "PostgresOperator" doesn't indicate that this is specifically the **Zalando Postgres Operator**, not Percona PostgreSQL Operator, CloudNativePG, or Crunchy Postgres Operator
 - **Verbose API Surface**: Users had to write `kind: PostgresOperatorKubernetes` in manifests, which is unnecessarily long
 - **Naming Inconsistency**: Mixed naming patterns across addon operators—some with suffixes, some without
-- **Code Verbosity**: Proto message types like `PostgresOperatorKubernetesSpec` and `PostgresOperatorKubernetesStackInput` were excessively long
+- **Code Verbosity**: Proto message types like `PostgresOperatorKubernetesSpec` and `PostgresOperatorKubernetesIacInput` were excessively long
 - **Poor Developer Experience**: The redundancy made code harder to read and type
 - **Vendor Clarity**: In an ecosystem with multiple PostgreSQL operators (Zalando, Percona, CloudNativePG, Crunchy), the name should clearly indicate which one is being deployed
 
-The provider namespace (`dev.planton.provider.kubernetes.addon.zalandopostgresoperator.v1`) now clearly indicates this is a Kubernetes component, and the resource should explicitly name the vendor (Zalando) to distinguish it from other PostgreSQL operator implementations in the Planton ecosystem.
+The provider namespace (`dev.planton.provider.kubernetes.addon.zalandopostgresoperator.v1`) now clearly indicates this is a Kubernetes kind, and the resource should explicitly name the vendor (Zalando) to distinguish it from other PostgreSQL operator implementations in the Planton ecosystem.
 
 ## Solution / What's New
 
@@ -31,7 +31,7 @@ Performed a comprehensive rename from `PostgresOperatorKubernetes` to `ZalandoPo
 1. **Directory Structure**: Renamed from `postgresoperatorkubernetes` to `zalandopostgresoperator`
 2. **Package Namespace**: Updated to `dev.planton.provider.kubernetes.addon.zalandopostgresoperator.v1`
 3. **Proto API Definitions**: Updated all message types, field references, and validation constraints
-4. **Cloud Resource Registry**: Modified the enum entry in `cloud_resource_kind.proto`
+4. **Catalog Kind Registry**: Modified the enum entry in `catalog_kind.proto`
 5. **Documentation**: Updated all user-facing docs and implementation guides
 6. **Implementation Code**: Modified Go code in Pulumi modules to use renamed types
 7. **Test Suite**: Created comprehensive validation tests with the new naming
@@ -90,33 +90,33 @@ message ZalandoPostgresOperatorBackupConfig { ... }
 message ZalandoPostgresOperatorBackupR2Config { ... }
 ```
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/zalandopostgresoperator/v1/stack_input.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/zalandopostgresoperator/v1/iac_input.proto`
 
 ```protobuf
 // Before
-message PostgresOperatorKubernetesStackInput {
+message PostgresOperatorKubernetesIacInput {
   PostgresOperatorKubernetes target = 1;
 }
 
 // After
-message ZalandoPostgresOperatorStackInput {
+message ZalandoPostgresOperatorIacInput {
   ZalandoPostgresOperator target = 1;
 }
 ```
 
-**File**: `apis/dev/planton/provider/kubernetes/addon/zalandopostgresoperator/v1/stack_outputs.proto`
+**File**: `apis/dev/planton/provider/kubernetes/addon/zalandopostgresoperator/v1/outputs.proto`
 
 ```protobuf
 // Before
-message PostgresOperatorKubernetesStackOutputs { ... }
+message PostgresOperatorKubernetesOutputs { ... }
 
 // After
-message ZalandoPostgresOperatorStackOutputs { ... }
+message ZalandoPostgresOperatorOutputs { ... }
 ```
 
 ### Registry Update
 
-**File**: `apis/dev/planton/shared/cloudresourcekind/cloud_resource_kind.proto`
+**File**: `apis/dev/planton/shared/catalogkind/catalog_kind.proto`
 
 ```protobuf
 // Before
@@ -142,20 +142,20 @@ ZalandoPostgresOperator = 827 [(kind_meta) = {
 
 ```go
 // Before
-stackInput := &postgresoperatorkubernetesv1.PostgresOperatorKubernetesStackInput{}
+iacInput := &postgresoperatorkubernetesv1.PostgresOperatorKubernetesIacInput{}
 
 // After
-stackInput := &zalandopostgresoperatorv1.ZalandoPostgresOperatorStackInput{}
+iacInput := &zalandopostgresoperatorv1.ZalandoPostgresOperatorIacInput{}
 ```
 
 **File**: `apis/dev/planton/provider/kubernetes/addon/zalandopostgresoperator/v1/iac/pulumi/module/main.go`
 
 ```go
 // Before
-func Resources(ctx *pulumi.Context, stackInput *postgresoperatorkubernetesv1.PostgresOperatorKubernetesStackInput) error
+func Resources(ctx *pulumi.Context, iacInput *postgresoperatorkubernetesv1.PostgresOperatorKubernetesIacInput) error
 
 // After
-func Resources(ctx *pulumi.Context, stackInput *zalandopostgresoperatorv1.ZalandoPostgresOperatorStackInput) error
+func Resources(ctx *pulumi.Context, iacInput *zalandopostgresoperatorv1.ZalandoPostgresOperatorIacInput) error
 ```
 
 **File**: `apis/dev/planton/provider/kubernetes/addon/zalandopostgresoperator/v1/iac/pulumi/module/locals.go`
@@ -218,7 +218,7 @@ var _ = ginkgo.Describe("ZalandoPostgresOperator Custom Validation Tests", func(
     input = &ZalandoPostgresOperator{
       ApiVersion: "kubernetes.planton.dev/v1",
       Kind:       "ZalandoPostgresOperator",
-      Metadata: &shared.CloudResourceMetadata{
+      Metadata: &shared.CatalogObjectMetadata{
         Name: "test-zalando-postgres-operator",
       },
       Spec: &ZalandoPostgresOperatorSpec{
@@ -251,8 +251,8 @@ kind: ZalandoPostgresOperator  # vs. kind: PostgresOperatorKubernetes
 
 Proto message names are now more concise:
 - `ZalandoPostgresOperatorSpec` (was `PostgresOperatorKubernetesSpec`)
-- `ZalandoPostgresOperatorStackInput` (was `PostgresOperatorKubernetesStackInput`)
-- `ZalandoPostgresOperatorStackOutputs` (was `PostgresOperatorKubernetesStackOutputs`)
+- `ZalandoPostgresOperatorIacInput` (was `PostgresOperatorKubernetesIacInput`)
+- `ZalandoPostgresOperatorOutputs` (was `PostgresOperatorKubernetesOutputs`)
 - `ZalandoPostgresOperatorBackupConfig` (was `PostgresOperatorKubernetesBackupConfig`)
 
 ### Clear Vendor Identity
@@ -325,17 +325,17 @@ spec:
 **Proto Definitions** (4 files):
 - `api.proto` - Main API message types
 - `spec.proto` - Spec, container, and backup message types
-- `stack_input.proto` - Stack input message type
-- `stack_outputs.proto` - Stack outputs message type
+- `iac_input.proto` - IaC input message type
+- `outputs.proto` - Outputs message type
 
 **Registry** (1 file):
-- `cloud_resource_kind.proto` - Enum entry
+- `catalog_kind.proto` - Enum entry
 
 **Documentation** (1 file):
-- `docs/README.md` - Component documentation with vendor clarity
+- `docs/README.md` - Kind documentation with vendor clarity
 
 **Implementation** (5 files):
-- `iac/pulumi/main.go` - Stack input type reference
+- `iac/pulumi/main.go` - IaC input type reference
 - `iac/pulumi/module/main.go` - Function signature
 - `iac/pulumi/module/locals.go` - Struct fields and labels
 - `iac/pulumi/module/postgres_operator.go` - Field access

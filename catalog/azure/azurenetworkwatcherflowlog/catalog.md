@@ -4,7 +4,7 @@ Records network traffic metadata for one virtual network, subnet, or network int
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Network Watcher flow log** -- the recorder writing flow records (source, destination, port, protocol, allow/deny verdict) for the target into the storage account, attached to the region's Network Watcher (which Azure auto-creates -- the module never creates a watcher)
 
@@ -59,11 +59,11 @@ spec:
 planton apply -f flow-log.yaml
 ```
 
-This records every flow in the `platform-vnet` virtual network into the `acmeflowlogs` storage account as version-2 records pruned after 30 days, attached to the region's auto-created Network Watcher. A Stack Job tracks the provisioning in real time.
+This records every flow in the `platform-vnet` virtual network into the `acmeflowlogs` storage account as version-2 records pruned after 30 days, attached to the region's auto-created Network Watcher. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When the network, storage account, and workspace are Cloud Resources in the same chart, wire them by reference:
+When the network, storage account, and workspace are Infra Components in the same chart, wire them by reference:
 
 ```yaml
 spec:
@@ -109,7 +109,7 @@ These are the most important decisions when configuring an Azure Network Watcher
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |---|---|---|
@@ -119,7 +119,7 @@ These are the most important decisions when configuring an Azure Network Watcher
 | Azure Log Analytics Workspace | `trafficAnalytics.workspaceResourceId` | `status.outputs.workspace_id` |
 | Azure Resource Group (self-managed watcher only) | `networkWatcherResourceGroup` | `status.outputs.resource_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
 `status.outputs` carries the flow log's ARM ID (`flow_log_id`), its name within the watcher (`flow_log_name`), and the Network Watcher it attached to (`network_watcher_name` -- the auto-created regional singleton unless the spec addressed a self-managed one). Nothing downstream consumes a flow log by reference -- it is a leaf recorder -- so these outputs exist for identification and for confirming which watcher the flow log landed on.
 
@@ -133,8 +133,8 @@ These are the most important decisions when configuring an Azure Network Watcher
 
 ## Works With
 
-- [**Azure Virtual Network**](/cloud-catalog/azure-virtual-network) -- the broadest recording target; reference its `virtual_network_id` output.
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- a narrower target for scoped recording; reference its `subnet_id` output.
-- [**Azure Network Interface**](/cloud-catalog/azure-network-interface) -- the narrowest target, one NIC's traffic; reference its `network_interface_id` output.
-- [**Azure Storage Account**](/cloud-catalog/azure-storage-account) -- where flow-log files land; use one without hand-managed lifecycle rules.
-- [**Azure Log Analytics Workspace**](/cloud-catalog/azure-log-analytics-workspace) -- the Traffic Analytics destination; supplies both workspace references.
+- [**Azure Virtual Network**](/infra-catalog/azure-virtual-network) -- the broadest recording target; reference its `virtual_network_id` output.
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- a narrower target for scoped recording; reference its `subnet_id` output.
+- [**Azure Network Interface**](/infra-catalog/azure-network-interface) -- the narrowest target, one NIC's traffic; reference its `network_interface_id` output.
+- [**Azure Storage Account**](/infra-catalog/azure-storage-account) -- where flow-log files land; use one without hand-managed lifecycle rules.
+- [**Azure Log Analytics Workspace**](/infra-catalog/azure-log-analytics-workspace) -- the Traffic Analytics destination; supplies both workspace references.

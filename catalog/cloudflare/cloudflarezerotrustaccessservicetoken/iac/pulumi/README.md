@@ -5,11 +5,11 @@ Pulumi (Go) IaC module for an Access service token -- a machine credential (clie
 ## Architecture
 
 ```
-main.go                   — Entrypoint loading the stack input
+main.go                   — Entrypoint loading the IaC input
 module/main.go            — Resources(): provider setup, resource, outputs
 module/locals.go          — Locals initialization
 module/service_token.go   — cloudflare.ZeroTrustAccessServiceToken
-module/outputs.go         — Stack output keys
+module/outputs.go         — output keys
 ```
 
 ## Behavior

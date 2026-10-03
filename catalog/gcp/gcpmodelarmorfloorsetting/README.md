@@ -4,7 +4,7 @@ The Model Armor floor setting of a project, folder, or organization -- the minim
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `modelarmor.googleapis.com` on the floor's project (project floors only; never disabled on destroy)
 - **Floor setting** -- the scope's `model_armor_floorsetting`, applied over whatever floor it had
@@ -73,7 +73,7 @@ planton apply -f model-armor-floor-setting.yaml
 - An integrated service setting needs `enforcementType`.
 - The filter rules match `GcpModelArmorTemplate`'s.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -101,7 +101,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpModelArmorTemplate** -- the templates the floor governs
 - **GcpFolder** -- a folder floor every project beneath it inherits

@@ -28,7 +28,7 @@ func minimalSpec() *AzureContainerAppJob {
 	return &AzureContainerAppJob{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureContainerAppJob",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-job",
 		},
 		Spec: &AzureContainerAppJobSpec{

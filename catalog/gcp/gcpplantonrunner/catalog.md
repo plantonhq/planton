@@ -4,7 +4,7 @@ Deploys a standing Planton runner appliance on Cloud Run -- an always-on, outbou
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cloud Run Admin API enablement** -- enables `run.googleapis.com` so a fresh project works on the first deploy; deliberately left enabled on destroy, so tearing down one runner never disables the API for everything else in the project
 - **Runtime service account** -- the runner's own GCP identity, created permissionless only when `serviceAccount` does not reference an existing account; deliberately never the project's Compute Engine default
@@ -52,7 +52,7 @@ spec:
 planton apply -f runner.yaml
 ```
 
-This minimal manifest deploys a single always-on worker at the default sizing (1 vCPU, 512Mi) tracking the latest runner release, in the provider's default project, with a dedicated permissionless service account and no VPC egress -- project, sizing, version pinning, VPC placement, and the runtime identity are not configured. A Stack Job tracks the provisioning in real time.
+This minimal manifest deploys a single always-on worker at the default sizing (1 vCPU, 512Mi) tracking the latest runner release, in the provider's default project, with a dedicated permissionless service account and no VPC egress -- project, sizing, version pinning, VPC placement, and the runtime identity are not configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -101,7 +101,7 @@ These are the most important decisions when configuring the runner. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -110,9 +110,9 @@ These are the most important decisions when configuring the runner. Explore the 
 | **GcpSubnetwork** (optional) | `vpcAccess.subnetwork` | `status.outputs.subnetwork_name` |
 | **GcpServiceAccount** (optional) | `serviceAccount` | `status.outputs.email` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -136,7 +136,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- the network Direct VPC egress rides into; the placement that defines what the runner can reach
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- where the runner draws IPs when VPC egress is configured; must be in the runner's region
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the runner's runtime identity, composed first-class with exactly the permissions its workloads need
-- [**GCP GKE Cluster**](/cloud-catalog/gcp-gke-cluster) -- the canonical private target: a private control plane the runner makes deployable
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- the network Direct VPC egress rides into; the placement that defines what the runner can reach
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- where the runner draws IPs when VPC egress is configured; must be in the runner's region
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the runner's runtime identity, composed first-class with exactly the permissions its workloads need
+- [**GCP GKE Cluster**](/infra-catalog/gcp-gke-cluster) -- the canonical private target: a private control plane the runner makes deployable

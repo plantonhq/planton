@@ -57,7 +57,7 @@ frontend (public IP | private address) + port
   with GET on the vault's secrets.
 - **Deploys run 15-25 minutes** -- Azure's slowest networking resource.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

@@ -10,13 +10,13 @@ import (
 // Resources is the module entry point—mirrors the pattern used in the VPC module.
 func Resources(
 	ctx *pulumi.Context,
-	stackInput *digitaloceanbucketv1alpha1.DigitalOceanBucketStackInput,
+	iacInput *digitaloceanbucketv1alpha1.DigitalOceanBucketIacInput,
 ) error {
 	// 1. Prepare locals (metadata, labels, credentials, etc.).
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// 2. Create a DigitalOcean provider from the supplied credential.
-	digitalOceanProvider, err := pulumidigitaloceanprovider.Get(ctx, stackInput.ProviderConfig)
+	digitalOceanProvider, err := pulumidigitaloceanprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup digitalocean provider")
 	}

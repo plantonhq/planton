@@ -10,7 +10,7 @@ import (
 // loadBalancerVerifier verifies a DigitalOceanLoadBalancer via
 // GET /v2/load_balancers/{id}. Beyond existence, it asserts the live
 // balancer is active and checks the IPv4 address the module CLAIMS in its
-// stack outputs against the live balancer -- outputs are contractually
+// outputs against the live balancer -- outputs are contractually
 // identical across both engines, so one assertion protects both, and an
 // absent output simply means "not claimed" and is skipped. Status is always
 // read live, never from an output: an apply-time snapshot goes stale

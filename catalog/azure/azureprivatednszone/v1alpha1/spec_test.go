@@ -37,7 +37,7 @@ func validResource() *AzurePrivateDnsZone {
 	return &AzurePrivateDnsZone{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzurePrivateDnsZone",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "pg-private-dns",
 		},
 		Spec: &AzurePrivateDnsZoneSpec{

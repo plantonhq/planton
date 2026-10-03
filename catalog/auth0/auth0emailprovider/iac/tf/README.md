@@ -15,7 +15,7 @@ Terraform/OpenTofu module that manages the email provider of an Auth0 tenant.
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `default_from_address` (required), `enabled` (default `true`), and exactly one of `smtp`, `ses`, `sendgrid`, `sparkpost`, `mailgun`, `mandrill`, `azure_cs`, `ms365`, `custom` |
 
 ## Outputs

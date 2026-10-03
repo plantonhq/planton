@@ -1,4 +1,4 @@
-# AwsBackupRestoreTestingPlan — Component Guide
+# AwsBackupRestoreTestingPlan — Kind Guide
 
 Authored operational judgment for the restore testing component: the
 design decisions behind the spec's shape, and what to know before

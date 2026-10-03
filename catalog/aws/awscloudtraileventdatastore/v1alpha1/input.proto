@@ -5,9 +5,9 @@ package dev.planton.aws.awscloudtraileventdatastore.v1alpha1;
 import "catalog/aws/awscloudtraileventdatastore/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsCloudTrailEventDataStoreStackInput is the input for the IaC
+// AwsCloudTrailEventDataStoreIacInput is the input for the IaC
 // modules that manage a CloudTrail Lake event data store.
-message AwsCloudTrailEventDataStoreStackInput {
+message AwsCloudTrailEventDataStoreIacInput {
   // target is the AwsCloudTrailEventDataStore resource to deploy.
   AwsCloudTrailEventDataStore target = 1;
   // provider_config contains the AWS provider credentials and configuration.

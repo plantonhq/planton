@@ -10,7 +10,7 @@ import (
 
 // OutputMapping is the schema for output_transform.yaml, the declarative
 // key-remapping mechanism for custom IaC modules whose output names don't
-// match the proto StackOutputs field names.
+// match the proto Outputs field names.
 type OutputMapping struct {
 	// Version must be "v1". Reserved for future schema evolution.
 	Version string `yaml:"version"`

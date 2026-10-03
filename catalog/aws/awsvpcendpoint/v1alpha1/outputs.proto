@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsvpcendpoint.v1alpha1;
 
-// AwsVpcEndpointStackOutputs describes the values returned after
+// AwsVpcEndpointOutputs describes the values returned after
 // provisioning a VPC endpoint.
-message AwsVpcEndpointStackOutputs {
+message AwsVpcEndpointOutputs {
   // vpc_endpoint_id is the endpoint's id (e.g. "vpce-0abc..."), the
   // handle every AWS API and route inspection uses.
   string vpc_endpoint_id = 1;

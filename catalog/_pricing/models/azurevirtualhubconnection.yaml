@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -7,9 +7,9 @@
 # ExpressRoute, point-to-site), never for VNet attachments, so the
 # attachment itself never appears on the invoice and every charge it shapes
 # follows traffic -- stated in exclusions, never padded into fabricated
-# dollars. Schema: finops/componentcostestimatemodel/v1.
+# dollars. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: azurevirtualhubconnection
 spec:
@@ -20,7 +20,7 @@ spec:
       hours_per_month: 730
       exclusions:
         - the attachment is a Microsoft-managed peering between the hub and this VNet, so the spoke's traffic bills standard VNet peering data rates per GB in each direction -- the peering meters, not a connection meter, are where the money moves
-        - VNet-to-VNet traffic through the hub additionally bills the hub router's per-GB data processing, carried on the hub's own component (which also bills hourly for existing, independent of this attachment)
+        - VNet-to-VNet traffic through the hub additionally bills the hub router's per-GB data processing, carried on the hub's own kind (which also bills hourly for existing, independent of this attachment)
         - inter-region spoke traffic adds standard inter-region data-transfer rates
       notes: Zero committed cost -- Virtual WAN's hourly connection units bill branches, never VNet attachments; an idle connection bills nothing, and the paid half of this pattern is the hub itself.
     - preset: 02-isolated-spoke
@@ -29,5 +29,5 @@ spec:
       hours_per_month: 730
       exclusions:
         - the isolated route-table association and label-based propagation are free routing posture -- isolation costs exactly as much as any-to-any, because routing moves WHERE traffic flows (and where its per-GB charges land), not what the connection costs
-        - traffic the spoke does exchange bills VNet peering data per GB, plus the hub's per-GB data processing for VNet-to-VNet transit on the hub's component
+        - traffic the spoke does exchange bills VNet peering data per GB, plus the hub's per-GB data processing for VNet-to-VNet transit on the hub's kind
       notes: Zero committed cost -- custom route tables carry no meter; the attachment stays off the invoice whether it reaches every spoke or none.

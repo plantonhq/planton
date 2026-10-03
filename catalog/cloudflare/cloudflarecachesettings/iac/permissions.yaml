@@ -3,7 +3,7 @@
 # modules. Cloudflare authenticates with a bearer API token assembled from
 # named permission groups; every group entry is `derived` (static analysis
 # of the module sources, cited in notes) until the live capture lane
-# upgrades it to `proven`. Schema: iac/componentpermissions/v1.
+# upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
 # HONEST UNKNOWN -- the two Argo-backed settings (tiered_caching via
 # /zones/{zone_id}/argo/tiered_caching, argo_smart_routing via
@@ -12,7 +12,7 @@
 # documents which group covers them, so none is claimed here.
 # (provenance: derived)
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: cloudflarecachesettings
 spec:

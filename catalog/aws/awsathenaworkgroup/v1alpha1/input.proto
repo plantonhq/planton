@@ -5,8 +5,8 @@ package dev.planton.aws.awsathenaworkgroup.v1alpha1;
 import "catalog/aws/awsathenaworkgroup/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsAthenaWorkgroupStackInput is the input envelope passed to IaC modules for provisioning.
-message AwsAthenaWorkgroupStackInput {
+// AwsAthenaWorkgroupIacInput is the input envelope passed to IaC modules for provisioning.
+message AwsAthenaWorkgroupIacInput {
   // target is the fully-specified AwsAthenaWorkgroup resource to provision.
   AwsAthenaWorkgroup target = 1;
 

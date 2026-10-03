@@ -16,7 +16,7 @@ OpenTofu module that declares one Stripe payment link. Stripe kinds run on OpenT
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `line_items` (resolved price ids, 1 to 20, required); `optional_items`, `active`, `inactive_message`, `after_completion`, `allow_promotion_codes`, `automatic_tax`, `billing_address_collection`, `consent_collection`, `currency`, `custom_fields`, `custom_text`, `customer_creation`, `invoice_creation`, `managed_payments`, `name_collection`, `payment_intent_data`, `payment_method_collection`, `payment_method_options`, `payment_method_types`, `phone_number_collection`, `restrictions`, `shipping_address_collection`, `shipping_options` (resolved shipping rate ids), `submit_type`, `subscription_data`, `tax_id_collection`, `application_fee_amount`, `application_fee_percent`, `on_behalf_of`, `transfer_data`, `metadata` |
 
 ## Outputs

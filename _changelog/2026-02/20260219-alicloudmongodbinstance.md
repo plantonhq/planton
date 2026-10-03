@@ -1,23 +1,23 @@
 # AliCloudMongodbInstance
 
 **Date**: 2026-02-19
-**Type**: New Component
+**Type**: New Kind
 **Resource Kind**: AliCloudMongodbInstance (enum 3073, id_prefix: acmdb)
 
 ## Summary
 
-Added AliCloudMongodbInstance component that provisions an Alibaba Cloud ApsaraDB for MongoDB replica-set instance. Supports configurable replication factors (1, 3, 5, 7 nodes), multi-zone HA across three availability zones, read-only replicas for read scaling, and both TDE and cloud disk encryption at rest. This is a single-resource component wrapping `alicloud_mongodb_instance` (replica-set mode only; sharding is a separate TF resource).
+Added AliCloudMongodbInstance kind that provisions an Alibaba Cloud ApsaraDB for MongoDB replica-set instance. Supports configurable replication factors (1, 3, 5, 7 nodes), multi-zone HA across three availability zones, read-only replicas for read scaling, and both TDE and cloud disk encryption at rest. This is a single-resource kind wrapping `alicloud_mongodb_instance` (replica-set mode only; sharding is a separate TF resource).
 
 ## What's Included
 
-- **Proto API**: spec.proto with 34 fields covering instance configuration, multi-zone HA, storage engine, encryption, backup, maintenance, and billing; stack_outputs.proto with 2 outputs (instance_id, replica_set_name); api.proto, stack_input.proto
+- **Proto API**: spec.proto with 34 fields covering instance configuration, multi-zone HA, storage engine, encryption, backup, maintenance, and billing; outputs.proto with 2 outputs (instance_id, replica_set_name); api.proto, iac_input.proto
 - **Validations**: CEL validations for engine_version, storage_engine, storage_type, instance_charge_type, ssl_action, tde_status, period, replication_factor, db_instance_name length; range constraints on readonly_replicas (0-5), auto_renew_duration (1-12); password length bounds (8-32)
 - **Tests**: spec_test.go with 7 valid-input and 14 invalid-input test cases covering all validation rules
 - **Pulumi Module**: main.go, locals.go, outputs.go -- clean mongodb.NewInstance with optional field helpers and parameter array mapping
 - **Terraform Module**: main.tf, variables.tf, outputs.tf, locals.tf, provider.tf -- single alicloud_mongodb_instance resource with dynamic parameters block
 - **Documentation**: catalog-page.md, examples.md, README.md, docs/README.md, Pulumi overview.md and README.md, TF README.md
 - **Presets**: 3 presets (development, production-ha, encrypted-compliance)
-- **Registration**: Enum 3073 in cloud_resource_kind.proto, kind_map_gen.go updated
+- **Registration**: Enum 3073 in catalog_kind.proto, kind_map_gen.go updated
 
 ## Design Decisions
 

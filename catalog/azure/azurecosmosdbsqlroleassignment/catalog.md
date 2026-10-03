@@ -4,7 +4,7 @@ Grants a Cosmos DB data-plane role to a Microsoft Entra principal at a scope ins
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cosmos DB SQL Role Assignment** -- a GUID-identified grant record binding the role to the principal at the scope
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -62,7 +62,7 @@ spec:
 planton apply -f cosmosdb-sql-role-assignment.yaml
 ```
 
-This grants the built-in Data Contributor account-wide to the workload's managed identity. A Stack Job tracks the provisioning in real time.
+This grants the built-in Data Contributor account-wide to the workload's managed identity. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -82,7 +82,7 @@ These are the most important decisions when configuring a role assignment. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -91,9 +91,9 @@ These are the most important decisions when configuring a role assignment. Explo
 | AzureUserAssignedIdentity | `principalId` | `status.outputs.principal_id` |
 | AzureCosmosdbAccount | `scope` | `status.outputs.cosmosdb_account_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -113,7 +113,7 @@ Nothing deploys INTO a grant — these outputs exist so automation can audit or 
 
 ## Works With
 
-- [**Azure Cosmos DB Account**](/cloud-catalog/azure-cosmosdb-account) — the SQL-API account the grant lives in, and the default scope reference
-- [**Azure Cosmos DB SQL Role Definition**](/cloud-catalog/azure-cosmosdb-sql-role-definition) — the custom role this grant binds, referenced via `role_definition_id`
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) — the workload identity receiving the grant, referenced via `principal_id`
-- [**Azure Cosmos DB SQL Database**](/cloud-catalog/azure-cosmosdb-sql-database) / [**Azure Cosmos DB SQL Container**](/cloud-catalog/azure-cosmosdb-sql-container) — the narrower scopes grants compose onto (`{account-id}/dbs/{db}` and `{account-id}/dbs/{db}/colls/{container}`)
+- [**Azure Cosmos DB Account**](/infra-catalog/azure-cosmosdb-account) — the SQL-API account the grant lives in, and the default scope reference
+- [**Azure Cosmos DB SQL Role Definition**](/infra-catalog/azure-cosmosdb-sql-role-definition) — the custom role this grant binds, referenced via `role_definition_id`
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) — the workload identity receiving the grant, referenced via `principal_id`
+- [**Azure Cosmos DB SQL Database**](/infra-catalog/azure-cosmosdb-sql-database) / [**Azure Cosmos DB SQL Container**](/infra-catalog/azure-cosmosdb-sql-container) — the narrower scopes grants compose onto (`{account-id}/dbs/{db}` and `{account-id}/dbs/{db}/colls/{container}`)

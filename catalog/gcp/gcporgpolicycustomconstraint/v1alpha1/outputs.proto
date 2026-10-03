@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcporgpolicycustomconstraint.v1alpha1;
 
-// GcpOrgPolicyCustomConstraintStackOutputs captures the constraint's
+// GcpOrgPolicyCustomConstraintOutputs captures the constraint's
 // identity after provisioning.
-message GcpOrgPolicyCustomConstraintStackOutputs {
+message GcpOrgPolicyCustomConstraintOutputs {
   // The constraint's full resource name,
   // `organizations/{org_id}/customConstraints/custom.{constraint_name}`.
   string name = 1;

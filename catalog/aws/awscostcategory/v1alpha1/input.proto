@@ -5,9 +5,9 @@ package dev.planton.aws.awscostcategory.v1alpha1;
 import "catalog/aws/awscostcategory/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsCostCategoryStackInput is the input for the IaC modules that
+// AwsCostCategoryIacInput is the input for the IaC modules that
 // manage a Cost Explorer cost category.
-message AwsCostCategoryStackInput {
+message AwsCostCategoryIacInput {
   // target is the AwsCostCategory resource to deploy.
   AwsCostCategory target = 1;
   // provider_config contains the AWS provider credentials and configuration.

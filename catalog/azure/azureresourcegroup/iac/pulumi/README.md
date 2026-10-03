@@ -11,7 +11,7 @@ This Pulumi module provisions an Azure Resource Group using the Azure Classic pr
 
 ## Inputs
 
-The module receives an `AzureResourceGroupStackInput` containing:
+The module receives an `AzureResourceGroupIacInput` containing:
 
 - `target.spec.name` -- resource group name
 - `target.spec.region` -- Azure region

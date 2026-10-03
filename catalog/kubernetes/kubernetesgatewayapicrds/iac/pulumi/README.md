@@ -36,10 +36,10 @@ planton pulumi up --manifest gateway-api-crds.yaml
 
 ### Direct Pulumi Usage
 
-1. Set the stack input as an environment variable:
+1. Set the IaC input as an environment variable:
 
 ```bash
-export STACK_INPUT_FILE_PATH=/path/to/manifest.yaml
+export IAC_INPUT_FILE_PATH=/path/to/manifest.yaml
 ```
 
 2. Run Pulumi:
@@ -50,7 +50,7 @@ pulumi up
 
 ## Configuration
 
-The module accepts configuration via the `KubernetesGatewayApiCrdsStackInput` protobuf message:
+The module accepts configuration via the `KubernetesGatewayApiCrdsIacInput` protobuf message:
 
 | Field | Description |
 |-------|-------------|
@@ -85,7 +85,7 @@ pulumi/
 └── module/
     ├── main.go       # Resource creation logic
     ├── locals.go     # Computed values
-    ├── outputs.go    # Stack outputs
+    ├── outputs.go    # Outputs
     └── vars.go       # Constants and URLs
 ```
 

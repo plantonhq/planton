@@ -1,14 +1,14 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. Both presets are zero-committed by verified absence: AWS
 # Backup's pricing page carries no meter for report plans at all, so the
-# only spend this component creates is S3-side, for the files it delivers
+# only spend this kind creates is S3-side, for the files it delivers
 # -- stated in exclusions, never padded into fabricated dollars.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awsbackupreportplan
 spec:
@@ -19,7 +19,7 @@ spec:
       hours_per_month: 730
       exclusions:
         - report generation and delivery are uncharged by the Backup service -- the daily job report itself carries no meter
-        - requesting both CSV and JSON delivers two files per daily run, and the files accumulate in the referenced bucket billing S3 storage and PUT requests on the AwsS3Bucket component until a bucket-side lifecycle rule expires them
+        - requesting both CSV and JSON delivers two files per daily run, and the files accumulate in the referenced bucket billing S3 storage and PUT requests on the AwsS3Bucket kind until a bucket-side lifecycle rule expires them
         - report file size scales with fleet activity -- a busier backup fleet writes bigger daily files
       notes: Zero committed cost at the Backup service -- the quietly accumulating spend is S3-side, roughly sixty small files a month (two formats, daily) whose retention is entirely the bucket's problem.
     - preset: 02-compliance-evidence
@@ -27,6 +27,6 @@ spec:
       currency: USD
       hours_per_month: 730
       exclusions:
-        - the compliance report itself is uncharged -- but it reports on Audit Manager framework evaluations, which bill per evaluation (plus AWS Config configuration items) on the referenced AwsBackupFramework component, not here
-        - delivered report files bill S3 storage and requests on the referenced bucket component, accumulating daily with no pruning in this spec
+        - the compliance report itself is uncharged -- but it reports on Audit Manager framework evaluations, which bill per evaluation (plus AWS Config configuration items) on the referenced AwsBackupFramework kind, not here
+        - delivered report files bill S3 storage and requests on the referenced bucket kind, accumulating daily with no pruning in this spec
       notes: Zero committed cost -- the evidence trail is free to produce; the spend that makes it worth producing (the framework's evaluations) bills on the framework being reported on.

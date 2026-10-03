@@ -5,8 +5,8 @@ package dev.planton.aws.awskinesisfirehose.v1alpha1;
 import "catalog/aws/awskinesisfirehose/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsKinesisFirehoseStackInput is the input envelope passed to IaC modules for provisioning.
-message AwsKinesisFirehoseStackInput {
+// AwsKinesisFirehoseIacInput is the input envelope passed to IaC modules for provisioning.
+message AwsKinesisFirehoseIacInput {
   // target is the fully-specified AwsKinesisFirehose resource to provision.
   AwsKinesisFirehose target = 1;
 

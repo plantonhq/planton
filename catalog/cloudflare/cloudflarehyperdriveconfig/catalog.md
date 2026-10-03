@@ -4,7 +4,7 @@ Deploys a Cloudflare Hyperdrive -- a connection pooler and global query cache th
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Hyperdrive Config** -- an account-scoped configuration pointing at your origin database, with pooling and caching behavior; Cloudflare validates connectivity to the origin at create time
 - **Origin Credentials** -- the database password (and optional Cloudflare Access service-token secret) resolved just-in-time from managed secrets at deploy, never stored in plaintext
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Hyperdrive edit access. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Hyperdrive edit access. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Managed secret for the database password** -- store the origin password as an org secret and reference it; Hyperdrive never accepts a plaintext password.
 - **Planton Runner** -- required when using Runner-based credential delivery.
 
@@ -56,7 +56,7 @@ spec:
 planton apply -f cloudflare-hyperdrive-config.yaml
 ```
 
-This creates a Hyperdrive config fronting a PostgreSQL origin with 60-second result caching. A Stack Job tracks the provisioning in real time.
+This creates a Hyperdrive config fronting a PostgreSQL origin with 60-second result caching. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -74,13 +74,13 @@ These are the most important decisions when configuring a Hyperdrive config. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no Cloud Resource foreign-key dependencies; it points directly at an external origin database, and its credentials are managed-secret references resolved at deploy.
+This kind has no Infra Component foreign-key dependencies; it points directly at an external origin database, and its credentials are managed-secret references resolved at deploy.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -98,4 +98,4 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Cloudflare Worker**](/cloud-catalog/cloudflare-worker) -- binds this config (a `hyperdrive` binding) to query the origin database with pooled, cached connections
+- [**Cloudflare Worker**](/infra-catalog/cloudflare-worker) -- binds this config (a `hyperdrive` binding) to query the origin database with pooled, cached connections

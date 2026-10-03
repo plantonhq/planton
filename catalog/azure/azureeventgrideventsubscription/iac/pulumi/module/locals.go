@@ -15,10 +15,10 @@ type Locals struct {
 	AzureEventgridEventSubscription *azureeventgrideventsubscriptionv1alpha1.AzureEventgridEventSubscription
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureeventgrideventsubscriptionv1alpha1.AzureEventgridEventSubscriptionStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureeventgrideventsubscriptionv1alpha1.AzureEventgridEventSubscriptionIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureEventgridEventSubscription = stackInput.Target
+	locals.AzureEventgridEventSubscription = iacInput.Target
 
 	return locals
 }

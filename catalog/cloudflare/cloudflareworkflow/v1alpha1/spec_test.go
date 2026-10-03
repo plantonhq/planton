@@ -28,7 +28,7 @@ func validWorkflow(spec *CloudflareWorkflowSpec) *CloudflareWorkflow {
 	return &CloudflareWorkflow{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareWorkflow",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-workflow",
 		},
 		Spec: spec,

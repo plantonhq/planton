@@ -29,7 +29,7 @@ VPC-only networking, KMS encryption, and cost management via idle shutdown.
 Domain infrastructure: EFS home-directory storage, billed per GB-month.
 Per-user compute is the main driver — the `ml.t3.medium` default instance bills hourly while running, and the 2-hour idle timeout is what keeps that line small by shutting instances down outside working hours. EBS space storage bills per GB-month.
 
-The verified figure for this preset lives in the component's generated estimate at `catalog/_pricing/estimates/awssagemakerdomain.yaml` — computed from the pinned price book, never hand-typed here.
+The verified figure for this preset lives in the kind's generated estimate at `catalog/_pricing/estimates/awssagemakerdomain.yaml` — computed from the pinned price book, never hand-typed here.
 
 ## Customization
 

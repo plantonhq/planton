@@ -14,7 +14,7 @@ storage backend; on-cluster that means composing a
 pointing `storage.s3` at it (the validated shape is in this kind's own
 example). Proposing `replicas: 2` with local storage is a manifest that
 will not deploy. This kind deliberately models single-binary Tempo — by
-the time per-component microservices are needed, that is its own design
+the time per-kind microservices are needed, that is its own design
 conversation (the reference page says so).
 
 ## How traces arrive, how they are read

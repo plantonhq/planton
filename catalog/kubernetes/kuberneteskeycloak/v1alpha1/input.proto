@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kuberneteskeycloak.v1alpha1;
 import "catalog/kubernetes/kuberneteskeycloak/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//keycloak-kubernetes stack-input
-message KubernetesKeycloakStackInput {
-  //target cloud-resource
+//keycloak-kubernetes iac-input
+message KubernetesKeycloakIacInput {
+  //target infra-component
   KubernetesKeycloak target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

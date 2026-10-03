@@ -19,17 +19,17 @@ message AzureExpressRoutePort {
   string kind = 2 [(buf.validate.field).string.const = 'AzureExpressRoutePort'];
 
   // Standard Planton metadata (name, org, env, labels, tags).
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // ExpressRoute Port specification.
   AzureExpressRoutePortSpec spec = 4 [(buf.validate.field).required = true];
 
-  // Deployment status containing stack outputs. Populated after deployment.
+  // Deployment status containing outputs. Populated after deployment.
   AzureExpressRoutePortStatus status = 5;
 }
 
 // AzureExpressRoutePortStatus holds the deployment outputs.
 message AzureExpressRoutePortStatus {
-  // Stack outputs from the IaC deployment.
-  AzureExpressRoutePortStackOutputs outputs = 1;
+  // Outputs from the IaC deployment.
+  AzureExpressRoutePortOutputs outputs = 1;
 }

@@ -20,17 +20,17 @@ message AzureMonitorActivityLogAlert {
   string kind = 2 [(buf.validate.field).string.const = 'AzureMonitorActivityLogAlert'];
 
   // Standard Planton metadata (name, org, env, labels, tags).
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // Activity log alert specification.
   AzureMonitorActivityLogAlertSpec spec = 4 [(buf.validate.field).required = true];
 
-  // Deployment status containing stack outputs. Populated after deployment.
+  // Deployment status containing outputs. Populated after deployment.
   AzureMonitorActivityLogAlertStatus status = 5;
 }
 
 // AzureMonitorActivityLogAlertStatus holds the deployment outputs.
 message AzureMonitorActivityLogAlertStatus {
-  // Stack outputs from the IaC deployment.
-  AzureMonitorActivityLogAlertStackOutputs outputs = 1;
+  // Outputs from the IaC deployment.
+  AzureMonitorActivityLogAlertOutputs outputs = 1;
 }

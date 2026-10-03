@@ -11,14 +11,14 @@ type Locals struct {
 	GcpKmsKeyRing     *gcpkmskeyringv1alpha1.GcpKmsKeyRing
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpkmskeyringv1alpha1.GcpKmsKeyRingStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpkmskeyringv1alpha1.GcpKmsKeyRingIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpKmsKeyRing = stackInput.Target
+	locals.GcpKmsKeyRing = iacInput.Target
 
 	// The key ring resource has no labels surface in the Cloud KMS API —
 	// no platform attribution labels are computed or stamped, identically
 	// on both engines. (Labels live on the crypto keys inside the ring.)
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

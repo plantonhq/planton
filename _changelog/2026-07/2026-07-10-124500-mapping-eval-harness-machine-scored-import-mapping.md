@@ -5,7 +5,7 @@
 
 ## Summary
 
-Import **mapping** — grouping discovered cloud resources into component
+Import **mapping** — grouping discovered infra components into kind
 instances, reconstructing their specs, and wiring `value_from` references —
 now has an examination system: seed an account from known manifests (the
 answer key), scan it back blind through a read-only channel, have a
@@ -13,7 +13,7 @@ proposer emit its mapping, and machine-score the proposal on grouping,
 spec, and reference accuracy. Any proposer takes the same exam and gets the
 same impartial grade; the grader itself is entirely structural (driven by
 the kinds' proto schemas and the shared `StringValueOrRef` encoding), so it
-works for any component on any provider with zero per-kind grading code.
+works for any kind on any provider with zero per-kind grading code.
 
 ## The proposal contract (`ImportMappingProposal`, `iac.planton.dev/v1`)
 

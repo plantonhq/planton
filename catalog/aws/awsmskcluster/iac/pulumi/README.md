@@ -13,7 +13,7 @@ This module creates:
 
 ### As a Pulumi program
 
-The module is designed to be invoked from the entry point in `main.go`, which loads an `AwsMskClusterStackInput` and calls `module.Resources()`:
+The module is designed to be invoked from the entry point in `main.go`, which loads an `AwsMskClusterIacInput` and calls `module.Resources()`:
 
 ```go
 package main
@@ -21,30 +21,30 @@ package main
 import (
     awsmskclusterv1 "github.com/plantonhq/planton/catalog/aws/awsmskcluster/v1alpha1"
     "github.com/plantonhq/planton/catalog/aws/awsmskcluster/iac/pulumi/module"
-    "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/stackinput"
+    "github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/iacinput"
     "github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
 func main() {
     pulumi.Run(func(ctx *pulumi.Context) error {
-        stackInput := &awsmskclusterv1.AwsMskClusterStackInput{}
-        if err := stackinput.LoadStackInput(ctx, stackInput); err != nil {
+        iacInput := &awsmskclusterv1.AwsMskClusterIacInput{}
+        if err := iacinput.LoadIacInput(ctx, iacInput); err != nil {
             return err
         }
-        return module.Resources(ctx, stackInput)
+        return module.Resources(ctx, iacInput)
     })
 }
 ```
 
-### Stack Input
+### IaC Input
 
-The stack input is an `AwsMskClusterStackInput` protobuf message containing:
+The IaC input is an `AwsMskClusterIacInput` protobuf message containing:
 - `target` — the `AwsMskCluster` resource (metadata + spec).
 - `provider_config` — optional AWS credentials (region, access key, secret key, session token).
 
 ### Outputs
 
-The module exports 17 stack outputs (see `module/outputs.go` for keys). Access them via `pulumi stack output`:
+The module exports 17 outputs (see `module/outputs.go` for keys). Access them via `pulumi stack output`:
 
 ```bash
 pulumi stack output cluster_arn
@@ -56,7 +56,7 @@ pulumi stack output zookeeper_connect_string_tls
 
 | File | Purpose |
 |------|---------|
-| `main.go` | Entry point — loads stack input, runs Pulumi program |
+| `main.go` | Entry point — loads IaC input, runs Pulumi program |
 | `module/main.go` | Orchestrator — resource creation flow + output exports |
 | `module/locals.go` | Locals initialization (labels, resolved target) |
 | `module/configuration.go` | Inline MSK Configuration from server_properties |
@@ -68,7 +68,7 @@ pulumi stack output zookeeper_connect_string_tls
 
 - Go 1.21+
 - Pulumi CLI v3+
-- AWS credentials (ambient or via stack input)
+- AWS credentials (ambient or via IaC input)
 - `pulumi-aws` plugin v7
 
 ## Related

@@ -18,7 +18,7 @@ Default values for proto fields were being documented only in comments, without 
 - **Presence tracking issues**: Without `optional` keyword, can't distinguish "user set empty string" from "user didn't set anything"
 - **IaC module bugs**: Modules couldn't properly detect when to apply defaults
 - **Test failures**: When fields became `optional`, tests broke due to pointer type changes
-- **Knowledge loss**: The correct pattern wasn't documented in forge rules, so new components repeated the mistake
+- **Knowledge loss**: The correct pattern wasn't documented in forge rules, so new kinds repeated the mistake
 
 ### Example of the Problem
 
@@ -31,7 +31,7 @@ string runner_group = 7;
 
 ## Solution / What's New
 
-Implemented a comprehensive solution that spans the entire deployment component lifecycle:
+Implemented a comprehensive solution that spans the entire catalog kind lifecycle:
 
 ```mermaid
 flowchart TB
@@ -55,10 +55,10 @@ flowchart TB
     end
 ```
 
-### Key Components
+### Key Kinds
 
 1. **Action Rule**: `apis/_rules/apply-planton-default-option-semantics.mdc`
-   - Comprehensive guide for applying default semantics to any component
+   - Comprehensive guide for applying default semantics to any kind
    - Documents the full workflow from proto to IaC
 
 2. **Info File Updates**: 
@@ -162,19 +162,19 @@ sequenceDiagram
 
 ### Updated Rules
 - `_rules/coding-guidelines/protobuf-validations.mdc` - Default options section
-- `_rules/deployment-component/forge/flow/001-spec-proto.mdc`
-- `_rules/deployment-component/forge/flow/002-spec-validate.mdc`
-- `_rules/deployment-component/forge/flow/003-spec-tests.mdc`
-- `_rules/deployment-component/forge/flow/009-pulumi-module.mdc`
-- `_rules/deployment-component/update/update-planton-component.mdc`
-- `_rules/deployment-component/fix/fix-planton-component.mdc`
+- `_rules/catalog-kind/forge/flow/001-spec-proto.mdc`
+- `_rules/catalog-kind/forge/flow/002-spec-validate.mdc`
+- `_rules/catalog-kind/forge/flow/003-spec-tests.mdc`
+- `_rules/catalog-kind/forge/flow/009-pulumi-module.mdc`
+- `_rules/catalog-kind/update/update-catalog-kind.mdc`
+- `_rules/catalog-kind/fix/fix-catalog-kind.mdc`
 
 ### Fixed Tests
 - `apis/dev/planton/provider/kubernetes/kubernetesgharunnerscaleset/v1/spec_test.go`
 
 ## Benefits
 
-### For Component Authors
+### For Kind Authors
 
 - **Clear guidance**: Know exactly when and how to use default field options
 - **Build-time feedback**: `DEFAULT_REQUIRES_OPTIONAL` linter catches mistakes early
@@ -202,7 +202,7 @@ sequenceDiagram
 
 | Audience | Impact |
 |----------|--------|
-| Component authors | Clear guidelines for default values |
+| Kind authors | Clear guidelines for default values |
 | IaC developers | No defensive coding, trust framework |
 | Test writers | Know to use pointers for optional fields |
 | Code reviewers | Can verify defaults are properly enforced |
@@ -210,17 +210,17 @@ sequenceDiagram
 
 ### Breaking Changes
 
-None. Existing components continue to work. New components and migrations benefit from the improved patterns.
+None. Existing kinds continue to work. New kinds and migrations benefit from the improved patterns.
 
 ## Related Work
 
 - **Custom Linter**: `buf/lint/optional-linter` - Enforces the optional + default pairing
 - **Proto Field Presence**: Previous work on proto3 presence tracking
-- **KubernetesGhaRunnerScaleSet**: Component where this issue was discovered and fixed
+- **KubernetesGhaRunnerScaleSet**: Kind where this issue was discovered and fixed
 
 ## Usage Example
 
-When you encounter a component with comment-only defaults:
+When you encounter a kind with comment-only defaults:
 
 ```bash
 @apply-planton-default-option-semantics KubernetesGhaRunnerScaleSet
@@ -229,7 +229,7 @@ When you encounter a component with comment-only defaults:
 Or use the update rule:
 
 ```bash
-@update-planton-component KubernetesGhaRunnerScaleSet --scenario apply-default-semantics
+@update-catalog-kind KubernetesGhaRunnerScaleSet --scenario apply-default-semantics
 ```
 
 ---

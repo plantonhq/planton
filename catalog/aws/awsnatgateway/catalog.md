@@ -4,7 +4,7 @@ Gives instances in a private subnet outbound network access while keeping them u
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **NAT gateway** -- an EC2 NAT gateway, either `public` (fronted by Elastic IPs) or `private` (no Elastic IP), placed zonally in one subnet or regionally across a whole VPC (`availabilityMode: regional`)
 - **Elastic IP association** -- for a zonal public gateway, the referenced Elastic IP (`allocationId`) is bound as the gateway's stable outbound address; secondary allocations are attached when provided. A regional gateway carries its per-zone allocations in `availabilityZoneAddresses`, or lets AWS allocate and manage them (auto mode)
@@ -16,14 +16,14 @@ Creating a NAT gateway does not route anything on its own. To build a working eg
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
-- **A subnet** -- the gateway is created inside a subnet. Deploy an [AWS Subnet](/cloud-catalog/aws-subnet) first, or reference an existing one by id. A public gateway needs a *public* subnet.
-- **An Elastic IP** (public gateways) -- a public gateway requires an [AWS Elastic IP](/cloud-catalog/aws-elastic-ip) for its outbound address. Deploy one first, or reference an existing `eipalloc-` id.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **A subnet** -- the gateway is created inside a subnet. Deploy an [AWS Subnet](/infra-catalog/aws-subnet) first, or reference an existing one by id. A public gateway needs a *public* subnet.
+- **An Elastic IP** (public gateways) -- a public gateway requires an [AWS Elastic IP](/infra-catalog/aws-elastic-ip) for its outbound address. Deploy one first, or reference an existing `eipalloc-` id.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **Public gateways need an internet path** -- a public NAT gateway must live in a public subnet whose route table already reaches an [AWS Internet Gateway](/cloud-catalog/aws-internet-gateway) (regional gateways likewise need the IGW attached to the VPC), or it has no upstream internet path itself.
+- **Public gateways need an internet path** -- a public NAT gateway must live in a public subnet whose route table already reaches an [AWS Internet Gateway](/infra-catalog/aws-internet-gateway) (regional gateways likewise need the IGW attached to the VPC), or it has no upstream internet path itself.
 - **Zonal vs regional** -- a zonal gateway lives in one Availability Zone; for high availability run one per AZ, or deploy a single `regional` gateway and let AWS span every zone for you.
 - **Region** -- the gateway is created in the specified `region`, which must match the subnet's (or VPC's) region.
 - **Regional IAM** -- creating a regional gateway additionally requires the `ec2:DescribeAvailabilityZones` permission on the deploying role.
@@ -64,7 +64,7 @@ spec:
 planton apply -f nat-gateway.yaml
 ```
 
-This creates a public NAT gateway in a Planton-managed public subnet, fronted by a referenced Elastic IP. A Stack Job tracks the provisioning in real time.
+This creates a public NAT gateway in a Planton-managed public subnet, fronted by a referenced Elastic IP. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -106,7 +106,7 @@ A NAT gateway's value is in how it composes; most deployments touch only a few f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -116,9 +116,9 @@ A NAT gateway's value is in how it composes; most deployments touch only a few f
 | **AwsElasticIp** | `secondaryAllocationIds` | `status.outputs.allocation_id` |
 | **AwsElasticIp** | `availabilityZoneAddresses[].allocationIds` (regional mode) | `status.outputs.allocation_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -145,8 +145,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 A NAT gateway sits between the private subnets that need egress and the internet path a public subnet provides:
 
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- the gateway lives in one subnet (public for a public gateway), and other subnets route a default route to this gateway's `nat_gateway_id` to gain egress
-- [**AWS Elastic IP**](/cloud-catalog/aws-elastic-ip) -- a public gateway's stable outbound address, referenced by `status.outputs.allocation_id`
-- [**AWS Internet Gateway**](/cloud-catalog/aws-internet-gateway) -- the internet path the public subnet (and the NAT gateway in it) routes through
-- [**AWS VPC**](/cloud-catalog/aws-vpc) -- the network that contains the subnet, the gateway, and the routes that tie them together
-- [**AWS Egress-Only Internet Gateway**](/cloud-catalog/aws-egress-only-internet-gateway) -- the IPv6 outbound-only counterpart for dual-stack VPCs
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- the gateway lives in one subnet (public for a public gateway), and other subnets route a default route to this gateway's `nat_gateway_id` to gain egress
+- [**AWS Elastic IP**](/infra-catalog/aws-elastic-ip) -- a public gateway's stable outbound address, referenced by `status.outputs.allocation_id`
+- [**AWS Internet Gateway**](/infra-catalog/aws-internet-gateway) -- the internet path the public subnet (and the NAT gateway in it) routes through
+- [**AWS VPC**](/infra-catalog/aws-vpc) -- the network that contains the subnet, the gateway, and the routes that tie them together
+- [**AWS Egress-Only Internet Gateway**](/infra-catalog/aws-egress-only-internet-gateway) -- the IPv6 outbound-only counterpart for dual-stack VPCs

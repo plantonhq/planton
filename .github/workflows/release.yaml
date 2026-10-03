@@ -4,7 +4,7 @@
 # Single entry point for all release workflows. Triggers on semantic version
 # tags (v*) and orchestrates the release of all Pulumi module binaries, all
 # Terraform module zips, content distribution zips (presets, IaC source,
-# catalog pages, proto source, the component reference pack), and the
+# catalog pages, proto source, the kind reference pack), and the
 # InfraChart catalog zip.
 #
 # Architecture:

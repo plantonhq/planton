@@ -1,4 +1,4 @@
-# AliCloudKubernetesNodePool Component Added
+# AliCloudKubernetesNodePool Kind Added
 
 **Date**: 2026-02-20
 **Component**: AliCloudKubernetesNodePool
@@ -7,15 +7,15 @@
 
 ## Summary
 
-Added the AliCloudKubernetesNodePool deployment component -- an ACK Kubernetes node pool with auto-scaling, spot instance support, managed lifecycle, and flexible disk configuration.
+Added the AliCloudKubernetesNodePool catalog kind -- an ACK Kubernetes node pool with auto-scaling, spot instance support, managed lifecycle, and flexible disk configuration.
 
-This component wraps a single provider resource (`alicloud_cs_kubernetes_node_pool` / `cs.NodePool`). It manages worker nodes for an AliCloudKubernetesCluster (R24).
+This kind wraps a single provider resource (`alicloud_cs_kubernetes_node_pool` / `cs.NodePool`). It manages worker nodes for an AliCloudKubernetesCluster (R24).
 
 ## What Was Created
 
 ### API Definition
-- `apis/dev/planton/provider/alicloud/alicloudkubernetesnodepool/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AliCloudKubernetesNodePool = 3092` in `CloudResourceKind` enum
+- `apis/dev/planton/provider/alicloud/alicloudkubernetesnodepool/v1/` -- Full proto API (spec, api, iac_input, outputs)
+- Registered `AliCloudKubernetesNodePool = 3092` in `CatalogKind` enum
 - 7 proto messages: spec, system_disk, data_disk, taint, scaling_config, management, spot_price_limit, plus the API/status wrappers
 
 ### IaC Modules
@@ -26,7 +26,7 @@ This component wraps a single provider resource (`alicloud_cs_kubernetes_node_po
 - Ginkgo/Gomega spec validation tests: 40 specs covering valid inputs (minimal, auto-scaling, spot, management, labels/taints, PrePaid billing, full production config), invalid inputs (missing required fields, invalid enum values, out-of-range values, invalid effects)
 
 ### Documentation
-- README.md with component overview and directory structure
+- README.md with kind overview and directory structure
 - catalog-page.md with user-facing documentation
 - examples.md with 3 YAML examples (minimal fixed-size, auto-scaling, production spot)
 - docs/README.md with provider research notes
@@ -34,7 +34,7 @@ This component wraps a single provider resource (`alicloud_cs_kubernetes_node_po
 ## Design Decisions
 
 - **Renamed from AliCloudAckNodePool**: T02 originally named this AliCloudAckNodePool. Renamed to AliCloudKubernetesNodePool per established naming pattern (matches DigitalOceanKubernetesNodePool, CivoKubernetesNodePool) and the parent cluster's README/spec.proto references.
-- **region field added**: Every other Alibaba Cloud component has a region field on the spec for provider setup. Included for consistency even though the node pool conceptually inherits region from the cluster.
+- **region field added**: Every other Alibaba Cloud kind has a region field on the spec for provider setup. Included for consistency even though the node pool conceptually inherits region from the cluster.
 - **Labels as map<string,string>**: Provider uses repeated key/value objects, but map is cleaner for end users. IaC modules convert to the provider's format.
 - **desired_size as int32**: The Terraform schema oddly uses string type for this field. Proto uses int32 which is semantically correct; the Pulumi module converts to string for the provider.
 - **80/20 field coverage**: ~30 fields covering all common production use cases. Excluded kubelet_configuration (30+ sub-fields), instance_patterns, TEE, eflo, and other niche features for v2.

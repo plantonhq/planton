@@ -9,16 +9,16 @@ main.go (entrypoint)
   └── module/
         ├── main.go                  — Resources() orchestrator
         ├── locals.go                — Locals struct and initialization
-        ├── outputs.go               — Stack output key constants
+        ├── outputs.go               — output key constants
         └── email_routing_address.go — address creation
 ```
 
 ## How It Works
 
-1. `main.go` loads the `CloudflareEmailRoutingAddressStackInput` from the `STACK_INPUT` environment variable (base64-encoded YAML).
+1. `main.go` loads the `CloudflareEmailRoutingAddressIacInput` from the `IAC_INPUT` environment variable (base64-encoded YAML).
 2. `module.Resources()` initializes locals, creates a Cloudflare provider, and provisions the address.
 3. Creating the address sends a verification email; the `verified` output stays empty until the owner clicks the link.
-4. Stack outputs are exported matching `CloudflareEmailRoutingAddressStackOutputs`.
+4. Outputs are exported matching `CloudflareEmailRoutingAddressOutputs`.
 
 ## Engine parity note
 
@@ -41,4 +41,4 @@ make test
 
 - `github.com/pulumi/pulumi-cloudflare/sdk/v6` — Cloudflare Pulumi provider
 - `github.com/pulumi/pulumi/sdk/v3` — Pulumi SDK
-- `github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule` — Shared stack input loading and provider wiring
+- `github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule` — Shared IaC input loading and provider wiring

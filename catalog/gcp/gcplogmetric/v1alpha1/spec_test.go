@@ -28,7 +28,7 @@ var _ = ginkgo.Describe("GcpLogMetricSpec", func() {
 		return &GcpLogMetric{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpLogMetric",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-log-metric",
 			},
 			Spec: &GcpLogMetricSpec{

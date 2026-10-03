@@ -6,9 +6,9 @@
 # cost is operations (delivery attempts, billable filter evaluations)
 # billed on the SOURCE topic or domain's meter at traffic volumes no
 # manifest can predict.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azureeventgrideventsubscription
 spec:

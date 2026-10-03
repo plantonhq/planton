@@ -5,10 +5,10 @@ package dev.planton.kubernetes.kubernetesenvoyfilter.v1alpha1;
 import "catalog/kubernetes/kubernetesenvoyfilter/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// KubernetesEnvoyFilterStackInput provides the inputs for creating the EnvoyFilter on a
+// KubernetesEnvoyFilterIacInput provides the inputs for creating the EnvoyFilter on a
 // Kubernetes cluster.
-message KubernetesEnvoyFilterStackInput {
-  // target cloud-resource
+message KubernetesEnvoyFilterIacInput {
+  // target infra-component
   KubernetesEnvoyFilter target = 1;
   // provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

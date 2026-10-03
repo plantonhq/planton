@@ -39,7 +39,7 @@ A second live-discovered fix rode along: the provider resolves the Vertex AI reg
 
 ### `GcpVertexAiEndpoint` (671) — conformed and deepened
 
-- **New spec surfaces**: user `labels`, `request_response_logging_config` (BigQuery destination as an honest plain string — the `bq://` scheme has no matching stack output to reference), `enable_secure_private_service_connect`. Two message-level CELs move the provider's `ConflictsWith` rejections pre-deploy (network⇔PSC, dedicated⇔PSC); the `endpoint_name` CEL encodes the exact numeric contract. Output extend-only: `endpoint_name` (the value model-deployment tooling consumes). 37-case spec test.
+- **New spec surfaces**: user `labels`, `request_response_logging_config` (BigQuery destination as an honest plain string — the `bq://` scheme has no matching output to reference), `enable_secure_private_service_connect`. Two message-level CELs move the provider's `ConflictsWith` rejections pre-deploy (network⇔PSC, dedicated⇔PSC); the `endpoint_name` CEL encodes the exact numeric contract. Output extend-only: `endpoint_name` (the value model-deployment tooling consumes). 37-case spec test.
 - `enable_secure_private_service_connect` verified **GA on the released 6.x line** via the installed provider schema — with a recorded PARITY/UPGRADE NOTE that the v7 major drops it from GA (the catalog-wide bump decision must drop the field or move to google-beta).
 - Recorded skips with reasons: `traffic_split` (keyed by deployed-model IDs that only exist after out-of-band model deployment — modeling it invites perma-diff), `region` (module plumbing, not a spec field).
 

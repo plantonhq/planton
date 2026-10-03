@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -6,9 +6,9 @@
 # a task definition is free, its cpu/memory are a rate card that bills only
 # through the AwsEcsService that runs copies, and the auto-created log group
 # bills only what tasks write -- stated in exclusions, never padded into
-# fabricated dollars. Schema: finops/componentcostestimatemodel/v1.
+# fabricated dollars. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awsecstaskdefinition
 spec:
@@ -42,5 +42,5 @@ spec:
       hours_per_month: 730
       exclusions:
         - each running copy bills 0.5 vCPU and 1 GB per hour at Fargate rates
-        - the configureAtLaunch volume's size, type, and therefore cost are supplied by the running service's volume_configuration -- the deliberate two-component contract with AwsEcsService's 04 preset
+        - the configureAtLaunch volume's size, type, and therefore cost are supplied by the running service's volume_configuration -- the deliberate two-kind contract with AwsEcsService's 04 preset
       notes: Zero committed cost -- the volume declared here is a mount point; the GB-months bill on the service that materializes it.

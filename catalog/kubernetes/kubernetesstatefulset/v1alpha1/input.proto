@@ -5,12 +5,12 @@ package dev.planton.kubernetes.kubernetesstatefulset.v1alpha1;
 import "catalog/kubernetes/kubernetesstatefulset/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-// KubernetesStatefulSetStackInput is the input for the IaC modules that deploy a
+// KubernetesStatefulSetIacInput is the input for the IaC modules that deploy a
 // KubernetesStatefulSet: the target resource and the provider configuration. The
 // image-pull Secret for a private registry is derived from the target's own spec
 // (`spec.pod.image_registries`), never from an input filled on the workload's behalf.
-message KubernetesStatefulSetStackInput {
-  // Target cloud-resource
+message KubernetesStatefulSetIacInput {
+  // Target infra-component
   KubernetesStatefulSet target = 1;
 
   // Provider-config for Kubernetes

@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsmwaaenvironment.v1alpha1;
 
-// AwsMwaaEnvironmentStackOutputs captures observable identifiers and endpoints from a deployed
+// AwsMwaaEnvironmentOutputs captures observable identifiers and endpoints from a deployed
 // Amazon MWAA environment. These outputs enable downstream consumers (CI/CD pipelines,
 // monitoring dashboards, documentation) to reference the Airflow UI, connect to the
 // environment, and integrate with security and observability workflows.
-message AwsMwaaEnvironmentStackOutputs {
+message AwsMwaaEnvironmentOutputs {
   // environment_arn is the Amazon Resource Name of the MWAA environment,
   // used in IAM policies and cross-service references.
   string environment_arn = 1;

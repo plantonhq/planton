@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsiamaccountsettings.v1alpha1;
 
-// AwsIamAccountSettingsStackOutputs captures the observable state of
+// AwsIamAccountSettingsOutputs captures the observable state of
 // the IAM account settings after apply.
-message AwsIamAccountSettingsStackOutputs {
+message AwsIamAccountSettingsOutputs {
   // The account these settings belong to (the singleton's identity;
   // also the STS preference's resource ID at the provider).
   string account_id = 1;

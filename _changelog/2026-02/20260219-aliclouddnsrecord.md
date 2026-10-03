@@ -1,4 +1,4 @@
-# AliCloudDnsRecord Component Added
+# AliCloudDnsRecord Kind Added
 
 **Date**: 2026-02-19
 **Component**: AliCloudDnsRecord
@@ -7,15 +7,15 @@
 
 ## Summary
 
-Added the AliCloudDnsRecord deployment component -- manages DNS records within an Alibaba Cloud Alidns-hosted domain. Supports all standard record types (A, AAAA, CNAME, MX, TXT, NS, SRV, CAA) with configurable TTL, priority, DNS resolution lines, and record status.
+Added the AliCloudDnsRecord catalog kind -- manages DNS records within an Alibaba Cloud Alidns-hosted domain. Supports all standard record types (A, AAAA, CNAME, MX, TXT, NS, SRV, CAA) with configurable TTL, priority, DNS resolution lines, and record status.
 
-The parent domain must already exist in Alidns, either managed by the AliCloudDnsZone component or added manually. This is a leaf resource -- nothing downstream depends on its outputs.
+The parent domain must already exist in Alidns, either managed by the AliCloudDnsZone kind or added manually. This is a leaf resource -- nothing downstream depends on its outputs.
 
 ## What Was Created
 
 ### API Definition
-- `apis/dev/planton/provider/alicloud/aliclouddnsrecord/v1/` -- Full proto API (spec, api, stack_input, stack_outputs)
-- Registered `AliCloudDnsRecord = 3041` in `CloudResourceKind` enum under the DNS category
+- `apis/dev/planton/provider/alicloud/aliclouddnsrecord/v1/` -- Full proto API (spec, api, iac_input, outputs)
+- Registered `AliCloudDnsRecord = 3041` in `CatalogKind` enum under the DNS category
 
 ### IaC Modules
 - **Pulumi** (Go): Creates alicloud provider and a single `dns.AlidnsRecord` resource with all spec fields mapped. No tag computation (resource does not support tags).
@@ -25,7 +25,7 @@ The parent domain must already exist in Alidns, either managed by the AliCloudDn
 - Ginkgo/Gomega spec validation tests: 20 specs covering valid inputs (A record minimal, all-optional MX, CNAME, apex @, wildcard *, TXT/SPF, DISABLE status, CAA) and invalid inputs (missing region/domain_name/rr/type/value, invalid type, wrong api_version/kind, missing metadata/spec, domain_name max length, invalid status)
 
 ### Documentation
-- README.md with configuration reference, output reference, and related components
+- README.md with configuration reference, output reference, and related kinds
 - examples.md with 6 YAML examples (A, CNAME, MX with priority, TXT/SPF, wildcard, disabled record)
 - catalog-page.md with full configuration reference, quick start, and examples
 - docs/README.md with comprehensive research documentation including record type reference table

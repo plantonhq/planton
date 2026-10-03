@@ -4,7 +4,7 @@ Grants Redis data-plane access to a Microsoft Entra identity on an Azure Managed
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Access Policy Assignment** -- a grant on the instance's default database, binding the Entra principal to the built-in "default" access policy (full data access). Azure names the assignment after the granted object ID, so an identity is granted at most once per database.
 
@@ -12,12 +12,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
 
-- **An Azure Managed Redis instance** to grant on. Reference an AzureManagedRedis Cloud Resource via ValueFromRef, or provide the ARM ID directly.
+- **An Azure Managed Redis instance** to grant on. Reference an AzureManagedRedis Infra Component via ValueFromRef, or provide the ARM ID directly.
 - **The Entra principal's object ID** -- a managed identity, service principal, user, or group. For a managed identity this is the PRINCIPAL (object) id, never the client id; granting the client id fails at connect time, not at deploy time.
 
 ## Deploy
@@ -54,7 +54,7 @@ spec:
 planton apply -f grant.yaml
 ```
 
-This grants the identity full data-plane access on the instance's default database; the identity connects with its object ID as the username and an Entra token as the password. A Stack Job tracks the provisioning in real time.
+This grants the identity full data-plane access on the instance's default database; the identity connects with its object ID as the username and an Entra token as the password. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -84,16 +84,16 @@ These are the only two decisions -- the kind is deliberately minimal. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureManagedRedis** | `managedRedisId` | `status.outputs.managed_redis_id` |
 | **AzureUserAssignedIdentity** (workload grants) | `objectId` | `status.outputs.principal_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -110,6 +110,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Managed Redis**](/cloud-catalog/azure-managed-redis) -- the instance being granted on
-- [**Azure User Assigned Identity**](/cloud-catalog/azure-user-assigned-identity) -- the workload identity whose principal_id is granted
-- [**Azure Managed Redis Geo Replication**](/cloud-catalog/azure-managed-redis-geo-replication) -- grants are per instance; geo-replicated applications grant their identity on every member
+- [**Azure Managed Redis**](/infra-catalog/azure-managed-redis) -- the instance being granted on
+- [**Azure User Assigned Identity**](/infra-catalog/azure-user-assigned-identity) -- the workload identity whose principal_id is granted
+- [**Azure Managed Redis Geo Replication**](/infra-catalog/azure-managed-redis-geo-replication) -- grants are per instance; geo-replicated applications grant their identity on every member

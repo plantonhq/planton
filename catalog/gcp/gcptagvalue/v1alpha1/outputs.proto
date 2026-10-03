@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcptagvalue.v1alpha1;
 
-// GcpTagValueStackOutputs captures the tag value's identity after
+// GcpTagValueOutputs captures the tag value's identity after
 // provisioning.
-message GcpTagValueStackOutputs {
+message GcpTagValueOutputs {
   // The value's resource name, `tagValues/{numeric_id}` -- what a
   // GcpTagBinding's tag_value references, what a GcpFolder's or
   // GcpProject's create-time `tags` map uses as its value, and what

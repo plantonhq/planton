@@ -42,7 +42,7 @@ module "droplet" {
 
 ## Outputs
 
-Exactly the kind's stack-output contract, identical to the Pulumi module:
+Exactly the kind's output contract, identical to the Pulumi module:
 
 | Output | Description |
 |--------|-------------|

@@ -25,7 +25,7 @@ Same posture as KubernetesClusterIssuer: readiness depends on external reachabil
 - **`spec.namespace`**: the Issuer's namespace — also where its credential Secrets and its Certificates must live
 - **`spec.config`**: exactly one backend (`acme` / `ca` / `self_signed` / `vault`)
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

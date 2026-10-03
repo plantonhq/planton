@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarewebanalyticssite
 spec:
@@ -13,7 +13,7 @@ spec:
         id field).
     - name: site_tag
       derivations:
-        - from_stack_output: site_tag
+        - from_output: site_tag
       where_to_find: >-
         `GET /accounts/<account_id>/rum/site_info/list` on the Cloudflare v4
         API (the site_tag field; match by host or the site's ruleset zone

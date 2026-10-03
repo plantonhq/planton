@@ -9,11 +9,11 @@ import (
 
 func Resources(
 	ctx *pulumi.Context,
-	stackInput *cloudflarerulesetv1alpha1.CloudflareRulesetStackInput,
+	iacInput *cloudflarerulesetv1alpha1.CloudflareRulesetIacInput,
 ) error {
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
-	cloudflareProvider, err := pulumicloudflareprovider.Get(ctx, stackInput.ProviderConfig)
+	cloudflareProvider, err := pulumicloudflareprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup cloudflare provider")
 	}

@@ -4,17 +4,17 @@
 # Zips a Terraform module, uploads it to Cloudflare R2
 # (downloads.planton.dev), and creates a GitHub release with download links.
 #
-# Tag Format: v{semver}-terraform.{component}.{YYYYMMDD}.{N}
+# Tag Format: v{semver}-terraform.{kind}.{YYYYMMDD}.{N}
 # Example: v0.3.5-terraform.awsecsservice.20260108.0
 #
-# Upload path: s3://downloads-dot-planton-dot-dev-bucket/releases/{tag}/modules/terraform/{component}/module.zip
-# Public URL:  https://downloads.planton.dev/releases/{tag}/modules/terraform/{component}/module.zip
+# Upload path: s3://downloads-dot-planton-dot-dev-bucket/releases/{tag}/modules/terraform/{kind}/module.zip
+# Public URL:  https://downloads.planton.dev/releases/{tag}/modules/terraform/{kind}/module.zip
 #
-# Triggered by: auto-tag.yaml via workflow_dispatch (one call per component)
+# Triggered by: auto-tag.yaml via workflow_dispatch (one call per kind)
 # =============================================================================
 
 name: auto-release.terraform-modules
-run-name: "Terraform: ${{ inputs.component }} (${{ inputs.tag }})"
+run-name: "Terraform: ${{ inputs.kind }} (${{ inputs.tag }})"
 
 on:
   workflow_dispatch:
@@ -23,8 +23,8 @@ on:
         description: 'Tag to release (e.g., v0.3.5-terraform.awsecsservice.20260108.0)'
         required: true
         type: string
-      component:
-        description: 'Component name (e.g., awsecsservice)'
+      kind:
+        description: 'Kind name (e.g., awsecsservice)'
         required: true
         type: string
       provider:
@@ -51,14 +51,14 @@ jobs:
 
       - name: Zip Terraform module
         run: |
-          COMPONENT="${{ inputs.component }}"
+          KIND="${{ inputs.kind }}"
           MODULE_PATH="${{ inputs.path }}"
-          # One live module set per component: the artifact carries no API
+          # One live module set per kind: the artifact carries no API
           # version segment -- same layout the full release workflow writes.
-          ARTIFACT_NAME="${COMPONENT}_module.zip"
+          ARTIFACT_NAME="${KIND}_module.zip"
           
           echo "========================================"
-          echo "ZIPPING: ${COMPONENT}"
+          echo "ZIPPING: ${KIND}"
           echo "Path: ${MODULE_PATH}"
           echo "========================================"
           
@@ -74,9 +74,9 @@ jobs:
           AWS_ENDPOINT_URL: ${{ secrets.CLOUDFLARE_R2_ENDPOINT }}
         run: |
           TAG="${{ inputs.tag }}"
-          COMPONENT="${{ inputs.component }}"
-          ARTIFACT_NAME="${COMPONENT}_module.zip"
-          R2_KEY="releases/${TAG}/modules/terraform/${COMPONENT}/module.zip"
+          KIND="${{ inputs.kind }}"
+          ARTIFACT_NAME="${KIND}_module.zip"
+          R2_KEY="releases/${TAG}/modules/terraform/${KIND}/module.zip"
           
           aws s3 cp "${ARTIFACT_NAME}" "s3://${R2_BUCKET}/${R2_KEY}" \
             --endpoint-url "${AWS_ENDPOINT_URL}"
@@ -87,15 +87,15 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           TAG="${{ inputs.tag }}"
-          COMPONENT="${{ inputs.component }}"
+          KIND="${{ inputs.kind }}"
           PROVIDER="${{ inputs.provider }}"
           MODULE_PATH="${{ inputs.path }}"
-          DOWNLOAD_URL="https://downloads.planton.dev/releases/${TAG}/modules/terraform/${COMPONENT}/module.zip"
+          DOWNLOAD_URL="https://downloads.planton.dev/releases/${TAG}/modules/terraform/${KIND}/module.zip"
 
           cat > release-notes.md << 'EOF'
           ## Terraform Module Auto-Release
 
-          This is an auto-release of the **COMPONENT_PLACEHOLDER** Terraform module.
+          This is an auto-release of the **KIND_PLACEHOLDER** Terraform module.
 
           ---
 
@@ -103,7 +103,7 @@ jobs:
 
           | Field | Value |
           |-------|-------|
-          | Component | COMPONENT_PLACEHOLDER |
+          | Kind | KIND_PLACEHOLDER |
           | Provider | PROVIDER_PLACEHOLDER |
           | Tag | `TAG_PLACEHOLDER` |
           | Commit | COMMIT_PLACEHOLDER |
@@ -117,8 +117,8 @@ jobs:
           ```bash
           # Download and extract
           curl -LO DOWNLOAD_URL_PLACEHOLDER
-          unzip module.zip -d COMPONENT_PLACEHOLDER
-          cd COMPONENT_PLACEHOLDER
+          unzip module.zip -d KIND_PLACEHOLDER
+          cd KIND_PLACEHOLDER
 
           # Initialize and apply
           terraform init
@@ -133,7 +133,7 @@ jobs:
           Add this module directly to your Terraform configuration:
 
           ```hcl
-          module "COMPONENT_PLACEHOLDER" {
+          module "KIND_PLACEHOLDER" {
             source = "git::https://github.com/plantonhq/planton.git//PATH_PLACEHOLDER?ref=TAG_PLACEHOLDER"
 
             # Add your variables here
@@ -146,7 +146,7 @@ jobs:
 
           | Artifact | Download |
           |----------|----------|
-          | `COMPONENT_PLACEHOLDER/module.zip` | [Download](DOWNLOAD_URL_PLACEHOLDER) |
+          | `KIND_PLACEHOLDER/module.zip` | [Download](DOWNLOAD_URL_PLACEHOLDER) |
 
           ---
 
@@ -158,7 +158,7 @@ jobs:
           EOF
 
           sed -i "s|TAG_PLACEHOLDER|${TAG}|g" release-notes.md
-          sed -i "s|COMPONENT_PLACEHOLDER|${COMPONENT}|g" release-notes.md
+          sed -i "s|KIND_PLACEHOLDER|${KIND}|g" release-notes.md
           sed -i "s|PROVIDER_PLACEHOLDER|${PROVIDER}|g" release-notes.md
           sed -i "s|PATH_PLACEHOLDER|${MODULE_PATH}|g" release-notes.md
           sed -i "s|COMMIT_PLACEHOLDER|${{ github.sha }}|g" release-notes.md
@@ -168,7 +168,7 @@ jobs:
             echo "Release ${TAG} already exists"
           else
             echo "Creating release ${TAG}..."
-            # --latest=false: component point releases carry no infra-charts/version.txt
+            # --latest=false: kind point releases carry no infra-charts/version.txt
             # assets, so they must never move the /releases/latest pointer that chart
             # consumers (e.g. the desktop daemon's chart seeder) resolve. Only the
             # strict-semver orchestrated release marks latest.
@@ -180,27 +180,27 @@ jobs:
 
           echo ""
           echo "========================================"
-          echo "RELEASE COMPLETE: ${COMPONENT}"
+          echo "RELEASE COMPLETE: ${KIND}"
           echo "========================================"
           echo "https://github.com/${{ github.repository }}/releases/tag/${TAG}"
 
       - name: Generate summary
         run: |
           TAG="${{ inputs.tag }}"
-          COMPONENT="${{ inputs.component }}"
+          KIND="${{ inputs.kind }}"
           PROVIDER="${{ inputs.provider }}"
-          DOWNLOAD_URL="https://downloads.planton.dev/releases/${TAG}/modules/terraform/${COMPONENT}/module.zip"
+          DOWNLOAD_URL="https://downloads.planton.dev/releases/${TAG}/modules/terraform/${KIND}/module.zip"
           
           echo "## Terraform Module Auto-Release Complete" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Component:** ${COMPONENT}" >> $GITHUB_STEP_SUMMARY
+          echo "**Kind:** ${KIND}" >> $GITHUB_STEP_SUMMARY
           echo "**Provider:** ${PROVIDER}" >> $GITHUB_STEP_SUMMARY
           echo "**Tag:** \`${TAG}\`" >> $GITHUB_STEP_SUMMARY
           echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Artifact" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- [${COMPONENT}/module.zip](${DOWNLOAD_URL})" >> $GITHUB_STEP_SUMMARY
+          echo "- [${KIND}/module.zip](${DOWNLOAD_URL})" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "### Usage" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY

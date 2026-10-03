@@ -1,16 +1,16 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceandroplet
 spec:
   # The droplet's identity is its integer API id, which the module exports
-  # as the droplet_id stack output -- zero user input when state is
+  # as the droplet_id output -- zero user input when state is
   # present. The provider's custom importer takes the plain integer id and
   # seeds image + resize_disk into state.
   values:
     - name: droplet_id
       derivations:
-        - from_stack_output: droplet_id
+        - from_output: droplet_id
       where_to_find: >-
         DigitalOcean control panel -> Droplets -> the droplet -> the numeric
         id in the page URL, or `doctl compute droplet list` (the ID column).

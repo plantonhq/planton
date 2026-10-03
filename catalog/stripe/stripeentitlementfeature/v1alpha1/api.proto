@@ -37,12 +37,12 @@ message StripeEntitlementFeature {
   // Must be "StripeEntitlementFeature" for this resource type.
   string kind = 2 [(buf.validate.field).string.const = 'StripeEntitlementFeature'];
 
-  // metadata contains standard cloud resource metadata.
+  // metadata contains standard catalog object metadata.
   // - name: Unique identifier for the resource within Planton
   // - org: Organization that owns it
   // - env: Environment it is deployed from
   // - labels: Key-value pairs for filtering and organization
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec contains the feature's lookup key and name.
   StripeEntitlementFeatureSpec spec = 4 [(buf.validate.field).required = true];
@@ -54,6 +54,6 @@ message StripeEntitlementFeature {
 // StripeEntitlementFeatureStatus represents the current state of a StripeEntitlementFeature
 // resource. Populated by the deployment system.
 message StripeEntitlementFeatureStatus {
-  // outputs contains the stack outputs: the feature's id, the id products grant it by.
-  StripeEntitlementFeatureStackOutputs outputs = 1;
+  // outputs contains the outputs: the feature's id, the id products grant it by.
+  StripeEntitlementFeatureOutputs outputs = 1;
 }

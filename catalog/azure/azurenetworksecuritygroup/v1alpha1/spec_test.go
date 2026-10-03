@@ -55,7 +55,7 @@ func validResource() *AzureNetworkSecurityGroup {
 	return &AzureNetworkSecurityGroup{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureNetworkSecurityGroup",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-nsg",
 		},
 		Spec: &AzureNetworkSecurityGroupSpec{

@@ -30,4 +30,4 @@ Creates an Azure Data Factory -- the workspace every other Data Factory resource
 
 ## Usage
 
-The module is executed by the Planton platform with a stack input containing the target `AzureDataFactory` resource and an Azure provider configuration. For a manifest example, see `../../e2e/manifest.yaml`.
+The module is executed by the Planton platform with an IaC input containing the target `AzureDataFactory` resource and an Azure provider configuration. For a manifest example, see `../../e2e/manifest.yaml`.

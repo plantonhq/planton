@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awscloudwatchlogresourcepolicy
 spec:
@@ -14,7 +14,7 @@ spec:
       notes: A resource policy stores no customer data -- it is a permission document held inside CloudWatch Logs' own control plane. The log data it lets services write rests (encrypted) in the receiving log groups, whose posture lives on AwsCloudwatchLogGroup.
     - control_id: enc-at-rest-cmk
       status: not_applicable
-      notes: There is no data at rest to key (see enc-at-rest); the resource-policy API exposes no KMS surface. Log-group CMK encryption is the AwsCloudwatchLogGroup component's kms_key_id.
+      notes: There is no data at rest to key (see enc-at-rest); the resource-policy API exposes no KMS surface. Log-group CMK encryption is the AwsCloudwatchLogGroup kind's kms_key_id.
     - control_id: enc-in-transit
       status: not_applicable
       notes: A policy terminates no connections. Its management calls (PutResourcePolicy, DescribeResourcePolicies, DeleteResourcePolicy) ride AWS API endpoints, which serve exclusively over TLS as provider-wide behavior -- and the service log-writes it authorizes travel AWS's internal TLS channels into the log groups.

@@ -5,10 +5,10 @@ package dev.planton.aws.awscloudwatchloggroup.v1alpha1;
 import "catalog/aws/awscloudwatchloggroup/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsCloudwatchLogGroupStackInput provides the inputs required by Pulumi/Terraform
+// AwsCloudwatchLogGroupIacInput provides the inputs required by Pulumi/Terraform
 // modules to provision a CloudWatch Logs log group.
-message AwsCloudwatchLogGroupStackInput {
-  // target cloud-resource
+message AwsCloudwatchLogGroupIacInput {
+  // target infra-component
   AwsCloudwatchLogGroup target = 1;
   // provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

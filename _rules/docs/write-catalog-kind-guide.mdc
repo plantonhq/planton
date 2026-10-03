@@ -1,0 +1,91 @@
+---
+description: Action rule to write a GUIDE.md for a Planton kind. Produces grounded operational judgment -- the authored wisdom layer beside the generated reference page.
+globs: []
+alwaysApply: false
+---
+
+# Rule: Write Kind Guide
+
+**Purpose**: Guide an AI agent through writing a `GUIDE.md` file for a kind. The output is the kind's authored wisdom: judgment, conventions, and trade-offs that the generated `reference.md` (schema facts) cannot carry.
+
+**Trigger**: User references this rule or asks to write/create a guide for a kind.
+
+**Output**: A single file at the kind root, `catalog/{provider}/{kind}/GUIDE.md` (beside `README.md` and `catalog.md`), followed by `make generate-reference` (the kind's reference page head gains its Guide link and the indexes gain a Guide entry -- committed together with the guide).
+
+---
+
+## The Two-Layer Law (read this before writing a word)
+
+The catalog has two knowledge layers with a hard routing rule:
+
+- **Facts live in the schemas.** A field's type, default, validation, or description is wrong or thin? Fix the proto comment or validation rule and regenerate -- NEVER restate or correct facts in a guide. A guide that duplicates the reference page will drift from it.
+- **Judgment lives in the guide.** When to choose this kind over its neighbors, what a flag really costs, which conventions the platform expects, what the choice looks like on the architecture diagram.
+
+If a sentence you are about to write is verifiable from `spec.proto` alone, it belongs in `spec.proto`.
+
+---
+
+## The Persona You Must Assume
+
+You are a senior platform engineer who has operated this kind on Planton in production and has opinions earned from incidents. You are writing for an AI agent (or engineer) about to compose an architecture that includes this kind -- they already have the reference page open; what they lack is the judgment you carry.
+
+---
+
+## The Five Laws of Guide Content
+
+1. **Internal-conventions-first.** The highest-value content is knowledge that exists nowhere outside Planton: platform conventions, state-ownership semantics of flags, kind-vs-flag judgments, deployment-flow behavior. General cloud knowledge the reader's model already has does NOT earn a place. Test each paragraph: "could a well-trained model have written this without access to this repo?" If yes, cut it.
+2. **Diagram-awareness.** Every architecture composed on Planton is also a rendered visualization. When a judgment affects composition -- a dedicated kind vs an inline flag, one shared resource vs many -- state the diagram consequence explicitly: a dedicated kind renders as a proper node with its own spec to customize; a buried flag renders as nothing.
+3. **Judgment framing.** Teach *when X vs when Y, and what breaks if you choose wrong* -- never feature lists (the reference page already enumerates the spec). Name the failure mode concretely: what error appears, at what stage, and why.
+4. **Living document.** Guides improve from adoption feedback and are contributed through pull requests -- the file you write is exactly the file agents read, in the repo, the release archive, and the packaged skill. Write claims you can ground TODAY; short is fine, speculation is not.
+5. **Alias-aware substitution.** If this kind is the catalog's implementation of software users ask for by another name (a compatible fork, a protocol-compatible alternative), say so in a "Substitutes for" line near the top -- that sentence is what full-text search finds when an agent looks for the other name. The compatibility FACT should also live in the spec's proto doc; the guide adds the judgment (what carries over, what differs operationally).
+
+---
+
+## Recommended Structure
+
+Sections are recommended, not mandatory -- include what the kind's wisdom genuinely fills, omit the rest. The H1 and opening judgment are always present.
+
+```
+# {Kind} Guide
+
+[1-3 sentences: the judgment this guide protects you from getting wrong.]
+
+Substitutes for: {software name} ({one-line compatibility claim})   <- only when applicable
+
+## When to use it (and when not)
+
+[Judgment framing: this kind vs its neighbors/flags, with consequences.]
+
+## Conventions and gotchas
+
+[Internal platform knowledge: state ownership, naming, flow-control
+annotations, operational surprises. The reasons things fail.]
+
+## On the diagram
+
+[What choices involving this kind render as, and what that costs or buys.]
+
+## Pairs well with
+
+[Kinds and patterns commonly composed with this one, each with the one-line
+reason. Link patterns from the catalog's patterns/ library where they exist.]
+```
+
+---
+
+## Grounding Requirements (non-negotiable)
+
+- Every claim must be traceable to source: `spec.proto` comments and options, the IaC module code (`iac/pulumi/module/*.go`, `iac/tf/*.tf`), the kind's `README.md` and `catalog.md`, or recorded platform behavior. No claim from general memory. Research documents are never committed -- the guide itself is where durable judgment lives, so anything worth keeping must be grounded here.
+- Complete embedded manifests (anything with `apiVersion:` + `kind:`) must validate -- catalog checks enforce this in CI (`go test ./pkg/explain/refgen/`). Partial YAML fragments are fine and exempt.
+- Spec field mentions use camelCase (the YAML authoring spelling); `fieldPath` strings use snake_case -- exactly as the reference pages teach.
+- Relative links must resolve (CI-enforced). Link the reference page and patterns rather than restating them.
+- **Name only what the packaged skill carries.** The guide ships to agents inside the multi-cloud-catalog skill's reference pack, which selects files by name (`pkg/skills/defspack/catalogpack.go`): the kind's `reference.md` and `GUIDE.md`, its `cost.yaml` / `controls.yaml` / `permissions.yaml`, and the `_patterns/` library -- never `presets/`, `e2e/`, `iac/`, `README.md`, or `catalog.md`. A reader following a path to any of those lands nowhere, and the skill forbids filling the gap from memory. So: a preset is named by slug (with the sentence that presets ship in the release's `presets.zip` and the repository, not in the pack); an `e2e/` fixture, scenario, or proof-batch manifest is never cited as "the validated manifest" -- when a composition needs a complete manifest the reader can copy, embed it (the validator covers it) or place it in the pattern that owns the shared shape and link there.
+- No marketing language: seamless, effortless, powerful, robust, cutting-edge are banned.
+
+---
+
+## Verification Protocol
+
+1. `make generate-reference` -- the kind's `reference.md` head must now carry the `**Guide**:` line; commit the guide and every regenerated file together.
+2. `go test ./pkg/explain/refgen/` -- the wisdom guardrails (placement, manifest validation, links) and the freshness gate must pass.
+3. Re-read the guide against the Five Laws; cut anything a model could have written without this repo.

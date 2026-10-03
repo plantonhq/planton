@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 //
 // No AwsTags here: neither conformance-pack provider resource carries
 // a tags argument (the one untaggable surface in the Config family).
@@ -14,7 +14,7 @@ type Locals struct {
 	Spec   *awsconfigconformancepackv1alpha1.AwsConfigConformancePackSpec
 }
 
-func initializeLocals(_ *pulumi.Context, in *awsconfigconformancepackv1alpha1.AwsConfigConformancePackStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, in *awsconfigconformancepackv1alpha1.AwsConfigConformancePackIacInput) *Locals {
 	locals := &Locals{}
 	locals.Target = in.Target
 	locals.Spec = in.Target.Spec

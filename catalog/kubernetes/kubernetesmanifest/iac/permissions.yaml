@@ -4,9 +4,9 @@
 # notes) until the live capture lane upgrades it to `proven`. This kind is
 # the catalog's bring-your-own-manifest escape hatch, so least-privilege has
 # a hard honest limit here: the runner applies WHATEVER THE DECLARED YAML
-# CONTAINS, exactly as written. Schema: iac/componentpermissions/v1.
+# CONTAINS, exactly as written. Schema: iac/catalogkindpermissions/v1.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: kubernetesmanifest
 spec:

@@ -5,9 +5,9 @@ package dev.planton.aws.awsmskcluster.v1alpha1;
 import "catalog/aws/awsmskcluster/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// aws-msk-cluster stack-input
-message AwsMskClusterStackInput {
-  // target cloud-resource
+// aws-msk-cluster iac-input
+message AwsMskClusterIacInput {
+  // target infra-component
   AwsMskCluster target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

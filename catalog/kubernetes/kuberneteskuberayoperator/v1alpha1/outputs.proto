@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kuberneteskuberayoperator.v1alpha1;
 
-//kuberay-operator-kubernetes stack outputs
-message KubernetesKubeRayOperatorStackOutputs {
+//kuberay-operator-kubernetes outputs
+message KubernetesKubeRayOperatorOutputs {
   //namespace the operator runs in.
   string namespace = 1;
 

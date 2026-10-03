@@ -5,9 +5,9 @@ package dev.planton.digitalocean.digitaloceanuptimecheck.v1alpha1;
 import "catalog/digitalocean/digitaloceanuptimecheck/v1alpha1/api.proto";
 import "catalog/digitalocean/provider.proto";
 
-//digital-ocean-uptime-check stack-input
-message DigitalOceanUptimeCheckStackInput {
-  //target cloud-resource
+//digital-ocean-uptime-check iac-input
+message DigitalOceanUptimeCheckIacInput {
+  //target infra-component
   DigitalOceanUptimeCheck target = 1;
   //provider-config
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;

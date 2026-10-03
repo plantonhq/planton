@@ -26,7 +26,7 @@ func minimalGroup() *AwsElasticacheUserGroup {
 	return &AwsElasticacheUserGroup{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsElasticacheUserGroup",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "orders-rbac",
 		},
 		Spec: &AwsElasticacheUserGroupSpec{

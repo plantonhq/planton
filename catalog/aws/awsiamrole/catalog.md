@@ -4,7 +4,7 @@ Deploys an IAM role with a configurable trust policy, managed policy attachments
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **IAM Role** -- created with the trust policy (written directly, or composed from the `oidcTrust` arm), description, IAM path, and session-duration ceiling
 - **Managed Policy Attachments** -- one attachment resource per entry in `managedPolicyArns`, keyed by the policy ARN itself so reordering the list is a no-op instead of a transient detach/re-attach on a live role
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -60,7 +60,7 @@ spec:
 planton apply -f iam-role.yaml
 ```
 
-This creates an IAM role that EKS can assume, with the `AmazonEKSClusterPolicy` managed policy attached (literal ARNs take the `value:` form; references to an AwsIamPolicy take `valueFrom:`). A Stack Job tracks the provisioning in real time.
+This creates an IAM role that EKS can assume, with the `AmazonEKSClusterPolicy` managed policy attached (literal ARNs take the `value:` form; references to an AwsIamPolicy take `valueFrom:`). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -105,7 +105,7 @@ These are the most important decisions when configuring an IAM role. Explore the
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -116,9 +116,9 @@ These are the most important decisions when configuring an IAM role. Explore the
 
 Literal values are also accepted on all four fields -- how AWS-managed policy ARNs and pre-existing OIDC providers attach.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -140,9 +140,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS IAM Policy**](/cloud-catalog/aws-iam-policy) -- customer-managed policies attached via `managedPolicyArns` or used as the `permissionsBoundary`
-- [**AWS IAM OIDC Provider**](/cloud-catalog/aws-iam-oidc-provider) -- the federated identity provider the `oidcTrust` arm references
-- [**AWS IAM Instance Profile**](/cloud-catalog/aws-iam-instance-profile) -- wraps this role for delivery to EC2 instances (the only service that needs the wrapper)
-- [**AWS EKS Cluster**](/cloud-catalog/aws-eks-cluster) -- consumes `role_arn` as its cluster service role
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) -- consumes `role_arn` as its execution role
-- [**AWS ECS Service**](/cloud-catalog/aws-ecs-service) -- consumes `role_arn` for task and execution roles
+- [**AWS IAM Policy**](/infra-catalog/aws-iam-policy) -- customer-managed policies attached via `managedPolicyArns` or used as the `permissionsBoundary`
+- [**AWS IAM OIDC Provider**](/infra-catalog/aws-iam-oidc-provider) -- the federated identity provider the `oidcTrust` arm references
+- [**AWS IAM Instance Profile**](/infra-catalog/aws-iam-instance-profile) -- wraps this role for delivery to EC2 instances (the only service that needs the wrapper)
+- [**AWS EKS Cluster**](/infra-catalog/aws-eks-cluster) -- consumes `role_arn` as its cluster service role
+- [**AWS Lambda**](/infra-catalog/aws-lambda) -- consumes `role_arn` as its execution role
+- [**AWS ECS Service**](/infra-catalog/aws-ecs-service) -- consumes `role_arn` for task and execution roles

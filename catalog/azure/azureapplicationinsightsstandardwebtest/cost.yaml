@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azureapplicationinsightsstandardwebtest
 spec:
@@ -33,4 +33,4 @@ spec:
     - test results and their traces are ingested into the bound Application Insights component and bill that component's per-GB Log Analytics ingestion meters
     - retries of failed runs add executions that follow the endpoint's actual failure behavior
     - the alert rule that pages on this test's failures is its own AzureMonitorMetricAlert component with its own monthly fee
-  notes: "A standard web test is a metronome with a per-tick price: Microsoft's pricing page bills standard web tests per scheduled test execution, and the schedule is fully determined by this manifest -- locations x (seconds per month / frequency). That makes the committed spend exact: one location at the default 5-minute frequency is 8,760 executions a month (about 4.38 at eastus list), and every added location or faster frequency scales it linearly. URL ping tests are free and multi-step tests bill per test per month, but this component is the standard kind -- the priced, recommended replacement for both. Prices verified from Microsoft's Retail Prices API and the Azure Monitor pricing page on 2026-08-18."
+  notes: "A standard web test is a metronome with a per-tick price: Microsoft's pricing page bills standard web tests per scheduled test execution, and the schedule is fully determined by this manifest -- locations x (seconds per month / frequency). That makes the committed spend exact: one location at the default 5-minute frequency is 8,760 executions a month (about 4.38 at eastus list), and every added location or faster frequency scales it linearly. URL ping tests are free and multi-step tests bill per test per month, but this kind is the standard kind -- the priced, recommended replacement for both. Prices verified from Microsoft's Retail Prices API and the Azure Monitor pricing page on 2026-08-18."

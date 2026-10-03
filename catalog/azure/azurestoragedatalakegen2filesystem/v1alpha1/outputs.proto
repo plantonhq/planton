@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurestoragedatalakegen2filesystem.v1alpha1;
 
-// **AzureStorageDataLakeGen2FilesystemStackOutputs** captures the outputs
+// **AzureStorageDataLakeGen2FilesystemOutputs** captures the outputs
 // of provisioning a Data Lake Gen2 filesystem.
-message AzureStorageDataLakeGen2FilesystemStackOutputs {
+message AzureStorageDataLakeGen2FilesystemOutputs {
   // The filesystem's Azure Resource Manager ID -- ADLS filesystems
   // surface in ARM as blob containers, so this is the container-proxy
   // ID and the scope data-plane role assignments (Storage Blob Data

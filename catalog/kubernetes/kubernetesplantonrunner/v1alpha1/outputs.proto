@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesplantonrunner.v1alpha1;
 
-// KubernetesPlantonRunnerStackOutputs captures the observable identifiers
+// KubernetesPlantonRunnerOutputs captures the observable identifiers
 // of a deployed runner — the handles for day-2 operations: finding the
 // release, the namespace it lives in, and the name it registered itself
 // under with the control plane.
-message KubernetesPlantonRunnerStackOutputs {
+message KubernetesPlantonRunnerOutputs {
   // The namespace the runner is installed in.
   string namespace = 1;
 

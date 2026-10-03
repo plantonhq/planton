@@ -5,7 +5,7 @@ import (
 
 	azureservicebusnamespacev1alpha1 "github.com/plantonhq/planton/catalog/azure/azureservicebusnamespace/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -43,11 +43,11 @@ var networkDefaultActionStrings = map[azureservicebusnamespacev1alpha1.AzureServ
 	azureservicebusnamespacev1alpha1.AzureServiceBusNetworkDefaultAction_DENY:                                                 "Deny",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureservicebusnamespacev1alpha1.AzureServiceBusNamespaceStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureservicebusnamespacev1alpha1.AzureServiceBusNamespaceIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureServiceBusNamespace = stackInput.Target
-	target := stackInput.Target
+	locals.AzureServiceBusNamespace = iacInput.Target
+	target := iacInput.Target
 
 	// The resource_group field is a StringValueOrRef. The platform middleware
 	// resolves valueFrom references before IaC modules run, so .GetValue()
@@ -59,7 +59,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureservicebusnamespacev
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureServiceBusNamespace.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureServiceBusNamespace.String()),
 	}
 
 	if target.Metadata.Id != "" {

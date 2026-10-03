@@ -19,7 +19,7 @@ set -euo pipefail
 # regardless of the TF fallback. Never encode default-true as a TF-only fallback.
 #
 # This is a static check (no network, no cluster), so it covers every module including
-# e2e skip/deferred components that never run a real apply.
+# e2e skip/deferred kinds that never run a real apply.
 
 repo_root_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 cd "$repo_root_dir"

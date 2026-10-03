@@ -9,9 +9,9 @@
 # ephemeral nature is stated in the exclusions on every estimate. The
 # derivation grammar cannot traverse the repeated sidecars list, so
 # declared sidecar reservations are named in the exclusions instead of
-# silently ignored. Schema: finops/componentcapacityderivation/v1.
+# silently ignored. Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesjob
 spec:

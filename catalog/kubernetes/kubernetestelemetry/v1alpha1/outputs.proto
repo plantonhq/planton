@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetestelemetry.v1alpha1;
 
-// KubernetesTelemetryStackOutputs captures observable outputs after the Telemetry
+// KubernetesTelemetryOutputs captures observable outputs after the Telemetry
 // resource is created on the target cluster. Telemetry has no controller-reconciled
 // status subresource that is useful to surface here (istiod programs the data plane),
 // so only the resource identity is exported.
-message KubernetesTelemetryStackOutputs {
+message KubernetesTelemetryOutputs {
   // Name of the created Telemetry resource (equals metadata.name).
   string telemetry_name = 1;
 

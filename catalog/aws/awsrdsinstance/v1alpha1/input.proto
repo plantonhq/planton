@@ -5,8 +5,8 @@ package dev.planton.aws.awsrdsinstance.v1alpha1;
 import "catalog/aws/awsrdsinstance/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsRdsInstanceStackInput defines the inputs the CLI passes to provision the RDS instance.
-message AwsRdsInstanceStackInput {
+// AwsRdsInstanceIacInput defines the inputs the CLI passes to provision the RDS instance.
+message AwsRdsInstanceIacInput {
   // target
   AwsRdsInstance target = 1;
 

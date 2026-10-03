@@ -29,7 +29,7 @@ The contract worth internalizing before the first apply:
 - **`spec.replicas`**: empty = the cluster's `default.replication.factor`
 - **`spec.config`**: Kafka topic-level entries (`retention.ms`, `cleanup.policy`, `max.message.bytes`, `min.insync.replicas`, ...) — values are Kafka configuration strings, so write numbers and booleans as strings
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

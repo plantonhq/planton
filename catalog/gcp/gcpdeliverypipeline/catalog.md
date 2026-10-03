@@ -4,7 +4,7 @@ Ships a release from dev to prod the same way every time. A Cloud Deploy deliver
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- the Cloud Deploy API on the pipeline's project
 - **Delivery pipeline** -- the pipeline and its ordered stages
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with permission to manage Cloud Deploy pipelines and automations in the target project, and to act as each automation's service account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with permission to manage Cloud Deploy pipelines and automations in the target project, and to act as each automation's service account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ## Deploy
@@ -50,7 +50,7 @@ spec:
 planton apply -f delivery-pipeline.yaml
 ```
 
-This creates a pipeline that promotes releases from the web-dev target to web-prod. A Stack Job tracks the provisioning in real time.
+This creates a pipeline that promotes releases from the web-dev target to web-prod. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -70,7 +70,7 @@ These are the most important decisions when configuring a delivery pipeline. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -79,9 +79,9 @@ These are the most important decisions when configuring a delivery pipeline. Exp
 | **GcpServiceAccount** | `automations[].serviceAccount` | `status.outputs.email` |
 | **GcpMonitoringAlertPolicy** | analysis `googleCloud.alertPolicyChecks[].alertPolicies` | `status.outputs.policy_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -101,7 +101,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Deploy Target**](/cloud-catalog/gcp-deploy-target) -- where each stage deploys
-- [**GCP Deploy Policy**](/cloud-catalog/gcp-deploy-policy) -- rollout freezes and windows for the pipeline
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the identity automations run as
-- [**GCP Cloud Build Trigger**](/cloud-catalog/gcp-cloud-build-trigger) -- builds that create releases
+- [**GCP Deploy Target**](/infra-catalog/gcp-deploy-target) -- where each stage deploys
+- [**GCP Deploy Policy**](/infra-catalog/gcp-deploy-policy) -- rollout freezes and windows for the pipeline
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the identity automations run as
+- [**GCP Cloud Build Trigger**](/infra-catalog/gcp-cloud-build-trigger) -- builds that create releases

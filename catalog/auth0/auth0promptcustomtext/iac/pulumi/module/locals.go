@@ -7,7 +7,7 @@ import (
 	auth0promptcustomtextv1alpha1 "github.com/plantonhq/planton/catalog/auth0/auth0promptcustomtext/v1alpha1"
 )
 
-// Locals holds the values the module computes from the stack input. It mirrors
+// Locals holds the values the module computes from the IaC input. It mirrors
 // the Terraform module's locals.tf -- keep them in lockstep.
 type Locals struct {
 	// ResourceName is the resource's identity (the Pulumi resource name).
@@ -22,8 +22,8 @@ type Locals struct {
 	Body string
 }
 
-func initializeLocals(stackInput *auth0promptcustomtextv1alpha1.Auth0PromptCustomTextStackInput) (*Locals, error) {
-	target := stackInput.Target
+func initializeLocals(iacInput *auth0promptcustomtextv1alpha1.Auth0PromptCustomTextIacInput) (*Locals, error) {
+	target := iacInput.Target
 	spec := target.Spec
 	body, err := renderBody(spec.Screens)
 	if err != nil {

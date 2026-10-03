@@ -12,7 +12,7 @@ The visitor already runs a posture tool, a Terraform pipeline, or a portal, and 
 
 ## Component mapping
 
-- `src/components/compare/ComparePage.tsx`: `PageHero`, a split "Where the Difference Is" with the stack-job record, one `CategorySection` per record (text column and `PageArtifact`, alternating sides, phone order title, tool, keep, record, proofs, door), `QuestionCard` grid, `PageCard` pair, `Doors`.
+- `src/components/compare/ComparePage.tsx`: `PageHero`, a split "Where the Difference Is" with the infra-job record, one `CategorySection` per record (text column and `PageArtifact`, alternating sides, phone order title, tool, keep, record, proofs, door), `QuestionCard` grid, `PageCard` pair, `Doors`.
 - `src/components/marketing/question-card.tsx`: lifted from the persona page's objection card so both pages render a question the same way; `PersonaPage` resolves the door and renders it.
 - `src/data/page-shapes.ts`: `illustratedFooter`, the one footer vocabulary every illustrated record now uses (the review found four phrasings for one fact and an unexplained `est.`).
 - `src/data/site-pages.ts`: the `compare` group and `PAGE_GROUP_HEADINGS`; `scripts/generate-llms.mjs` iterates the headings and refuses a group they omit, and prints the Compare record's own words.
@@ -24,7 +24,7 @@ Before code: "the schema refuses" became "validates" (a refusal record is roadma
 
 ## Revisions forced by the independent review (three rounds: FAIL 13, FAIL 12, PASS 6 minor)
 
-The headline was a label ("How Planton Compares") and became the spine; the lede described the page's method and now answers the visitor's question; the umbrella sentence left the hero (the kicker and the lede carry what Planton is). "Where the Difference Is" was one 49-word sentence with no proof and now shows the stack-job record beside a two-sentence claim. Every category section gained the proving page's record; the "keep it" sentence moved above the proof points and up a size. The story went to v1.4: chapter 11 said every component states its controls where chapter 3 says every covered component does, and the review saw both sentences on one page. The engines are said one way (the Terraform module, which OpenTofu or Terraform runs; and Pulumi), matching the Open Source record's row. Repeated sentences were removed (typed schema, adopted not rewritten, the exit path, "with the record attached"). Every illustrated record's footer converged on one vocabulary that explains `est.`. The abstraction-layer question's door moved from Import to Catalog; its garbled sentence was rewritten with three concrete nouns.
+The headline was a label ("How Planton Compares") and became the spine; the lede described the page's method and now answers the visitor's question; the umbrella sentence left the hero (the kicker and the lede carry what Planton is). "Where the Difference Is" was one 49-word sentence with no proof and now shows the infra-job record beside a two-sentence claim. Every category section gained the proving page's record; the "keep it" sentence moved above the proof points and up a size. The story went to v1.4: chapter 11 said every kind states its controls where chapter 3 says every covered kind does, and the review saw both sentences on one page. The engines are said one way (the Terraform module, which OpenTofu or Terraform runs; and Pulumi), matching the Open Source record's row. Repeated sentences were removed (typed schema, adopted not rewritten, the exit path, "with the record attached"). Every illustrated record's footer converged on one vocabulary that explains `est.`. The abstraction-layer question's door moved from Import to Catalog; its garbled sentence was rewritten with three concrete nouns.
 
 ## Standing after PASS, with owners
 
@@ -32,7 +32,7 @@ The record window's height against a taller text column (the chapter frame's law
 
 ## Must not claim
 
-A vendor's name; "DevSecOps"; "FinOps"; a table with a competitor column; "policy as code"; rules over spec content, refusal records, drift detection, or anything else from chapter 13 as shipped; "compliant" of any component; a dollar-savings figure; "zero lock-in" as a badge.
+A vendor's name; "DevSecOps"; "FinOps"; a table with a competitor column; "policy as code"; rules over spec content, refusal records, drift detection, or anything else from chapter 13 as shipped; "compliant" of any kind; a dollar-savings figure; "zero lock-in" as a badge.
 
 ## Verification
 

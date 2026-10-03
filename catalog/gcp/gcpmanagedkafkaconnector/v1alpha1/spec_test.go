@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpManagedKafkaConnectorSpec", func() {
 		return &GcpManagedKafkaConnector{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpManagedKafkaConnector",
-			Metadata:   &shared.CloudResourceMetadata{Name: "orders-to-pubsub"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "orders-to-pubsub"},
 			Spec: &GcpManagedKafkaConnectorSpec{
 				Location:       "us-central1",
 				ConnectCluster: litRef("events-connect"),

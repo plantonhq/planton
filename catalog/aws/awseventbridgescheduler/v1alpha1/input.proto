@@ -5,10 +5,10 @@ package dev.planton.aws.awseventbridgescheduler.v1alpha1;
 import "catalog/aws/awseventbridgescheduler/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsEventBridgeSchedulerStackInput is the input for the IaC modules
+// AwsEventBridgeSchedulerIacInput is the input for the IaC modules
 // that manage an EventBridge Scheduler schedule (and optionally its
 // group).
-message AwsEventBridgeSchedulerStackInput {
+message AwsEventBridgeSchedulerIacInput {
   // target is the AwsEventBridgeScheduler resource to deploy.
   AwsEventBridgeScheduler target = 1;
   // provider_config contains the AWS provider credentials and configuration.

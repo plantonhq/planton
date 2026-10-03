@@ -10,17 +10,17 @@ Added the AwsFsxOntapFileSystem resource kind (enum 294, id_prefix `awsfxo`) to 
 
 ## Problem Statement / Motivation
 
-FSx for ONTAP is AWS's most feature-rich managed file system, providing enterprise NAS/SAN capabilities that no other FSx type offers: simultaneous NFS, SMB, and iSCSI protocol access from a single file system, up to 12 HA pairs for petabyte-scale single-AZ deployments, and NetApp's SnapMirror for cross-region replication. Without this component, Planton users needing enterprise storage for VMware Cloud on AWS, database workloads, or hybrid cloud scenarios had no declarative option.
+FSx for ONTAP is AWS's most feature-rich managed file system, providing enterprise NAS/SAN capabilities that no other FSx type offers: simultaneous NFS, SMB, and iSCSI protocol access from a single file system, up to 12 HA pairs for petabyte-scale single-AZ deployments, and NetApp's SnapMirror for cross-region replication. Without this kind, Planton users needing enterprise storage for VMware Cloud on AWS, database workloads, or hybrid cloud scenarios had no declarative option.
 
 ### Pain Points
 
-- No Planton component for ONTAP file systems despite being the most requested FSx type for enterprise workloads
+- No Planton kind for ONTAP file systems despite being the most requested FSx type for enterprise workloads
 - Users managing ONTAP file systems manually or through raw Terraform without the Planton validation, preset, and cross-reference framework
 - The remaining FSx ONTAP sub-resources (SVMs, Volumes) depend on this file system component existing first
 
 ## Solution / What's New
 
-A complete deployment component following the Planton ideal state, covering the ONTAP file system resource (the storage/networking fabric). Storage Virtual Machines and Volumes are separate lifecycle resources handled by companion components.
+A complete catalog kind following the Planton ideal state, covering the ONTAP file system resource (the storage/networking fabric). Storage Virtual Machines and Volumes are separate lifecycle resources handled by companion kinds.
 
 ### Key Design Decisions
 
@@ -39,9 +39,9 @@ A complete deployment component following the Planton ideal state, covering the 
 ### Proto API (4 files)
 
 - **spec.proto**: 18 top-level fields + 1 nested message (DiskIopsConfiguration). 10 CEL cross-field validations covering deployment type constraints, HA pair limits, multi-AZ field gating, admin password length, throughput tier validation, and backup time dependencies.
-- **stack_outputs.proto**: 10 outputs including ONTAP-specific endpoints (management DNS/IPs for CLI access, intercluster DNS/IPs for SnapMirror replication).
+- **outputs.proto**: 10 outputs including ONTAP-specific endpoints (management DNS/IPs for CLI access, intercluster DNS/IPs for SnapMirror replication).
 - **api.proto**: KRM envelope with `aws.planton.dev/v1` API version.
-- **stack_input.proto**: Standard stack input with AWS provider config.
+- **iac_input.proto**: Standard IaC input with AWS provider config.
 
 ### Validation Tests
 
@@ -53,7 +53,7 @@ A complete deployment component following the Planton ideal state, covering the 
 ### Pulumi Module (4 Go files)
 
 - `main.go`: Provider setup, resource creation, 10 exports including nested endpoint extraction via `ApplyT`
-- `locals.go`: Tag initialization with CloudResourceKind enum
+- `locals.go`: Tag initialization with CatalogKind enum
 - `outputs.go`: 10 output key constants
 - `file_system.go`: Single `fsx.NewOntapFileSystem` resource with conditional field mapping for all 18 spec fields
 
@@ -78,16 +78,16 @@ A complete deployment component following the Planton ideal state, covering the 
 
 ## Benefits
 
-- Enterprise storage workloads now have a first-class Planton component with full validation
+- Enterprise storage workloads now have a first-class Planton kind with full validation
 - Scale-out HA pair support enables petabyte-scale deployments via simple `haPairs` field
 - Rich cross-resource references via StringValueOrRef for VPC, security groups, KMS keys
-- 10 stack outputs enable downstream SVM and volume components to wire dependencies
+- 10 outputs enable downstream SVM and volume kinds to wire dependencies
 - Consistent patterns with OpenZFS/Windows siblings make the FSx family predictable
 
 ## Impact
 
 - **Users**: Can now declaratively provision FSx for ONTAP file systems with all 4 deployment types
-- **Platform**: Enables the remaining R29e (AwsFsxOntapStorageVirtualMachine) and R29f (AwsFsxOntapVolume) components that depend on this file system
+- **Platform**: Enables the remaining R29e (AwsFsxOntapStorageVirtualMachine) and R29f (AwsFsxOntapVolume) kinds that depend on this file system
 - **Coverage**: AWS provider now has 4 of 6 planned FSx types complete
 
 ## Related Work

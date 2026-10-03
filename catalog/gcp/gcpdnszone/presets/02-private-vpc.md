@@ -26,7 +26,7 @@ Creates a private Cloud DNS managed zone visible only to resources on a VPC netw
 - **01-public-zone** — internet-facing authoritative zone
 - **03-private-dnssec** — public zone with DNSSEC
 
-## Related Components
+## Related Kinds
 
 - [GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork) — VPC that can see this zone
 - [GcpDnsRecord](/docs/catalog/gcp/gcpdnsrecord) — records within the private zone

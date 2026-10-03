@@ -4,7 +4,7 @@ Deploys a VPN Gateway Connection -- the tunnel bundle joining one branch (a VPN 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **VPN Gateway Connection** -- the ARM child of the gateway carrying the tunnels, their routing configuration, and optional traffic selectors
 
@@ -14,7 +14,7 @@ The connection carries no region, resource group, or tags of its own -- ARM deri
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -56,7 +56,7 @@ spec:
 planton apply -f azure-vpn-gateway-connection.yaml
 ```
 
-This creates a one-tunnel connection joining the branch site's primary link to the hub gateway with Azure's default IPsec proposals and a generated shared key. The connection provisions in minutes and is free; watch the tunnel's connection state separately. A Stack Job tracks the provisioning in real time.
+This creates a one-tunnel connection joining the branch site's primary link to the hub gateway with Azure's default IPsec proposals and a generated shared key. The connection provisions in minutes and is free; watch the tunnel's connection state separately. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -100,7 +100,7 @@ These are the most important decisions when configuring a connection. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -111,9 +111,9 @@ These are the most important decisions when configuring a connection. Explore th
 | **AzureVirtualHub** (optional) | `routing.associatedRouteTableId` | `status.outputs.default_route_table_id` or `status.outputs.route_table_ids.<name>` |
 | **AzureVirtualHub** (optional) | `routing.inboundRouteMapId` / `outboundRouteMapId` | `status.outputs.route_map_ids.<name>` |
 
-### What This Component Provides
+### What This Kind Provides
 
-The connection's `status.outputs` carry only `connection_id` and `connection_name` -- identity echoes of the resource itself. No downstream Cloud Resource consumes them: the connection is a leaf of the branch-connectivity graph, and the tunnels' live state is runtime telemetry, not a provisioning output.
+The connection's `status.outputs` carry only `connection_id` and `connection_name` -- identity echoes of the resource itself. No downstream Infra Component consumes them: the connection is a leaf of the branch-connectivity graph, and the tunnels' live state is runtime telemetry, not a provisioning output.
 
 ## Common Patterns
 
@@ -125,6 +125,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure VPN Gateway**](/cloud-catalog/azure-vpn-gateway) -- the gateway this connection belongs to
-- [**Azure VPN Site**](/cloud-catalog/azure-vpn-site) -- the branch being connected
-- [**Azure Virtual Hub**](/cloud-catalog/azure-virtual-hub) -- whose route tables and route maps the routing block references
+- [**Azure VPN Gateway**](/infra-catalog/azure-vpn-gateway) -- the gateway this connection belongs to
+- [**Azure VPN Site**](/infra-catalog/azure-vpn-site) -- the branch being connected
+- [**Azure Virtual Hub**](/infra-catalog/azure-virtual-hub) -- whose route tables and route maps the routing block references

@@ -18,7 +18,7 @@ balancer chain testable end to end.
 
 ## Problem Statement / Motivation
 
-The ALB component modeled no target groups and no listeners at all -- its
+The ALB kind modeled no target groups and no listeners at all -- its
 modules hardcoded an HTTP-redirect/fixed-response listener pair behind an
 `ssl.enabled` toggle, so the load balancer literally could not route traffic
 to targets through its own API. The NLB bundled listeners and target groups

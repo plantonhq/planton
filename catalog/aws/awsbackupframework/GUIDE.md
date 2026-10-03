@@ -1,4 +1,4 @@
-# AwsBackupFramework — Component Guide
+# AwsBackupFramework — Kind Guide
 
 Authored operational judgment for the Backup Audit Manager framework
 component: the design decisions behind the spec's shape, and what to

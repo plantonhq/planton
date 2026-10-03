@@ -15,7 +15,7 @@ OpenTofu module that declares one Stripe price on a product. Stripe kinds run on
 
 | Name | Description |
 |---|---|
-| `metadata` | Cloud resource metadata (`name`, `org`, `env`, ...) |
+| `metadata` | Catalog object metadata (`name`, `org`, `env`, ...) |
 | `spec` | `product` (resolved product id), `currency` (required); `unit_amount`, `unit_amount_decimal`, `billing_scheme`, `tiers_mode`, `tiers`, `custom_unit_amount`, `transform_quantity`, `recurring`, `currency_options`, `lookup_key`, `transfer_lookup_key`, `nickname`, `tax_behavior`, `active`, `metadata` |
 
 ## Outputs

@@ -18,7 +18,7 @@ func list(spec *StripeRadarValueListSpec) *StripeRadarValueList {
 	return &StripeRadarValueList{
 		ApiVersion: "stripe.planton.dev/v1alpha1",
 		Kind:       "StripeRadarValueList",
-		Metadata:   &shared.CloudResourceMetadata{Name: "blocked-countries"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "blocked-countries"},
 		Spec:       spec,
 	}
 }

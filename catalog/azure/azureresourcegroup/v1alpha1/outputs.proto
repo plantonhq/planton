@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.azure.azureresourcegroup.v1alpha1;
 
-// **AzureResourceGroupStackOutputs** captures the outputs of provisioning an Azure Resource Group.
+// **AzureResourceGroupOutputs** captures the outputs of provisioning an Azure Resource Group.
 // These outputs are used by downstream Azure resources via StringValueOrRef to establish
 // the resource group dependency in infra chart DAGs.
-message AzureResourceGroupStackOutputs {
+message AzureResourceGroupOutputs {
   // The Azure Resource Manager ID of the resource group.
   // Format: /subscriptions/{subscription-id}/resourceGroups/{resource-group-name}
   string resource_group_id = 1;

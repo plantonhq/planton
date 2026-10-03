@@ -13,13 +13,13 @@ import (
 // their endpoint, which is why they fold here instead of being kinds of
 // their own; each is still its own provider resource so membership edits
 // apply in place.
-func Resources(ctx *pulumi.Context, stackInput *awsclientvpnv1alpha1.AwsClientVpnStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *awsclientvpnv1alpha1.AwsClientVpnIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the AWS provider from the stack input via the shared builder,
+	// Build the AWS provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (static keys, keyless
 	// web identity, or ambient chain).
-	provider, err := pulumiawsprovider.Get(ctx, stackInput.ProviderConfig, locals.AwsClientVpn.Spec.Region)
+	provider, err := pulumiawsprovider.Get(ctx, iacInput.ProviderConfig, locals.AwsClientVpn.Spec.Region)
 	if err != nil {
 		return errors.Wrap(err, "failed to create AWS provider")
 	}

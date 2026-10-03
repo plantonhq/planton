@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kuberneteskarpenterec2nodeclass.v1alpha1;
 
-// KubernetesKarpenterEc2NodeClassStackOutputs captures observable outputs
+// KubernetesKarpenterEc2NodeClassOutputs captures observable outputs
 // after the EC2NodeClass is applied to the target cluster.
-message KubernetesKarpenterEc2NodeClassStackOutputs {
+message KubernetesKarpenterEc2NodeClassOutputs {
   // Name of the EC2NodeClass object (cluster-scoped; equals
   // metadata.name) — the value NodePools reference through their
   // node_class_ref.

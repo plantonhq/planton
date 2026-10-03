@@ -1,7 +1,7 @@
 locals {
   # SVMs carry TWO names: the ONTAP-internal spec.name (the SVM identity in
   # junction paths, SnapMirror, and DNS — underscore-only charset) and the
-  # cloud resource's metadata.name, which becomes the Name tag so the AWS
+  # infra component's metadata.name, which becomes the Name tag so the AWS
   # console shows the same identity both engines pin.
   resource_name = var.metadata.name
 

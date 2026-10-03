@@ -4,7 +4,7 @@ Creates an IAM SAML identity provider -- the account's trust anchor for SAML 2.0
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **SAML Provider** -- the IAM identity provider, named from `metadata.name`, created from the IdP's metadata document (issuer, SSO endpoints, and public signing certificates). IAM is global: the provider exists account-wide regardless of the endpoint region the stack ran against.
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with IAM permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with IAM permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -64,7 +64,7 @@ spec:
 planton apply -f aws-iam-saml-provider.yaml
 ```
 
-This creates the account's federation trust anchor from the pasted metadata, exporting the provider ARN for role trust policies and the certificate expiry date to rotate by. A Stack Job tracks the provisioning in real time.
+This creates the account's federation trust anchor from the pasted metadata, exporting the provider ARN for role trust policies and the certificate expiry date to rotate by. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -82,13 +82,13 @@ These are the most important decisions when configuring a SAML provider. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies -- the metadata document is pasted IdP content, not a reference to another Cloud Resource.
+This kind has no foreign key dependencies -- the metadata document is pasted IdP content, not a reference to another Infra Component.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -109,5 +109,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the roles federated users assume; their trust policies name this provider's ARN
-- [**AWS IAM User**](/cloud-catalog/aws-iam-user) -- what federation replaces: long-lived per-human credentials give way to short-lived role sessions
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the roles federated users assume; their trust policies name this provider's ARN
+- [**AWS IAM User**](/infra-catalog/aws-iam-user) -- what federation replaces: long-lived per-human credentials give way to short-lived role sessions

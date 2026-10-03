@@ -71,8 +71,8 @@ SaaS signing/SSO material (`saas_client_id`/`saas_client_secret`/`saas_public_ke
   Load Balancing decomposition. The application references policies rather than
   embedding rules, so authorization is reusable and lives in one place.
 - **The access-rule oneof is defined independently in each of policy and group**
-  (the codebase has no cross-component proto imports); a shared proto would be a new
-  cross-component pattern. The Terraform modules pass the rule lists straight
+  (the codebase has no cross-kind proto imports); a shared proto would be a new
+  cross-kind pattern. The Terraform modules pass the rule lists straight
   through (proto field names match the provider 1:1, including the nested
   `user_risk_score.user_risk_score`); the Pulumi modules map each variant explicitly.
 - **Cross-resource IDs are `StringValueOrRef`** (group id -> CloudflareZeroTrustAccessGroup;
@@ -93,7 +93,7 @@ resources and every deep application nested type, so tofu↔Pulumi are at full p
 **except** the `cloudflare_account_member` access-rule variant: it exists in the
 Terraform provider (v5.21.1) but not the Pulumi SDK. The proto models it (the
 future-proof source of truth) and the Terraform modules provision it; the Pulumi
-modules log a warning and skip that one variant, documented on each component's
+modules log a warning and skip that one variant, documented on each kind's
 Pulumi `README.md`. No proto `reserved` is used.
 
 ## Validation
@@ -101,7 +101,7 @@ Pulumi `README.md`. No proto `reserved` is used.
 `make protos` (incl. the Java compile gate); `go build ./...`; spec tests for all
 three components (happy/error/boundary per field, enum, and CEL rule); `pkg/outputs`
 conformance extended with all three kinds (the tofu↔pulumi parity guard);
-`pkg/secretcoverage` green; `make generate-cloud-resource-kind-map`; `tofu validate`
+`pkg/secretcoverage` green; `make generate-catalog-kind-map`; `tofu validate`
 of all three modules against the real v5 provider; all Pulumi entrypoints build the
 release way; and a **live `tofu apply` + `destroy`** against a real Cloudflare
 account of the full Monitor-free chain — a Group, a Policy that references it via a
@@ -115,7 +115,7 @@ the foreign keys resolve and the `aud` output populates, with a clean teardown
 `application_name` / `hostname` / `policy_type` / `allowed_emails` /
 `allowed_google_groups` / `require_mfa` / `session_duration_minutes` fields and the
 `CloudflareZeroTrustPolicyType` enum are removed in favor of the v5 surface and
-policy references. Stack outputs `public_hostname` / `policy_id` are replaced by
+policy references. Outputs `public_hostname` / `policy_id` are replaced by
 `aud` / `domain` / the SaaS outputs. Deliberate on this pre-1.0 surface.
 
 ---

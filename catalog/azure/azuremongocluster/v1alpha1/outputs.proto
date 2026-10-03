@@ -4,9 +4,9 @@ package dev.planton.azure.azuremongocluster.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureMongoClusterStackOutputs** captures the outputs from
+// **AzureMongoClusterOutputs** captures the outputs from
 // provisioning an Azure Cosmos DB for MongoDB vCore cluster.
-message AzureMongoClusterStackOutputs {
+message AzureMongoClusterOutputs {
   // The cluster's Azure Resource Manager ID -- the target an
   // AzureMongoClusterUser's mongo_cluster_id (and a replica's
   // source_server_id) references.

@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesmetricsserver
 spec:
@@ -10,19 +10,19 @@ spec:
   values:
     - name: release_name
       derivations:
-        - from_stack_output: release_name
+        - from_output: release_name
       where_to_find: >-
         Always "metrics-server" — the module fixes the release name.
         Confirm with `helm list -n <namespace>` (NAME column).
     - name: release_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         `helm list -A` (NAMESPACE column); conventionally "kube-system".
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Only imported when create_namespace is true; the installation

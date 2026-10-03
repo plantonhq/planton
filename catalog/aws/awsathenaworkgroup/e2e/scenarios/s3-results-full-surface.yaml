@@ -23,7 +23,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsathenaworkgroup
+    e2e-catalog-kind: awsathenaworkgroup
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AwsS3Bucket"

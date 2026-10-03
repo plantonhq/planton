@@ -37,7 +37,7 @@ func validResource() *AzureNatGateway {
 	return &AzureNatGateway{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureNatGateway",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-nat",
 		},
 		Spec: &AzureNatGatewaySpec{

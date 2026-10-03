@@ -1,5 +1,5 @@
 apiVersion: _test.planton.dev/v1alpha2
-kind: TestCloudResourceGeneric
+kind: TestCatalogKindGeneric
 metadata:
   name: producer
   env: dev

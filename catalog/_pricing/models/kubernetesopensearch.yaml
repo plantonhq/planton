@@ -1,16 +1,16 @@
 # Estimate model: hand-computed capacity footprints for this
-# cluster-capacity component's presets. The derivation grammar cannot
+# cluster-capacity kind's presets. The derivation grammar cannot
 # traverse this kind's repeated node_pools list (per-pool replicas,
 # resources, and disk_size) nor the separate Dashboards deployment with
 # its own replicas and resources, so each preset's totals are computed by
 # hand from its manifest: the sum over pools of replicas x (resources +
 # disk_size volume), plus Dashboards replicas x resources when enabled.
-# Cluster-capacity components carry no priced lines -- the dollar value of
+# Cluster-capacity kinds carry no priced lines -- the dollar value of
 # the reservation is the target cluster's node and storage-class
 # economics, which this catalog cannot know.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: kubernetesopensearch
 spec:

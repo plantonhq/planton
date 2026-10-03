@@ -5,9 +5,9 @@ package dev.planton.aws.awseksaccessentry.v1alpha1;
 import "catalog/aws/awseksaccessentry/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-eks-access-entry stack-input
-message AwsEksAccessEntryStackInput {
-  //target cloud-resource
+//aws-eks-access-entry iac-input
+message AwsEksAccessEntryIacInput {
+  //target infra-component
   AwsEksAccessEntry target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

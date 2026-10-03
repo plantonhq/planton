@@ -13,7 +13,7 @@ import (
 // behavior of the cancellation-reaping fix WITHOUT needing a tofu binary:
 // cancelling the context terminates the child's ENTIRE process group (the leader
 // AND its descendants), not just the leader. This is exactly what stops a
-// cancelled/superseded stack job from orphaning a tofu (or its provider plugins)
+// cancelled/superseded infra job from orphaning a tofu (or its provider plugins)
 // that would keep holding the state lock.
 //
 // The command backgrounds a grandchild `sleep` in the same group so the group has

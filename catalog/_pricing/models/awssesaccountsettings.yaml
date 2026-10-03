@@ -1,16 +1,16 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. Both presets are zero-committed: the SES account object
-# exists per account+region whether or not this component manages it, the
+# exists per account+region whether or not this kind manages it, the
 # suppression arm has no meter at all, and the VDM arm's per-email fee has
-# no fixed monthly component -- every meter a preset can start bills on the
+# no fixed monthly kind -- every meter a preset can start bills on the
 # account's send volume as it happens, stated in exclusions, never padded
 # into fabricated dollars.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awssesaccountsettings
 spec:
@@ -28,7 +28,7 @@ spec:
       currency: USD
       hours_per_month: 730
       exclusions:
-        - vdm.enabled starts the VDM per-email fee ($0.07 per 1,000 emails for the first 10M a month, stepping down at higher tiers) on every email the account sends in the region -- proportional to send volume, zero in an idle account, with no fixed monthly component
+        - vdm.enabled starts the VDM per-email fee ($0.07 per 1,000 emails for the first 10M a month, stepping down at higher tiers) on every email the account sends in the region -- proportional to send volume, zero in an idle account, with no fixed monthly kind
         - VDM dashboard queries bill $0.0005 per 1,000 beyond the permanent 5,000-free-queries-per-month allotment
         - "VDM Global deliverability ($1,250 per month flat) is a separate console-purchased add-on this API never enables"
         - the account's outbound sending bills on its own meters ($0.10 per 1,000 emails plus $0.12 per GB of attachment data) regardless of VDM

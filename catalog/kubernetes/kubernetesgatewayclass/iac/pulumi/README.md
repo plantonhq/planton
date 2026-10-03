@@ -27,12 +27,12 @@ planton pulumi up --manifest ../../e2e/manifest.yaml
 
 ### Direct Pulumi usage
 
-The entrypoint loads the `KubernetesGatewayClassStackInput` from the
-`STACK_INPUT_YAML_FILE` environment variable (path to a manifest) or
-`STACK_INPUT_YAML` (inline YAML content):
+The entrypoint loads the `KubernetesGatewayClassIacInput` from the
+`IAC_INPUT_YAML_FILE` environment variable (path to a manifest) or
+`IAC_INPUT_YAML` (inline YAML content):
 
 ```bash
-export STACK_INPUT_YAML_FILE=../../e2e/manifest.yaml
+export IAC_INPUT_YAML_FILE=../../e2e/manifest.yaml
 pulumi up
 ```
 
@@ -47,14 +47,14 @@ pulumi up
 
 ```
 pulumi/
-├── main.go           # Pulumi entrypoint (loads stack input)
+├── main.go           # Pulumi entrypoint (loads IaC input)
 ├── Pulumi.yaml       # Pulumi project configuration
 ├── Makefile          # Build automation
 ├── README.md         # This file
 └── module/
     ├── main.go       # Resource creation (typed NewGatewayClass)
     ├── locals.go     # Computed values
-    └── outputs.go    # Stack output constant names
+    └── outputs.go    # Output constant names
 ```
 
 No await/wait logic is attached: the Accepted condition belongs to the named

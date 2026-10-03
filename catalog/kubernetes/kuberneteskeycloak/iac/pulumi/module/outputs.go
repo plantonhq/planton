@@ -4,7 +4,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Output name constants — one per KubernetesKeycloakStackOutputs field.
+// Output name constants — one per KubernetesKeycloakOutputs field.
 const (
 	OpNamespace              = "namespace"
 	OpStatefulSet            = "stateful_set"

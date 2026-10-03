@@ -1,4 +1,4 @@
-# AwsOrganizationalUnit — Component Guide
+# AwsOrganizationalUnit — Kind Guide
 
 Authored operational judgment for the organizational-unit component:
 the design decisions behind the spec's shape, and what to know before

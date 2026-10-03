@@ -16,7 +16,7 @@ import (
 )
 
 // GetWithKubernetesProviderConfig returns the kubernetes provider for the connection
-// carried in the stack input. A nil config falls back to the host kubeconfig (with
+// carried in the IaC input. A nil config falls back to the host kubeconfig (with
 // optional KUBE_CTX context selection) -- the local-workflow path.
 func GetWithKubernetesProviderConfig(ctx *pulumi.Context,
 	kubernetesProviderConfig *kubernetesprovider.KubernetesProviderConfig,

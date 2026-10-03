@@ -28,7 +28,7 @@ import (
 // is no region parameter (region is a property of the resource, not of the
 // API endpoint).
 type Verifier interface {
-	// IDOutputKey is the stack-output key carrying the identifier used to
+	// IDOutputKey is the output key carrying the identifier used to
 	// verify the resource (e.g. "vpc_id"). The key names come from each
 	// kind's outputs.proto -- they are contract, not convention.
 	IDOutputKey() string
@@ -38,7 +38,7 @@ type Verifier interface {
 	VerifyAbsent(ctx context.Context, client *godo.Client, id string) error
 }
 
-// OutputsVerifier inspects the full stack output map when a single string id
+// OutputsVerifier inspects the full output map when a single string id
 // is insufficient (e.g. a DNS record is addressed by domain + record id, and
 // a Spaces bucket by region + name).
 type OutputsVerifier interface {
@@ -139,7 +139,7 @@ func isNotFound(err error) bool {
 	return false
 }
 
-// StringOutput reads a string-valued stack output, tolerating non-string
+// StringOutput reads a string-valued output, tolerating non-string
 // scalars: DigitalOcean's numeric ids (droplets, DNS records) may decode as
 // float64 or json.Number depending on the engine's JSON path, and a float64
 // rendered with %v would turn 12345678 into "1.2345678e+07". Exported because
@@ -155,7 +155,7 @@ func StringOutput(outputs map[string]interface{}, key string) string {
 	return scalarString(v)
 }
 
-// StringSliceOutput reads a list-valued stack output (a `repeated string`
+// StringSliceOutput reads a list-valued output (a `repeated string`
 // in the outputs contract) as []string, tolerating a missing or empty list
 // and applying StringOutput's scalar care to every element. Order is the
 // engine's; callers that compare sets must not rely on it.
@@ -174,7 +174,7 @@ func StringSliceOutput(outputs map[string]interface{}, key string) []string {
 	return out
 }
 
-// StringMapOutput reads a map-valued stack output (a `map<string, string>`
+// StringMapOutput reads a map-valued output (a `map<string, string>`
 // in the outputs contract -- the per-instance id maps that keyed blind
 // imports derive from) as map[string]string, tolerating a missing or empty
 // map and applying StringOutput's scalar care to every value.

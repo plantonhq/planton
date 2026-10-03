@@ -56,7 +56,7 @@ Suresh Attaluri  5:24
 that is, how one can build
 
 Suresh Attaluri  5:26  
-through chat, someone can deploy and all those stuff, right? So, recordings are already there. Here we can put some nice chat image, an existing chart. We can take a screenshot, yeah, along with stack jobs or logs, or with or without it? Yeah.
+through chat, someone can deploy and all those stuff, right? So, recordings are already there. Here we can put some nice chat image, an existing chart. We can take a screenshot, yeah, along with infra jobs or logs, or with or without it? Yeah.
 
 Swarup Donepudi  5:45  
 And we can also create a simple GIF by like, doing the typing. So we'll have a chat that we want to show, and we'll do the chat and create a GIF out of it and put it here. It's not a video.

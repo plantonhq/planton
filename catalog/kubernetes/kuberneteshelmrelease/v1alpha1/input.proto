@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kuberneteshelmrelease.v1alpha1;
 import "catalog/kubernetes/kuberneteshelmrelease/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//kubernetes-helm-release stack-input
-message KubernetesHelmReleaseStackInput {
-  //target cloud-resource
+//kubernetes-helm-release iac-input
+message KubernetesHelmReleaseIacInput {
+  //target infra-component
   KubernetesHelmRelease target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

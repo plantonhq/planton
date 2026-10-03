@@ -4,7 +4,7 @@ Defines one custom organization-policy constraint: a rule the organization write
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Custom constraint** -- the `org_policy_custom_constraint` named `custom.{constraintName}` in the organization, with its resource types, method types, condition, and action
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials that can administer organization policies at the organization. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials that can administer organization policies at the organization. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### GCP Organization
 
@@ -55,7 +55,7 @@ spec:
 planton apply -f custom-constraint.yaml
 ```
 
-This defines `custom.disableGkeAutoUpgradeOff` in the organization. Nothing is blocked yet -- a `GcpOrgPolicy` at some scope enforces it. A Stack Job tracks the provisioning in real time.
+This defines `custom.disableGkeAutoUpgradeOff` in the organization. Nothing is blocked yet -- a `GcpOrgPolicy` at some scope enforces it. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -73,13 +73,13 @@ These are the most important decisions when configuring a custom constraint. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies: the organization is named by its numeric ID.
+This kind has no foreign key dependencies: the organization is named by its numeric ID.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -97,5 +97,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Organization Policy**](/cloud-catalog/gcp-org-policy) -- enforces this constraint at a project, folder, or the organization by reference
-- [**GCP Folder**](/cloud-catalog/gcp-folder) -- the scopes the enforcing policies typically sit on
+- [**GCP Organization Policy**](/infra-catalog/gcp-org-policy) -- enforces this constraint at a project, folder, or the organization by reference
+- [**GCP Folder**](/infra-catalog/gcp-folder) -- the scopes the enforcing policies typically sit on

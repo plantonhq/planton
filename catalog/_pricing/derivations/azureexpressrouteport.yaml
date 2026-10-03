@@ -10,9 +10,9 @@
 # replays the catalog presets through these rules to emit
 # ../estimates/azureexpressrouteport.yaml; a server-side estimator
 # evaluates the same rules against live manifests.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: azureexpressrouteport
 spec:
@@ -89,9 +89,9 @@ spec:
       price_slug: expressroute-direct-100gbps-unlimited-port-zone1
       basis: one port pair x the 100 Gbps unlimited-data monthly fee -- the flat rate that removes per-GB egress metering from every circuit on the port; Zone 1 assumed as above
   exclusions:
-    - text: circuits carved from the port bill on their own components -- Premium circuit add-ons carry a monthly fee, and on metered ports the circuits' outbound traffic bills per GB
+    - text: circuits carved from the port bill on their own kinds -- Premium circuit add-ons carry a monthly fee, and on metered ports the circuits' outbound traffic bills per GB
     - text: the physical cross-connect and colocation charges are contracted with the facility operator, outside Azure entirely
-    - text: MACsec key reads bill as Key Vault operations on the referenced vault's component
+    - text: MACsec key reads bill as Key Vault operations on the referenced vault's kind
   notes:
     - text: The port fee is priced by the peering location's zone (Zone 1 through Zone 4) -- facilities outside Zone 1 bill higher list rates on the SAME meters, and no committed mapping from facility name to zone exists in the manifest, which is why the zone rides as a stated assumption rather than a lookup.
     - text: MACsec, link admin state, issued authorizations, and the managed identity add no meters -- the port pair fee is the whole committed bill.

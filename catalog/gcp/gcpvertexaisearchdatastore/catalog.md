@@ -4,7 +4,7 @@ Stands up a Vertex AI Search data store -- the corpus a search, chat, or recomme
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `discoveryengine.googleapis.com` on the project
 - **Data store** -- a `discoveryengine.DataStore` with its vertical, content type, solutions, and document processing
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Discovery Engine admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Discovery Engine admin permissions on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Optional Dependencies
@@ -58,7 +58,7 @@ spec:
 planton apply -f vertex-ai-search-data-store.yaml
 ```
 
-This creates a document store enrolled in search and chat that parses documents by layout and chunks them into passages. A Stack Job tracks the provisioning in real time.
+This creates a document store enrolled in search and chat that parses documents by layout and chunks them into passages. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -76,16 +76,16 @@ These are the most important decisions when configuring a data store. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpKmsKey** | `kmsKeyName` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -107,6 +107,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Vertex AI Search Engine**](/cloud-catalog/gcp-vertex-ai-search-engine) -- the app over the store
-- [**GCP Vertex AI Search Data Connector**](/cloud-catalog/gcp-vertex-ai-search-data-connector) -- stores synced from third-party sources
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- customer-managed encryption
+- [**GCP Vertex AI Search Engine**](/infra-catalog/gcp-vertex-ai-search-engine) -- the app over the store
+- [**GCP Vertex AI Search Data Connector**](/infra-catalog/gcp-vertex-ai-search-data-connector) -- stores synced from third-party sources
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- customer-managed encryption

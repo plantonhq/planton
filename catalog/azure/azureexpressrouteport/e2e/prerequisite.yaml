@@ -21,7 +21,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureexpressrouteport
+    e2e-catalog-kind: azureexpressrouteport
   annotations:
     planton.dev/e2e: "true"
   tags:

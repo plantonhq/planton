@@ -4,7 +4,7 @@ A Cloud Run worker pool -- a pool of always-running container instances with no 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Worker pool** -- a `cloud_run_v2_worker_pool` in your region with the container template, scaling posture, instance split, binary authorization, and encryption settings
 - **API enablement** -- `run.googleapis.com` on the project (never disabled on destroy)
@@ -95,7 +95,7 @@ Per container: `name`, `image`, `command`, `args`, `env` (literal, `valueFromSec
 - An env var takes exactly one of `value`, `valueFromSecret`, or `secretValue`; a volume has exactly one source; `vpcAccess` uses a connector or network interfaces, not both.
 - Probe `timeoutSeconds` ≤ `periodSeconds`; a startup window (`failureThreshold` × `periodSeconds`) ≤ 240 s; **at most one probe `httpHeaders` entry** (see Important Notes).
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -128,7 +128,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpCloudRun** -- the request-serving sibling; **GcpCloudRunJob** -- run-to-completion work
 - **GcpServiceAccount** -- the runtime identity

@@ -4,7 +4,7 @@ Installs an upstream Helm chart as a REAL Helm release — the catalog's sole in
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm Release** -- the chart fetched from `repo` (an HTTPS repository index or an `oci://` registry pull), installed at the PINNED `version` into `namespace`, named `releaseName` when set (otherwise `metadata.name`)
 - **Everything the chart renders** -- workloads, Services, ConfigMaps, and any CRDs the chart templates as release resources (Helm-owned; a chart that templates them without `helm.sh/resource-policy: keep` is refused unless `crds.allowHelmManaged` accepts it)
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - For a **private chart source**: an organization secret holding the repository password or registry token — `repositoryPassword` stores a `$secret/<name>` reference, resolved just-in-time at deploy.
 
 ### Kubernetes Cluster
@@ -62,11 +62,11 @@ spec:
 planton apply -f helm-release.yaml
 ```
 
-This installs the podinfo chart at the pinned 6.9.2 into the `apps` namespace as a real Helm release, with two replicas and an atomic rollback guarantee. A Stack Job tracks the provisioning in real time.
+This installs the podinfo chart at the pinned 6.9.2 into the `apps` namespace as a real Helm release, with two replicas and an atomic rollback guarantee. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire the release to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, wire the release to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -100,15 +100,15 @@ These are the most important decisions when configuring a Helm release. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -131,5 +131,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the placement target; reference one by name or compose it as a first-class resource.
-- First-class chart components -- when the catalog grows a typed component for a chart you run through this kind ([**Cert Manager**](/cloud-catalog/kubernetes-cert-manager), [**Ingress NGINX**](/cloud-catalog/kubernetes-ingress-nginx), [**Istio**](/cloud-catalog/kubernetes-istio), and the rest already exist), prefer it: validation, outputs, and field-level teaching come with it.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the placement target; reference one by name or compose it as a first-class resource.
+- First-class chart components -- when the catalog grows a typed component for a chart you run through this kind ([**Cert Manager**](/infra-catalog/kubernetes-cert-manager), [**Ingress NGINX**](/infra-catalog/kubernetes-ingress-nginx), [**Istio**](/infra-catalog/kubernetes-istio), and the rest already exist), prefer it: validation, outputs, and field-level teaching come with it.

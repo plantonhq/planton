@@ -11,7 +11,7 @@ provisions in seconds and costs nothing to keep.
 
 The Azure provider is built through the shared provider builder, which
 resolves the right credential mechanism (static client secret, keyless
-web identity, or ambient chain) from the stack input.
+web identity, or ambient chain) from the IaC input.
 
 ## Design Decisions
 
@@ -23,7 +23,7 @@ web identity, or ambient chain) from the stack input.
 
 ## Inputs
 
-The module receives an `AzureLocalNetworkGatewayStackInput` containing:
+The module receives an `AzureLocalNetworkGatewayIacInput` containing:
 
 - `target.spec.region` / `target.spec.resource_group` / `target.spec.name` -- the object's ARM identity (references resolved to literals by the platform)
 - `target.spec.gateway_address` / `target.spec.gateway_fqdn` -- the device's public endpoint (exactly one)

@@ -259,7 +259,7 @@ The following MWAA features are **not** covered by this v1 API. They may be adde
 
 ## How it works
 
-Planton provisions the MWAA environment via Pulumi or Terraform modules defined in this repository. The API contract is protobuf-based (`api.proto`, `spec.proto`, `outputs.proto`) and stack execution is orchestrated by the platform using the `AwsMwaaEnvironmentStackInput` (includes provider credentials and target resource).
+Planton provisions the MWAA environment via Pulumi or Terraform modules defined in this repository. The API contract is protobuf-based (`api.proto`, `spec.proto`, `outputs.proto`) and stack execution is orchestrated by the platform using the `AwsMwaaEnvironmentIacInput` (includes provider credentials and target resource).
 
 Network ingress is composed, never embedded: the environment attaches the referenced `securityGroupIds` directly, and the rules MWAA needs live on those first-class `AwsSecurityGroup` nodes. The AWS-recommended MWAA security group carries:
 - A self-referencing inbound rule (all traffic) for MWAA component intercommunication.

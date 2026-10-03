@@ -4,7 +4,7 @@ Deploys a Private Link Service -- the PROVIDER side of Azure Private Link. Your 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Private Link Service** -- the ARM object carrying the destination (LB frontends or destination IP), NAT configurations, visibility/auto-approval lists, and the generated consumer-facing alias
 - **Azure Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) merged with your `tags`, applied to the service
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -56,7 +56,7 @@ spec:
 planton apply -f azure-private-link-service.yaml
 ```
 
-This publishes the service behind the internal load balancer's frontend, with one NAT address on the policies-disabled subnet and the consumer-facing alias in the outputs. A Stack Job tracks the provisioning in real time.
+This publishes the service behind the internal load balancer's frontend, with one NAT address on the policies-disabled subnet and the consumer-facing alias in the outputs. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,7 +95,7 @@ These are the most important decisions when configuring a Private Link Service. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -103,9 +103,9 @@ These are the most important decisions when configuring a Private Link Service. 
 | **AzureSubnet** | `natIpConfigurations[].subnetId` | `status.outputs.subnet_id` |
 | **AzureLoadBalancer** | `loadBalancerFrontendIpConfigurationIds[]` | `status.outputs.frontend_ip_configuration_ids.<frontend-name>` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -123,6 +123,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- provides the policies-disabled subnet the NAT addresses draw from
-- [**Azure Load Balancer**](/cloud-catalog/azure-load-balancer) -- the Standard internal LB the service typically fronts
-- [**Azure Private Endpoint**](/cloud-catalog/azure-private-endpoint) -- the CONSUMER side that connects to this service
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- provides the policies-disabled subnet the NAT addresses draw from
+- [**Azure Load Balancer**](/infra-catalog/azure-load-balancer) -- the Standard internal LB the service typically fronts
+- [**Azure Private Endpoint**](/infra-catalog/azure-private-endpoint) -- the CONSUMER side that connects to this service

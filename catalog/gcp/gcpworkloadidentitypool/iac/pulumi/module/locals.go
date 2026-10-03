@@ -11,8 +11,8 @@ type Locals struct {
 	GcpWorkloadIdentityPool *gcpworkloadidentitypoolv1alpha1.GcpWorkloadIdentityPool
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *gcpworkloadidentitypoolv1alpha1.GcpWorkloadIdentityPoolStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *gcpworkloadidentitypoolv1alpha1.GcpWorkloadIdentityPoolIacInput) *Locals {
 	return &Locals{
-		GcpWorkloadIdentityPool: stackInput.Target,
+		GcpWorkloadIdentityPool: iacInput.Target,
 	}
 }

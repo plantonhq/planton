@@ -8,7 +8,7 @@ running Keycloak StatefulSets. Every bundle resource carries
 upstream's fixed names (`keycloak-operator` and friends): exactly one
 install per namespace, by construction.
 
-Not the right component when:
+Not the right kind when:
 
 - **You want Keycloak itself** — that is `KubernetesKeycloak`: the
   server declaration this operator reconciles. Installing the

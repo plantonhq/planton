@@ -5,19 +5,19 @@ Pulumi (Go) IaC module for managing a Cloudflare zone's behavior settings — th
 ## Architecture
 
 ```
-main.go             — Entrypoint loading the stack input
+main.go             — Entrypoint loading the IaC input
 module/main.go      — Resources(): provider setup, fan-out, companions, outputs
 module/locals.go    — Locals initialization
 module/zone_settings.go — collectSettings() + the cloudflare_zone_setting fan-out
 module/companions.go — Managed transforms, URL normalization, origin regions, waiting-room bypass
-module/outputs.go   — Stack output keys (zone_id)
+module/outputs.go   — output keys (zone_id)
 ```
 
 ## Behavior
 
 Each managed setting emits one `ZoneSetting` resource keyed by its setting id. An unset spec field is NOT MANAGED: the module never sends it, and the zone keeps its current value. Zone settings have no delete at Cloudflare — destroy drops state and abandons the live values, so revert settings explicitly before retiring the resource.
 
-The module mirrors the Terraform module's contract exactly: same resource set, same on/off mapping for boolean settings, same `zone_id` stack output.
+The module mirrors the Terraform module's contract exactly: same resource set, same on/off mapping for boolean settings, same `zone_id` output.
 
 ## Outputs
 

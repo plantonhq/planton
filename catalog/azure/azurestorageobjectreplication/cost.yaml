@@ -5,9 +5,9 @@
 # configure object replication, including the task of enabling change feed,
 # enabling versioning, and adding replication policies" -- but the
 # replication it drives bills real transaction, capacity, and egress meters
-# on BOTH referenced accounts. Schema: finops/componentcostprofile/v1.
+# on BOTH referenced accounts. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurestorageobjectreplication
 spec:

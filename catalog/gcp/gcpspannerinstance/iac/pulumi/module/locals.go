@@ -6,7 +6,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpspannerinstancev1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpspannerinstance/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -17,9 +17,9 @@ type Locals struct {
 	InstanceName       string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpspannerinstancev1alpha1.GcpSpannerInstanceStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpspannerinstancev1alpha1.GcpSpannerInstanceIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpSpannerInstance = stackInput.Target
+	locals.GcpSpannerInstance = iacInput.Target
 
 	locals.InstanceName = locals.GcpSpannerInstance.Spec.InstanceName
 	if locals.InstanceName == "" {
@@ -34,7 +34,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpspannerinstancev1alpha1.
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = locals.InstanceName
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpSpannerInstance.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpSpannerInstance.String())
 
 	if locals.GcpSpannerInstance.Metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = locals.GcpSpannerInstance.Metadata.Org
@@ -46,6 +46,6 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpspannerinstancev1alpha1.
 		locals.GcpLabels[gcplabelkeys.ResourceId] = locals.GcpSpannerInstance.Metadata.Id
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

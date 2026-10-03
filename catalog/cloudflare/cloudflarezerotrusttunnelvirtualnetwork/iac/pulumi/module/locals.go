@@ -12,9 +12,9 @@ type Locals struct {
 	CloudflareZeroTrustTunnelVirtualNetwork *cloudflarezerotrusttunnelvirtualnetworkv1alpha1.CloudflareZeroTrustTunnelVirtualNetwork
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflarezerotrusttunnelvirtualnetworkv1alpha1.CloudflareZeroTrustTunnelVirtualNetworkStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflarezerotrusttunnelvirtualnetworkv1alpha1.CloudflareZeroTrustTunnelVirtualNetworkIacInput) *Locals {
 	locals := &Locals{}
-	locals.CloudflareZeroTrustTunnelVirtualNetwork = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareZeroTrustTunnelVirtualNetwork = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

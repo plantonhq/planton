@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetessolr.v1alpha1;
 import "catalog/kubernetes/kubernetessolr/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//solr-kubernetes stack-input
-message KubernetesSolrStackInput {
-  //target cloud-resource
+//solr-kubernetes iac-input
+message KubernetesSolrIacInput {
+  //target infra-component
   KubernetesSolr target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

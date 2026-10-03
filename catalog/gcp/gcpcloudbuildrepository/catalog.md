@@ -4,7 +4,7 @@ Links one repository from your code host into Cloud Build through an existing co
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Repository link** -- the repository, linked under its connection in the connection's project and region
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with permission to manage Cloud Build repositories in the connection's project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with permission to manage Cloud Build repositories in the connection's project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Code Host Account
@@ -46,7 +46,7 @@ spec:
 planton apply -f cloud-build-repository.yaml
 ```
 
-This links the orders repository so a trigger can build it. A Stack Job tracks the provisioning in real time.
+This links the orders repository so a trigger can build it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -62,15 +62,15 @@ These are the most important decisions when configuring a repository link. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpCloudBuildConnection** | `parentConnection` | `status.outputs.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -86,6 +86,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Cloud Build Connection**](/cloud-catalog/gcp-cloud-build-connection) -- the connection the repository is linked through
-- [**GCP Cloud Build Trigger**](/cloud-catalog/gcp-cloud-build-trigger) -- builds started by the repository's events
-- [**GCP Deploy Custom Target Type**](/cloud-catalog/gcp-deploy-custom-target-type) -- Skaffold modules read from the repository
+- [**GCP Cloud Build Connection**](/infra-catalog/gcp-cloud-build-connection) -- the connection the repository is linked through
+- [**GCP Cloud Build Trigger**](/infra-catalog/gcp-cloud-build-trigger) -- builds started by the repository's events
+- [**GCP Deploy Custom Target Type**](/infra-catalog/gcp-deploy-custom-target-type) -- Skaffold modules read from the repository

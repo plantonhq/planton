@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awss3objectset.v1alpha1;
 
-// AwsS3ObjectSetStackOutputs captures observable outputs from the S3 object
+// AwsS3ObjectSetOutputs captures observable outputs from the S3 object
 // upload operations.
-message AwsS3ObjectSetStackOutputs {
+message AwsS3ObjectSetOutputs {
   // The bucket the objects were uploaded to. Carried for downstream
   // references and for E2E verification (HeadObject per key).
   string bucket_id = 1;

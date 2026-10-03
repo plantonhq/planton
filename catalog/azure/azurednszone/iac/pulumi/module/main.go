@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azurednszonev1alpha1.AzureDnsZoneStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azurednszonev1alpha1.AzureDnsZoneIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -80,7 +80,7 @@ func Resources(ctx *pulumi.Context, stackInput *azurednszonev1alpha1.AzureDnsZon
 		return errors.Wrapf(err, "failed to create dns zone %s", spec.ZoneName)
 	}
 
-	// Export stack outputs from the created resource. zone_name (with
+	// Export outputs from the created resource. zone_name (with
 	// resource_group_name) is the join key AzureDnsRecord resources
 	// address record sets through; zone_id is the ARM-id seam for kinds
 	// that watch the zone as a whole (Front Door custom-domain

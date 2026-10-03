@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package dev.planton.azure.azurefrontdoorroute.v1alpha1;
 
-// **AzureFrontDoorRouteStackOutputs** captures the outputs of
+// **AzureFrontDoorRouteOutputs** captures the outputs of
 // provisioning an Azure Front Door route.
 //
 // No hostname output on purpose: the client-facing hostname lives on the
 // ENDPOINT (AzureFrontDoorEndpoint's host_name output); the route is
 // policy attached to that hostname.
-message AzureFrontDoorRouteStackOutputs {
+message AzureFrontDoorRouteOutputs {
   // The Azure Resource Manager ID of the route.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Cdn/profiles/{profile}/afdEndpoints/{endpoint}/routes/{name}
   string route_id = 1;

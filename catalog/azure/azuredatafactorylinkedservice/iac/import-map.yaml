@@ -1,16 +1,16 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuredatafactorylinkedservice
 spec:
   values:
     - name: linked_service_id
       derivations:
-        - from_stack_output: linked_service_id
+        - from_output: linked_service_id
       where_to_find: >-
         Compose it from the factory's resource ID plus
         /linkedservices/<linked-service-name>, or `az datafactory
         linked-service show --factory-name <factory> --resource-group
         <rg> --name <name> --query id`; also the component's own
-        linked_service_id stack output. The same ID shape serves all
+        linked_service_id output. The same ID shape serves all
         23 connection types.

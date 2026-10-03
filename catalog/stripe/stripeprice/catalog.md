@@ -1,10 +1,10 @@
 # Stripe Price
 
-Declares how much, how often and in which currencies a product is charged -- a flat monthly amount, a per-seat price, graduated usage tiers, or an amount the customer chooses. One Cloud Resource per price.
+Declares how much, how often and in which currencies a product is charged -- a flat monthly amount, a per-seat price, graduated usage tiers, or an amount the customer chooses. One Infra Component per price.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the OpenTofu module creates one price on the product it names, in the Stripe account your Stripe connection's key belongs to:
+When you deploy this Infra Component, the OpenTofu module creates one price on the product it names, in the Stripe account your Stripe connection's key belongs to:
 
 - **The charge** -- amount, currency, and how quantity or usage turns into an amount
 - **The schedule** -- one-time, or recurring at an interval
@@ -20,7 +20,7 @@ When you deploy this Cloud Resource, the OpenTofu module creates one price on th
 ### Stripe Account
 
 - **The connection's restricted key** needs **Prices: Write** (Stripe Dashboard: Developers, API keys, the key's permissions).
-- **The product** -- a Stripe Product Cloud Resource, or an existing product's id.
+- **The product** -- a Stripe Product Infra Component, or an existing product's id.
 - **One owner**: declare a price here only if your application and the Dashboard do not also manage it.
 
 ## Deploy
@@ -55,7 +55,7 @@ spec:
 planton apply -f stripe-price.yaml
 ```
 
-A Stack Job tracks the change in real time.
+An Infra Job tracks the change in real time.
 
 ### InfraChart
 
@@ -86,14 +86,14 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Field | Kind | Output |
 |-------|------|--------|
 | `product` | Stripe Product | `status.outputs.id` |
 | `recurring.meter` | Stripe Billing Meter | `status.outputs.id` |
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -115,7 +115,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Stripe Product**](/cloud-catalog/stripe-product) -- what the price charges for.
-- [**Stripe Billing Meter**](/cloud-catalog/stripe-billing-meter) -- counts the usage a metered price bills.
-- [**Stripe Payment Link**](/cloud-catalog/stripe-payment-link) -- a hosted page that sells the price.
-- [**Stripe Billing Portal Configuration**](/cloud-catalog/stripe-billing-portal-configuration) -- lets customers switch between prices.
+- [**Stripe Product**](/infra-catalog/stripe-product) -- what the price charges for.
+- [**Stripe Billing Meter**](/infra-catalog/stripe-billing-meter) -- counts the usage a metered price bills.
+- [**Stripe Payment Link**](/infra-catalog/stripe-payment-link) -- a hosted page that sells the price.
+- [**Stripe Billing Portal Configuration**](/infra-catalog/stripe-billing-portal-configuration) -- lets customers switch between prices.

@@ -5,9 +5,9 @@ package dev.planton.aws.awsauroradsql.v1alpha1;
 import "catalog/aws/awsauroradsql/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsAuroraDsqlStackInput is the input for the IaC modules that
+// AwsAuroraDsqlIacInput is the input for the IaC modules that
 // manage an Aurora DSQL cluster and its multi-region pairing.
-message AwsAuroraDsqlStackInput {
+message AwsAuroraDsqlIacInput {
   // target is the AwsAuroraDsql resource to deploy.
   AwsAuroraDsql target = 1;
   // provider_config contains the AWS provider credentials and configuration.

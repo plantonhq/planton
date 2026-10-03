@@ -4,9 +4,9 @@
 # estimate model: its presets commit real spend (desired_count copies of a
 # task), but the per-copy rate lives on the referenced AwsEcsTaskDefinition's
 # cpu/memory -- invisible in this manifest, so a dollar figure here would be
-# a guess wearing a dollar sign. Schema: finops/componentcostprofile/v1.
+# a guess wearing a dollar sign. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awsecsservice
 spec:

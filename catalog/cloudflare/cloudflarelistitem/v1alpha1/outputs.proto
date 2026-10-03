@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarelistitem.v1alpha1;
 
-// CloudflareListItemStackOutputs captures the outputs after writing a list entry.
-message CloudflareListItemStackOutputs {
+// CloudflareListItemOutputs captures the outputs after writing a list entry.
+message CloudflareListItemOutputs {
   // The Cloudflare-assigned identifier of the list item.
   string item_id = 1;
 

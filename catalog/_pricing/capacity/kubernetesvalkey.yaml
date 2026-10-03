@@ -9,9 +9,9 @@
 # resources block and its own volume from replication.persistence
 # (top-level persistence and the replication block are mutually
 # exclusive by the spec's own validation, so exactly one volume path
-# resolves per manifest). Schema: finops/componentcapacityderivation/v1.
+# resolves per manifest). Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetesvalkey
 spec:

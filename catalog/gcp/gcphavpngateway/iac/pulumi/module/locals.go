@@ -6,7 +6,7 @@ import (
 
 	gcphavpngatewayv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcphavpngateway/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -31,8 +31,8 @@ type Locals struct {
 	GcpLabels map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcphavpngatewayv1alpha1.GcpHaVpnGatewayStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcphavpngatewayv1alpha1.GcpHaVpnGatewayIacInput) *Locals {
+	target := iacInput.Target
 
 	gatewayName := target.Spec.GatewayName
 	if gatewayName == "" {
@@ -49,7 +49,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcphavpngatewayv1alpha1.Gcp
 	}
 	labels[gcplabelkeys.Resource] = strconv.FormatBool(true)
 	labels[gcplabelkeys.ResourceName] = gatewayName
-	labels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpHaVpnGateway.String())
+	labels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpHaVpnGateway.String())
 	if target.Metadata.Org != "" {
 		labels[gcplabelkeys.Organization] = target.Metadata.Org
 	}

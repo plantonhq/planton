@@ -3,9 +3,9 @@
 # catalog-data conformance gate. This component deliberately ships a
 # zero-committed estimate: the deployment is a job RECIPE -- nothing runs
 # or bills at create time, and every dollar it shapes lands on the compute
-# pool its jobs run on. Schema: finops/componentcostprofile/v1.
+# pool its jobs run on. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azuremachinelearningbatchdeployment
 spec:
@@ -32,7 +32,7 @@ spec:
       pricing_unit: hours
       impact: For pipeline-component recipes, the steps find their compute HERE (default_compute), not through compute_id -- the pipeline jobs' node-hours land on whatever pools the settings name, each billing on its own component.
   estimate_exclusions:
-    - job node-hours bill on the referenced compute pool -- the AzureMachineLearningComputeCluster component's dedicated or low-priority VM meters, or serverless compute VM hours billed directly when compute_id is unset -- following invocation cadence and job duration, which no manifest can predict
+    - job node-hours bill on the referenced compute pool -- the AzureMachineLearningComputeCluster kind's dedicated or low-priority VM meters, or serverless compute VM hours billed directly when compute_id is unset -- following invocation cadence and job duration, which no manifest can predict
     - job inputs and outputs rest in the workspace's datastores, so storage capacity and transactions bill on the storage account's own component
     - network egress follows what jobs move between regions and out of Azure
   notes: "A recipe, priced like one: the deployment object carries no meter under Azure Machine Learning's no-additional-charge model (Microsoft's pricing page, retrieved 2026-08-18), so holding it -- even with a registered model, scoring code and environment attached -- costs exactly nothing. Money moves only when the ENDPOINT is invoked: each invocation materializes a job from this recipe, the referenced pool scales up, and plain VM node-hours accrue for the job's duration on the pool's component. The recipe's fields shape that spend without owning it -- instance_count multiplies concurrent node-hours, retries extend them, concurrency compresses them. The pattern's whole appeal is that an idle batch stack (endpoint + deployment + scale-to-zero cluster) is a zero-dollar standing army."

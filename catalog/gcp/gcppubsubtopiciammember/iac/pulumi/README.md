@@ -27,7 +27,7 @@ iac/pulumi/
 └── module/
     ├── main.go        # Module coordinator
     ├── iam_member.go  # IAM member grant creation
-    └── outputs.go     # Stack output constants
+    └── outputs.go     # Output constants
 ```
 
 ## Quick Start
@@ -41,7 +41,7 @@ pulumi stack init dev
 
 ### 2. Create Input File
 
-Provide a `stack-input.yaml` with the grant specification:
+Provide a `iac-input.yaml` with the grant specification:
 
 ```yaml
 target:
@@ -61,7 +61,7 @@ target:
 ### 3. Deploy
 
 ```bash
-export STACK_INPUT_FILE_PATH=stack-input.yaml
+export IAC_INPUT_FILE_PATH=iac-input.yaml
 pulumi up
 ```
 
@@ -73,7 +73,7 @@ pulumi destroy
 
 Destroy removes exactly this (role, member) pair from the topic's policy — no other grant is touched, and the topic is never affected.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|

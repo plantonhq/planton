@@ -4,7 +4,7 @@ Deploys a Cognito User Pool — the user directory at the root of the Cognito fa
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Cognito User Pool** -- a user directory with the configured identity model (email/phone or alias sign-in), feature tier, password policy, passwordless first factors (email OTP, SMS OTP, passkeys), MFA settings, account recovery order, verification/invitation message templates, device tracking, and threat protection
 - **User Pool Domain** -- created only when `domain` is configured; a Cognito-hosted prefix domain or a custom domain backed by an ACM certificate for the hosted sign-in UI and OAuth endpoints
@@ -18,16 +18,16 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
 - **A verified SES identity** (optional) -- required only when using DEVELOPER email mode for production-volume sending. Provide the SES identity ARN directly or as a ValueFromRef.
-- **An IAM role for SNS** (optional) -- required only when SMS delivery is configured (SMS OTP sign-in, SMS MFA, or phone auto-verification). The role's trust policy must allow `cognito-idp.amazonaws.com` with your external ID; reference an AwsIamRole Cloud Resource or provide the ARN directly.
-- **Lambda functions** (optional) -- required when configuring authentication lifecycle triggers (pre-sign-up, post-confirmation, custom auth challenges, versioned token customization, custom senders). Each Lambda must grant Cognito permission to invoke it. Reference AwsLambda Cloud Resources via ValueFromRef or provide function ARNs directly.
+- **An IAM role for SNS** (optional) -- required only when SMS delivery is configured (SMS OTP sign-in, SMS MFA, or phone auto-verification). The role's trust policy must allow `cognito-idp.amazonaws.com` with your external ID; reference an AwsIamRole Infra Component or provide the ARN directly.
+- **Lambda functions** (optional) -- required when configuring authentication lifecycle triggers (pre-sign-up, post-confirmation, custom auth challenges, versioned token customization, custom senders). Each Lambda must grant Cognito permission to invoke it. Reference AwsLambda Infra Components via ValueFromRef or provide function ARNs directly.
 - **A KMS key** (optional) -- required only when custom email/SMS sender Lambdas are configured; Cognito encrypts verification codes with it before invoking your functions.
-- **An ACM certificate in us-east-1** (optional) -- required only when using a custom domain (FQDN) for the hosted UI. Cognito routes custom domains through CloudFront, so the certificate must be in us-east-1 regardless of the pool's region. Reference an AwsCertManagerCert Cloud Resource or provide the ARN directly.
+- **An ACM certificate in us-east-1** (optional) -- required only when using a custom domain (FQDN) for the hosted UI. Cognito routes custom domains through CloudFront, so the certificate must be in us-east-1 regardless of the pool's region. Reference an AwsCertManagerCert Infra Component or provide the ARN directly.
 
 ## Deploy
 
@@ -62,7 +62,7 @@ spec:
 planton apply -f cognito-user-pool.yaml
 ```
 
-This creates a user pool with email as the sign-in identifier, email auto-verification, email-based recovery, and deletion protection. Add an AwsCognitoUserPoolClient resource so an application can authenticate — the pool alone has no app client. A Stack Job tracks the provisioning in real time.
+This creates a user pool with email as the sign-in identifier, email auto-verification, email-based recovery, and deletion protection. Add an AwsCognitoUserPoolClient resource so an application can authenticate — the pool alone has no app client. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -109,7 +109,7 @@ These are the most important decisions when configuring a Cognito User Pool. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -123,9 +123,9 @@ These are the most important decisions when configuring a Cognito User Pool. Exp
 | **AwsS3Bucket** (optional) | `logConfigurations[].s3BucketArn` | `status.outputs.bucket_arn` |
 | **AwsCertManagerCert** (optional) | `domain.certificateArn` | `status.outputs.cert_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -153,11 +153,11 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Cognito User Pool Client**](/cloud-catalog/aws-cognito-user-pool-client) -- the app client that applications authenticate through; binds `user_pool_id`
-- [**AWS Cognito Identity Provider**](/cloud-catalog/aws-cognito-identity-provider) -- federates Google/Facebook/Apple/OIDC/SAML sign-in into this pool
-- [**AWS Cognito Resource Server**](/cloud-catalog/aws-cognito-resource-server) -- defines custom OAuth scopes for APIs protected by this pool
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- the SNS caller role SMS delivery rides on
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) -- authentication lifecycle triggers, token customization, and custom message senders
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- encrypts codes handed to custom sender Lambdas
-- [**AWS ACM Certificate**](/cloud-catalog/aws-cert-manager-cert) -- the us-east-1 certificate for custom hosted UI domains
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group), [**AWS Kinesis Firehose**](/cloud-catalog/aws-kinesis-firehose), [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) -- log export destinations
+- [**AWS Cognito User Pool Client**](/infra-catalog/aws-cognito-user-pool-client) -- the app client that applications authenticate through; binds `user_pool_id`
+- [**AWS Cognito Identity Provider**](/infra-catalog/aws-cognito-identity-provider) -- federates Google/Facebook/Apple/OIDC/SAML sign-in into this pool
+- [**AWS Cognito Resource Server**](/infra-catalog/aws-cognito-resource-server) -- defines custom OAuth scopes for APIs protected by this pool
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- the SNS caller role SMS delivery rides on
+- [**AWS Lambda**](/infra-catalog/aws-lambda) -- authentication lifecycle triggers, token customization, and custom message senders
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- encrypts codes handed to custom sender Lambdas
+- [**AWS ACM Certificate**](/infra-catalog/aws-cert-manager-cert) -- the us-east-1 certificate for custom hosted UI domains
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group), [**AWS Kinesis Firehose**](/infra-catalog/aws-kinesis-firehose), [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) -- log export destinations

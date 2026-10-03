@@ -9,9 +9,9 @@
 # the us-central1 assumption, whose static-IP rate is the standard tier
 # shared across regions. The estimate generator replays the catalog
 # presets through these rules to emit ../estimates/gcpglobaladdress.yaml.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: gcpglobaladdress
 spec:
@@ -46,7 +46,7 @@ spec:
         - field_path: address_type
           op: equals
           value: INTERNAL
-      text: whatever fills the private range bills elsewhere -- managed-service instances in a VPC_PEERING range and the services behind a PRIVATE_SERVICE_CONNECT endpoint are their own components
+      text: whatever fills the private range bills elsewhere -- managed-service instances in a VPC_PEERING range and the services behind a PRIVATE_SERVICE_CONNECT endpoint are their own kinds
   notes:
     - applies_when:
         - field_path: address_type

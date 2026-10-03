@@ -33,7 +33,7 @@ Always:
 
 Create a changelog when:
 - ✅ You've created or significantly updated an InfraChart
-- ✅ New cloud resources were added to a chart
+- ✅ New catalog kinds were added to a chart
 - ✅ Template structure or patterns were changed
 - ✅ Resource relationships or dependencies were introduced/modified
 - ✅ Boolean flags or conditional resources were added
@@ -167,7 +167,7 @@ Every changelog should include:
 
 ### Resources Included
 
-[List of cloud resources in the chart with descriptions]
+[List of infra components in the chart with descriptions]
 
 ### Conditional Resources
 
@@ -256,7 +256,7 @@ Before finalizing a changelog:
 - [ ] Summary captures essence in 2-4 sentences
 - [ ] Problem statement explains why this chart was created/updated
 - [ ] Solution section describes the chart structure
-- [ ] Resources Included section lists all cloud resources
+- [ ] Resources Included section lists all infra components
 - [ ] Implementation details show actual template code when relevant
 - [ ] Benefits are concrete and measurable (time saved, resources provisioned)
 - [ ] Usage example shows realistic values.yaml and commands

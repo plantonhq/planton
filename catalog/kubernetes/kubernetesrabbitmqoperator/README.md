@@ -10,7 +10,7 @@ with KubernetesRabbitMq — one resource per cluster. Install the
 operator once per Kubernetes cluster, then declare RabbitMQ clusters
 against it.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want a RabbitMQ cluster** — that is KubernetesRabbitMq; this
   component is the controller that reconciles it.
@@ -107,7 +107,7 @@ version field (pinned by design).
   `rabbitmq-system` namespace) for pulling the operator image from a
   private mirror
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

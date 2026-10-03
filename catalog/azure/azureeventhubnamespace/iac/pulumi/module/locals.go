@@ -5,7 +5,7 @@ import (
 
 	azureeventhubnamespacev1alpha1 "github.com/plantonhq/planton/catalog/azure/azureeventhubnamespace/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -42,11 +42,11 @@ var networkDefaultActionStrings = map[azureeventhubnamespacev1alpha1.AzureEventH
 	azureeventhubnamespacev1alpha1.AzureEventHubNetworkRuleSetDefaultAction_DENY:  "Deny",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureeventhubnamespacev1alpha1.AzureEventHubNamespaceStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureeventhubnamespacev1alpha1.AzureEventHubNamespaceIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureEventHubNamespace = stackInput.Target
-	target := stackInput.Target
+	locals.AzureEventHubNamespace = iacInput.Target
+	target := iacInput.Target
 
 	// The resource_group field is a StringValueOrRef. The platform middleware
 	// resolves valueFrom references before IaC modules run, so .GetValue()
@@ -58,7 +58,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azureeventhubnamespacev1a
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureEventHubNamespace.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureEventHubNamespace.String()),
 	}
 
 	if target.Metadata.Id != "" {

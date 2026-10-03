@@ -4,7 +4,7 @@ Puts change freezes into code. A deploy policy blocks rollouts to the pipelines 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- the Cloud Deploy API on the policy's project
 - **Deploy policy** -- the policy with its rules and selectors
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with permission to manage Cloud Deploy deploy policies in the target project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with permission to manage Cloud Deploy deploy policies in the target project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ## Deploy
@@ -56,7 +56,7 @@ spec:
 planton apply -f deploy-policy.yaml
 ```
 
-This blocks every rollout action on targets labeled `env: prod` all weekend, New York time. A Stack Job tracks the provisioning in real time.
+This blocks every rollout action on targets labeled `env: prod` all weekend, New York time. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -74,7 +74,7 @@ These are the most important decisions when configuring a deploy policy. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -82,9 +82,9 @@ These are the most important decisions when configuring a deploy policy. Explore
 | **GcpDeliveryPipeline** | `selectors[].deliveryPipeline.id` | `status.outputs.delivery_pipeline_id` |
 | **GcpDeployTarget** | `selectors[].target.id` | `status.outputs.target_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -102,5 +102,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Delivery Pipeline**](/cloud-catalog/gcp-delivery-pipeline) -- pipelines the policy governs
-- [**GCP Deploy Target**](/cloud-catalog/gcp-deploy-target) -- targets the policy governs
+- [**GCP Delivery Pipeline**](/infra-catalog/gcp-delivery-pipeline) -- pipelines the policy governs
+- [**GCP Deploy Target**](/infra-catalog/gcp-deploy-target) -- targets the policy governs

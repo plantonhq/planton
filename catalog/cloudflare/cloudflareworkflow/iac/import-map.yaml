@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflareworkflow
 spec:
@@ -13,7 +13,7 @@ spec:
         id field).
     - name: workflow_name
       derivations:
-        - from_stack_output: workflow_name
+        - from_output: workflow_name
       where_to_find: >-
         Cloudflare dashboard -> Workers & Pages -> Workflows (the workflow's
         name IS its identity), or `GET /accounts/<account_id>/workflows` on

@@ -20,7 +20,7 @@ typed, per-run parameters.
 
 - Add `aws:approve` steps for human gates on destructive operations
 - Run it on a schedule inside
-  [AWS SSM Maintenance Window](/cloud-catalog/aws-ssm-maintenance-window)
+  [AWS SSM Maintenance Window](/infra-catalog/aws-ssm-maintenance-window)
   (task type `AUTOMATION`), or rate-controlled across many instances
-  via [AWS SSM Association](/cloud-catalog/aws-ssm-association) with
+  via [AWS SSM Association](/infra-catalog/aws-ssm-association) with
   `automationTargetParameterName: InstanceId`

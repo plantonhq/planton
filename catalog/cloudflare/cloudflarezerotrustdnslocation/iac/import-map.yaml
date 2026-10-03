@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarezerotrustdnslocation
 spec:
@@ -13,7 +13,7 @@ spec:
         id field).
     - name: location_id
       derivations:
-        - from_stack_output: location_id
+        - from_output: location_id
       where_to_find: >-
         `GET /accounts/<account_id>/gateway/locations` on the Cloudflare v4
         API (the id field; match by name), or the Zero Trust dashboard ->

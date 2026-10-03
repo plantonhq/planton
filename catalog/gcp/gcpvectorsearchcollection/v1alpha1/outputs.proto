@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpvectorsearchcollection.v1alpha1;
 
-// GcpVectorSearchCollectionStackOutputs captures what the Vector Search
+// GcpVectorSearchCollectionOutputs captures what the Vector Search
 // collection and its indexes resolved to.
-message GcpVectorSearchCollectionStackOutputs {
+message GcpVectorSearchCollectionOutputs {
   // Full resource name of the collection:
   // projects/{project}/locations/{location}/collections/{collection_id}.
   string name = 1;

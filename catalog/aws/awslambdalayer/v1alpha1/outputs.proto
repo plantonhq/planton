@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awslambdalayer.v1alpha1;
 
-// AwsLambdaLayerStackOutputs captures the observable state of the
+// AwsLambdaLayerOutputs captures the observable state of the
 // published layer version after apply.
-message AwsLambdaLayerStackOutputs {
+message AwsLambdaLayerOutputs {
   // The layer's unversioned ARN
   // (arn:aws:lambda:region:account:layer:name) - the identity that
   // persists across versions.

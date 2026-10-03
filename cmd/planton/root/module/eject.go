@@ -8,7 +8,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/internal/cli/cliprint"
 	"github.com/plantonhq/planton/internal/cli/ui/validateoutputs"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/eject"
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
 	"github.com/spf13/cobra"
@@ -18,7 +18,7 @@ var Eject = &cobra.Command{
 	Use:   "eject <kind>",
 	Short: "copy the official IaC module for a kind into your own directory",
 	Long: `Ejects the official OpenTofu/Terraform or Pulumi module behind a catalog
-component into a directory you own, ready to customize.
+kind into a directory you own, ready to customize.
 
 The copy is fully yours: edit it freely, keep it in your own git repository,
 and register it so your organization's deployments of the kind run your
@@ -62,12 +62,12 @@ func ejectHandler(cmd *cobra.Command, args []string) error {
 	goModulePath, _ := cmd.Flags().GetString("go-module")
 	skipGoModTidy, _ := cmd.Flags().GetBool("skip-go-mod-tidy")
 
-	kind := crkreflect.KindFromString(kindName)
+	kind := catalogkindreflect.KindFromString(kindName)
 	if kind == 0 {
 		validateoutputs.RenderUnknownKind(kindName)
-		return errors.Errorf("unknown cloud resource kind %q", kindName)
+		return errors.Errorf("unknown catalog kind %q", kindName)
 	}
-	canonicalKindName := crkreflect.ExtractKindNameByKind(kind)
+	canonicalKindName := catalogkindreflect.ExtractKindNameByKind(kind)
 
 	prov, err := provisioner.FromString(provisionerName)
 	if err != nil {

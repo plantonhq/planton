@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package dev.planton.auth0.auth0action.v1alpha1;
 
-// Auth0ActionStackOutputs contains the outputs from an Auth0 Action deployment.
+// Auth0ActionOutputs contains the outputs from an Auth0 Action deployment.
 // These outputs provide essential identifiers and status information for referencing
 // the action in trigger bindings and monitoring its deployment state.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/action#attributes-reference
 // https://www.pulumi.com/registry/packages/auth0/api-docs/action/#outputs
-message Auth0ActionStackOutputs {
+message Auth0ActionOutputs {
   // id is the unique identifier of the Auth0 action.
   // This is assigned by Auth0 and used to reference the action in trigger bindings
   // and API calls.

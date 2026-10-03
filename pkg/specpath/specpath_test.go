@@ -4,14 +4,14 @@ import (
 	"strings"
 	"testing"
 
-	componentv1 "github.com/plantonhq/planton/iac/componentpermissions/v1"
+	kindv1 "github.com/plantonhq/planton/iac/catalogkindpermissions/v1"
 )
 
-// The tests walk a real committed descriptor (ComponentPermissionsSpec) so
+// The tests walk a real committed descriptor (CatalogKindPermissionsSpec) so
 // they exercise the same protoreflect surfaces production paths do, with no
 // synthetic fixture to maintain.
 func TestValidate(t *testing.T) {
-	desc := (&componentv1.ComponentPermissionsSpec{}).ProtoReflect().Descriptor()
+	desc := (&kindv1.CatalogKindPermissionsSpec{}).ProtoReflect().Descriptor()
 
 	valid := []string{
 		"aws",                             // message leaf
@@ -46,9 +46,9 @@ func TestValidate(t *testing.T) {
 // walk through repeated fields; paths a live evaluator resolves may
 // not).
 func TestResolve(t *testing.T) {
-	spec := &componentv1.ComponentPermissionsSpec{
-		Aws: &componentv1.AwsPermissions{
-			Statements: []*componentv1.AwsStatement{
+	spec := &kindv1.CatalogKindPermissionsSpec{
+		Aws: &kindv1.AwsPermissions{
+			Statements: []*kindv1.AwsStatement{
 				{Sid: "ManageTable", Actions: []string{"dynamodb:CreateTable"}},
 			},
 		},
@@ -78,7 +78,7 @@ func TestResolve(t *testing.T) {
 	} else if !strings.Contains(err.Error(), "cannot pick an element") {
 		t.Fatalf("Resolve(aws.statements.actions): got %v, want the cannot-pick-an-element refusal", err)
 	}
-	if err := Validate((&componentv1.ComponentPermissionsSpec{}).ProtoReflect().Descriptor(), "aws.statements.actions"); err != nil {
+	if err := Validate((&kindv1.CatalogKindPermissionsSpec{}).ProtoReflect().Descriptor(), "aws.statements.actions"); err != nil {
 		t.Fatalf("Validate(aws.statements.actions) = %v -- the asymmetry this pin documents just moved", err)
 	}
 
@@ -110,7 +110,7 @@ func TestResolve(t *testing.T) {
 // gate validating with it can never bless a path that later errors at
 // replay.
 func TestResolvableTerminal(t *testing.T) {
-	desc := (&componentv1.ComponentPermissionsSpec{}).ProtoReflect().Descriptor()
+	desc := (&kindv1.CatalogKindPermissionsSpec{}).ProtoReflect().Descriptor()
 
 	// Terminal repeated fields are legal, same as Resolve.
 	terminal, err := ResolvableTerminal(desc, "aws.statements")

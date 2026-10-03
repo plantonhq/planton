@@ -12,7 +12,7 @@ Implemented a comprehensive documentation system for the planton repository usin
 
 The planton repository lacked a structured documentation site. While the README provided an overview, there was no organized way to:
 - Present comprehensive guides for different user personas
-- Organize documentation hierarchically (Getting Started, Concepts, Components)
+- Organize documentation hierarchically (Getting Started, Concepts, Kinds)
 - Provide interactive navigation with search capabilities
 - Maintain documentation alongside code with proper version control
 - Create a professional documentation experience matching the quality of the framework itself
@@ -20,7 +20,7 @@ The planton repository lacked a structured documentation site. While the README 
 ### Pain Points
 
 - **No structured docs**: Documentation scattered across README files without clear organization
-- **Poor discoverability**: Users couldn't easily browse available deployment components or guides
+- **Poor discoverability**: Users couldn't easily browse available catalog kinds or guides
 - **Inconsistent experience**: planton.ai had a polished docs system, but planton's open-source docs were basic
 - **Limited navigation**: No sidebar, no table of contents, no search
 - **Maintenance burden**: Documentation not following modern git-as-CMS patterns proven effective in planton.ai
@@ -39,8 +39,8 @@ site/public/docs/
 ├── concepts/
 │   ├── index.md                      # Concepts overview
 │   └── architecture.md               # Technical architecture
-└── deployment-components/
-    ├── index.md                      # Components overview
+└── catalog-kinds/
+    ├── index.md                      # Kinds overview
     └── kubernetes.md                 # Kubernetes deployments guide
 ```
 
@@ -68,9 +68,9 @@ badge: "Popular"
 - `rehype-highlight` - Syntax highlighting for code blocks
 - `gray-matter` - Frontmatter parsing
 
-### Component Architecture
+### Kind Architecture
 
-**Created Components**:
+**Created Kinds**:
 
 1. **DocsHeader** (`site/src/app/docs/components/DocsHeader.tsx`)
    - Dedicated header matching landing page styling
@@ -102,7 +102,7 @@ badge: "Popular"
    - Markdown rendering with react-markdown
    - Purple-themed styling for all elements
    - Syntax highlighting for code blocks
-   - Custom components for headings, lists, tables, blockquotes
+   - Custom kinds for headings, lists, tables, blockquotes
    - Anchor links generated from heading IDs
    - "Next Article" navigation
 
@@ -187,8 +187,8 @@ Created sample documentation demonstrating the full feature set:
 - IaC module design philosophy
 - Complete workflow examples
 
-**Deployment Components** (`public/docs/deployment-components/`):
-- Component catalog overview
+**Catalog Kinds** (`public/docs/catalog-kinds/`):
+- Kind catalog overview
 - Provider-specific vs. abstract explanation
 - Kubernetes deployment guide with multiple examples
 - Usage patterns and best practices
@@ -278,7 +278,7 @@ All routes pre-rendered at build time, no server required.
 - Type-safe `NavItem` interface with external link support
 
 **Header Consistency**:
-- Created dedicated `DocsHeader` component
+- Created dedicated `DocsHeader` kind
 - Uses same logo assets as landing page (`/icon.png`, `/logo-text.svg`)
 - Same header height (h-16)
 - Same backdrop blur and border styling
@@ -295,7 +295,7 @@ All routes pre-rendered at build time, no server required.
 - Responsive design works on all devices
 
 ✅ **Better Discoverability**
-- Hierarchical organization (Getting Started → Concepts → Components)
+- Hierarchical organization (Getting Started → Concepts → Kinds)
 - Search functionality (placeholder for future enhancement)
 - Visual badges highlighting popular or new content
 - Clear navigation paths
@@ -323,7 +323,7 @@ All routes pre-rendered at build time, no server required.
 ✅ **Consistency Across Repos**
 - Same patterns as planton.ai
 - Team doesn't need to learn different documentation systems
-- Components can be shared or synced if needed
+- Kinds can be shared or synced if needed
 
 ### For the Project
 
@@ -358,7 +358,7 @@ All routes pre-rendered at build time, no server required.
 **For the Team**:
 - Consistent documentation patterns with planton.ai
 - No context switching between repos
-- Can reuse learned patterns and components
+- Can reuse learned patterns and kinds
 
 ### Long-term Impact
 
@@ -450,7 +450,7 @@ Chose Material-UI despite existing Radix UI to maintain consistency with planton
 - Team already familiar with Material-UI from planton.ai
 - Reduces cognitive overhead for developers working across repos
 - Proven patterns can be reused
-- Drawer, IconButton, Typography components well-tested
+- Drawer, IconButton, Typography kinds well-tested
 
 **Trade-off**: Added ~26MB of dependencies, but consistency benefits outweigh bundle size concerns for a documentation site.
 
@@ -460,11 +460,11 @@ Selected `react-markdown` to match planton.ai:
 
 **Benefits**:
 - Simpler API for straightforward markdown rendering
-- Better control over component customization
+- Better control over kind customization
 - Consistent with planton.ai implementation
 - Sufficient for documentation needs (no complex MDX components needed)
 
-### Why Separate DocsHeader Component?
+### Why Separate DocsHeader Kind?
 
 Created dedicated header instead of reusing layout header:
 
@@ -575,7 +575,7 @@ out/
 │   ├── index.html
 │   ├── getting-started.html
 │   ├── concepts/
-│   └── deployment-components/
+│   └── catalog-kinds/
 ├── api/docs/structure.json
 └── _next/
 ```
@@ -614,7 +614,7 @@ For future deployment, add `.github/workflows/deploy-site.yml`:
 - Markdown rendering (4 packages)
 
 **Lines of Code**: ~1,200 lines
-- Components: ~500 lines
+- Kinds: ~500 lines
 - Utilities: ~400 lines
 - Documentation: ~300 lines
 
@@ -631,7 +631,7 @@ All routes tested and confirmed working:
 ✅ http://localhost:3000/docs/getting-started (200)
 ✅ http://localhost:3000/docs/concepts (200)
 ✅ http://localhost:3000/docs/concepts/architecture (200)
-✅ http://localhost:3000/docs/deployment-components (200)
+✅ http://localhost:3000/docs/catalog-kinds (200)
 ✅ http://localhost:3000/api/docs/structure (200)
 ```
 
@@ -650,8 +650,8 @@ Features verified:
 ### Near-term (Next Iteration)
 
 **Documentation Scraping**:
-- Scan repository for README.md files in deployment component directories
-- Auto-generate component documentation pages
+- Scan repository for README.md files in catalog kind directories
+- Auto-generate kind documentation pages
 - Extract examples from proto files
 - Link to Buf Schema Registry API docs
 
@@ -687,7 +687,7 @@ Features verified:
 ### Ecosystem Consistency
 
 This implementation aligns with:
-- **planton.ai docs** - Same architecture, components, and patterns
+- **planton.ai docs** - Same architecture, kinds, and patterns
 - **Git Repository Topology** - Supports three-repo strategy with git-as-CMS
 - **Planton Philosophy** - Transparency, consistency, developer experience
 
@@ -698,9 +698,9 @@ Related documentation and website work:
 - Website redesign and branding initiatives
 - Git-as-CMS pattern adoption
 
-### Component Reusability
+### Kind Reusability
 
-Components from this implementation could be:
+Kinds from this implementation could be:
 - Extracted to shared component library
 - Reused in planton.ai for consistency
 - Adapted for other Planton ecosystem projects
@@ -749,7 +749,7 @@ No breaking changes - existing README stays as-is.
 ### Future Iterations
 
 1. **Implement Search**: Add Algolia or client-side search
-2. **Scrape Repository Docs**: Auto-generate from deployment component directories
+2. **Scrape Repository Docs**: Auto-generate from catalog kind directories
 3. **API Reference**: Generate from protobuf definitions
 4. **Interactive Examples**: Add code playgrounds or Pulumi Play integration
 

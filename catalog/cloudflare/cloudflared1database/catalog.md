@@ -4,7 +4,7 @@ Deploys a Cloudflare D1 serverless SQLite database with configurable region plac
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **D1 Database** -- a serverless SQLite database created in the specified Cloudflare account, with an optional primary location hint (or data-residency jurisdiction) fixing where the primary instance lives
 - **Read Replication** -- configured only when `readReplication` is set; enables D1 Read Replication to place read-only replicas across multiple regions for lower global read latency
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has D1 permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has D1 permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -47,7 +47,7 @@ spec:
 planton apply -f cloudflare-d1-database.yaml
 ```
 
-This creates a D1 database named `app-cache` with Cloudflare selecting the default storage region. No read replication is configured. A Stack Job tracks the provisioning in real time.
+This creates a D1 database named `app-cache` with Cloudflare selecting the default storage region. No read replication is configured. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -65,13 +65,13 @@ These are the most important decisions when configuring a D1 database. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies -- the Cloudflare account is identified by the `accountId` string.
+This kind has no foreign key dependencies -- the Cloudflare account is identified by the `accountId` string.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -89,4 +89,4 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Cloudflare Worker**](/cloud-catalog/cloudflare-worker) -- the primary consumer; a Worker's `d1` binding references the `database_id` output
+- [**Cloudflare Worker**](/infra-catalog/cloudflare-worker) -- the primary consumer; a Worker's `d1` binding references the `database_id` output

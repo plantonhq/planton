@@ -51,7 +51,7 @@ import "shared/options/options.proto";
 //   HTTP endpoint, Snowflake) can source it from AWS Secrets Manager instead
 //   of embedding it in the manifest -- prefer that for production.
 // - Credentials, region, and deployment workflow live outside this spec in
-//   stack inputs.
+//   IaC inputs.
 message AwsKinesisFirehoseSpec {
   // The AWS region where the resource will be created.
   // Example: "us-west-2", "eu-west-1"

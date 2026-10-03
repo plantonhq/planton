@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpbigtableinstance.v1alpha1;
 
 // Outputs produced after provisioning a Cloud Bigtable instance.
-message GcpBigtableInstanceStackOutputs {
+message GcpBigtableInstanceOutputs {
   // Fully qualified instance resource name.
   // Format: projects/{project}/instances/{instance}
   // Used by Bigtable client libraries and downstream tools that

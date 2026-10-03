@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added Scaleway as provider #24 to Planton, enabling users to manage Scaleway cloud credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, stack input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. Scaleway's flat access key / secret key authentication model maps cleanly to 6 `SCW_*` environment variables without the oneof complexity required by OpenStack.
+Added Scaleway as provider #24 to Planton, enabling users to manage Scaleway cloud credentials through the platform. The integration spans all 6 system layers -- proto definitions, CLI guidance, IaC input / env var processing, provider detection, backend credential CRUD, and frontend credential forms. Scaleway's flat access key / secret key authentication model maps cleanly to 6 `SCW_*` environment variables without the oneof complexity required by OpenStack.
 
 ## Problem Statement / Motivation
 
@@ -14,7 +14,7 @@ Planton supports 13 cloud providers but had no Scaleway support. Organizations u
 
 ### Pain Points
 
-- No `scaleway` entry in the `CloudResourceProvider` enum
+- No `scaleway` entry in the `CatalogProvider` enum
 - No credential storage or management for Scaleway
 - No environment variable mapping for the Terraform Scaleway provider
 - No frontend UI for capturing Scaleway credentials
@@ -29,7 +29,7 @@ Implemented comprehensive Scaleway provider support following the established pr
 ```mermaid
 flowchart TB
     subgraph proto [Proto Layer]
-        ProviderEnum["cloud_resource_provider.proto\nscaleway = 24"]
+        ProviderEnum["catalog_provider.proto\nscaleway = 24"]
         ProviderConfig["provider/scaleway/provider.proto\nScalewayProviderConfig"]
         CredentialAPI["credential/v1/api.proto\nSCALEWAY enum + oneof"]
     end
@@ -96,7 +96,7 @@ flowchart LR
 
 ### 1. Proto Definitions
 
-**Provider registration** (`cloud_resource_provider.proto`):
+**Provider registration** (`catalog_provider.proto`):
 
 ```protobuf
 scaleway = 24 [(provider_meta) = {
@@ -133,14 +133,14 @@ Added Scaleway provider page at `/docs/catalog/scaleway` with provider logo SVG 
 
 | Layer | New Files | Modified Files |
 |-------|-----------|----------------|
-| Proto | `provider/scaleway/provider.proto` | `cloud_resource_provider.proto`, `credential/v1/api.proto` |
+| Proto | `provider/scaleway/provider.proto` | `catalog_provider.proto`, `credential/v1/api.proto` |
 | Provider | `provider/scaleway/cli_help.go`, `BUILD.bazel` | -- |
-| Stack Input | `providerenvvars/scaleway.go` | `loader.go` |
+| IaC Input | `providerenvvars/scaleway.go` | `loader.go` |
 | Provider Detect | -- | `detect.go`, `guidance.go`, `validate.go` |
 | Backend | -- | `credential.go`, `credential_repo.go`, `credential_service.go`, `credential_resolver.go` |
 | Frontend | `scaleway.tsx` | `types.ts`, `credential-drawer.tsx`, `index.ts`, `utils.ts` |
 | Catalog | `scaleway/index.md`, `scaleway.svg` | `catalog/index.md` |
-| Generated | `provider.pb.go`, `provider_pb.ts` | `api.pb.go`, `api_pb.ts`, `cloud_resource_provider.pb.go`, `cloud_resource_provider_pb.ts` |
+| Generated | `provider.pb.go`, `provider_pb.ts` | `api.pb.go`, `api_pb.ts`, `catalog_provider.pb.go`, `catalog_provider_pb.ts` |
 
 **Total**: 29 files, ~500 insertions
 
@@ -170,7 +170,7 @@ Added Scaleway provider page at `/docs/catalog/scaleway` with provider logo SVG 
 
 ### Future Work Enabled
 
-- Scaleway resource kinds (CloudResourceKind range to be assigned)
+- Scaleway resource kinds (CatalogKind range to be assigned)
 - Instance, VPC, Kubernetes, Load Balancer, DNS, and other Scaleway service resources
 - Terraform IaC modules wrapping the terraform-provider-scaleway
 

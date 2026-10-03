@@ -19,9 +19,9 @@ Optional inputs:
 
 Example:
   python3 tools/local-dev/create_github_issue.py \
-    --title "Postgres component spec validation broken" \
+    --title "Postgres kind spec validation broken" \
     --body-file /path/to/issue-body.md \
-    --labels "bug,area/component,priority/high" \
+    --labels "bug,area/kind,priority/high" \
     --assignees "user1,user2" \
     --web
 """

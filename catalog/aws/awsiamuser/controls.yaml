@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awsiamuser
 spec:
@@ -39,7 +39,7 @@ spec:
       field_path: disable_access_keys
       evidence:
         type: spec_default
-        reference: This component is the deliberate exception to keyless identity -- by default it mints one long-lived access key, because external CI without OIDC federation, legacy tooling, and break-glass access are exactly the cases short-lived federated credentials cannot cover. Setting disable_access_keys keeps the identity keyless for console-only or externally-keyed users.
+        reference: This kind is the deliberate exception to keyless identity -- by default it mints one long-lived access key, because external CI without OIDC federation, legacy tooling, and break-glass access are exactly the cases short-lived federated credentials cannot cover. Setting disable_access_keys keeps the identity keyless for console-only or externally-keyed users.
       notes: Workloads that CAN federate should use AwsIamRole's oidc_trust against an AwsIamOidcProvider instead of this kind -- a role's credentials expire in hours, a user's key works until rotated. The spec's own documentation says to prefer roles wherever possible.
     - control_id: no-legacy-auth
       status: configurable

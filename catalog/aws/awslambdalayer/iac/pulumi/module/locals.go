@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals holds pre-computed values derived from the stack input.
+// Locals holds pre-computed values derived from the IaC input.
 //
 // No AwsTags map here: neither layer versions nor layer-version
 // permissions are taggable at AWS (the Terraform module carries the
@@ -15,7 +15,7 @@ type Locals struct {
 	Spec   *awslambdalayerv1alpha1.AwsLambdaLayerSpec
 }
 
-func initializeLocals(_ *pulumi.Context, in *awslambdalayerv1alpha1.AwsLambdaLayerStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, in *awslambdalayerv1alpha1.AwsLambdaLayerIacInput) *Locals {
 	locals := &Locals{}
 	locals.Target = in.Target
 	locals.Spec = in.Target.Spec

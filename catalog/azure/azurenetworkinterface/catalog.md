@@ -4,7 +4,7 @@ Deploys an Azure Network Interface (NIC) — the attachment point that gives a v
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Network Interface** -- with one or more IP configurations (a private address in a referenced subnet, dynamic or pinned static, IPv4 or IPv6, optionally fronted by a referenced AzurePublicIp), accelerated networking, IP forwarding, DNS overrides, and the preview NVA-acceleration pair
 - **NSG association** -- when a NIC-level network security group is referenced (the per-workload complement to subnet-level filtering)
@@ -18,7 +18,7 @@ The VM-side attachment is NOT created here — which VM holds this NIC lives on 
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -64,7 +64,7 @@ spec:
 planton apply -f nic.yaml
 ```
 
-This creates a private-only NIC with a dynamic IPv4 address in the referenced subnet and SR-IOV on — ready for the VM that references it. A Stack Job tracks the provisioning in real time.
+This creates a private-only NIC with a dynamic IPv4 address in the referenced subnet and SR-IOV on — ready for the VM that references it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -104,7 +104,7 @@ These are the most important decisions when configuring a NIC. Explore the full 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -116,9 +116,9 @@ These are the most important decisions when configuring a NIC. Explore the full 
 | **AzureLoadBalancer** (optional, per membership) | `ipConfigurations[].loadBalancerBackendAddressPoolIds`, `ipConfigurations[].loadBalancerInboundNatRuleIds` | `status.outputs.backend_pool_ids.<pool>`, `status.outputs.nat_rule_ids.<rule>` |
 | **AzureApplicationGateway** (optional, per membership) | `ipConfigurations[].applicationGatewayBackendAddressPoolIds` | `status.outputs.backend_address_pool_ids.<pool>` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -142,10 +142,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Virtual Machine**](/cloud-catalog/azure-virtual-machine) -- attaches this NIC by its `network_interface_id` output (the FIRST entry in `networkInterfaceIds` is the primary interface)
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- where each configuration's private address lives
-- [**Azure Public IP**](/cloud-catalog/azure-public-ip) -- fronts a configuration for inbound internet traffic
-- [**Azure Load Balancer**](/cloud-catalog/azure-load-balancer) -- this NIC joins its pools and completes its NAT rules from the member side, through the name-keyed map outputs
-- [**Azure Network Security Group**](/cloud-catalog/azure-network-security-group) -- NIC-level filtering, in series with the subnet's NSG
-- [**Azure Application Security Group**](/cloud-catalog/azure-application-security-group) -- workload groups this NIC joins so NSG rules target roles instead of IP ranges
-- [**Azure Application Gateway**](/cloud-catalog/azure-application-gateway) -- this NIC joins its backend pools from the member side
+- [**Azure Virtual Machine**](/infra-catalog/azure-virtual-machine) -- attaches this NIC by its `network_interface_id` output (the FIRST entry in `networkInterfaceIds` is the primary interface)
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- where each configuration's private address lives
+- [**Azure Public IP**](/infra-catalog/azure-public-ip) -- fronts a configuration for inbound internet traffic
+- [**Azure Load Balancer**](/infra-catalog/azure-load-balancer) -- this NIC joins its pools and completes its NAT rules from the member side, through the name-keyed map outputs
+- [**Azure Network Security Group**](/infra-catalog/azure-network-security-group) -- NIC-level filtering, in series with the subnet's NSG
+- [**Azure Application Security Group**](/infra-catalog/azure-application-security-group) -- workload groups this NIC joins so NSG rules target roles instead of IP ranges
+- [**Azure Application Gateway**](/infra-catalog/azure-application-gateway) -- this NIC joins its backend pools from the member side

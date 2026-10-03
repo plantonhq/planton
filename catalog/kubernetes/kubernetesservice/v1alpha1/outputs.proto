@@ -3,13 +3,13 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesservice.v1alpha1;
 
 /**
- * **KubernetesServiceStackOutputs** captures the observable handles of a deployed
+ * **KubernetesServiceOutputs** captures the observable handles of a deployed
  * Service. Downstream resources compose on these: Ingress backends and sibling
  * workloads connect through `kube_endpoint`, external-dns publishes the
  * load-balancer address, and operators reach the workload locally through the
  * port-forward command.
  */
-message KubernetesServiceStackOutputs {
+message KubernetesServiceOutputs {
   // The name of the Service object as created in the cluster.
   string service_name = 1;
 

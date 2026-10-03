@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcptpuvm.v1alpha1;
 
-// GcpTpuVmStackOutputs carries the TPU's identity.
-message GcpTpuVmStackOutputs {
+// GcpTpuVmOutputs carries the TPU's identity.
+message GcpTpuVmOutputs {
   // Full resource name:
   // projects/{project}/locations/{zone}/nodes/{node_id}.
   string name = 1;

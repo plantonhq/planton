@@ -1,4 +1,4 @@
-# Auth0 Resource Server Deployment Component
+# Auth0 Resource Server Catalog Kind
 
 **Date**: January 10, 2026
 **Type**: Feature
@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added a complete Auth0ResourceServer deployment component for managing Auth0 APIs (Resource Servers) with both Pulumi and Terraform IaC modules. Additionally enhanced Auth0EventStream webhook authorization with CEL validations for better input validation. This component enables infrastructure-as-code management of API configurations including scopes (permissions), token settings, and RBAC policies.
+Added a complete Auth0ResourceServer catalog kind for managing Auth0 APIs (Resource Servers) with both Pulumi and Terraform IaC modules. Additionally enhanced Auth0EventStream webhook authorization with CEL validations for better input validation. This kind enables infrastructure-as-code management of API configurations including scopes (permissions), token settings, and RBAC policies.
 
 ## Problem Statement / Motivation
 
@@ -18,7 +18,7 @@ Auth0 Resource Servers represent APIs that applications can request access to. T
 
 ### Pain Points
 
-- No existing Planton component for managing Auth0 Resource Servers
+- No existing Planton kind for managing Auth0 Resource Servers
 - Manual Auth0 dashboard configuration is error-prone and not auditable
 - Token settings (lifetime, dialect, signing algorithm) needed declarative management
 - RBAC policy enforcement lacked infrastructure-as-code support
@@ -26,17 +26,17 @@ Auth0 Resource Servers represent APIs that applications can request access to. T
 
 ## Solution / What's New
 
-Implemented a complete Auth0ResourceServer deployment component following Planton patterns, with field selection guided by Pareto's principle (80/20) - exposing the most commonly used 20% of features that cover 80% of use cases.
+Implemented a complete Auth0ResourceServer catalog kind following Planton patterns, with field selection guided by Pareto's principle (80/20) - exposing the most commonly used 20% of features that cover 80% of use cases.
 
-### Component Architecture
+### Kind Architecture
 
 ```mermaid
 flowchart TB
-    subgraph "Auth0ResourceServer Component"
+    subgraph "Auth0ResourceServer Kind"
         API[api.proto<br/>KRM Wrapper]
         SPEC[spec.proto<br/>Configuration Schema]
-        SI[stack_input.proto<br/>IaC Input]
-        SO[stack_outputs.proto<br/>Deployment Outputs]
+        SI[iac_input.proto<br/>IaC Input]
+        SO[outputs.proto<br/>Deployment Outputs]
     end
 
     subgraph "IaC Modules"
@@ -125,7 +125,7 @@ flowchart LR
         OUT[outputs.go<br/>Stack Exports]
     end
 
-    INPUT[StackInput] --> MAIN
+    INPUT[IacInput] --> MAIN
     MAIN --> LOCALS
     LOCALS --> RS
     RS --> OUT
@@ -251,17 +251,17 @@ Auth0ResourceServer Validation
 
 | Category | Count | Description |
 |----------|-------|-------------|
-| Proto definitions | 4 | spec, api, stack_input, stack_outputs |
+| Proto definitions | 4 | spec, api, iac_input, outputs |
 | Generated Go | 4 | Protobuf Go files |
 | Generated TypeScript | 4 | Frontend type definitions |
 | Pulumi module | 5 | Go implementation |
 | Terraform module | 5 | HCL implementation |
 | Documentation | 4 | README, examples, overview, docs |
 | Tests | 1 | 27 validation test cases |
-| Registry | 2 | cloud_resource_kind.proto update |
+| Registry | 2 | catalog_kind.proto update |
 | **Total** | **45** | files changed |
 
-### New Component Registration
+### New Kind Registration
 
 ```protobuf
 Auth0ResourceServer = 2103 [(kind_meta) = {

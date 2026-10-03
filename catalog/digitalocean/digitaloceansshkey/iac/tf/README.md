@@ -14,7 +14,7 @@ Generated `variables.tf` mirrors the `DigitalOceanSshKeySpec` proto: `key_name` 
 
 ## Outputs
 
-Exactly the `DigitalOceanSshKeyStackOutputs` contract: `ssh_key_id` (the numeric id as a string) and `fingerprint`.
+Exactly the `DigitalOceanSshKeyOutputs` contract: `ssh_key_id` (the numeric id as a string) and `fingerprint`.
 
 ## Behavior notes
 

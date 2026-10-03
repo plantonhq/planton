@@ -4,7 +4,7 @@ Deploys an ONTAP Storage Virtual Machine (SVM) on an existing FSx for NetApp ONT
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **ONTAP Storage Virtual Machine** -- a logical data server within the specified FSx ONTAP file system, with configurable root volume security style (UNIX, NTFS, or MIXED) and optional SVM admin password for vsadmin SSH access
 - **NFS Endpoint** -- automatically provisioned for NFS client mounts to volumes on this SVM
@@ -18,12 +18,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **An FSx for ONTAP file system** -- the SVM's parent file system must be provisioned first. Provide the file system ID directly or reference an AwsFsxOntapFileSystem Cloud Resource via ValueFromRef.
+- **An FSx for ONTAP file system** -- the SVM's parent file system must be provisioned first. Provide the file system ID directly or reference an AwsFsxOntapFileSystem Infra Component via ValueFromRef.
 - **A self-managed Active Directory domain** (optional) -- required only for SMB access. Must be reachable from the file system's VPC. AWS Managed Microsoft AD is not supported for ONTAP SVMs.
 - **AD service account credentials** (optional) -- required only for Active Directory domain join. The account must have permissions to create computer objects in the target OU.
 
@@ -56,7 +56,7 @@ spec:
 planton apply -f fsx-ontap-svm.yaml
 ```
 
-This creates an NFS/iSCSI-only SVM with UNIX security style on the specified ONTAP file system. No Active Directory is configured, so SMB endpoints are not available. A Stack Job tracks the provisioning in real time.
+This creates an NFS/iSCSI-only SVM with UNIX security style on the specified ONTAP file system. No Active Directory is configured, so SMB endpoints are not available. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,15 +87,15 @@ These are the most important decisions when configuring an ONTAP SVM. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsFsxOntapFileSystem** | `fileSystemId` | `status.outputs.file_system_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -124,5 +124,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS FSx ONTAP File System**](/cloud-catalog/aws-fsx-ontap-file-system) -- provides the parent file system infrastructure for this SVM
-- [**AWS FSx ONTAP Volume**](/cloud-catalog/aws-fsx-ontap-volume) -- the data volumes that attach to this SVM by `svm_id` and mount through its endpoints
+- [**AWS FSx ONTAP File System**](/infra-catalog/aws-fsx-ontap-file-system) -- provides the parent file system infrastructure for this SVM
+- [**AWS FSx ONTAP Volume**](/infra-catalog/aws-fsx-ontap-volume) -- the data volumes that attach to this SVM by `svm_id` and mount through its endpoints

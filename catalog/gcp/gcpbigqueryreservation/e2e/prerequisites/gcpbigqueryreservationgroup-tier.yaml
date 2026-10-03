@@ -8,7 +8,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpbigqueryreservationgroup
+    e2e-catalog-kind: gcpbigqueryreservationgroup
   annotations:
     planton.dev/e2e: "true"
   tags:

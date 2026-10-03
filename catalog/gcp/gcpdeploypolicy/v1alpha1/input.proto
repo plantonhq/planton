@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpdeploypolicy.v1alpha1;
 import "catalog/gcp/gcpdeploypolicy/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-deploy-policy stack-input
-message GcpDeployPolicyStackInput {
-  //target cloud-resource
+//gcp-deploy-policy iac-input
+message GcpDeployPolicyIacInput {
+  //target infra-component
   GcpDeployPolicy target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

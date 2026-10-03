@@ -1,10 +1,10 @@
 # Kubernetes Namespace
 
-Deploys a production-ready Kubernetes namespace with optional resource quotas, LimitRanges, network policies, pod security standards, and service mesh sidecar injection. Manages namespace-level governance as a single Cloud Resource, turning multi-object namespace setup into a one-step operation.
+Deploys a production-ready Kubernetes namespace with optional resource quotas, LimitRanges, network policies, pod security standards, and service mesh sidecar injection. Manages namespace-level governance as a single Infra Component, turning multi-object namespace setup into a one-step operation.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- the core namespace object with user-specified labels, annotations, and pod security standard labels
 - **ResourceQuota** -- created only when a resource profile is configured (built-in T-shirt size or custom quotas); enforces aggregate CPU, memory, and object count limits
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -54,7 +54,7 @@ spec:
 planton apply -f namespace.yaml
 ```
 
-This creates a namespace with a medium resource quota profile (4 CPU / 8Gi requests, 8 CPU / 16Gi limits, 50 pods max) and baseline pod security enforcement. Network isolation and service mesh injection are not enabled. A Stack Job tracks the provisioning in real time.
+This creates a namespace with a medium resource quota profile (4 CPU / 8Gi requests, 8 CPU / 16Gi limits, 50 pods max) and baseline pod security enforcement. Network isolation and service mesh injection are not enabled. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -70,13 +70,13 @@ These are the most important decisions when configuring a Kubernetes Namespace. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies.
+This kind has no foreign key dependencies.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|

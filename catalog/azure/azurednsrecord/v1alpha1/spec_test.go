@@ -39,7 +39,7 @@ func validResource() *AzureDnsRecord {
 	return &AzureDnsRecord{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureDnsRecord",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "www-a-record",
 		},
 		Spec: &AzureDnsRecordSpec{

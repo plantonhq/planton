@@ -8,7 +8,7 @@ The spec's purpose is converting **crash-loops into apply-time errors**: the CR 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **The `Keycloak` custom resource** (`k8s.keycloak.org/v2alpha1`) — the operator reconciles it into:
   - A **StatefulSet** named exactly after this resource, running the requested number of server instances
@@ -79,7 +79,7 @@ spec:
 planton apply -f keycloak.yaml
 ```
 
-This creates a two-instance clustered Keycloak backed by the named Postgres database, serving TLS from the `keycloak-tls` Secret and advertising `https://auth.example.com` as its identity. A Stack Job tracks the provisioning in real time.
+This creates a two-instance clustered Keycloak backed by the named Postgres database, serving TLS from the `keycloak-tls` Secret and advertising `https://auth.example.com` as its identity. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -133,7 +133,7 @@ These are the most important decisions when configuring a Keycloak server. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -142,7 +142,7 @@ These are the most important decisions when configuring a Keycloak server. Explo
 | **KubernetesPostgres** | `db.usernameSecret.name` / `db.passwordSecret.name` | `status.outputs.password_secret.name` |
 | **KubernetesCertificate** | `http.tlsSecretName` | `status.outputs.secret_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains:
 
@@ -167,7 +167,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Keycloak Operator**](/cloud-catalog/kubernetes-keycloak-operator) — the manager that reconciles this declaration; deploy it FIRST, in this same namespace under its default watch, and destroy declarations BEFORE the operator on the way out.
-- [**PostgreSQL**](/cloud-catalog/kubernetes-postgres) — the recommended production database; its read-write Service and app-credential Secret compose by reference.
-- [**Cert Manager Certificate**](/cloud-catalog/kubernetes-certificate) — issues the TLS Secret the listener serves.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — provides the namespace by reference; co-locate the operator, the database, and Keycloak so the credential secretKeyRefs resolve.
+- [**Keycloak Operator**](/infra-catalog/kubernetes-keycloak-operator) — the manager that reconciles this declaration; deploy it FIRST, in this same namespace under its default watch, and destroy declarations BEFORE the operator on the way out.
+- [**PostgreSQL**](/infra-catalog/kubernetes-postgres) — the recommended production database; its read-write Service and app-credential Secret compose by reference.
+- [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) — issues the TLS Secret the listener serves.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — provides the namespace by reference; co-locate the operator, the database, and Keycloak so the credential secretKeyRefs resolve.

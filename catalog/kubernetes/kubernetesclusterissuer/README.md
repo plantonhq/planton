@@ -40,7 +40,7 @@ Issuer readiness depends on external reachability (the ACME server, Vault, DNS) 
 - Use the Let's Encrypt **staging** server while testing: production rate limits are strict and exhaustible
 - Wildcards need DNS-01; HTTP-01 needs public port-80 reachability
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

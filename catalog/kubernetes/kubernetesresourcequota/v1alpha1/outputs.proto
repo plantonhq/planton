@@ -3,11 +3,11 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesresourcequota.v1alpha1;
 
 /**
- * **KubernetesResourceQuotaStackOutputs** captures the observable handles of a
+ * **KubernetesResourceQuotaOutputs** captures the observable handles of a
  * deployed namespace-governance pair: the ResourceQuota object and, when
  * limit defaults were configured, the companion LimitRange.
  */
-message KubernetesResourceQuotaStackOutputs {
+message KubernetesResourceQuotaOutputs {
   // The name of the ResourceQuota object as created in the cluster.
   string resource_quota_name = 1;
 

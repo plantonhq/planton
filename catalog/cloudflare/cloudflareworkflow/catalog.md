@@ -4,7 +4,7 @@ Deploys a Cloudflare Workflow registration: the binding of a durable-execution c
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Workflow Registration** — one workflow on the account binding `workflowName` to the `className` exported by `scriptName`, carrying the retention, limits, and schedule settings
 
@@ -12,12 +12,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Account → Workers Scripts → Edit. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** — an active connection in the Connect module with an API token holding Account → Workers Scripts → Edit. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Cloudflare Account
 
-- **A deployed Worker script** — `scriptName` must name a script already deployed (a CloudflareWorker Cloud Resource) that exports the `WorkflowEntrypoint` subclass named in `className`. Deploy order is script first, workflow second.
+- **A deployed Worker script** — `scriptName` must name a script already deployed (a CloudflareWorker Infra Component) that exports the `WorkflowEntrypoint` subclass named in `className`. Deploy order is script first, workflow second.
 - **Workers Paid** (only for scale) — the registration itself works on the free tier; production instance runs at scale ride Workers Paid limits.
 
 ## Deploy
@@ -49,7 +49,7 @@ spec:
 planton apply -f workflow.yaml
 ```
 
-This registers the `order-fulfillment` workflow against the `OrderFulfillment` class exported by the already-deployed `order-processor` script, keeping Cloudflare's default retention and limits. A Stack Job tracks the provisioning in real time.
+This registers the `order-fulfillment` workflow against the `OrderFulfillment` class exported by the already-deployed `order-processor` script, keeping Cloudflare's default retention and limits. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,15 +85,15 @@ These are the most important decisions when configuring a workflow. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareWorker** | `scriptName` | `status.outputs.script_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -110,5 +110,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Worker**](/cloud-catalog/cloudflare-worker) — the script that exports the workflow class; its `workflows` bindings reference this registration by name
-- [**Cloudflare Queue**](/cloud-catalog/cloudflare-queue) — queues feed Workers that create workflow instances; the sibling asynchronous-work building block
+- [**Cloudflare Worker**](/infra-catalog/cloudflare-worker) — the script that exports the workflow class; its `workflows` bindings reference this registration by name
+- [**Cloudflare Queue**](/infra-catalog/cloudflare-queue) — queues feed Workers that create workflow instances; the sibling asynchronous-work building block

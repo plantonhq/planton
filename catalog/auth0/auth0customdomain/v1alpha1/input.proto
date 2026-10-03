@@ -5,9 +5,9 @@ package dev.planton.auth0.auth0customdomain.v1alpha1;
 import "catalog/auth0/auth0customdomain/v1alpha1/api.proto";
 import "catalog/auth0/provider.proto";
 
-// Auth0CustomDomainStackInput is the input to the Auth0CustomDomain IaC module.
+// Auth0CustomDomainIacInput is the input to the Auth0CustomDomain IaC module.
 // It contains the target resource and the Auth0 provider configuration.
-message Auth0CustomDomainStackInput {
+message Auth0CustomDomainIacInput {
   // target is the Auth0CustomDomain resource to be deployed.
   Auth0CustomDomain target = 1;
 

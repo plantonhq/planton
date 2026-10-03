@@ -15,11 +15,11 @@ type Locals struct {
 	DomainIds []string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurefrontdoorsecuritypolicyv1alpha1.AzureFrontDoorSecurityPolicyStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurefrontdoorsecuritypolicyv1alpha1.AzureFrontDoorSecurityPolicyIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureFrontDoorSecurityPolicy = stackInput.Target
-	target := stackInput.Target
+	locals.AzureFrontDoorSecurityPolicy = iacInput.Target
+	target := iacInput.Target
 
 	locals.ProfileId = target.Spec.ProfileId.GetValue()
 	locals.FirewallPolicyId = target.Spec.FirewallPolicyId.GetValue()

@@ -19,15 +19,15 @@ import "shared/metadata.proto";
 //     name: network-staples
 //   spec:
 //     members:
-//       - component: awsvpc
+//       - kind_dir: awsvpc
 //         manifest_path: catalog/aws/awsvpc/v1alpha1/e2e/prerequisite.yaml
-//       - component: awssubnet
+//       - kind_dir: awssubnet
 //         manifest_path: catalog/aws/awssubnet/v1alpha1/e2e/scenarios/routed.yaml
 //     scan_scope:
 //       region: us-west-2
 message MappingEvalSuite {
   string api_version = 1;
   string kind = 2;
-  dev.planton.shared.CloudResourceMetadata metadata = 3;
+  dev.planton.shared.CatalogObjectMetadata metadata = 3;
   MappingEvalSuiteSpec spec = 4;
 }

@@ -34,7 +34,7 @@ func validResource() *AzureMachineLearningComputeCluster {
 	return &AzureMachineLearningComputeCluster{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureMachineLearningComputeCluster",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-ml-compute-cluster",
 		},
 		Spec: &AzureMachineLearningComputeClusterSpec{

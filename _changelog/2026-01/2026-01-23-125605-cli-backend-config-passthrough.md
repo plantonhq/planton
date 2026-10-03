@@ -40,7 +40,7 @@ Modified `RunCommand` to accept an optional `backendConfig` parameter:
 func RunCommand(
     binaryName string,
     // ... other params ...
-    providerConfig *stackinputproviderconfig.ProviderConfig,
+    providerConfig *iacinputproviderconfig.ProviderConfig,
     backendConfig *backendconfig.TofuBackendConfig,  // NEW
 ) error {
     // If backendConfig is provided, use it directly

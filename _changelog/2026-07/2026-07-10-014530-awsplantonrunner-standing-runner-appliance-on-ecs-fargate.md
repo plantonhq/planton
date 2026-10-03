@@ -6,13 +6,13 @@
 
 ## Summary
 
-A new AWS deployment component, `AwsPlantonRunner`, deploys a standing
+A new AWS catalog kind, `AwsPlantonRunner`, deploys a standing
 Planton runner appliance inside a customer's VPC on ECS Fargate: an
 always-on, outbound-only worker that executes deploy operations and cloud
 operations from within the network. This is the piece that makes
 private-endpoint targets — most notably Kubernetes clusters whose API
 endpoints are unreachable from the internet — deployable and operable with
-zero inbound network exposure. The component ships the full anatomy (four
+zero inbound network exposure. The kind ships the full anatomy (four
 protos, both IaC engines at behavioral parity, docs, presets, its own live
 E2E lane) and was proven live on both engines with clean create → verify →
 destroy runs.
@@ -89,7 +89,7 @@ order:
 - **IaC engines**: `iac/pulumi/` (module split by resource concern:
   secret, iam, security_group, runner) and `iac/tf/` at full behavioral
   parity — same naming basis (`metadata.name`), identical tags, same
-  resources, same container contract, same 10 stack outputs. No
+  resources, same container contract, same 10 outputs. No
   steady-state gating and no deployment circuit breaker on either
   engine, deliberately: ECS reports a service ACTIVE independently of
   task health, and a runner whose control plane is momentarily
@@ -151,7 +151,7 @@ order:
   `target_cluster` removal — together these make private-cluster
   deployment through an in-VPC runner possible end to end.
 - The forge workflow's registration rule now documents the
-  kind-reflection-map regeneration step this component's forge surfaced.
+  kind-reflection-map regeneration step this kind's forge surfaced.
 
 ---
 

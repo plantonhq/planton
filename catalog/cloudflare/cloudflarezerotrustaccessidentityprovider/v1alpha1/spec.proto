@@ -299,7 +299,7 @@ message CloudflareZeroTrustAccessIdentityProviderScimConfig {
   };
 
   // Turn SCIM on. Enabling it for the first time mints the SCIM bearer secret
-  // (exposed once in the scim_secret stack output; refresh it later via the
+  // (exposed once in the scim_secret output; refresh it later via the
   // Access API's refresh_scim_secret endpoint if lost).
   bool enabled = 1;
 

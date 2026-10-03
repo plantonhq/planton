@@ -21,7 +21,7 @@ This directory contains the Terraform/OpenTofu implementation for deploying a Cl
 | `variables.tf` | GENERATED from the proto spec (`planton tofu generate-variables GcpWorkflow`), extended with the spec-default for `deletion_protection` |
 | `locals.tf` | Project/region fallback + name derivation + label merge |
 | `main.tf` | API enablement + the workflow resource |
-| `outputs.tf` | Stack outputs |
+| `outputs.tf` | Outputs |
 | `provider.tf` | google provider pin (`~> 8.3`) |
 | `backend.tf` | Local state backend (the runner injects the real backend) |
 

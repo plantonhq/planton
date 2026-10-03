@@ -4,7 +4,7 @@ Deploys an ExpressRoute Gateway -- the Virtual WAN on-ramp for ExpressRoute circ
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **ExpressRoute Gateway** -- the gateway in the hub, with its scale-unit floor and non-WAN-traffic policy
 - **ExpressRoute Connections** (optional) -- one per `connections` entry: the join between a circuit's private peering and the hub, with authorization key, routing block, and weight
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -57,7 +57,7 @@ spec:
 planton apply -f azure-express-route-gateway.yaml
 ```
 
-This creates a one-scale-unit ExpressRoute gateway in the `hub-eastus` Virtual WAN hub, ready for circuit connections. A Stack Job tracks the provisioning in real time. The gateway bills hourly per scale unit from creation, and ARM takes roughly 30 minutes to provision one.
+This creates a one-scale-unit ExpressRoute gateway in the `hub-eastus` Virtual WAN hub, ready for circuit connections. An Infra Job tracks the provisioning in real time. The gateway bills hourly per scale unit from creation, and ARM takes roughly 30 minutes to provision one.
 
 ### InfraChart
 
@@ -97,7 +97,7 @@ These are the most important decisions when configuring a gateway. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -106,7 +106,7 @@ These are the most important decisions when configuring a gateway. Explore the f
 | **AzureExpressRouteCircuitPeering** (per connection) | `connections[].expressRouteCircuitPeeringId` | `status.outputs.express_route_circuit_peering_id` |
 | **AzureVirtualHub** (optional) | `connections[].routing.associatedRouteTableId` | `status.outputs.default_route_table_id` or `status.outputs.route_table_ids.<name>` |
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` surfaces the gateway's ARM ID and name (`express_route_gateway_id`, `express_route_gateway_name`) and a name-keyed map of connection ARM IDs (`connection_ids`). No catalog kind consumes these via ValueFromRef -- the gateway is the end of the hybrid-connectivity chain, and its connections are declared inline rather than as separate resources -- so the outputs exist for inspection and external tooling.
 
@@ -120,6 +120,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- provides the resource group the gateway is created in
-- [**Azure Virtual Hub**](/cloud-catalog/azure-virtual-hub) -- the hub the gateway deploys into
-- [**Azure ExpressRoute Circuit Peering**](/cloud-catalog/azure-express-route-circuit-peering) -- the private peering each connection joins
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- provides the resource group the gateway is created in
+- [**Azure Virtual Hub**](/infra-catalog/azure-virtual-hub) -- the hub the gateway deploys into
+- [**Azure ExpressRoute Circuit Peering**](/infra-catalog/azure-express-route-circuit-peering) -- the private peering each connection joins

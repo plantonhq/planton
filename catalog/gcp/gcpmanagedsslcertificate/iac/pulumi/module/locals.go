@@ -15,8 +15,8 @@ type Locals struct {
 	CertificateName string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *gcpmanagedsslcertificatev1alpha1.GcpManagedSslCertificateStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(ctx *pulumi.Context, iacInput *gcpmanagedsslcertificatev1alpha1.GcpManagedSslCertificateIacInput) *Locals {
+	target := iacInput.Target
 
 	certificateName := target.Spec.CertificateName
 	if certificateName == "" {

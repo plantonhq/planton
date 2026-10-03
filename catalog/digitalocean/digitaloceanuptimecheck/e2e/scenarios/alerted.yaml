@@ -18,7 +18,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: digitaloceanuptimecheck
+    e2e-catalog-kind: digitaloceanuptimecheck
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-required-env: PLANTON_E2E_DIGITALOCEAN_ALERT_EMAIL

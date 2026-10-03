@@ -151,7 +151,7 @@ flowchart LR
 Teams get the serverless tier as three one-shot deploys: a production
 service that grows arms instead of being rebuilt, an eventing fabric
 whose failure paths are designed rather than discovered, and a batch
-layer with the IAM handshake already right. For component consumers, push
+layer with the IAM handshake already right. For kind consumers, push
 subscriptions can finally target Cloud Run services by reference — with
 full backward compatibility for literal URLs.
 

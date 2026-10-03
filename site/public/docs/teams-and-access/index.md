@@ -93,11 +93,11 @@ Planton uses a role-based access control system backed by [OpenFGA](https://open
 
 Each IAM role specifies:
 
-- **What kind of resource** it applies to (organization, environment, cloud resource, service, team, etc.)
+- **What kind of resource** it applies to (organization, environment, infra component, service, team, etc.)
 - **What actions** it grants (such as creating resources, updating configurations, managing IAM policies, or viewing details)
 - **What kind of principal** it is assigned to (user or organization)
 
-Roles are not generic "admin" or "viewer" labels — they are scoped to specific resource types. A role granting full access to services does not automatically grant access to cloud resources.
+Roles are not generic "admin" or "viewer" labels — they are scoped to specific resource types. A role granting full access to services does not automatically grant access to infra components.
 
 ### Assigning Roles
 

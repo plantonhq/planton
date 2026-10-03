@@ -24,7 +24,7 @@ export default function SlideSolution() {
             Replaces Terraform Enterprise / Pulumi Cloud
           </p>
           <p className="text-xs sm:text-sm text-[#a0a0a0] mb-2">
-            Deploy Any Cloud Resource with a Single API
+            Deploy Any Infra Component with a Single API
           </p>
           <ul className="space-y-1">
             <li className="flex items-center gap-2 text-xs sm:text-sm text-[#a0a0a0]">

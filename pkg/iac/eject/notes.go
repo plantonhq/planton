@@ -34,7 +34,7 @@ func tofuNotes(kindName, sourceVersion string) string {
 	return fmt.Sprintf(`# %[1]s — Customized OpenTofu/Terraform Module
 
 This directory is a customizable copy of the official OpenTofu/Terraform
-module for the %[1]s cloud resource, ejected from release %[2]s of the
+module for the %[1]s infra component, ejected from release %[2]s of the
 Planton catalog. Edit it freely — it is yours now. The one thing that must
 survive every customization is the contract below.
 
@@ -50,7 +50,7 @@ results back through a typed outputs schema:
   can be absent must be declared optional() with a default — a new required
   attribute the schema cannot supply will fail every deployment.
 - **Outputs.** Values declared in outputs.tf are matched by name against the
-  %[1]s stack-outputs schema. An output the schema does not know is ignored;
+  %[1]s outputs schema. An output the schema does not know is ignored;
   a schema field no output populates stays empty on the deployed resource.
 
 ## Prove a customization still conforms
@@ -88,22 +88,22 @@ func pulumiNotes(kindName, sourceVersion, goModulePath string) string {
 	return fmt.Sprintf(`# %[1]s — Customized Pulumi Module
 
 This directory is a customizable copy of the official Pulumi module for the
-%[1]s cloud resource, ejected from release %[2]s of the Planton catalog.
+%[1]s infra component, ejected from release %[2]s of the Planton catalog.
 Edit it freely — it is yours now. The one thing that must survive every
 customization is the contract below.
 
 ## The contract
 
 - **Entrypoint.** main.go is a Go Pulumi program: it loads a typed
-  %[1]sStackInput (the resource manifest plus deployment context) through
-  the stack-input loader and hands it to the module package. Keep that
+  %[1]sIacInput (the resource manifest plus deployment context) through
+  the iac-input loader and hands it to the module package. Keep that
   shape — the input type and its loading are how every deployment feeds
   this module.
 - **Runtime.** Pulumi.yaml declares the go runtime. Deployments build this
   module from source with the Go toolchain; other runtimes are not
   supported for customized modules.
 - **Outputs.** Values exported on the Pulumi context are matched by name
-  against the %[1]s stack-outputs schema. An export the schema does not
+  against the %[1]s outputs schema. An export the schema does not
   know is ignored; a schema field no export populates stays empty on the
   deployed resource.
 
@@ -111,7 +111,7 @@ customization is the contract below.
 
 This copy declares its own Go module, %[3]s, with the catalog
 (github.com/plantonhq/planton) as a dependency — that is where the %[1]s
-stub types and the stack-input loader come from. If dependencies have not
+stub types and the iac-input loader come from. If dependencies have not
 been resolved yet, run:
 
     go mod tidy

@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# Stack Outputs — matching AwsFsxLustreFileSystemStackOutputs
+# Outputs — matching AwsFsxLustreFileSystemOutputs
 # ---------------------------------------------------------------------------
 # Primary consumers: EKS (PV via FSx CSI driver), ECS (task def), EC2 (Lustre
 # mount), Batch (compute environments), data repository associations.

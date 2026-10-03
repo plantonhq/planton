@@ -4,7 +4,7 @@ Deploys a Kinesis Data Stream in either On-Demand or Provisioned capacity mode, 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kinesis Data Stream** -- a real-time data stream named from your manifest's `metadata.name`, configured with the specified capacity mode (On-Demand or Provisioned)
 - **Stream Mode Configuration** -- On-Demand mode auto-scales shards to match throughput (up to 200 MB/s write); Provisioned mode creates the exact number of shards specified in `shardCount`
@@ -16,12 +16,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **A KMS key** (optional) -- required when encrypting data at rest. Accepts a key ID, key ARN, or alias (e.g., `alias/aws/kinesis` for the AWS-managed Kinesis key). Provide the value directly or reference an AwsKmsKey Cloud Resource via ValueFromRef.
+- **A KMS key** (optional) -- required when encrypting data at rest. Accepts a key ID, key ARN, or alias (e.g., `alias/aws/kinesis` for the AWS-managed Kinesis key). Provide the value directly or reference an AwsKmsKey Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -49,7 +49,7 @@ spec:
 planton apply -f kinesis-stream.yaml
 ```
 
-This creates an On-Demand stream with AWS-managed shard scaling, default 24-hour retention, and no encryption. A Stack Job tracks the provisioning in real time.
+This creates an On-Demand stream with AWS-managed shard scaling, default 24-hour retention, and no encryption. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -86,15 +86,15 @@ These are the most important decisions when configuring a Kinesis Data Stream. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsKmsKey** (optional) | `kmsKeyId` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -113,5 +113,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for data-at-rest encryption
-- [**AWS Kinesis Stream Consumer**](/cloud-catalog/aws-kinesis-stream-consumer) -- registers an enhanced fan-out consumer with a dedicated 2 MB/s read pipe per shard on this stream
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for data-at-rest encryption
+- [**AWS Kinesis Stream Consumer**](/infra-catalog/aws-kinesis-stream-consumer) -- registers an enhanced fan-out consumer with a dedicated 2 MB/s read pipe per shard on this stream

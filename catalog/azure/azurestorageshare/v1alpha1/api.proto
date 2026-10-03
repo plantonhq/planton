@@ -20,7 +20,7 @@ message AzureStorageShare {
   string kind = 2 [(buf.validate.field).string.const = 'AzureStorageShare'];
 
   // metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // spec
   AzureStorageShareSpec spec = 4 [(buf.validate.field).required = true];
@@ -31,6 +31,6 @@ message AzureStorageShare {
 
 // AzureStorageShareStatus holds the deployment status and outputs.
 message AzureStorageShareStatus {
-  // stack-outputs
-  AzureStorageShareStackOutputs outputs = 1;
+  // outputs
+  AzureStorageShareOutputs outputs = 1;
 }

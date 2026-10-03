@@ -4,7 +4,7 @@ Defines an Istio ServiceEntry: a namespaced resource that adds a host into Istio
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **A ServiceEntry** -- a namespaced Istio registry entry describing the service's hosts, ports (with protocols), location (external to the mesh or part of it), how its endpoints are resolved, the static endpoints or in-mesh workloads that optionally back it, the namespaces it is exported to, and the subject alternate names the proxy checks when originating TLS.
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking.
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -55,7 +55,7 @@ spec:
 planton apply -f service-entry.yaml
 ```
 
-This registers `api.stripe.com` as an external HTTPS service that workloads in `prod-apps` can reach by name, with TLS routed by SNI and the host resolved via DNS. A Stack Job tracks the provisioning in real time.
+This registers `api.stripe.com` as an external HTTPS service that workloads in `prod-apps` can reach by name, with TLS routed by SNI and the host resolved via DNS. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,15 +94,15 @@ These are the most important decisions when configuring a ServiceEntry. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources and operators can reference:
+After provisioning, `status.outputs` contains values that downstream Infra Components and operators can reference:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|

@@ -4,7 +4,7 @@ Defines an Istio RequestAuthentication: a namespaced policy that decides which J
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **A RequestAuthentication policy** -- a namespaced Istio policy that tells the mesh how to validate JWTs presented to the workloads it selects: which issuers to trust (one JWT rule per issuer, each with its own signing keys and allowed audiences), where to read the token from (Authorization header, custom headers, query parameters, or cookies), and what to do with the verified claims (forward the token, emit the payload, or copy claims into request headers).
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking.
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -52,7 +52,7 @@ spec:
 planton apply -f request-authentication.yaml
 ```
 
-This validates Google-issued JWTs for every workload in the `prod-apps` namespace. A Stack Job tracks the provisioning in real time.
+This validates Google-issued JWTs for every workload in the `prod-apps` namespace. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,15 +87,15 @@ These are the most important decisions when configuring a RequestAuthentication 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources and operators can reference:
+After provisioning, `status.outputs` contains values that downstream Infra Components and operators can reference:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -112,7 +112,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Istio Base CRDs**](/cloud-catalog/kubernetes-istio-base-crds) -- the CRDs this policy type registers under (prerequisite).
-- [**Istio**](/cloud-catalog/kubernetes-istio) -- the running control plane (istiod) that fetches signing keys and enforces validation in the data plane.
-- [**Istio Authorization Policy**](/cloud-catalog/kubernetes-authorization-policy) -- the natural pair: RequestAuthentication establishes WHO the caller is (a verified JWT principal); AuthorizationPolicy decides whether that principal may proceed. Without it, tokenless requests pass.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the placement target the policy scopes to.
+- [**Istio Base CRDs**](/infra-catalog/kubernetes-istio-base-crds) -- the CRDs this policy type registers under (prerequisite).
+- [**Istio**](/infra-catalog/kubernetes-istio) -- the running control plane (istiod) that fetches signing keys and enforces validation in the data plane.
+- [**Istio Authorization Policy**](/infra-catalog/kubernetes-authorization-policy) -- the natural pair: RequestAuthentication establishes WHO the caller is (a verified JWT principal); AuthorizationPolicy decides whether that principal may proceed. Without it, tokenless requests pass.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the placement target the policy scopes to.

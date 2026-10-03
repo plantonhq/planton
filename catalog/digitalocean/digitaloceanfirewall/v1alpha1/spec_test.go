@@ -27,7 +27,7 @@ func validFirewall() *DigitalOceanFirewall {
 	return &DigitalOceanFirewall{
 		ApiVersion: "digital-ocean.planton.dev/v1alpha1",
 		Kind:       "DigitalOceanFirewall",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-firewall",
 		},
 		Spec: &DigitalOceanFirewallSpec{

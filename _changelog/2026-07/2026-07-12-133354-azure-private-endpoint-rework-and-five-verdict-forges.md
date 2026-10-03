@@ -2,7 +2,7 @@
 
 **Date**: July 12, 2026
 **Type**: Feature (breaking rework + five new kinds + eleven reference retrofits)
-**Components**: API Definitions, Azure Provider, IaC Modules (Terraform + Pulumi), E2E Framework, Cloud Resource Registry
+**Components**: API Definitions, Azure Provider, IaC Modules (Terraform + Pulumi), E2E Framework, Catalog Kind Registry
 
 ## Summary
 

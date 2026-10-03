@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: azuremssqlelasticpool
 spec:
@@ -58,7 +58,7 @@ spec:
       notes: Backups are taken per member database (automated full/differential/log backups with point-in-time restore are always on for each database); the pool itself holds no restorable data.
     - control_id: backup-retention-policy
       status: not_applicable
-      notes: Retention windows and long-term retention are member-database settings (the AzureMssqlDatabase component carries them); the pool API has no retention fields.
+      notes: Retention windows and long-term retention are member-database settings (the AzureMssqlDatabase kind carries them); the pool API has no retention fields.
     - control_id: multi-zone-ha
       status: configurable
       field_path: zone_redundant

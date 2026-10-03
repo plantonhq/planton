@@ -6,7 +6,7 @@ go_library(
     importpath = "github.com/plantonhq/planton/pkg/kustomize/schema",
     visibility = ["//visibility:public"],
     deps = [
-        "//pkg/crkreflect",
+        "//pkg/catalogkindreflect",
         "@com_github_sirupsen_logrus//:logrus",
         "@org_golang_google_protobuf//reflect/protoreflect",
     ],
@@ -17,8 +17,8 @@ go_test(
     srcs = ["generator_test.go"],
     embed = [":schema"],
     deps = [
-        "//pkg/crkreflect",
-        "//shared/cloudresourcekind",
+        "//pkg/catalogkindreflect",
+        "//shared/catalogkind",
         "@org_golang_google_protobuf//reflect/protoreflect",
     ],
 )

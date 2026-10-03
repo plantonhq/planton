@@ -208,7 +208,7 @@ message GcpVertexAiIndexSpec {
   // one-field diff on the next plan.
   //
   // A plain string (not a reference) because the gs:// directory URI
-  // has no matching stack output shape on the GCS kinds; compose by
+  // has no matching output shape on the GCS kinds; compose by
   // writing the bucket name into the URI.
   string contents_delta_uri = 6 [(buf.validate.field).cel = {
     id: "contents_delta_uri_gs_scheme"

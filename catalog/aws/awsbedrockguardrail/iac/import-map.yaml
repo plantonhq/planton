@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsbedrockguardrail
 spec:
@@ -11,13 +11,13 @@ spec:
   values:
     - name: guardrail_id
       derivations:
-        - from_stack_output: guardrail_id
+        - from_output: guardrail_id
       where_to_find: >-
         Bedrock console -> Safeguards -> Guardrails -> <guardrail> (the
         ID), or `aws bedrock list-guardrails` (id).
     - name: guardrail_arn
       derivations:
-        - from_stack_output: guardrail_arn
+        - from_output: guardrail_arn
       where_to_find: >-
         Bedrock console -> Safeguards -> Guardrails -> <guardrail> (the
         ARN), or `aws bedrock list-guardrails` (arn).
@@ -28,7 +28,7 @@ spec:
     - name: version
       tofu_resource_name: published
       derivations:
-        - from_stack_output_keyed_by_address: version_numbers
+        - from_output_keyed_by_address: version_numbers
       where_to_find: >-
         `aws bedrock list-guardrails --guardrail-identifier <arn>` lists
         the numbered versions; match each to its spec.versions entry by

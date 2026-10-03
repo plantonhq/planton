@@ -6,7 +6,7 @@ package dev.planton.qa.mappingevalsuite.v1;
 // mapping: the fixture manifests that are deployed as the known ground
 // truth, and the scan scope a blind proposer is given. Because the suite
 // deploys from known manifests, it holds the complete answer key -- which
-// cloud resources exist, which component instance owns each, what every
+// infra components exist, which component instance owns each, what every
 // spec field is, and where the value_from edges run -- so a proposer's
 // output can be machine-scored instead of eyeballed.
 //
@@ -39,12 +39,12 @@ message MappingEvalSuiteSpec {
   bool grade_environment_partition = 3;
 }
 
-// SuiteMember is one fixture deployment: a component kind plus the manifest
+// SuiteMember is one fixture deployment: a kind plus the manifest
 // to deploy for it.
 message SuiteMember {
-  // The component directory name (e.g. "awsvpc", "awssubnet") -- the same
+  // The kind directory name (e.g. "awsvpc", "awssubnet") -- the same
   // slug the E2E framework and the import maps key on.
-  string component = 1;
+  string kind_dir = 1;
   // Repo-relative path to the KRM manifest to deploy (an existing E2E
   // scenario or install profile -- suites compose proven fixtures rather
   // than inventing parallel ones).

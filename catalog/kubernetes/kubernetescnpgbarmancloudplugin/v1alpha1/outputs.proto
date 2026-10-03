@@ -3,13 +3,13 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetescnpgbarmancloudplugin.v1alpha1;
 
 /**
- * **KubernetesCnpgBarmanCloudPluginStackOutputs** -- the composition handles
+ * **KubernetesCnpgBarmanCloudPluginOutputs** -- the composition handles
  * a deployed Barman Cloud plugin exports. The plugin has no per-database
  * surface of its own: KubernetesPostgres backup blocks name the plugin
  * inside their Cluster and point at ObjectStore resources they render
  * themselves, so the handles here identify the installation.
  */
-message KubernetesCnpgBarmanCloudPluginStackOutputs {
+message KubernetesCnpgBarmanCloudPluginOutputs {
   // Namespace the plugin runs in -- the CloudNativePG operator's namespace,
   // by requirement.
   string namespace = 1;

@@ -12,7 +12,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: kubernetesplantonrunner
+    e2e-catalog-kind: kubernetesplantonrunner
   annotations:
     planton.dev/e2e: "true"
     # The fake token's crash-loop is DESIGNED -- the lane pins the failure to

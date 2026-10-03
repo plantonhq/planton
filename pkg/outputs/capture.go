@@ -8,7 +8,7 @@ import (
 
 // CaptureResult carries a stack's outputs captured after a successful apply,
 // in every shape a consumer needs: the engine-decoded raw map, the dotted-key
-// flattening, the kind's typed StackOutputs proto, and which outputs the
+// flattening, the kind's typed Outputs proto, and which outputs the
 // kind's schema declares secrets.
 //
 // Captured values include the real secrets, because resolving a downstream
@@ -21,13 +21,13 @@ type CaptureResult struct {
 	// Flat is Raw flattened to dotted string keys (see Flatten).
 	Flat map[string]string
 
-	// Typed is the kind's StackOutputs proto populated from Raw, honoring
+	// Typed is the kind's Outputs proto populated from Raw, honoring
 	// module-shipped transform overrides. Nil when the kind declares no
 	// outputs message or the transform was skipped.
 	Typed proto.Message
 
 	// Secrets is the kind's schema marks (see SecretOutputs): top-level
-	// stack-outputs field name -> whether it is a secret.
+	// outputs field name -> whether it is a secret.
 	Secrets map[string]bool
 }
 

@@ -8,7 +8,7 @@ go_library(
         "manifest.go",
         "manifest_diagnosis.go",
         "messages.go",
-        "stack_outputs.go",
+        "outputs.go",
         "styles.go",
     ],
     importpath = "github.com/plantonhq/planton/internal/cli/ui",
@@ -24,7 +24,7 @@ go_library(
 
 go_test(
     name = "ui_test",
-    srcs = ["stack_outputs_test.go"],
+    srcs = ["outputs_test.go"],
     embed = [":ui"],
     deps = [
         "//pkg/outputs",

@@ -265,11 +265,11 @@ resources:
       - arg: destination
         reason: wired by the module from the destination oneof arm -- each arm renders its configuration block plus the matching destination string
       - arg: arn
-        reason: legacy Optional+Computed attribute -- AWS always assigns the ARN; read back as the delivery_stream_arn stack output, never real configuration
+        reason: legacy Optional+Computed attribute -- AWS always assigns the ARN; read back as the delivery_stream_arn output, never real configuration
       - arg: destination_id
-        reason: provider handshake attribute (Optional+Computed) -- exposed as the destination_id stack output, never user surface
+        reason: provider handshake attribute (Optional+Computed) -- exposed as the destination_id output, never user surface
       - arg: version_id
-        reason: provider handshake attribute (Optional+Computed) -- exposed as the version_id stack output, never user surface
+        reason: provider handshake attribute (Optional+Computed) -- exposed as the version_id output, never user surface
       - arg: server_side_encryption.key_type
         reason: derived by the module from sse_kms_key_arn presence -- CUSTOMER_MANAGED_CMK when a key is set, AWS_OWNED_CMK otherwise
       - arg: tags

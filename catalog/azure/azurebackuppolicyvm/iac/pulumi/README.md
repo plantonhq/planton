@@ -8,7 +8,7 @@ Creates an Azure Backup policy for IaaS virtual machines -- the schedule and lay
 
 - `backup.PolicyVM` -- the policy (`.../vaults/{vault}/backupPolicies/{name}`)
 
-## Stack Outputs
+## Outputs
 
 - `backup_policy_id` -- the policy's full ARM ID (what protected VMs bind to)
 - `backup_policy_name` -- unique on its vault

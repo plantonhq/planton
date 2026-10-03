@@ -20,7 +20,7 @@ func validEnvelope(spec *AwsAppRunnerObservabilityConfigurationSpec) *AwsAppRunn
 	return &AwsAppRunnerObservabilityConfiguration{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsAppRunnerObservabilityConfiguration",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-oc"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-oc"},
 		Spec:       spec,
 	}
 }

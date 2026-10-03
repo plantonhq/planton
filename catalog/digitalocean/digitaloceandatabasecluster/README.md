@@ -1,8 +1,8 @@
 # DigitalOcean Database Cluster
 
-Managed databases on DigitalOcean: one Planton component models the full `digitalocean_database_cluster` resource — every engine DigitalOcean offers (PostgreSQL, MySQL, Valkey, MongoDB, Kafka, OpenSearch — plus Redis for adopting existing clusters), node topology and sizing, VPC-private networking, custom storage with automatic growth, weekly maintenance windows, restore-from-backup provisioning, engine-specific tuning, project placement, and tags.
+Managed databases on DigitalOcean: one catalog kind models the full `digitalocean_database_cluster` resource — every engine DigitalOcean offers (PostgreSQL, MySQL, Valkey, MongoDB, Kafka, OpenSearch — plus Redis for adopting existing clusters), node topology and sizing, VPC-private networking, custom storage with automatic growth, weekly maintenance windows, restore-from-backup provisioning, engine-specific tuning, project placement, and tags.
 
-## What this component models
+## What this kind models
 
 The spec maps one-to-one onto DigitalOcean's managed database cluster:
 

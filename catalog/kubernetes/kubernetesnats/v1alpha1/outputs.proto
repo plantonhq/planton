@@ -3,12 +3,12 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesnats.v1alpha1;
 
 /**
- * **KubernetesNatsStackOutputs** — the composition handles a deployed
+ * **KubernetesNatsOutputs** — the composition handles a deployed
  * NATS system exports. Applications connect through the client
  * Service; credentials (when auth is declared) live in the exported
  * auth Secret.
  */
-message KubernetesNatsStackOutputs {
+message KubernetesNatsOutputs {
   // Namespace the servers run in.
   string namespace = 1;
 

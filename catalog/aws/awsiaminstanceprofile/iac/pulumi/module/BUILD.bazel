@@ -16,7 +16,7 @@ go_library(
         "//pkg/iac/pulumi/pulumimodule/datatypes/stringmaps/convertstringmaps",
         "//pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/aws/pulumiawsprovider",
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_aws_sdk_v7//go/aws/iam",
         "@com_github_pulumi_pulumi_sdk_v3//go/pulumi",

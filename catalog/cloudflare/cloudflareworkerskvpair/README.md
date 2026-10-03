@@ -55,7 +55,7 @@ spec:
 KV values are not secrets. Keep credentials out of KV: use a Worker `secret_text`
 binding or Cloudflare Secrets Store, both of which are secret-by-default.
 
-## Related components
+## Related kinds
 
 - `CloudflareKvNamespace` — the container this entry is written into.
 - `CloudflareWorker` — binds the namespace via `kv_namespaces` to read entries.

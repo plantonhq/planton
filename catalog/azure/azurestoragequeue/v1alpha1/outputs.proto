@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.azure.azurestoragequeue.v1alpha1;
 
-// **AzureStorageQueueStackOutputs** captures the outputs of provisioning
+// **AzureStorageQueueOutputs** captures the outputs of provisioning
 // a Storage queue.
 //
 // No URL output on purpose: the queue's data-plane URL is the ACCOUNT's
@@ -10,7 +10,7 @@ package dev.planton.azure.azurestoragequeue.v1alpha1;
 // real endpoint (partitioned-DNS accounts use a different hostname than
 // the classic shared DNS). Compose client URLs from
 // AzureStorageAccount's primary_queue_endpoint output + queue_name.
-message AzureStorageQueueStackOutputs {
+message AzureStorageQueueOutputs {
   // The Azure Resource Manager ID of the queue. Role assignments
   // (Storage Queue Data Contributor/Message Processor/Message Sender)
   // scope to it for queue-level data access.

@@ -26,7 +26,7 @@ triggers flow control at the wrong threshold. Add `tls` (a
 KubernetesCertificate's secret output plugs in directly) before
 anything crosses a trust boundary; applications read credentials from
 the operator-generated `prod-rabbitmq-default-user` Secret exported
-in the stack outputs — never from a manifest.
+in the outputs — never from a manifest.
 
 See [02-production-quorum.yaml](./02-production-quorum.yaml) for the
 manifest.

@@ -4,9 +4,9 @@
 # the meter spins when a pipeline's Execute Data Flow activity (or a
 # debug session) runs it -- Spark cluster time billed per vCore-hour on
 # the Azure Data Factory V2 service against the factory. Schema:
-# finops/componentcostprofile/v1.
+# finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azuredatafactorydataflow
 spec:

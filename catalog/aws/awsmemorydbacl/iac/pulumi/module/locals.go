@@ -5,7 +5,7 @@ import (
 
 	awsmemorydbaclv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsmemorydbacl/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -20,11 +20,11 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *awsmemorydbaclv1alpha1.AwsMemorydbAclStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *awsmemorydbaclv1alpha1.AwsMemorydbAclIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsMemorydbAcl = stackInput.Target
+	locals.AwsMemorydbAcl = iacInput.Target
 
-	metadata := stackInput.Target.Metadata
+	metadata := iacInput.Target.Metadata
 	locals.AclName = metadata.Name
 
 	// Resource-identity tags match the Terraform module key-for-key.
@@ -33,7 +33,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *awsmemorydbaclv1alpha1.AwsM
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsMemorydbAcl.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsMemorydbAcl.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

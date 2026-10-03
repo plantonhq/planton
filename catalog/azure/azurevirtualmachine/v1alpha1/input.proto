@@ -5,9 +5,9 @@ package dev.planton.azure.azurevirtualmachine.v1alpha1;
 import "catalog/azure/azurevirtualmachine/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-virtual-machine stack-input
-message AzureVirtualMachineStackInput {
-  //target cloud-resource
+//azure-virtual-machine iac-input
+message AzureVirtualMachineIacInput {
+  //target infra-component
   AzureVirtualMachine target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

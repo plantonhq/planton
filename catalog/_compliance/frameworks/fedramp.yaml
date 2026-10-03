@@ -1,6 +1,6 @@
 # Crosswalk: FedRAMP (via the NIST SP 800-53 Rev 5 controls its baselines
 # draw on) onto the Planton Control Catalog. FedRAMP is an authorization
-# program, not a checklist -- no component, chart, or deployment is ever
+# program, not a checklist -- no kind, chart, or deployment is ever
 # "FedRAMP authorized" by this data. This crosswalk maps the technical
 # 800-53 controls FedRAMP baselines draw on, so the catalog's verified
 # posture serves as evidence a FedRAMP assessment consumes, never as an
@@ -13,7 +13,7 @@
 # FedRAMP is provider-neutral: its baselines govern any cloud service
 # offering regardless of the underlying cloud, so this crosswalk declares
 # NO provider scope (spec.providers stays absent) and applies to every
-# provider's components.
+# provider's kinds.
 apiVersion: compliance.planton.dev/v1
 kind: FrameworkCrosswalk
 metadata:
@@ -25,11 +25,11 @@ spec:
     - requirement_id: AC-3
       requirement_name: Access Enforcement
       control_ids: [rbac]
-      notes: Role-based access control is the enforcement mechanism for approved authorizations on the component's management and data planes.
+      notes: Role-based access control is the enforcement mechanism for approved authorizations on the kind's management and data planes.
     - requirement_id: AC-6
       requirement_name: Least Privilege
       control_ids: [rbac]
-      notes: Role-based grants scoped to what each role needs are the component-grain expression of least privilege.
+      notes: Role-based grants scoped to what each role needs are the kind-grain expression of least privilege.
     - requirement_id: IA-5
       requirement_name: Authenticator Management
       control_ids: [workload-identity, no-legacy-auth, strong-user-auth]
@@ -37,22 +37,22 @@ spec:
     - requirement_id: AU-2
       requirement_name: Event Logging
       control_ids: [audit-logging]
-      notes: Administrative and access events captured in provider audit logs are the component's event-logging contribution; selecting which event types the organization logs remains organizational.
+      notes: Administrative and access events captured in provider audit logs are the kind's event-logging contribution; selecting which event types the organization logs remains organizational.
     - requirement_id: AU-12
       requirement_name: Audit Record Generation
       control_ids: [audit-logging]
-      notes: The component's audit-log integration is the record-generation capability this control requires.
+      notes: The kind's audit-log integration is the record-generation capability this control requires.
     - requirement_id: SC-7
       requirement_name: Boundary Protection
       control_ids: [no-public-access, restricted-ingress, edge-protection]
-      notes: No public exposure, declared ingress sources, and edge request filtering are boundary protection at the component grain.
+      notes: No public exposure, declared ingress sources, and edge request filtering are boundary protection at the kind grain.
     - requirement_id: SC-8
       requirement_name: Transmission Confidentiality and Integrity
       control_ids: [enc-in-transit]
     - requirement_id: SC-8(1)
       requirement_name: Cryptographic Protection
       control_ids: [enc-in-transit]
-      notes: The cryptographic-protection enhancement of SC-8, served by encrypted connections to and from the component.
+      notes: The cryptographic-protection enhancement of SC-8, served by encrypted connections to and from the kind.
     - requirement_id: SC-12
       requirement_name: Cryptographic Key Establishment and Management
       control_ids: [enc-at-rest-cmk]
@@ -71,11 +71,11 @@ spec:
     - requirement_id: CP-10
       requirement_name: System Recovery and Reconstitution
       control_ids: [backup-recovery, multi-zone-ha]
-      notes: Restore-from-backup recovers the component to a known state; zone-replicated operation sustains service through the failure of a zone. CP-7 (Alternate Processing Site) is deliberately not cited -- its statement concerns organization-level site agreements and equipment, not a component capability.
+      notes: Restore-from-backup recovers the kind to a known state; zone-replicated operation sustains service through the failure of a zone. CP-7 (Alternate Processing Site) is deliberately not cited -- its statement concerns organization-level site agreements and equipment, not a kind capability.
     - requirement_id: SI-2
       requirement_name: Flaw Remediation
       control_ids: [managed-patching]
-      notes: Security patches and version upgrades applied through a managed channel are the component's flaw-remediation path.
+      notes: Security patches and version upgrades applied through a managed channel are the kind's flaw-remediation path.
     - requirement_id: SI-4
       requirement_name: System Monitoring
       control_ids: [monitoring-integration]
@@ -83,4 +83,4 @@ spec:
     - requirement_id: CM-5
       requirement_name: Access Restrictions for Change
       control_ids: [deletion-protection]
-      notes: Refusing deletion until protection is explicitly lifted is an enforced logical restriction on the most destructive change a component accepts.
+      notes: Refusing deletion until protection is explicitly lifted is an enforced logical restriction on the most destructive change a kind accepts.

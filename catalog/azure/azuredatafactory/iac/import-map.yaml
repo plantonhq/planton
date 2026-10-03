@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: azuredatafactory
 spec:
@@ -13,7 +13,7 @@ spec:
   values:
     - name: data_factory_id
       derivations:
-        - from_stack_output: data_factory_id
+        - from_output: data_factory_id
       where_to_find: >-
         Portal -> Data factories -> the factory -> Properties ->
         Resource ID, or `az datafactory show -g <rg> -n <name> --query

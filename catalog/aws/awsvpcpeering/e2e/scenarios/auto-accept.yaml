@@ -11,7 +11,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsvpcpeering
+    e2e-catalog-kind: awsvpcpeering
   annotations:
     planton.dev/e2e: "true"
     # The registry prerequisite (AwsVpc) provides the requester side;

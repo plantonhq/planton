@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: stripetaxregistration
 spec:
@@ -9,6 +9,6 @@ spec:
   values:
     - name: tax_registration_id
       derivations:
-        - from_stack_output: id
+        - from_output: id
       where_to_find: >-
         `GET /v1/tax/registrations` lists the account's registrations with their ids (taxreg_...), country and options; the Stripe Dashboard's Tax registrations page shows the same registrations by place.

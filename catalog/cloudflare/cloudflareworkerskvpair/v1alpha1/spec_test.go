@@ -21,7 +21,7 @@ func validPair() *CloudflareWorkersKvPair {
 	return &CloudflareWorkersKvPair{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareWorkersKvPair",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-kv-pair"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-kv-pair"},
 		Spec: &CloudflareWorkersKvPairSpec{
 			AccountId:   validAccountID,
 			NamespaceId: value("0f1e2d3c4b5a69788796a5b4c3d2e1f0"),

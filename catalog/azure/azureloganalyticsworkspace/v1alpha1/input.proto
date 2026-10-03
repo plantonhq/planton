@@ -5,10 +5,10 @@ package dev.planton.azure.azureloganalyticsworkspace.v1alpha1;
 import "catalog/azure/azureloganalyticsworkspace/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureLogAnalyticsWorkspaceStackInput is the input to the IaC module.
+// AzureLogAnalyticsWorkspaceIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-message AzureLogAnalyticsWorkspaceStackInput {
-  // target cloud-resource to be deployed
+message AzureLogAnalyticsWorkspaceIacInput {
+  // target infra-component to be deployed
   AzureLogAnalyticsWorkspace target = 1;
   // provider-config for Azure authentication
   dev.planton.azure.AzureProviderConfig provider_config = 2;

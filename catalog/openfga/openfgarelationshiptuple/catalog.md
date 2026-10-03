@@ -4,7 +4,7 @@ Deploys a single relationship tuple into an existing OpenFGA store -- the fundam
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Relationship Tuple** -- an `openfga_relationship_tuple` resource that writes one (user, relation, object) row into the target store. The module assembles OpenFGA's string forms from the structured spec: `user.type` + `user.id` become `user:anne`, adding `user.relation` produces a userset like `group:engineering#member`, and `object.type` + `object.id` become `document:budget-2024`.
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **OpenFGA Provider Connection** -- an active connection in the Connect module with the OpenFGA API URL and authentication credentials (API token or client credentials). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **OpenFGA Provider Connection** -- an active connection in the Connect module with the OpenFGA API URL and authentication credentials (API token or client credentials). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline authentication.
 
 ### OpenFGA Server
@@ -55,7 +55,7 @@ spec:
 planton apply -f openfga-tuple.yaml
 ```
 
-This writes one tuple granting `user:anne` the `viewer` relation on `document:budget-2024`, validated against the store's latest authorization model. OpenFGA ships only a Terraform provider, so this component provisions with Terraform/OpenTofu. A Stack Job tracks the provisioning in real time.
+This writes one tuple granting `user:anne` the `viewer` relation on `document:budget-2024`, validated against the store's latest authorization model. OpenFGA ships only a Terraform provider, so this component provisions with Terraform/OpenTofu. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -89,20 +89,20 @@ These are the most important decisions when configuring an OpenFGA relationship 
 
 **Conditions** -- The optional `condition` block makes the tuple dynamic: it only participates in a check when the named condition (which must be declared in the authorization model) evaluates true. `contextJson` supplies partial context stored with the tuple -- for example an allowed IP range -- which is merged with the context supplied at check time before evaluation.
 
-**Tuple granularity** -- Each Cloud Resource manages exactly one tuple. That fits long-lived structural grants -- group memberships, organization hierarchy, service-to-service access -- where declarative history matters. High-churn per-user grants created as users interact with the application are better written by the application through the OpenFGA API.
+**Tuple granularity** -- Each Infra Component manages exactly one tuple. That fits long-lived structural grants -- group memberships, organization hierarchy, service-to-service access -- where declarative history matters. High-churn per-user grants created as users interact with the application are better written by the application through the OpenFGA API.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **OpenFgaStore** | `storeId` | `status.outputs.id` |
 | **OpenFgaAuthorizationModel** (optional) | `authorizationModelId` | `status.outputs.id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-Relationship tuples have no server-side identifier -- a tuple is identified by the combination of store, user, relation, and object. `status.outputs` echoes `user`, `relation`, and `object` back as confirmation that the tuple was written; there is nothing here for downstream Cloud Resources to consume via ValueFromRef.
+Relationship tuples have no server-side identifier -- a tuple is identified by the combination of store, user, relation, and object. `status.outputs` echoes `user`, `relation`, and `object` back as confirmation that the tuple was written; there is nothing here for downstream Infra Components to consume via ValueFromRef.
 
 ## Common Patterns
 
@@ -118,5 +118,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**OpenFGA Store**](/cloud-catalog/openfga-store) -- the store the tuple is written into, wired through `storeId`
-- [**OpenFGA Authorization Model**](/cloud-catalog/openfga-authorization-model) -- defines the types, relations, and conditions the tuple must conform to; pin a version via `authorizationModelId`
+- [**OpenFGA Store**](/infra-catalog/openfga-store) -- the store the tuple is written into, wired through `storeId`
+- [**OpenFGA Authorization Model**](/infra-catalog/openfga-authorization-model) -- defines the types, relations, and conditions the tuple must conform to; pin a version via `authorizationModelId`

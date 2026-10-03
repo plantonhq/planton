@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesqdrant.v1alpha1;
 import "catalog/kubernetes/kubernetesqdrant/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//qdrant-kubernetes stack-input
-message KubernetesQdrantStackInput {
-  //target cloud-resource
+//qdrant-kubernetes iac-input
+message KubernetesQdrantIacInput {
+  //target infra-component
   KubernetesQdrant target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

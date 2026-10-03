@@ -12,9 +12,9 @@ type Locals struct {
 	CloudflareLoadBalancerPool *cloudflareloadbalancerpoolv1alpha1.CloudflareLoadBalancerPool
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *cloudflareloadbalancerpoolv1alpha1.CloudflareLoadBalancerPoolStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *cloudflareloadbalancerpoolv1alpha1.CloudflareLoadBalancerPoolIacInput) *Locals {
 	return &Locals{
-		CloudflareProviderConfig:   stackInput.ProviderConfig,
-		CloudflareLoadBalancerPool: stackInput.Target,
+		CloudflareProviderConfig:   iacInput.ProviderConfig,
+		CloudflareLoadBalancerPool: iacInput.Target,
 	}
 }

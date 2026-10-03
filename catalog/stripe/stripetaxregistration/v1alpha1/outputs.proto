@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.stripe.stripetaxregistration.v1alpha1;
 
-// StripeTaxRegistrationStackOutputs identifies the tax registration and says whether it is
+// StripeTaxRegistrationOutputs identifies the tax registration and says whether it is
 // collecting.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/tax_registration
-message StripeTaxRegistrationStackOutputs {
+message StripeTaxRegistrationOutputs {
   // id is the registration's Stripe id (taxreg_...). It changes when the registration is replaced.
   string id = 1;
 

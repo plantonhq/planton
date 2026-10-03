@@ -5,9 +5,9 @@ package dev.planton.aws.awsmwaaenvironment.v1alpha1;
 import "catalog/aws/awsmwaaenvironment/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// aws-mwaa-environment stack-input
-message AwsMwaaEnvironmentStackInput {
-  // target cloud-resource
+// aws-mwaa-environment iac-input
+message AwsMwaaEnvironmentIacInput {
+  // target infra-component
   AwsMwaaEnvironment target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

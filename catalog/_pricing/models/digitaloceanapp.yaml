@@ -1,18 +1,18 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. A hand model rather than a derivation: an app's cost
-# identity lives in REPEATED component trees (services, workers, jobs,
+# identity lives in REPEATED kind trees (services, workers, jobs,
 # databases), and the derivation grammar reads scalar spec paths -- it
 # cannot walk each service and multiply its own slug by its own count.
 # Each preset's quantities are computed here and defended in their bases.
 # App Platform pricing carries no region dimension, so every referenced
 # entry is pinned "global". Autoscaling floors are priced and ceilings
 # named -- honest floors, never averages.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: digitaloceanapp
 spec:

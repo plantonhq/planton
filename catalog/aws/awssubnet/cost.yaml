@@ -1,11 +1,11 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awssubnet
 spec:
   billing_model: free
-  free_tier: A subnet carries no meter -- AWS charges nothing for creating subnets, and the route table and route-table association this component can create alongside are equally chargeless VPC configuration. AWS's own pricing is explicit that VPCs, subnets, and route tables have no hourly or usage fee, at any count and any size of address range.
+  free_tier: A subnet carries no meter -- AWS charges nothing for creating subnets, and the route table and route-table association this kind can create alongside are equally chargeless VPC configuration. AWS's own pricing is explicit that VPCs, subnets, and route tables have no hourly or usage fee, at any count and any size of address range.
   notes: "No field of this spec buys anything directly, but two fields shape spend that bills elsewhere. map_public_ip_on_launch makes every instance launched here hold a public IPv4 address, and AWS bills each public IPv4 per hour ON THE RESOURCE HOLDING IT -- a subnet full of public instances drives that meter without the subnet itself billing. Routes decide which paid doors traffic exits through: a nat_gateway target sends traffic to AwsNatGateway's hourly and per-GB meters, a transit_gateway target to the TGW attachment and per-GB processing meters, while internet_gateway and egress_only_internet_gateway targets are free paths (only EC2 data-transfer-out applies). The dominant spend is always the resources PLACED in the subnet -- instances, databases, endpoints -- each billing as its own catalog kind, plus cross-AZ data transfer between this single-AZ subnet and its siblings."

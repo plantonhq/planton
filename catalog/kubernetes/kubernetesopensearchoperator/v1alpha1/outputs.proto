@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetesopensearchoperator.v1alpha1;
 
-//kubernetes-open-search-operator stack outputs
-message KubernetesOpenSearchOperatorStackOutputs {
+//kubernetes-open-search-operator outputs
+message KubernetesOpenSearchOperatorOutputs {
   //namespace the operator is installed into.
   string namespace = 1;
 

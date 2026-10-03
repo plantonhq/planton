@@ -5,10 +5,10 @@ package dev.planton.azure.azureeventhubauthorizationrule.v1alpha1;
 import "catalog/azure/azureeventhubauthorizationrule/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureEventHubAuthorizationRuleStackInput is the input to the IaC module.
+// AzureEventHubAuthorizationRuleIacInput is the input to the IaC module.
 // It contains the target resource and provider configuration.
-message AzureEventHubAuthorizationRuleStackInput {
-  // target cloud-resource to be deployed
+message AzureEventHubAuthorizationRuleIacInput {
+  // target infra-component to be deployed
   AzureEventHubAuthorizationRule target = 1;
   // provider-config for Azure authentication
   dev.planton.azure.AzureProviderConfig provider_config = 2;

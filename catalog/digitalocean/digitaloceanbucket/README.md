@@ -2,7 +2,7 @@
 
 An S3-compatible object-storage bucket on DigitalOcean Spaces, described once in a Planton manifest: region and canned ACL, object versioning, lifecycle rules that expire current or noncurrent versions and abort stale multipart uploads, CORS for browser applications, a JSON bucket policy, access logging to another bucket, and the force-destroy safety flag.
 
-## What this component models
+## What this kind models
 
 The spec maps onto DigitalOcean's Spaces bucket plus the three per-bucket settings satellites whose lifecycle is identical to the bucket's:
 

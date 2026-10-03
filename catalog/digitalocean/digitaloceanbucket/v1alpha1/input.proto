@@ -5,9 +5,9 @@ package dev.planton.digitalocean.digitaloceanbucket.v1alpha1;
 import "catalog/digitalocean/digitaloceanbucket/v1alpha1/api.proto";
 import "catalog/digitalocean/provider.proto";
 
-//digital-ocean-bucket stack-input
-message DigitalOceanBucketStackInput {
-  //target cloud-resource
+//digital-ocean-bucket iac-input
+message DigitalOceanBucketIacInput {
+  //target infra-component
   DigitalOceanBucket target = 1;
   //provider-config
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;

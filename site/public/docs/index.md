@@ -17,9 +17,9 @@ This documentation covers every shipped feature of the platform, from connecting
 
 <!-- SCREENSHOT: Planton console dashboard
   Page: /dashboard
-  Action: Show the main dashboard with resource cards, recent pipelines, and cloud resources
+  Action: Show the main dashboard with resource cards, recent pipelines, and infra components
   Focus: Full dashboard view with summary cards and activity lists
-  Alt: Planton console dashboard showing resource counts, recent pipelines, and cloud resource summary
+  Alt: Planton console dashboard showing resource counts, recent pipelines, and infra component summary
 -->
 
 ## Platform
@@ -36,7 +36,7 @@ Credential and integration management — connect cloud providers, Git providers
 
 ## Infrastructure
 
-Declarative infrastructure provisioning across cloud providers. Deploy individual Cloud Resources, compose them into Infra Charts, orchestrate with Infra Pipelines, and track execution through Stack Jobs.
+Declarative infrastructure provisioning across cloud providers. Deploy individual Infra Components, compose them into Infra Charts, orchestrate with Infra Pipelines, and track execution through Infra Jobs.
 
 [Explore Infrastructure](/docs/infrastructure)
 
@@ -48,7 +48,7 @@ Application CI/CD from Git push to production deployment. Build with Buildpacks 
 
 ## Operations
 
-Runtime operations gateway for Kubernetes pod management, log streaming, shell access, and multi-cloud resource browsing.
+Runtime operations gateway for Kubernetes pod management, log streaming, shell access, and multi-infra component browsing.
 
 [Learn about Operations](/docs/operations)
 

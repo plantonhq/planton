@@ -17,17 +17,17 @@ import (
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/e2e/framework/provider"
 	"github.com/plantonhq/planton/internal/manifest"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"sigs.k8s.io/yaml"
 )
 
 // Dependency is a single prerequisite deployment that must exist before a
-// component's own scenario is applied.
+// kind's own scenario is applied.
 type Dependency struct {
-	// KindSlug is the lowercase component directory name of the dependency
+	// KindSlug is the lowercase kind directory name of the dependency
 	// (e.g. "kubernetesgatewayapicrds").
 	KindSlug string
 
@@ -46,9 +46,9 @@ type DependencyState struct {
 	ModuleDir string
 
 	// StackName labels the deploy on both engines; on Pulumi it is the stack.
-	StackName      string
-	BackendURL     string
-	StackInputPath string
+	StackName    string
+	BackendURL   string
+	IacInputPath string
 
 	// WorkDir is the HCL arm's disposable copy of the module, holding the
 	// dependency's local state. It outlives a failed destroy on purpose: it is
@@ -63,8 +63,8 @@ type DependencyState struct {
 	// specific instance when an install profile deploys several of the same kind.
 	ManifestName string
 
-	// Outputs are the dependency's captured stack outputs. They are used both to
-	// verify the dependency and to resolve the dependent component's value_from
+	// Outputs are the dependency's captured outputs. They are used both to
+	// verify the dependency and to resolve the dependent kind's value_from
 	// references (see ResolveManifestRefs).
 	Outputs map[string]interface{}
 }
@@ -77,7 +77,7 @@ func (s DependencyState) tracked() bool {
 }
 
 // scenarioPrerequisitesAnnotation is the manifest annotation through which a
-// scenario declares prerequisites BEYOND the component kind's registry graph.
+// scenario declares prerequisites BEYOND the kind's registry graph.
 // The registry's `kind_meta.prerequisites` stays the honest statement of what
 // the kind REQUIRES to deploy at all; this annotation is how one scenario says
 // what it additionally COMPOSES -- optional references (a folded capacity
@@ -159,12 +159,12 @@ const ScenarioResidentPrerequisitesAnnotation = "planton.dev/e2e-resident-prereq
 const teardownAttemptsAnnotation = "planton.dev/e2e-teardown-attempts"
 
 // ResolveDependencies returns the ordered, deduplicated list of prerequisite
-// deployments a component needs before its own scenario is applied. Dependencies
+// deployments a kind needs before its own scenario is applied. Dependencies
 // come from three sources, merged and expanded transitively in deploy-first order:
 //
-//  1. The component's CloudResourceKindMeta.prerequisites graph in the proto
+//  1. The kind's CatalogKindMeta.prerequisites graph in the proto
 //     registry: declaring `prerequisites: [X]` on a kind is enough for the
-//     harness to install X first, with no per-component wiring.
+//     harness to install X first, with no per-kind wiring.
 //  2. The scenario manifest's `planton.dev/e2e-prerequisites` annotation, for
 //     compositions that are optional on the kind and therefore must not be
 //     registry prerequisites (see scenarioPrerequisitesAnnotation). Kind-name
@@ -189,15 +189,15 @@ const teardownAttemptsAnnotation = "planton.dev/e2e-teardown-attempts"
 // needs two subnets in different availability zones, so the subnet profile
 // publishes a two-AZ pair. Each document deploys as its own stack and its
 // outputs are captured under its own manifest name.
-func ResolveDependencies(repoRoot, componentProvider, component, scenarioManifestPath string) ([]Dependency, error) {
-	kind := crkreflect.KindFromString(component)
-	if kind == cloudresourcekind.CloudResourceKind_unspecified {
+func ResolveDependencies(repoRoot, kindProvider, kindDir, scenarioManifestPath string) ([]Dependency, error) {
+	kind := catalogkindreflect.KindFromString(kindDir)
+	if kind == catalogkind.CatalogKind_unspecified {
 		// Not a registered kind (or an alias mismatch); no prerequisites.
 		return nil, nil
 	}
 
 	// Copy before appending: Prerequisites returns the registry's own slice.
-	roots := append([]cloudresourcekind.CloudResourceKind{}, crkreflect.Prerequisites(kind)...)
+	roots := append([]catalogkind.CatalogKind{}, catalogkindreflect.Prerequisites(kind)...)
 
 	declaredKinds, declaredPaths, err := scenarioDeclaredPrerequisites(scenarioManifestPath)
 	if err != nil {
@@ -205,7 +205,7 @@ func ResolveDependencies(repoRoot, componentProvider, component, scenarioManifes
 	}
 	for _, d := range declaredKinds {
 		if d == kind {
-			return nil, errors.Errorf("scenario %s declares the component's own kind %s as an E2E prerequisite", scenarioManifestPath, component)
+			return nil, errors.Errorf("scenario %s declares its own kind %s as an E2E prerequisite", scenarioManifestPath, kindDir)
 		}
 		roots = append(roots, d)
 	}
@@ -220,7 +220,7 @@ func ResolveDependencies(repoRoot, componentProvider, component, scenarioManifes
 	}
 	for _, r := range residents {
 		if r == kind {
-			return nil, errors.Errorf("scenario %s declares the component's own kind %s as resident (the component under test is what the scenario deploys)", scenarioManifestPath, component)
+			return nil, errors.Errorf("scenario %s declares its own kind %s as resident (the kind under test is what the scenario deploys)", scenarioManifestPath, kindDir)
 		}
 		if _, substituted := substitutes[r]; substituted {
 			return nil, errors.Errorf("scenario %s declares %s both resident (%s) and installed from a substitute manifest (%s) — a kind is either already on the cluster or installed here, not both", scenarioManifestPath, r.String(), ScenarioResidentPrerequisitesAnnotation, ScenarioPrerequisiteInstallManifestAnnotation)
@@ -228,16 +228,16 @@ func ResolveDependencies(repoRoot, componentProvider, component, scenarioManifes
 	}
 
 	resolver := &chainResolver{
-		repoRoot:          repoRoot,
-		componentProvider: componentProvider,
-		component:         component,
-		substitutes:       substitutes,
+		repoRoot:     repoRoot,
+		kindProvider: kindProvider,
+		kindDir:      kindDir,
+		substitutes:  substitutes,
 	}
 
 	// Residents are pre-marked visited: the graph walk skips a visited kind
 	// and never returns it, which prunes the resident AND stops the walk
 	// from descending into its edges through it — exactly "already there".
-	visited := make(map[cloudresourcekind.CloudResourceKind]bool)
+	visited := make(map[catalogkind.CatalogKind]bool)
 	for _, r := range residents {
 		visited[r] = true
 	}
@@ -284,8 +284,8 @@ func ResolveDependencies(repoRoot, componentProvider, component, scenarioManifes
 		if slices.ContainsFunc(deps, func(d Dependency) bool { return d.ManifestPath == full }) {
 			continue
 		}
-		entryKind := crkreflect.KindFromString(slug)
-		pre, err := resolver.expandPrerequisiteGraph(crkreflect.Prerequisites(entryKind), visited)
+		entryKind := catalogkindreflect.KindFromString(slug)
+		pre, err := resolver.expandPrerequisiteGraph(catalogkindreflect.Prerequisites(entryKind), visited)
 		if err != nil {
 			return nil, err
 		}
@@ -307,13 +307,13 @@ func ResolveDependencies(repoRoot, componentProvider, component, scenarioManifes
 // scenario installs from a substitute manifest instead. Residents never reach
 // it — they are pruned before the walk by pre-marking them visited.
 type chainResolver struct {
-	repoRoot          string
-	componentProvider string
-	component         string
+	repoRoot     string
+	kindProvider string
+	kindDir      string
 
 	// substitutes maps a kind to the absolute manifest path this scenario
 	// installs it from (ScenarioPrerequisiteInstallManifestAnnotation).
-	substitutes map[cloudresourcekind.CloudResourceKind]string
+	substitutes map[catalogkind.CatalogKind]string
 }
 
 // expandPrerequisiteGraph topologically orders the root prerequisites plus
@@ -328,24 +328,24 @@ type chainResolver struct {
 // skipped, and newly visited kinds are added to it), so a scenario's
 // manifest-path entries can extend one chain without re-deploying fixtures
 // the graph already ordered. Only NEWLY visited kinds are returned.
-func (r *chainResolver) expandPrerequisiteGraph(roots []cloudresourcekind.CloudResourceKind, visited map[cloudresourcekind.CloudResourceKind]bool) ([]cloudresourcekind.CloudResourceKind, error) {
-	var result []cloudresourcekind.CloudResourceKind
+func (r *chainResolver) expandPrerequisiteGraph(roots []catalogkind.CatalogKind, visited map[catalogkind.CatalogKind]bool) ([]catalogkind.CatalogKind, error) {
+	var result []catalogkind.CatalogKind
 	if visited == nil {
-		visited = make(map[cloudresourcekind.CloudResourceKind]bool)
+		visited = make(map[catalogkind.CatalogKind]bool)
 	}
-	inStack := make(map[cloudresourcekind.CloudResourceKind]bool)
+	inStack := make(map[catalogkind.CatalogKind]bool)
 
-	var visit func(k cloudresourcekind.CloudResourceKind) error
-	visit = func(k cloudresourcekind.CloudResourceKind) error {
+	var visit func(k catalogkind.CatalogKind) error
+	visit = func(k catalogkind.CatalogKind) error {
 		if inStack[k] {
-			return errors.Errorf("prerequisite cycle detected at %s while resolving dependencies for %s", k.String(), r.component)
+			return errors.Errorf("prerequisite cycle detected at %s while resolving dependencies for %s", k.String(), r.kindDir)
 		}
 		if visited[k] {
 			return nil
 		}
 		inStack[k] = true
 
-		edges := append([]cloudresourcekind.CloudResourceKind{}, crkreflect.Prerequisites(k)...)
+		edges := append([]catalogkind.CatalogKind{}, catalogkindreflect.Prerequisites(k)...)
 		manifestDeclared, err := r.installManifestPrerequisites(k)
 		if err != nil {
 			return err
@@ -382,7 +382,7 @@ func (r *chainResolver) expandPrerequisiteGraph(roots []cloudresourcekind.CloudR
 // swallowing it here never hides a failure. An annotation naming an unknown
 // kind, however, errors immediately -- silently skipping it would deploy the
 // manifest without a fixture it relies on.
-func (r *chainResolver) installManifestPrerequisites(k cloudresourcekind.CloudResourceKind) ([]cloudresourcekind.CloudResourceKind, error) {
+func (r *chainResolver) installManifestPrerequisites(k catalogkind.CatalogKind) ([]catalogkind.CatalogKind, error) {
 	slug := strings.ToLower(k.String())
 	// The consumer scoping matters here too: annotations are read from the
 	// manifest that will actually deploy, which may be a consumer-scoped
@@ -398,8 +398,8 @@ func (r *chainResolver) installManifestPrerequisites(k cloudresourcekind.CloudRe
 		return nil, errors.Wrapf(err, "splitting install profile for prerequisite %q", slug)
 	}
 
-	var kinds []cloudresourcekind.CloudResourceKind
-	seen := make(map[cloudresourcekind.CloudResourceKind]bool)
+	var kinds []catalogkind.CatalogKind
+	seen := make(map[catalogkind.CatalogKind]bool)
 	for _, docPath := range docPaths {
 		raw, err := manifestAnnotation(docPath, scenarioPrerequisitesAnnotation)
 		if err != nil {
@@ -420,8 +420,8 @@ func (r *chainResolver) installManifestPrerequisites(k cloudresourcekind.CloudRe
 				// can dedup them against the rest of the chain.
 				return nil, errors.Errorf("install manifest %s declares manifest-path entry %q in the %s annotation; install-manifest edges must be kind names (path entries are only valid on scenario manifests)", manifestPath, token, scenarioPrerequisitesAnnotation)
 			}
-			declared := crkreflect.KindFromString(token)
-			if declared == cloudresourcekind.CloudResourceKind_unspecified {
+			declared := catalogkindreflect.KindFromString(token)
+			if declared == catalogkind.CatalogKind_unspecified {
 				return nil, errors.Errorf("install manifest %s declares unknown kind %q in the %s annotation", manifestPath, token, scenarioPrerequisitesAnnotation)
 			}
 			if declared == k || seen[declared] {
@@ -435,7 +435,7 @@ func (r *chainResolver) installManifestPrerequisites(k cloudresourcekind.CloudRe
 }
 
 // prerequisiteManifestPath returns the manifest used to install a prerequisite,
-// in order of preference (e2e assets live at each component's root):
+// in order of preference (e2e assets live at each kind's root):
 //   - the scenario's substitute for the kind
 //     (ScenarioPrerequisiteInstallManifestAnnotation) — a per-scenario truth
 //     about the lane cluster, above every consumer-wide profile;
@@ -450,26 +450,26 @@ func (r *chainResolver) installManifestPrerequisites(k cloudresourcekind.CloudRe
 // Errors if none exist, so a missing install profile fails loudly rather than
 // silently skipping a required dependency.
 func (r *chainResolver) prerequisiteManifestPath(slug string) (string, error) {
-	if substitute, ok := r.substitutes[crkreflect.KindFromString(slug)]; ok {
+	if substitute, ok := r.substitutes[catalogkindreflect.KindFromString(slug)]; ok {
 		return substitute, nil
 	}
-	return prerequisiteManifestPath(r.repoRoot, r.componentProvider, r.component, slug)
+	return prerequisiteManifestPath(r.repoRoot, r.kindProvider, r.kindDir, slug)
 }
 
 // prerequisiteManifestPath is the consumer-scoped lookup behind
 // chainResolver.prerequisiteManifestPath: the consumer's override, else the
 // dependency's published profile, else its minimal scenario.
-func prerequisiteManifestPath(repoRoot, componentProvider, consumer, slug string) (string, error) {
+func prerequisiteManifestPath(repoRoot, kindProvider, consumer, slug string) (string, error) {
 	if consumer != "" {
-		if _, err := crkreflect.ComponentVersionDir(consumer); err != nil {
+		if _, err := catalogkindreflect.KindVersionDir(consumer); err != nil {
 			return "", err
 		}
-		consumerPrereq := filepath.Join(repoRoot, "catalog", componentProvider, consumer, "e2e", "prerequisites", slug+".yaml")
+		consumerPrereq := filepath.Join(repoRoot, "catalog", kindProvider, consumer, "e2e", "prerequisites", slug+".yaml")
 		if pathExists(consumerPrereq) {
 			return consumerPrereq, nil
 		}
 	}
-	if _, err := crkreflect.ComponentVersionDir(slug); err != nil {
+	if _, err := catalogkindreflect.KindVersionDir(slug); err != nil {
 		return "", err
 	}
 	// The published profiles live under the DEPENDENCY's provider, which may
@@ -492,14 +492,14 @@ func prerequisiteManifestPath(repoRoot, componentProvider, consumer, slug string
 }
 
 // DeployDependencies resolves and deploys all prerequisite deployments for a
-// component in order, each on its own kind's engine (see dependencyEngine).
+// kind in order, each on its own kind's engine (see dependencyEngine).
 // scenarioManifestPath (optional, "" to skip) lets the scenario under test add
 // composed-but-optional prerequisites via its annotation. t is the lane's test,
 // which the HCL arm's Terratest calls run under. Returns the deployed states
 // (needed for teardown) and any error. On the first failure it stops and
 // returns whatever was already deployed so the caller can tear it down.
-func DeployDependencies(ctx context.Context, t testing.TB, repoRoot, componentProvider, component, scenarioManifestPath, backendURL, runID string, clock time.Time, harness provider.Harness) ([]DependencyState, error) {
-	deps, err := ResolveDependencies(repoRoot, componentProvider, component, scenarioManifestPath)
+func DeployDependencies(ctx context.Context, t testing.TB, repoRoot, kindProvider, kindDir, scenarioManifestPath, backendURL, runID string, clock time.Time, harness provider.Harness) ([]DependencyState, error) {
+	deps, err := ResolveDependencies(repoRoot, kindProvider, kindDir, scenarioManifestPath)
 	if err != nil {
 		return nil, err
 	}
@@ -507,13 +507,13 @@ func DeployDependencies(ctx context.Context, t testing.TB, repoRoot, componentPr
 		return nil, nil
 	}
 
-	fmt.Printf("  [deps] Deploying %d dependencies for %s\n", len(deps), component)
+	fmt.Printf("  [deps] Deploying %d dependencies for %s\n", len(deps), kindDir)
 
 	// accumulated holds each deployed prerequisite's outputs keyed by kind and
 	// manifest name. A later prerequisite that references an earlier one (e.g. an
 	// AwsSubnet's vpc_id -> the AwsVpc it sits in) has its value_from refs resolved
-	// against this map before it deploys -- the same resolution RunComponentTest
-	// applies to the component under test, extended transitively across the
+	// against this map before it deploys -- the same resolution RunKindTest
+	// applies to the kind under test, extended transitively across the
 	// prerequisite chain so deep compositions (VPC -> Subnet -> NatGateway) can be
 	// tested standalone.
 	accumulated := make(DependencyOutputs, len(deps))
@@ -545,7 +545,7 @@ func DeployDependencies(ctx context.Context, t testing.TB, repoRoot, componentPr
 			}
 			docDep.ManifestPath = resolvedManifestPath
 
-			state, err := deployDependency(ctx, t, repoRoot, componentProvider, docDep, backendURL, runID, harness, docIndex)
+			state, err := deployDependency(ctx, t, repoRoot, kindProvider, docDep, backendURL, runID, harness, docIndex)
 			if state.tracked() {
 				deployed = append(deployed, state)
 			}
@@ -553,7 +553,7 @@ func DeployDependencies(ctx context.Context, t testing.TB, repoRoot, componentPr
 				return deployed, err
 			}
 
-			kind := crkreflect.KindFromString(dep.KindSlug)
+			kind := catalogkindreflect.KindFromString(dep.KindSlug)
 			if accumulated[kind] == nil {
 				accumulated[kind] = make(map[string]map[string]interface{})
 			}
@@ -570,7 +570,7 @@ func DeployDependencies(ctx context.Context, t testing.TB, repoRoot, componentPr
 // alone is refused under PLANTON_E2E_TF_BINARY=terraform exactly as its own
 // lane is.
 func dependencyEngine(slug string) (string, error) {
-	allowed, err := provisioner.Allowed(crkreflect.KindFromString(slug))
+	allowed, err := provisioner.Allowed(catalogkindreflect.KindFromString(slug))
 	if err != nil {
 		return "", errors.Wrapf(err, "reading the engines dependency %q runs on", slug)
 	}
@@ -588,11 +588,11 @@ func dependencyEngine(slug string) (string, error) {
 // has its own provider's harness verify it (see dependencyHarness). docIndex
 // disambiguates the deploy label when an install profile deploys several
 // instances of the same kind.
-func deployDependency(ctx context.Context, t testing.TB, repoRoot, componentProvider string, dep Dependency, backendURL, runID string, harness provider.Harness, docIndex int) (DependencyState, error) {
-	if _, err := crkreflect.ComponentVersionDir(dep.KindSlug); err != nil {
+func deployDependency(ctx context.Context, t testing.TB, repoRoot, kindProvider string, dep Dependency, backendURL, runID string, harness provider.Harness, docIndex int) (DependencyState, error) {
+	if _, err := catalogkindreflect.KindVersionDir(dep.KindSlug); err != nil {
 		return DependencyState{}, err
 	}
-	depHarness, depProvider, err := dependencyHarness(componentProvider, dep.KindSlug, harness)
+	depHarness, depProvider, err := dependencyHarness(kindProvider, dep.KindSlug, harness)
 	if err != nil {
 		return DependencyState{}, err
 	}
@@ -663,41 +663,41 @@ func deployDependency(ctx context.Context, t testing.TB, repoRoot, componentProv
 func deployPulumiDependency(moduleDir string, dep Dependency, stackName, backendURL, manifestName string) (DependencyState, error) {
 	// Dependencies deploy with the harness's default posture (ambient
 	// credentials, empty provider block) -- the provider-config fixture is
-	// the component under test's, never its prerequisites'.
-	stackInputPath, err := BuildStackInput(dep.ManifestPath, nil)
+	// the kind under test's, never its prerequisites'.
+	iacInputPath, err := BuildIacInput(dep.ManifestPath, nil)
 	if err != nil {
-		return DependencyState{}, errors.Wrapf(err, "failed to build stack input for dependency %q", dep.KindSlug)
+		return DependencyState{}, errors.Wrapf(err, "failed to build IaC input for dependency %q", dep.KindSlug)
 	}
 
-	if _, err := PulumiDeploy(moduleDir, stackName, backendURL, stackInputPath); err != nil {
+	if _, err := PulumiDeploy(moduleDir, stackName, backendURL, iacInputPath); err != nil {
 		return DependencyState{}, errors.Wrapf(err, "failed to deploy dependency %q", dep.KindSlug)
 	}
 
 	state := DependencyState{
-		Dependency:     dep,
-		Engine:         "pulumi",
-		ModuleDir:      moduleDir,
-		StackName:      stackName,
-		BackendURL:     backendURL,
-		StackInputPath: stackInputPath,
-		ManifestName:   manifestName,
+		Dependency:   dep,
+		Engine:       "pulumi",
+		ModuleDir:    moduleDir,
+		StackName:    stackName,
+		BackendURL:   backendURL,
+		IacInputPath: iacInputPath,
+		ManifestName: manifestName,
 	}
 
-	outputsJSON, err := PulumiStackOutputs(moduleDir, stackName, backendURL)
+	outputsJSON, err := PulumiOutputs(moduleDir, stackName, backendURL)
 	if err != nil {
 		return state, errors.Wrapf(err, "failed to read outputs for dependency %q", dep.KindSlug)
 	}
-	depStackOutputs, err := parsePulumiOutputs(outputsJSON)
+	depOutputs, err := parsePulumiOutputs(outputsJSON)
 	if err != nil {
 		return state, errors.Wrapf(err, "failed to parse outputs for dependency %q", dep.KindSlug)
 	}
-	state.Outputs = depStackOutputs
+	state.Outputs = depOutputs
 	return state, nil
 }
 
 // deployTofuDependency applies the dependency's HCL module in its own
 // disposable working copy, with state in that copy's local backend -- the same
-// preparation the component under test gets (PrepareWorkDir,
+// preparation the kind under test gets (PrepareWorkDir,
 // BuildTerraformInput), with the harness's default posture. A prerequisite
 // deploys fresh for every scenario, so no state is shared across scenarios.
 // The state is tracked from before the apply: a failed apply may still have
@@ -776,7 +776,7 @@ var dependencyDestroyBackoff = 60 * time.Second
 // remaining teardowns (stopping early would leak everything deployed before
 // it) -- but every failure is collected and returned so the caller FAILS the
 // run. A destroy that cannot run (for example because the ephemeral backend
-// state disappeared before teardown) means real cloud resources may still
+// state disappeared before teardown) means real infra components may still
 // exist; reporting success would leave them leaking silently, invisible
 // until someone audits the account.
 func TeardownDependencies(deployed []DependencyState) error {
@@ -791,7 +791,7 @@ func TeardownDependencies(deployed []DependencyState) error {
 			if dep.Engine == "terraform" {
 				_, destroyErr = terraformDestroyFn(dep.t, dep.terraformOpts)
 			} else {
-				_, destroyErr = pulumiDestroyFn(dep.ModuleDir, dep.StackName, dep.BackendURL, dep.StackInputPath)
+				_, destroyErr = pulumiDestroyFn(dep.ModuleDir, dep.StackName, dep.BackendURL, dep.IacInputPath)
 			}
 			if destroyErr == nil {
 				break
@@ -909,7 +909,7 @@ func splitManifestDocuments(manifestPath string) ([]string, error) {
 // their listed order. An empty path or an absent annotation returns nil
 // (the registry graph alone drives resolution); an unknown kind name errors
 // loudly rather than silently skipping a dependency the scenario relies on.
-func scenarioDeclaredPrerequisites(manifestPath string) ([]cloudresourcekind.CloudResourceKind, []string, error) {
+func scenarioDeclaredPrerequisites(manifestPath string) ([]catalogkind.CatalogKind, []string, error) {
 	if manifestPath == "" {
 		return nil, nil, nil
 	}
@@ -921,7 +921,7 @@ func scenarioDeclaredPrerequisites(manifestPath string) ([]cloudresourcekind.Clo
 		return nil, nil, nil
 	}
 
-	var kinds []cloudresourcekind.CloudResourceKind
+	var kinds []catalogkind.CatalogKind
 	var paths []string
 	for _, token := range strings.Split(raw, ",") {
 		token = strings.TrimSpace(token)
@@ -932,8 +932,8 @@ func scenarioDeclaredPrerequisites(manifestPath string) ([]cloudresourcekind.Clo
 			paths = append(paths, token)
 			continue
 		}
-		kind := crkreflect.KindFromString(token)
-		if kind == cloudresourcekind.CloudResourceKind_unspecified {
+		kind := catalogkindreflect.KindFromString(token)
+		if kind == catalogkind.CatalogKind_unspecified {
 			return nil, nil, errors.Errorf("scenario %s declares unknown kind %q in the %s annotation", manifestPath, token, scenarioPrerequisitesAnnotation)
 		}
 		kinds = append(kinds, kind)
@@ -947,7 +947,7 @@ func scenarioDeclaredPrerequisites(manifestPath string) ([]cloudresourcekind.Clo
 // must be registered, the path must exist, and the manifest at the path must
 // declare that same kind — a substitute that installs a different kind than
 // the slot it takes would silently leave the real prerequisite missing.
-func scenarioInstallManifestSubstitutes(repoRoot, manifestPath string) (map[cloudresourcekind.CloudResourceKind]string, error) {
+func scenarioInstallManifestSubstitutes(repoRoot, manifestPath string) (map[catalogkind.CatalogKind]string, error) {
 	if manifestPath == "" {
 		return nil, nil
 	}
@@ -959,7 +959,7 @@ func scenarioInstallManifestSubstitutes(repoRoot, manifestPath string) (map[clou
 		return nil, nil
 	}
 
-	substitutes := make(map[cloudresourcekind.CloudResourceKind]string)
+	substitutes := make(map[catalogkind.CatalogKind]string)
 	for _, token := range strings.Split(raw, ",") {
 		token = strings.TrimSpace(token)
 		if token == "" {
@@ -970,8 +970,8 @@ func scenarioInstallManifestSubstitutes(repoRoot, manifestPath string) (map[clou
 		if !ok || kindName == "" || rel == "" {
 			return nil, errors.Errorf("scenario %s: %s entry %q must be <Kind>=<repo-relative manifest path>", manifestPath, ScenarioPrerequisiteInstallManifestAnnotation, token)
 		}
-		kind := crkreflect.KindFromString(kindName)
-		if kind == cloudresourcekind.CloudResourceKind_unspecified {
+		kind := catalogkindreflect.KindFromString(kindName)
+		if kind == catalogkind.CatalogKind_unspecified {
 			return nil, errors.Errorf("scenario %s: %s names unknown kind %q", manifestPath, ScenarioPrerequisiteInstallManifestAnnotation, kindName)
 		}
 		full := filepath.Join(repoRoot, rel)
@@ -996,7 +996,7 @@ func scenarioInstallManifestSubstitutes(repoRoot, manifestPath string) (map[clou
 // scenarioResidentPrerequisites reads the scenario's
 // e2e-resident-prerequisites annotation: the kinds already present on the
 // lane cluster, to be pruned from the chain. Unknown kind names error loudly.
-func scenarioResidentPrerequisites(manifestPath string) ([]cloudresourcekind.CloudResourceKind, error) {
+func scenarioResidentPrerequisites(manifestPath string) ([]catalogkind.CatalogKind, error) {
 	if manifestPath == "" {
 		return nil, nil
 	}
@@ -1008,14 +1008,14 @@ func scenarioResidentPrerequisites(manifestPath string) ([]cloudresourcekind.Clo
 		return nil, nil
 	}
 
-	var kinds []cloudresourcekind.CloudResourceKind
+	var kinds []catalogkind.CatalogKind
 	for _, token := range strings.Split(raw, ",") {
 		token = strings.TrimSpace(token)
 		if token == "" {
 			continue
 		}
-		kind := crkreflect.KindFromString(token)
-		if kind == cloudresourcekind.CloudResourceKind_unspecified {
+		kind := catalogkindreflect.KindFromString(token)
+		if kind == catalogkind.CatalogKind_unspecified {
 			return nil, errors.Errorf("scenario %s declares unknown kind %q in the %s annotation", manifestPath, token, ScenarioResidentPrerequisitesAnnotation)
 		}
 		kinds = append(kinds, kind)
@@ -1035,7 +1035,7 @@ func ScenarioDeclaresResidents(manifestPath string) (bool, error) {
 }
 
 // manifestKindSlug reads the kind a manifest file declares and returns its
-// lowercase component directory slug, erroring on unregistered kinds so a
+// lowercase kind directory slug, erroring on unregistered kinds so a
 // mistyped manifest-path fixture fails at resolution time rather than
 // mid-deploy. A path fixture may deliberately hold SEVERAL documents (e.g. a
 // pair of watched namespaces) — the loader accepts exactly one document per
@@ -1061,9 +1061,9 @@ func manifestKindSlug(manifestPath string) (string, error) {
 			return "", err
 		}
 		name := string(obj.ProtoReflect().Descriptor().Name())
-		kind := crkreflect.KindFromString(name)
-		if kind == cloudresourcekind.CloudResourceKind_unspecified {
-			return "", errors.Errorf("manifest %s declares kind %q, which is not a registered cloud resource kind", manifestPath, name)
+		kind := catalogkindreflect.KindFromString(name)
+		if kind == catalogkind.CatalogKind_unspecified {
+			return "", errors.Errorf("manifest %s declares kind %q, which is not a registered catalog kind", manifestPath, name)
 		}
 		docSlug := strings.ToLower(kind.String())
 		if slug == "" {
@@ -1196,17 +1196,17 @@ func manifestMetadataName(manifestPath string) (string, error) {
 
 // kindProviderDir is the catalog directory of the provider a kind belongs to
 // (catalog/<provider>/<kind>), read from the kind's registry metadata rather
-// than assumed from the component under test.
+// than assumed from the kind under test.
 func kindProviderDir(slug string) (string, error) {
-	kind := crkreflect.KindFromString(slug)
-	if kind == cloudresourcekind.CloudResourceKind_unspecified {
-		return "", errors.Errorf("cannot resolve %q to a cloud-resource kind, so its provider's catalog directory cannot be located", slug)
+	kind := catalogkindreflect.KindFromString(slug)
+	if kind == catalogkind.CatalogKind_unspecified {
+		return "", errors.Errorf("cannot resolve %q to a catalog kind, so its provider's catalog directory cannot be located", slug)
 	}
-	meta, err := crkreflect.KindMeta(kind)
+	meta, err := catalogkindreflect.KindMeta(kind)
 	if err != nil {
 		return "", errors.Wrapf(err, "no kind metadata for %s", kind)
 	}
-	return crkreflect.ProviderDirName(meta.Provider), nil
+	return catalogkindreflect.ProviderDirName(meta.Provider), nil
 }
 
 // registeredHarness is another provider's harness a suite lends the runner for
@@ -1261,16 +1261,16 @@ func TeardownDependencyHarnesses(ctx context.Context) error {
 }
 
 // dependencyHarness returns the harness that verifies a prerequisite and the
-// provider directory its module lives under: the component's own harness for a
-// kind of the component's provider, the registered harness (set up once, on
+// provider directory its module lives under: the kind's own harness for a
+// kind of the kind's provider, the registered harness (set up once, on
 // first use) for another provider's kind.
-func dependencyHarness(componentProvider, slug string, componentHarness provider.Harness) (provider.Harness, string, error) {
+func dependencyHarness(kindProvider, slug string, kindHarness provider.Harness) (provider.Harness, string, error) {
 	depProvider, err := kindProviderDir(slug)
 	if err != nil {
 		return nil, "", err
 	}
-	if depProvider == componentProvider {
-		return componentHarness, depProvider, nil
+	if depProvider == kindProvider {
+		return kindHarness, depProvider, nil
 	}
 
 	dependencyHarnessesMu.Lock()
@@ -1280,7 +1280,7 @@ func dependencyHarness(componentProvider, slug string, componentHarness provider
 		return nil, "", errors.Errorf(
 			"prerequisite %q is a %s kind, and the %s suite registered no %s harness to deploy and verify it with -- "+
 				"call runner.RegisterDependencyHarness(%q, <the %s harness>) in the suite's TestMain",
-			slug, depProvider, componentProvider, depProvider, depProvider, depProvider)
+			slug, depProvider, kindProvider, depProvider, depProvider, depProvider)
 	}
 	registered.once.Do(func() {
 		registered.setupErr = registered.harness.Setup(context.Background())

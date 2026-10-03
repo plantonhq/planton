@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpTagKeySpec", func() {
 		return &GcpTagKey{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpTagKey",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "environment",
 			},
 			Spec: &GcpTagKeySpec{

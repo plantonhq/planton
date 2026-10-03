@@ -11,8 +11,8 @@ type Locals struct {
 	GcpServiceAccountIamMember *gcpserviceaccountiammemberv1alpha1.GcpServiceAccountIamMember
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *gcpserviceaccountiammemberv1alpha1.GcpServiceAccountIamMemberStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *gcpserviceaccountiammemberv1alpha1.GcpServiceAccountIamMemberIacInput) *Locals {
 	return &Locals{
-		GcpServiceAccountIamMember: stackInput.Target,
+		GcpServiceAccountIamMember: iacInput.Target,
 	}
 }

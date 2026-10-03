@@ -4,7 +4,7 @@ Runs a fleet of identical droplets that DigitalOcean keeps at your target size -
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Droplet Autoscale Pool** -- the pool with your scaling mode (static count, or dynamic bounds plus utilization targets); creation waits for the pool AND every member to reach `active`
 - **Member Droplets** -- provisioned and owned by the pool from your template (size, region, image, SSH keys, networking); member names are generated from the pool name, and every member carries your template `tags` plus the standard Planton labels both engines always apply
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 - **An SSH key** -- a DigitalOceanSshKey resource (or a literal numeric key id) for `dropletTemplate.sshKeys`; the API requires at least one key on every pool template, because an autoscaled droplet has no other first-boot access path.
 - **A VPC and Project (optional)** -- referenced in the template when you want members placed explicitly; otherwise members land in the region's default VPC and the account's default project.
@@ -59,7 +59,7 @@ spec:
 planton apply -f do-autoscale-pool.yaml
 ```
 
-This holds exactly two identical Ubuntu 24.04 droplets in `nyc3`, tagged `web`, with the monitoring agent installed and your SSH key injected at first boot -- DigitalOcean replaces any member that fails health checks. A Stack Job tracks the provisioning in real time.
+This holds exactly two identical Ubuntu 24.04 droplets in `nyc3`, tagged `web`, with the monitoring agent installed and your SSH key injected at first boot -- DigitalOcean replaces any member that fails health checks. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -109,7 +109,7 @@ These are the most important decisions when configuring a droplet autoscale pool
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -117,9 +117,9 @@ These are the most important decisions when configuring a droplet autoscale pool
 | **DigitalOceanVpc** (optional) | `dropletTemplate.vpc` | `status.outputs.vpc_id` |
 | **DigitalOceanProject** (optional) | `dropletTemplate.projectId` | `status.outputs.project_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` carries `pool_id` (the pool's UUID -- its API identity and import id). The pool's health is deliberately not an output: a status captured at apply time goes stale the moment DigitalOcean changes it (a member fails, the pool scales), so live health is read from the API (`GET /v2/droplets/autoscale/{pool_id}`), never from stored outputs. `pool_id` is not a wiring surface for downstream Cloud Resources either: member droplet ids churn by design, so firewalls and load balancers address the fleet through the template's `tags`, which follow the membership as it scales.
+After provisioning, `status.outputs` carries `pool_id` (the pool's UUID -- its API identity and import id). The pool's health is deliberately not an output: a status captured at apply time goes stale the moment DigitalOcean changes it (a member fails, the pool scales), so live health is read from the API (`GET /v2/droplets/autoscale/{pool_id}`), never from stored outputs. `pool_id` is not a wiring surface for downstream Infra Components either: member droplet ids churn by design, so firewalls and load balancers address the fleet through the template's `tags`, which follow the membership as it scales.
 
 ## Common Patterns
 
@@ -131,8 +131,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean SSH Key**](/cloud-catalog/digital-ocean-ssh-key) -- the required first-boot access key injected into every member
-- [**DigitalOcean VPC**](/cloud-catalog/digital-ocean-vpc) -- explicit private-network placement for members
-- [**DigitalOcean Project**](/cloud-catalog/digital-ocean-project) -- the project members are created in
-- [**DigitalOcean Load Balancer**](/cloud-catalog/digital-ocean-load-balancer) -- routes traffic to the fleet by tag, surviving member churn
-- [**DigitalOcean Cloud Firewall**](/cloud-catalog/digital-ocean-firewall) -- secures the fleet with tag-targeted rules that follow membership
+- [**DigitalOcean SSH Key**](/infra-catalog/digital-ocean-ssh-key) -- the required first-boot access key injected into every member
+- [**DigitalOcean VPC**](/infra-catalog/digital-ocean-vpc) -- explicit private-network placement for members
+- [**DigitalOcean Project**](/infra-catalog/digital-ocean-project) -- the project members are created in
+- [**DigitalOcean Load Balancer**](/infra-catalog/digital-ocean-load-balancer) -- routes traffic to the fleet by tag, surviving member churn
+- [**DigitalOcean Cloud Firewall**](/infra-catalog/digital-ocean-firewall) -- secures the fleet with tag-targeted rules that follow membership

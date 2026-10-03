@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: awscognitouserpool
 spec:
@@ -51,7 +51,7 @@ spec:
       evidence:
         type: spec_default
         reference: OFF (AWS's default) leaves single-factor password sign-in as a complete authentication path; OPTIONAL lets users enroll a second factor and ON requires one for every user. allowed_first_auth_factors can additionally replace passwords entirely with EMAIL_OTP, SMS_OTP, or WEB_AUTHN passkeys on the ESSENTIALS tier and above.
-      notes: Which token flows an application may use (SRP versus plain-password ADMIN flows) is app-client configuration, governed on the AwsCognitoUserPoolClient components.
+      notes: Which token flows an application may use (SRP versus plain-password ADMIN flows) is app-client configuration, governed on the AwsCognitoUserPoolClient kinds.
     - control_id: strong-user-auth
       status: configurable
       field_path: password_policy

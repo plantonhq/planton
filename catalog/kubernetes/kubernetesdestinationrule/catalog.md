@@ -4,7 +4,7 @@ Defines an Istio DestinationRule: a namespaced resource that tunes *how* traffic
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **DestinationRule** -- a namespaced `networking.istio.io/v1` policy applying the declared traffic policy to a service host, plus any named subsets and per-port overrides. istiod picks it up and programs every sidecar (or only the sidecars matched by `workloadSelector`) accordingly.
 
@@ -14,7 +14,7 @@ The rule is pure configuration: no pods, no Services. A rule written for a host 
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -65,7 +65,7 @@ spec:
 planton apply -f destination-rule.yaml
 ```
 
-This caps how many connections and requests callers push at `reviews`, and ejects any host that returns five consecutive 5xx errors -- classic circuit breaking that keeps a struggling backend from taking down its callers. A Stack Job tracks the provisioning in real time.
+This caps how many connections and requests callers push at `reviews`, and ejects any host that returns five consecutive 5xx errors -- classic circuit breaking that keeps a struggling backend from taking down its callers. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -107,14 +107,14 @@ These are the most important decisions when configuring a DestinationRule. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 | **KubernetesService** | `host` | `status.outputs.kube_endpoint` |
 
-### What This Component Provides
+### What This Kind Provides
 
 A DestinationRule is a policy resource consumed by istiod -- it has no controller-reconciled status worth exporting. `status.outputs` carries only the resource identity (`destination_rule_name`, `namespace`), both echoes of what the manifest declared; downstream resources have nothing to consume from it.
 
@@ -130,8 +130,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Istio Base CRDs**](/cloud-catalog/kubernetes-istio-base-crds) -- the prerequisite CRDs the DestinationRule kind is defined by
-- [**Istio**](/cloud-catalog/kubernetes-istio) -- the control plane (istiod) that reads the rule and programs the sidecars
-- [**Kubernetes Service**](/cloud-catalog/kubernetes-service) -- the in-mesh destination whose traffic the rule shapes; the `host` foreign key targets it
-- [**Istio Service Entry**](/cloud-catalog/kubernetes-service-entry) -- brings an external host into the registry so this rule can configure egress to it
-- [**Istio Peer Authentication**](/cloud-catalog/kubernetes-peer-authentication) -- the mTLS acceptance side; a shared workload selector scopes both to the same sidecars
+- [**Istio Base CRDs**](/infra-catalog/kubernetes-istio-base-crds) -- the prerequisite CRDs the DestinationRule kind is defined by
+- [**Istio**](/infra-catalog/kubernetes-istio) -- the control plane (istiod) that reads the rule and programs the sidecars
+- [**Kubernetes Service**](/infra-catalog/kubernetes-service) -- the in-mesh destination whose traffic the rule shapes; the `host` foreign key targets it
+- [**Istio Service Entry**](/infra-catalog/kubernetes-service-entry) -- brings an external host into the registry so this rule can configure egress to it
+- [**Istio Peer Authentication**](/infra-catalog/kubernetes-peer-authentication) -- the mTLS acceptance side; a shared workload selector scopes both to the same sidecars

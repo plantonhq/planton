@@ -16,7 +16,7 @@ are read-only and fast (see `planton-cli.md` for exact commands):
 
 - The active org and environment (`planton context get`).
 - Existing infra charts and their descriptions.
-- Existing infra projects and their deploy status — what has actually been
+- Existing infra stacks and their deploy status — what has actually been
   built, and did it succeed?
 - Available provider connections (which clouds, which Kubernetes clusters).
 - Environments in the org.

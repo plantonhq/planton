@@ -9,11 +9,11 @@ namespace) is the backup engine a `backup` block or an object-store
 recovery runs through. Deploy the operator first, the plugin when any
 database will declare backups, databases after.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You want the operator itself** — installing and configuring
   CloudNativePG (watch scope, reconcile concurrency, the backup plugin)
-  is KubernetesCloudNativePgOperator; this component is one PostgreSQL
+  is KubernetesCloudNativePgOperator; this kind is one PostgreSQL
   cluster it manages.
 - **You want external exposure baked in** — this component never creates
   a LoadBalancer or a route. The cluster is in-cluster plumbing
@@ -175,7 +175,7 @@ GKE disaster-recovery resource set — identity, binding, bucket, operator
 plugin, source cluster, recovery target — is laid out in
 [GUIDE.md](GUIDE.md).
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

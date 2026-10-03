@@ -4,12 +4,12 @@ package dev.planton.stripe.stripeeventdestination.v1alpha1;
 
 import "shared/options/options.proto";
 
-// StripeEventDestinationStackOutputs identifies the destination, carries a webhook
+// StripeEventDestinationOutputs identifies the destination, carries a webhook
 // destination's signing secret, and names the cloud-side source an EventBridge or Event Grid
 // destination waits on.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/v2_core_event_destination
-message StripeEventDestinationStackOutputs {
+message StripeEventDestinationOutputs {
   // id is the destination's Stripe id (ed_...).
   string id = 1;
 

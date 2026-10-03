@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpfolder.v1alpha1;
 
-// GcpFolderStackOutputs captures the folder's identity after provisioning.
-message GcpFolderStackOutputs {
+// GcpFolderOutputs captures the folder's identity after provisioning.
+message GcpFolderOutputs {
   // The folder's numeric ID -- the value every child needs: a nested
   // GcpFolder's parent.folder_id, a GcpProject's folder_id, a
   // GcpOrgPolicy's scope.folder_id, a GcpTagBinding's parent.folder_id.

@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package dev.planton.aws.awsnatgateway.v1alpha1;
 
-// AwsNatGatewayStackOutputs contains the values produced by deploying an
+// AwsNatGatewayOutputs contains the values produced by deploying an
 // AwsNatGateway. Downstream components reference these via StringValueOrRef --
 // most commonly an AwsSubnet route whose target is this gateway's id.
 //
@@ -10,7 +10,7 @@ package dev.planton.aws.awsnatgateway.v1alpha1;
 // does the underlying API), so the gateway is identified solely by
 // nat_gateway_id. Do not add a nat_gateway_arn output -- there is nothing to
 // populate it with.
-message AwsNatGatewayStackOutputs {
+message AwsNatGatewayOutputs {
   // The NAT gateway's id (e.g. "nat-0abc123"). This is the value a subnet route
   // uses as its target_id when target_type is nat_gateway.
   string nat_gateway_id = 1;

@@ -4,7 +4,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Output name constants — one per KubernetesFlinkDeploymentStackOutputs field.
+// Output name constants — one per KubernetesFlinkDeploymentOutputs field.
 const (
 	OpNamespace          = "namespace"
 	OpRestService        = "rest_service"

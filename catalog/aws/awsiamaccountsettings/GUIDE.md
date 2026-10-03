@@ -1,4 +1,4 @@
-# AwsIamAccountSettings — Component Guide
+# AwsIamAccountSettings — Kind Guide
 
 Authored operational judgment for IAM's account-settings singleton:
 the design decisions behind the spec's shape, and what to know before

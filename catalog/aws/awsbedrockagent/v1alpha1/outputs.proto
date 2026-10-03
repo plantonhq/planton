@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsbedrockagent.v1alpha1;
 
-// AwsBedrockAgentStackOutputs captures observable identifiers from a
+// AwsBedrockAgentOutputs captures observable identifiers from a
 // provisioned Bedrock agent. These outputs are used by downstream
 // resources (supervisor agents, flows, prompts) to wire dependencies via
 // StringValueOrRef.
-message AwsBedrockAgentStackOutputs {
+message AwsBedrockAgentOutputs {
   // The unique agent identifier (e.g. "GGRRAED6JP").
   string agent_id = 1;
 

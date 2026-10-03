@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azureplantonrunner
+    e2e-catalog-kind: azureplantonrunner
   annotations:
     planton.dev/e2e: "true"
     # The fake token's replica crash-loop is DESIGNED -- the lane additionally

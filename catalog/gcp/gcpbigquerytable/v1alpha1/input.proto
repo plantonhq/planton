@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpbigquerytable.v1alpha1;
 import "catalog/gcp/gcpbigquerytable/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-bigquery-table stack-input
-message GcpBigQueryTableStackInput {
-  //target cloud-resource
+//gcp-bigquery-table iac-input
+message GcpBigQueryTableIacInput {
+  //target infra-component
   GcpBigQueryTable target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

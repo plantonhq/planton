@@ -5,9 +5,9 @@ package dev.planton.aws.awscloudwatchsynthetics.v1alpha1;
 import "catalog/aws/awscloudwatchsynthetics/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsCloudwatchSyntheticsStackInput is the input for the IaC modules
+// AwsCloudwatchSyntheticsIacInput is the input for the IaC modules
 // that manage CloudWatch Synthetics canaries and groups.
-message AwsCloudwatchSyntheticsStackInput {
+message AwsCloudwatchSyntheticsIacInput {
   // target is the AwsCloudwatchSynthetics resource to deploy.
   AwsCloudwatchSynthetics target = 1;
   // provider_config contains the AWS provider credentials and configuration.

@@ -16,7 +16,7 @@ go_library(
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/kuberneteslabelkeys",
         "//pkg/iac/pulumi/pulumimodule/provider/kubernetes/pulumikubernetesprovider",
         "//pkg/kubernetes/kubernetestypes/karpenter/kubernetes/karpenter/v1:karpenter",
-        "//shared/cloudresourcekind",
+        "//shared/catalogkind",
         "@com_github_pkg_errors//:errors",
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes",
         "@com_github_pulumi_pulumi_kubernetes_sdk_v4//go/kubernetes/meta/v1:meta",

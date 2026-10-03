@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcphealthcheck.v1alpha1;
 
 // Outputs produced after provisioning a GCP Compute Engine health check.
-message GcpHealthCheckStackOutputs {
+message GcpHealthCheckOutputs {
   // Self-link URI of the health check. This is the value backend services
   // reference in their health_checks list — the composition handle for the
   // load balancing family.

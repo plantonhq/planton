@@ -1,4 +1,4 @@
-# AwsBackupReportPlan — Component Guide
+# AwsBackupReportPlan — Kind Guide
 
 Authored operational judgment for the Backup Audit Manager report plan
 component: the design decisions behind the spec's shape, and what to

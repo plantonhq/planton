@@ -4,7 +4,7 @@ Deploys an Auth0 Event Stream that delivers tenant events — authentication res
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Auth0 Event Stream** — a stream configured with the specified destination type, event subscriptions, and destination-specific settings
 
@@ -14,7 +14,7 @@ For EventBridge destinations, Auth0 creates a partner event source in the target
 
 ### Planton Setup
 
-- **Auth0 Provider Connection** — an active connection in the Connect module with Auth0 domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Auth0 Provider Connection** — an active connection in the Connect module with Auth0 domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Auth0 Account
@@ -56,7 +56,7 @@ spec:
 planton apply -f auth0-event-stream.yaml
 ```
 
-This creates a stream that POSTs authentication success and failure events to the webhook endpoint with bearer token authorization. A Stack Job tracks the provisioning in real time.
+This creates a stream that POSTs authentication success and failure events to the webhook endpoint with bearer token authorization. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -72,13 +72,13 @@ These are the most important decisions when configuring an Auth0 Event Stream. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. The AWS account for EventBridge destinations is supplied as a plain account ID rather than a typed reference.
+This kind has no foreign key dependencies. The AWS account for EventBridge destinations is supplied as a plain account ID rather than a typed reference.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -96,5 +96,5 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**AWS EventBridge Bus**](/cloud-catalog/aws-event-bridge-bus) — the event bus the partner event source is associated with; rules on the bus route Auth0 events to targets
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) — the usual EventBridge rule target for processing Auth0 events serverlessly
+- [**AWS EventBridge Bus**](/infra-catalog/aws-event-bridge-bus) — the event bus the partner event source is associated with; rules on the bus route Auth0 events to targets
+- [**AWS Lambda**](/infra-catalog/aws-lambda) — the usual EventBridge rule target for processing Auth0 events serverlessly

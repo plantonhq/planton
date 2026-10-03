@@ -12,14 +12,14 @@ tofu module to behavioral parity with Pulumi (neither engine is privileged — t
 contract and intended behavior are the arbiter; here the Pulumi module was the correct one),
 adds a reusable
 drift-detection guard built on the existing `pkg/outputs` framework, and hardens the
-deployment-component forge and audit workflows so coding agents now treat 100%
+catalog-kind forge and audit workflows so coding agents now treat 100%
 tofu↔pulumi parity as the default — deviating only with a documented technical reason.
 
 ## Problem Statement / Motivation
 
-A component ships two IaC implementations of one contract — a Pulumi module
+A kind ships two IaC implementations of one contract — a Pulumi module
 (`iac/pulumi/module/`) and an OpenTofu module (`iac/tf/`). They are supposed to produce
-the same cloud objects for the same `stack-input`. Nothing enforced that, so the Postgres
+the same catalog objects for the same `iac-input`. Nothing enforced that, so the Postgres
 tofu module had drifted from Pulumi across several dimensions, two of them
 deploy-breaking. Reading both modules side by side surfaced the gaps.
 
@@ -36,7 +36,7 @@ deploy-breaking. Reading both modules side by side surfaced the gaps.
   (`WALG_S3_PREFIX` / `BACKUP_SCHEDULE` / `USE_WALG_BACKUP`) and a restore standby block
   (`spec.standby.s3_wal_path` + `STANDBY_AWS_*`); the tofu module implemented neither
   (`variables.tf` had no `backup_config` at all).
-- **Stack outputs never populated the proto.** tofu emitted flat `password_secret_name` /
+- **Outputs never populated the proto.** tofu emitted flat `password_secret_name` /
   `password_secret_key`; these flatten to a dotless key and never reach the proto's nested
   `password_secret{name,key}` field, so consumers reading `status.outputs.password_secret.name`
   got nothing. Pulumi emitted `password_secret.name`. (The same flat-output drift exists in
@@ -94,9 +94,9 @@ raw outputs → `Flatten` (joins nested keys with `.`) → `populateMessage` (se
 Both engines feeding the same transformer means **conformance-to-proto is the real
 cross-engine parity invariant** — no brittle tofu-vs-pulumi string diffing.
 
-- `pkg/outputs/conformance_test.go` — `TestStackOutputsConformance` (table-driven, seeded
+- `pkg/outputs/conformance_test.go` — `TestOutputsConformance` (table-driven, seeded
   with `KubernetesPostgres`) asserts a representative output set fully populates the
-  `StackOutputs` proto with zero unmapped keys, via the existing `ValidateOverride`
+  `Outputs` proto with zero unmapped keys, via the existing `ValidateOverride`
   dry-run. A negative test (`...DetectsFlatSecretDrift`) proves the guard catches the exact
   flat-output regression that started this work.
 - `pkg/iac/MODULE_PARITY.md` — the authoritative parity-dimension checklist for the
@@ -109,7 +109,7 @@ cross-engine parity invariant** — no brittle tofu-vs-pulumi string diffing.
 The architecture doc already *declared* "feature parity," but no workflow operationalized
 it. That is now fixed:
 
-- `forge-planton-component.mdc` — a non-negotiable **Parity Mandate** (neither engine is
+- `forge-catalog-kind.mdc` — a non-negotiable **Parity Mandate** (neither engine is
   privileged; the proto contract + intended behavior decide which is correct, and the wrong
   engine is fixed; deviation only via a documented `PARITY-EXCEPTION:` comment in both
   modules) and
@@ -118,10 +118,10 @@ it. That is now fixed:
 - `forge/flow/013-terraform-module.mdc` — a mandatory **PARITY WITH PULUMI** section: since
   tofu is authored after Pulumi, the rule now reconciles field-by-field against it, with a
   step-5 verification (`planton validate-outputs`) and a parity success criterion.
-- `audit/audit-planton-component.mdc` — a **Category 5b: Cross-Engine IaC Parity** critical
+- `audit/audit-catalog-kind.mdc` — a **Category 5b: Cross-Engine IaC Parity** critical
   gate (caps the Pulumi/Terraform scores on undocumented divergence; ❌ when a divergence
   would misdeploy), a parity verdict in the report + chat summary, a `--parity` invocation,
-  and a **"Driving All Components to Parity (one component per session)"** sweep workflow so
+  and a **"Driving All Kinds to Parity (one kind per session)"** sweep workflow so
   the whole catalog can be retired to parity incrementally with an auditable ledger.
 
 ## Implementation Details
@@ -134,7 +134,7 @@ flowchart LR
     PU["pulumi: ctx.Export('password_secret.name', ...)"] --> FL
     FL --> KEYS["password_secret.name / .key"]
     KEYS --> POP["populateMessage (split on '.')"]
-    POP --> PROTO["StackOutputs.password_secret{name,key}"]
+    POP --> PROTO["Outputs.password_secret{name,key}"]
     BAD["tofu (old): output password_secret_name"] -.->|"no dot → unmapped"| DROP["never reaches proto ❌"]
 ```
 
@@ -161,7 +161,7 @@ from the established convention. So `backup_config` was hand-added in the curate
 - **Drift is now catchable in CI.** The conformance guard fails the build if any engine's
   outputs stop populating the proto — the exact bug that started this is now a red test.
 - **Parity is the default, not an aspiration.** Forge prevents drift at authoring time;
-  audit measures it per component and provides a repeatable sweep to retire existing drift.
+  audit measures it per kind and provides a repeatable sweep to retire existing drift.
 - **Zero new framework.** The guard reuses `pkg/outputs.ValidateOverride` / `validate-outputs`
   rather than inventing a parallel mechanism.
 
@@ -170,7 +170,7 @@ from the established convention. So `backup_config` was hand-added in the curate
 - **Operators** deploying `KubernetesPostgres` via the tofu provisioner get a correct
   deployment (this was the immediate driver: GoSilver is the first tofu adopter).
 - **Coding agents** running forge/audit now have explicit, enforceable parity guidance and a
-  one-component-per-session path to bring all existing components to parity.
+  one-kind-per-session path to bring all existing kinds to parity.
 - **No blast radius:** nothing is live on the tofu Postgres module yet (GoSilver undeployed;
   leftbin runs the pulumi default), so the naming-basis change is safe.
 
@@ -187,8 +187,8 @@ from the established convention. So `backup_config` was hand-added in the curate
 
 - Builds directly on the `pkg/outputs` transformer framework and the tofu generators
   (`pkg/iac/tofu/generators`, the 012 redesign).
-- Follow-up sweep: apply `@audit-planton-component --parity` across the catalog (Redis's
-  flat-output drift is already known) to drive every component to parity.
+- Follow-up sweep: apply `@audit-catalog-kind --parity` across the catalog (Redis's
+  flat-output drift is already known) to drive every kind to parity.
 
 ---
 

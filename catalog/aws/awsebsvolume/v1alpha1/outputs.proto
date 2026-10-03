@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsebsvolume.v1alpha1;
 
-// AwsEbsVolumeStackOutputs captures the observable state of the volume
+// AwsEbsVolumeOutputs captures the observable state of the volume
 // after apply.
-message AwsEbsVolumeStackOutputs {
+message AwsEbsVolumeOutputs {
   // The volume's id (vol-...) - what attachments, snapshots, and
   // copies reference, and the provider's import ID.
   string volume_id = 1;

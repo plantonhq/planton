@@ -4,7 +4,7 @@ Deploys a subnetwork in a custom-mode GCP VPC — the regional address space wor
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Subnetwork** -- a Compute Engine subnetwork in the specified project, region, and VPC network, carrying the primary CIDR range, purpose, stack type, and Private Google Access setting
 - **Secondary IP Ranges** -- created only when `secondaryIpRanges` entries are provided; named secondary CIDR blocks used by GKE for Pod and Service IP allocation
@@ -15,13 +15,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the subnetwork will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
-- **A VPC network** in custom subnet mode. Provide the network self-link directly or reference a GcpVpcNetwork Cloud Resource via ValueFromRef. The module enables the Compute Engine API itself, so the connection's principal needs permission to enable services on a fresh project.
+- **A GCP project** where the subnetwork will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
+- **A VPC network** in custom subnet mode. Provide the network self-link directly or reference a GcpVpcNetwork Infra Component via ValueFromRef. The module enables the Compute Engine API itself, so the connection's principal needs permission to enable services on a fresh project.
 - **An internal IPv6 range on the VPC** (only for INTERNAL `ipv6AccessType`) -- ULA-addressed subnets draw their prefix from the VPC's internal IPv6 range.
 
 ## Deploy
@@ -56,7 +56,7 @@ spec:
 planton apply -f gcp-subnetwork.yaml
 ```
 
-This creates a subnet with a `/20` primary range and Private Google Access enabled. No secondary ranges are configured -- add them for GKE deployments. A Stack Job tracks the provisioning in real time.
+This creates a subnet with a `/20` primary range and Private Google Access enabled. No secondary ranges are configured -- add them for GKE deployments. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -96,16 +96,16 @@ These are the most important decisions when configuring a subnetwork. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** | `projectId` | `status.outputs.project_id` |
 | **GcpVpcNetwork** | `vpcSelfLink` | `status.outputs.network_self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -128,6 +128,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the subnetwork is created
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- provides the VPC network that contains this subnetwork
-- [**GCP GKE Cluster**](/cloud-catalog/gcp-gke-cluster) -- consumes the subnet and its secondary ranges for VPC-native pod and service IPs
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the subnetwork is created
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- provides the VPC network that contains this subnetwork
+- [**GCP GKE Cluster**](/infra-catalog/gcp-gke-cluster) -- consumes the subnet and its secondary ranges for VPC-native pod and service IPs

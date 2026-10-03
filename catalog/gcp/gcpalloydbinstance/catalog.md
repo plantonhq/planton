@@ -4,7 +4,7 @@ Deploys a standalone AlloyDB instance (`google_alloydb_instance`) attached to an
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **AlloyDB API enablement** (`alloydb.googleapis.com`) on the target project (never disabled on destroy)
 - **AlloyDB Instance** — a compute node within an existing cluster (READ_POOL, PRIMARY, or SECONDARY), sized by `cpuCount` XOR `machineType`, with read-pool node count, optional public IP with authorized CIDR ranges, per-instance PSC configuration, database flags, and query insights as declared in the spec
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** — an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** — an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
@@ -51,7 +51,7 @@ spec:
 planton apply -f alloydb-instance.yaml
 ```
 
-This attaches a two-node, 4-CPU read pool to the existing cluster — two nodes spread across zones, so the pool survives a zone outage. A Stack Job tracks the provisioning in real time.
+This attaches a two-node, 4-CPU read pool to the existing cluster — two nodes spread across zones, so the pool survives a zone outage. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -80,16 +80,16 @@ These are the most important decisions when configuring an AlloyDB instance. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 | **GcpAlloydbCluster** | `cluster` | `status.outputs.cluster_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -109,6 +109,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP AlloyDB Cluster**](/cloud-catalog/gcp-alloydb-cluster) — parent cluster this instance attaches to
-- [**GCP AlloyDB User**](/cloud-catalog/gcp-alloydb-user) — application credentials on the same cluster
-- [**GCP Project**](/cloud-catalog/gcp-project) — optional project override when the cluster lives elsewhere
+- [**GCP AlloyDB Cluster**](/infra-catalog/gcp-alloydb-cluster) — parent cluster this instance attaches to
+- [**GCP AlloyDB User**](/infra-catalog/gcp-alloydb-user) — application credentials on the same cluster
+- [**GCP Project**](/infra-catalog/gcp-project) — optional project override when the cluster lives elsewhere

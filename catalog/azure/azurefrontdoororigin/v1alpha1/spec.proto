@@ -215,7 +215,7 @@ message AzureFrontDoorOriginPrivateLink {
   ];
 
   // A reference names its kind, so an AzurePrivateLinkService reference
-  // (CloudResourceKind 2143) needs no target_type, like a literal
+  // (CatalogKind 2143) needs no target_type, like a literal
   // /privateLinkServices/ ID.
   option (buf.validate.message).cel = {
     id: "front_door_origin_private_link_target_type_or_pls"

@@ -8,16 +8,16 @@ import (
 	grafanav1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetesgrafana/v1alpha1"
 	keycloakv1 "github.com/plantonhq/planton/catalog/kubernetes/kuberneteskeycloak/v1alpha1"
 	kpgv1 "github.com/plantonhq/planton/catalog/kubernetes/kubernetespostgres/v1alpha1"
-	capacityv1 "github.com/plantonhq/planton/finops/componentcapacityderivation/v1"
-	derivationv1 "github.com/plantonhq/planton/finops/componentcostderivation/v1"
+	capacityv1 "github.com/plantonhq/planton/finops/catalogkindcapacityderivation/v1"
+	derivationv1 "github.com/plantonhq/planton/finops/catalogkindcostderivation/v1"
 	"google.golang.org/protobuf/proto"
 )
 
 // postgresBinding is the kubernetespostgres capacity derivation's shape:
 // one workload whose count is the instances field (provider default 1),
 // with a required data volume and an optional WAL volume.
-func postgresBinding() *capacityv1.ComponentCapacityDerivationSpec {
-	return &capacityv1.ComponentCapacityDerivationSpec{
+func postgresBinding() *capacityv1.CatalogKindCapacityDerivationSpec {
+	return &capacityv1.CatalogKindCapacityDerivationSpec{
 		Workloads: []*capacityv1.WorkloadBinding{{
 			Label:         "instance",
 			ResourcesPath: "resources",
@@ -165,7 +165,7 @@ func TestSpecDeclaredDefaults(t *testing.T) {
 	// kuberneteskeycloak's resources field carries the annotation
 	// (requests 250m/768Mi, limits 1/1Gi) -- the paired fixture from the
 	// committed 02-dev-sandbox preset, which omits resources entirely.
-	keycloakBinding := &capacityv1.ComponentCapacityDerivationSpec{
+	keycloakBinding := &capacityv1.CatalogKindCapacityDerivationSpec{
 		Workloads: []*capacityv1.WorkloadBinding{{
 			Label:         "instance",
 			ResourcesPath: "resources",
@@ -213,7 +213,7 @@ func TestSpecDeclaredDefaults(t *testing.T) {
 	// kubernetesgrafana's storage.size carries (options.default) "10Gi":
 	// a PRESENT block without a size reserves the default; an ABSENT
 	// block reserves nothing.
-	grafanaBinding := &capacityv1.ComponentCapacityDerivationSpec{
+	grafanaBinding := &capacityv1.CatalogKindCapacityDerivationSpec{
 		Workloads: []*capacityv1.WorkloadBinding{{
 			Label:     "state volume",
 			Instances: &capacityv1.InstanceCount{Count: &capacityv1.InstanceCount_Constant{Constant: "1"}},
@@ -252,7 +252,7 @@ func TestSpecDeclaredDefaults(t *testing.T) {
 // its spec default while binding NOTHING -- a size without a volume must
 // contribute nothing, never a fabricated reservation.
 func TestVolumeAppliesWhen(t *testing.T) {
-	binding := &capacityv1.ComponentCapacityDerivationSpec{
+	binding := &capacityv1.CatalogKindCapacityDerivationSpec{
 		Workloads: []*capacityv1.WorkloadBinding{{
 			Label:     "state volume",
 			Instances: &capacityv1.InstanceCount{Count: &capacityv1.InstanceCount_Constant{Constant: "1"}},

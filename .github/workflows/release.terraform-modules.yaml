@@ -1,21 +1,21 @@
 # =============================================================================
 # Terraform Modules Release (Reusable Workflow)
 # =============================================================================
-# Zips all Terraform component folders across all providers and
+# Zips all Terraform kind folders across all providers and
 # uploads them to Cloudflare R2 (downloads.planton.dev).
 #
 # Features:
-#   - Dynamic component discovery from directory structure
+#   - Dynamic kind discovery from directory structure
 #   - Matrix-based parallelization: one job per provider
 #   - Simple zip operation - no compilation needed
-#   - Clear progress logging with component counts
-#   - No hardcoded component paths - auto-discovers from filesystem
+#   - Clear progress logging with kind counts
+#   - No hardcoded kind paths - auto-discovers from filesystem
 #
-# Upload path: s3://downloads-dot-planton-dot-dev-bucket/releases/{tag}/modules/terraform/{component}/module.zip
-# Public URL:  https://downloads.planton.dev/releases/{tag}/modules/terraform/{component}/module.zip
+# Upload path: s3://downloads-dot-planton-dot-dev-bucket/releases/{tag}/modules/terraform/{kind}/module.zip
+# Public URL:  https://downloads.planton.dev/releases/{tag}/modules/terraform/{kind}/module.zip
 #
-# Path pattern: catalog/{provider}/{component}/iac/tf (one live module set per
-# component -- the key carries no API version segment; the release tag
+# Path pattern: catalog/{provider}/{kind}/iac/tf (one live module set per
+# kind -- the key carries no API version segment; the release tag
 # versions the artifact)
 #
 # Called by: .github/workflows/release.yaml (after CLI release creates the release)
@@ -76,24 +76,24 @@ jobs:
           TAG="${GITHUB_REF#refs/tags/}"
           PROVIDER_PATH="${CATALOG_ROOT}/${PROVIDER}"
           
-          # Discover all components by listing directories
+          # Discover all kinds by listing directories
           if [ ! -d "$PROVIDER_PATH" ]; then
             echo "WARNING: Provider path not found: $PROVIDER_PATH"
             exit 0
           fi
           
-          # Get all components that have a tf module. Modules live at the
-          # component root (one live module set per component), so discovery
+          # Get all kinds that have a tf module. Modules live at the
+          # kind root (one live module set per kind), so discovery
           # is a single-level walk with no version segment.
-          COMPONENTS=()
-          for component_dir in "$PROVIDER_PATH"/*/; do
-            component=$(basename "$component_dir")
-            if [ -d "${component_dir}iac/tf" ]; then
-              COMPONENTS+=("${component}")
+          KINDS=()
+          for kind_path in "$PROVIDER_PATH"/*/; do
+            kind=$(basename "$kind_path")
+            if [ -d "${kind_path}iac/tf" ]; then
+              KINDS+=("${kind}")
             fi
           done
           
-          TOTAL=${#COMPONENTS[@]}
+          TOTAL=${#KINDS[@]}
           
           echo "========================================"
           echo "PROVIDER: ${PROVIDER}"
@@ -101,7 +101,7 @@ jobs:
           echo "========================================"
           echo ""
           echo "Modules:"
-          printf '  - %s\n' "${COMPONENTS[@]}"
+          printf '  - %s\n' "${KINDS[@]}"
           echo ""
           echo "========================================"
           
@@ -113,23 +113,23 @@ jobs:
           COMPLETED=0
           FAILED=0
           
-          for component in "${COMPONENTS[@]}"; do
+          for kind in "${KINDS[@]}"; do
             COMPLETED=$((COMPLETED + 1))
             REMAINING=$((TOTAL - COMPLETED))
             
-            TF_PATH="${PROVIDER_PATH}/${component}/iac/tf"
-            ARTIFACT_NAME="${component}_module.zip"
-            R2_KEY="releases/${TAG}/modules/terraform/${component}/module.zip"
+            TF_PATH="${PROVIDER_PATH}/${kind}/iac/tf"
+            ARTIFACT_NAME="${kind}_module.zip"
+            R2_KEY="releases/${TAG}/modules/terraform/${kind}/module.zip"
             
             echo ""
             echo "----------------------------------------"
-            echo "ZIPPING: ${component}"
+            echo "ZIPPING: ${kind}"
             echo "Progress: ${COMPLETED}/${TOTAL} (${REMAINING} remaining)"
             echo "----------------------------------------"
             
             # Apache-2.0 §4(d): LICENSE and NOTICE must accompany every
             # redistribution, and a module zip is a standalone redistribution of
-            # that component. Both land at the zip root; terraform ignores
+            # that kind. Both land at the zip root; terraform ignores
             # non-.tf files, so consumers are unaffected.
             if (cd "${TF_PATH}" && zip -r "${GITHUB_WORKSPACE}/${ARTIFACT_NAME}" .) \
               && zip -j "${GITHUB_WORKSPACE}/${ARTIFACT_NAME}" LICENSE NOTICE; then

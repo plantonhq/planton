@@ -79,7 +79,7 @@ jobs:
 
       - name: Package definitions release
         # -embed-catalog-pack ships the catalog skill self-contained (its
-        # components/ reference pack inside the archive). Artifacts above
+        # kinds/ reference pack inside the archive). Artifacts above
         # the engines' 10MB inline lane ride the capability-URL transfer
         # lane; pushing them needs Stigmer SDK >= v3.12.3 (go.mod pins it).
         run: |

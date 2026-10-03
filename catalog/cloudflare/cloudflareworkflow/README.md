@@ -45,7 +45,7 @@ Two provider behaviors are worth knowing before authoring: create IS a PUT (regi
 | `limits` | object | `steps` -- the maximum steps an instance may execute (>= 1). |
 | `schedules[]` | list | Cron triggers (`cron`, five-field, UTC). |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

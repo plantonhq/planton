@@ -72,9 +72,9 @@ The Pulumi module builds `map[string]*Backend` and `map[string]*Certificate` at 
 ### Proto Schema (4 files)
 
 - `spec.proto` -- 8 message types: `ScalewayLoadBalancerSpec`, `Backend`, `Frontend`, `Certificate`, `Letsencrypt`, `CustomCertificate`, `HealthCheck` + the spec itself
-- `stack_outputs.proto` -- 3 outputs: `lb_id`, `lb_ip_address`, `lb_ip_id`
+- `outputs.proto` -- 3 outputs: `lb_id`, `lb_ip_address`, `lb_ip_id`
 - `api.proto` -- Resource envelope with validation
-- `stack_input.proto` -- IaC input contract
+- `iac_input.proto` -- IaC input contract
 
 Key design: backends have per-backend health checks (TCP/HTTP/HTTPS), unlike DigitalOcean's single shared health check. This matches Scaleway's architecture accurately.
 
@@ -106,7 +106,7 @@ message ScalewayLoadBalancerHealthCheck {
 
 ### Documentation (2 files)
 
-- `README.md` -- Component overview, bundled resources table, upstream/downstream dependencies, LB types
+- `README.md` -- Kind overview, bundled resources table, upstream/downstream dependencies, LB types
 - `examples.md` -- 6 examples: minimal HTTP, HTTPS with Let's Encrypt, multi-service, TCP proxy, full-featured, valueFrom composition
 
 ## Benefits

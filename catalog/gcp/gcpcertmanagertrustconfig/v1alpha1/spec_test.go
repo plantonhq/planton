@@ -29,7 +29,7 @@ var _ = ginkgo.Describe("GcpCertManagerTrustConfigSpec", func() {
 		return &GcpCertManagerTrustConfig{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpCertManagerTrustConfig",
-			Metadata:   &shared.CloudResourceMetadata{Name: "partner-mtls"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "partner-mtls"},
 			Spec: &GcpCertManagerTrustConfigSpec{
 				TrustStores: []*GcpCertManagerTrustConfigTrustStore{{
 					TrustAnchors:    []string{pem},

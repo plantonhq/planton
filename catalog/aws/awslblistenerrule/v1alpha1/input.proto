@@ -5,9 +5,9 @@ package dev.planton.aws.awslblistenerrule.v1alpha1;
 import "catalog/aws/awslblistenerrule/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-lb-listener-rule stack-input
-message AwsLbListenerRuleStackInput {
-  //target cloud-resource
+//aws-lb-listener-rule iac-input
+message AwsLbListenerRuleIacInput {
+  //target infra-component
   AwsLbListenerRule target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

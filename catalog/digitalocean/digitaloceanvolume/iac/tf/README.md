@@ -41,4 +41,4 @@ module "volume" {
 
 ## Outputs
 
-Exactly the kind's stack-output contract, identical to the Pulumi module: `volume_id`, `urn`.
+Exactly the kind's output contract, identical to the Pulumi module: `volume_id`, `urn`.

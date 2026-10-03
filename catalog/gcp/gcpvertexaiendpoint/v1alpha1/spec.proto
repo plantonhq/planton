@@ -95,7 +95,7 @@ message GcpVertexAiEndpointRequestResponseLoggingConfig {
   //     dataset must exist and the table must not.
   //
   // A plain string (not a reference) because the bq:// URI scheme has no
-  // matching stack output on the BigQuery kinds; compose by writing the
+  // matching output on the BigQuery kinds; compose by writing the
   // dataset's project and ID into the URI.
   string bigquery_destination_uri = 3 [(buf.validate.field).string = {max_len: 2000}];
 }

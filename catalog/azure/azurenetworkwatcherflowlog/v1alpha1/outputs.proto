@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurenetworkwatcherflowlog.v1alpha1;
 
-// **AzureNetworkWatcherFlowLogStackOutputs** captures the outputs of
+// **AzureNetworkWatcherFlowLogOutputs** captures the outputs of
 // provisioning a Network Watcher flow log.
-message AzureNetworkWatcherFlowLogStackOutputs {
+message AzureNetworkWatcherFlowLogOutputs {
   // The flow log's ARM resource ID
   // (.../networkWatchers/{watcher}/flowLogs/{name}).
   string flow_log_id = 1;

@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awsegressonlyinternetgateway.v1alpha1;
 
-// AwsEgressOnlyInternetGatewayStackOutputs contains the values produced by
+// AwsEgressOnlyInternetGatewayOutputs contains the values produced by
 // deploying an AwsEgressOnlyInternetGateway. Downstream components reference
 // these via StringValueOrRef -- most commonly an AwsSubnet IPv6 route whose
 // target is this gateway's id.
-message AwsEgressOnlyInternetGatewayStackOutputs {
+message AwsEgressOnlyInternetGatewayOutputs {
   // The egress-only internet gateway's id (e.g. "eigw-0abc123"). This is the
   // value a subnet route uses as its target_id when target_type is
   // egress_only_internet_gateway. AWS exposes no ARN for this resource.

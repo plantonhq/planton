@@ -12,7 +12,7 @@ import (
 	"google.golang.org/protobuf/types/descriptorpb"
 	"sigs.k8s.io/yaml"
 
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // The deprecation half of the conformance gate, pinned violation by
@@ -24,7 +24,7 @@ import (
 // schema check yet would make runtimes silently announce nothing. The
 // agreement check refuses it by name.
 func TestConformanceRefusesStaleDeprecations(t *testing.T) {
-	bundle := loadBundleWithMutatedDeprecations(t, func(meta *cloudresourcekind.CloudResourceKindMeta) {
+	bundle := loadBundleWithMutatedDeprecations(t, func(meta *catalogkind.CatalogKindMeta) {
 		meta.Deprecations = nil
 	})
 	err := CheckConformance(bundle)
@@ -39,7 +39,7 @@ func TestConformanceRefusesStaleDeprecations(t *testing.T) {
 // A deprecation naming a version the bundle ships no schema for is a lie the
 // bundle tells about itself -- refused with the missing schema named.
 func TestConformanceRefusesDeprecationOfSchemalessVersion(t *testing.T) {
-	bundle := loadBundleWithMutatedDeprecations(t, func(meta *cloudresourcekind.CloudResourceKindMeta) {
+	bundle := loadBundleWithMutatedDeprecations(t, func(meta *catalogkind.CatalogKindMeta) {
 		meta.Deprecations[0].Version = "v9alpha9"
 	})
 	err := CheckConformance(bundle)
@@ -69,7 +69,7 @@ func TestConformanceRefusesDeprecationWithoutConversionPath(t *testing.T) {
 
 	strippedPath := filepath.Join(dir, "stripped.zip")
 	rezipWithoutEntry(t, bundlePath, strippedPath,
-		"conversions/_test/testcloudresourcegeneric/v1alpha1_to_v1alpha2.yaml")
+		"conversions/_test/testcatalogkindgeneric/v1alpha1_to_v1alpha2.yaml")
 
 	bundle, err := Load(strippedPath)
 	if err != nil {
@@ -87,7 +87,7 @@ func TestConformanceRefusesDeprecationWithoutConversionPath(t *testing.T) {
 // loadBundleWithMutatedDeprecations builds a bundle whose descriptor set
 // carries a mutated copy of the torture kind's deprecations -- the compiled
 // registry stays truthful, the bundle lies.
-func loadBundleWithMutatedDeprecations(t *testing.T, mutate func(*cloudresourcekind.CloudResourceKindMeta)) *Bundle {
+func loadBundleWithMutatedDeprecations(t *testing.T, mutate func(*catalogkind.CatalogKindMeta)) *Bundle {
 	t.Helper()
 	dir := t.TempDir()
 	descriptorsPath := filepath.Join(dir, "descriptors.binpb")
@@ -103,23 +103,23 @@ func loadBundleWithMutatedDeprecations(t *testing.T, mutate func(*cloudresourcek
 	}
 	mutated := false
 	for _, file := range fds.File {
-		if file.GetName() != "shared/cloudresourcekind/cloud_resource_kind.proto" {
+		if file.GetName() != "shared/catalogkind/catalog_kind.proto" {
 			continue
 		}
 		for _, enum := range file.EnumType {
-			if enum.GetName() != "CloudResourceKind" {
+			if enum.GetName() != "CatalogKind" {
 				continue
 			}
 			for _, value := range enum.Value {
-				if value.GetName() != "TestCloudResourceGeneric" {
+				if value.GetName() != "TestCatalogKindGeneric" {
 					continue
 				}
-				meta, ok := proto.GetExtension(value.Options, cloudresourcekind.E_KindMeta).(*cloudresourcekind.CloudResourceKindMeta)
+				meta, ok := proto.GetExtension(value.Options, catalogkind.E_KindMeta).(*catalogkind.CatalogKindMeta)
 				if !ok || meta == nil || len(meta.GetDeprecations()) == 0 {
 					t.Fatal("the torture kind's deprecation fixture is missing from the linked registry")
 				}
 				mutate(meta)
-				proto.SetExtension(value.Options, cloudresourcekind.E_KindMeta, meta)
+				proto.SetExtension(value.Options, catalogkind.E_KindMeta, meta)
 				mutated = true
 			}
 		}

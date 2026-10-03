@@ -1,4 +1,4 @@
 order:
-    - TestCloudResourceGeneric/twin@dev
+    - TestCatalogKindGeneric/twin@dev
 findings:
-    - duplicate-identity TestCloudResourceGeneric/twin@dev
+    - duplicate-identity TestCatalogKindGeneric/twin@dev

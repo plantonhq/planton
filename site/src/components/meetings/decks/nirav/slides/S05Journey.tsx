@@ -25,7 +25,7 @@ const milestones = [
   {
     year: '2026',
     title: 'AI Teammates Ship',
-    description: 'Launched autonomous AI DevOps teammates powered by 370+ protobuf-modeled cloud resource kinds and deterministic execution.',
+    description: 'Launched autonomous AI DevOps teammates powered by 370+ protobuf-modeled catalog kinds and deterministic execution.',
     status: 'current' as const,
   },
 ];

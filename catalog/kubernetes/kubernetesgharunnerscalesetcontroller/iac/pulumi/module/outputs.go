@@ -5,7 +5,7 @@ import (
 )
 
 // Output name constants — one per
-// KubernetesGhaRunnerScaleSetControllerStackOutputs field.
+// KubernetesGhaRunnerScaleSetControllerOutputs field.
 const (
 	OpNamespace          = "namespace"
 	OpReleaseName        = "release_name"

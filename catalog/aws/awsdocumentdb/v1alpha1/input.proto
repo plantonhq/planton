@@ -5,8 +5,8 @@ package dev.planton.aws.awsdocumentdb.v1alpha1;
 import "catalog/aws/awsdocumentdb/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsDocumentDbStackInput is the input for the IaC modules that deploy the DocumentDB cluster.
-message AwsDocumentDbStackInput {
+// AwsDocumentDbIacInput is the input for the IaC modules that deploy the DocumentDB cluster.
+message AwsDocumentDbIacInput {
   // target is the AwsDocumentDb resource to deploy.
   AwsDocumentDb target = 1;
   // provider_config contains the AWS provider credentials and configuration.

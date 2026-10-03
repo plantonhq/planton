@@ -1,5 +1,5 @@
 # Auth0ClientFromMetadataDocument Outputs
-# Maps to the Auth0ClientFromMetadataDocumentStackOutputs protobuf message: the
+# Maps to the Auth0ClientFromMetadataDocumentOutputs protobuf message: the
 # application as Auth0 registered it, what Auth0 took from the metadata
 # document, and the document's validation as of the last read.
 

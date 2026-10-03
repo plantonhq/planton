@@ -5,9 +5,9 @@ package dev.planton.azure.azureredislinkedserver.v1alpha1;
 import "catalog/azure/azureredislinkedserver/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-redis-linked-server stack-input
-message AzureRedisLinkedServerStackInput {
-  //target cloud-resource
+//azure-redis-linked-server iac-input
+message AzureRedisLinkedServerIacInput {
+  //target infra-component
   AzureRedisLinkedServer target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

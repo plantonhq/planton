@@ -87,9 +87,9 @@ Like Container Registry (R14), Scaleway DNS zones and records do not support tag
 
 **Proto (4):**
 - `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/spec.proto`
-- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/stack_outputs.proto`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/outputs.proto`
 - `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/api.proto`
-- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/stack_input.proto`
+- `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/iac_input.proto`
 
 **Pulumi Go (6):**
 - `apis/dev/planton/provider/scaleway/scalewaydnszone/v1/iac/pulumi/main.go`

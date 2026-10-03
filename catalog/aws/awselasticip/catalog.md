@@ -1,10 +1,10 @@
 # AWS Elastic IP
 
-Deploys a static public IPv4 address from Amazon's address pool or from a Bring-Your-Own-IP (BYOIP) pool, with optional network border group scoping for Local Zones and Wavelength zones. Unlike an instance's ephemeral public IP, the address persists until the Cloud Resource is destroyed, which is what makes it the anchor for stable endpoints: NLB subnet mappings, NAT gateway egress, and pet instances that must keep their address across stop/start cycles. For the common case, no spec fields beyond `region` are needed -- the optional fields cover attachment, BYOIP, IPAM pools, edge zones, and reverse DNS.
+Deploys a static public IPv4 address from Amazon's address pool or from a Bring-Your-Own-IP (BYOIP) pool, with optional network border group scoping for Local Zones and Wavelength zones. Unlike an instance's ephemeral public IP, the address persists until the Infra Component is destroyed, which is what makes it the anchor for stable endpoints: NLB subnet mappings, NAT gateway egress, and pet instances that must keep their address across stop/start cycles. For the common case, no spec fields beyond `region` are needed -- the optional fields cover attachment, BYOIP, IPAM pools, edge zones, and reverse DNS.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Elastic IP** -- a VPC-domain static public IPv4 address allocated from Amazon's pool (default) or from a BYOIP pool when `publicIpv4Pool` is specified
 - **AWS Tags** -- resource metadata tags (organization, environment, resource kind, resource ID) applied to the Elastic IP
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
@@ -47,7 +47,7 @@ spec:
 planton apply -f elastic-ip.yaml
 ```
 
-This allocates a standard VPC Elastic IP from Amazon's address pool in us-west-2. No BYOIP or network border group is configured. The allocated IP persists until the Cloud Resource is destroyed -- it does not change across Stack Job runs. A Stack Job tracks the provisioning in real time.
+This allocates a standard VPC Elastic IP from Amazon's address pool in us-west-2. No BYOIP or network border group is configured. The allocated IP persists until the Infra Component is destroyed -- it does not change across Infra Job runs. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -83,16 +83,16 @@ These are the most important decisions when configuring an Elastic IP. Explore t
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsEc2Instance** | `instance` | `status.outputs.instance_id` |
 | **AwsEc2Instance** | `networkInterface` (the precise per-ENI form; literal `eni-...` ids also work) | `status.outputs.primary_network_interface_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -117,6 +117,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS NAT Gateway**](/cloud-catalog/aws-nat-gateway) -- consumes this component's `allocation_id` as the gateway's stable outbound address
-- [**AWS NLB**](/cloud-catalog/aws-nlb) -- consumes `allocation_id` in subnet mappings to bind a static IP per subnet
-- [**AWS EC2 Instance**](/cloud-catalog/aws-ec2-instance) -- the attachment target this component references, by `instance_id` or `primary_network_interface_id`
+- [**AWS NAT Gateway**](/infra-catalog/aws-nat-gateway) -- consumes this component's `allocation_id` as the gateway's stable outbound address
+- [**AWS NLB**](/infra-catalog/aws-nlb) -- consumes `allocation_id` in subnet mappings to bind a static IP per subnet
+- [**AWS EC2 Instance**](/infra-catalog/aws-ec2-instance) -- the attachment target this component references, by `instance_id` or `primary_network_interface_id`

@@ -29,7 +29,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awslambda
+    e2e-catalog-kind: awslambda
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AwsS3ObjectSet"

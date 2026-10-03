@@ -4,18 +4,18 @@ Creates a namespaced Kubernetes Gateway API `HTTPRoute` -- a route that matches 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **A namespaced HTTPRoute** named after `metadata.name` in `spec.namespace`, attached to the Gateway listener(s) in `spec.parentRefs`, matching the `spec.hostnames` and the per-rule `matches`, and forwarding to the backends declared in its `spec.rules` (or terminating with a redirect).
 - **Kubernetes Labels** -- resource metadata labels (resource name, kind, organization, environment) applied automatically for tracking.
 
-The Gateway controller reconciles the route asynchronously: it reports per-parent `Accepted` / `ResolvedRefs` conditions in the route's status, which you observe with `kubectl` (these controller-managed values are intentionally not stored as stack outputs).
+The Gateway controller reconciles the route asynchronously: it reports per-parent `Accepted` / `ResolvedRefs` conditions in the route's status, which you observe with `kubectl` (these controller-managed values are intentionally not stored as outputs).
 
 ## Before You Deploy
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -66,7 +66,7 @@ spec:
 planton apply -f http-route.yaml
 ```
 
-This creates an HTTPRoute in `prod-apps` that attaches to the `https` listener of `prod-gateway`, matches requests to `app.example.com` under `/api`, and forwards them to the `api` Service on port 8080. A Stack Job tracks the provisioning in real time.
+This creates an HTTPRoute in `prod-apps` that attaches to the `https` listener of `prod-gateway`, matches requests to `app.example.com` under `/api`, and forwards them to the `api` Service on port 8080. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -115,7 +115,7 @@ These are the most important decisions when configuring an HTTPRoute. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -125,9 +125,9 @@ These are the most important decisions when configuring an HTTPRoute. Explore th
 
 Literal names cover Gateways and Services created outside Planton; cross-namespace references additionally require a `KubernetesReferenceGrant` in the target namespace.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -148,8 +148,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Gateway API CRDs**](/cloud-catalog/kubernetes-gateway-api-crds) -- installs the Gateway API CRDs (standard channel is sufficient); deploy first (prerequisite).
-- [**Kubernetes Gateway**](/cloud-catalog/kubernetes-gateway) -- the Gateway whose HTTP/HTTPS listener this route attaches to (`parentRefs`); install first.
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the namespace (`spec.namespace`) the route runs in.
-- [**Kubernetes ReferenceGrant**](/cloud-catalog/kubernetes-reference-grant) -- authorizes cross-namespace parent or backend references from this route.
-- [**Kubernetes Service**](/cloud-catalog/kubernetes-service) -- the backend workloads (`backendRefs`) that receive forwarded requests.
+- [**Kubernetes Gateway API CRDs**](/infra-catalog/kubernetes-gateway-api-crds) -- installs the Gateway API CRDs (standard channel is sufficient); deploy first (prerequisite).
+- [**Kubernetes Gateway**](/infra-catalog/kubernetes-gateway) -- the Gateway whose HTTP/HTTPS listener this route attaches to (`parentRefs`); install first.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the namespace (`spec.namespace`) the route runs in.
+- [**Kubernetes ReferenceGrant**](/infra-catalog/kubernetes-reference-grant) -- authorizes cross-namespace parent or backend references from this route.
+- [**Kubernetes Service**](/infra-catalog/kubernetes-service) -- the backend workloads (`backendRefs`) that receive forwarded requests.

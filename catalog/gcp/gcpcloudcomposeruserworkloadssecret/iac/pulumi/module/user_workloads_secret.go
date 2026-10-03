@@ -24,7 +24,7 @@ func userWorkloadsSecret(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.P
 
 	// Values are base64-encoded secret material (the Kubernetes Secret
 	// contract). ToSecret marks the whole map secret in Pulumi state; it
-	// is never surfaced in stack outputs.
+	// is never surfaced in outputs.
 	args := &composer.UserWorkloadsSecretArgs{
 		Name:        pulumi.StringPtr(spec.SecretName),
 		Environment: pulumi.String(spec.Environment.GetValue()),

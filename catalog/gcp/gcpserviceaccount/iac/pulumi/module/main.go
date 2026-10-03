@@ -10,14 +10,14 @@ import (
 // Resources provisions the Service Account, optional key, IAM bindings, and exports outputs.
 func Resources(
 	ctx *pulumi.Context,
-	stackInput *gcpserviceaccountv1alpha1.GcpServiceAccountStackInput,
+	iacInput *gcpserviceaccountv1alpha1.GcpServiceAccountIacInput,
 ) error {
 
 	// Gather "locals" (mirrors Terraform locals {} convention).
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// Create gcp provider using credentials from the input
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, stackInput.ProviderConfig)
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup gcp provider")
 	}
@@ -33,7 +33,7 @@ func Resources(
 		return errors.Wrap(err, "failed to create IAM bindings")
 	}
 
-	// === Export stack outputs ===
+	// === Export outputs ===
 	ctx.Export(OpEmail, createdServiceAccount.Email)
 	// The ready-made IAM member string ("serviceAccount:<email>") — downstream
 	// grants reference this directly, so no consumer ever assembles the prefix.

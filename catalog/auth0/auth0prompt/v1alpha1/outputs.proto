@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.auth0.auth0prompt.v1alpha1;
 
-// Auth0PromptStackOutputs contains the login-flow settings as applied: the values
+// Auth0PromptOutputs contains the login-flow settings as applied: the values
 // the tenant carries after the deployment, managed or not.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/prompt#attributes-reference
-message Auth0PromptStackOutputs {
+message Auth0PromptOutputs {
   // universal_login_experience is the login experience the tenant runs.
   string universal_login_experience = 1;
 

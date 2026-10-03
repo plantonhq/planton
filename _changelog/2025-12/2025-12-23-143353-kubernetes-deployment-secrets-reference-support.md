@@ -143,7 +143,7 @@ message KubernetesSecretKeyRef {
 
 #### 2a. secret.go - Only Create Secret for String Values
 
-**File**: `apis/dev/planton/provider/kubernetes/<component>/v1/iac/pulumi/module/secret.go`
+**File**: `apis/dev/planton/provider/kubernetes/<kind>/v1/iac/pulumi/module/secret.go`
 
 **Key Logic**:
 - Only add secrets with `GetValue() != ""` to the Kubernetes Secret
@@ -157,8 +157,8 @@ import "sort"
 func secret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.ProviderResource) error {
     dataMap := make(map[string]string)
 
-    if locals.Component.Spec.Container.App.Env != nil {
-        secrets := locals.Component.Spec.Container.App.Env.Secrets
+    if locals.Kind.Spec.Container.App.Env != nil {
+        secrets := locals.Kind.Spec.Container.App.Env.Secrets
         if secrets != nil && len(secrets) > 0 {
             // Sort keys for deterministic output
             sortedKeys := make([]string, 0, len(secrets))
@@ -188,7 +188,7 @@ func secret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Provi
 
 #### 2b. deployment.go (or equivalent workload file) - Handle Both Types
 
-**File**: `apis/dev/planton/provider/kubernetes/<component>/v1/iac/pulumi/module/deployment.go`
+**File**: `apis/dev/planton/provider/kubernetes/<kind>/v1/iac/pulumi/module/deployment.go`
 
 **Key Logic**:
 - For secrets with `GetSecretRef() != nil`: Reference the external Secret directly
@@ -199,16 +199,16 @@ func secret(ctx *pulumi.Context, locals *Locals, kubernetesProvider pulumi.Provi
 import "sort"
 
 // In the function that creates env vars:
-if locals.Component.Spec.Container.App.Env.Secrets != nil {
+if locals.Kind.Spec.Container.App.Env.Secrets != nil {
     // Sort keys for deterministic output
-    sortedSecretKeys := make([]string, 0, len(locals.Component.Spec.Container.App.Env.Secrets))
-    for k := range locals.Component.Spec.Container.App.Env.Secrets {
+    sortedSecretKeys := make([]string, 0, len(locals.Kind.Spec.Container.App.Env.Secrets))
+    for k := range locals.Kind.Spec.Container.App.Env.Secrets {
         sortedSecretKeys = append(sortedSecretKeys, k)
     }
     sort.Strings(sortedSecretKeys)
 
     for _, secretKey := range sortedSecretKeys {
-        secretValue := locals.Component.Spec.Container.App.Env.Secrets[secretKey]
+        secretValue := locals.Kind.Spec.Container.App.Env.Secrets[secretKey]
 
         if secretValue.GetSecretRef() != nil {
             // Use external Kubernetes Secret reference
@@ -244,7 +244,7 @@ if locals.Component.Spec.Container.App.Env.Secrets != nil {
 
 #### 3a. variables.tf - Update Secrets Type
 
-**File**: `apis/dev/planton/provider/kubernetes/<component>/v1/iac/tf/variables.tf`
+**File**: `apis/dev/planton/provider/kubernetes/<kind>/v1/iac/tf/variables.tf`
 
 **Change the `env.secrets` type from**:
 ```hcl
@@ -271,7 +271,7 @@ env = optional(object({
 
 #### 3b. secret.tf - Only Create Secret for String Values
 
-**File**: `apis/dev/planton/provider/kubernetes/<component>/v1/iac/tf/secret.tf`
+**File**: `apis/dev/planton/provider/kubernetes/<kind>/v1/iac/tf/secret.tf`
 
 **Pattern**:
 ```hcl
@@ -301,7 +301,7 @@ resource "kubernetes_secret" "this" {
 
 #### 3c. deployment.tf (or equivalent) - Handle Both Types
 
-**File**: `apis/dev/planton/provider/kubernetes/<component>/v1/iac/tf/deployment.tf`
+**File**: `apis/dev/planton/provider/kubernetes/<kind>/v1/iac/tf/deployment.tf`
 
 **Replace the single secrets dynamic block with two**:
 
@@ -345,7 +345,7 @@ dynamic "env" {
 
 ### 4. Test Updates
 
-**File**: `apis/dev/planton/provider/kubernetes/<component>/v1/spec_test.go`
+**File**: `apis/dev/planton/provider/kubernetes/<kind>/v1/spec_test.go`
 
 **Add test cases for**:
 1. Secrets with direct string values - should pass
@@ -359,7 +359,7 @@ dynamic "env" {
 ginkgo.Describe("Environment secrets validation", func() {
     ginkgo.Context("When secrets have direct string values", func() {
         ginkgo.It("should pass validation", func() {
-            input.Spec.Container.App.Env = &ComponentContainerAppEnv{
+            input.Spec.Container.App.Env = &KindContainerAppEnv{
                 Secrets: map[string]*kubernetes.KubernetesSensitiveValue{
                     "DATABASE_PASSWORD": {
                         Value: &kubernetes.KubernetesSensitiveValue_Value{
@@ -375,7 +375,7 @@ ginkgo.Describe("Environment secrets validation", func() {
 
     ginkgo.Context("When secrets have Kubernetes Secret references", func() {
         ginkgo.It("should pass validation with valid secret ref", func() {
-            input.Spec.Container.App.Env = &ComponentContainerAppEnv{
+            input.Spec.Container.App.Env = &KindContainerAppEnv{
                 Secrets: map[string]*kubernetes.KubernetesSensitiveValue{
                     "DATABASE_PASSWORD": {
                         Value: &kubernetes.KubernetesSensitiveValue_SecretRef{
@@ -413,7 +413,7 @@ ginkgo.Describe("Environment secrets validation", func() {
 
 Update all example files to show both options:
 
-- `v1/examples.md` - Main component examples
+- `v1/examples.md` - Main kind examples
 - `v1/iac/pulumi/examples.md` - Pulumi-specific examples
 - `v1/iac/tf/examples.md` - Terraform-specific examples
 
@@ -440,8 +440,8 @@ After making changes, run:
 # 1. Regenerate proto stubs
 make protos
 
-# 2. Run component-specific tests
-go test ./apis/dev/planton/provider/kubernetes/<component>/v1/...
+# 2. Run kind-specific tests
+go test ./apis/dev/planton/provider/kubernetes/<kind>/v1/...
 
 # 3. Full build
 make build
@@ -450,9 +450,9 @@ make build
 make test
 ```
 
-## Applying to Other Components
+## Applying to Other Kinds
 
-This change should be applied to these additional components that have the same `env.secrets` pattern:
+This change should be applied to these additional kinds that have the same `env.secrets` pattern:
 
 ### 1. KubernetesDaemonset
 **Path**: `apis/dev/planton/provider/kubernetes/kubernetesdaemonset/v1/`
@@ -463,17 +463,17 @@ This change should be applied to these additional components that have the same 
 ### 3. KubernetesStatefulset
 **Path**: `apis/dev/planton/provider/kubernetes/kubernetesstatefulset/v1/`
 
-**For each component**:
+**For each kind**:
 1. Check if `spec.proto` has the same `KubernetesDeploymentContainerAppEnv` pattern or equivalent
 2. Apply the same changes to all files listed in the table above
-3. Run tests for that component
+3. Run tests for that kind
 4. Update examples
 
 ## Planton Web Console Integration
 
 When this pattern is adopted, the Planton web console (`planton` repo) will need updates:
 
-### Form Components
+### Form Kinds
 
 1. **Create Form**: Add UI for selecting between `value` and `secretRef`
 2. **Edit Modal**: Support editing both value types
@@ -505,7 +505,7 @@ After `make update-deps` in web console:
 - **GitOps friendly**: Manifests can be safely committed to version control without exposing credentials
 - **Easier rotation**: Password changes only require updating the Kubernetes Secret, not the manifest
 - **Follows proto patterns**: Uses `oneof` pattern consistent with existing `ValueOrRef` in the codebase
-- **Reusable type**: `KubernetesSensitiveValue` is shared across components
+- **Reusable type**: `KubernetesSensitiveValue` is shared across kinds
 - **Backward compatible API structure**: Both Pulumi and Terraform modules handle both value types seamlessly
 
 ## Impact
@@ -516,7 +516,7 @@ After `make update-deps` in web console:
 - Clear documentation with examples for both approaches
 
 ### Developers
-- Pattern established for handling secrets across the Kubernetes provider components
+- Pattern established for handling secrets across the Kubernetes provider kinds
 - All tests updated and passing
 - Reusable `KubernetesSensitiveValue` type for other sensitive fields
 

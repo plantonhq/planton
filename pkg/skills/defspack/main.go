@@ -41,7 +41,7 @@ func main() {
 	// packaging run needs no catalog tree; loading and VALIDATION always
 	// assemble the pack either way, so a pull request that breaks it fails
 	// the lint gate regardless of the flag.
-	embedPack := flag.Bool("embed-catalog-pack", false, "package the catalog skill self-contained (its components/ reference pack inside the archive)")
+	embedPack := flag.Bool("embed-catalog-pack", false, "package the catalog skill self-contained (its kinds/ reference pack inside the archive)")
 	flag.Parse()
 
 	repoRoot := *root

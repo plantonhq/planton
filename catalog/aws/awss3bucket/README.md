@@ -63,7 +63,7 @@ The **AwsS3Bucket** resource provisions and manages Amazon S3 buckets through Pl
 - **metrics_configurations**: Named CloudWatch request-metrics configurations scoped by access point, prefix, and/or tags (standard CloudWatch per-metric cost).
 - **metadata_configuration**: S3 Metadata — AWS-managed Apache Iceberg tables of this bucket's objects: the change-journal table (with its required record-expiration policy, ≥ 7 days when enabled) and an optional live inventory table, each with optional KMS encryption. Query them with Athena/Spark instead of listing the bucket.
 
-## Stack Outputs
+## Outputs
 
 - **bucket_id**: Bucket name — the identifier log destinations, code sources, and object sets reference.
 - **bucket_arn**: Bucket ARN (`arn:aws:s3:::name`) — used in IAM/bucket policies and by ARN-consuming services.
@@ -83,7 +83,7 @@ When you define an AwsS3Bucket resource, Planton:
 4. **Configures data management** — lifecycle rules, Intelligent-Tiering archive configurations, transfer acceleration, requester pays.
 5. **Configures integration surfaces** — website hosting, server access logging, CORS, and event notifications.
 
-Both the Terraform/OpenTofu and Pulumi modules implement the same contract with identical stack outputs.
+Both the Terraform/OpenTofu and Pulumi modules implement the same contract with identical outputs.
 
 ## Use Cases
 

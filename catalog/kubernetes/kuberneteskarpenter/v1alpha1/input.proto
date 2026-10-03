@@ -8,8 +8,8 @@ import "catalog/kubernetes/provider.proto";
 // Input for the KubernetesKarpenter IaC stack. The platform resolves all
 // StringValueOrRef references (namespace) to literal strings before passing
 // this to the IaC engine.
-message KubernetesKarpenterStackInput {
-  // Target cloud-resource.
+message KubernetesKarpenterIacInput {
+  // Target infra-component.
   KubernetesKarpenter target = 1;
   // Kubernetes provider configuration (cluster credentials).
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

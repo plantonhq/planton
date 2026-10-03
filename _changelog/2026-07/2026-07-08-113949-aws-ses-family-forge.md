@@ -48,6 +48,6 @@ The verified sender — the trust anchor nothing leaves SES without:
 - Offline gate all green: `make protos`, spec tests ×2 (go + Bazel), targeted Go + Pulumi builds, `make build-go`, kind-map regeneration, drift guard (both kinds enrolled, contracts byte-identical to the generator), outputs conformance (+2 cases, incl. the repeated `dkim_tokens` population proof), `tofu init`+`validate` ×2, offline `tofu plan` from both hack manifests, `validate-refs --check`, `secret-coverage --check`, `validate-outputs` ×2, all ten manifests CLI-validated, site catalog regenerated, scaffolding-leakage grep clean.
 - Live gate: all four dual-engine lanes green with a zero-orphan account sweep (no configuration sets, identities, or fixture topics left).
 
-## Deferred Surface (recorded with reasons in the component research docs)
+## Deferred Surface (recorded with reasons in the kind research docs)
 
 Dedicated IP pools/assignments (paid capacity surface; the `sending_pool_name` arm composes by name), contact lists (marketing data plane), tenants (new multi-tenant surface), account-level VDM/suppression attributes (account singletons), classic-SES receiving (a separate product surface), and `aws_ses_template` (classic-SES-only; SESv2 templates have no provider resource).

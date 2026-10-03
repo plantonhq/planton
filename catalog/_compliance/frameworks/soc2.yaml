@@ -1,20 +1,20 @@
 # Crosswalk: SOC 2 Trust Services Criteria (TSP section 100, 2017, with
 # revised points of focus, 2022) onto the Planton Control Catalog. SOC 2
-# reports on an organization's controls, not a product's -- no component is
+# reports on an organization's controls, not a product's -- no kind is
 # ever "SOC 2 compliant" by itself. This crosswalk covers the Trust Services
 # Criteria that TECHNICAL controls can serve (the logical-access,
 # system-operations, and change-management common criteria plus the
 # availability and confidentiality categories); organizational and process
 # criteria (governance, risk assessment, vendor management) are deliberately
 # absent, not blurred. A mapping says catalog controls SERVE a criterion --
-# it never declares a component or deployment "SOC 2 compliant". Criterion
+# it never declares a kind or deployment "SOC 2 compliant". Criterion
 # text is quoted verbatim from the published AICPA document. Schema:
 # compliance/frameworkcrosswalk/v1.
 #
 # SOC 2 is provider-neutral: the Trust Services Criteria apply to any system
 # regardless of the cloud it runs on, so this crosswalk declares NO provider
 # scope (spec.providers stays absent) and applies to every provider's
-# components.
+# kinds.
 apiVersion: compliance.planton.dev/v1
 kind: FrameworkCrosswalk
 metadata:
@@ -26,15 +26,15 @@ spec:
     - requirement_id: "CC6.1"
       requirement_name: The entity implements logical access security software, infrastructure, and architectures over protected information assets to protect them from security events to meet the entity's objectives.
       control_ids: [rbac, workload-identity, no-legacy-auth, strong-user-auth, enc-at-rest]
-      notes: The criterion's points of focus include restricting logical access to data at rest, identifying and authenticating persons, infrastructure, and software, and using encryption to protect data. For components that enforce end-user sign-in, credential strength is the identifying-and-authenticating-persons posture.
+      notes: The criterion's points of focus include restricting logical access to data at rest, identifying and authenticating persons, infrastructure, and software, and using encryption to protect data. For kinds that enforce end-user sign-in, credential strength is the identifying-and-authenticating-persons posture.
     - requirement_id: "CC6.3"
       requirement_name: The entity authorizes, modifies, or removes access to data, software, functions, and other protected information assets based on roles, responsibilities, or the system design and changes, giving consideration to the concepts of least privilege and segregation of duties, to meet the entity's objectives.
       control_ids: [rbac]
-      notes: Role-based access with least-privilege grants is the component-level expression of this criterion; the entity's own role definitions and review cadence remain organizational.
+      notes: Role-based access with least-privilege grants is the kind-level expression of this criterion; the entity's own role definitions and review cadence remain organizational.
     - requirement_id: "CC6.6"
       requirement_name: The entity implements logical access security measures to protect against threats from sources outside its system boundaries.
       control_ids: [no-public-access, restricted-ingress, edge-protection]
-      notes: Boundary protection at the component grain -- no public exposure, declared ingress sources, and edge request filtering.
+      notes: Boundary protection at the kind grain -- no public exposure, declared ingress sources, and edge request filtering.
     - requirement_id: "CC6.7"
       requirement_name: The entity restricts the transmission, movement, and removal of information to authorized internal and external users and processes, and protects it during transmission, movement, or removal to meet the entity's objectives.
       control_ids: [enc-in-transit]
@@ -42,27 +42,27 @@ spec:
     - requirement_id: "CC7.1"
       requirement_name: To meet its objectives, the entity uses detection and monitoring procedures to identify (1) changes to configurations that result in the introduction of new vulnerabilities, and (2) susceptibilities to newly discovered vulnerabilities.
       control_ids: [monitoring-integration]
-      notes: The component's exported metrics and security-relevant runtime signals are what the entity's detection and monitoring procedures consume.
+      notes: The kind's exported metrics and security-relevant runtime signals are what the entity's detection and monitoring procedures consume.
     - requirement_id: "CC7.2"
-      requirement_name: The entity monitors system components and the operation of those components for anomalies that are indicative of malicious acts, natural disasters, and errors affecting the entity's ability to meet its objectives; anomalies are analyzed to determine whether they represent security events.
+      requirement_name: The entity monitors system components and the operation of those kinds for anomalies that are indicative of malicious acts, natural disasters, and errors affecting the entity's ability to meet its objectives; anomalies are analyzed to determine whether they represent security events.
       control_ids: [monitoring-integration, audit-logging]
-      notes: Anomaly monitoring consumes the component's exported operational signals; audit logs capture the administrative and access events anomalies are analyzed against.
+      notes: Anomaly monitoring consumes the kind's exported operational signals; audit logs capture the administrative and access events anomalies are analyzed against.
     - requirement_id: "CC7.3"
       requirement_name: The entity evaluates security events to determine whether they could or have resulted in a failure of the entity to meet its objectives (security incidents) and, if so, takes actions to prevent or address such failures.
       control_ids: [audit-logging]
-      notes: Evaluation itself is the entity's process; the component's contribution is the captured audit trail that evaluation consumes.
+      notes: Evaluation itself is the entity's process; the kind's contribution is the captured audit trail that evaluation consumes.
     - requirement_id: "CC8.1"
       requirement_name: The entity authorizes, designs, develops or acquires, configures, documents, tests, approves, and implements changes to infrastructure, data, software, and procedures to meet its objectives.
       control_ids: [managed-patching, deletion-protection]
-      notes: The criterion's Manages Patch Changes point of focus (added 2022) names patch identification, testing, and implementation; deletion protection enforces explicit authorization before the most destructive change a component accepts.
+      notes: The criterion's Manages Patch Changes point of focus (added 2022) names patch identification, testing, and implementation; deletion protection enforces explicit authorization before the most destructive change a kind accepts.
     - requirement_id: "A1.1"
       requirement_name: The entity maintains, monitors, and evaluates current processing capacity and use of system components (infrastructure, data, and software) to manage capacity demand and to enable the implementation of additional capacity to help meet its objectives.
       control_ids: [monitoring-integration]
-      notes: Capacity evaluation consumes the component's exported operational metrics; capacity planning itself is the entity's process.
+      notes: Capacity evaluation consumes the kind's exported operational metrics; capacity planning itself is the entity's process.
     - requirement_id: "A1.2"
       requirement_name: The entity authorizes, designs, develops or acquires, implements, operates, approves, maintains, and monitors environmental protections, software, data backup processes, and recovery infrastructure to meet its objectives.
       control_ids: [backup-recovery, backup-retention-policy, multi-zone-ha]
-      notes: Automated backup with policy-driven retention and multi-zone replication are the component-level data backup and recovery infrastructure this criterion names; environmental protections are the provider's physical domain.
+      notes: Automated backup with policy-driven retention and multi-zone replication are the kind-level data backup and recovery infrastructure this criterion names; environmental protections are the provider's physical domain.
     - requirement_id: "C1.1"
       requirement_name: The entity identifies and maintains confidential information to meet the entity's objectives related to confidentiality.
       control_ids: [enc-at-rest, enc-at-rest-cmk]

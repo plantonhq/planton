@@ -1,10 +1,10 @@
 # AWS Lambda
 
-Deploys a complete AWS Lambda function: the code source (an S3 zip archive or an ECR container image), the execution environment (memory, timeout, ephemeral storage, environment variables), VPC attachment with an optional EFS mount, and the function-scoped surface AWS models as separate resources but that are honestly part of the function's own configuration — aliases with canary traffic shifting and provisioned concurrency, the function URL, resource-policy invoke permissions, the asynchronous-invocation config, recursion detection, and runtime patch management. Event sources (SQS, Kinesis, DynamoDB Streams, Kafka) attach through the separate AwsLambdaEventSourceMapping Cloud Resource, which references this function.
+Deploys a complete AWS Lambda function: the code source (an S3 zip archive or an ECR container image), the execution environment (memory, timeout, ephemeral storage, environment variables), VPC attachment with an optional EFS mount, and the function-scoped surface AWS models as separate resources but that are honestly part of the function's own configuration — aliases with canary traffic shifting and provisioned concurrency, the function URL, resource-policy invoke permissions, the asynchronous-invocation config, recursion detection, and runtime patch management. Event sources (SQS, Kinesis, DynamoDB Streams, Kafka) attach through the separate AwsLambdaEventSourceMapping Infra Component, which references this function.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Lambda Function** -- configured with the specified code source, runtime or image, memory, timeout, architecture, and every environment setting in the spec
 - **Aliases** (when defined) -- one alias resource per entry, keyed by name, each optionally splitting traffic between two published versions and carrying provisioned concurrency
@@ -19,12 +19,12 @@ The function's **name comes from `metadata.name`** — create-time immutable in 
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **An IAM execution role** trusting `lambda.amazonaws.com` with `AWSLambdaBasicExecutionRole` attached (add `AWSLambdaVPCAccessExecutionRole` for VPC attachment). Provide the ARN directly or reference an AwsIamRole Cloud Resource.
+- **An IAM execution role** trusting `lambda.amazonaws.com` with `AWSLambdaBasicExecutionRole` attached (add `AWSLambdaVPCAccessExecutionRole` for VPC attachment). Provide the ARN directly or reference an AwsIamRole Infra Component.
 - **A deployment artifact** -- a zip archive in an S3 bucket in the function's region, or a container image in ECR.
 - **VPC subnets and security groups** (optional) -- only when the function must reach private resources. Both travel together, and attachment removes default internet access (route through a NAT gateway to restore it).
 - **KMS keys** (optional) -- one for environment variables at rest (`kmsKeyArn`), one for the deployment package in S3 (`sourceKmsKeyArn`).
@@ -64,7 +64,7 @@ spec:
 planton apply -f lambda.yaml
 ```
 
-This creates the function from the S3 deployment package. A Stack Job tracks the provisioning and streams progress in real time.
+This creates the function from the S3 deployment package. An Infra Job tracks the provisioning and streams progress in real time.
 
 ### InfraChart
 
@@ -126,7 +126,7 @@ These are the most important decisions when configuring AWS Lambda. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -139,9 +139,9 @@ These are the most important decisions when configuring AWS Lambda. Explore the 
 | **AwsEfsAccessPoint** (optional) | `fileSystemConfig.accessPointArn` | `status.outputs.access_point_arn` |
 | **AwsCloudwatchLogGroup** (optional) | `loggingConfig.logGroup` | `status.outputs.log_group_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -166,12 +166,12 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Lambda Event Source Mapping**](/cloud-catalog/aws-lambda-event-source-mapping) -- wires SQS queues, Kinesis/DynamoDB streams, and Kafka topics into this function
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- provides the execution role
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) -- holds the zip deployment package
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- provides subnets for VPC-attached functions
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- controls network access for the function's ENIs
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- encrypts environment variables and the deployment artifact
-- [**AWS SQS Queue**](/cloud-catalog/aws-sqs-queue) -- receives dead-letter and async failure records
-- [**AWS Elastic File System**](/cloud-catalog/aws-elastic-file-system) -- durable shared storage mounted into the execution environment
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) -- a managed destination for the function's logs
+- [**AWS Lambda Event Source Mapping**](/infra-catalog/aws-lambda-event-source-mapping) -- wires SQS queues, Kinesis/DynamoDB streams, and Kafka topics into this function
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- provides the execution role
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) -- holds the zip deployment package
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- provides subnets for VPC-attached functions
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- controls network access for the function's ENIs
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- encrypts environment variables and the deployment artifact
+- [**AWS SQS Queue**](/infra-catalog/aws-sqs-queue) -- receives dead-letter and async failure records
+- [**AWS Elastic File System**](/infra-catalog/aws-elastic-file-system) -- durable shared storage mounted into the execution environment
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) -- a managed destination for the function's logs

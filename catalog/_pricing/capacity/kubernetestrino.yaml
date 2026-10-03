@@ -7,9 +7,9 @@
 # the singleton coordinator and the worker fleet; it is diskless by
 # design (no volumes -- it queries data where it lives), so the footprint
 # is purely compute reservations.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kubernetestrino
 spec:
@@ -43,7 +43,7 @@ spec:
         - field_path: helm_values
           op: is_set
       text: the helm_values overlay merges last and can override any modeled value, including resources and replica counts -- this footprint states the typed spec's declaration
-    - text: fault-tolerant exchange spooling writes to external storage (object stores or local paths) and the catalog data sources are separate components -- neither rides this footprint
+    - text: fault-tolerant exchange spooling writes to external storage (object stores or local paths) and the catalog data sources are separate kinds -- neither rides this footprint
   notes:
     - text: Trino is diskless by design -- it provisions no volumes and queries data where it lives, so the footprint is purely compute reservations
     - text: workers.replicas 0 with coordinator.include_in_scheduling gives the single-node shape -- the worker binding then contributes nothing and the coordinator carries all execution

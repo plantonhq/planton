@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: gcpeventarcmessagebus
 spec:
@@ -26,7 +26,7 @@ spec:
       impact: The API default (NONE) writes no platform logs; INFO on a busy hub records bus activity to Cloud Logging, billed there by ingested volume -- both presets choose INFO deliberately while onboarding, with the note to scale back in steady state.
     - field_path: crypto_key
       sku_meter: Cloud KMS key operations
-      impact: CMEK routes every encrypt/decrypt of messages at rest through the named key -- key-version storage and per-operation charges bill on the GcpKmsKey component's project. Each satellite (source, pipeline) can carry its own crypto_key with the same economics.
+      impact: CMEK routes every encrypt/decrypt of messages at rest through the named key -- key-version storage and per-operation charges bill on the GcpKmsKey kind's project. Each satellite (source, pipeline) can carry its own crypto_key with the same economics.
   estimate_exclusions:
     - an idle bus bills nothing -- all three Eventarc Advanced meters (bus publishing, pipeline messages, pipeline transformations) count events, and zero events means zero count
     - what the pipelines deliver TO bills downstream -- Pub/Sub message charges on topic destinations, Workflows steps on workflow destinations, and the receiving service's compute on HTTP endpoints

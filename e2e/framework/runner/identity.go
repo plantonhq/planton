@@ -6,7 +6,7 @@ import (
 
 	"github.com/pkg/errors"
 	"github.com/plantonhq/planton/e2e/framework/provider"
-	"github.com/plantonhq/planton/pkg/iac/stackinput/stackinputproviderconfig"
+	"github.com/plantonhq/planton/pkg/iac/iacinput/iacinputproviderconfig"
 )
 
 // IdentityAnnotation makes a scenario deploy as an identity the harness
@@ -14,7 +14,7 @@ import (
 // The value is provider-interpreted (see provider.IdentityProvisioner); the
 // Kubernetes harness accepts "declared" and
 // "declared-minus:<apiGroup>/<resource>:<verb>,<verb>". The identity applies
-// to the component under test only: its fixture chain deploys as the
+// to the kind under test only: its fixture chain deploys as the
 // harness does, because the fixtures are the lane's stage, not its subject.
 const IdentityAnnotation = "planton.dev/e2e-identity"
 
@@ -27,7 +27,7 @@ const PhaseIdentity Phase = "IDENTITY"
 // and records the provider configuration on the context so every manifest
 // binding uses it. The returned cleanup is a no-op when the scenario declares
 // no identity.
-func provisionIdentity(ctx context.Context, tc *provider.ComponentTestContext, harness provider.Harness) (func(), error) {
+func provisionIdentity(ctx context.Context, tc *provider.KindTestContext, harness provider.Harness) (func(), error) {
 	spec, err := ManifestAnnotation(tc.ManifestPath, IdentityAnnotation)
 	if err != nil || spec == "" {
 		return func() {}, nil
@@ -47,9 +47,9 @@ func provisionIdentity(ctx context.Context, tc *provider.ComponentTestContext, h
 }
 
 // laneProviderConfig is the provider configuration a manifest binding uses:
-// the lane's identity when the scenario declared one, else the component's
+// the lane's identity when the scenario declared one, else the kind's
 // opt-in fixture (or none, the harness's ambient posture).
-func laneProviderConfig(tc *provider.ComponentTestContext, manifestPath string) (*stackinputproviderconfig.ProviderConfig, error) {
+func laneProviderConfig(tc *provider.KindTestContext, manifestPath string) (*iacinputproviderconfig.ProviderConfig, error) {
 	if tc.IdentityProviderConfig == "" {
 		return LoadProviderConfigFixture(tc.ModuleDir, manifestPath)
 	}
@@ -57,7 +57,7 @@ func laneProviderConfig(tc *provider.ComponentTestContext, manifestPath string) 
 	if err != nil {
 		return nil, err
 	}
-	config := &stackinputproviderconfig.ProviderConfig{Path: tc.IdentityProviderConfig}
+	config := &iacinputproviderconfig.ProviderConfig{Path: tc.IdentityProviderConfig}
 	if detected != nil {
 		config.Provider = detected.Provider
 		return config, nil

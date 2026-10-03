@@ -5,7 +5,7 @@ import (
 
 	awslambdav1alpha1 "github.com/plantonhq/planton/catalog/aws/awslambda/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -25,15 +25,15 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *awslambdav1alpha1.AwsLambdaStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *awslambdav1alpha1.AwsLambdaIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsLambda = stackInput.Target
+	locals.AwsLambda = iacInput.Target
 
-	metadata := stackInput.Target.Metadata
+	metadata := iacInput.Target.Metadata
 	locals.FunctionName = metadata.Name
 
 	locals.LogGroupName = "/aws/lambda/" + locals.FunctionName
-	if lc := stackInput.Target.Spec.LoggingConfig; lc != nil && lc.LogGroup.GetValue() != "" {
+	if lc := iacInput.Target.Spec.LoggingConfig; lc != nil && lc.LogGroup.GetValue() != "" {
 		locals.LogGroupName = lc.LogGroup.GetValue()
 	}
 
@@ -43,7 +43,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *awslambdav1alpha1.AwsLambda
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsLambda.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsLambda.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

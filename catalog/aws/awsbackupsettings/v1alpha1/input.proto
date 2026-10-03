@@ -5,9 +5,9 @@ package dev.planton.aws.awsbackupsettings.v1alpha1;
 import "catalog/aws/awsbackupsettings/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsBackupSettingsStackInput is the input for the IaC modules that
+// AwsBackupSettingsIacInput is the input for the IaC modules that
 // manage AWS Backup account/region settings.
-message AwsBackupSettingsStackInput {
+message AwsBackupSettingsIacInput {
   // target is the AwsBackupSettings resource to deploy.
   AwsBackupSettings target = 1;
   // provider_config contains the AWS provider credentials and configuration.

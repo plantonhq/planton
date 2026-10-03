@@ -10,7 +10,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awswafipset
+    e2e-catalog-kind: awswafipset
   annotations:
     planton.dev/e2e: "true"
   tags:

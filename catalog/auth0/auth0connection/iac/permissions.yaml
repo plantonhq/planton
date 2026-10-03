@@ -7,7 +7,7 @@
 # grant's scopes are the policy. Every group is `derived` (static analysis
 # of the module sources against Auth0's endpoint docs, cited in notes)
 # until a live capture upgrades it to `proven`. Schema:
-# iac/componentpermissions/v1.
+# iac/catalogkindpermissions/v1.
 #
 # Auth0 scopes are per resource family, not per object: a credential
 # holding them manages EVERY connection in the tenant, so the trust
@@ -15,7 +15,7 @@
 # OIDC, or Azure AD client id and secret inside the options tree) are
 # values the connection carries, not extra Management API scopes.
 apiVersion: iac.planton.dev/v1
-kind: ComponentPermissions
+kind: CatalogKindPermissions
 metadata:
   name: auth0connection
 spec:

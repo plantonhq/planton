@@ -4,7 +4,7 @@ Manages a region's Amazon Bedrock model invocation logging configuration — the
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module configures the region's one invocation logging object — it adopts the account+region settings singleton rather than creating a new named resource:
+When you deploy this Infra Component, the IaC module configures the region's one invocation logging object — it adopts the account+region settings singleton rather than creating a new named resource:
 
 - **Data-type capture** — which invocation payloads are logged: text, image, embedding, and video, each an explicit toggle (AWS defaults all four to enabled; unset inherits that)
 - **CloudWatch delivery** — configured only when `cloudwatch` is set: the log group and the IAM role Bedrock assumes to write to it, with optional S3 spillover for payloads too large for a log event
@@ -16,7 +16,7 @@ Destroying this component deletes the configuration — logging stops region-wid
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Bedrock logging permissions (`bedrock:PutModelInvocationLoggingConfiguration` and its read/delete siblings, plus `iam:PassRole` for the CloudWatch arm). Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Bedrock logging permissions (`bedrock:PutModelInvocationLoggingConfiguration` and its read/delete siblings, plus `iam:PassRole` for the CloudWatch arm). Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -73,7 +73,7 @@ spec:
 planton apply -f bedrock-invocation-logging.yaml
 ```
 
-This configures full-fidelity logging for us-west-2: CloudWatch for querying, S3 for retention, and oversized payloads spilled to S3 instead of being truncated. A Stack Job tracks the provisioning in real time.
+This configures full-fidelity logging for us-west-2: CloudWatch for querying, S3 for retention, and oversized payloads spilled to S3 instead of being truncated. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -117,7 +117,7 @@ These are the most important decisions when configuring invocation logging. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -125,9 +125,9 @@ These are the most important decisions when configuring invocation logging. Expl
 | **AwsIamRole** | `cloudwatch.roleArn` | `status.outputs.role_arn` |
 | **AwsS3Bucket** | `s3.bucketName`, `cloudwatch.largeDataDeliveryS3.bucketName` | `status.outputs.bucket_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-This component has no consumable outputs: `status.outputs` carries only `configured_region`, which echoes the region the instance owns — the singleton's identity and import ID, not a value downstream resources compose on. The configuration's effect is the log streams and objects that appear in the destinations you referenced.
+This kind has no consumable outputs: `status.outputs` carries only `configured_region`, which echoes the region the instance owns — the singleton's identity and import ID, not a value downstream resources compose on. The configuration's effect is the log streams and objects that appear in the destinations you referenced.
 
 ## Common Patterns
 
@@ -139,6 +139,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) — the query-side destination, wired via `cloudwatch.logGroupName`
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the delivery role Bedrock assumes for CloudWatch writes, wired via `cloudwatch.roleArn`
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — the retention destination and the large-payload spillover, wired via `bucketName` references
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) — the query-side destination, wired via `cloudwatch.logGroupName`
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the delivery role Bedrock assumes for CloudWatch writes, wired via `cloudwatch.roleArn`
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — the retention destination and the large-payload spillover, wired via `bucketName` references

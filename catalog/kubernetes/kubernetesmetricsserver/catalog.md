@@ -4,7 +4,7 @@ Installs metrics-server — the cluster's resource-metrics pipeline — from the
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm Release** -- the metrics-server Deployment, Service, and RBAC (the release name is fixed to `metrics-server`), pinned to the chart version you choose
 - **APIService registration** -- the cluster-wide `v1beta1.metrics.k8s.io` APIService that routes resource-metrics queries to this installation
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Kubernetes Cluster
 
@@ -47,11 +47,11 @@ spec:
 planton apply -f metrics-server.yaml
 ```
 
-This installs metrics-server into `kube-system` with the chart defaults -- verified kubelet TLS, one replica, the APIService registered. On a self-signed-kubelet cluster add `kubeletInsecureTls: true`, or the release never turns ready. A Stack Job tracks the provisioning in real time.
+This installs metrics-server into `kube-system` with the chart defaults -- verified kubelet TLS, one replica, the APIService registered. On a self-signed-kubelet cluster add `kubeletInsecureTls: true`, or the release never turns ready. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire metrics-server to a namespace or TLS material managed by other Cloud Resources:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire metrics-server to a namespace or TLS material managed by other Infra Components:
 
 ```yaml
 spec:
@@ -79,7 +79,7 @@ These are the most important decisions when configuring metrics-server. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -88,9 +88,9 @@ These are the most important decisions when configuring metrics-server. Explore 
 | **KubernetesIssuer** | `tls.certManagerIssuer.issuer.name` | `status.outputs.issuer_name` |
 | **KubernetesClusterIssuer** | `tls.certManagerIssuer.clusterIssuer.name` | `status.outputs.cluster_issuer_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -111,7 +111,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes HorizontalPodAutoscaler**](/cloud-catalog/kubernetes-horizontal-pod-autoscaler) -- consumes the resource-metrics API this component registers, with no explicit reference needed
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) -- `kubectl top pod` and `kubectl top node` work for its workloads the moment the first scrape lands
-- [**KEDA**](/cloud-catalog/kubernetes-keda) -- complements metrics-server: KEDA covers event-driven and external metrics, metrics-server covers instantaneous CPU/memory
-- [**Cert Manager Issuer**](/cloud-catalog/kubernetes-issuer) -- signs the serving certificate when the cert-manager TLS arm is chosen
+- [**Kubernetes HorizontalPodAutoscaler**](/infra-catalog/kubernetes-horizontal-pod-autoscaler) -- consumes the resource-metrics API this component registers, with no explicit reference needed
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- `kubectl top pod` and `kubectl top node` work for its workloads the moment the first scrape lands
+- [**KEDA**](/infra-catalog/kubernetes-keda) -- complements metrics-server: KEDA covers event-driven and external metrics, metrics-server covers instantaneous CPU/memory
+- [**Cert Manager Issuer**](/infra-catalog/kubernetes-issuer) -- signs the serving certificate when the cert-manager TLS arm is chosen

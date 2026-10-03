@@ -4,7 +4,7 @@ package dev.planton.azure.azurecosmosdbaccount.v1alpha1;
 
 import "shared/options/options.proto";
 
-// **AzureCosmosdbAccountStackOutputs** captures the outputs of provisioning
+// **AzureCosmosdbAccountOutputs** captures the outputs of provisioning
 // an Azure Cosmos DB account.
 //
 // Cosmos DB authenticates with auto-generated account keys rather than
@@ -22,7 +22,7 @@ import "shared/options/options.proto";
 // (AzureCosmosdbSqlDatabase / AzureCosmosdbSqlContainer /
 // AzureCosmosdbMongoDatabase / AzureCosmosdbMongoCollection) referencing
 // this account, so this kind exports no database ids.
-message AzureCosmosdbAccountStackOutputs {
+message AzureCosmosdbAccountOutputs {
   // The Azure Resource Manager ID of the account.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.DocumentDB/databaseAccounts/{name}
   string cosmosdb_account_id = 1;

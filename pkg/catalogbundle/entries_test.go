@@ -11,12 +11,12 @@ import (
 
 	"sigs.k8s.io/yaml"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 )
 
 // The entries cargo end to end over the REAL tree and the REAL registry:
 // every user-facing kind projects exactly one entry, the torture provider is
-// withheld, and each entry's display fields agree with the component's own
+// withheld, and each entry's display fields agree with the kind's own
 // catalog page -- read independently here, so the projection can never
 // drift from its source without this failing.
 func TestCatalogEntriesRoundTrip(t *testing.T) {
@@ -44,9 +44,9 @@ func TestCatalogEntriesRoundTrip(t *testing.T) {
 	}
 
 	userFacing := 0
-	for _, kind := range crkreflect.KindsList() {
-		if crkreflect.GetProvider(kind).String() == testProviderName {
-			kindName := crkreflect.ExtractKindNameByKind(kind)
+	for _, kind := range catalogkindreflect.KindsList() {
+		if catalogkindreflect.GetProvider(kind).String() == testProviderName {
+			kindName := catalogkindreflect.ExtractKindNameByKind(kind)
 			if _, present := byKind[kindName]; present {
 				t.Errorf("the %s test kind must never get a catalog entry", kindName)
 			}
@@ -58,7 +58,7 @@ func TestCatalogEntriesRoundTrip(t *testing.T) {
 		t.Fatalf("expected one entry per user-facing kind (%d), got %d", userFacing, len(catalogEntries))
 	}
 
-	// One real component pinned in depth, its truth read from the tree here
+	// One real kind pinned in depth, its truth read from the tree here
 	// rather than hardcoded so catalog edits never break the bundle suite.
 	entry, ok := byKind["AwsKmsKey"]
 	if !ok {
@@ -114,7 +114,7 @@ func TestEntrySlugDerivation(t *testing.T) {
 }
 
 // Title comes from the catalog page's H1; the description is the intro
-// paragraph's first sentence; a component without a page falls back to its
+// paragraph's first sentence; a kind without a page falls back to its
 // kind name.
 func TestReadCatalogPage(t *testing.T) {
 	dir := t.TempDir()
@@ -139,12 +139,12 @@ func TestReadCatalogPage(t *testing.T) {
 }
 
 // A tree that cannot satisfy the registry fails the BUILD, naming every
-// missing component -- deploy coordinates are proven at release build time.
+// missing kind -- deploy coordinates are proven at release build time.
 func TestProjectEntriesRefusesForeignTree(t *testing.T) {
 	if _, err := projectEntries(t.TempDir(), nil); err == nil {
-		t.Fatal("a catalog tree missing the registry's components must fail entry projection")
-	} else if !strings.Contains(err.Error(), "no component directory") {
-		t.Fatalf("refusal must name the missing components, got: %v", err)
+		t.Fatal("a catalog tree missing the registry's kinds must fail entry projection")
+	} else if !strings.Contains(err.Error(), "no kind directory") {
+		t.Fatalf("refusal must name the missing kinds, got: %v", err)
 	}
 }
 

@@ -4,7 +4,7 @@ Deploys a standing Planton runner appliance on Azure Container Apps -- an always
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Container App** -- the runner container itself, a single-revision app pinned to exactly one replica (min = max = 1), with the runner token in the app's own secret store (`runner-token`) referenced as a secret-backed environment variable, no ingress at all, and a startup probe on the runner's health server
 - **Azure tags** -- resource tags derived from the resource's organization, environment, and name
@@ -50,7 +50,7 @@ spec:
 planton apply -f runner.yaml
 ```
 
-This minimal manifest deploys a single always-on worker at the default Consumption-plan sizing (0.5 vCPU, 1Gi) tracking the latest runner release -- sizing, version pinning, and the control-plane endpoint are not configured. A Stack Job tracks the provisioning in real time.
+This minimal manifest deploys a single always-on worker at the default Consumption-plan sizing (0.5 vCPU, 1Gi) tracking the latest runner release -- sizing, version pinning, and the control-plane endpoint are not configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -81,16 +81,16 @@ These are the most important decisions when configuring the runner. Explore the 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureResourceGroup** | `resourceGroup` | `status.outputs.resource_group_name` |
 | **AzureContainerAppEnvironment** | `containerAppEnvironmentId` | `status.outputs.environment_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -112,6 +112,6 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Azure Resource Group**](/cloud-catalog/azure-resource-group) -- where the appliance lives; the teardown boundary for everything in it
-- [**Azure Container App Environment**](/cloud-catalog/azure-container-app-environment) -- the placement that defines what the runner can reach; VNet-integrate it for private endpoints
-- [**Azure AKS Cluster**](/cloud-catalog/azure-aks-cluster) -- the canonical private target: a private API server the runner makes deployable
+- [**Azure Resource Group**](/infra-catalog/azure-resource-group) -- where the appliance lives; the teardown boundary for everything in it
+- [**Azure Container App Environment**](/infra-catalog/azure-container-app-environment) -- the placement that defines what the runner can reach; VNet-integrate it for private endpoints
+- [**Azure AKS Cluster**](/infra-catalog/azure-aks-cluster) -- the canonical private target: a private API server the runner makes deployable

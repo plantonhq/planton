@@ -33,7 +33,7 @@ func validResource() *AzureExpressRouteGateway {
 	return &AzureExpressRouteGateway{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureExpressRouteGateway",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-ergw",
 		},
 		Spec: &AzureExpressRouteGatewaySpec{

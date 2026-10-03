@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarezerotrustaccesspolicy
 spec:
@@ -15,7 +15,7 @@ spec:
         right-hand API panel), or `GET /accounts` on the Cloudflare v4 API.
     - name: policy_id
       derivations:
-        - from_stack_output: policy_id
+        - from_output: policy_id
       where_to_find: >-
         Zero Trust dashboard -> Access -> Policies -> the policy (the policy
         ID is in the API, not the UI), or

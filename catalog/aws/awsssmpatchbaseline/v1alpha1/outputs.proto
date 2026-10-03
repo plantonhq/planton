@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsssmpatchbaseline.v1alpha1;
 
-// AwsSsmPatchBaselineStackOutputs captures the observable state of the
+// AwsSsmPatchBaselineOutputs captures the observable state of the
 // patch baseline after apply.
-message AwsSsmPatchBaselineStackOutputs {
+message AwsSsmPatchBaselineOutputs {
   // The baseline's AWS-generated ID ("pb-..." - also the provider's
   // import ID; each folded patch group imports as
   // "{patch_group},{baseline_id}").

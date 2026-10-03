@@ -1,5 +1,5 @@
-# Stack outputs — identical names and derivations in the Pulumi module
-# (KubernetesTektonOperatorStackOutputs).
+# Outputs — identical names and derivations in the Pulumi module
+# (KubernetesTektonOperatorOutputs).
 
 output "namespace" {
   description = "Namespace the operator is installed into (always tekton-operator — the release manifest's fixed namespace)"

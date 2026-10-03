@@ -4,7 +4,7 @@ Deploys an HTTP API on Amazon API Gateway (v2) with route-to-integration wiring,
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **HTTP API** -- an API Gateway v2 HTTP API with optional CORS settings, description, version label, IP address type (IPv4 or dual-stack), and default-endpoint control
 - **Stage** -- a deployment stage (defaults to `$default` with auto-deploy enabled) with optional access logging, throttling, detailed CloudWatch metrics, per-route setting overrides, and stage variables
@@ -17,15 +17,15 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
 - **A Lambda function or HTTP endpoint** for each route integration. For Lambda proxy integrations (`AWS_PROXY`), provide the function ARN. For HTTP proxy integrations (`HTTP_PROXY`), provide the upstream URL.
-- **A CloudWatch Log Group** (optional) for access logging. Provide the ARN directly or reference an AwsCloudwatchLogGroup Cloud Resource via ValueFromRef.
-- **A Lambda authorizer function** (optional) for REQUEST-type authorizers. Provide the function ARN directly or reference an AwsLambda Cloud Resource via ValueFromRef.
-- **An IAM role** (optional) for Lambda authorizer invocation. Required when using REQUEST authorizers. Provide the ARN directly or reference an AwsIamRole Cloud Resource via ValueFromRef.
+- **A CloudWatch Log Group** (optional) for access logging. Provide the ARN directly or reference an AwsCloudwatchLogGroup Infra Component via ValueFromRef.
+- **A Lambda authorizer function** (optional) for REQUEST-type authorizers. Provide the function ARN directly or reference an AwsLambda Infra Component via ValueFromRef.
+- **An IAM role** (optional) for Lambda authorizer invocation. Required when using REQUEST authorizers. Provide the ARN directly or reference an AwsIamRole Infra Component via ValueFromRef.
 
 ## Deploy
 
@@ -58,7 +58,7 @@ spec:
 planton apply -f http-api-gateway.yaml
 ```
 
-This creates an HTTP API with a single catch-all route forwarding all requests to a Lambda function, using the `$default` stage with auto-deploy. No CORS or authorization is configured. A Stack Job tracks the provisioning in real time.
+This creates an HTTP API with a single catch-all route forwarding all requests to a Lambda function, using the `$default` stage with auto-deploy. No CORS or authorization is configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -111,7 +111,7 @@ These are the most important decisions when configuring an HTTP API Gateway. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -124,9 +124,9 @@ These are the most important decisions when configuring an HTTP API Gateway. Exp
 | **AwsCognitoUserPool** (optional) | `authorizers[].jwtConfiguration.issuer` | `status.outputs.issuer` |
 | **AwsCognitoUserPoolClient** (optional) | `authorizers[].jwtConfiguration.audiences[]` | `status.outputs.client_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -149,10 +149,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) -- provides backend functions for route integrations and REQUEST authorizers
-- [**AWS HTTP API VPC Link**](/cloud-catalog/aws-http-api-vpc-link) -- provides the network attachment for private integrations to ALB/NLB/Cloud Map targets inside a VPC
-- [**AWS HTTP API Domain**](/cloud-catalog/aws-http-api-domain) -- fronts this API with a custom domain; its API mappings reference this API's `api_id` and `stage_name` outputs
-- [**AWS Cognito User Pool**](/cloud-catalog/aws-cognito-user-pool) -- provides the JWT issuer for token validation
-- [**AWS Cognito User Pool Client**](/cloud-catalog/aws-cognito-user-pool-client) -- provides app client IDs as JWT audiences
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- provides invocation roles for Lambda authorizers and AWS service actions
-- [**AWS CloudWatch Log Group**](/cloud-catalog/aws-cloudwatch-log-group) -- provides the destination for API access logs
+- [**AWS Lambda**](/infra-catalog/aws-lambda) -- provides backend functions for route integrations and REQUEST authorizers
+- [**AWS HTTP API VPC Link**](/infra-catalog/aws-http-api-vpc-link) -- provides the network attachment for private integrations to ALB/NLB/Cloud Map targets inside a VPC
+- [**AWS HTTP API Domain**](/infra-catalog/aws-http-api-domain) -- fronts this API with a custom domain; its API mappings reference this API's `api_id` and `stage_name` outputs
+- [**AWS Cognito User Pool**](/infra-catalog/aws-cognito-user-pool) -- provides the JWT issuer for token validation
+- [**AWS Cognito User Pool Client**](/infra-catalog/aws-cognito-user-pool-client) -- provides app client IDs as JWT audiences
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- provides invocation roles for Lambda authorizers and AWS service actions
+- [**AWS CloudWatch Log Group**](/infra-catalog/aws-cloudwatch-log-group) -- provides the destination for API access logs

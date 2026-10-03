@@ -5,7 +5,7 @@ package dev.planton.gcp.gcpbackendservice.v1alpha1;
 import "catalog/gcp/gcpbackendservice/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-message GcpBackendServiceStackInput {
+message GcpBackendServiceIacInput {
   GcpBackendService target = 1;
   dev.planton.gcp.GcpProviderConfig provider_config = 2;
 }

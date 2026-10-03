@@ -25,7 +25,7 @@ export default function S04WhatIsPlanton() {
           </p>
           <ul className="space-y-2 text-sm text-white/60">
             <li>
-              • <strong className="text-white">600+ components</strong> across 17
+              • <strong className="text-white">600+ catalog kinds</strong> across 17
               clouds
             </li>
             <li>• Every component ships a Pulumi and an OpenTofu module</li>

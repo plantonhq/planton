@@ -5,9 +5,9 @@ package dev.planton.aws.awssagemakerfeaturegroup.v1alpha1;
 import "catalog/aws/awssagemakerfeaturegroup/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsSagemakerFeatureGroupStackInput is the input for the IaC modules
+// AwsSagemakerFeatureGroupIacInput is the input for the IaC modules
 // that deploy the feature group.
-message AwsSagemakerFeatureGroupStackInput {
+message AwsSagemakerFeatureGroupIacInput {
   // target is the AwsSagemakerFeatureGroup resource to deploy.
   AwsSagemakerFeatureGroup target = 1;
   // provider_config contains the AWS provider credentials and configuration.

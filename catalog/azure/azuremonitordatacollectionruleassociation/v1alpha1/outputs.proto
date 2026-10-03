@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.azure.azuremonitordatacollectionruleassociation.v1alpha1;
 
-// **AzureMonitorDataCollectionRuleAssociationStackOutputs** captures
+// **AzureMonitorDataCollectionRuleAssociationOutputs** captures
 // the outputs from provisioning an Azure Monitor data collection rule
 // association.
-message AzureMonitorDataCollectionRuleAssociationStackOutputs {
+message AzureMonitorDataCollectionRuleAssociationOutputs {
   // The association's ARM resource ID, scoped under the target machine
   // ({target_resource_id}/providers/Microsoft.Insights/dataCollectionRuleAssociations/{name}).
   string data_collection_rule_association_id = 1;

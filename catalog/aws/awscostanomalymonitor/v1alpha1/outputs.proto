@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awscostanomalymonitor.v1alpha1;
 
-// AwsCostAnomalyMonitorStackOutputs captures the observable state of
+// AwsCostAnomalyMonitorOutputs captures the observable state of
 // the anomaly monitor after apply.
-message AwsCostAnomalyMonitorStackOutputs {
+message AwsCostAnomalyMonitorOutputs {
   // The monitor's ARN (also the provider's import ID).
   string monitor_arn = 1;
 

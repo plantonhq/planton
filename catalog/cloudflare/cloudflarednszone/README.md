@@ -171,7 +171,7 @@ is active and the DS records are accepted by the registrar.
 
 ## Terraform and Pulumi
 
-This component supports both Pulumi (default) and Terraform, producing identical infrastructure:
+This kind supports both Pulumi (default) and Terraform, producing identical infrastructure:
 
 - **Pulumi**: `iac/pulumi/` — Go-based implementation
 - **Terraform**: `iac/tf/` — HCL-based implementation
@@ -183,7 +183,7 @@ This component supports both Pulumi (default) and Terraform, producing identical
 
 ## License
 
-This component is part of Planton and follows the same license.
+This kind is part of Planton and follows the same license.
 
 ---
 

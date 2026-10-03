@@ -1,4 +1,4 @@
-# Stack outputs — must flatten onto KubernetesDeploymentStackOutputs
+# Outputs — must flatten onto KubernetesDeploymentOutputs
 # (outputs.proto) identically to the Pulumi module's exports.
 
 output "namespace" {

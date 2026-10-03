@@ -9,9 +9,9 @@
 # are the multipliers and mode switches (regions, multi-region writes,
 # serverless, free tier) that reshape the children's bill -- a dollar figure
 # here would be a guess wearing a dollar sign.
-# Schema: finops/componentcostprofile/v1.
+# Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: azurecosmosdbaccount
 spec:

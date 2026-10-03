@@ -1,12 +1,12 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awscloudtraileventdatastore
 spec:
   values:
     - name: event_data_store_arn
       derivations:
-        - from_stack_output: event_data_store_arn
+        - from_output: event_data_store_arn
       where_to_find: >-
         CloudTrail console -> Lake -> Event data stores (the store's
         ARN), or `aws cloudtrail list-event-data-stores`

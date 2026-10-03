@@ -5,9 +5,9 @@ package dev.planton.aws.awsroute53zone.v1alpha1;
 import "catalog/aws/awsroute53zone/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-route53-zone stack-input
-message AwsRoute53ZoneStackInput {
-  //target cloud-resource
+//aws-route53-zone iac-input
+message AwsRoute53ZoneIacInput {
+  //target infra-component
   AwsRoute53Zone target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

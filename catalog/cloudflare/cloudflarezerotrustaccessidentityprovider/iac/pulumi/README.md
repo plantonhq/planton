@@ -5,11 +5,11 @@ Pulumi (Go) IaC module for connecting Cloudflare Access to an identity source (G
 ## Architecture
 
 ```
-main.go                      — Entrypoint loading the stack input
+main.go                      — Entrypoint loading the IaC input
 module/main.go               — Resources(): provider setup, resource, outputs
 module/locals.go             — Locals initialization
 module/identity_provider.go  — cloudflare.ZeroTrustAccessIdentityProvider
-module/outputs.go            — Stack output keys
+module/outputs.go            — output keys
 ```
 
 ## Behavior

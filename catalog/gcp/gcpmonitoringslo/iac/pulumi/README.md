@@ -26,7 +26,7 @@ iac/pulumi/
     ├── main.go                # Module coordinator
     ├── slo.go                 # SLO + count-gated service creation, SLI expansion
     ├── locals.go              # Resolved resource + derived values
-    └── outputs.go             # Stack output constants
+    └── outputs.go             # Output constants
 ```
 
 ## How the module maps the spec
@@ -43,11 +43,11 @@ iac/pulumi/
 | `project_id` | `project` | Omitted when empty — the provider's default project applies |
 | `deletion_policy` | `deletion_policy` | Applied to the SLO AND any service the module created |
 
-Both stack outputs derive from the SLO's server-assigned resource name, so
+Both outputs derive from the SLO's server-assigned resource name, so
 they are correct on every service arm — including an existing service in
 the provider's ambient project.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |---|---|
@@ -56,7 +56,7 @@ the provider's ambient project.
 
 ## Local development
 
-`stack-input.yaml` carries a ready smoke manifest. Run the module directly:
+`iac-input.yaml` carries a ready smoke manifest. Run the module directly:
 
 ```bash
 planton apply --manifest ../../e2e/manifest.yaml --module-dir .

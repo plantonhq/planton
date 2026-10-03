@@ -2,12 +2,12 @@ syntax = "proto3";
 
 package dev.planton.auth0.auth0customdomain.v1alpha1;
 
-// Auth0CustomDomainStackOutputs contains the custom domain as Auth0 created it:
+// Auth0CustomDomainOutputs contains the custom domain as Auth0 created it:
 // its identity, its state, and the DNS record that proves control of the name.
 //
 // https://registry.terraform.io/providers/auth0/auth0/latest/docs/resources/custom_domain#read-only
 // https://www.pulumi.com/registry/packages/auth0/api-docs/customdomain/#outputs
-message Auth0CustomDomainStackOutputs {
+message Auth0CustomDomainOutputs {
   // id is the custom domain's identifier in Auth0 (cd_...). An
   // Auth0CustomDomainVerification's custom_domain_id reads it.
   string id = 1;

@@ -42,7 +42,7 @@ Only `mode` and `notes` can change in place. Cloudflare's API does not honor edi
 |-------|------|-------------|
 | `notes` | string | Why the rule exists (shown in the dashboard). Updates in place. |
 
-### Stack Outputs
+### Outputs
 
 | Field | Description |
 |-------|-------------|

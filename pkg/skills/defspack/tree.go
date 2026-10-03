@@ -49,7 +49,7 @@ type Skill struct {
 	CitedReferences []string
 	// PackFiles carries content assembled from OUTSIDE the skill directory
 	// at package time, keyed by archive path. Today only the catalog skill
-	// uses it (the component reference pack under components/ -- see
+	// uses it (the kind reference pack under kinds/ -- see
 	// catalogpack.go); the git tree never duplicates these files.
 	PackFiles map[string][]byte
 }
@@ -253,7 +253,7 @@ func loadSkill(dir, slug string) (*Skill, error) {
 
 // validatePack holds the catalog skill's assembled pack to its contract:
 // present and recognizably a pack (the commons root marker plus at least
-// one component reference page -- an empty or misrooted assembly would
+// one kind reference page -- an empty or misrooted assembly would
 // ship a research skill with nothing to research), every file non-empty,
 // and the whole archive comfortably inside the serving engine's push
 // ceilings so catalog growth fails HERE with a clear message instead of
@@ -284,7 +284,7 @@ func validatePack(skill Skill, report func(format string, args ...any)) {
 		totalBytes += len(content)
 	}
 	if referencePages == 0 {
-		report("skills/%s: assembled pack carries no component reference pages", skill.Slug)
+		report("skills/%s: assembled pack carries no kind reference pages", skill.Slug)
 	}
 	totalFiles := 1 + len(skill.ReferenceFiles) + len(skill.PackFiles)
 	if totalFiles > maxSkillArchiveFiles {

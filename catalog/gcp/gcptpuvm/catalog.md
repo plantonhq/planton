@@ -4,7 +4,7 @@ Gives your team Google's AI chips. A Cloud TPU VM is a slice of Tensor Processin
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `tpu.googleapis.com` on the project
 - **TPU VM** -- a `tpu.V2Vm` (Google's beta-only TPU resource, used under the catalog's recorded admission)
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with Cloud TPU admin permissions on the project, and TPU quota for the generation in the zone. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with Cloud TPU admin permissions on the project, and TPU quota for the generation in the zone. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ## Deploy
@@ -45,7 +45,7 @@ spec:
 planton apply -f tpu-vm.yaml
 ```
 
-This brings up an 8-chip TPU v5e slice on spot capacity. A Stack Job tracks the provisioning in real time.
+This brings up an 8-chip TPU v5e slice on spot capacity. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -65,7 +65,7 @@ These are the most important decisions when configuring a TPU. Explore the full 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -75,9 +75,9 @@ These are the most important decisions when configuring a TPU. Explore the full 
 | **GcpServiceAccount** | `serviceAccount.email` | `status.outputs.email` |
 | **GcpComputeDisk** | `dataDisks[].sourceDisk` | `status.outputs.self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -95,7 +95,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP TPU Queued Resource**](/cloud-catalog/gcp-tpu-queued-resource) -- wait for scarce capacity
-- [**GCP Subnetwork**](/cloud-catalog/gcp-subnetwork) -- private networking
-- [**GCP Compute Disk**](/cloud-catalog/gcp-compute-disk) -- shared data and checkpoints
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- the TPU's identity
+- [**GCP TPU Queued Resource**](/infra-catalog/gcp-tpu-queued-resource) -- wait for scarce capacity
+- [**GCP Subnetwork**](/infra-catalog/gcp-subnetwork) -- private networking
+- [**GCP Compute Disk**](/infra-catalog/gcp-compute-disk) -- shared data and checkpoints
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- the TPU's identity

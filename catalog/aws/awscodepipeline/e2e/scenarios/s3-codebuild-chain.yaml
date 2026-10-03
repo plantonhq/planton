@@ -32,7 +32,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awscodepipeline
+    e2e-catalog-kind: awscodepipeline
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AwsCodeBuildProject"

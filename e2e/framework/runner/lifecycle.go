@@ -1,5 +1,5 @@
 // Lifecycle lanes: scenarios whose PROOF is what happens to a deployed
-// component AFTER its first install. The standard lifecycle deploys once,
+// kind AFTER its first install. The standard lifecycle deploys once,
 // verifies, destroys, and verifies absence; three annotations extend it so a
 // scenario can prove the promises a module makes about its second act:
 //
@@ -96,23 +96,23 @@ func readLifecycleAnnotations(manifestPath string) (lifecycleAnnotations, error)
 }
 
 // bindManifest points the engine at a manifest: the Pulumi lane gets a fresh
-// stack-input file, the Terraform lane a regenerated terraform.tfvars (and
+// iac-input file, the Terraform lane a regenerated terraform.tfvars (and
 // provider override) in its existing working directory. runValidate binds the
 // first manifest this way; the lifecycle lanes rebind for the second and
 // restore the first afterwards, so destroy always runs against the inputs
 // that built what it destroys.
-func bindManifest(tc *provider.ComponentTestContext, manifestPath string) error {
+func bindManifest(tc *provider.KindTestContext, manifestPath string) error {
 	providerConfig, err := laneProviderConfig(tc, manifestPath)
 	if err != nil {
 		return errors.Wrap(err, "provider configuration for the lane")
 	}
 	switch tc.Engine {
 	case "pulumi":
-		stackInputPath, err := BuildStackInput(manifestPath, providerConfig)
+		iacInputPath, err := BuildIacInput(manifestPath, providerConfig)
 		if err != nil {
-			return errors.Wrap(err, "cannot build stack input from manifest")
+			return errors.Wrap(err, "cannot build IaC input from manifest")
 		}
-		tc.StackInputFilePath = stackInputPath
+		tc.IacInputFilePath = iacInputPath
 	case "terraform":
 		if tc.TerraformWorkDir == "" {
 			return errors.New("terraform working directory not prepared (runValidate must run first)")
@@ -145,7 +145,7 @@ func prepareSecondAct(path, runID, firstActScenario string, clock time.Time, dep
 }
 
 // runUpgrade deploys the second manifest against the same stack.
-func runUpgrade(tc *provider.ComponentTestContext, upgradeManifest string) error {
+func runUpgrade(tc *provider.KindTestContext, upgradeManifest string) error {
 	if err := bindManifest(tc, upgradeManifest); err != nil {
 		return errors.Wrap(err, "binding the upgrade manifest")
 	}
@@ -156,7 +156,7 @@ func runUpgrade(tc *provider.ComponentTestContext, upgradeManifest string) error
 // refuse it, hands the error to the harness for cause pinning, and restores
 // the first manifest's inputs whatever happens, so the destroy that follows
 // tears down what the first deploy built.
-func runUpgradeExpectFailure(ctx context.Context, tc *provider.ComponentTestContext, harness provider.Harness,
+func runUpgradeExpectFailure(ctx context.Context, tc *provider.KindTestContext, harness provider.Harness,
 	upgradeManifest, expectation, originalManifest string) (err error) {
 	defer func() {
 		if restoreErr := bindManifest(tc, originalManifest); restoreErr != nil && err == nil {
@@ -185,7 +185,7 @@ func runUpgradeExpectFailure(ctx context.Context, tc *provider.ComponentTestCont
 // The Terraform state is empty and the Pulumi stack exists with no
 // resources, so this is a plain deploy from the engine's point of view; what
 // it proves is on the cluster (kept resources adopted, nothing conflicting).
-func runReinstall(tc *provider.ComponentTestContext) error {
+func runReinstall(tc *provider.KindTestContext) error {
 	if tc.Engine == "terraform" {
 		if _, ok := tc.TerraformOpts.(*tt.Options); !ok {
 			return errors.New("terraform options not initialized (runValidate must run first)")

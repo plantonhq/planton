@@ -27,7 +27,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: digitaloceanvpc
+    e2e-catalog-kind: digitaloceanvpc
   annotations:
     planton.dev/e2e: "true"
   tags:

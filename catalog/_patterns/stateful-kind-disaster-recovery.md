@@ -29,7 +29,7 @@ kind's alone.
 ## The problem
 
 "Can I get it back?" is the first question a team asks of any stateful
-component, and the answer is a composition, never one manifest: the store,
+kind, and the answer is a composition, never one manifest: the store,
 the credential the instance presents to it, the instance's backup
 declaration, and — on the bad day — a second instance declared to restore
 from the first one's store. Each hop is a catalog kind wired by reference,

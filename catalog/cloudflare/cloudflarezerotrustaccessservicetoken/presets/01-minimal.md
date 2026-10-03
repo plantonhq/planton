@@ -1,6 +1,6 @@
 # Minimal
 
-A named service token with Cloudflare's one-year default duration. Capture `client_id` and `client_secret` from the stack outputs in the same change -- the secret is never readable again except on rotation.
+A named service token with Cloudflare's one-year default duration. Capture `client_id` and `client_secret` from the outputs in the same change -- the secret is never readable again except on rotation.
 
 ## When to Use
 

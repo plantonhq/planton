@@ -5,9 +5,9 @@ package dev.planton.aws.awslambdalayer.v1alpha1;
 import "catalog/aws/awslambdalayer/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsLambdaLayerStackInput is the input for the IaC modules that
+// AwsLambdaLayerIacInput is the input for the IaC modules that
 // publish a Lambda layer version with its share grants.
-message AwsLambdaLayerStackInput {
+message AwsLambdaLayerIacInput {
   // target is the AwsLambdaLayer resource to deploy.
   AwsLambdaLayer target = 1;
   // provider_config contains the AWS provider credentials and configuration.

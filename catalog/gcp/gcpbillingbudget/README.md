@@ -4,7 +4,7 @@ Sets a spending guardrail on a Cloud Billing account: a budgeted amount for a pe
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Billing budget** -- the `billing_budget` on the billing account with its amount, filter, threshold rules, and notification rule
 
@@ -77,7 +77,7 @@ planton apply -f billing-budget.yaml
 - **`calendarPeriod`** and **`customPeriod`** are alternatives; **`creditTypes`** needs `INCLUDE_SPECIFIED_CREDITS`.
 - **`notifications`** must name a topic, a channel, or both.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -106,7 +106,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpProject](/docs/catalog/gcp/gcpproject) — the projects a budget filters on
 - [GcpFolder](/docs/catalog/gcp/gcpfolder) — the folders a budget filters on

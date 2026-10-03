@@ -111,7 +111,7 @@ Extract meaningful keywords from the user's query related to Planton:
 
 **CLI & Commands**:
 - CLI, command, flags, subcommand, handler
-- `pulumi`, `preview`, `up`, `destroy`, `stack-outputs`
+- `pulumi`, `preview`, `up`, `destroy`, `outputs`
 - `kubectl`, `apply`, `delete`
 
 **IAC & Execution**:
@@ -250,7 +250,7 @@ Here are the changelogs matching your search criteria:
    - Single bulk copy code block with all filenames
 2. **Details Section**: Numbered entries with:
    - Changelog title
-   - Date, type, and components
+   - Date, type, and kinds
    - Full path (for clarity)
    - Brief summary
    - Copyable code block with full path
@@ -262,7 +262,7 @@ Here are the changelogs matching your search criteria:
 - ✅ **Always get current date first** using `date` command
 - ✅ **Search broadly** if user query is vague
 - ✅ **Present most relevant first** (recent + keyword matches)
-- ✅ **Read changelog metadata** (Date, Type, Components) to provide accurate descriptions
+- ✅ **Read changelog metadata** (Date, Type, Kinds) to provide accurate descriptions
 - ✅ **Include clickable links, individual copyable, and bulk copy** formats
 - ✅ **Show 3-7 results** (not too few, not overwhelming)
 - ✅ **Group by relevance** or chronology
@@ -313,9 +313,9 @@ When searching, understand these common Planton change types:
 
 ### Component Mapping
 
-Map user keywords to component categories:
+Map user keywords to kind categories:
 
-| User mentions... | Component category |
+| User mentions... | Kind category |
 |------------------|-------------------|
 | "pulumi", "stack", "preview", "up" | Pulumi CLI Integration |
 | "flag", "command", "CLI" | CLI Flags, Command Handlers |
@@ -396,7 +396,7 @@ Planton changelog filenames are descriptive slugs, so searching filenames first 
 
 ### Metadata Search for Refinement
 
-If you need to filter by component or type, read the metadata:
+If you need to filter by kind or type, read the metadata:
 ```markdown
 **Type**: Enhancement
 **Components**: Pulumi CLI Integration, CLI Flags
@@ -430,12 +430,12 @@ Before finalizing response:
 - [ ] Top section has bulleted list with clickable links
 - [ ] Top section has individual copyable code blocks
 - [ ] Top section has bulk copy code block with all filenames
-- [ ] Each changelog has title, date, type, components, path, summary
+- [ ] Each changelog has title, date, type, kinds, path, summary
 - [ ] Each changelog has copyable code block with full path
 - [ ] Results ordered by relevance or chronology
 - [ ] Summaries extracted from actual changelog content
 - [ ] Provided clear instructions on using links vs paths
-- [ ] Metadata (Type, Components) included in details
+- [ ] Metadata (Type, Kinds) included in details
 
 ## Edge Cases
 
@@ -496,7 +496,7 @@ Found 18 changelogs matching your criteria. Showing the 7 most relevant:
 **Note**: Found 11 additional changelogs. To narrow results:
 1. Add more specific keywords (e.g., "pulumi preview" instead of just "pulumi")
 2. Narrow the time range
-3. Specify a component (e.g., "CLI", "provider", "kubernetes")
+3. Specify a kind (e.g., "CLI", "provider", "kubernetes")
 4. Specify a type (e.g., "bug fix", "enhancement")
 ```
 
@@ -526,7 +526,7 @@ Include this in the detailed response for better context.
 - "refactor", "migrate" → Type: Refactoring
 - "breaking" → Type: Breaking Change
 
-### By Component
+### By Kind
 - "manifest" → Manifest Processing
 - "command" → Command Handlers
 - "build" → Build System

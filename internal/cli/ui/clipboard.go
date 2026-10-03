@@ -19,7 +19,7 @@ func ClipboardEmpty() {
 	fmt.Printf("%s  %s\n", infoIcon.Render("ℹ️"), infoTitle.Render("Clipboard is Empty"))
 	fmt.Println(sep)
 
-	fmt.Println(infoMessage.Render("Copy a manifest or stack input YAML to your clipboard, then run the command again."))
+	fmt.Println(infoMessage.Render("Copy a manifest or IaC input YAML to your clipboard, then run the command again."))
 	fmt.Println()
 
 	fmt.Println(infoMessage.Render("Examples:"))
@@ -104,18 +104,18 @@ func ClipboardFileNotFound(filePath string) {
 	fmt.Println(sep)
 }
 
-// ClipboardNotStackInput displays a formatted error when clipboard content
-// is valid YAML but not a stack input (missing "target" field).
-func ClipboardNotStackInput(content []byte) {
+// ClipboardNotIacInput displays a formatted error when clipboard content
+// is valid YAML but not an IaC input (missing "target" field).
+func ClipboardNotIacInput(content []byte) {
 	sep := separator(infoIcon)
 
 	fmt.Println()
 	fmt.Println(sep)
-	fmt.Printf("%s  %s\n", infoIcon.Render("ℹ️"), infoTitle.Render("Not a Stack Input"))
+	fmt.Printf("%s  %s\n", infoIcon.Render("ℹ️"), infoTitle.Render("Not an IaC Input"))
 	fmt.Println(sep)
 
-	fmt.Println(infoMessage.Render("The clipboard content is valid YAML but not a stack input."))
-	fmt.Println(infoMessage.Render("Stack input files must have a \"target\" field at the root level."))
+	fmt.Println(infoMessage.Render("The clipboard content is valid YAML but not an IaC input."))
+	fmt.Println(infoMessage.Render("IaC input files must have a \"target\" field at the root level."))
 	fmt.Println()
 
 	// Show content preview
@@ -124,8 +124,8 @@ func ClipboardNotStackInput(content []byte) {
 	fmt.Println(preview)
 	fmt.Println()
 
-	// Show expected stack input format
-	fmt.Println(infoTitle.Render("Expected stack input format:"))
+	// Show expected IaC input format
+	fmt.Println(infoTitle.Render("Expected IaC input format:"))
 	fmt.Println()
 	fmt.Printf("    %s\n", Cmd("target:"))
 	fmt.Printf("    %s\n", Cmd("  apiVersion: kubernetes.planton.dev/v1alpha1"))
@@ -139,7 +139,7 @@ func ClipboardNotStackInput(content []byte) {
 	fmt.Println()
 
 	fmt.Printf("%s %s\n", infoIcon.Render(iconTip),
-		infoMessage.Render("Tip: If your clipboard contains a raw manifest (not stack input),"))
+		infoMessage.Render("Tip: If your clipboard contains a raw manifest (not IaC input),"))
 	fmt.Println(infoMessage.Render("     use '--clip' without '-i' and it will be detected automatically."))
 
 	fmt.Println(sep)

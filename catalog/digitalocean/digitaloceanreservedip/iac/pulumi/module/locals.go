@@ -21,15 +21,15 @@ type Locals struct {
 	DropletId *int
 }
 
-// initializeLocals copies stack-input fields into the Locals struct and
+// initializeLocals copies iac-input fields into the Locals struct and
 // parses the optional droplet assignment.
-func initializeLocals(_ *pulumi.Context, stackInput *digitaloceanreservedipv1alpha1.DigitalOceanReservedIpStackInput) (*Locals, error) {
+func initializeLocals(_ *pulumi.Context, iacInput *digitaloceanreservedipv1alpha1.DigitalOceanReservedIpIacInput) (*Locals, error) {
 	locals := &Locals{
-		DigitalOceanReservedIp: stackInput.Target,
-		IsIpv6:                 stackInput.Target.Spec.IpVersion == "ipv6",
+		DigitalOceanReservedIp: iacInput.Target,
+		IsIpv6:                 iacInput.Target.Spec.IpVersion == "ipv6",
 	}
 
-	if dropletRef := stackInput.Target.Spec.Droplet.GetValue(); dropletRef != "" {
+	if dropletRef := iacInput.Target.Spec.Droplet.GetValue(); dropletRef != "" {
 		dropletId, err := strconv.Atoi(dropletRef)
 		if err != nil {
 			return nil, errors.Wrapf(err, "droplet %q is not a numeric Droplet ID", dropletRef)

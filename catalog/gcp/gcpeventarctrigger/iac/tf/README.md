@@ -21,7 +21,7 @@ This directory contains the Terraform/OpenTofu implementation for deploying an E
 | `variables.tf` | GENERATED from the proto spec (`planton tofu generate-variables GcpEventarcTrigger`) — never hand-edited |
 | `locals.tf` | Project fallback + name derivations + count guards + label merge |
 | `main.tf` | API enablement + channel + google-channel-config + trigger |
-| `outputs.tf` | Stack outputs |
+| `outputs.tf` | Outputs |
 | `provider.tf` | google provider pin (`~> 8.3`) |
 | `backend.tf` | Local state backend (the runner injects the real backend) |
 

@@ -6,13 +6,13 @@ import (
 	"strings"
 
 	"github.com/plantonhq/planton/internal/manifest"
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/iac/provisioner"
 	pulumibackend "github.com/plantonhq/planton/pkg/iac/pulumi/backendconfig"
 	"github.com/plantonhq/planton/pkg/iac/tofu/backendconfig"
 	"github.com/plantonhq/planton/pkg/kubernetes/kubecontext"
 	"github.com/plantonhq/planton/pkg/manifestgraph"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/proto"
 )
 
@@ -162,7 +162,7 @@ func Preflight(docs []Doc, flags Flags, probes Probes) *Plan {
 		node := &set.Nodes[i]
 		np := NodePlan{Index: i, Identity: node.Identity, Source: node.Source}
 
-		kindName, err := crkreflect.ExtractKindFromProto(node.Msg)
+		kindName, err := catalogkindreflect.ExtractKindFromProto(node.Msg)
 		if err != nil {
 			engineCheck.Entries = append(engineCheck.Entries, Entry{
 				Severity: SeverityRefusal, Source: node.Source,
@@ -172,7 +172,7 @@ func Preflight(docs []Doc, flags Flags, probes Probes) *Plan {
 			continue
 		}
 		np.KindName = kindName
-		np.Provider = crkreflect.GetProvider(node.Identity.Kind)
+		np.Provider = catalogkindreflect.GetProvider(node.Identity.Kind)
 
 		// The label, else the kind's sole declared engine; a label naming an
 		// engine the kind does not run on is refused here, before anything runs.
@@ -436,7 +436,7 @@ func backendAnnotationPrefix(prov provisioner.ProvisionerType) string {
 // each distinct kube context once. Deterministic iteration keeps the report
 // stable for golden pinning.
 func runCheck8(plan *Plan, probes Probes, check *Check) {
-	providers := map[cloudresourcekind.CloudResourceProvider]bool{}
+	providers := map[catalogkind.CatalogProvider]bool{}
 	kubeContexts := map[string]bool{}
 	for i := range plan.Nodes {
 		np := &plan.Nodes[i]
@@ -452,7 +452,7 @@ func runCheck8(plan *Plan, probes Probes, check *Check) {
 	}
 
 	providerNames := make([]string, 0, len(providers))
-	providerByName := map[string]cloudresourcekind.CloudResourceProvider{}
+	providerByName := map[string]catalogkind.CatalogProvider{}
 	for p := range providers {
 		providerNames = append(providerNames, p.String())
 		providerByName[p.String()] = p
@@ -474,9 +474,9 @@ func runCheck8(plan *Plan, probes Probes, check *Check) {
 
 // requiresProviderCredentials mirrors the provider-detection rule: only the
 // unspecified and _test providers deploy without credentials.
-func requiresProviderCredentials(p cloudresourcekind.CloudResourceProvider) bool {
-	return p != cloudresourcekind.CloudResourceProvider_cloud_resource_provider_unspecified &&
-		p != cloudresourcekind.CloudResourceProvider__test
+func requiresProviderCredentials(p catalogkind.CatalogProvider) bool {
+	return p != catalogkind.CatalogProvider_catalog_provider_unspecified &&
+		p != catalogkind.CatalogProvider__test
 }
 
 // recordProbe folds a probe outcome into a check: Verified joins the pass

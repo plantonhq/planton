@@ -7,9 +7,9 @@
 # registry replicas, and the optional REST-proxy Deployment with its own
 # independent sizing. Schema storage is Kafka-native (a compacted topic
 # on the connected cluster) -- no persistent volumes are bound.
-# Schema: finops/componentcapacityderivation/v1.
+# Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCapacityDerivation
+kind: CatalogKindCapacityDerivation
 metadata:
   name: kuberneteskarapace
 spec:

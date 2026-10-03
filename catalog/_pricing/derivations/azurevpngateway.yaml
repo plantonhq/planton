@@ -2,14 +2,14 @@
 # AzureVpnGateway manifest's spec values into metered quantities and
 # price choices -- the site-to-site scale-unit meter, multiplied by the
 # manifest's scale units, every hour of the month. Branch connection
-# units deliberately ride the AzureVpnGatewayConnection component (one
+# units deliberately ride the AzureVpnGatewayConnection kind (one
 # unit per connected branch), and the hub's deployment and data
 # processing meters ride the AzureVirtualHub -- Virtual WAN's own split.
 # The estimate generator replays the catalog presets through these
 # rules; a server-side estimator evaluates the same rules against live
-# manifests. Schema: finops/componentcostderivation/v1.
+# manifests. Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: azurevpngateway
 spec:
@@ -28,8 +28,8 @@ spec:
       price_slug: vwan-vpn-s2s-scale-unit-eastus
       basis: the gateway bills its scale units (500 Mbps each across the managed active-active pair; unset applies the provider's default of 1) x 730 hours at the flat per-unit rate -- unlike Virtual WAN's ExpressRoute gateway, the S2S rate has no tier break
   exclusions:
-    - text: each connected branch bills a VPN S2S connection unit per hour on its own AzureVpnGatewayConnection component
-    - text: the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub component
+    - text: each connected branch bills a VPN S2S connection unit per hour on its own AzureVpnGatewayConnection kind
+    - text: the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub kind
     - text: data leaving Azure through the tunnels bills at standard data-transfer rates and follows traffic
   notes:
     - applies_when:

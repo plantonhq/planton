@@ -9,7 +9,7 @@ provider.tf   — Cloudflare provider configuration
 variables.tf  — Input variables mirroring CloudflareZoneSettingsSpec
 locals.tf     — The managed-settings map (unset spec fields never enter it)
 main.tf       — cloudflare_zone_setting fan-out + companion resources
-outputs.tf    — Stack outputs (zone_id)
+outputs.tf    — outputs (zone_id)
 ```
 
 ## Usage

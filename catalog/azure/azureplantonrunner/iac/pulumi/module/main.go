@@ -18,7 +18,7 @@ const (
 
 // The runner's Consumption-plan sizing defaults — the spec's documented
 // defaults, applied when the platform's defaulting middleware did not
-// materialize them into the stack input.
+// materialize them into the IaC input.
 const (
 	defaultCpu    = 0.5
 	defaultMemory = "1Gi"
@@ -36,15 +36,15 @@ const (
 // itself under RunnerName, and receives its own individually revocable
 // identity; replica replacement re-joins with the same token (its lineage
 // re-admits the runner it originally admitted).
-func Resources(ctx *pulumi.Context, stackInput *azureplantonrunnerv1alpha1.AzurePlantonRunnerStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureplantonrunnerv1alpha1.AzurePlantonRunnerIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 	spec := locals.AzurePlantonRunner.Spec
 	runnerName := locals.AzurePlantonRunner.Metadata.Name
 
-	// Build the Azure provider from the stack input via the shared
+	// Build the Azure provider from the IaC input via the shared
 	// builder, which resolves the right credential mechanism (static
 	// client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}

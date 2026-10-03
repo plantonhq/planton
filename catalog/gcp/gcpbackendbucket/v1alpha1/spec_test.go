@@ -30,7 +30,7 @@ var _ = ginkgo.Describe("GcpBackendBucketSpec", func() {
 		return &GcpBackendBucket{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpBackendBucket",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-backend-bucket",
 			},
 			Spec: &GcpBackendBucketSpec{

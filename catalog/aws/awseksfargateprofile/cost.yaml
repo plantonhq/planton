@@ -1,8 +1,8 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. Schema: finops/componentcostprofile/v1.
+# catalog-data conformance gate. Schema: finops/catalogkindcostprofile/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awseksfargateprofile
 spec:
@@ -19,5 +19,5 @@ spec:
   estimate_exclusions:
     - matched pods bill Fargate vCPU and memory rates by their own resource requests (rounded up to Fargate's size combinations) -- workload-driven and invisible in this manifest
     - the profile requires private subnets, so matched pods' internet egress rides a NAT gateway billed on its AwsNatGateway component
-    - the cluster management fee bills on the AwsEksCluster component
+    - the cluster management fee bills on the AwsEksCluster kind
   notes: "The profile itself is free -- it is a routing rule, not capacity. What it routes is the money: preset 01's bare-namespace selector is a deliberate blank cheque (everything in the namespace moves to Fargate rates), while preset 02's label selector prices only what opts in. The cost story here is scope control, and the manifest is where the scope lives."

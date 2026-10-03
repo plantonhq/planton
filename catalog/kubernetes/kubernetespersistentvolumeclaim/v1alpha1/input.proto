@@ -6,12 +6,12 @@ import "catalog/kubernetes/kubernetespersistentvolumeclaim/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
 /**
- * **KubernetesPersistentVolumeClaimStackInput** defines the input structure
+ * **KubernetesPersistentVolumeClaimIacInput** defines the input structure
  * for deploying a Kubernetes PersistentVolumeClaim. It carries the target
  * claim specification and the Kubernetes cluster configuration the IaC
  * modules (Pulumi and Terraform) need to reach the cluster.
  */
-message KubernetesPersistentVolumeClaimStackInput {
+message KubernetesPersistentVolumeClaimIacInput {
   /**
    * The target PersistentVolumeClaim resource to be created.
    * Contains the complete specification including metadata, storage request,

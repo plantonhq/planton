@@ -4,7 +4,7 @@ Deploys a reusable Cloudflare Load Balancing origin pool. A pool groups origin s
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Load Balancer Pool** -- a pool containing the declared origins (with per-origin weight, port, host-header, and enabled state), linked to a health monitor, with optional check-region restriction, load shedding, origin steering, and notification filters
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Load Balancing edit access. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Load Balancing edit access. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -62,7 +62,7 @@ spec:
 planton apply -f cloudflare-load-balancer-pool.yaml
 ```
 
-This creates a two-origin pool health-checked by a referenced monitor. A Stack Job tracks the provisioning in real time.
+This creates a two-origin pool health-checked by a referenced monitor. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -95,15 +95,15 @@ These are the most important decisions when configuring a pool. Explore the full
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **CloudflareLoadBalancerMonitor** | `monitor` | `status.outputs.monitor_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -121,5 +121,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Cloudflare Load Balancer Monitor**](/cloud-catalog/cloudflare-load-balancer-monitor) -- health-checks this pool's origins
-- [**Cloudflare Load Balancer**](/cloud-catalog/cloudflare-load-balancer) -- references this pool as a default, fallback, or geo-routed pool
+- [**Cloudflare Load Balancer Monitor**](/infra-catalog/cloudflare-load-balancer-monitor) -- health-checks this pool's origins
+- [**Cloudflare Load Balancer**](/infra-catalog/cloudflare-load-balancer) -- references this pool as a default, fallback, or geo-routed pool

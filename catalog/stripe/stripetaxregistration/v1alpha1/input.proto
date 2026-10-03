@@ -5,9 +5,9 @@ package dev.planton.stripe.stripetaxregistration.v1alpha1;
 import "catalog/stripe/provider.proto";
 import "catalog/stripe/stripetaxregistration/v1alpha1/api.proto";
 
-// StripeTaxRegistrationStackInput is the input to the StripeTaxRegistration IaC module.
+// StripeTaxRegistrationIacInput is the input to the StripeTaxRegistration IaC module.
 // It contains the target resource and the Stripe provider configuration.
-message StripeTaxRegistrationStackInput {
+message StripeTaxRegistrationIacInput {
   // target is the StripeTaxRegistration resource to be deployed.
   StripeTaxRegistration target = 1;
 

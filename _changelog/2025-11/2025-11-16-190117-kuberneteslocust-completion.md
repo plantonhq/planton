@@ -1,4 +1,4 @@
-# KubernetesLocust Component Completion
+# KubernetesLocust Kind Completion
 
 **Date**: November 16, 2025  
 **Type**: Enhancement  
@@ -6,11 +6,11 @@
 
 ## Summary
 
-Completed the KubernetesLocust component by adding missing supporting files and documentation, bringing the component from 96% to 100% completion. Added standardized manifest examples and Terraform usage documentation to match the completeness standards of other Kubernetes workload components.
+Completed the KubernetesLocust kind by adding missing supporting files and documentation, bringing the kind from 96% to 100% completion. Added standardized manifest examples and Terraform usage documentation to match the completeness standards of other Kubernetes workload kinds.
 
 ## Problem Statement / Motivation
 
-The KubernetesLocust component audit revealed two minor gaps preventing 100% completion:
+The KubernetesLocust kind audit revealed two minor gaps preventing 100% completion:
 - Missing `iac/hack/manifest.yaml` at the standardized location (existed only in `iac/tf/hack/`)
 - Missing `iac/tf/examples.md` for Terraform users (Pulumi had examples, but Terraform didn't)
 
@@ -18,7 +18,7 @@ The KubernetesLocust component audit revealed two minor gaps preventing 100% com
 
 - **Inconsistent file locations**: Test manifest was in `iac/tf/hack/` instead of the standard `iac/hack/` location
 - **Documentation parity**: Pulumi users had `examples.md`, but Terraform users lacked equivalent documentation
-- **Audit score**: Component scored 96% despite being functionally complete
+- **Audit score**: Kind scored 96% despite being functionally complete
 
 ## Solution / What's New
 
@@ -99,8 +99,8 @@ Key sections:
 
 ## Benefits
 
-1. **Complete component**: Achieved 100% audit score
-2. **Standardized structure**: Manifest file in expected location for all components
+1. **Complete kind**: Achieved 100% audit score
+2. **Standardized structure**: Manifest file in expected location for all kinds
 3. **Terraform documentation**: Feature parity with Pulumi examples
 4. **Better user experience**: Clear examples for Terraform users deploying Locust
 5. **Testing support**: Standard manifest location makes testing easier
@@ -110,7 +110,7 @@ Key sections:
 ### Users Affected
 - **Terraform users**: Now have comprehensive examples for deploying Locust
 - **Test engineers**: Standardized manifest location for validation
-- **Component auditors**: Component meets all completeness criteria
+- **Kind auditors**: Kind meets all completeness criteria
 
 ### Changes
 - Added 2 new files
@@ -125,14 +125,14 @@ Key sections:
 ## Related Work
 
 - References audit report: `2025-11-15-120109.md`
-- Follows completion standards from other Kubernetes workload components
+- Follows completion standards from other Kubernetes workload kinds
 - Aligns with Terraform documentation patterns across the codebase
 
 ## Code Metrics
 
 - **Files added**: 2
 - **Lines added**: ~270 (manifest + examples)
-- **Component completion**: 96% → 100%
+- **Kind completion**: 96% → 100%
 - **Audit gaps addressed**: 2/2 (Quick Wins)
 
 ---

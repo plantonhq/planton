@@ -94,7 +94,7 @@ to resolve to the hostname (it previously, incorrectly, echoed the LB id).
 ## Validation
 
 `make protos` (incl. the Java compile gate) green; `go build` of all three
-components and their Pulumi entrypoints (release contract); spec tests for all
+kinds and their Pulumi entrypoints (release contract); spec tests for all
 three with happy/error/boundary cases per new field, enum, and CEL rule;
 `pkg/outputs` conformance extended with the two new kinds (the tofu↔pulumi parity
 guard); `pkg/secretcoverage` green (the family has no secret-bearing fields);

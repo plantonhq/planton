@@ -105,7 +105,7 @@ Copied all cloud provider SVG logos from `openmcf/site/public/images/providers/`
 - cloudflare.svg
 - Plus additional: confluent.svg, mongodb-atlas.svg, snowflake.svg, pulumi.svg, terraform.svg, docker.svg, git.svg, github.svg, gitlab.svg
 
-**HeroSection Component Updates** (`src/components/landing-page-v2/HeroSection.tsx`):
+**HeroSection Kind Updates** (`src/components/landing-page-v2/HeroSection.tsx`):
 
 Added cloud provider logos array:
 ```tsx
@@ -143,7 +143,7 @@ Replaced text badge with logo section:
 </Box>
 ```
 
-**FinalCTA Component**:
+**FinalCTA Kind**:
 - Removed "Multi-Cloud Support (AWS • GCP • Azure)" from trust indicators
 - Keeps section cleaner since logos now shown in hero
 
@@ -200,7 +200,7 @@ Replaced text badge with logo section:
 
 ### Immediate Changes
 - ✅ Landing page draft-3 and preview-3 updated (compliance removed)
-- ✅ SecurityCompliance component streamlined
+- ✅ SecurityCompliance kind streamlined
 - ✅ Navigation reflects current product (Agent Fleet)
 - ✅ Mobile header properly formatted
 - ✅ Cloud provider logos displaying on hero section

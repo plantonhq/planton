@@ -7,7 +7,7 @@ import (
 	"fmt"
 
 	"github.com/plantonhq/planton/pkg/outputs"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
 // noOverride mirrors outputs.OverrideNone for callers deciding whether the
@@ -19,7 +19,7 @@ const noOverride = outputs.OverrideNone
 // transformation — the same machinery `planton validate-outputs` fronts.
 // Returns which override mechanism was discovered so the caller knows
 // whether by-name output matching applies.
-func checkOutputsOverride(kind cloudresourcekind.CloudResourceKind, moduleDir string, sampleOutputs map[string]interface{}, result *Result) outputs.OverrideKind {
+func checkOutputsOverride(kind catalogkind.CatalogKind, moduleDir string, sampleOutputs map[string]interface{}, result *Result) outputs.OverrideKind {
 	validation, err := outputs.ValidateOverride(kind, moduleDir, sampleOutputs)
 	if err != nil {
 		result.addError("", fmt.Sprintf("the outputs transformation could not be validated: %v", err))
@@ -44,7 +44,7 @@ func checkOutputsOverride(kind cloudresourcekind.CloudResourceKind, moduleDir st
 		}
 		for _, unmatched := range validation.DryRun.UnmappedOutputs {
 			result.addWarning("", fmt.Sprintf(
-				"outputs dry-run: the sample output %q matched no stack-outputs field and would be dropped", unmatched))
+				"outputs dry-run: the sample output %q matched no outputs field and would be dropped", unmatched))
 		}
 	}
 

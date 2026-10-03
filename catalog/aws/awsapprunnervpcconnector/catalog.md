@@ -1,10 +1,10 @@
 # AWS App Runner VPC Connector
 
-Deploys an App Runner VPC connector — the managed network attachment that lets [App Runner services](/cloud-catalog/aws-app-runner-service) reach private resources inside a VPC (databases, caches, internal APIs) for their OUTBOUND traffic. It is deliberately its own resource: one connector is shared by any number of services, each referencing it by ARN in its egress configuration, and the connector owns the network-attachment lifecycle — AWS provisions managed ENIs into the chosen subnets that persist across service create/destroy cycles. Its subnets and security groups accept ValueFromRef wiring to AwsSubnet and AwsSecurityGroup resources, and every attribute is immutable after creation — a change replaces the connector as a new revision under the same name.
+Deploys an App Runner VPC connector — the managed network attachment that lets [App Runner services](/infra-catalog/aws-app-runner-service) reach private resources inside a VPC (databases, caches, internal APIs) for their OUTBOUND traffic. It is deliberately its own resource: one connector is shared by any number of services, each referencing it by ARN in its egress configuration, and the connector owns the network-attachment lifecycle — AWS provisions managed ENIs into the chosen subnets that persist across service create/destroy cycles. Its subnets and security groups accept ValueFromRef wiring to AwsSubnet and AwsSecurityGroup resources, and every attribute is immutable after creation — a change replaces the connector as a new revision under the same name.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **App Runner VPC Connector** -- a named, versioned network attachment; every attribute is fixed at creation (AWS has no update API), and a change registers a new connector revision under the same name
 - **Managed ENIs** -- one network interface per attached subnet, provisioned and owned by AWS; egress routes only through Availability Zones the connector has an ENI in
@@ -14,8 +14,8 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
-- **Subnets and security groups** -- create the [AwsSubnet](/cloud-catalog/aws-subnet) and [AwsSecurityGroup](/cloud-catalog/aws-security-group) resources first (declaration before reference), or have existing ids ready as literals.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **Subnets and security groups** -- create the [AwsSubnet](/infra-catalog/aws-subnet) and [AwsSecurityGroup](/infra-catalog/aws-security-group) resources first (declaration before reference), or have existing ids ready as literals.
 
 ### AWS Account
 
@@ -62,7 +62,7 @@ spec:
 planton apply -f app-runner-vpc-connector.yaml
 ```
 
-This creates a two-AZ connector wearing a dedicated egress group. A Stack Job tracks the provisioning in real time.
+This creates a two-AZ connector wearing a dedicated egress group. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -102,16 +102,16 @@ These are the most important decisions when configuring a VPC connector. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsSubnet** | `subnetIds[]` | `status.outputs.subnet_id` |
 | **AwsSecurityGroup** | `securityGroupIds[]` | `status.outputs.security_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -131,6 +131,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS App Runner Service**](/cloud-catalog/aws-app-runner-service) -- routes outbound traffic through this connector via `vpcConnectorArn` (consumes `vpc_connector_arn`)
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- hosts the connector's managed ENIs (provides `subnet_id`)
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- governs what the ENIs may reach (provides `security_group_id`)
+- [**AWS App Runner Service**](/infra-catalog/aws-app-runner-service) -- routes outbound traffic through this connector via `vpcConnectorArn` (consumes `vpc_connector_arn`)
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- hosts the connector's managed ENIs (provides `subnet_id`)
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- governs what the ENIs may reach (provides `security_group_id`)

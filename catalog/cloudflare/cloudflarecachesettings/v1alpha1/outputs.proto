@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarecachesettings.v1alpha1;
 
-// CloudflareCacheSettingsStackOutputs captures the observable outputs after applying
+// CloudflareCacheSettingsOutputs captures the observable outputs after applying
 // a zone's cache settings. Cache settings are a zone-scoped singleton with no
 // resource id of their own -- the zone is the identity.
-message CloudflareCacheSettingsStackOutputs {
+message CloudflareCacheSettingsOutputs {
   // The zone ID the cache settings belong to (the singleton's identity, and the
   // pass-through for downstream resource references).
   string zone_id = 1;

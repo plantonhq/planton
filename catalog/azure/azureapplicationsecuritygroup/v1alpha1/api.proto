@@ -21,17 +21,17 @@ message AzureApplicationSecurityGroup {
   string kind = 2 [(buf.validate.field).string.const = 'AzureApplicationSecurityGroup'];
 
   // Standard Planton metadata (name, org, env, labels, tags).
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   // Application security group specification.
   AzureApplicationSecurityGroupSpec spec = 4 [(buf.validate.field).required = true];
 
-  // Deployment status containing stack outputs. Populated after deployment.
+  // Deployment status containing outputs. Populated after deployment.
   AzureApplicationSecurityGroupStatus status = 5;
 }
 
 // AzureApplicationSecurityGroupStatus holds the deployment outputs.
 message AzureApplicationSecurityGroupStatus {
-  // Stack outputs from the IaC deployment.
-  AzureApplicationSecurityGroupStackOutputs outputs = 1;
+  // Outputs from the IaC deployment.
+  AzureApplicationSecurityGroupOutputs outputs = 1;
 }

@@ -4,7 +4,7 @@ Deploys an AlloyDB cluster with a bundled primary instance, private networking (
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **AlloyDB API enablement** (`alloydb.googleapis.com`) on the target project (never disabled on destroy)
 - **AlloyDB Cluster** -- a managed cluster in the specified GCP project and region with private networking, optional display name, annotations, and a subscription tier (STANDARD or TRIAL)
@@ -19,13 +19,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the AlloyDB cluster will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
-- **A VPC network** with Private Service Access configured (compose GcpGlobalAddress with VPC_PEERING purpose + GcpServiceNetworkingConnection). Provide the network as the relative resource path `projects/{project}/global/networks/{network}` -- the AlloyDB API rejects full https:// self-link URLs -- or reference a GcpVpcNetwork Cloud Resource via ValueFromRef (resolves to exactly that path). Not needed when using Private Service Connect instead.
+- **A GCP project** where the AlloyDB cluster will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
+- **A VPC network** with Private Service Access configured (compose GcpGlobalAddress with VPC_PEERING purpose + GcpServiceNetworkingConnection). Provide the network as the relative resource path `projects/{project}/global/networks/{network}` -- the AlloyDB API rejects full https:// self-link URLs -- or reference a GcpVpcNetwork Infra Component via ValueFromRef (resolves to exactly that path). Not needed when using Private Service Connect instead.
 - **Cloud KMS keys** (if using CMEK) -- each key must be in the same region as the cluster. The AlloyDB service account must have `roles/cloudkms.cryptoKeyEncrypterDecrypter` on each key.
 
 ## Deploy
@@ -62,7 +62,7 @@ spec:
 planton apply -f alloydb-cluster.yaml
 ```
 
-This creates a regional AlloyDB cluster with a 4-CPU primary instance, private networking via the specified VPC, and GCP default backup policies. No initial user is created. The cluster ships destroy-guarded: `deletionProtection` defaults to TRUE, so a destroy fails until the spec flips it false and that change is applied first. A Stack Job tracks the provisioning in real time.
+This creates a regional AlloyDB cluster with a 4-CPU primary instance, private networking via the specified VPC, and GCP default backup policies. No initial user is created. The cluster ships destroy-guarded: `deletionProtection` defaults to TRUE, so a destroy fails until the spec flips it false and that change is applied first. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -109,7 +109,7 @@ These are the most important decisions when configuring an AlloyDB cluster. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -120,9 +120,9 @@ These are the most important decisions when configuring an AlloyDB cluster. Expl
 | **GcpKmsKey** (optional) | `continuousBackupConfig.encryptionKmsKeyName` | `status.outputs.key_id` |
 | **GcpAlloydbCluster** (PITR restore) | `restoreContinuousBackupSource.cluster` | `status.outputs.cluster_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -145,10 +145,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the AlloyDB cluster is created
-- [**GCP VPC Network**](/cloud-catalog/gcp-vpc-network) -- provides the VPC network for private connectivity via Private Service Access
-- [**GCP Global Address**](/cloud-catalog/gcp-global-address) -- reserves the VPC_PEERING range Private Service Access carves the cluster's IPs from
-- [**GCP Service Networking Connection**](/cloud-catalog/gcp-service-networking-connection) -- establishes the Private Service Access peering the cluster's network requires
-- [**GCP AlloyDB Instance**](/cloud-catalog/gcp-alloydb-instance) -- adds read pool instances that reference this cluster's `cluster_id`
-- [**GCP AlloyDB User**](/cloud-catalog/gcp-alloydb-user) -- manages per-application database users on this cluster
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- provides Cloud KMS keys for cluster, backup, and continuous backup CMEK encryption
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the AlloyDB cluster is created
+- [**GCP VPC Network**](/infra-catalog/gcp-vpc-network) -- provides the VPC network for private connectivity via Private Service Access
+- [**GCP Global Address**](/infra-catalog/gcp-global-address) -- reserves the VPC_PEERING range Private Service Access carves the cluster's IPs from
+- [**GCP Service Networking Connection**](/infra-catalog/gcp-service-networking-connection) -- establishes the Private Service Access peering the cluster's network requires
+- [**GCP AlloyDB Instance**](/infra-catalog/gcp-alloydb-instance) -- adds read pool instances that reference this cluster's `cluster_id`
+- [**GCP AlloyDB User**](/infra-catalog/gcp-alloydb-user) -- manages per-application database users on this cluster
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- provides Cloud KMS keys for cluster, backup, and continuous backup CMEK encryption

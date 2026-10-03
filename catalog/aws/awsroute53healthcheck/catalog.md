@@ -4,7 +4,7 @@ Deploys a Route 53 health check — the availability signal DNS records referenc
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Route 53 Health Check** -- the monitoring model chosen by `checkType` (create-time immutable), with its per-model surface: probe target, child set, mirrored alarm, or routing control
 - **Probe Configuration** -- interval (10s/30s, create-time immutable; AWS defaults to 30), failure threshold (AWS defaults to 3), optional latency graphing (create-time immutable), SNI, and an optional checker-region subset (min 3). Probe tuning applies to ENDPOINT checks only -- the aggregation, alarm, and recovery models take none of it, enforced at authoring time
@@ -15,8 +15,8 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
-- **Model prerequisites** -- CALCULATED checks reference other [AWS Route 53 Health Check](/cloud-catalog/aws-route53-health-check) resources (deploy the children first); CLOUDWATCH_METRIC checks name an [AWS CloudWatch Alarm](/cloud-catalog/aws-cloudwatch-alarm) (or composite) by its `alarm_name` output.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
+- **Model prerequisites** -- CALCULATED checks reference other [AWS Route 53 Health Check](/infra-catalog/aws-route53-health-check) resources (deploy the children first); CLOUDWATCH_METRIC checks name an [AWS CloudWatch Alarm](/infra-catalog/aws-cloudwatch-alarm) (or composite) by its `alarm_name` output.
 
 ### AWS Account
 
@@ -53,7 +53,7 @@ spec:
 planton apply -f health-check.yaml
 ```
 
-This probes `https://api.example.com/healthz` from the global checker fleet — about 90 seconds from outage to DNS reaction at the default cadence. A Stack Job tracks the provisioning in real time.
+This probes `https://api.example.com/healthz` from the global checker fleet — about 90 seconds from outage to DNS reaction at the default cadence. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -91,17 +91,17 @@ These are the most important decisions when configuring a health check. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsRoute53HealthCheck** (children of a CALCULATED check) | `childHealthChecks` | `status.outputs.health_check_id` |
 
-A CLOUDWATCH_METRIC check names its [AwsCloudwatchAlarm](/cloud-catalog/aws-cloudwatch-alarm) (or [AwsCloudwatchCompositeAlarm](/cloud-catalog/aws-cloudwatch-composite-alarm)) by plain alarm name and region — `cloudwatchAlarmName` is a string, not a typed reference.
+A CLOUDWATCH_METRIC check names its [AwsCloudwatchAlarm](/infra-catalog/aws-cloudwatch-alarm) (or [AwsCloudwatchCompositeAlarm](/infra-catalog/aws-cloudwatch-composite-alarm)) by plain alarm name and region — `cloudwatchAlarmName` is a string, not a typed reference.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -118,7 +118,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Route 53 DNS Record**](/cloud-catalog/aws-route53-dns-record) -- the records whose failover / weighted / multivalue routing gates on this check's `health_check_id`
-- [**AWS Route 53 Zone**](/cloud-catalog/aws-route53-zone) -- the hosted zone those records live in
-- [**AWS CloudWatch Alarm**](/cloud-catalog/aws-cloudwatch-alarm) -- the alarm a CLOUDWATCH_METRIC check mirrors
-- [**AWS CloudWatch Composite Alarm**](/cloud-catalog/aws-cloudwatch-composite-alarm) -- a whole-service verdict a CLOUDWATCH_METRIC check can mirror into DNS
+- [**AWS Route 53 DNS Record**](/infra-catalog/aws-route53-dns-record) -- the records whose failover / weighted / multivalue routing gates on this check's `health_check_id`
+- [**AWS Route 53 Zone**](/infra-catalog/aws-route53-zone) -- the hosted zone those records live in
+- [**AWS CloudWatch Alarm**](/infra-catalog/aws-cloudwatch-alarm) -- the alarm a CLOUDWATCH_METRIC check mirrors
+- [**AWS CloudWatch Composite Alarm**](/infra-catalog/aws-cloudwatch-composite-alarm) -- a whole-service verdict a CLOUDWATCH_METRIC check can mirror into DNS

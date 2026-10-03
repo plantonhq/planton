@@ -1,4 +1,4 @@
-# AwsBedrockGuardrail — Component Guide
+# AwsBedrockGuardrail — Kind Guide
 
 Authored operational judgment for the Bedrock guardrail component: the
 design decisions behind the spec's shape, and what to know before running

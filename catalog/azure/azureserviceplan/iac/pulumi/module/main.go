@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureserviceplanv1alpha1.AzureServicePlanStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureserviceplanv1alpha1.AzureServicePlanIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -48,7 +48,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureserviceplanv1alpha1.AzureSe
 		servicePlanArgs.WorkerCount = pulumi.Int(int(spec.GetWorkerCount()))
 	}
 
-	// Presence-guarded proto defaults: stack inputs never materialize
+	// Presence-guarded proto defaults: IaC inputs never materialize
 	// them, so an unset field must deploy the spec's documented default,
 	// not the Go zero value.
 
@@ -88,7 +88,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureserviceplanv1alpha1.AzureSe
 		return errors.Wrapf(err, "failed to create Service Plan %s", spec.ServicePlanName)
 	}
 
-	// Export stack outputs. kind and reserved are Azure-computed
+	// Export outputs. kind and reserved are Azure-computed
 	// attributes read back after creation (the API's own classification
 	// of the plan).
 	ctx.Export(OpServicePlanId, servicePlan.ID())

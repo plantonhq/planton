@@ -31,7 +31,7 @@ var _ = ginkgo.Describe("GcpCloudTasksQueueSpec", func() {
 		return &GcpCloudTasksQueue{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpCloudTasksQueue",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-queue",
 			},
 			Spec: &GcpCloudTasksQueueSpec{

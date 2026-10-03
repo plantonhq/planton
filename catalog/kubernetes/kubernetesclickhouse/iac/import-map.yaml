@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesclickhouse
 spec:
@@ -30,7 +30,7 @@ spec:
       tofu_resource_name: clickhouse_installation
       derivations:
         - from_metadata_name: true
-        - from_stack_output: chi_name
+        - from_output: chi_name
       where_to_find: >-
         The ClickHouseInstallation's metadata.name (equals the Planton
         resource name) — `kubectl get chi -A` (NAME column).
@@ -50,7 +50,7 @@ spec:
     - name: name
       tofu_resource_name: keeper
       derivations:
-        - from_stack_output: keeper_name
+        - from_output: keeper_name
         - from_metadata_name_suffix: "-keeper"
       where_to_find: >-
         Present only when coordination resolves to a managed Keeper;
@@ -58,7 +58,7 @@ spec:
     # ── shared namespace segment for both CRs ────────────────────────────
     - name: namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         The cluster's namespace — `kubectl get chi -A` (NAMESPACE column).
@@ -66,7 +66,7 @@ spec:
     - name: secret_name
       tofu_resource_name: auth
       derivations:
-        - from_stack_output: auth_secret_name
+        - from_output: auth_secret_name
         - from_metadata_name_suffix: "-clickhouse-auth"
       where_to_find: >-
         Present only when users are declared; always
@@ -74,7 +74,7 @@ spec:
         `kubectl get secrets -n <namespace>`.
     - name: secret_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the cluster — every object the module renders is
@@ -82,7 +82,7 @@ spec:
     # ── the optional anchor namespace ────────────────────────────────────
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Only imported when create_namespace is true; the cluster's

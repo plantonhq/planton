@@ -1,17 +1,17 @@
 # Estimate model: hand-computed capacity footprints for this
-# cluster-capacity component's presets. The derivation grammar cannot
+# cluster-capacity kind's presets. The derivation grammar cannot
 # traverse this kind's shards x replicas host multiplication or the
 # managed Keeper the module auto-provisions whenever replicas > 1 or
 # shards > 1 (or coordination says managed_keeper explicitly), so each
 # preset's totals are computed by hand from its manifest and the spec
 # defaults: (shards x replicas) hosts x (resources + disk_size volume),
 # plus the Keeper ensemble's resources and volumes when the preset
-# triggers one. Cluster-capacity components carry no priced lines -- the
+# triggers one. Cluster-capacity kinds carry no priced lines -- the
 # dollar value of the reservation is the target cluster's node and
 # storage-class economics, which this catalog cannot know.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: kubernetesclickhouse
 spec:

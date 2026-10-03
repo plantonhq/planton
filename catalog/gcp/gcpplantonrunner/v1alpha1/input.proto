@@ -5,9 +5,9 @@ package dev.planton.gcp.gcpplantonrunner.v1alpha1;
 import "catalog/gcp/gcpplantonrunner/v1alpha1/api.proto";
 import "catalog/gcp/provider.proto";
 
-//gcp-planton-runner stack-input
-message GcpPlantonRunnerStackInput {
-  //target cloud-resource
+//gcp-planton-runner iac-input
+message GcpPlantonRunnerIacInput {
+  //target infra-component
   GcpPlantonRunner target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

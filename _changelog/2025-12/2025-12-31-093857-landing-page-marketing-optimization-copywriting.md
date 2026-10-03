@@ -22,7 +22,7 @@ Following the December 19 landing page redesign that established the DevOps-in-a
 ### Foundation: December 19 Landing Page Redesign
 
 The December 19 work established solid foundation:
-- 12-section landing page with new component system (`landing-page-v2/`)
+- 12-section landing page with new kind system (`landing-page-v2/`)
 - DevOps-in-a-Box positioning (pivoted from outdated Copilot messaging)
 - Design system in `shared.tsx`
 - Initial customer references (Tynybay, iorta TechNext)
@@ -233,7 +233,7 @@ The December 19 work established solid foundation:
 **Contents**:
 - **3-Step Visual Process**: 
   1. Connect Your Cloud (OAuth, assume-role, zero long-term credentials)
-  2. Choose Your Infrastructure (120+ deployment components, browse or custom charts)
+  2. Choose Your Infrastructure (120+ catalog kinds, browse or custom charts)
   3. Deploy in Minutes (real-time Terraform visualization, Tekton-backed)
 - **CTA**: [Start Your First Deployment] [Watch 5-Minute Demo]
 
@@ -251,7 +251,7 @@ The December 19 work established solid foundation:
   - Setup time (<1 hour vs 1-2 days vs 1-2 weeks)
   - Monthly cost ($450 vs $1,200+ vs $1,000+ vs $12,500)
   - Backend CI/CD (✅ Included vs ❌ Build yourself)
-  - Out-of-the-box infra (✅ 120+ components vs ⚠️ Limited vs ❌ Write all)
+  - Out-of-the-box infra (✅ 120+ catalog kinds vs ⚠️ Limited vs ❌ Write all)
   - **CLI open source** (✅ All 3 have open CLIs)
   - **Deployment modules open source** (✅ Planton only vs ❌ You write your own)
   - **Platform (SaaS) open source** (❌ None—all proprietary)
@@ -350,9 +350,9 @@ Planton = Vercel/Heroku DX + Terraform/Pulumi Infrastructure + Your Cloud
 #### 2. Infra Hub
 
 **Changes**:
-- **Updated component count**: 50+ → **120+ deployment components**
+- **Updated kind count**: 50+ → **120+ catalog kinds**
 - **Added customer proof**: Odwen quote about 47-minute GCP deployment
-- **Added GitHub link**: "Browse 120+ components on GitHub →"
+- **Added GitHub link**: "Browse 120+ catalog kinds on GitHub →"
 - **Added metric**: "450+ production deployments completed"
 
 **Impact**: Shows platform maturity, validates scale, drives GitHub traffic.
@@ -447,7 +447,7 @@ Planton = Vercel/Heroku DX + Terraform/Pulumi Infrastructure + Your Cloud
 - **Precise Clarification Added**: 3-part breakdown of what's open source vs what's not
   
   **Open Source** (100% Auditable):
-  - ✅ All 120+ Deployment Components
+  - ✅ All 120+ Catalog Kinds
   - ✅ Pulumi/Terraform modules that deploy customer infrastructure
   - ✅ openmcf CLI (independent of platform)
   
@@ -535,9 +535,9 @@ Planton = Vercel/Heroku DX + Terraform/Pulumi Infrastructure + Your Cloud
 
 ---
 
-### Out-of-the-Box: 120+ Components (Not 50+)
+### Out-of-the-Box: 120+ Catalog Kinds (Not 50+)
 
-**Correction**: Updated all references from "50+" to "120+" deployment components.
+**Correction**: Updated all references from "50+" to "120+" catalog kinds.
 
 **Why It Matters**:
 - Shows significant platform maturity (2.5x original count)
@@ -991,7 +991,7 @@ Only platform combining:
 
 **Founder Feedback**:
 - Stage area: `transcripts/swarup.feedback.md`
-- Critical clarifications on open source, AI scope, PaaS competitors, deployment components count
+- Critical clarifications on open source, AI scope, PaaS competitors, catalog kinds count
 - Testimonial permissions and refinements
 - Competitive positioning nuances
 
@@ -1022,7 +1022,7 @@ Only platform combining:
 
 **During Implementation**:
 1. Create 6 new React components
-2. Update 8 existing components
+2. Update 8 existing kinds
 3. Implement 4 interactive elements (calculator, terminal, carousel, scroll animations)
 4. Build verification (`make build`)
 5. Local testing (`yarn dev`)
@@ -1123,7 +1123,7 @@ Based on competitive analysis feedback, future work may include:
 **Solution**: Precise breakdown and respectful acknowledgment:
 - Open source: 3 rows (CLI / Modules / Platform) showing exact differences
 - AI: Acknowledge Pulumi AI exists, explain Planton's broader scope (full SDLC vs infra-only)
-- Out-of-the-box: Specify 120+ components vs limited/none (quantified difference)
+- Out-of-the-box: Specify 120+ catalog kinds vs limited/none (quantified difference)
 
 **Result**: Honest, defensible competitive positioning that highlights genuine differentiators.
 
@@ -1198,7 +1198,7 @@ Based on competitive analysis feedback, future work may include:
 
 **LLM 2: Implementation** (Separate Session - Pending):
 - Read handoff.md for strategic context
-- Analyze existing component architecture
+- Analyze existing kind architecture
 - Create 6 new React components
 - Update 8 existing React components
 - Implement 4 interactive elements
@@ -1218,10 +1218,10 @@ Based on competitive analysis feedback, future work may include:
 - Content assets needed (logos, images, icons)
 
 **NOT Included** (per user's request):
-- Detailed component code
+- Detailed kind code
 - HTML/CSS specifications
 - Step-by-step implementation instructions
-- Prescriptive "how to build each component"
+- Prescriptive "how to build each kind"
 
 **Philosophy**:
 > "Implementation LLM is far more capable at analyzing existing code, understanding React patterns, and making implementation decisions autonomously. Provide strategic context and let them figure out HOW based on existing codebase analysis."
@@ -1235,7 +1235,7 @@ Based on competitive analysis feedback, future work may include:
 ✅ Authentic testimonials with real names and permissions  
 ✅ Precise competitive positioning (IaC + PaaS comparisons)  
 ✅ Open source claims accurate and defensible  
-✅ 120+ deployment components count verified  
+✅ 120+ catalog kinds count verified  
 ✅ AI scope differentiation clear (full SDLC vs infra-only)  
 ✅ Testimonials refined for professionalism (3 iterations)  
 ✅ Strategic handoff created (context, not prescription)  
@@ -1304,7 +1304,7 @@ Based on competitive analysis feedback, future work may include:
 - **Average Deployment Time**: 52 minutes
 - **Customer Retention**: 100% since launch
 - **Paying Customers**: 5 (all IT consulting firms or their clients)
-- **Deployment Components**: 120+ available on GitHub
+- **Catalog Kinds**: 120+ available on GitHub
 
 ### Customer Metrics (Real Usage)
 - **iorta TechNext**: $144,600/year savings (96% cost reduction), 7 developers, $450/month spend
@@ -1396,7 +1396,7 @@ Based on competitive analysis feedback, future work may include:
 **Key Evolutions**:
 - Open source: Honest (CLI + Platform same as competitors, Modules are differentiator)
 - AI agents: Respectful (acknowledges Pulumi AI, explains broader scope)
-- Out-of-the-box: Quantified (120+ components vs limited/none)
+- Out-of-the-box: Quantified (120+ catalog kinds vs limited/none)
 - Intersection: Articulated (PaaS DX + IaC automation + Your Cloud)
 
 **Result**: Planton can confidently compare against any competitor with accurate, verifiable claims.

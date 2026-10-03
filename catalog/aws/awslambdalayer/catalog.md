@@ -4,7 +4,7 @@ Deploys a Lambda layer version — a shared code archive (libraries, custom runt
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Lambda layer version** — published from the S3 archive named in `code`, with its runtime and architecture compatibility metadata and license info. Lambda copies the archive at publish, so the S3 object only needs to exist during the deploy
 - **Layer version permissions** — one per `permissions` entry: a statement in the version's resource policy granting `lambda:GetLayerVersion` (the only action AWS supports on layers) to a specific account, everyone, or everyone in one AWS Organization
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with Lambda permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with Lambda permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -60,7 +60,7 @@ spec:
 planton apply -f lambda-layer.yaml
 ```
 
-This publishes version 1 of the `shared-python-utils` layer from the referenced artifact bucket, tagged compatible with both architectures so Graviton and x86 functions filter it correctly in the console. A Stack Job tracks the provisioning in real time.
+This publishes version 1 of the `shared-python-utils` layer from the referenced artifact bucket, tagged compatible with both architectures so Graviton and x86 functions filter it correctly in the console. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -98,15 +98,15 @@ These are the most important decisions when configuring a layer. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsS3Bucket** | `code.bucket` | `status.outputs.bucket_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -127,6 +127,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) — the consumer: functions attach the `layer_version_arn` output in their layers list
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) — the artifact bucket the layer content zip is published from, wired via `code.bucket`
-- [**AWS S3 Object Set**](/cloud-catalog/aws-s3-object-set) — stages the layer zip into the bucket when a build pipeline doesn't
+- [**AWS Lambda**](/infra-catalog/aws-lambda) — the consumer: functions attach the `layer_version_arn` output in their layers list
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) — the artifact bucket the layer content zip is published from, wired via `code.bucket`
+- [**AWS S3 Object Set**](/infra-catalog/aws-s3-object-set) — stages the layer zip into the bucket when a build pipeline doesn't

@@ -4,7 +4,7 @@ Creates a Cloud Logging log-based metric — the bridge from logs to monitoring:
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Log-based metric** -- a `logging.Metric` with the configured filter, descriptor, extractors, and histogram layout
 - **Logging API enablement** -- `logging.googleapis.com` enabled in the target project (never disabled on destroy)
@@ -50,7 +50,7 @@ spec:
 planton apply -f log-metric.yaml
 ```
 
-The metric then charts (and alerts) as `logging.googleapis.com/user/checkout-errors`. A Stack Job tracks the provisioning in real time.
+The metric then charts (and alerts) as `logging.googleapis.com/user/checkout-errors`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -84,16 +84,16 @@ These are the most important decisions when configuring a log-based metric. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **GcpProject** (optional) | `projectId` | `status.outputs.project_id` |
 | **GcpLogBucket** (optional) | `bucketName` | `status.outputs.bucket_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -109,8 +109,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Monitoring Alert Policy**](/cloud-catalog/gcp-monitoring-alert-policy) -- turns log patterns into pages
-- [**GCP Monitoring Dashboard**](/cloud-catalog/gcp-monitoring-dashboard) -- charts the metric
-- [**GCP Monitoring SLO**](/cloud-catalog/gcp-monitoring-slo) -- log-based counters feed good/total SLIs
-- [**GCP Log Bucket**](/cloud-catalog/gcp-log-bucket) -- scopes the metric to a specific bucket
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project whose logs feed the metric
+- [**GCP Monitoring Alert Policy**](/infra-catalog/gcp-monitoring-alert-policy) -- turns log patterns into pages
+- [**GCP Monitoring Dashboard**](/infra-catalog/gcp-monitoring-dashboard) -- charts the metric
+- [**GCP Monitoring SLO**](/infra-catalog/gcp-monitoring-slo) -- log-based counters feed good/total SLIs
+- [**GCP Log Bucket**](/infra-catalog/gcp-log-bucket) -- scopes the metric to a specific bucket
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project whose logs feed the metric

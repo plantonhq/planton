@@ -1,0 +1,171 @@
+---
+alwaysApply: false
+---
+RULE NUMBER
+015
+
+TITLE
+Forge: Generate Proto Stubs (make protos)
+
+ROLE
+You are the Planton Code Partner working inside the developer's local workspace in Cursor. This rule validates that proto files are valid and generates language stubs by running `make protos` from the project root.
+
+SCOPE
+- Run `make protos` from project root
+- Generate Go/Java/TypeScript stubs from proto files
+- Validate proto files compile correctly
+- Ensure imports and dependencies are resolved
+- Do not modify proto files
+
+PREREQUISITES
+This rule should be run after:
+- Rule 001: spec.proto (no validations)
+- Rule 002: spec.proto (add validations)
+- Rule 004: outputs.proto
+- Rule 005: api.proto
+- Rule 006: input.proto
+- Rule 014: catalog_kind.proto (if new resource added)
+
+All proto files must exist before running this rule.
+
+SEQUENTIAL STEPS
+1) Verify Prerequisites:
+   - Check that the following proto files exist for the resource (the four contract protos):
+     * `catalog/<provider>/<kindfolder>/v1alpha1/api.proto`
+     * `catalog/<provider>/<kindfolder>/v1alpha1/spec.proto`
+     * `catalog/<provider>/<kindfolder>/v1alpha1/input.proto`
+     * `catalog/<provider>/<kindfolder>/v1alpha1/outputs.proto`
+   - Confirm you are in the project root directory
+
+2) Execute Command:
+   - Run: `make protos` from project root
+   - This command generates stubs for Go, Java, and TypeScript from proto files
+   - May take 30-60 seconds to complete
+   - TRANSIENT FAILURE MODE — `Failure: deadline_exceeded: context deadline
+     exceeded` from the `buf generate` step: the stub generation uses REMOTE
+     buf.build plugins, and each plugin's generation RPC carries its own
+     ~2-minute server-side deadline that a slow network or a loaded buf.build
+     can exceed. This is NOT caused by your proto changes. Retry `buf generate`
+     (from the REPO ROOT, with the same flags the Makefile uses) until it succeeds —
+     flakes typically clear within a retry or two — then finish the remaining
+     pipeline steps the Makefile would have run (copy the generated Go stubs
+     into place, regenerate the Java stub BUILD file, build the Java stub
+     gate, run gazelle). Batch proto edits so the whole spec change set rides
+     one regeneration rather than paying this per edit.
+   - PATH-SCOPED ESCAPE — when full-repo retries KEEP exceeding the deadline
+     (the repo is large enough that the whole-catalog generation can
+     persistently outrun the remote plugins' server-side budget), scope the
+     generation to just the changed protos:
+     `buf generate --path catalog/<provider>/<kind>/v1alpha1/spec.proto`
+     (repeat `--path` per changed file, from the repo root). This completes in
+     seconds, uses the SAME pinned remote plugins (output is byte-identical
+     for those files), and you then copy only those generated stubs into
+     place (`generated/stubs/go/github.com/plantonhq/planton/<path>` →
+     `<path>`) and remove `generated/stubs/go`. Remember the copied stubs
+     bake into CLI binaries: rebuild `make build-go` before validating
+     manifests against the new fields.
+
+3) Parse Output:
+   - Check exit code (0 = success, non-zero = failure)
+   - Look for compilation errors in output
+   - Check for import resolution failures
+   - Note any warnings
+
+4) Verify Generated Files:
+   - Confirm `.pb.go` files are generated in the same directory as proto files
+   - Check that generated files have proper imports
+   - Example expected files:
+     * `api.pb.go`
+     * `spec.pb.go`
+     * `input.pb.go`
+     * `outputs.pb.go`
+
+5) Report Results:
+   - Show command exit code
+   - Display any errors or warnings
+   - List generated files if successful
+   - Suggest fixes if errors occurred
+
+SUCCESS CRITERIA
+- `make protos` exits with code 0
+- No proto compilation errors
+- All expected `.pb.go` files are generated
+- No import resolution failures
+- Generated code compiles without errors
+
+COMMON ERRORS AND FIXES
+
+1. **Missing Import:**
+   ```
+   Error: "package X" is not defined
+   ```
+   Fix: Add missing import to proto file
+
+2. **Invalid Syntax:**
+   ```
+   Error: unexpected token at line X
+   ```
+   Fix: Check proto file syntax, ensure proper formatting
+
+3. **Duplicate Field Numbers:**
+   ```
+   Error: field number X is already used
+   ```
+   Fix: Ensure all field numbers are unique within message
+
+4. **Circular Dependencies:**
+   ```
+   Error: cycle detected in imports
+   ```
+   Fix: Restructure imports to remove circular dependencies
+
+5. **Permission Issues:**
+   ```
+   Error: permission denied
+   ```
+   Fix: Ensure write permissions for generated files directory
+
+OUTPUT FORMAT
+Show results clearly:
+
+```
+✅ Prerequisites verified
+   - api.proto exists
+   - spec.proto exists
+   - input.proto exists
+   - outputs.proto exists
+
+🔨 Running: make protos
+
+⏱️  Duration: 45 seconds
+
+✅ Success: Exit code 0
+
+📁 Generated files:
+   - catalog/gcp/gcpcertmanagercert/v1alpha1/api.pb.go
+   - catalog/gcp/gcpcertmanagercert/v1alpha1/spec.pb.go
+   - catalog/gcp/gcpcertmanagercert/v1alpha1/input.pb.go
+   - catalog/gcp/gcpcertmanagercert/v1alpha1/outputs.pb.go
+
+✅ Proto stub generation complete
+```
+
+On error:
+```
+❌ Error: Exit code 1
+
+Error details:
+[show relevant error output]
+
+Suggested fix:
+[provide specific guidance based on error type]
+```
+
+NOTES
+- This is a critical validation step before proceeding to code generation
+- All proto files must compile successfully before continuing
+- Generated stubs are required for Go code to compile
+- Do not proceed to rule 009 (Pulumi module) if this fails
+- Run from project root directory only
+- If errors occur, fix proto files and re-run this rule before proceeding
+- BUILD.bazel files are auto-generated; do not create them manually

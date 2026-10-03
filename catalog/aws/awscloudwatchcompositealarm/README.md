@@ -57,7 +57,7 @@ spec:
 
 ## Composing Alarm Names
 
-The rule addresses alarms by their CloudWatch names. `AwsCloudwatchAlarm` resources name their alarms after `metadata.name` and export it as the `alarm_name` stack output — reference that output when wiring the suppressor, and use the known names inside `alarmRule` text.
+The rule addresses alarms by their CloudWatch names. `AwsCloudwatchAlarm` resources name their alarms after `metadata.name` and export it as the `alarm_name` output — reference that output when wiring the suppressor, and use the known names inside `alarmRule` text.
 
 ## What Is Deliberately Omitted (v1)
 

@@ -4,7 +4,7 @@ Declares one Trino install -- the distributed SQL query engine that queries data
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **The Helm release** -- the official `trino/trino` chart, rendering:
@@ -20,7 +20,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -66,11 +66,11 @@ spec:
 planton apply -f analytics-trino.yaml
 ```
 
-This declares the near-defaults install: a coordinator and two workers, PASSWORD authentication ON with a module-generated admin (the secured default -- the open server never ships), the samples still on beside one real PostgreSQL catalog -- `SELECT * FROM warehouse.public.orders JOIN tpch.tiny.nation ...` works the moment it is up. A Stack Job tracks the provisioning in real time.
+This declares the near-defaults install: a coordinator and two workers, PASSWORD authentication ON with a module-generated admin (the secured default -- the open server never ships), the samples still on beside one real PostgreSQL catalog -- `SELECT * FROM warehouse.public.orders JOIN tpch.tiny.nation ...` works the moment it is up. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire a catalog to a database managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire a catalog to a database managed by another Infra Component:
 
 ```yaml
 spec:
@@ -118,7 +118,7 @@ These are the most important decisions when configuring Trino. Explore the full 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -128,9 +128,9 @@ These are the most important decisions when configuring Trino. Explore the full 
 | **KubernetesMysql** | `catalogs.mysql[].passwordSecret.secretName` | `status.outputs.root_password_secret.name` |
 | **KubernetesKeda** (runtime prerequisite) | -- | the KEDA operator must run on the cluster when `workers.keda` is declared |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -154,10 +154,10 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**PostgreSQL**](/cloud-catalog/kubernetes-postgres) -- the natural postgres catalog; the `catalogs.postgres` foreign-key defaults point at it
-- [**MySQL**](/cloud-catalog/kubernetes-mysql) -- the natural mysql catalog; the `catalogs.mysql` foreign-key defaults point at it
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the namespace for the deployment
-- [**KEDA**](/cloud-catalog/kubernetes-keda) -- the runtime prerequisite for event-driven worker autoscaling
-- [**kube-prometheus-stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) -- the operator CRDs the ServiceMonitors need, and the Prometheus a KEDA trigger queries
-- [**SeaweedFS**](/cloud-catalog/kubernetes-seaweed-fs) -- S3-compatible spooling storage for fault-tolerant execution
-- [**Apache Superset**](/cloud-catalog/kubernetes-superset) -- a BI layer over the exported coordinator endpoint
+- [**PostgreSQL**](/infra-catalog/kubernetes-postgres) -- the natural postgres catalog; the `catalogs.postgres` foreign-key defaults point at it
+- [**MySQL**](/infra-catalog/kubernetes-mysql) -- the natural mysql catalog; the `catalogs.mysql` foreign-key defaults point at it
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the namespace for the deployment
+- [**KEDA**](/infra-catalog/kubernetes-keda) -- the runtime prerequisite for event-driven worker autoscaling
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) -- the operator CRDs the ServiceMonitors need, and the Prometheus a KEDA trigger queries
+- [**SeaweedFS**](/infra-catalog/kubernetes-seaweed-fs) -- S3-compatible spooling storage for fault-tolerant execution
+- [**Apache Superset**](/infra-catalog/kubernetes-superset) -- a BI layer over the exported coordinator endpoint

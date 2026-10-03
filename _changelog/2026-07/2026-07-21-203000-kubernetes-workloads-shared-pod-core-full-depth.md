@@ -1,7 +1,7 @@
 # Kubernetes workloads rebuilt on a shared pod core at full configuration depth
 
 **Date**: 2026-07-21
-**Scope**: `apis/dev/planton/provider/kubernetes` (five workload kinds + shared workload protos), `pkg/iac/pulumi/pulumimodule/provider/kubernetes/workloadpod`, `pkg/outputs`, `aa_import`, `e2e`, site catalog, `_rules/deployment-component/update`
+**Scope**: `apis/dev/planton/provider/kubernetes` (five workload kinds + shared workload protos), `pkg/iac/pulumi/pulumimodule/provider/kubernetes/workloadpod`, `pkg/outputs`, `aa_import`, `e2e`, site catalog, `_rules/catalog-kind/update`
 
 ## What changed
 
@@ -108,6 +108,6 @@ catalog pages regenerated.
 
 ### Workflow
 
-The component-update rule gains two hard-won lessons: never read a proto
+The kind-update rule gains two hard-won lessons: never read a proto
 oneof through an interface assertion in module code, and fail the Terraform
 plan (precondition) when a provider cannot express a spec field.

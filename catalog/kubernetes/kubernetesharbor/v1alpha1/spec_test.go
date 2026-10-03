@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/gomega"
 	kubernetes "github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -27,7 +27,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -45,7 +45,7 @@ func baseInput() *KubernetesHarbor {
 	return &KubernetesHarbor{
 		ApiVersion: "kubernetes.planton.dev/v1alpha1",
 		Kind:       "KubernetesHarbor",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "registry",
 		},
 		Spec: &KubernetesHarborSpec{
@@ -91,7 +91,7 @@ var _ = ginkgo.Describe("KubernetesHarbor Validation Tests", func() {
 		})
 
 		ginkgo.It("namespace as a reference should be valid", func() {
-			input.Spec.Namespace = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "harbor", "spec.name")
+			input.Spec.Namespace = valueFrom(catalogkind.CatalogKind_KubernetesNamespace, "harbor", "spec.name")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -102,8 +102,8 @@ var _ = ginkgo.Describe("KubernetesHarbor Validation Tests", func() {
 
 		ginkgo.It("a maximal composed spec (external postgres/valkey FKs, s3 storage, trivy, metrics) should be valid", func() {
 			db := externalDatabase()
-			db.Host = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "harbor-pg", "status.outputs.rw_service")
-			db.PasswordSecretName = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesPostgres, "harbor-pg", "status.outputs.password_secret.name")
+			db.Host = valueFrom(catalogkind.CatalogKind_KubernetesPostgres, "harbor-pg", "status.outputs.rw_service")
+			db.PasswordSecretName = valueFrom(catalogkind.CatalogKind_KubernetesPostgres, "harbor-pg", "status.outputs.password_secret.name")
 			db.Port = int32Ptr(5432)
 			db.CoreDatabase = strPtr("registry")
 			db.SslMode = strPtr("verify-full")
@@ -116,7 +116,7 @@ var _ = ginkgo.Describe("KubernetesHarbor Validation Tests", func() {
 			input.Spec.Cache = &KubernetesHarborCache{
 				Engine: &KubernetesHarborCache_External{
 					External: &KubernetesHarborExternalRedis{
-						Addr:               valueFrom(cloudresourcekind.CloudResourceKind_KubernetesValkey, "harbor-valkey", "status.outputs.kube_endpoint"),
+						Addr:               valueFrom(catalogkind.CatalogKind_KubernetesValkey, "harbor-valkey", "status.outputs.kube_endpoint"),
 						ExistingSecretName: strPtr("harbor-redis-auth"),
 					},
 				},
@@ -126,7 +126,7 @@ var _ = ginkgo.Describe("KubernetesHarbor Validation Tests", func() {
 					S3: &KubernetesHarborS3Storage{
 						Bucket:   "harbor-artifacts",
 						Region:   "us-east-1",
-						Endpoint: valueFrom(cloudresourcekind.CloudResourceKind_KubernetesSeaweedFs, "harbor-objects", "status.outputs.s3_endpoint"),
+						Endpoint: valueFrom(catalogkind.CatalogKind_KubernetesSeaweedFs, "harbor-objects", "status.outputs.s3_endpoint"),
 						Credentials: &KubernetesHarborS3Credentials{
 							ExistingSecretName: strPtr("harbor-s3-auth"),
 						},

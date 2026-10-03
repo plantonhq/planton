@@ -38,7 +38,7 @@ message DigitalOceanContainerRegistrySpec {
 
   // (Optional) Docker credentials to mint for this registry. When set, both provisioners
   // create a credential (a base64-encoded Docker `config.json`) exported through the
-  // `docker_credentials` stack output. When omitted, no credential is created -- the secure
+  // `docker_credentials` output. When omitted, no credential is created -- the secure
   // default, since an unconfigured credential would otherwise live for ~50 years.
   DigitalOceanContainerRegistryDockerCredentials docker_credentials = 5;
 }

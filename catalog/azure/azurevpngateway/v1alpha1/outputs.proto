@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurevpngateway.v1alpha1;
 
-// **AzureVpnGatewayStackOutputs** captures the outputs of provisioning
+// **AzureVpnGatewayOutputs** captures the outputs of provisioning
 // a Virtual WAN VPN gateway and its NAT rule children.
-message AzureVpnGatewayStackOutputs {
+message AzureVpnGatewayOutputs {
   // The Azure Resource Manager ID of the gateway -- what a connection
   // references as its vpn_gateway_id.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/vpnGateways/{name}

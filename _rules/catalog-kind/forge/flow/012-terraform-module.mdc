@@ -1,0 +1,505 @@
+---
+alwaysApply: false
+---
+RULE NUMBER
+012
+
+TITLE
+Forge: Generate Terraform module (tf/) from proto definitions
+
+ROLE
+You are the Planton Code Partner working inside the developer’s local workspace in Cursor. This rule scaffolds the Terraform module for a resource under the kind-root `iac/tf/`.
+
+TOOLS
+- Proto Readers: reuse readers for `api.proto`, `spec.proto`, `input.proto`, `outputs.proto`.
+- Variables Generator: `_rules/catalog-kind/_scripts/terraform_module_write.py` (run with `--make-local --generate-variables`)
+- Module Writer: `_rules/catalog-kind/_scripts/terraform_module_write.py`
+- Reference kinds (live ground truth): `catalog/aws/awsvpc/iac/tf/`
+  and `catalog/aws/awsalb/iac/tf/` -- canonical `variables.tf`/`provider.tf`/`locals.tf`/`main.tf`/`outputs.tf` layout.
+
+PARITY WITH PULUMI (MANDATORY -- read before writing any HCL)
+Terraform is authored AFTER the Pulumi module in the sequence, so the Pulumi module
+(`iac/pulumi/module/*.go`) already exists and is the thing to reconcile against. This rule's
+job is to produce a Terraform module that is at **100% behavioral parity** with it -- the
+same catalog objects, names, labels, selectors, environment, dependency ordering, and stack
+outputs for an identical `iac-input`. Neither engine is privileged: the proto contract
+(`spec.proto` + `outputs.proto`) and intended behavior decide correctness, so if the
+Pulumi module is the one that is wrong, fix it too. Do not author Terraform "from the proto"
+in isolation and hope it lines up; author it by reconciling against the existing Pulumi
+module field by field.
+
+Before drafting, OPEN the sibling Pulumi module and walk the parity-dimension checklist in
+`pkg/iac/MODULE_PARITY.md`. Confirm your Terraform matches Pulumi on each:
+- **Namespace / scope source** -- same spec field (e.g. `var.spec.namespace`), never a
+  derived name or `metadata.id`.
+- **Resource naming basis** -- created objects (operator CRs, secret names, pod annotations)
+  key off the SAME field Pulumi uses (`metadata.name` is the established basis). A common
+  drift is keying off a `resource_id` local instead.
+- **Labels** -- identical keys AND values to `locals.go` (the `kuberneteslabelkeys` set;
+  the kind value is the `CatalogKind` enum string, NOT an ad-hoc string like
+  `"postgres_kubernetes"`; conditional labels appear under the same condition).
+- **Selectors** -- pod/service selectors must match the labels the operator/chart actually
+  applies to workload pods (e.g. Zalando/Spilo pods are `application: spilo`), exactly as
+  Pulumi selects. A selector built from resource-identity labels matches zero pods.
+- **Spec feature coverage** -- every field in `spec.proto` that Pulumi honors is honored
+  here too (backup, restore/standby, ingress, env injection, sizing, ...). A field handled
+  in `module/*.go` but absent from `*.tf` is a parity defect, even if `terraform validate`
+  passes.
+- **Dependency ordering** -- the same edges Pulumi expresses via `pulumi.DependsOn`
+  appear here via `depends_on` / `metadata.relationships`.
+- **Outputs** -- `outputs.tf` must emit shapes that flatten onto the SAME
+  `outputs.proto` fields Pulumi exports. Nested proto messages are emitted as nested
+  HCL objects (`output "x" { value = { name = ..., key = ... } }`), which the generic
+  transformer flattens to `x.name` / `x.key`. NEVER emit flat names like `x_name` -- they
+  never reach the nested proto field.
+
+DEVIATION POLICY: the default is exact parity. Deviate ONLY for a strong technical reason
+(a provider feature absent from one SDK, an operator that names a thing differently). When
+you must, keep the divergence minimal, ensure it does NOT change the outputs, and add
+a `# PARITY-EXCEPTION:` comment here AND a matching `// PARITY-EXCEPTION:` in the Pulumi
+module stating what differs and why. An undocumented divergence is a defect.
+
+NO UNTRACKED INLINE OBJECTS: never set a provider argument that creates a second object inside
+the resource (a `*_data` block such as `default_price_data` or `product_data`). The provider
+keeps no resource for that object, so destroy leaves it live, a change to it forces a surprise
+replacement, and its drift is never detected. The object is its own kind (or a folded resource
+this module manages with its own block), composed by reference; the provider-parity manifest
+excludes the inline argument with that reason.
+
+A CHANGE THE PROVIDER ACCEPTS BUT CAN'T SEND FORCES A REPLACEMENT: some provider arguments plan an
+in-place update the vendor's API can never apply (Stripe's payment link can't change a line
+item's price; its update call has no price field), and some are write-only, so a change plans
+nothing at all (the same link's line-item quantity). Either way the change is dropped silently
+or shows as a pending change forever. The module holds those values in a `terraform_data`
+tracker and puts `replace_triggered_by = [terraform_data.<tracker>]` on the resource, with
+`create_before_destroy` when the object's id or address is something other resources read by
+reference. The provider-parity manifest judges the tracker `internal`, and the provider's import
+catalog records `terraform_data` with `not_importable_upstream_reason`: an imported tracker has no
+input, so the first apply after an import would replace the imported object; left out, it is
+simply created. The spec field says in plain words that a change replaces the object. Prove it
+with offline plans against a seeded state: unchanged plans nothing, each tracked change plans a
+replacement, every other change stays in place, and a state without the tracker plans only the
+tracker's creation.
+
+The same tracker serves a value the provider can't READ BACK. Some vendors leave fields out of
+an object they return unless the read asks to expand them (Stripe's "includable" fields: a
+coupon's products and other-currency amounts, a price's other-currency amounts, a shipping rate's
+other-currency amounts, a portal's switchable products). A provider that never expands keeps a
+deployed object's configured value, so a plain deploy plans clean, but a blind import holds
+nothing, and the first plan after it re-sends the value or replaces the object. Read the
+provider's Read for its expand list, then probe the vendor once with and without expanding, and
+let the update path decide:
+- the field updates in place and re-sending it is a no-op: the provider's import catalog
+  declares it in `write_normalized_attributes` (a dotted sub-path when it is one leaf of a block),
+  with the reason, and the live round trip proves the reconcile-apply;
+- the field forces a replacement, or the vendor refuses re-sending it (Stripe refuses a new amount
+  for a currency a coupon already has): `lifecycle.ignore_changes` on the field plus the tracker,
+  so a blind import adopts the object untouched and a change still replaces it. `ignore_changes`
+  alone would silently drop every later change, and a tolerance can never cover a replacement;
+- the provider rejects its own create because the vendor's answer omits the field ("inconsistent
+  result after apply"): nothing in the module can hold it, so the kind can't offer the field on
+  that pin, and the gap goes to the product owner, never into a placeholder.
+
+A value the vendor normalizes on write (Stripe stores a Radar list's string, email and country
+values in lower case) is sent already normalized, keyed by the value as declared, or the
+provider rejects its own result after create. A default the vendor fills in when a block is
+omitted (a billing meter's payload keys) is sent explicitly with the vendor's own default, for
+the same reason. Both are found only by a live run; record each as "verified live" in the module
+comment beside the code that answers it.
+
+SEQUENTIAL STEPS
+1) Read: Use proto readers to derive `<Kind>`, spec, outputs, and provider context.
+   ALSO read the sibling Pulumi module (`iac/pulumi/module/*.go`) -- it is the existing
+   engine to reconcile against for everything below (correct it if it is the wrong one;
+   neither engine is privileged).
+
+   FAST PATH -- Kubernetes-CRD-projection kinds: If the kind's spec is a direct
+   1:1 projection of a single Kubernetes custom resource (Istio, Gateway API,
+   etc.) AND the kind is annotated with `kubernetes_manifest_projection` in
+   `CatalogKindMeta` (catalog_kind.proto), the ENTIRE module is
+   deterministic -- do NOT hand-author it. Generate it in one shot:
+   `echo '{"files":[]}' | python3 _rules/catalog-kind/_scripts/terraform_module_write.py --provider <provider> --kindfolder <kindfolder> --kind <Kind> --stdin --make-local --generate-module --validate | cat`.
+   This emits variables.tf (spec/metadata typed `any`), a thin locals.tf, a
+   kubectl_manifest main.tf (GVK from the annotation), provider.tf, and
+   outputs.tf. The proto->tfvars converter emits the camelCase, null-pruned spec
+   at runtime, so there is no snake->camel / null-prune / oneOf logic to write;
+   it also writes the shapes the spec marks (an IntOrString as a number or a
+   name, a list-valued map's wrappers as bare lists) as upstream's.
+   The locals route the envelope to metadata -- the namespace reference, and any
+   top-level map marked `kubernetes_object_metadata` as the object's own labels
+   or annotations (identity labels win) -- reading both the envelope and the
+   identity label keys from `pkg/kubernetes/manifestprojection`, the same source
+   the Pulumi module's `manifestcr.Apply` uses (rule 009). Commit no backend.tf:
+   the runtime writes one before every init. `TestManifestModuleDrift`
+   (`pkg/iac/tofu/generators`) holds every projection kind's committed module to
+   the generator's output, so regenerate with
+   `PLANTON_REGEN_MANIFEST_MODULES=1 go test ./pkg/iac/tofu/generators/ -run TestManifestModuleDrift`
+   rather than editing a `.tf` file; a module the generator cannot yet express
+   is named, with what it does, in that test's `manifestModuleGaps`.
+   Then STOP -- skip steps 2-4 below.
+
+   Do NOT use this path for kinds whose Planton spec ABSTRACTS over the CRD
+   (e.g. cert-manager's issuer_ref oneof -> issuerRef.kind/name, or any CRD with
+   a required field whose valid value is the empty string, which protojson omits
+   -- e.g. ReferenceGrant's to[].group). Those keep the hand-written path below.
+
+2) Generate variables and read it: first `make generate-proto-docs` if any proto
+   changed since the last run (the generator prints each field's proto
+   documentation above its attribute, read from that index, so a stale index
+   leaves the comments a version behind the schema), then
+   `echo '{"files":[]}' | python3 _rules/catalog-kind/_scripts/terraform_module_write.py --provider <provider> --kindfolder <kindfolder> --kind <Kind> --stdin --make-local --generate-variables | cat`.
+   Then open the generated `variables.tf` in the module path and read it: the
+   comments are the spec's own field documentation and are what you draft
+   `main.tf` from. The file is `tofu fmt`-clean as generated; never hand-edit it.
+   The drift gate (`go test ./pkg/iac/tofu/generators/ -run TestVariablesTFDrift`)
+   compares every enrolled module's committed file byte for byte with the
+   generator: for a provider whose whole catalog is generator-owned (GCP) every
+   registered kind is enrolled automatically -- there is nothing to append, and a
+   kind whose file was not generated fails the gate until it is -- while a
+   provider enrolled kind by kind (AWS) takes a new entry in the test's
+   `migratedKinds`. A module the generator genuinely cannot express is named in
+   the test's `generatorGaps` with the gap it waits on; it is never hand-patched
+   into the generator's shape and enrolled.
+3) Draft: Consult the reference kind `iac/tf/` directories. CAUTION when
+   mirroring a sibling's `variables.tf` instead of using the generator: the
+   proto->tfvars converter flattens every `StringValueOrRef` field to a PLAIN
+   STRING before the module runs (`pkg/iac/tofu/generators/typerules.go`), so a
+   ref field must be typed `string` in variables.tf — some older modules carry a
+   stale `object({ value = string })` shape that fails at plan time with
+   "attribute ...: object required". The generator emits the correct shape;
+   trust it over any hand-written sibling. The same converter DROPS every spec
+   field marked `(dev.planton.shared.options.manifest_only)` before the module
+   runs (a manifest word such as a selector's `match_all` or an access config's
+   `ephemeral`, whose wire spelling is the absence of its siblings), and the
+   generator declares no variable for it -- so a module never declares, reads,
+   or forwards such a field; it renders the shape the field's validation rules
+   already guarantee (a selector with no criteria, a config with no static
+   address). Prepare a files JSON manifest for non-generated files. Comment the HCL to the module-comment bar (`architecture/catalog-kind.md` §4.1 Code Quality): explain *why*, trade-offs, provider quirks, and non-obvious ordering -- not line-by-line narration. These modules render on the public catalog, so their comments are part of the deliverable.
+4) Write and validate:
+   - `cat <<'JSON' | python3 _rules/catalog-kind/_scripts/terraform_module_write.py --provider <provider> --kindfolder <kindfolder> --kind <Kind> --stdin --validate | cat`
+     { "files": [ {"name": "provider.tf", "content": "..."}, {"name": "locals.tf", "content": "..."}, {"name": "outputs.tf", "content": "..."} ] }
+     JSON
+   - If validation fails, refine and re-run (≤3).
+5) Reconcile parity (MANDATORY): re-walk the PARITY WITH PULUMI checklist above against the
+   finished module and confirm each dimension matches the Pulumi module. Verify outputs with
+   the automated guard rather than by eye:
+   `planton validate-outputs --kind <Kind> --module-dir catalog/<provider>/<kind>/iac/tf --sample-outputs <sample>.json`
+   (expect full proto population, zero unmapped). Resolve every mismatch now, or record it as
+   a documented `PARITY-EXCEPTION:` in both modules.
+
+OUTPUT
+- Show variables generation outcome (path/exit code) and confirm `variables.tf` was read.
+- Show created/updated file list and key JSON fields from the writer tool.
+- Show validate results.
+- Report the parity reconciliation outcome: "parity achieved" or the explicit list of
+  documented `PARITY-EXCEPTION:` divergences.
+
+SUCCESS CRITERIA
+- `variables.tf` is generated in step 2 at the module path and matches the expected schema; the drift gate is green for the kind
+- Drafted files reference inputs that exist in `variables.tf`
+- Core files (`provider.tf`, `locals.tf`, `outputs.tf`, resource files) exist and `terraform validate` passes
+- Module code is richly commented to the module-comment bar (why/trade-offs/provider quirks/ordering, not narration)
+- **Cross-engine parity holds:** every parity dimension matches the Pulumi module, or the
+  divergence is minimal, output-neutral, and carries a `PARITY-EXCEPTION:` comment in BOTH
+  modules; `planton validate-outputs` reports full proto population with zero unmapped outputs
+
+NOTES
+- Generate variables once up-front; derive convenience in `locals.tf`.
+- **Offline plans through the CLI must point at the LIVE module with an ABSOLUTE
+  `--module-dir`:** `planton tofu plan --manifest <abs path> --module-dir <abs
+  path to catalog/<provider>/<kind>/iac/tf>`. Without `--module-dir` (or when the working directory
+  is not the module dir) the CLI silently falls back to a STAGING CLONE of the
+  repo — a stale checkout whose `variables.tf` predates your edits — and the
+  plan fails with schema errors that look like your module's ("attributes ...
+  are required") but come from code you never wrote. A RELATIVE `--module-dir`
+  also fails (the generated tfvars path resolves against the wrong root). Both
+  paths absolute, always.
+- **A field with explicit presence is `optional(...)` in variables.tf, whatever its
+  value constraints.** A proto3 `optional` field (or a oneof member) is validated only
+  when it is set, so a `min_len` on it describes the value, never presence; a bare
+  attribute makes every spec that leaves it unset fail with "attribute X is required".
+  The generator (`isRequiredField`) follows this; a hand-written variables.tf must too.
+- **Send exactly what the Pulumi module sends.** Where the Pulumi module omits an
+  argument whose spec value is the proto3 zero value (an empty string, a zero
+  number), the Terraform module sends `null` for it (`var.spec.x != "" ? var.spec.x :
+  null`), so both engines leave the provider's own value in place. Forwarding the zero
+  value sends it: a provider refuses an empty string for a set of allowed values
+  ("expected X to be one of [...], got "), or applies it.
+- **Variable validations on nullable optional objects must guard with `try()`:**
+  HCL's `||` evaluates BOTH operands (it does not short-circuit), so a validation
+  shaped `var.spec.block == null || length(var.spec.block.field) > 0` fails at
+  plan time with "Attempt to get attribute from null value" whenever the block is
+  omitted. Write `var.spec.block == null || length(try(var.spec.block.field, {})) > 0`
+  instead. This only bites when the block is absent, so it escapes a happy-path
+  `terraform validate` against a fully-populated manifest — test the omitted case.
+- **Never guard possibly-empty optional strings with `coalesce()`:** HCL's
+  `coalesce()` skips empty strings as well as nulls, so `coalesce(var.spec.name, "")`
+  ERRORS (no non-empty argument) when the field is legitimately `""` — and inside a
+  validation's `can(...)` that error silently becomes `false`, failing the variable
+  with a misleading message. For an `optional(string, "")` field write the guard as
+  `var.spec.name == "" || can(regex(...))` (or `try(var.spec.name, "") == ""`).
+  This bites exactly when the optional field is omitted, so it escapes a plan
+  against a fully-populated manifest — test the omitted case.
+- **Gate ambient-project data sources with `count` on actual need:** an
+  unconditional `data "google_project"` (or any live-lookup data source) executes
+  during EVERY plan — including offline plans against the e2e manifest's sample
+  project — and fails with "user does not have permission to access Project".
+  When a module resolves the provider's effective project only for entries that
+  omit theirs, compute a `needs_ambient_*` local (spec project empty AND some
+  entry empty) and set `count = local.needs_ambient_* ? 1 : 0` on the data
+  source, referencing it as `data.google_project.this[0]`. This also mirrors the
+  Pulumi side's only-when-needed `GetClientConfig` lookup, keeping the engines'
+  resolution behavior identical.
+- **A provider the default deploy never uses must still configure with nothing but
+  the connection's own credential.** OpenTofu and Terraform configure EVERY provider
+  a module references, even when the only block reading through it has `count = 0`
+  -- typically a secondary S3-compatible provider that reads an object store the
+  connection reaches with a separate key pair (R2, Spaces). The AWS provider refuses
+  to configure without SOME credential source even with every `skip_*` flag set, so
+  a module that declares it unconditionally fails for every customer whose runner
+  holds no AWS credential. The shape: the real key pair arrives as sensitive,
+  nullable variables in `iac/tf/credentials.tf`, fed by the provider-environment
+  loader (`pkg/iac/iacinput/providerenvvars`) as `TF_VAR_*`; on the path that
+  reads through the provider it gets those variables, and on every other path a
+  fixed placeholder key pair, which with the skip flags makes no network call and
+  signs nothing. Never a provider-level `for_each` (Terraform cannot load a module
+  that uses one, and every module serves both engines), and never `AWS_*`
+  environment variables for a non-AWS credential (an S3 state backend
+  authenticated from the environment reads the same names). `tofu validate` never
+  configures a provider, and a live lane passes whenever the machine running it
+  happens to hold the credential, so only a plan run with ONLY the connection's
+  variables in the environment catches this: the credential-isolated plan guards in
+  `pkg/iac/tofu/tofumodule` (`PLANTON_TF_PLAN_GUARDS=1`) are the shape to copy.
+  Exemplar: CloudflareWorker's `aws.r2` provider.
+- **Read object-store content as bytes, never through a "readable types" shortcut.**
+  `aws_s3_object`'s plain `body` is filled only for a short list of Content-Types
+  (`text/*`, `application/json`, ...; NOT `application/javascript`), so content an
+  upload tool typed differently reads back empty without an error. Set
+  `download_body = true`, decode `body_base64`, and refuse an empty object in a
+  `postcondition` that names it (the Pulumi twin: `DownloadBody` + `BodyBase64` and
+  an `errors.Errorf`).
+- **Outputs surfacing provider-`Sensitive` attributes MUST carry `sensitive = true`.**
+  OpenTofu rejects the whole configuration at plan time ("Output refers to
+  sensitive values") when a root output references any attribute the provider
+  schema marks `Sensitive` -- and sensitivity propagates through `try()`,
+  `split()`, and index expressions. The trap: name-like fields can be
+  sensitive too (azurerm marks the whole `site_credential` block sensitive,
+  including its `name`, and `custom_domain_verification_id` on App Service
+  kinds). Check the provider schema's `Sensitive:` flag for every attribute an
+  output touches -- `terraform validate` does NOT catch this class; only a
+  plan does.
+- **Provider budgets on module-derived values are `lifecycle { precondition }`
+  blocks on the resource, twins of the Pulumi module's guard.** When a service
+  caps something the module itself assembles (a derived name, the composed tag
+  set including the Planton labels), the author cannot see the final value and
+  no spec rule can compute it, so the module checks it before anything renders:
+  a `local.<thing>_budget` naming the measured number (comment carries the date
+  and the API's own error text), a local computing the FINAL value sent (after
+  `distinct()`, after label rendering), and a precondition whose
+  `error_message` interpolates the budget, the offending total, and the
+  author's levers -- the same number and the same words as the Pulumi module's
+  `errors.Errorf`. Measure the boundary live (pass at N, fail at N+1) before
+  writing the number. Exemplars: the Superset chart's name budget; the
+  DigitalOcean database cluster's 255-character combined-tags budget.
+- **Dispatch-pattern outputs coalesce PER ATTRIBUTE, never per resource.**
+  When one kind count-gates between several provider resources (an
+  exactly-one-of scope or mode discriminator selecting among variants with
+  identical faces), splice the outputs attribute-by-attribute
+  (`coalesce(try(variant_a[0].id, null), try(variant_b[0].id, null), ...)`).
+  Coalescing whole resource OBJECTS taints every derived output with the
+  union of the object's sensitivity -- a resource carrying any `Sensitive`
+  attribute makes even its `id` and `name` outputs "refer to sensitive
+  values" and fails the plan. Same detection caveat as above: only a plan
+  catches it.
+- **Use the provider's ONE repo-wide pin shape, and check what the lock
+  resolves.** Each provider's modules share a single `required_providers`
+  constraint convention — some providers pin a floor (`>= 5.0.0`), others a
+  major-capped range whose floor is the audited release (`~> 8.3`) because
+  the next major's fields are deliberately excluded from the modeled surface
+  and a lower floor could lie about what a module's arguments need; follow
+  the sibling modules of the SAME provider, never mix shapes within one
+  provider. Either way, a
+  stale `.terraform.lock.hcl` silently freezes the resolved provider -- so
+  when adding fields that need a newer provider, run `terraform init -upgrade`
+  and confirm the lock file's resolved version, or `terraform validate` fails
+  with "Unsupported argument" on fields the current provider genuinely has.
+  Keep sibling modules of one provider on the same resolved version so
+  behavior never varies per kind.
+- **A secondary-channel provider (`google-beta`) enters a module only under a
+  recorded admission, and only on the resources that need it.** The GA
+  provider is the parity baseline; a resource the GA provider serves at the
+  pin is declared through it, always. When a resource exists ONLY in the
+  provider's secondary channel (Google publishes Firebase's core resources
+  in `google-beta` alone), the module: (1) declares the channel in
+  `required_providers` on the SAME constraint as the baseline (the pin guard
+  holds both to one line), (2) configures its provider block the way the
+  baseline's is configured (a `provider "google-beta" {}` block carrying the
+  same `user_project_override` judgment, so behavior never depends on which
+  channel a resource rides), (3) sets `provider = google-beta` on exactly the
+  resource blocks the channel serves -- never on a resource GA serves, never
+  on the whole module -- and (4) records each (resource, kind) in
+  `pkg/providerparity/admissions/<channel>.yaml` with the reason and the path
+  where its promotion to GA is watched. `hack/guards/ensure_beta_admissions.sh`
+  fails an attachment with no entry and an entry with no attachment; the
+  provider-parity accounting additionally fails an admitted resource the GA
+  schema has started serving (the promotion happened: move the resource back
+  to the baseline provider and remove the entry). Pulumi needs none of this:
+  the bridged SDK is built from the beta provider, so one provider instance
+  serves both channels -- say so in a module comment where the Terraform side
+  attaches the channel, so the parity walk reads as deliberate.
+- **Enum values arrive as the FULL proto enum value name -- match them
+  exactly.** The tfvars pipeline serializes enum fields as the proto value's
+  declared name (e.g. `LINUX_AUTOMATIC_BY_PLATFORM`, `ASSESSMENT_IMAGE_DEFAULT`),
+  including any disambiguation prefix the spec added because sibling enums in
+  one file cannot share value names. A `locals.tf` comparison against a
+  shortened form (`"AUTOMATIC_BY_PLATFORM"`) can never match: the ternary
+  silently resolves null, the feature is silently dropped, and `terraform
+  validate` passes. When writing enum maps, copy each value name verbatim from
+  `spec.proto` -- and prove every conditional enum seam with a `planton tofu
+  plan` whose manifest actually carries those fields (see the e2e-manifest
+  rule): a plan only proves the fields it exercises.
+- **The variable contract is only proven by a live run, never by `terraform
+  validate`.** `validate` checks the module against itself; it cannot detect a
+  `variables.tf` whose types the tfvars pipeline can never satisfy (e.g. labels/
+  annotations typed as `{key,value}` objects instead of `map(string)`, or a
+  `StringValueOrRef` field typed as a strict object instead of the pre-resolved
+  `string` the orchestrator delivers). The current contract: metadata uses
+  `optional(...)` attributes with `map(string)` labels/annotations; every
+  `StringValueOrRef` spec field arrives pre-resolved as `string` (repeated ones
+  as `list(string)`). When updating an older module, conform its `variables.tf`
+  to this shape before anything else -- the E2E Terraform run is the proof.
+- **Locals evaluate eagerly -- bound every derivation that can see an empty
+  optional.** Terraform computes ALL locals on every plan, even ones consumed
+  only inside a `count = 0` resource. A family derivation like
+  `slice(split(".", var.spec.engine_version), 0, 2)` hard-fails the whole plan
+  when `engine_version` is unpinned (split of "" yields one element; the slice
+  end exceeds the list). Bound it: `slice(parts, 0, min(2, length(parts)))`.
+  `tofu validate` cannot catch this (it never evaluates against real inputs) --
+  it surfaced only in a live E2E deploy. The Pulumi modules are immune because
+  Go helpers are called conditionally.
+- **`google.protobuf.Struct` spec fields arrive in tfvars as NESTED OBJECTS,
+  never JSON strings.** The generated contract types them `optional(any)` and
+  the proto->tfvars converter passes the protojson value through verbatim (a
+  real nested object/array/scalar). A module that treats such a field as a
+  string -- `var.spec.policy != "" ? var.spec.policy : null` -- passes
+  `tofu validate` (the variable is `any`) and fails only at live apply with
+  "Inappropriate value for attribute: string required". The correct idiom for
+  every Struct field whose provider argument wants a JSON document:
+  `var.spec.policy != null ? jsonencode(var.spec.policy) : null`. Fields the
+  spec models as raw JSON *strings* (e.g. an SNS `delivery_policy`) keep the
+  string comparison -- check the proto type, not the field name.
+- **User string content passes through the tfvars writer with HCL template
+  introducers escaped.** The proto->tfvars converter emits `$${` / `%%{` for
+  literal `${` / `%{` inside string values, so fields carrying IAM policy JSON
+  (`${aws:PrincipalAccount}` condition variables), shell user-data, and similar
+  template-looking content arrive in Terraform as literal characters. Modules
+  therefore consume such fields directly -- never add escaping in HCL, and never
+  avoid modeling a policy/user-data string field out of interpolation concerns.
+  (Exercise one template-introducer-bearing value in the kind's E2E scenario:
+  `tofu validate` never sees real tfvars, so only a rendered run proves it.)
+- **The offline `tofu plan` proof: render tfvars with
+  `planton tofu load-tfvars <path to e2e/manifest.yaml>` (positional arg; prints
+  HCL tfvars to stdout), save to a file, then in `iac/tf/` run
+  `tofu init -backend=false` + `tofu plan -input=false -refresh=false
+  -var-file=<file>`.** Two credential realities: the AWS provider validates
+  credentials via an STS `GetCallerIdentity` call at PLAN time, so dummy static
+  keys fail the "offline" proof — a real credential chain is required even
+  though `-refresh=false` with no state reads or mutates nothing. And the
+  provider's AWS SDK can fail to refresh a cached SSO token that the AWS CLI
+  itself accepts — when an `AWS_PROFILE` SSO profile errors with "refresh
+  cached SSO token failed", export short-lived static credentials instead:
+  `eval $(aws configure export-credentials --profile <profile> --format env)`.
+  The proof passes when the plan renders every expected resource
+  (`Plan: N to add`) with zero errors. Remove the `.terraform/`,
+  `.terraform.lock.hcl`, and any plan-file artifacts afterwards (gitignored,
+  but they bloat the working tree).
+
+HANDLING OPTIONAL FIELDS WITH DEFAULTS
+- Fields with `(dev.planton.shared.options.default)` are `optional` in the proto schema
+- Planton middleware populates defaults BEFORE Terraform runs, so:
+  - The generated `variables.tf` may show `optional(string, null)` for these fields
+  - At runtime, the value will NEVER actually be null for defaulted fields
+  - NO `coalesce()`, `try()`, or conditional default wrappers are needed in `locals.tf`
+- In `locals.tf`, reference defaulted fields directly: `var.spec.field_name` is guaranteed non-null
+- In resource definitions, use the value directly without defensive handling
+
+HANDLING PROTO-OPTIONAL TRI-STATES (presence WITHOUT a platform default)
+- A proto3 `optional` scalar WITHOUT `(options.default)` is a genuine tri-state:
+  unset means "let the cloud default decide" and an explicit zero value (false/0)
+  is a real user choice that must NOT collapse into "unset".
+- The generated contract renders these as `optional(<type>)` with a NULL default
+  (never `optional(bool, false)` / `optional(number, 0)` -- a zero default would
+  silently override the cloud's own default on every resource that omitted the
+  field, and diverge from the Pulumi module's nil-pointer handling).
+- In the module, pass such attributes through null-aware: `var.spec.field` when
+  the provider accepts null directly, or `var.spec.field == null ? null :
+  tostring(var.spec.field)` for the provider's string-typed nullable-bools.
+  NEVER write `field > 0 ? field : null` against a tri-state -- null > 0 is an
+  evaluation error, and it erases an explicit zero. Guard comparisons with
+  `coalesce(field, 0)` when a numeric test is genuinely needed.
+- **HCL's `&&` does NOT short-circuit.** `obj != null && obj.attr` evaluates
+  BOTH operands and errors with "Attempt to get attribute from null value"
+  whenever the object is null -- and `terraform validate` cannot catch it
+  (only a run with the attribute pruned does). Null-guard nested-object
+  access with a ternary instead: `obj != null ? obj.attr : false`, or the
+  `for_each = obj != null ? [obj] : []` dynamic-block idiom. This applies in
+  EVERY expression context, not just dynamic blocks -- a `count` guard like
+  `count = enabled && var.spec.block.sub != null ? 1 : 0` errors identically
+  when `block` is null; nest ternaries there too:
+  `count = enabled ? (var.spec.block.sub != null ? 1 : 0) : 0`. Before
+  finishing, sweep the module for `&&`/`||` whose operands dereference a
+  possibly-null object. When MANY flat provider attributes read off one
+  nullable block (per-protocol triads, feature sub-objects), normalize the
+  block to a zero-value object once in `locals.tf` --
+  `try(coalesce(var.spec.block.sub), local.zero)` -- so every attribute
+  expression reads it unconditionally instead of repeating null guards.
+- **`can()` does NOT null-guard either.** `can(o.s3_origin) && o.s3_origin.attr`
+  still errors when `s3_origin` is null: `can(o.s3_origin)` returns true (the
+  expression evaluates fine, to null), and then the second operand dereferences
+  null. The robust idiom for nested access behind a possibly-null parent is
+  `try(obj.attr, default)` -- `try(o.s3_origin.create_oac, false)` is both the
+  null guard and the default in one expression, and works in `for` filters,
+  `for_each`, and resource arguments alike.
+- **`coalesce(x, "")` ERRORS when every argument is empty.** HCL's `coalesce`
+  requires at least one non-null, NON-EMPTY-STRING argument, so
+  `coalesce(field, "") != ""` fails at plan time exactly when the field is
+  absent -- the case it was meant to guard. Generator-flattened
+  `StringValueOrRef` fields (and every `optional(string, "")` contract
+  attribute) are never null -- they carry the contract default `""` -- so
+  test them with a plain `field != ""`. Reserve `coalesce` for genuinely
+  nullable attributes with a non-empty fallback (e.g.
+  `coalesce(nullable_enum, "OPTIONAL")`), and only `tofu plan` with real
+  tfvars proves the difference (`tofu validate` cannot).
+- Example:
+  ```hcl
+  # CORRECT: Planton guarantees content_type is populated (default: application/octet-stream)
+  content_type = each.value.content_type
+
+  # WRONG: Unnecessary defensive default - Planton already handled this
+  content_type = coalesce(each.value.content_type, "application/octet-stream")
+  ```
+- See the reference kind `iac/tf/` directories named in TOOLS for worked examples
+
+HANDLING RECURSIVE PROTO MESSAGES (self-referential statement trees)
+- When a spec message references itself (e.g. WAFv2 AND/OR/NOT statements, or any
+  nested tree whose descriptor cycle would hang the variables generator), the
+  generator detects the cycle on the current walk path and collapses that subtree
+  to bare `any` in `variables.tf`.
+- Terraform cannot express `list(any)` or `map(any)` when element types differ
+  across entries (heterogeneous object shapes under one repeated field). When a
+  list or map's element type contains free-form `any`, the generator emits the
+  **entire attribute** as bare `any` (`TFFreeFormList` / `TFFreeFormMap`), not
+  `list(object({...}))` with an `any` leaf -- otherwise `tofu plan` fails with
+  "element types must all match for conversion to list".
+- The module must serialize such trees itself (typically `rule_json` / `jsonencode`
+  in HCL, or a Go builder in Pulumi) rather than expecting typed nested Terraform
+  resources for every statement variant. Add a unit test on the serializer and a
+  regression test in `variablestf_test.go` when introducing a new recursive spec.
+- **NO 64-bit integers inside an `any`-typed subtree that feeds a JSON provider
+  argument.** protojson stringifies int64/uint64 ("16384", not 16384) — the
+  typed-contract path never notices, but a provider that unmarshals the
+  serialized JSON into typed Go structs rejects it at APPLY time ("cannot
+  unmarshal string into ... of type int64"), and Pulumi's Go builder (which
+  marshals real ints) silently diverges. Type such fields int32/uint32 when the
+  domain fits (it almost always does — sizes cap at int32 max, ASNs are uint32);
+  only a live Terraform run catches the mismatch, never `tofu validate`.

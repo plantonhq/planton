@@ -6,18 +6,18 @@
 
 ## Summary
 
-Made `cloud_dns_zone_id` optional in the GcpCertManagerCert component so users whose DNS zones are hosted outside GCP (e.g. AWS Route 53, Cloudflare) can still provision GCP Certificate Manager certificates. When the zone ID is omitted, the module creates DNS authorizations but exports the required validation CNAME records as stack outputs for manual insertion into any DNS provider.
+Made `cloud_dns_zone_id` optional in the GcpCertManagerCert kind so users whose DNS zones are hosted outside GCP (e.g. AWS Route 53, Cloudflare) can still provision GCP Certificate Manager certificates. When the zone ID is omitted, the module creates DNS authorizations but exports the required validation CNAME records as outputs for manual insertion into any DNS provider.
 
 ## Problem Statement / Motivation
 
-The GcpCertManagerCert component was tightly coupled to GCP Cloud DNS — the `cloud_dns_zone_id` field was required, and the IaC modules unconditionally created `dns.RecordSet` / `google_dns_record_set` resources in a Cloud DNS managed zone. This made the component unusable in a common real-world scenario: the domain's authoritative DNS is hosted outside GCP.
+The GcpCertManagerCert kind was tightly coupled to GCP Cloud DNS — the `cloud_dns_zone_id` field was required, and the IaC modules unconditionally created `dns.RecordSet` / `google_dns_record_set` resources in a Cloud DNS managed zone. This made the kind unusable in a common real-world scenario: the domain's authoritative DNS is hosted outside GCP.
 
 ### Pain Points
 
-- Users with DNS zones in AWS Route 53, Cloudflare, or Azure DNS could not use this component at all
+- Users with DNS zones in AWS Route 53, Cloudflare, or Azure DNS could not use this kind at all
 - The only workaround was bypassing the module entirely and using `gcloud` CLI or raw Pulumi directly
 - No mechanism existed to surface the DNS validation records for manual insertion
-- The component's `required` constraint on `cloud_dns_zone_id` rejected manifests that omitted it
+- The kind's `required` constraint on `cloud_dns_zone_id` rejected manifests that omitted it
 
 ## Solution / What's New
 
@@ -46,7 +46,7 @@ flowchart TB
 
 ### Key Changes
 
-1. **Proto schema** — Removed `(buf.validate.field).required = true` from `cloud_dns_zone_id`; added `DnsValidationRecord` message and `dns_validation_records` repeated field to stack outputs
+1. **Proto schema** — Removed `(buf.validate.field).required = true` from `cloud_dns_zone_id`; added `DnsValidationRecord` message and `dns_validation_records` repeated field to outputs
 2. **Pulumi module** — Guarded `dns.NewRecordSet` behind a nil-check on zone ID; always exports validation records as JSON via `dns-validation-records` output
 3. **Terraform module** — Made `cloud_dns_zone_id` optional (default `null`); guarded `google_dns_record_set` behind `local.has_dns_zone`; added `dns-validation-records` output
 4. **Tests** — Updated spec tests so missing zone ID is valid; added coverage for `DnsValidationRecords` in status structure test
@@ -65,7 +65,7 @@ dev.planton.shared.foreignkey.v1.StringValueOrRef cloud_dns_zone_id = 4 [
 ];
 ```
 
-**`stack_outputs.proto`** — Added a new message and field:
+**`outputs.proto`** — Added a new message and field:
 
 ```protobuf
 message DnsValidationRecord {
@@ -106,7 +106,7 @@ The `createManagedCertificate` function now:
 
 ## Impact
 
-- **Users with external DNS**: Can now provision GCP certificates without Cloud DNS, reading validation records from stack outputs
+- **Users with external DNS**: Can now provision GCP certificates without Cloud DNS, reading validation records from outputs
 - **Existing users**: No changes required — existing manifests with `cloudDnsZoneId` work exactly as before
 - **Both Pulumi and Terraform**: Feature parity maintained across both IaC implementations
 
@@ -115,9 +115,9 @@ The `createManagedCertificate` function now:
 | File | Change |
 |------|--------|
 | `v1/spec.proto` | Removed `required` from `cloud_dns_zone_id`, updated comment |
-| `v1/stack_outputs.proto` | Added `DnsValidationRecord` message and repeated field |
+| `v1/outputs.proto` | Added `DnsValidationRecord` message and repeated field |
 | `v1/spec.pb.go` | Regenerated |
-| `v1/stack_outputs.pb.go` | Regenerated |
+| `v1/outputs.pb.go` | Regenerated |
 | `v1/spec_test.go` | Updated tests for optional zone ID |
 | `v1/iac/pulumi/module/cert_manager_cert.go` | Conditional DNS records, validation record export |
 | `v1/iac/pulumi/module/outputs.go` | Added `OpDnsValidationRecords` constant |
@@ -132,7 +132,7 @@ The `createManagedCertificate` function now:
 
 ## Related Work
 
-- Initial GcpCertManagerCert component forge
+- Initial GcpCertManagerCert kind forge
 - Audit report: `v1/docs/audit/2025-11-14-052934.md`
 
 ---

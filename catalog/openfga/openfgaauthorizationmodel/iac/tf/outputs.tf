@@ -1,6 +1,6 @@
 # OpenFgaAuthorizationModel Outputs
 # This file defines the outputs from the OpenFGA authorization model deployment.
-# These values are used to populate the stack outputs protobuf message.
+# These values are used to populate the outputs protobuf message.
 #
 # Reference: https://registry.terraform.io/providers/openfga/openfga/latest/docs/resources/authorization_model#attributes-reference
 

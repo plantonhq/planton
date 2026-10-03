@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpCertManagerIssuanceConfigSpec", func() {
 		return &GcpCertManagerIssuanceConfig{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpCertManagerIssuanceConfig",
-			Metadata:   &shared.CloudResourceMetadata{Name: "internal-tls"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "internal-tls"},
 			Spec: &GcpCertManagerIssuanceConfigSpec{
 				CaPool:                   valueOf("projects/my-project/locations/us-central1/caPools/internal"),
 				KeyAlgorithm:             "ECDSA_P256",

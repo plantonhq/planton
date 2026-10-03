@@ -4,7 +4,7 @@ Deploys an SSL/TLS certificate on DigitalOcean, supporting both free auto-renewi
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **DigitalOcean Certificate** -- a `digitalocean_certificate` resource; the manifest's source branch (`letsEncrypt` or `custom`) determines the certificate type
 - **Let's Encrypt Certificate** -- created when the `letsEncrypt` branch is set; includes the specified domains with automatic ACME validation and renewal managed by DigitalOcean
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### DigitalOcean Account
@@ -51,7 +51,7 @@ spec:
 planton apply -f certificate.yaml
 ```
 
-This creates a free Let's Encrypt certificate covering `example.com` and `www.example.com`, with renewal handled by DigitalOcean. A Stack Job tracks the provisioning in real time.
+This creates a free Let's Encrypt certificate covering `example.com` and `www.example.com`, with renewal handled by DigitalOcean. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -69,13 +69,13 @@ These are the most important decisions when configuring a DigitalOcean certifica
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies.
+This kind has no foreign key dependencies.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -92,4 +92,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Load Balancer**](/cloud-catalog/digital-ocean-load-balancer) -- HTTPS forwarding rules reference this certificate by name via the `certificate_id` output
+- [**DigitalOcean Load Balancer**](/infra-catalog/digital-ocean-load-balancer) -- HTTPS forwarding rules reference this certificate by name via the `certificate_id` output

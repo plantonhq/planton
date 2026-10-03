@@ -4,7 +4,7 @@ Memorystore for Redis Cluster -- Google's fully managed, sharded Redis. Data is 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Redis Cluster** -- a `redis_cluster` in your region with `shardCount` shards and `replicaCount` replicas per shard on the chosen `nodeType`, its authentication and TLS modes, persistence, backups, maintenance window, zone distribution, optional CMEK, and the Private Service Connect configuration
 - **API enablement** -- `redis.googleapis.com` and `networkconnectivity.googleapis.com` on the project (never disabled on destroy)
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with `roles/redis.admin` on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with `roles/redis.admin` on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Networks
@@ -95,7 +95,7 @@ planton apply -f redis-cluster.yaml
 - **`rdbConfig`** only under `mode: RDB`; **`aofConfig`** only under `mode: AOF`; **`zone`** only under `SINGLE_ZONE`.
 - A **`SECONDARY`** names its `primaryCluster`; only a **`PRIMARY`** lists `secondaryClusters`.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -130,7 +130,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpServiceConnectionPolicy** -- the connectivity automation policy `pscConfigs` depends on
 - **GcpRedisClusterEndpointSet** -- registers consumer-built PSC connections on a cluster without `pscConfigs`

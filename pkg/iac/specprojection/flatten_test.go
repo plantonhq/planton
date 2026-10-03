@@ -4,22 +4,22 @@ import (
 	"encoding/json"
 	"testing"
 
-	testkubernetesv1 "github.com/plantonhq/planton/catalog/_test/testcloudresourcekubernetes/v1alpha1"
+	testkubernetesv1 "github.com/plantonhq/planton/catalog/_test/testcatalogkindkubernetes/v1alpha1"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 	"google.golang.org/protobuf/encoding/protojson"
 )
 
-// buildTestK8sJSON creates a TestCloudResourceKubernetes proto with
+// buildTestK8sJSON creates a TestCatalogKindKubernetes proto with
 // StringValueOrRef namespace and map<string, StringValueOrRef> ref_map,
 // then returns its JSON-unmarshaled map. This exercises the shapes the
 // flatten logic must handle.
 func buildTestK8sJSON(t *testing.T) map[string]interface{} {
 	t.Helper()
 
-	msg := &testkubernetesv1.TestCloudResourceKubernetes{
+	msg := &testkubernetesv1.TestCatalogKindKubernetes{
 		ApiVersion: "_test.planton.dev/v1alpha1",
-		Kind:       "TestCloudResourceKubernetes",
-		Spec: &testkubernetesv1.TestCloudResourceKubernetesSpec{
+		Kind:       "TestCatalogKindKubernetes",
+		Spec: &testkubernetesv1.TestCatalogKindKubernetesSpec{
 			Namespace: &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{
 					Value: "e2e-test-ns",
@@ -59,7 +59,7 @@ func stringPtr(s string) *string { return &s }
 
 func TestFlatten_StringValueOrRef_Singular(t *testing.T) {
 	data := buildTestK8sJSON(t)
-	md := (&testkubernetesv1.TestCloudResourceKubernetes{}).ProtoReflect().Descriptor()
+	md := (&testkubernetesv1.TestCatalogKindKubernetes{}).ProtoReflect().Descriptor()
 
 	Flatten(data, md, DefaultRules())
 
@@ -83,7 +83,7 @@ func TestFlatten_StringValueOrRef_Singular(t *testing.T) {
 
 func TestFlatten_SkipRule_RemovesField(t *testing.T) {
 	data := buildTestK8sJSON(t)
-	md := (&testkubernetesv1.TestCloudResourceKubernetes{}).ProtoReflect().Descriptor()
+	md := (&testkubernetesv1.TestCatalogKindKubernetes{}).ProtoReflect().Descriptor()
 
 	// Populate the env field (a ContainerEnv message), then flatten with a
 	// rule set that marks ContainerEnv as Skip. The field must be removed
@@ -107,7 +107,7 @@ func TestFlatten_SkipRule_RemovesField(t *testing.T) {
 
 func TestFlatten_MapWithStringValueOrRef(t *testing.T) {
 	data := buildTestK8sJSON(t)
-	md := (&testkubernetesv1.TestCloudResourceKubernetes{}).ProtoReflect().Descriptor()
+	md := (&testkubernetesv1.TestCatalogKindKubernetes{}).ProtoReflect().Descriptor()
 
 	Flatten(data, md, DefaultRules())
 
@@ -136,7 +136,7 @@ func TestFlatten_MapWithStringValueOrRef(t *testing.T) {
 
 func TestFlatten_PreservesNonRuleFields(t *testing.T) {
 	data := buildTestK8sJSON(t)
-	md := (&testkubernetesv1.TestCloudResourceKubernetes{}).ProtoReflect().Descriptor()
+	md := (&testkubernetesv1.TestCatalogKindKubernetes{}).ProtoReflect().Descriptor()
 
 	Flatten(data, md, DefaultRules())
 
@@ -157,7 +157,7 @@ func TestFlatten_PreservesNonRuleFields(t *testing.T) {
 // would be refused by the apiserver at apply). A sibling scalar without the
 // marker rides through untouched on both.
 func TestFlatten_ManifestOnlyField_DroppedOnBothPaths(t *testing.T) {
-	md := (&testkubernetesv1.TestCloudResourceKubernetes{}).ProtoReflect().Descriptor()
+	md := (&testkubernetesv1.TestCatalogKindKubernetes{}).ProtoReflect().Descriptor()
 
 	for _, tc := range []struct {
 		name string
@@ -190,7 +190,7 @@ func TestFlatten_ManifestOnlyField_DroppedOnBothPaths(t *testing.T) {
 
 func TestFlatten_EmptyRules_NoChanges(t *testing.T) {
 	data := buildTestK8sJSON(t)
-	md := (&testkubernetesv1.TestCloudResourceKubernetes{}).ProtoReflect().Descriptor()
+	md := (&testkubernetesv1.TestCatalogKindKubernetes{}).ProtoReflect().Descriptor()
 
 	Flatten(data, md, map[string]TypeRule{})
 

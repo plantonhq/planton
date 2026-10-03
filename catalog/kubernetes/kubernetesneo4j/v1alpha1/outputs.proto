@@ -4,8 +4,8 @@ package dev.planton.kubernetes.kubernetesneo4j.v1alpha1;
 
 import "catalog/kubernetes/kubernetes.proto";
 
-//kubernetes-neo4j stack outputs
-message KubernetesNeo4jStackOutputs {
+//kubernetes-neo4j outputs
+message KubernetesNeo4jOutputs {
   //namespace the server runs in.
   string namespace = 1;
 

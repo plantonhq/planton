@@ -18,12 +18,12 @@ import (
 // (Azure issues keys for a PRIMARY self-hosted registration only);
 // the managed builders export them empty so the output contract stays
 // uniform across variants.
-func Resources(ctx *pulumi.Context, stackInput *azuredatafactoryintegrationruntimev1alpha1.AzureDataFactoryIntegrationRuntimeStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azuredatafactoryintegrationruntimev1alpha1.AzureDataFactoryIntegrationRuntimeIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}

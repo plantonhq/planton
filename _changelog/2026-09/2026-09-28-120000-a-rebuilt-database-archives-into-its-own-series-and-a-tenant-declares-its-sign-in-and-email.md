@@ -62,7 +62,7 @@
 - **Modules.** `planton module verify` confirms conformance for both engines of the six Auth0 kinds, the seven DNS kinds and `KubernetesPostgres`.
 - **Parity.** `planton provider-parity --provider auth0 --ga-schema auth0 --kind <Kind>` reads total accounting, with zero unaccounted, for all six kinds.
 - **Gates.** These pass:
-  - `go test` for `pkg/crkreflect`, `pkg/refcheck`, `pkg/outputs`, `pkg/iac/actioninventory`, `pkg/providerparity`, `pkg/secretcoverage`, `pkg/cataloglogo`, `pkg/presetvalidity`, `pkg/certification`, `pkg/iac/importmap`, `pkg/iac/permissions`, `pkg/finops`, `pkg/compliance`;
+  - `go test` for `pkg/catalogkindreflect`, `pkg/refcheck`, `pkg/outputs`, `pkg/iac/actioninventory`, `pkg/providerparity`, `pkg/secretcoverage`, `pkg/cataloglogo`, `pkg/presetvalidity`, `pkg/certification`, `pkg/iac/importmap`, `pkg/iac/permissions`, `pkg/finops`, `pkg/compliance`;
   - `TestCatalogFixtureIntegrity`;
   - Bazel builds of every touched package.
 - **Anatomy.** The anatomy gate's only finding is an existing one in `kubernetesplantonplatform`, outside this change.

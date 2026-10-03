@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpLogBucketSpec", func() {
 		return &GcpLogBucket{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpLogBucket",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-log-bucket",
 			},
 			Spec: &GcpLogBucketSpec{

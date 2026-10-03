@@ -4,7 +4,7 @@ Deploys a CloudTrail Lake event data store: a queryable, immutable store of AWS 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Event Data Store** — the Lake store with its pricing mode, retention window, multi-region and organization ingestion, advanced event selectors, termination protection, ingestion pause switch, and optional SSE-KMS encryption
 
@@ -14,11 +14,11 @@ Destroying the component soft-deletes the store: AWS holds it in `PENDING_DELETI
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with CloudTrail permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with CloudTrail permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
-- An account grandfathered into CloudTrail Lake — one that already holds (or previously created) an event data store. There is no known exception process, and nothing in this component's spec can route around the account-level wall.
+- An account grandfathered into CloudTrail Lake — one that already holds (or previously created) an event data store. There is no known exception process, and nothing in this kind's spec can route around the account-level wall.
 - (Only for SSE-KMS) a KMS key whose policy allows CloudTrail to use it. AWS recommends multi-region keys for multi-region stores, and losing the key makes the store unreadable.
 
 ## Deploy
@@ -51,7 +51,7 @@ spec:
 planton apply -f event-data-store.yaml
 ```
 
-This creates a multi-region store (the AWS default) ingesting all management events, queryable with Lake SQL for the default 2555-day retention, with termination protection on. A Stack Job tracks the provisioning in real time.
+This creates a multi-region store (the AWS default) ingesting all management events, queryable with Lake SQL for the default 2555-day retention, with termination protection on. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -92,15 +92,15 @@ These are the most important decisions when configuring an event data store. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AwsKmsKey** | `kmsKeyId` | `status.outputs.key_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-The single output, `event_data_store_arn`, is an identity echo rather than a composition input — no catalog component consumes it via ValueFromRef. It is the provider's import ID and what `aws cloudtrail start-query` SQL addresses in its FROM clause; the store's real product is query results in the Lake editor, not wiring for downstream resources.
+The single output, `event_data_store_arn`, is an identity echo rather than a composition input — no catalog kind consumes it via ValueFromRef. It is the provider's import ID and what `aws cloudtrail start-query` SQL addresses in its FROM clause; the store's real product is query results in the Lake editor, not wiring for downstream resources.
 
 ## Common Patterns
 
@@ -114,5 +114,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS CloudTrail**](/cloud-catalog/aws-cloud-trail) — the complementary surface: file delivery to S3 for the archive, Lake for SQL investigation
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) — SSE-KMS encryption of the stored events, fixed at creation
+- [**AWS CloudTrail**](/infra-catalog/aws-cloud-trail) — the complementary surface: file delivery to S3 for the archive, Lake for SQL investigation
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) — SSE-KMS encryption of the stored events, fixed at creation

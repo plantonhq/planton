@@ -5,7 +5,7 @@ import (
 
 	azurefirewallv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurefirewall/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -23,11 +23,11 @@ type Locals struct {
 	AzureTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurefirewallv1alpha1.AzureFirewallStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurefirewallv1alpha1.AzureFirewallIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureFirewall = stackInput.Target
-	target := stackInput.Target
+	locals.AzureFirewall = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -38,7 +38,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurefirewallv1alpha1.Azu
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureFirewall.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureFirewall.String()),
 	}
 
 	if target.Metadata.Id != "" {

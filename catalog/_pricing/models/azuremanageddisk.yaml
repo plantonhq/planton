@@ -1,20 +1,20 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. A hand model rather than a derivation for one reason the
 # derivation grammar cannot express: fixed-tier SKUs map disk_size_gb to a
 # tier meter through Azure's size BANDS (256 GiB -> P15), a banded lookup
-# no rule can state -- and a component's quantities have exactly one home,
+# no rule can state -- and a kind's quantities have exactly one home,
 # so the Premium SSD v2 subtractions stay hand-computed beside it. Each
 # preset's quantities are computed here and defended in their bases. The
 # 03-snapshot-clone preset deliberately has NO entry: its committed spend is
 # real (a Premium SSD tier fee) but its size -- and therefore its tier -- is
 # inherited from the source snapshot and invisible in the manifest, so any
 # figure would be a guess; absence is the honest state.
-# Schema: finops/componentcostestimatemodel/v1.
+# Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: azuremanageddisk
 spec:

@@ -43,7 +43,7 @@ var _ = ginkgo.Describe("GcpPscServiceAttachmentSpec", func() {
 		return &GcpPscServiceAttachment{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpPscServiceAttachment",
-			Metadata:   &shared.CloudResourceMetadata{Name: "orders-db-psc"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "orders-db-psc"},
 			Spec: &GcpPscServiceAttachmentSpec{
 				Region:               "us-central1",
 				TargetService:        nameRef("orders-ilb"),

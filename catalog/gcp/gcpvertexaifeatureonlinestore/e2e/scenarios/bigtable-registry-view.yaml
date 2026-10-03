@@ -13,7 +13,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpvertexaifeatureonlinestore
+    e2e-catalog-kind: gcpvertexaifeatureonlinestore
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpvertexaifeatureonlinestore/e2e/prerequisites/gcpbigquerytable-features.yaml,catalog/gcp/gcpvertexaifeatureonlinestore/e2e/prerequisites/gcpvertexaifeaturegroup-customers.yaml"

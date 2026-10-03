@@ -118,7 +118,7 @@ storage too; switching to PHYSICAL is allowed once every 14 days.
   connection / data-transfer / analytics-hub / data-policy resources are
   separate product families outside this kind's boundary.
 
-## Related Components
+## Related Kinds
 
 - [GcpBigQueryTable](../gcpbigquerytable/) -- infrastructure-owned tables, views, and external tables in this dataset
 - [GcpKmsKey](../gcpkmskey/) -- CMEK encryption key for dataset encryption

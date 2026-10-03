@@ -5,9 +5,9 @@ package dev.planton.aws.awsbedrockinferenceprofile.v1alpha1;
 import "catalog/aws/awsbedrockinferenceprofile/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsBedrockInferenceProfileStackInput is the input for the IaC modules
+// AwsBedrockInferenceProfileIacInput is the input for the IaC modules
 // that deploy the Bedrock inference profile.
-message AwsBedrockInferenceProfileStackInput {
+message AwsBedrockInferenceProfileIacInput {
   // target is the AwsBedrockInferenceProfile resource to deploy.
   AwsBedrockInferenceProfile target = 1;
   // provider_config contains the AWS provider credentials and configuration.

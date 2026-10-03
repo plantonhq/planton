@@ -108,14 +108,14 @@ spec:
 
 The registry prerequisite orders the rule after the KubernetesKubePrometheusStack that installs its CRDs. The `release` label a fenced stack selects by is a plain string; keep the stack's `release_name` output and the label in step.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `prometheus_rule_name` | Name of the created PrometheusRule (equals `metadata.name`). |
 | `namespace` | Namespace the PrometheusRule was created in. |
 
-## Related Components
+## Related Kinds
 
 - **KubernetesKubePrometheusStack**: installs the CRDs and the Prometheus that evaluates the rules.
 - **KubernetesNamespace**: where the object lives.

@@ -8,12 +8,12 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-func Resources(ctx *pulumi.Context, stackInput *azureroledefinitionv1alpha1.AzureRoleDefinitionStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *azureroledefinitionv1alpha1.AzureRoleDefinitionIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the Azure provider from the stack input via the shared builder, which resolves
+	// Build the Azure provider from the IaC input via the shared builder, which resolves
 	// the right credential mechanism (static client secret, keyless web identity, or ambient chain).
-	azureProvider, err := pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)
+	azureProvider, err := pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create azure provider")
 	}
@@ -75,7 +75,7 @@ func Resources(ctx *pulumi.Context, stackInput *azureroledefinitionv1alpha1.Azur
 		return errors.Wrapf(err, "failed to create role definition %s", locals.AzureRoleDefinition.Metadata.Name)
 	}
 
-	// Export stack outputs from the created resource (not the spec) so they
+	// Export outputs from the created resource (not the spec) so they
 	// carry the values Azure resolved -- the generated GUID and the defaulted
 	// assignable scopes in particular. The fully-scoped ARM ID
 	// (role_definition_resource_id in azurerm terms) is exported as

@@ -27,6 +27,6 @@ This preset deploys a single-node BASIC tier Redis instance — the smallest, ch
 - **02-ha-production** — when the cache becoming unavailable is an incident
 - **03-private-services-access** — Shared VPC / PSA connectivity with read replicas and CMEK
 
-## Related Components
+## Related Kinds
 
 - [GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork) — the network the cache attaches to

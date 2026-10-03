@@ -8,9 +8,9 @@
 # estimate generator replays the catalog presets through these rules to
 # emit ../estimates/azureapplicationgateway.yaml; a server-side estimator
 # evaluates the same rules against live manifests.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: azureapplicationgateway
 spec:
@@ -86,8 +86,8 @@ spec:
           op: is_set
       text: traffic pushing an instance past its 10 reserved capacity units bills additional units on the same meter
     - text: outbound data transfer bills per GB at Azure's bandwidth rates
-    - text: the referenced Standard public IPs bill hourly on their own components
-    - text: Key Vault-sourced certificates bill on the referenced vault's component
+    - text: the referenced Standard public IPs bill hourly on their own kinds
+    - text: Key Vault-sourced certificates bill on the referenced vault's kind
   notes:
     - applies_when:
         - field_path: sku

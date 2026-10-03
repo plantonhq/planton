@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.gcp.gcpbillingbudget.v1alpha1;
 
-// GcpBillingBudgetStackOutputs captures the budget after provisioning.
-message GcpBillingBudgetStackOutputs {
+// GcpBillingBudgetOutputs captures the budget after provisioning.
+message GcpBillingBudgetOutputs {
   // The budget's resource name, `billingAccounts/{account}/budgets/{id}` --
   // the handle the Cloud Billing API and console address it by.
   string name = 1;

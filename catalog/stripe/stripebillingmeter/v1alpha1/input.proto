@@ -5,9 +5,9 @@ package dev.planton.stripe.stripebillingmeter.v1alpha1;
 import "catalog/stripe/provider.proto";
 import "catalog/stripe/stripebillingmeter/v1alpha1/api.proto";
 
-// StripeBillingMeterStackInput is the input to the StripeBillingMeter IaC module.
+// StripeBillingMeterIacInput is the input to the StripeBillingMeter IaC module.
 // It contains the target resource and the Stripe provider configuration.
-message StripeBillingMeterStackInput {
+message StripeBillingMeterIacInput {
   // target is the StripeBillingMeter resource to be deployed.
   StripeBillingMeter target = 1;
 

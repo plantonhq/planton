@@ -1,19 +1,19 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflareauthenticatedoriginpullscertificate
 spec:
   values:
     - name: zone_id
       derivations:
-        - from_stack_output: zone_id
+        - from_output: zone_id
       where_to_find: >-
         Cloudflare dashboard -> the zone's Overview page (Zone ID in the
         right-hand API panel), or `GET /zones?name=<domain>` on the
         Cloudflare v4 API (the id field).
     - name: certificate_id
       derivations:
-        - from_stack_output: certificate_id
+        - from_output: certificate_id
       where_to_find: >-
         For zone-scoped uploads `GET /zones/<zone_id>/origin_tls_client_auth`
         on the Cloudflare v4 API; for hostname-scoped uploads

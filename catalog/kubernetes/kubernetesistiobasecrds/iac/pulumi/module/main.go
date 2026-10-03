@@ -9,13 +9,13 @@ import (
 )
 
 // Resources installs the Istio base CRDs on the target Kubernetes cluster.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesistiobasecrdsv1alpha1.KubernetesIstioBaseCrdsStackInput) error {
+func Resources(ctx *pulumi.Context, iacInput *kubernetesistiobasecrdsv1alpha1.KubernetesIstioBaseCrdsIacInput) error {
 	// Initialize locals with computed values
-	locals := initializeLocals(ctx, stackInput)
+	locals := initializeLocals(ctx, iacInput)
 
 	// Set up kubernetes provider from the supplied cluster credential
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(
-		ctx, stackInput.ProviderConfig, "kubernetes")
+		ctx, iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}

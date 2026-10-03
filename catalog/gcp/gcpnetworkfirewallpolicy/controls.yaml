@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: gcpnetworkfirewallpolicy
 spec:
@@ -27,7 +27,7 @@ spec:
       evidence:
         type: spec_validation
         reference: Every rule states its direction, its action, and a match with at least one layer4_configs entry (repeated.min_items = 1), so what an INGRESS rule admits or denies -- by CIDR, country, threat-intelligence list, address group, secure tag, or source network -- is always an explicit, reviewable choice, and one policy holds the network's whole rule set in one ordered list.
-      notes: "This component IS the restricted-ingress control for the networks it attaches to, evaluated after the hierarchical policies and before legacy VPC rules. How restrictive is the rule set's choice -- preset 01 admits only IAP SSH and Google's health-check ranges and denies (and logs) everything else; preset 02 scopes a regional rule to one internal load balancer; preset 03 lets tagged tiers talk only to the tiers they should. Two caveats a reviewer should hear: disabled=true leaves a rule in place but unenforced, and a rule whose target secure tags are all INEFFECTIVE is silently ignored."
+      notes: "This kind IS the restricted-ingress control for the networks it attaches to, evaluated after the hierarchical policies and before legacy VPC rules. How restrictive is the rule set's choice -- preset 01 admits only IAP SSH and Google's health-check ranges and denies (and logs) everything else; preset 02 scopes a regional rule to one internal load balancer; preset 03 lets tagged tiers talk only to the tiers they should. Two caveats a reviewer should hear: disabled=true leaves a rule in place but unenforced, and a rule whose target secure tags are all INEFFECTIVE is silently ignored."
     - control_id: edge-protection
       status: configurable
       field_path: rules.security_profile_group

@@ -2,14 +2,14 @@ syntax = "proto3";
 
 package dev.planton.azure.azurecosmosdbmongocollection.v1alpha1;
 
-// **AzureCosmosdbMongoCollectionStackOutputs** captures the outputs of
+// **AzureCosmosdbMongoCollectionOutputs** captures the outputs of
 // provisioning a Cosmos DB MongoDB API collection.
 //
 // No endpoint or credential outputs on purpose: connectivity and the
 // MongoDB connection strings live on the ACCOUNT (AzureCosmosdbAccount's
 // outputs); the collection is addressed inside that connection by
 // database and collection name.
-message AzureCosmosdbMongoCollectionStackOutputs {
+message AzureCosmosdbMongoCollectionOutputs {
   // The Azure Resource Manager ID of the collection -- the management-
   // plane identity ARM reads and policy target.
   // Format: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.DocumentDB/databaseAccounts/{account}/mongodbDatabases/{db}/collections/{name}

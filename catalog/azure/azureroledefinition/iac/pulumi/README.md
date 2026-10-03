@@ -20,7 +20,7 @@ resource type does not support them).
 
 ## Inputs
 
-The module receives an `AzureRoleDefinitionStackInput` containing:
+The module receives an `AzureRoleDefinitionIacInput` containing:
 
 - `target.spec.name` -- the role's tenant-unique display name
 - `target.spec.scope` -- the ARM creation scope (references resolved to a literal by the platform)

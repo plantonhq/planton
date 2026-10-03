@@ -5,7 +5,7 @@ import (
 
 	gcpplantonrunnerv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpplantonrunner/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -13,7 +13,7 @@ import (
 // (`<name>-token`) holding the runner token.
 const tokenSecretSuffix = "-token"
 
-// Locals holds computed values derived from the stack input for use across
+// Locals holds computed values derived from the IaC input for use across
 // the Pulumi module. Every resolution here has an exact twin in the
 // Terraform module's locals.tf — keep them in lockstep.
 type Locals struct {
@@ -41,10 +41,10 @@ type Locals struct {
 	ProjectId string
 }
 
-// initializeLocals pulls values from the stack input and populates the
+// initializeLocals pulls values from the IaC input and populates the
 // Locals struct. Similar to Terraform's "locals" concept.
-func initializeLocals(_ *pulumi.Context, stackInput *gcpplantonrunnerv1alpha1.GcpPlantonRunnerStackInput) *Locals {
-	target := stackInput.Target
+func initializeLocals(_ *pulumi.Context, iacInput *gcpplantonrunnerv1alpha1.GcpPlantonRunnerIacInput) *Locals {
+	target := iacInput.Target
 
 	locals := &Locals{
 		GcpPlantonRunner: target,
@@ -60,7 +60,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpplantonrunnerv1alpha1.Gc
 	locals.GcpLabels = map[string]string{
 		gcplabelkeys.Resource:     "true",
 		gcplabelkeys.ResourceName: target.Metadata.Name,
-		gcplabelkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_GcpPlantonRunner.String()),
+		gcplabelkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_GcpPlantonRunner.String()),
 	}
 	if target.Metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = target.Metadata.Org

@@ -7,8 +7,8 @@ Serverless caches.
 
 - `main.tf` — ElastiCache Serverless cache resource with dynamic scaling limits
 - `locals.tf` — Variable transformations, tag construction, limit computation
-- `outputs.tf` — Stack outputs matching `AwsServerlessElasticacheStackOutputs`
-- `variables.tf` — Input variables from stack input
+- `outputs.tf` — outputs matching `AwsServerlessElasticacheOutputs`
+- `variables.tf` — Input variables from IaC input
 - `provider.tf` — AWS provider configuration
 
 ## Usage

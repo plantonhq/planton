@@ -8,15 +8,15 @@ import "shared/metadata.proto";
 // PriceBook is a provider's pinned list-price snapshot -- the single home of
 // every unit price the catalog's cost estimates cite. One book per provider,
 // at catalog/_pricing/pricebook/<provider>.yaml (filename = metadata.name =
-// the provider directory name under catalog/). Component estimate models
+// the provider directory name under catalog/). Kind estimate models
 // reference entries by their slug name and never restate a price; the
 // estimate generator joins the two, so a price exists in exactly one place
 // and every estimate that cites it moves together when it is refreshed.
 // Follows the KRM pattern (apiVersion + kind + metadata + spec).
 //
-// Entries are identified by their own slug, never by a component's meter
+// Entries are identified by their own slug, never by a kind's meter
 // label: a price's true identity is the provider's SKU (a P10 disk in
-// eastus, a Standard_D4s_v5 hour), and multiple components with the same
+// eastus, a Standard_D4s_v5 hour), and multiple kinds with the same
 // meter label may need different SKUs' prices.
 //
 // Refresh discipline: prices enter the book pinned -- each entry carries the
@@ -43,6 +43,6 @@ import "shared/metadata.proto";
 message PriceBook {
   string api_version = 1;
   string kind = 2;
-  dev.planton.shared.CloudResourceMetadata metadata = 3;
+  dev.planton.shared.CatalogObjectMetadata metadata = 3;
   PriceBookSpec spec = 4;
 }

@@ -8,10 +8,10 @@ import (
 )
 
 // Resources is the Pulumi program entry-point for the GcpRouterNat component.
-func Resources(ctx *pulumi.Context, stackInput *gcprouternatv1alpha1.GcpRouterNatStackInput) error {
-	locals := initializeLocals(stackInput)
+func Resources(ctx *pulumi.Context, iacInput *gcprouternatv1alpha1.GcpRouterNatIacInput) error {
+	locals := initializeLocals(iacInput)
 
-	gcpProvider, err := pulumigoogleprovider.Get(ctx, stackInput.ProviderConfig)
+	gcpProvider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to setup google provider")
 	}

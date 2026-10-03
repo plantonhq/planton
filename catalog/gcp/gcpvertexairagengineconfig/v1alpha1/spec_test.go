@@ -34,7 +34,7 @@ var _ = ginkgo.Describe("GcpVertexAiRagEngineConfigSpec", func() {
 		return &GcpVertexAiRagEngineConfig{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpVertexAiRagEngineConfig",
-			Metadata:   &shared.CloudResourceMetadata{Name: "rag-engine-us-central1"},
+			Metadata:   &shared.CatalogObjectMetadata{Name: "rag-engine-us-central1"},
 			Spec: &GcpVertexAiRagEngineConfigSpec{
 				Location: "us-central1",
 				Tier:     "BASIC",

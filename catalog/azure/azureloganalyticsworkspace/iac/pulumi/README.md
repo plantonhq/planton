@@ -17,8 +17,8 @@ component, at 100% behavioral parity with the Terraform module.
 - Enum wire maps live in `locals.go` (SKU and identity-type vocabularies,
   mechanically identical to the Terraform module's `locals.tf` maps).
 - True-default optional booleans are presence-guarded to the proto
-  defaults: stack inputs built from a manifest materialize defaults, but
-  direct stack-input paths do not.
+  defaults: IaC inputs built from a manifest materialize defaults, but
+  direct iac-input paths do not.
 - `workspace_customer_id` exports the provider's WorkspaceId attribute
   (the agent-facing GUID); `workspace_id` exports the ARM resource ID --
   the FK seam downstream kinds reference.

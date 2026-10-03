@@ -1,5 +1,5 @@
 apiVersion: _test.planton.dev/v1alpha1
-kind: TestCloudResourceKubernetes
+kind: TestCatalogKindKubernetes
 metadata:
   name: workload
   env: dev

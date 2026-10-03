@@ -5,7 +5,7 @@ import (
 
 	azurecognitiveaccountprojectv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurecognitiveaccountproject/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -31,11 +31,11 @@ var identityTypeWire = map[azurecognitiveaccountprojectv1alpha1.AzureCognitiveAc
 	azurecognitiveaccountprojectv1alpha1.AzureCognitiveAccountProjectIdentityType_SYSTEM_AND_USER_ASSIGNED: "SystemAssigned, UserAssigned",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurecognitiveaccountprojectv1alpha1.AzureCognitiveAccountProjectStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurecognitiveaccountprojectv1alpha1.AzureCognitiveAccountProjectIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureCognitiveAccountProject = stackInput.Target
-	target := stackInput.Target
+	locals.AzureCognitiveAccountProject = iacInput.Target
+	target := iacInput.Target
 
 	locals.CognitiveAccountId = target.Spec.CognitiveAccountId.GetValue()
 
@@ -46,7 +46,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurecognitiveaccountproj
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureCognitiveAccountProject.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureCognitiveAccountProject.String()),
 	}
 
 	if target.Metadata.Id != "" {

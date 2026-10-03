@@ -4,7 +4,7 @@ Grants one role, to one identity, on ONE Cloud Storage bucket — for grantees t
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Bucket IAM Member Binding** -- a `google_storage_bucket_iam_member` merging the (role, member) pair into the target bucket's IAM policy, with an optional IAM Condition attached
 
@@ -17,7 +17,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### GCP Project
 
-- **A Cloud Storage bucket** whose IAM policy receives the grant. Provide its name directly or reference a GcpGcsBucket Cloud Resource via ValueFromRef.
+- **A Cloud Storage bucket** whose IAM policy receives the grant. Provide its name directly or reference a GcpGcsBucket Infra Component via ValueFromRef.
 - **The identity** receiving the grant must already exist — a sink's writer identity exists once the sink is created.
 - **Uniform bucket-level access** on the bucket if the grant carries a condition.
 
@@ -51,7 +51,7 @@ spec:
 planton apply -f gcp-gcs-bucket-iam-member.yaml
 ```
 
-This merges one binding into the bucket's policy. A Stack Job tracks the provisioning in real time.
+This merges one binding into the bucket's policy. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -91,7 +91,7 @@ These are the most important decisions when configuring a grant. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -100,9 +100,9 @@ These are the most important decisions when configuring a grant. Explore the ful
 | **GcpServiceAccount** (optional) | `member` | `status.outputs.member` |
 | **GcpLoggingSink** (optional) | `member` | `status.outputs.writer_identity` |
 
-### What This Component Provides
+### What This Kind Provides
 
-This component has no outputs a downstream Cloud Resource would consume: `status.outputs` records the grant's post-resolution facts — the (`bucket`, `role`, `member`) triple after any references were resolved, plus the bucket IAM policy `etag` at the moment this grant merged. They exist for audit and drift review, not for ValueFromRef wiring.
+This kind has no outputs a downstream Infra Component would consume: `status.outputs` records the grant's post-resolution facts — the (`bucket`, `role`, `member`) triple after any references were resolved, plus the bucket IAM policy `etag` at the moment this grant merged. They exist for audit and drift review, not for ValueFromRef wiring.
 
 ## Common Patterns
 
@@ -114,7 +114,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP GCS Bucket**](/cloud-catalog/gcp-gcs-bucket) -- its `bucket_id` output feeds the bucket field; its own `iam_members` covers grantees that do not depend on it
-- [**GCP Logging Sink**](/cloud-catalog/gcp-logging-sink) -- its `writer_identity` output feeds the member field for bucket log exports
-- [**GCP Service Account**](/cloud-catalog/gcp-service-account) -- its `member` output feeds the member field for workload access
-- [**GCP IAM Custom Role**](/cloud-catalog/gcp-iam-custom-role) -- its `name` output feeds the role field for curated permission bundles
+- [**GCP GCS Bucket**](/infra-catalog/gcp-gcs-bucket) -- its `bucket_id` output feeds the bucket field; its own `iam_members` covers grantees that do not depend on it
+- [**GCP Logging Sink**](/infra-catalog/gcp-logging-sink) -- its `writer_identity` output feeds the member field for bucket log exports
+- [**GCP Service Account**](/infra-catalog/gcp-service-account) -- its `member` output feeds the member field for workload access
+- [**GCP IAM Custom Role**](/infra-catalog/gcp-iam-custom-role) -- its `name` output feeds the role field for curated permission bundles

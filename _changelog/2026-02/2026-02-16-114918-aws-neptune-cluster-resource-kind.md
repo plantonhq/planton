@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added `AwsNeptuneCluster` (R26) as a new deployment component in Planton, enabling fully managed graph database provisioning on AWS. Neptune supports property-graph (Gremlin) and RDF (SPARQL) query languages. The component bundles cluster, instances, subnet group, security group, and parameter group into a single resource definition, following the established DocumentDB/RDS Cluster pattern.
+Added `AwsNeptuneCluster` (R26) as a new catalog kind in Planton, enabling fully managed graph database provisioning on AWS. Neptune supports property-graph (Gremlin) and RDF (SPARQL) query languages. The kind bundles cluster, instances, subnet group, security group, and parameter group into a single resource definition, following the established DocumentDB/RDS Cluster pattern.
 
 ## Problem Statement / Motivation
 
@@ -20,9 +20,9 @@ Planton's AWS provider lacked graph database support. Users building knowledge g
 
 ## Solution / What's New
 
-A complete `AwsNeptuneCluster` deployment component covering:
+A complete `AwsNeptuneCluster` catalog kind covering:
 
-- **Protobuf API** — spec, api, stack_input, stack_outputs with full buf.validate rules and CEL cross-field validations
+- **Protobuf API** — spec, api, iac_input, outputs with full buf.validate rules and CEL cross-field validations
 - **Pulumi module** — 8 Go files implementing cluster, instances, subnet group, security group, and parameter group
 - **Terraform module** — 9 HCL files with feature parity to the Pulumi module
 - **22 spec validation tests** — all passing, covering valid inputs, invalid inputs, CIDR validation, port ranges, window formats, storage types, parameter group apply methods, and serverless scaling bounds
@@ -35,7 +35,7 @@ Unlike DocumentDB and RDS Cluster, Neptune does not use master username/password
 - **IAM database authentication** — temporary credentials from IAM roles/users
 - **Network-level security** — VPC security groups and subnet isolation
 
-This fundamentally simplifies the spec compared to other database components.
+This fundamentally simplifies the spec compared to other database kinds.
 
 ### Neptune-Specific Features
 
@@ -66,12 +66,12 @@ flowchart TB
 ```
 apis/dev/planton/provider/aws/awsneptunecluster/v1/
 ├── spec.proto                    # 27 fields, 4 CEL validations
-├── stack_outputs.proto           # 10 outputs
+├── outputs.proto           # 10 outputs
 ├── api.proto                     # KRM wiring
-├── stack_input.proto             # IaC module input
+├── iac_input.proto             # IaC module input
 ├── spec_test.go                  # 22 validation tests
 ├── catalog-page.md               # User-facing catalog page
-├── README.md                     # Component overview
+├── README.md                     # Kind overview
 ├── examples.md                   # 4 YAML examples
 ├── docs/README.md                # Comprehensive Neptune research
 ├── iac/
@@ -117,14 +117,14 @@ apis/dev/planton/provider/aws/awsneptunecluster/v1/
 ## Impact
 
 - **New resource kind**: `AwsNeptuneCluster` (enum 341, id_prefix: `awsnep`)
-- **Phase 3 progress**: 1 of 7 specialized components complete (R26)
+- **Phase 3 progress**: 1 of 7 specialized kinds complete (R26)
 - **Infra chart enablement**: Graph database patterns now available for future composition
 
 ## Related Work
 
 - Part of project `20260215.02.sp.aws-resource-expansion` (Phase 3: Specialized Services)
 - Follows the AwsDocumentDB cluster+instance pattern
-- Enum 341 registered in `cloud_resource_kind.proto`
+- Enum 341 registered in `catalog_kind.proto`
 
 ---
 

@@ -5,7 +5,7 @@ import (
 
 	awsecstaskdefinitionv1alpha1 "github.com/plantonhq/planton/catalog/aws/awsecstaskdefinition/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/aws/awstagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -15,17 +15,17 @@ type Locals struct {
 	AwsTags map[string]string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *awsecstaskdefinitionv1alpha1.AwsEcsTaskDefinitionStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *awsecstaskdefinitionv1alpha1.AwsEcsTaskDefinitionIacInput) *Locals {
 	locals := &Locals{}
-	locals.AwsEcsTaskDefinition = stackInput.Target
+	locals.AwsEcsTaskDefinition = iacInput.Target
 
-	metadata := stackInput.Target.Metadata
+	metadata := iacInput.Target.Metadata
 	locals.AwsTags = map[string]string{
 		awstagkeys.Name:         metadata.Name,
 		awstagkeys.Resource:     strconv.FormatBool(true),
 		awstagkeys.Organization: metadata.Org,
 		awstagkeys.Environment:  metadata.Env,
-		awstagkeys.ResourceKind: cloudresourcekind.CloudResourceKind_AwsEcsTaskDefinition.String(),
+		awstagkeys.ResourceKind: catalogkind.CatalogKind_AwsEcsTaskDefinition.String(),
 		awstagkeys.ResourceId:   metadata.Id,
 	}
 

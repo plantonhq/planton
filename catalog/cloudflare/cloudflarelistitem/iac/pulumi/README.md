@@ -9,15 +9,15 @@ main.go (entrypoint)
   └── module/
         ├── main.go      — Resources() orchestrator
         ├── locals.go    — Locals struct and initialization
-        ├── outputs.go   — Stack output key constants
+        ├── outputs.go   — output key constants
         └── list_item.go — item creation
 ```
 
 ## How It Works
 
-1. `main.go` loads the `CloudflareListItemStackInput` from the `STACK_INPUT` environment variable (base64-encoded YAML).
+1. `main.go` loads the `CloudflareListItemIacInput` from the `IAC_INPUT` environment variable (base64-encoded YAML).
 2. `module.Resources()` initializes locals, creates a Cloudflare provider, and writes the entry. Exactly one of `ip` / `asn` / `hostname` / `redirect` is sent.
-3. Stack outputs are exported matching `CloudflareListItemStackOutputs`.
+3. Outputs are exported matching `CloudflareListItemOutputs`.
 
 Item values are immutable in the provider: changing an entry replaces it. Do not also declare inline `items` on the parent CloudflareList.
 
@@ -38,4 +38,4 @@ make test
 
 - `github.com/pulumi/pulumi-cloudflare/sdk/v6` — Cloudflare Pulumi provider
 - `github.com/pulumi/pulumi/sdk/v3` — Pulumi SDK
-- `github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule` — Shared stack input loading and provider wiring
+- `github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule` — Shared IaC input loading and provider wiring

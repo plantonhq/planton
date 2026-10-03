@@ -1,5 +1,5 @@
 # StripePaymentLink Outputs
-# Maps to the StripePaymentLinkStackOutputs protobuf message.
+# Maps to the StripePaymentLinkOutputs protobuf message.
 
 output "id" {
   description = "The payment link's Stripe id (plink_...); it changes when the link is replaced"

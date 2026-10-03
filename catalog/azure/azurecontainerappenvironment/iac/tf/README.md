@@ -8,7 +8,7 @@ The Terraform/OpenTofu implementation of the `AzureContainerAppEnvironment` comp
 tf/
 ├── main.tf          # Environment + optional custom-domain association
 ├── variables.tf     # Input variables (metadata + spec)
-├── outputs.tf       # Stack outputs
+├── outputs.tf       # Outputs
 ├── locals.tf        # Tag merge + enum wire-value maps
 └── provider.tf      # Empty azurerm provider (credentials injected as ARM_* env)
 ```

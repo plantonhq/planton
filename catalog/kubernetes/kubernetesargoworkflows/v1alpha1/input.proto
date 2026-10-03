@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesargoworkflows.v1alpha1;
 import "catalog/kubernetes/kubernetesargoworkflows/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//argo-workflows-kubernetes stack-input
-message KubernetesArgoWorkflowsStackInput {
-  //target cloud-resource
+//argo-workflows-kubernetes iac-input
+message KubernetesArgoWorkflowsIacInput {
+  //target infra-component
   KubernetesArgoWorkflows target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

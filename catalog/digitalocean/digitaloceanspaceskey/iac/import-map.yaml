@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: digitaloceanspaceskey
 spec:
@@ -13,7 +13,7 @@ spec:
   values:
     - name: access_key
       derivations:
-        - from_stack_output: access_key
+        - from_output: access_key
       where_to_find: >-
         The key's access key ID: DigitalOcean control panel -> Spaces
         Object Storage -> Access Keys, or the API (GET /v2/spaces/keys).

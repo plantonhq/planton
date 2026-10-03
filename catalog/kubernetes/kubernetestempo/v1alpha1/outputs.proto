@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.kubernetes.kubernetestempo.v1alpha1;
 
-//tempo-kubernetes stack outputs
-message KubernetesTempoStackOutputs {
+//tempo-kubernetes outputs
+message KubernetesTempoOutputs {
   //namespace Tempo runs in.
   string namespace = 1;
 

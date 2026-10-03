@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.azure.azurefrontdoorsecuritypolicy.v1alpha1;
 
-// **AzureFrontDoorSecurityPolicyStackOutputs** captures the outputs of
+// **AzureFrontDoorSecurityPolicyOutputs** captures the outputs of
 // provisioning an Azure Front Door security policy.
-message AzureFrontDoorSecurityPolicyStackOutputs {
+message AzureFrontDoorSecurityPolicyOutputs {
   // The Azure Resource Manager ID of the security policy. Nothing
   // composes on a security policy (it is itself the association), so
   // this exists for operational addressing -- diagnostics, RBAC scoping,

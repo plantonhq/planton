@@ -4,7 +4,7 @@ Declares a production-grade MySQL cluster reconciled by the Percona Operator for
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **PerconaXtraDBCluster** (`pxc.percona.com/v1`, named `metadata.name`) -- the Galera cluster; the operator derives database pods (`<name>-pxc-0..N`), the proxy Services (`<name>-haproxy` / `<name>-proxysql`, plus `<name>-haproxy-replicas` for reads), and the system-users Secret (`<name>-secrets`) from it
 - **Credential Secrets** -- every declared user password and backup access key materializes as a Kubernetes Secret the operator and backup jobs read; never plaintext in the rendered resource
@@ -15,7 +15,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### Kubernetes Cluster
 
@@ -59,11 +59,11 @@ spec:
 planton apply -f mysql.yaml
 ```
 
-The operator brings up three Galera nodes and three HAProxy replicas; applications connect at the exported `kube_endpoint` as `app` (or as root, from the operator-managed `orders-db-secrets` Secret). A Stack Job tracks the provisioning in real time.
+The operator brings up three Galera nodes and three HAProxy replicas; applications connect at the exported `kube_endpoint` as `app` (or as root, from the operator-managed `orders-db-secrets` Secret). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire placement and storage to resources managed by other Cloud Resources:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire placement and storage to resources managed by other Infra Components:
 
 ```yaml
 spec:
@@ -106,7 +106,7 @@ These are the most important decisions when configuring MySQL. Explore the full 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -114,9 +114,9 @@ These are the most important decisions when configuring MySQL. Explore the full 
 | **KubernetesStorageClass** | `storage.storageClass` (also ProxySQL's and the PVC backup volume's) | `status.outputs.storage_class_name` |
 | **KubernetesClusterIssuer** | `tls.issuer` (or a namespaced KubernetesIssuer via `issuerKind`) | `metadata.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -138,8 +138,8 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Percona Operator for MySQL**](/cloud-catalog/kubernetes-percona-mysql-operator) -- the prerequisite engine: it must be on the cluster and watching this namespace before the database can reconcile
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- the placement target; databases conventionally live beside their operator
-- [**Kubernetes StorageClass**](/cloud-catalog/kubernetes-storage-class) -- pins the volumes to an SSD-backed or provisioned-IOPS class
-- [**Cert Manager Cluster Issuer**](/cloud-catalog/kubernetes-cluster-issuer) -- the cert-manager trust seam for organization-verified TLS
-- [**Kubernetes Deployment**](/cloud-catalog/kubernetes-deployment) -- the applications that consume the exported endpoint and the user credential Secrets
+- [**Percona Operator for MySQL**](/infra-catalog/kubernetes-percona-mysql-operator) -- the prerequisite engine: it must be on the cluster and watching this namespace before the database can reconcile
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the placement target; databases conventionally live beside their operator
+- [**Kubernetes StorageClass**](/infra-catalog/kubernetes-storage-class) -- pins the volumes to an SSD-backed or provisioned-IOPS class
+- [**Cert Manager Cluster Issuer**](/infra-catalog/kubernetes-cluster-issuer) -- the cert-manager trust seam for organization-verified TLS
+- [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- the applications that consume the exported endpoint and the user credential Secrets

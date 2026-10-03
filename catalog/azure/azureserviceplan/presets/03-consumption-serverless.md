@@ -1,6 +1,6 @@
 # Consumption (Serverless) Service Plan
 
-This preset creates an Azure App Service Plan with the Consumption (Y1) SKU — a fully serverless plan that scales to zero and bills per execution. The Consumption plan is the cheapest option for Azure Functions: nothing is charged when idle, and usage bills per execution plus per GB-second of compute. Each month includes 1 million free executions and 400,000 GB-seconds free. The verified figure for this preset lives in the component's generated estimate at `catalog/_pricing/estimates/azureserviceplan.yaml` — computed from the pinned price book, never hand-typed here.
+This preset creates an Azure App Service Plan with the Consumption (Y1) SKU — a fully serverless plan that scales to zero and bills per execution. The Consumption plan is the cheapest option for Azure Functions: nothing is charged when idle, and usage bills per execution plus per GB-second of compute. Each month includes 1 million free executions and 400,000 GB-seconds free. The verified figure for this preset lives in the kind's generated estimate at `catalog/_pricing/estimates/azureserviceplan.yaml` — computed from the pinned price book, never hand-typed here.
 
 ## When to Use
 

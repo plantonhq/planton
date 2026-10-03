@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarezerotrustaccessinfrastructuretarget.v1alpha1;
 
-// CloudflareZeroTrustAccessInfrastructureTargetStackOutputs captures the
+// CloudflareZeroTrustAccessInfrastructureTargetOutputs captures the
 // observable outputs after registering the infrastructure target.
-message CloudflareZeroTrustAccessInfrastructureTargetStackOutputs {
+message CloudflareZeroTrustAccessInfrastructureTargetOutputs {
   // The Cloudflare-assigned UUID of the target.
   string target_id = 1;
 }

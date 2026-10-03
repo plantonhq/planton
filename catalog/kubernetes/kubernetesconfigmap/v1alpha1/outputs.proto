@@ -3,11 +3,11 @@ syntax = "proto3";
 package dev.planton.kubernetes.kubernetesconfigmap.v1alpha1;
 
 /**
- * **KubernetesConfigMapStackOutputs** captures observable outputs from a Kubernetes ConfigMap
+ * **KubernetesConfigMapOutputs** captures observable outputs from a Kubernetes ConfigMap
  * deployment. Downstream resources (workloads mounting the ConfigMap, charts wiring
  * `configMapRef` env sources) compose on these handles.
  */
-message KubernetesConfigMapStackOutputs {
+message KubernetesConfigMapOutputs {
   /**
    * The name of the created ConfigMap — the handle workloads use in `configMapRef`,
    * `configMapKeyRef`, and `configMap` volume definitions.

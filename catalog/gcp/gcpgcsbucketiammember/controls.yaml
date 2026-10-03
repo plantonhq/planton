@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: gcpgcsbucketiammember
 spec:
@@ -35,7 +35,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: This component IS role-based access control on the bucket -- the additive grant assigns exactly one role to one member, and managing the grant itself authorizes against storage.buckets.getIamPolicy and storage.buckets.setIamPolicy on the target bucket; no unauthenticated management path exists.
+        reference: This kind IS role-based access control on the bucket -- the additive grant assigns exactly one role to one member, and managing the grant itself authorizes against storage.buckets.getIamPolicy and storage.buckets.setIamPolicy on the target bucket; no unauthenticated management path exists.
       notes: Bucket-scoped grants are the least-privilege shape for a sink's writer -- IAM also flows down onto the bucket from its project, so a project-level objectCreator grant would let the writer fill every bucket. The condition field narrows a grant further (an object-name prefix, an expiry) on buckets with uniform bucket-level access.
     - control_id: workload-identity
       status: not_applicable

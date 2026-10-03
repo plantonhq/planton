@@ -4,7 +4,7 @@ Deploys an AWS Backup restore testing plan: scheduled, automated restore drills 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Restore Testing Plan** — the drill schedule plus the recovery-point selection rule: which vaults to draw from, snapshot or continuous points, latest-or-random within a lookback window
 - **Restore Testing Selections** — one per `selections` entry, each testing one protected resource type (EBS, EC2, RDS, S3, ...) under its IAM role, covering resources by explicit ARNs or by tag conditions
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** — an active connection in the Connect module with AWS Backup permissions. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** — an active connection in the Connect module with AWS Backup permissions. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -62,7 +62,7 @@ spec:
 planton apply -f restore-testing-plan.yaml
 ```
 
-This creates a plan that every Monday at 05:00 UTC restores a random snapshot from the last 30 days across all vaults, testing every EBS volume under the referenced role, holding each restored copy four hours for validation. A Stack Job tracks the provisioning in real time.
+This creates a plan that every Monday at 05:00 UTC restores a random snapshot from the last 30 days across all vaults, testing every EBS volume under the referenced role, holding each restored copy four hours for validation. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -108,7 +108,7 @@ These are the most important decisions when configuring a restore testing plan. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -116,9 +116,9 @@ These are the most important decisions when configuring a restore testing plan. 
 
 The vaults drilled against are named as ARN strings (or `"*"`) in `recoveryPointSelection.includeVaults`, not as typed references.
 
-### What This Component Provides
+### What This Kind Provides
 
-The single output, `restore_testing_plan_arn`, is an identity echo rather than a composition input — no catalog component consumes it via ValueFromRef. The plan and its selections import by name (AWS assigns no separate ID); test results and restore-time metrics surface in the Backup console's restore testing view, which is where the drill evidence actually lives.
+The single output, `restore_testing_plan_arn`, is an identity echo rather than a composition input — no catalog kind consumes it via ValueFromRef. The plan and its selections import by name (AWS assigns no separate ID); test results and restore-time metrics surface in the Backup console's restore testing view, which is where the drill evidence actually lives.
 
 ## Common Patterns
 
@@ -132,7 +132,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS Backup Plan**](/cloud-catalog/aws-backup-plan) — creates the recovery points the drills restore
-- [**AWS Backup Vault**](/cloud-catalog/aws-backup-vault) — the vaults `includeVaults` draws recovery points from
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) — the restore-permissions role each selection runs under
-- [**AWS Backup Framework**](/cloud-catalog/aws-backup-framework) — evaluates the restore-time metrics the drills produce
+- [**AWS Backup Plan**](/infra-catalog/aws-backup-plan) — creates the recovery points the drills restore
+- [**AWS Backup Vault**](/infra-catalog/aws-backup-vault) — the vaults `includeVaults` draws recovery points from
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) — the restore-permissions role each selection runs under
+- [**AWS Backup Framework**](/infra-catalog/aws-backup-framework) — evaluates the restore-time metrics the drills produce

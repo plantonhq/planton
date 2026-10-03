@@ -18,7 +18,7 @@
 //     `providers schema -json` artifacts per pinned provider version
 //     (schemas/, produced by the distiller sub-package). No source parsing.
 //   - The catalog's contract side is a proto field census from descriptors
-//     via pkg/crkreflect (spec_census.go) -- the same registry walk as
+//     via pkg/catalogkindreflect (spec_census.go) -- the same registry walk as
 //     pkg/secretcoverage; a reader who knows one walk knows both.
 //   - The catalog's module side is a consumed-resource, provider-pin, and
 //     provider-attachment census over every `*.tf` file of every kind's

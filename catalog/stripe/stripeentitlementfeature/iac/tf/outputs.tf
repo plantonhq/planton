@@ -1,5 +1,5 @@
 # StripeEntitlementFeature Outputs
-# Maps to the StripeEntitlementFeatureStackOutputs protobuf message.
+# Maps to the StripeEntitlementFeatureOutputs protobuf message.
 
 output "id" {
   description = "The feature's Stripe id (feat_...), the value a StripeProduct's features reference"

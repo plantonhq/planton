@@ -81,7 +81,7 @@ and the Elastic IPs partners have allowlisted -- stays put.
   everything else keeps its AWS default instead of a module opinion.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `load_balancer_arn`: ARN of the NLB (what `AwsLbListener` resources attach through; also what Global Accelerator endpoints reference)
 - `load_balancer_name`: final name assigned to the NLB (metadata.name, truncated to AWS's 32-character limit when necessary)

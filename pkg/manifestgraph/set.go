@@ -3,17 +3,17 @@ package manifestgraph
 import (
 	"fmt"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/reflection/metadatareflect"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"google.golang.org/protobuf/proto"
 )
 
 // Identity is a node's graph identity: the triple the platform's dependency
 // graph keys on. Two manifests with the same identity are the same node.
 type Identity struct {
-	Kind cloudresourcekind.CloudResourceKind
+	Kind catalogkind.CatalogKind
 	Slug string
 	Env  string
 }
@@ -46,7 +46,7 @@ type Node struct {
 }
 
 // Metadata returns the node's extracted metadata (nil-safe).
-func (n *Node) Metadata() *shared.CloudResourceMetadata {
+func (n *Node) Metadata() *shared.CatalogObjectMetadata {
 	return metadatareflect.ExtractMetadata(n.Msg)
 }
 
@@ -80,9 +80,9 @@ func NewSet(items []Item) (*Set, []Finding) {
 
 	for _, item := range items {
 		meta := metadatareflect.ExtractMetadata(item.Msg)
-		kindName, _ := crkreflect.ExtractKindFromProto(item.Msg)
+		kindName, _ := catalogkindreflect.ExtractKindFromProto(item.Msg)
 		identity := Identity{
-			Kind: crkreflect.KindFromString(kindName),
+			Kind: catalogkindreflect.KindFromString(kindName),
 			Slug: ResolveSlug(meta),
 			Env:  meta.GetEnv(),
 		}

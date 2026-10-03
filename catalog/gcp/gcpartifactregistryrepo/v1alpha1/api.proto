@@ -16,7 +16,7 @@ message GcpArtifactRegistryRepo {
   string kind = 2 [(buf.validate.field).string.const = 'GcpArtifactRegistryRepo'];
 
   //metadata
-  dev.planton.shared.CloudResourceMetadata metadata = 3 [(buf.validate.field).required = true];
+  dev.planton.shared.CatalogObjectMetadata metadata = 3 [(buf.validate.field).required = true];
 
   //resource spec
   GcpArtifactRegistryRepoSpec spec = 4 [(buf.validate.field).required = true];
@@ -27,6 +27,6 @@ message GcpArtifactRegistryRepo {
 
 //gcp-artifact-registry-repo status
 message GcpArtifactRegistryRepoStatus {
-  //stack-outputs for gcp-artifact-registry-repo
-  GcpArtifactRegistryRepoStackOutputs outputs = 1;
+  //outputs for gcp-artifact-registry-repo
+  GcpArtifactRegistryRepoOutputs outputs = 1;
 }

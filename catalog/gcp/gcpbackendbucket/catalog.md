@@ -4,7 +4,7 @@ Deploys a Compute Engine backend bucket — the piece that serves a Cloud Storag
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute Engine API enablement** (`compute.googleapis.com`) on the target project (never disabled on destroy)
 - **Compute Engine Backend Bucket** -- fronting the configured GCS origin for external load balancers (or, rarely, the cross-region internal ALB)
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
@@ -54,7 +54,7 @@ spec:
 planton apply -f backend-bucket.yaml
 ```
 
-This creates the standard static-assets shape: a GCS origin cached at the edge for a day. A Stack Job tracks the provisioning in real time.
+This creates the standard static-assets shape: a GCS origin cached at the edge for a day. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -85,7 +85,7 @@ These are the most important decisions when configuring a backend bucket. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -93,9 +93,9 @@ These are the most important decisions when configuring a backend bucket. Explor
 | **GcpGcsBucket** | `bucketName` | `status.outputs.bucket_id` |
 | **GcpCloudArmorPolicy** | `edgeSecurityPolicy` | `status.outputs.policy_self_link` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -115,7 +115,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the backend bucket is created
-- [**GCP GCS Bucket**](/cloud-catalog/gcp-gcs-bucket) -- the origin whose objects are served
-- [**GCP URL Map**](/cloud-catalog/gcp-url-map) -- consumes this backend's `self_link` for static routes
-- [**GCP Backend Service**](/cloud-catalog/gcp-backend-service) -- the dynamic sibling on the same URL map
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the backend bucket is created
+- [**GCP GCS Bucket**](/infra-catalog/gcp-gcs-bucket) -- the origin whose objects are served
+- [**GCP URL Map**](/infra-catalog/gcp-url-map) -- consumes this backend's `self_link` for static routes
+- [**GCP Backend Service**](/infra-catalog/gcp-backend-service) -- the dynamic sibling on the same URL map

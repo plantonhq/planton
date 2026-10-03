@@ -2,7 +2,7 @@
 
 ## Overview
 
-**KubernetesSecret** is an Planton component that implements a "Secret-as-a-Service" pattern for creating and managing Kubernetes Secrets as first-class, declaratively managed resources. It provides type-safe configuration for all common Kubernetes secret types -- Opaque, TLS, DockerConfigJson, BasicAuth, and SSHAuth -- with per-type validation and a clean, structured API.
+**KubernetesSecret** is a catalog kind that implements a "Secret-as-a-Service" pattern for creating and managing Kubernetes Secrets as first-class, declaratively managed resources. It provides type-safe configuration for all common Kubernetes secret types -- Opaque, TLS, DockerConfigJson, BasicAuth, and SSHAuth -- with per-type validation and a clean, structured API.
 
 ## Purpose
 
@@ -59,7 +59,7 @@ For SSH key-based authentication. Maps to Kubernetes type `kubernetes.io/ssh-aut
 - **`spec.annotations`**: Annotations for custom metadata
 - **`spec.immutable`**: When true, prevents updates to secret data after creation
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available in `status.outputs`:
 
@@ -69,7 +69,7 @@ After deployment, the following outputs are available in `status.outputs`:
 
 ## How It Works
 
-This component includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
+This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 1. Determine the Kubernetes secret type from the `oneof secret_data` variant
 2. Map the type-safe fields to the corresponding Kubernetes Secret `stringData` keys

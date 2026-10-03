@@ -4,7 +4,7 @@ A Vertex AI Search data connector -- a collection of data stores Google syncs fr
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `discoveryengine.googleapis.com` on the project (never disabled on destroy)
 - **Data connector** -- a `discovery_engine_data_connector`, which creates the collection and one data store per `entities[]` entry
@@ -90,7 +90,7 @@ planton apply -f vertex-ai-search-data-connector.yaml
 - Durations are `NNNs` strings; modes and sync modes are Google's values; ports are 1-65535.
 - Collection ids are RFC 1034; entity names are non-empty.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -123,7 +123,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpVertexAiSearchEngine** -- the app that searches the connector's stores (`collectionId`)
 - **GcpVertexAiSearchDataStore** -- a store you fill yourself, in `default_collection`

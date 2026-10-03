@@ -13,14 +13,14 @@ type Locals struct {
 	Scope                          string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurecosmosdbsqlroleassignmentv1alpha1.AzureCosmosdbSqlRoleAssignmentStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurecosmosdbsqlroleassignmentv1alpha1.AzureCosmosdbSqlRoleAssignmentIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureCosmosdbSqlRoleAssignment = stackInput.Target
-	locals.CosmosdbAccountId = stackInput.Target.Spec.CosmosdbAccountId.GetValue()
-	locals.RoleDefinitionId = stackInput.Target.Spec.RoleDefinitionId.GetValue()
-	locals.PrincipalId = stackInput.Target.Spec.PrincipalId.GetValue()
-	locals.Scope = stackInput.Target.Spec.Scope.GetValue()
+	locals.AzureCosmosdbSqlRoleAssignment = iacInput.Target
+	locals.CosmosdbAccountId = iacInput.Target.Spec.CosmosdbAccountId.GetValue()
+	locals.RoleDefinitionId = iacInput.Target.Spec.RoleDefinitionId.GetValue()
+	locals.PrincipalId = iacInput.Target.Spec.PrincipalId.GetValue()
+	locals.Scope = iacInput.Target.Spec.Scope.GetValue()
 
 	// No Azure tags: ARM does not support tags on Cosmos child
 	// resources, so the platform's identity tags live on the account.

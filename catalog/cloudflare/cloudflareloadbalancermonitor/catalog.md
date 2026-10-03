@@ -4,7 +4,7 @@ Deploys a reusable Cloudflare Load Balancing health monitor. A monitor probes th
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Load Balancer Monitor** -- a health check of the configured protocol (HTTP, HTTPS, TCP, UDP/ICMP, ICMP ping, or SMTP) with the chosen probe configuration, timing, and health-flip thresholds
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Load Balancing edit access. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Load Balancing edit access. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -56,7 +56,7 @@ spec:
 planton apply -f cloudflare-load-balancer-monitor.yaml
 ```
 
-This creates an HTTPS monitor that probes `/healthz` on each origin and marks it healthy on a `2xx` response. A Stack Job tracks the provisioning in real time.
+This creates an HTTPS monitor that probes `/healthz` on each origin and marks it healthy on a `2xx` response. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -72,13 +72,13 @@ These are the most important decisions when configuring a monitor. Explore the f
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign-key dependencies -- a monitor is defined entirely by its own probe configuration.
+This kind has no foreign-key dependencies -- a monitor is defined entirely by its own probe configuration.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -94,5 +94,5 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Cloudflare Load Balancer Pool**](/cloud-catalog/cloudflare-load-balancer-pool) -- references this monitor (via `monitor`) to health-check its origins
-- [**Cloudflare Load Balancer**](/cloud-catalog/cloudflare-load-balancer) -- steers traffic across the pools this monitor keeps honest
+- [**Cloudflare Load Balancer Pool**](/infra-catalog/cloudflare-load-balancer-pool) -- references this monitor (via `monitor`) to health-check its origins
+- [**Cloudflare Load Balancer**](/infra-catalog/cloudflare-load-balancer) -- steers traffic across the pools this monitor keeps honest

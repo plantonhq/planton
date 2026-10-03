@@ -53,7 +53,7 @@ The shared-compute pool on a logical server: sku ladder (BasicPool/StandardPool/
 ## Validation
 
 - Spec tests: 53 (MySQL) + 39 (MSSQL server) + 46 (database) + 18 (pool), every CEL error path covered.
-- `make protos`, kind-map regen, targeted builds, `make build-go`, Bazel builds ×4 component trees — all green.
+- `make protos`, kind-map regen, targeted builds, `make build-go`, Bazel builds ×4 kind trees — all green.
 - `secret-coverage` (Azure 100% at 28 covered), `validate-refs` (all FK seams resolve), `pkg/outputs` conformance ×4.
 - Full `planton tofu plan` on all four hack manifests (7/1/8/1 resources); 12 presets; parity audits ×4 at 100% Fully Complete, PARITY ✅ COVERAGE ✅; site catalog regenerated (mssql-database and mssql-elastic-pool pages added).
 - **Live dual-engine E2E, all green**: MSSQL server (Pulumi 221s / Terraform 268s); MSSQL database minimal + pool-attach both engines (Pulumi 357s + 442s; Terraform ~30m for the pair) — pool-attach proves the composed RG → server → pool → pooled-database chain; elastic pool (Pulumi 300s / Terraform 288s); MySQL (Pulumi 524s / Terraform 592s, in westus2). Final sweep: subscription fully clean — zero resource groups, zero SQL servers, zero MySQL servers.

@@ -10,14 +10,14 @@ Completely removed the self-hosted web application layer from Planton — the Go
 
 ## Problem Statement / Motivation
 
-Planton experimented with an optional self-hosted web application (backend + frontend + MongoDB, shipped as a unified Docker container) that provided a local UI for managing cloud resources, credentials, and stack updates. After evaluation, the decision was made to not pursue this direction:
+Planton experimented with an optional self-hosted web application (backend + frontend + MongoDB, shipped as a unified Docker container) that provided a local UI for managing infra components, credentials, and stack updates. After evaluation, the decision was made to not pursue this direction:
 
 ### Pain Points
 
 - The webapp duplicated functionality better served by the Planton SaaS platform (the commercial layer above Planton)
 - Maintaining a Go/Connect backend, Next.js frontend, MongoDB database, and Docker orchestration added significant surface area to an open-source project whose core value is API standardization and CLI-driven IaC
 - The webapp's CI/CD pipelines were already disabled (`release.app.yaml` and `auto-release.app.yaml` both had `if: false` guards)
-- CLI commands like `cloud-resource:create`, `credential:list`, and `stack-update:stream-output` only worked when the webapp backend was running, creating a confusing two-tier experience
+- CLI commands like `infra-component:create`, `credential:list`, and `stack-update:stream-output` only worked when the webapp backend was running, creating a confusing two-tier experience
 
 ## Solution / What's New
 
@@ -34,7 +34,7 @@ flowchart TB
         CC[CLI RPC Commands]
     end
     subgraph kept ["Kept (core pillars)"]
-        API[Deployment Component APIs]
+        API[Catalog Kind APIs]
         IAC[IaC Modules]
         CLI[CLI Orchestration]
         SITE[Documentation Site]
@@ -50,13 +50,13 @@ flowchart TB
 | Directory | Contents |
 |-----------|----------|
 | `app/` | Go backend (Connect server + MongoDB repos), Next.js frontend, Dockerfile.unified, supervisord |
-| `apis/dev/planton/app/` | App-layer protos: cloudresource/v1, credential/v1, stackupdate/v1, commons — plus all generated Go, gRPC, and Connect stubs |
+| `apis/dev/planton/app/` | App-layer protos: infracomponent/v1, credential/v1, stackupdate/v1, commons — plus all generated Go, gRPC, and Connect stubs |
 | `cmd/planton/root/webapp/` | `planton webapp init\|start\|stop\|status\|logs\|restart\|uninstall` subcommand tree |
 | `docker/` | MongoDB init script for the webapp |
 
 ### Deleted Files (19 individual files)
 
-- **12 CLI command files** — `cloud_resource_{apply,create,delete,get,list,update}.go`, `credential_{create,delete,get,list,update}.go`, `stack_update_stream_output.go` — all Connect-RPC clients to the webapp backend
+- **12 CLI command files** — `infra_component_{apply,create,delete,get,list,update}.go`, `credential_{create,delete,get,list,update}.go`, `stack_update_stream_output.go` — all Connect-RPC clients to the webapp backend
 - **`config.go`** — all three config keys (`backend-url`, `webapp-container-id`, `webapp-version`) existed solely for the webapp
 - **`docker-compose.yml`** — unified webapp service definition
 - **`docs/CORS.md`** — webapp CORS documentation
@@ -86,7 +86,7 @@ flowchart TB
 
 ## Impact
 
-- **CLI users**: The commands `cloud-resource:*`, `credential:*`, `stack-update:stream-output`, `webapp *`, and `config` are no longer available. These were only usable with a running webapp backend, which was never part of the standard installation path.
+- **CLI users**: The commands `infra-component:*`, `credential:*`, `stack-update:stream-output`, `webapp *`, and `config` are no longer available. These were only usable with a running webapp backend, which was never part of the standard installation path.
 - **Developers**: `go.work` no longer includes `./app/backend`; no need to deal with the separate backend Go module.
 - **CI/CD**: The `release.app.yaml` and `auto-release.app.yaml` workflows no longer exist (they were already disabled).
 - **Documentation site (`site/`)**: Untouched — continues to work as before.

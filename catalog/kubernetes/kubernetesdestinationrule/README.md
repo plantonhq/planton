@@ -206,14 +206,14 @@ spec:
 
 See `GUIDE.md` for the full composability rationale.
 
-## Stack Outputs
+## Outputs
 
 | Output | Description |
 |--------|-------------|
 | `destination_rule_name` | Name of the created DestinationRule (equals metadata.name). |
 | `namespace` | Namespace the DestinationRule was created in. |
 
-## Related Components
+## Related Kinds
 
 - [Kubernetes Service Entry](../kubernetesserviceentry)
 - [Kubernetes Istio](../kubernetesistio)

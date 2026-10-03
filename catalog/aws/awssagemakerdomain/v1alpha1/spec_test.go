@@ -20,7 +20,7 @@ func validMinimalSpec() *AwsSagemakerDomain {
 	return &AwsSagemakerDomain{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsSagemakerDomain",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-sagemaker-domain",
 		},
 		Spec: &AwsSagemakerDomainSpec{

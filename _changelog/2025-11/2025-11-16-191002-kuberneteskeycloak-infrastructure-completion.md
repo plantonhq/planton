@@ -6,11 +6,11 @@
 
 ## Summary
 
-Completed the KubernetesKeycloak component from 93.07% to 100% by creating the missing Pulumi locals.go, implementing complete Terraform infrastructure (main.tf, locals.tf, outputs.tf), and creating comprehensive documentation (README, examples). This component now provides production-ready Keycloak identity and access management deployment with both Pulumi and Terraform.
+Completed the KubernetesKeycloak kind from 93.07% to 100% by creating the missing Pulumi locals.go, implementing complete Terraform infrastructure (main.tf, locals.tf, outputs.tf), and creating comprehensive documentation (README, examples). This kind now provides production-ready Keycloak identity and access management deployment with both Pulumi and Terraform.
 
 ## Problem Statement / Motivation
 
-The KubernetesKeycloak component was at 93.07% completion with critical infrastructure gaps:
+The KubernetesKeycloak kind was at 93.07% completion with critical infrastructure gaps:
 - **Missing Pulumi locals.go**: Reduced Pulumi module completeness from 13.32% to 11.10%
 - **Terraform main.tf empty**: 0 bytes, making Terraform deployment impossible
 - **No Terraform infrastructure files**: Missing locals.tf and outputs.tf
@@ -27,7 +27,7 @@ The KubernetesKeycloak component was at 93.07% completion with critical infrastr
 
 ## Solution / What's New
 
-Completed all missing infrastructure and documentation files to bring the component to 100%, providing full parity between Pulumi and Terraform implementations.
+Completed all missing infrastructure and documentation files to bring the kind to 100%, providing full parity between Pulumi and Terraform implementations.
 
 ### Key Changes
 
@@ -50,7 +50,7 @@ type Locals struct {
     InternalHostname   string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *kuberneteskeycloakv1.KubernetesKeycloakStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *kuberneteskeycloakv1.KubernetesKeycloakIacInput) *Locals {
     // Namespace: keycloak-{name}
     // Labels: app, resource, env, org
     // Service config: keycloak-{name}:8080
@@ -58,7 +58,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *kuberneteskeycloakv1.Kube
 }
 ```
 
-**Why This Matters**: Provides proper variable initialization and configuration management for the Pulumi module, following standard patterns used across all components.
+**Why This Matters**: Provides proper variable initialization and configuration management for the Pulumi module, following standard patterns used across all kinds.
 
 **2. Implemented Complete Terraform Infrastructure**
 
@@ -76,7 +76,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *kuberneteskeycloakv1.Kube
 # Main orchestration file for KubernetesKeycloak
 # deployment using Terraform.
 #
-# Infrastructure Components:
+# Infrastructure Kinds:
 #  1. Kubernetes Namespace (defined here)
 #  2. Keycloak Deployment (using Bitnami Helm chart)
 #     - StatefulSet (avoiding anti-pattern)
@@ -102,7 +102,7 @@ resource "kubernetes_namespace_v1" "keycloak_namespace" {
 
 **Key Documentation Sections**:
 - Module overview and architecture
-- Infrastructure components catalog
+- Infrastructure kinds catalog
 - Production features list
 - Design philosophy (Operator pattern vs anti-patterns)
 - Deployment approach explanation
@@ -124,7 +124,7 @@ locals {
   # Label management
   final_labels = merge(local.base_labels, local.org_label, local.env_label)
   
-  # Stack outputs
+  # Outputs
   port_forward_command = "kubectl port-forward -n ${local.namespace} svc/${local.service_name} 8080:8080"
   kube_endpoint        = "${local.service_name}.${local.namespace}.svc.cluster.local:8080"
   
@@ -136,7 +136,7 @@ locals {
 
 **File**: `iac/tf/outputs.tf` (921 bytes)
 
-All 6 stack outputs matching `stack_outputs.proto`:
+All 6 outputs matching `outputs.proto`:
 ```hcl
 output "namespace" { value = local.namespace }
 output "service" { value = local.service_name }
@@ -202,7 +202,7 @@ spec:
 
 ### Deployment Architecture
 
-The KubernetesKeycloak component follows the **Keycloak Operator pattern** to avoid common anti-patterns:
+The KubernetesKeycloak kind follows the **Keycloak Operator pattern** to avoid common anti-patterns:
 
 **Anti-Pattern (Avoided)**:
 ```hcl
@@ -243,8 +243,8 @@ final_labels = merge(
 )
 ```
 
-**Stack Outputs**:
-- All 6 outputs match `stack_outputs.proto` specification
+**Outputs**:
+- All 6 outputs match `outputs.proto` specification
 - Conditional logic for ingress endpoints
 - Port-forward command for debugging
 
@@ -260,7 +260,7 @@ final_labels = merge(
 ### For Pulumi Users
 
 1. **Complete Module**: locals.go provides proper variable initialization
-2. **Consistent Patterns**: Matches structure of other complete components
+2. **Consistent Patterns**: Matches structure of other complete kinds
 3. **Better Maintainability**: Follows standard module organization
 
 ### For Platform Teams
@@ -317,13 +317,13 @@ module "keycloak_prod" {
 
 ### Developer Impact
 
-**Who**: Contributors maintaining the kuberneteskeycloak component
+**Who**: Contributors maintaining the kuberneteskeycloak kind
 
 **Changes**:
 - Pulumi module now complete with proper locals
 - Terraform module fully documented and structured
 - Clear separation of concerns across modular files
-- Reference implementation for other workload components
+- Reference implementation for other workload kinds
 
 ## Design Decisions
 
@@ -332,12 +332,12 @@ module "keycloak_prod" {
 The Terraform implementation uses separate files for different concerns:
 - **main.tf**: Entry point with architecture documentation
 - **locals.tf**: Computed values and transformations
-- **outputs.tf**: Stack output definitions
+- **outputs.tf**: Output definitions
 - **variables.tf**: Input parameter definitions
 
 **Rationale**: 
 - Improves readability and maintainability
-- Allows selective understanding of components
+- Allows selective understanding of kinds
 - Follows Terraform best practices for large modules
 - Matches pattern used in KubernetesJenkins (100% complete reference)
 
@@ -351,7 +351,7 @@ The 11.6KB examples file provides extensive coverage because:
 
 ## Related Work
 
-### Component Completion Pattern
+### Kind Completion Pattern
 
 This completion follows the same pattern used for:
 - **KubernetesIstio**: Completed from 68.86% to 100% (same session)
@@ -360,14 +360,14 @@ This completion follows the same pattern used for:
 
 ### Research Foundation
 
-This component builds on exceptional research documentation (21.6KB) covering:
+This kind builds on exceptional research documentation (21.6KB) covering:
 - Deployment method spectrum (Level 0-3)
 - Anti-pattern analysis (split-brain Deployment issue)
 - Operator comparison (Official, Codecentric, Bitnami)
 - Licensing analysis (Bitnami paywall warning for Aug 2025)
 - Day 2 operations philosophy
 
-### Component Registry
+### Kind Registry
 
 - **Enum**: `KubernetesKeycloak = 808`
 - **ID Prefix**: `k8skc`

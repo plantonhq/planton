@@ -18,13 +18,13 @@ mssql.ElasticPool (single resource)
   against azurerm's own validation helpers), so a mismatched combination
   is unrepresentable. DTU pools carry no family.
 - **`maintenance_configuration_name` is presence-guarded** to its spec
-  default (`SQL_Default`): stack inputs built from a manifest do not
+  default (`SQL_Default`): IaC inputs built from a manifest do not
   materialize proto defaults.
 
 ## Provider
 
 The Azure provider is built by the shared
-`pulumiazureprovider.Get(ctx, stackInput.ProviderConfig)` builder, which
+`pulumiazureprovider.Get(ctx, iacInput.ProviderConfig)` builder, which
 dispatches static client-secret, keyless (web identity), and ambient
 credential chains. Never construct the provider inline.
 

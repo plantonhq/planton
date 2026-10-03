@@ -4,7 +4,7 @@ Deploys a CloudWatch alarm that watches a single metric, a metric math expressio
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **CloudWatch Metric Alarm** -- a metric alarm configured with the specified comparison operator, evaluation periods, threshold (static or anomaly detection band), and optional M-of-N datapoints-to-alarm evaluation
 - **Alarm Actions** -- created only when `alarmActions` entries are provided; executes the specified ARNs (typically SNS topics) when the alarm transitions to ALARM state
@@ -16,12 +16,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **An SNS topic** (optional) -- required when configuring alarm, OK, or insufficient data actions. Provide the topic ARN directly or reference an AwsSnsTopic Cloud Resource via ValueFromRef.
+- **An SNS topic** (optional) -- required when configuring alarm, OK, or insufficient data actions. Provide the topic ARN directly or reference an AwsSnsTopic Infra Component via ValueFromRef.
 - **A CloudWatch metric** -- the alarm monitors an existing metric in CloudWatch. Ensure the metric is being published by the target AWS service or custom application before creating the alarm.
 
 ## Deploy
@@ -60,7 +60,7 @@ spec:
 planton apply -f cloudwatch-alarm.yaml
 ```
 
-This creates a CloudWatch alarm monitoring EC2 CPU utilization with 2-of-3 M-of-N evaluation. No OK or insufficient data actions are configured. A Stack Job tracks the provisioning in real time.
+This creates a CloudWatch alarm monitoring EC2 CPU utilization with 2-of-3 M-of-N evaluation. No OK or insufficient data actions are configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -96,7 +96,7 @@ These are the most important decisions when configuring a CloudWatch alarm. Expl
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -104,9 +104,9 @@ These are the most important decisions when configuring a CloudWatch alarm. Expl
 | **AwsSnsTopic** (optional) | `okActions` | `status.outputs.topic_arn` |
 | **AwsSnsTopic** (optional) | `insufficientDataActions` | `status.outputs.topic_arn` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -127,4 +127,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS SNS Topic**](/cloud-catalog/aws-sns-topic) -- provides notification targets for alarm, OK, and insufficient data state transitions
+- [**AWS SNS Topic**](/infra-catalog/aws-sns-topic) -- provides notification targets for alarm, OK, and insufficient data state transitions

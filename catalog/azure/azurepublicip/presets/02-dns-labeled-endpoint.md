@@ -12,7 +12,7 @@ This preset creates a zone-redundant Standard public IP with an Azure-managed DN
 
 - **`domainNameLabel`** -- 3-63 characters: lowercase letters, digits, and hyphens; starts with a letter, ends with a letter or digit
 - **`domainNameLabelScope: TENANT_REUSE`** -- the hashed label is reusable across tenants; use `NO_REUSE` for the strictest takeover defense, or omit the scope entirely for the classic region-unique label (the resulting FQDN is then exactly `{label}.{region}.cloudapp.azure.com` with no hash)
-- **The `fqdn` stack output** carries the final Azure-assigned name -- reference it instead of reconstructing the FQDN
+- **The `fqdn` output** carries the final Azure-assigned name -- reference it instead of reconstructing the FQDN
 
 ## Placeholders to Replace
 

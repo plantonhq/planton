@@ -1,4 +1,4 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
@@ -6,9 +6,9 @@
 # domain is free at rest, domain topics are free at any count and in either
 # management posture, and the Basic tier's only meter bills operations --
 # stated in exclusions, never padded into fabricated dollars. Schema:
-# finops/componentcostestimatemodel/v1.
+# finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: azureeventgriddomain
 spec:
@@ -21,7 +21,7 @@ spec:
         - "every event published to the domain endpoint -- whichever tenant's topic it names -- bills 0.60 USD per million operations past the monthly 100,000-operation free grant, counted in 64 KB units"
         - "every delivery attempt by subscriptions on any domain topic bills the same meter, retries included; advanced filtering and subject-ends-with filtering bill per evaluation (event-type matching and subject-begins-with are free)"
         - "auto-managed domain topics carry no meter -- Azure materializing one per tenant on first subscription and removing it on last unsubscribe moves nothing on the invoice"
-        - "dead-lettered events bill as delivery operations, with blob storage charges on the destination storage account's own component"
+        - "dead-lettered events bill as delivery operations, with blob storage charges on the destination storage account's own kind"
       notes: "Zero committed cost -- the domain has no meter for existing, and tenant count is free: only the aggregate operation volume across all tenants bills, at the same rate one custom topic would pay."
     - preset: 02-pinned-topics-domain
       region_assumption: eastus
@@ -31,5 +31,5 @@ spec:
         - "every event published to the domain endpoint bills 0.60 USD per million operations past the monthly 100,000-operation free grant, counted in 64 KB units -- Entra-only auth is free posture that moves no meter"
         - "every delivery attempt by subscriptions on any pinned topic bills the same meter, retries included; advanced filtering and subject-ends-with filtering bill per evaluation"
         - "pinned domain topics (declared AzureEventgridDomainTopic resources) carry no meter at any count -- governance costs nothing"
-        - "dead-lettered events bill as delivery operations, with blob storage charges on the destination storage account's own component"
+        - "dead-lettered events bill as delivery operations, with blob storage charges on the destination storage account's own kind"
       notes: "Zero committed cost -- the pinned-topics posture and disabled access keys change who may publish and which topics exist, never what an operation costs."

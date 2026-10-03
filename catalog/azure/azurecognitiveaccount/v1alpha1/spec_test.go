@@ -28,7 +28,7 @@ func validResource() *AzureCognitiveAccount {
 	return &AzureCognitiveAccount{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureCognitiveAccount",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-cognitive-account",
 		},
 		Spec: &AzureCognitiveAccountSpec{

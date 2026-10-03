@@ -4,7 +4,7 @@ Deploys a zonal Compute Engine persistent disk — the durable block device behi
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Compute Engine Persistent Disk** -- a zonal block device in the specified project and zone, created empty (the common data-volume case) or initialized from exactly one source: an image (bootable), a snapshot (restore), an instant snapshot (fast same-region restore), a Cloud Storage disk-image file (import), or an existing GcpComputeDisk (clone)
 - **Performance Configuration** -- the disk type (pd-standard, pd-balanced, pd-ssd, pd-extreme, or hyperdisk-*), with provisioned IOPS/throughput dials on the types that support tuning
@@ -16,12 +16,12 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with credentials for the target GCP project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### GCP Project
 
-- **A GCP project** where the disk will be created. Provide the project ID directly or reference a GcpProject Cloud Resource via ValueFromRef.
+- **A GCP project** where the disk will be created. Provide the project ID directly or reference a GcpProject Infra Component via ValueFromRef.
 - **IAM permissions** -- `roles/compute.storageAdmin` on the target project.
 - **For CMEK** -- the Compute Engine service agent (`service-<project-number>@compute-system.iam.gserviceaccount.com`) must hold `roles/cloudkms.cryptoKeyEncrypterDecrypter` on the referenced GcpKmsKey.
 
@@ -56,7 +56,7 @@ spec:
 planton apply -f disk.yaml
 ```
 
-This creates an empty 100 GB pd-balanced disk ready to attach to a VM in `us-central1-a`. A Stack Job tracks the provisioning in real time.
+This creates an empty 100 GB pd-balanced disk ready to attach to a VM in `us-central1-a`. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,7 +94,7 @@ These are the most important decisions when configuring a persistent disk. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -105,9 +105,9 @@ These are the most important decisions when configuring a persistent disk. Explo
 | **GcpKmsKey** (optional) | `kmsKey` | `status.outputs.key_id` |
 | **GcpKmsKey** (optional) | `sourceImageEncryption.kmsKey` / `sourceSnapshotEncryption.kmsKey` | `status.outputs.key_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -128,6 +128,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Compute Instance**](/cloud-catalog/gcp-compute-instance) -- attaches this disk as a boot or data volume by self link
-- [**GCP Project**](/cloud-catalog/gcp-project) -- provides the GCP project where the disk is created
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- provides the customer-managed encryption key
+- [**GCP Compute Instance**](/infra-catalog/gcp-compute-instance) -- attaches this disk as a boot or data volume by self link
+- [**GCP Project**](/infra-catalog/gcp-project) -- provides the GCP project where the disk is created
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- provides the customer-managed encryption key

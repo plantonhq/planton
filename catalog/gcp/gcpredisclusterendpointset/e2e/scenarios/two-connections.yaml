@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpredisclusterendpointset
+    e2e-catalog-kind: gcpredisclusterendpointset
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "GcpRedisCluster,catalog/gcp/gcpredisclusterendpointset/e2e/prerequisites/gcpaddress-discovery.yaml,catalog/gcp/gcpredisclusterendpointset/e2e/prerequisites/gcpaddress-primary.yaml,catalog/gcp/gcpredisclusterendpointset/e2e/prerequisites/gcpglobalforwardingrule-discovery.yaml,catalog/gcp/gcpredisclusterendpointset/e2e/prerequisites/gcpglobalforwardingrule-primary.yaml"

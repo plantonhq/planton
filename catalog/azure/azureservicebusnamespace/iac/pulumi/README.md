@@ -16,7 +16,7 @@ component, at 100% behavioral parity with the Terraform module.
 - Enum wire maps carry an unspecified row (Standard sku, Allow firewall
   action) so a zero enum never sends the empty string.
 - `local_auth_enabled` and `public_network_access_enabled` are
-  presence-guarded to Azure's defaults (true) -- direct stack-input
+  presence-guarded to Azure's defaults (true) -- direct iac-input
   paths do not materialize proto defaults.
 - The Premium pairings (capacity, partitions) are sent only when
   present; the spec's CELs guarantee they exist exactly on PREMIUM.

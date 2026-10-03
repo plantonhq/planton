@@ -5,7 +5,7 @@ import (
 
 	azurefrontdoorprofilev1alpha1 "github.com/plantonhq/planton/catalog/azure/azurefrontdoorprofile/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -14,7 +14,7 @@ type Locals struct {
 	ResourceGroupName     string
 	AzureTags             map[string]string
 	// SkuName is ARM's tier value, materialized from the spec enum with
-	// the documented STANDARD default (stack inputs never carry proto
+	// the documented STANDARD default (IaC inputs never carry proto
 	// defaults).
 	SkuName string
 }
@@ -40,16 +40,16 @@ var logScrubbingVariableStrings = map[azurefrontdoorprofilev1alpha1.AzureFrontDo
 	azurefrontdoorprofilev1alpha1.AzureFrontDoorProfileLogScrubbingVariable_REQUEST_URI:            "RequestUri",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurefrontdoorprofilev1alpha1.AzureFrontDoorProfileStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurefrontdoorprofilev1alpha1.AzureFrontDoorProfileIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureFrontDoorProfile = stackInput.Target
-	target := stackInput.Target
+	locals.AzureFrontDoorProfile = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
 	// Materialize the tier default: unspecified deploys STANDARD (the
-	// spec's documented default -- stack inputs never carry proto
+	// spec's documented default -- IaC inputs never carry proto
 	// defaults).
 	locals.SkuName = skuStrings[target.Spec.Sku]
 	if locals.SkuName == "" {
@@ -63,7 +63,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurefrontdoorprofilev1al
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureFrontDoorProfile.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureFrontDoorProfile.String()),
 	}
 
 	if target.Metadata.Id != "" {

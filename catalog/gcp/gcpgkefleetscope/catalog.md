@@ -4,7 +4,7 @@ Gives a team its slice of a shared GKE fleet. Declare the team's namespaces once
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- the Fleet API on the fleet host project
 - **Scope** -- the team scope
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with fleet admin permissions on the fleet host project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with fleet admin permissions on the fleet host project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ## Deploy
@@ -55,7 +55,7 @@ spec:
 planton apply -f gke-fleet-scope.yaml
 ```
 
-This gives the orders team a namespace and edit access across the clusters bound to its scope. A Stack Job tracks the provisioning in real time.
+This gives the orders team a namespace and edit access across the clusters bound to its scope. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -73,7 +73,7 @@ These are the most important decisions when configuring a team scope. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -83,9 +83,9 @@ These are the most important decisions when configuring a team scope. Explore th
 | **GcpCloudIdentityGroup** | `rbacRoleBindings[].group` | `status.outputs.group_email` |
 | **GcpServiceAccount** | `rbacRoleBindings[].user` | `status.outputs.email` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -103,7 +103,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP GKE Fleet**](/cloud-catalog/gcp-gke-fleet) -- the fleet the scope lives in
-- [**GCP GKE Cluster**](/cloud-catalog/gcp-gke-cluster) -- clusters to bind
-- [**GCP GKE Fleet Membership**](/cloud-catalog/gcp-gke-fleet-membership) -- explicitly registered clusters
-- [**GCP Cloud Identity Group**](/cloud-catalog/gcp-cloud-identity-group) -- the team's group
+- [**GCP GKE Fleet**](/infra-catalog/gcp-gke-fleet) -- the fleet the scope lives in
+- [**GCP GKE Cluster**](/infra-catalog/gcp-gke-cluster) -- clusters to bind
+- [**GCP GKE Fleet Membership**](/infra-catalog/gcp-gke-fleet-membership) -- explicitly registered clusters
+- [**GCP Cloud Identity Group**](/infra-catalog/gcp-cloud-identity-group) -- the team's group

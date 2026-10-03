@@ -2,7 +2,7 @@
 
 **Date**: June 4, 2026
 **Type**: Bug Fix + Enhancement
-**Components**: Kubernetes Provider (Terraform modules), Stack-Outputs Conformance
+**Components**: Kubernetes Provider (Terraform modules), Outputs Conformance
 
 ## Summary
 
@@ -32,7 +32,7 @@ provisioner, which exposed defects the Pulumi-only path had hidden.
 - **Empty `provider "helm" { kubernetes {} }` blocks.** In helm v3 the `kubernetes` nested
   block became an attribute, so the empty block is itself invalid under v3.
 - **ExternalDNS output drift.** The tofu module emitted `service_account_name`, which does
-  not flatten onto the `KubernetesExternalDnsStackOutputs.solver_sa` proto field (Pulumi
+  not flatten onto the `KubernetesExternalDnsOutputs.solver_sa` proto field (Pulumi
   already exported `solver_sa`), plus three extra outputs absent from the proto and Pulumi.
 
 ## Solution / What's New
@@ -80,7 +80,7 @@ flowchart LR
   `values = [yamlencode(local.helm_values)]`, where `local.helm_values` mirrors the Pulumi
   values map; migrated the deprecated `kubernetes_namespace` / `kubernetes_service_account`
   / `kubernetes_secret` (+ existing-namespace data source) to their `_v1` forms (clearing
-  the stack job's "Deprecated Resource" warnings, matching the `externalsecrets` sibling).
+  the infra job's "Deprecated Resource" warnings, matching the `externalsecrets` sibling).
 - `variables.tf` — curated the untyped `spec = object({})` into the `optional()` form per
   `pkg/iac/MODULE_PARITY.md`.
 - `outputs.tf` — emits exactly `namespace`, `release_name`, `solver_sa` (renamed from
@@ -89,7 +89,7 @@ flowchart LR
 ### 3. Conformance guard
 
 Added a `KubernetesExternalDns` case to `pkg/outputs/conformance_test.go`
-(`TestStackOutputsConformance`): the three outputs fully populate the StackOutputs proto
+(`TestOutputsConformance`): the three outputs fully populate the Outputs proto
 with zero unmapped, locking in the `solver_sa` rename.
 
 ## Implementation Details
@@ -121,7 +121,7 @@ with zero unmapped, locking in the `solver_sa` rename.
 ## Parity divergences flagged for the sweep (not changed here)
 
 These tofu↔Pulumi divergences were observed while migrating the helm-values surface and
-are recorded for the per-component `@audit-planton-component --parity` sweep rather than
+are recorded for the per-kind `@audit-catalog-kind --parity` sweep rather than
 changed in this (cross-cutting) pass:
 
 - `altinityoperator` — tofu sets `watchNamespaces`; Pulumi sets

@@ -5,10 +5,10 @@ package dev.planton.azure.azuredatafactorytrigger.v1alpha1;
 import "catalog/azure/azuredatafactorytrigger/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureDataFactoryTriggerStackInput is the input to the IaC modules
+// AzureDataFactoryTriggerIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and
 // Azure provider credentials.
-message AzureDataFactoryTriggerStackInput {
+message AzureDataFactoryTriggerIacInput {
   // The Data Factory trigger resource to deploy.
   AzureDataFactoryTrigger target = 1;
 

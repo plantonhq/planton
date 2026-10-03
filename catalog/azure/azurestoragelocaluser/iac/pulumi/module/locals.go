@@ -17,11 +17,11 @@ var serviceStrings = map[azurestoragelocaluserv1alpha1.AzureStorageLocalUserPerm
 	azurestoragelocaluserv1alpha1.AzureStorageLocalUserPermissionService_FILE: "file",
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurestoragelocaluserv1alpha1.AzureStorageLocalUserStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurestoragelocaluserv1alpha1.AzureStorageLocalUserIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureStorageLocalUser = stackInput.Target
-	locals.StorageAccountId = stackInput.Target.Spec.StorageAccountId.GetValue()
+	locals.AzureStorageLocalUser = iacInput.Target
+	locals.StorageAccountId = iacInput.Target.Spec.StorageAccountId.GetValue()
 
 	// No Azure tags: ARM does not support tags on localUsers, so the
 	// platform's identity tags live on the parent account.

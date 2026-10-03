@@ -1,11 +1,11 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. Presets with no quantity lines have no committed always-on
-# spend and estimate to zero. Schema: finops/componentcostestimatemodel/v1.
+# spend and estimate to zero. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: gcpspannerdatabase
 spec:
@@ -18,7 +18,7 @@ spec:
         - an empty database stores almost nothing -- database storage accrues per GiB-month at the parent instance configuration's rate (regional SSD includes all three replicas) as applications write
         - the 24h PITR window retains overwritten versions as billed storage, in proportion to the write rate
         - compute capacity bills hourly on the GcpSpannerInstance, idle or busy -- the always-on cost of Spanner lives there
-      notes: Creation is free; the estimate is zero because the manifest commits no bytes and the database rides an instance whose compute is billed on its own component.
+      notes: Creation is free; the estimate is zero because the manifest commits no bytes and the database rides an instance whose compute is billed on its own kind.
     - preset: 02-postgresql-database
       region_assumption: us-central1
       currency: USD
@@ -34,6 +34,6 @@ spec:
       hours_per_month: 730
       exclusions:
         - stored data bills per GiB-month at the parent instance configuration's rate; the 3d PITR window retains overwritten versions as billed storage
-        - the CMEK key's version storage and per-operation charges bill on the referenced GcpKmsKey component
+        - the CMEK key's version storage and per-operation charges bill on the referenced GcpKmsKey kind
         - compute capacity bills on the GcpSpannerInstance; drop protection changes deletability, not price
       notes: Zero committed at creation -- CMEK and drop protection are posture choices with no meter of their own on this resource.

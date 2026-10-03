@@ -90,7 +90,7 @@ planton apply -f user.yaml
 - `passwordPolicy` applies to `BUILT_IN` users only.
 - `passwordExpirationDuration` must be a seconds duration string (e.g. `2592000s`).
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -122,7 +122,7 @@ Everything else on `google_sql_user` at the pinned provider is representable —
 |---|---|
 | `password_wo` / `password_wo_version` | Write-only variants of the modeled `password` — same capability through engine-side ergonomics; the spec field is secret-annotated: Pulumi encrypts it in state, and OpenTofu encrypts it with the whole state file when given an encryption key. |
 
-## Related Components
+## Related Kinds
 
 - [GcpCloudSql](/docs/catalog/gcp/gcpcloudsql) — the instance this user lives on
 - [GcpCloudSqlDatabase](/docs/catalog/gcp/gcpcloudsqldatabase) — pair each user with its application database

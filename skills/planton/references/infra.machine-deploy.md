@@ -98,7 +98,7 @@ With the machine connected (or the org already wired), deploying a composed
 chart is yours to perform when the user explicitly asks — the same
 one-confirmation discipline as every mutation. One precondition first: when
 the organization's catalog policy disables kinds this chart uses, the user
-hears the disclosure BEFORE the deploy starts — which components, that the
+hears the disclosure BEFORE the deploy starts — which kinds, that the
 rest deploys now, and that an Infrastructure Admin can enable them
 (`catalog-availability.md`); a policy refusal mid-pipeline means the
 disclosure was skipped, not that something broke.

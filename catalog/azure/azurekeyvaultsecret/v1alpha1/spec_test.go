@@ -32,7 +32,7 @@ func validResource() *AzureKeyVaultSecret {
 	return &AzureKeyVaultSecret{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureKeyVaultSecret",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-secret",
 		},
 		Spec: &AzureKeyVaultSecretSpec{

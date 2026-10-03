@@ -1,4 +1,4 @@
-# AwsSagemakerMlflowApp — Component Guide
+# AwsSagemakerMlflowApp — Kind Guide
 
 Authored operational judgment for the serverless MLflow app component:
 the design decisions behind the spec's shape, and what to know before

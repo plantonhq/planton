@@ -2,7 +2,7 @@
 
 Built for 100% parity with the Terraform DigitalOcean provider's reserved-IP family at the pinned provider version: one component covering `digitalocean_reserved_ip`, `digitalocean_reserved_ipv6`, and `digitalocean_reserved_ipv6_assignment` (the v4 assignment resource is deliberately never created -- v4 assigns through the reservation's own mutable argument).
 
-## What this component models
+## What this kind models
 
 A static public IP address reserved in a region -- IPv4 or IPv6 -- optionally assigned to a droplet. The address survives the droplets behind it: re-pointing it is the classic manual-failover move.
 

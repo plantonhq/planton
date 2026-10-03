@@ -6,11 +6,11 @@
 
 ## Summary
 
-Implemented a complete Terraform module for the KubernetesNeo4j component from scratch, creating all missing Terraform infrastructure files (`locals.tf`, `main.tf`, `outputs.tf`) and comprehensive documentation (`README.md`, `examples.md`). This brings the component from 96.8% to 100% completion, enabling Terraform users to deploy Neo4j Community Edition on Kubernetes with production-ready configurations.
+Implemented a complete Terraform module for the KubernetesNeo4j kind from scratch, creating all missing Terraform infrastructure files (`locals.tf`, `main.tf`, `outputs.tf`) and comprehensive documentation (`README.md`, `examples.md`). This brings the kind from 96.8% to 100% completion, enabling Terraform users to deploy Neo4j Community Edition on Kubernetes with production-ready configurations.
 
 ## Problem Statement / Motivation
 
-The KubernetesNeo4j component was complete for Pulumi users but completely non-functional for Terraform users:
+The KubernetesNeo4j kind was complete for Pulumi users but completely non-functional for Terraform users:
 
 ### Critical Gaps
 
@@ -27,7 +27,7 @@ The KubernetesNeo4j component was complete for Pulumi users but completely non-f
 ### Pain Points
 
 - **Zero functionality**: Terraform module couldn't deploy Neo4j
-- **Blocked users**: Anyone preferring Terraform over Pulumi couldn't use this component
+- **Blocked users**: Anyone preferring Terraform over Pulumi couldn't use this kind
 - **Incomplete experience**: Variables existed but served no purpose
 - **Missing documentation**: Even if implemented, users wouldn't know how to use it
 
@@ -330,7 +330,7 @@ If user doesn't specify memory config, Neo4j uses its internal defaults (~512MB 
 
 ## Benefits
 
-1. **Terraform functionality**: Component now works for Terraform users (was 0% functional)
+1. **Terraform functionality**: Kind now works for Terraform users (was 0% functional)
 2. **Feature parity**: Matches Pulumi capabilities completely
 3. **Production-ready**: Memory tuning, persistence, external access
 4. **Well-documented**: Comprehensive README and 7 detailed examples

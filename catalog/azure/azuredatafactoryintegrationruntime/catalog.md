@@ -4,7 +4,7 @@ Deploys one integration runtime inside an Azure Data Factory -- the compute engi
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions exactly one integration runtime of the flavor the spec's variant block declares:
+When you deploy this Infra Component, the IaC module provisions exactly one integration runtime of the flavor the spec's variant block declares:
 
 - **Azure (data-flow compute)** -- serverless Spark Azure provisions when a mapping data flow runs, sized by compute type and core count, optionally kept warm between runs and joined to the factory's managed virtual network
 - **Azure-SSIS** -- a managed cluster of VMs that runs SQL Server Integration Services packages, with an optional SSISDB catalog on your Azure SQL server, node custom setup (script container or express form), virtual network injection (standard or express), package stores, copy/pipeline compute scaling, and an on-premises proxy through a self-hosted runtime
@@ -59,7 +59,7 @@ spec:
 planton apply -f data-factory-integration-runtime.yaml
 ```
 
-This creates the managed data-flow compute in eastus with Azure's smallest cluster (General profile, 8 cores) and a 10-minute warm pool between runs -- billing only while a cluster is up. A Stack Job tracks the provisioning in real time.
+This creates the managed data-flow compute in eastus with Azure's smallest cluster (General profile, 8 cores) and a 10-minute warm pool between runs -- billing only while a cluster is up. An Infra Job tracks the provisioning in real time.
 
 For the SSIS flavor's secret-bearing fields -- the catalog's `administratorPassword`, the setup script's `sasToken`, cmdkey passwords, and component licenses -- reference managed secrets as `$secret/<slug>` instead of pasting values, or use the Key Vault reference alternatives where the spec offers them.
 
@@ -107,7 +107,7 @@ These are the most important decisions when configuring an integration runtime. 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -119,9 +119,9 @@ These are the most important decisions when configuring an integration runtime. 
 | **AzureDataFactoryLinkedService** (SSIS package stores, proxy staging, Key Vault references) | `azureSsis.packageStore[].linkedServiceName` and peers | `status.outputs.linked_service_name` |
 | **AzureDataFactoryIntegrationRuntime** (SSIS proxy / shared registration) | `azureSsis.proxy.selfHostedIntegrationRuntimeName`, `selfHosted.rbacAuthorization.resourceId` | `status.outputs.integration_runtime_name` / `status.outputs.integration_runtime_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -146,9 +146,9 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Data Factory**](/cloud-catalog/azure-data-factory) -- the factory the runtime lives in, referenced by `dataFactoryId`
-- [**Azure Data Factory Linked Service**](/cloud-catalog/azure-data-factory-linked-service) -- connections pin to a runtime by name; SSIS package stores, proxy staging, and Key Vault secret references all travel through linked services
-- [**Azure Data Factory Data Flow**](/cloud-catalog/azure-data-factory-data-flow) -- mapping data flows execute on the azure flavor
-- [**Azure Data Factory Pipeline**](/cloud-catalog/azure-data-factory-pipeline) -- activities run on the runtime their linked services resolve to
-- [**Azure Subnet**](/cloud-catalog/azure-subnet) -- the injection target for SSIS virtual network integration
-- [**Azure Public IP**](/cloud-catalog/azure-public-ip) -- the two static outbound addresses an injected SSIS runtime can present
+- [**Azure Data Factory**](/infra-catalog/azure-data-factory) -- the factory the runtime lives in, referenced by `dataFactoryId`
+- [**Azure Data Factory Linked Service**](/infra-catalog/azure-data-factory-linked-service) -- connections pin to a runtime by name; SSIS package stores, proxy staging, and Key Vault secret references all travel through linked services
+- [**Azure Data Factory Data Flow**](/infra-catalog/azure-data-factory-data-flow) -- mapping data flows execute on the azure flavor
+- [**Azure Data Factory Pipeline**](/infra-catalog/azure-data-factory-pipeline) -- activities run on the runtime their linked services resolve to
+- [**Azure Subnet**](/infra-catalog/azure-subnet) -- the injection target for SSIS virtual network integration
+- [**Azure Public IP**](/infra-catalog/azure-public-ip) -- the two static outbound addresses an injected SSIS runtime can present

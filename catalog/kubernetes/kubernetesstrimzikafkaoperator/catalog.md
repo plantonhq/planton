@@ -1,10 +1,10 @@
 # Strimzi Kafka Operator
 
-Installs the Strimzi cluster operator — the CNCF project that runs Apache Kafka on Kubernetes — from the official `strimzi-kafka-operator` Helm chart. The operator is the ENGINE: it reconciles `Kafka` custom resources (declared with Apache Kafka) into KRaft-mode Kafka clusters, and its per-cluster entity operators reconcile `KafkaTopic` / `KafkaUser` resources into real topics and authenticated users. This component installs and configures the operator itself; Kafka clusters, topics, and users are declared as their own first-class Cloud Resources.
+Installs the Strimzi cluster operator — the CNCF project that runs Apache Kafka on Kubernetes — from the official `strimzi-kafka-operator` Helm chart. The operator is the ENGINE: it reconciles `Kafka` custom resources (declared with Apache Kafka) into KRaft-mode Kafka clusters, and its per-cluster entity operators reconcile `KafkaTopic` / `KafkaUser` resources into real topics and authenticated users. This component installs and configures the operator itself; Kafka clusters, topics, and users are declared as their own first-class Infra Components.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** — created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **Strimzi Helm Release** — the official `strimzi-kafka-operator` chart from the Strimzi chart repository at the pinned `chartVersion`
@@ -16,7 +16,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** — an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** — an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** — required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -53,11 +53,11 @@ spec:
 planton apply -f strimzi-operator.yaml
 ```
 
-This installs the operator watching its OWN namespace only (the chart default) — Kafka clusters declared in the `kafka` namespace are reconciled; clusters elsewhere are invisible to it. The operator creates no Kafka clusters by itself: declare them with Apache Kafka resources. A Stack Job tracks the provisioning in real time.
+This installs the operator watching its OWN namespace only (the chart default) — Kafka clusters declared in the `kafka` namespace are reconciled; clusters elsewhere are invisible to it. The operator creates no Kafka clusters by itself: declare them with Apache Kafka resources. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, wire the operator to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, wire the operator to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -87,15 +87,15 @@ These are the most important decisions when configuring the operator. Explore th
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | Kubernetes Namespace | `spec.namespace` | `spec.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -116,7 +116,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) — provides the namespace for the operator deployment
-- [**Apache Kafka**](/cloud-catalog/kubernetes-kafka) — the Kafka clusters this operator reconciles
-- [**Kafka Topic**](/cloud-catalog/kubernetes-kafka-topic) — topics reconciled by each cluster's entity operator
-- [**Kafka User**](/cloud-catalog/kubernetes-kafka-user) — authenticated users reconciled by each cluster's entity operator
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) — provides the namespace for the operator deployment
+- [**Apache Kafka**](/infra-catalog/kubernetes-kafka) — the Kafka clusters this operator reconciles
+- [**Kafka Topic**](/infra-catalog/kubernetes-kafka-topic) — topics reconciled by each cluster's entity operator
+- [**Kafka User**](/infra-catalog/kubernetes-kafka-user) — authenticated users reconciled by each cluster's entity operator

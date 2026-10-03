@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.aws.awscloudfront.v1alpha1;
 
-// AwsCloudFrontStackOutputs captures the observable identifiers of a
+// AwsCloudFrontOutputs captures the observable identifiers of a
 // deployed CloudFront distribution -- the join keys DNS and security
 // resources compose against.
-message AwsCloudFrontStackOutputs {
+message AwsCloudFrontOutputs {
   // The distribution ID (e.g. "E2ABCDEF123456") -- what invalidation
   // requests and monitoring subscriptions key on.
   string distribution_id = 1;

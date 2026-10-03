@@ -1,10 +1,10 @@
 # Azure Service Bus Queue
 
-Deploys a queue inside an Azure Service Bus namespace -- reliable point-to-point messaging with FIFO delivery, at-least-once semantics, PeekLock consumption, and a built-in dead-letter sub-queue. Queues are many-per-namespace with independent lifecycles, which is why the queue is a first-class Cloud Resource referencing the namespace rather than a list folded into it.
+Deploys a queue inside an Azure Service Bus namespace -- reliable point-to-point messaging with FIFO delivery, at-least-once semantics, PeekLock consumption, and a built-in dead-letter sub-queue. Queues are many-per-namespace with independent lifecycles, which is why the queue is a first-class Infra Component referencing the namespace rather than a list folded into it.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Service Bus Queue** -- on the referenced namespace, with your chosen size, lock, delivery, TTL, session, duplicate-detection, express, and dead-letter dials
 - **Auto-forwarding chains** -- when `forwardTo` or `forwardDeadLetteredMessagesTo` is set: broker-side routing to another queue or topic in the same namespace, by entity name
@@ -14,7 +14,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Azure Provider Connection** -- an active connection in the Connect module with credentials for the target Azure subscription. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Azure Subscription
@@ -55,7 +55,7 @@ spec:
 planton apply -f queue.yaml
 ```
 
-This creates the `orders` queue on the `order-bus` namespace with a tightened 5-attempt poison threshold, expired messages preserved in the dead-letter sub-queue, and a 14-day TTL; unset dials keep Azure's defaults (1 GB size, 1-minute lock, batching on). A Stack Job tracks the provisioning in real time.
+This creates the `orders` queue on the `order-bus` namespace with a tightened 5-attempt poison threshold, expired messages preserved in the dead-letter sub-queue, and a 14-day TTL; unset dials keep Azure's defaults (1 GB size, 1-minute lock, batching on). An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -90,7 +90,7 @@ These are the most important decisions when configuring a Service Bus queue. Exp
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -98,9 +98,9 @@ These are the most important decisions when configuring a Service Bus queue. Exp
 | **AzureServiceBusQueue** | `forwardTo` / `forwardDeadLetteredMessagesTo` | `status.outputs.queue_name` |
 | **AzureServiceBusTopic** | `forwardTo` / `forwardDeadLetteredMessagesTo` | `status.outputs.topic_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,7 +120,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Service Bus Namespace**](/cloud-catalog/azure-service-bus-namespace) -- the parent namespace every queue references
-- [**Azure Service Bus Topic**](/cloud-catalog/azure-service-bus-topic) -- the pub/sub sibling; a legal auto-forward target
-- [**Azure Service Bus Subscription**](/cloud-catalog/azure-service-bus-subscription) -- fans a topic out; commonly forwards matches into a queue like this one
-- [**Azure Role Assignment**](/cloud-catalog/azure-role-assignment) -- keyless data-plane grants scoped to `queue_id`
+- [**Azure Service Bus Namespace**](/infra-catalog/azure-service-bus-namespace) -- the parent namespace every queue references
+- [**Azure Service Bus Topic**](/infra-catalog/azure-service-bus-topic) -- the pub/sub sibling; a legal auto-forward target
+- [**Azure Service Bus Subscription**](/infra-catalog/azure-service-bus-subscription) -- fans a topic out; commonly forwards matches into a queue like this one
+- [**Azure Role Assignment**](/infra-catalog/azure-role-assignment) -- keyless data-plane grants scoped to `queue_id`

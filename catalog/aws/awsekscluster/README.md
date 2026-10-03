@@ -70,7 +70,7 @@ through referenced roles and the exported OIDC issuer -- lets you:
   doors are called out on the fields themselves.
 - **Consistency**: identical behavior across Terraform and Pulumi.
 
-## Stack outputs
+## Outputs
 
 - `endpoint`: Kubernetes API server URL
 - `cluster_ca_certificate`: base64 cluster CA (kubeconfig)

@@ -8,7 +8,7 @@ singletons, so the Helm release name is fixed to `cilium`. Check whether the
 cluster already runs Cilium (or another CNI you intend to keep) before
 adding this component.
 
-Also not the right component when:
+Also not the right kind when:
 
 - **You only need Kubernetes NetworkPolicy on a managed cloud whose native
   CNI already enforces it** — some managed offerings ship policy enforcement
@@ -140,7 +140,7 @@ both engines) for anything beyond it.
   control plane, L2 announcements, Cluster Mesh, ingress controller, image
   overrides, ...) — never the primary interface
 
-## Stack Outputs
+## Outputs
 
 | Output | Purpose |
 |---|---|

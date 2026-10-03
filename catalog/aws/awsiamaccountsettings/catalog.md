@@ -14,7 +14,7 @@ This component adopts and configures IAM settings objects that exist on every AW
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with IAM permissions on the target account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with IAM permissions on the target account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS Account
 
@@ -57,7 +57,7 @@ spec:
 planton apply -f aws-iam-account-settings.yaml
 ```
 
-This sets the `acme-corp-prod` sign-in alias, applies a 14-character four-character-class password policy with 90-day rotation and 24-password reuse memory, and switches the global STS endpoint to v2 tokens valid in every region. A Stack Job tracks the provisioning in real time.
+This sets the `acme-corp-prod` sign-in alias, applies a 14-character four-character-class password policy with 90-day rotation and 24-password reuse memory, and switches the global STS endpoint to v2 tokens valid in every region. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -77,13 +77,13 @@ These are the most important decisions when configuring IAM account settings. Ex
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies -- it configures account-level singletons and takes no references to other Cloud Resources.
+This kind has no foreign key dependencies -- it configures account-level singletons and takes no references to other Infra Components.
 
-### What This Component Provides
+### What This Kind Provides
 
-`status.outputs` echoes the applied state -- `account_id` (the singleton's identity), `account_alias`, and `expire_passwords` (derived by AWS from `maxPasswordAge`). These are audit and onboarding-documentation values, not composition inputs: no downstream Cloud Resource consumes IAM account settings by reference.
+`status.outputs` echoes the applied state -- `account_id` (the singleton's identity), `account_alias`, and `expire_passwords` (derived by AWS from `maxPasswordAge`). These are audit and onboarding-documentation values, not composition inputs: no downstream Infra Component consumes IAM account settings by reference.
 
 ## Common Patterns
 
@@ -97,5 +97,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS IAM User**](/cloud-catalog/aws-iam-user) -- the users whose console passwords the policy arm governs
-- [**AWS Organization**](/cloud-catalog/aws-organization) -- centralized root-access management is deliberately NOT in this kind; it is a management-account act modeled on the organization resource
+- [**AWS IAM User**](/infra-catalog/aws-iam-user) -- the users whose console passwords the policy arm governs
+- [**AWS Organization**](/infra-catalog/aws-organization) -- centralized root-access management is deliberately NOT in this kind; it is a management-account act modeled on the organization resource

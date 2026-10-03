@@ -62,7 +62,7 @@ planton apply -f secret.yaml
 | `projectId` | `StringValueOrRef` | provider default | GCP project of the Composer environment. |
 | `deletionPolicy` | `string` | `DELETE` | What a destroy does: `DELETE` the Secret, `PREVENT` (fail — protects credentials live pipelines depend on), or `ABANDON` (keep it in the cluster, drop from management). |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -74,12 +74,12 @@ The Secret's data is deliberately never exported.
 ## Important Notes
 
 - **Values are base64-encoded** — Kubernetes Secret semantics. Encode with `echo -n 'value' | base64`; the API rejects raw strings.
-- **The material stays out of outputs**: decoded values never appear in stack outputs; the entries are held as secrets in IaC state (Terraform marks the attribute sensitive; Pulumi wraps the map with `ToSecret`).
+- **The material stays out of outputs**: decoded values never appear in outputs; the entries are held as secrets in IaC state (Terraform marks the attribute sensitive; Pulumi wraps the map with `ToSecret`).
 - **Data updates in place**; `secretName`, `environment`, `region`, and `projectId` are immutable.
 - **How DAGs consume it**: mount it into `KubernetesPodOperator` tasks (as env vars or files) or point an Airflow connection/secret backend at it by `secret_name`.
 - **Deleting this resource deletes the Kubernetes Secret** from the environment.
 
-## Related Components
+## Related Kinds
 
 - [GcpCloudComposerEnvironment](/docs/catalog/gcp/gcpcloudcomposerenvironment) — the environment the Secret is delivered into
 - [GcpCloudComposerUserWorkloadsConfigMap](/docs/catalog/gcp/gcpcloudcomposeruserworkloadsconfigmap) — the non-secret sibling for plain configuration

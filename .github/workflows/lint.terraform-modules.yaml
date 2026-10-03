@@ -45,7 +45,7 @@ on:
       - 'hack/guards/ensure_create_namespace_default_false.sh'
       - 'pkg/iac/tofu/generators/**'
       - 'pkg/iac/tofu/tofumodule/**'
-      - 'pkg/iac/stackinput/providerenvvars/**'
+      - 'pkg/iac/iacinput/providerenvvars/**'
       - '.github/workflows/lint.terraform-modules.yaml'
   push:
     branches:
@@ -58,7 +58,7 @@ on:
       - 'hack/guards/ensure_create_namespace_default_false.sh'
       - 'pkg/iac/tofu/generators/**'
       - 'pkg/iac/tofu/tofumodule/**'
-      - 'pkg/iac/stackinput/providerenvvars/**'
+      - 'pkg/iac/iacinput/providerenvvars/**'
       - '.github/workflows/lint.terraform-modules.yaml'
   schedule:
     - cron: '17 6 * * *' # nightly full validate (provider-drift net)

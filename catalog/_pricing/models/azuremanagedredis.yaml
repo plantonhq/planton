@@ -1,10 +1,10 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
-# ../estimates/. Schema: finops/componentcostestimatemodel/v1.
+# ../estimates/. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: azuremanagedredis
 spec:
@@ -43,6 +43,6 @@ spec:
           pricing_quantity: "730"
           quantity_basis: one BALANCED_B3 (the geo-replication SKU floor) x 730 hours -- this manifest is one member of the geo group and bills only itself
       exclusions:
-        - every other member of the geo-replication group is its own component billing its own SKU-hour
+        - every other member of the geo-replication group is its own kind billing its own SKU-hour
         - cross-region replication traffic follows the group's write volume
-      notes: Active geo-replication is priced as the sum of the members -- each instance carries its own line, so the group's total lives across the composed components.
+      notes: Active geo-replication is priced as the sum of the members -- each instance carries its own line, so the group's total lives across the composed kinds.

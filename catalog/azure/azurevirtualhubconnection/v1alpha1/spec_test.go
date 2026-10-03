@@ -44,7 +44,7 @@ func validResource() *AzureVirtualHubConnection {
 	return &AzureVirtualHubConnection{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureVirtualHubConnection",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-vhub-connection",
 		},
 		Spec: &AzureVirtualHubConnectionSpec{

@@ -227,7 +227,7 @@ All documentation followed the user's specifications:
 - Recipe cards (manifests)
 
 **Exclusions**:
-- Correctly excluded `stack_input` references from user-facing docs (internal SaaS platform bridge)
+- Correctly excluded `iac_input` references from user-facing docs (internal SaaS platform bridge)
 - No speculation—all content grounded in actual code implementation
 
 ## Benefits
@@ -272,7 +272,7 @@ All documentation followed the user's specifications:
 - Main README
 - Getting Started
 - Concepts overview and architecture
-- Auto-generated component catalog (118 components)
+- Auto-generated kind catalog (118 kinds)
 
 **After**: 20+ documentation pages
 - All previous pages retained
@@ -296,7 +296,7 @@ All documentation followed the user's specifications:
 **Topics Covered**:
 - 2 IaC engines (Pulumi and OpenTofu)
 - 10+ cloud providers (AWS, GCP, Azure, Cloudflare, etc.)
-- 118 deployment components (via catalog)
+- 118 catalog kinds (via catalog)
 - 12 CLI commands documented
 - 15+ common flags explained
 
@@ -341,7 +341,7 @@ docs/
 ├── index.md (updated with new sections)
 ├── getting-started.md (existing)
 ├── concepts/ (existing)
-├── catalog/ (auto-generated, 118 components)
+├── catalog/ (auto-generated, 118 kinds)
 │
 ├── cli/ (NEW - CLI Reference)
 │   ├── index.md
@@ -364,7 +364,7 @@ docs/
 Every document includes "Related Documentation" section linking to:
 - Related guides
 - CLI commands
-- Component catalog
+- Kind catalog
 - External resources (official provider docs)
 
 **Example navigation paths**:
@@ -388,7 +388,7 @@ Documentation structured for three skill levels:
 3. Browse Catalog
 
 **Advanced**:
-1. Component-specific docs
+1. Kind-specific docs
 2. Fork modules
 3. Build automation
 4. Contribute
@@ -478,7 +478,7 @@ Documentation structured for three skill levels:
 - Directory structure breakdown
 - Command implementation pattern
 - Flag handling approach
-- Integration with internal packages (manifest, crkreflect, IaC modules)
+- Integration with internal packages (manifest, catalogkindreflect, IaC modules)
 - Build system (Go, Bazel)
 - Adding new commands walkthrough
 - Development workflow
@@ -627,7 +627,7 @@ Makes documentation enjoyable to read while maintaining technical accuracy.
 **Coverage**:
 - CLI commands: 12 commands fully documented
 - Providers: 10+ providers with credential guides
-- Deployment components: 118 (via existing catalog)
+- Catalog kinds: 118 (via existing catalog)
 - Guides: 4 comprehensive guides
 - Troubleshooting: 20+ scenarios covered
 
@@ -659,13 +659,13 @@ Makes documentation enjoyable to read while maintaining technical accuracy.
 ### Builds on Prior Documentation
 
 - **Documentation Site with Git-as-CMS** (2025-11-09): Established the website documentation system
-- **Automated Component Docs Build** (2025-11-09): Created catalog auto-generation
+- **Automated Kind Docs Build** (2025-11-09): Created catalog auto-generation
 - **Kubernetes & Snowflake Integration** (2025-11-11): Completed catalog coverage
 
 ### Complements Existing Documentation
 
 - Main README: Philosophical overview and value proposition
-- Component documentation: Provider/resource-specific deployment guides
+- Kind documentation: Provider/resource-specific deployment guides
 - Getting Started: Quick installation and first deployment
 
 ### Documentation Ecosystem
@@ -675,7 +675,7 @@ This expansion creates a complete documentation ecosystem:
 2. **Getting Started**: Install and deploy your first resource
 3. **CLI Reference**: How to use commands
 4. **Guides**: Deep dives on specific topics
-5. **Catalog**: Browse 118 deployment components
+5. **Catalog**: Browse 118 catalog kinds
 6. **Troubleshooting**: Fix problems quickly
 
 ## Future Enhancements
@@ -689,8 +689,8 @@ This expansion creates a complete documentation ecosystem:
 
 **API Reference**:
 - Generate from Protocol Buffer definitions
-- Link from component catalog
-- Show all available fields per component
+- Link from kind catalog
+- Show all available fields per kind
 
 **Video Tutorials**:
 - Record CLI command walkthroughs

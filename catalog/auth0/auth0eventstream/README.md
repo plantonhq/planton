@@ -1,6 +1,6 @@
 # Auth0EventStream
 
-Auth0EventStream is a Planton component that manages Auth0 Event Streams. Event Streams enable real-time delivery of Auth0 events to external systems like AWS EventBridge or custom webhook endpoints.
+Auth0EventStream is a catalog kind that manages Auth0 Event Streams. Event Streams enable real-time delivery of Auth0 events to external systems like AWS EventBridge or custom webhook endpoints.
 
 ## Overview
 
@@ -128,7 +128,7 @@ planton apply --manifest eventstream.yaml \
   --auth0-provider-config auth0-creds.yaml
 ```
 
-## Stack Outputs
+## Outputs
 
 After deployment, the following outputs are available:
 
@@ -163,7 +163,7 @@ aws events create-partner-event-source-connection \
   --partner-event-source "aws.partner/auth0.com/tenant-id/security-events"
 ```
 
-## Related Components
+## Related Kinds
 
 - [Auth0Connection](../auth0connection/README.md) - Manage identity provider connections
 - [Auth0Client](../auth0client/README.md) - Manage Auth0 applications

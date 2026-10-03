@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.aws.awsneptunecluster.v1alpha1;
 
-// AwsNeptuneClusterStackOutputs captures the observable identifiers and
+// AwsNeptuneClusterOutputs captures the observable identifiers and
 // connection endpoints of the Neptune cluster after deployment.
-message AwsNeptuneClusterStackOutputs {
+message AwsNeptuneClusterOutputs {
   // The cluster identifier (e.g. "knowledge-graph").
   string cluster_identifier = 1;
 

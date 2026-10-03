@@ -22,7 +22,7 @@ After renaming the project to Planton, the text logo SVG still contained the old
 
 Replaced the SVG-based text logo with styled HTML text "Planton" using Tailwind CSS classes. The approach maintains visual consistency while eliminating the need for a custom text logo asset.
 
-### Component Changes
+### Kind Changes
 
 ```mermaid
 flowchart TB

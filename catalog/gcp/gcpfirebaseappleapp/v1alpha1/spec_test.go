@@ -37,7 +37,7 @@ var _ = ginkgo.Describe("GcpFirebaseAppleAppSpec", func() {
 		return &GcpFirebaseAppleApp{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpFirebaseAppleApp",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-firebase-apple-app",
 			},
 			Spec: &GcpFirebaseAppleAppSpec{

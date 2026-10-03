@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kuberneteskafkaconnect
 spec:
@@ -21,13 +21,13 @@ spec:
       tofu_resource_name: connect
       derivations:
         - from_metadata_name: true
-        - from_stack_output: connect_name
+        - from_output: connect_name
       where_to_find: >-
         The KafkaConnect CR's metadata.name (equals the Planton resource
         name) — `kubectl get kafkaconnect -A` (NAME column).
     - name: namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         The Connect cluster's namespace — `kubectl get kafkaconnect -A`
@@ -43,14 +43,14 @@ spec:
         `kubectl get configmap -n <namespace>`.
     - name: config_map_namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Same namespace as the Connect cluster.
     # ── the optional anchor namespace ────────────────────────────────────
     - name: namespace_name
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         Only imported when create_namespace is true; the Connect

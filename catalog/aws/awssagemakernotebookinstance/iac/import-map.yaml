@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awssagemakernotebookinstance
 spec:
@@ -9,13 +9,13 @@ spec:
   values:
     - name: notebook_instance_name
       derivations:
-        - from_stack_output: notebook_instance_name
+        - from_output: notebook_instance_name
       where_to_find: >-
         SageMaker console -> Notebook instances (the name), or
         `aws sagemaker list-notebook-instances` (NotebookInstanceName).
     - name: lifecycle_config_name
       derivations:
-        - from_stack_output: lifecycle_config_name
+        - from_output: lifecycle_config_name
       where_to_find: >-
         `aws sagemaker describe-notebook-instance
         --notebook-instance-name <name>` shows

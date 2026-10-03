@@ -20,7 +20,7 @@ func baseProject() *GcpProject {
 	return &GcpProject{
 		ApiVersion: "gcp.planton.dev/v1alpha1",
 		Kind:       "GcpProject",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-gcp-project",
 		},
 		Spec: &GcpProjectSpec{

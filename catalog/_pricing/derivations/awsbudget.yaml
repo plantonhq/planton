@@ -5,9 +5,9 @@
 # the same rules against live manifests. Prices live in the provider's
 # price book (../pricebook/). Grammar-reachable: the only paid meter is
 # the action-enabled flag, a presence check. Schema:
-# finops/componentcostderivation/v1.
+# finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: awsbudget
 spec:
@@ -27,11 +27,11 @@ spec:
       basis: a budget with any action attached bills per budget-day it exists, however many actions it carries -- 730 hours / 24 = 30.42 budget-days a month, priced at the full marginal rate past the account's free allowance
   exclusions:
     - text: AWS Budgets Reports bill $0.01 per delivered report -- a console feature outside this spec
-    - text: SNS topics subscribed to notifications bill on their own components; email subscribers are free
+    - text: SNS topics subscribed to notifications bill on their own kinds; email subscribers are free
     - applies_when:
         - field_path: actions
           op: is_set
-      text: what a fired action DOES (denying IAM groups, attaching SCPs, stopping instances via SSM) changes other components' bills, not this one's
+      text: what a fired action DOES (denying IAM groups, attaching SCPs, stopping instances via SSM) changes other kinds' bills, not this one's
   notes:
     - text: "The AWSBudgets offer prices the account's first 62 action-enabled budget-days each month at $0.00 -- two action-enabled budgets running a full month are free. Whether THIS budget falls inside that account-level allowance no single manifest can see, so the estimate prices the full $0.10 rate and states the allowance (the adjudicated treatment, same as the CloudWatch dashboard and alarm allowances)."
     - text: A notifications-only budget (the 01 preset) is genuinely free -- the offer's plain Budget-days meter prices $0.00 flat at any budget count.

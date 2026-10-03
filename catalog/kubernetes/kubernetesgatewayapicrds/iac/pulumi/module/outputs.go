@@ -5,7 +5,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// exportOutputs exports the stack outputs for the Gateway API CRDs installation.
+// exportOutputs exports the outputs for the Gateway API CRDs installation.
 func exportOutputs(ctx *pulumi.Context, locals *Locals, crds *pulumiyaml.ConfigFile) error {
 	// Export installed version
 	ctx.Export("installed_version", pulumi.String(locals.Version))

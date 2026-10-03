@@ -9,9 +9,9 @@ import (
 	"github.com/plantonhq/planton/internal/cli/iacflags"
 	climanifest "github.com/plantonhq/planton/internal/cli/manifest"
 	"github.com/plantonhq/planton/internal/manifest"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
 	"github.com/plantonhq/planton/pkg/conversion"
 	"github.com/plantonhq/planton/pkg/conversion/embedded"
-	"github.com/plantonhq/planton/pkg/crkreflect"
 	"github.com/plantonhq/planton/pkg/protobufyaml"
 	"github.com/spf13/cobra"
 )
@@ -118,10 +118,10 @@ func upgradeManifestFile(manifestPath string) ([]byte, []conversion.DeclaredLoss
 	if kindName == "" {
 		return nil, nil, fmt.Errorf("the manifest has no kind field -- nothing to upgrade")
 	}
-	kind := crkreflect.KindFromString(kindName)
-	served, err := crkreflect.KindVersion(kind)
+	kind := catalogkindreflect.KindFromString(kindName)
+	served, err := catalogkindreflect.KindVersion(kind)
 	if err != nil {
-		return nil, nil, fmt.Errorf("kind %q is not a registered cloud-resource kind: %w", kindName, err)
+		return nil, nil, fmt.Errorf("kind %q is not a registered catalog kind: %w", kindName, err)
 	}
 
 	apiVersion, _ := doc["apiVersion"].(string)

@@ -36,7 +36,7 @@ every layer:
   jobs per engine.
 - **Missing floor surface**: `app_engine_routing_override` (on released 6.x)
   was unmodeled, and the spec comment promising `max_burst_size` "reported
-  in stack outputs" pointed at an output that did not exist.
+  in outputs" pointed at an output that did not exist.
 - **Stale-shape classes**: `object({value})` Terraform ref typing, stale
   `Pulumi.yaml binary:` options, no API enablement, required `project_id`
   instead of the catalog-wide ambient contract, presets carrying `${...}`

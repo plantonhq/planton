@@ -7,7 +7,7 @@ import (
 	"github.com/onsi/ginkgo/v2"
 	"github.com/onsi/gomega"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -29,7 +29,7 @@ func minimalSpec() *AzureRedisCacheAccessPolicyAssignment {
 	return &AzureRedisCacheAccessPolicyAssignment{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureRedisCacheAccessPolicyAssignment",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-assignment",
 		},
 		Spec: &AzureRedisCacheAccessPolicyAssignmentSpec{
@@ -63,7 +63,7 @@ var _ = ginkgo.Describe("AzureRedisCacheAccessPolicyAssignmentSpec Validation Te
 			input.Spec.AccessPolicyName = &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 					ValueFrom: &foreignkeyv1.ValueFromRef{
-						Kind:      cloudresourcekind.CloudResourceKind_AzureRedisCacheAccessPolicy,
+						Kind:      catalogkind.CatalogKind_AzureRedisCacheAccessPolicy,
 						Name:      "app-read-only",
 						FieldPath: "status.outputs.access_policy_name",
 					},
@@ -77,7 +77,7 @@ var _ = ginkgo.Describe("AzureRedisCacheAccessPolicyAssignmentSpec Validation Te
 			input.Spec.ObjectId = &foreignkeyv1.StringValueOrRef{
 				LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 					ValueFrom: &foreignkeyv1.ValueFromRef{
-						Kind:      cloudresourcekind.CloudResourceKind_AzureUserAssignedIdentity,
+						Kind:      catalogkind.CatalogKind_AzureUserAssignedIdentity,
 						Name:      "app-identity",
 						FieldPath: "status.outputs.principal_id",
 					},

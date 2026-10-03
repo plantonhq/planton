@@ -28,7 +28,7 @@ This preset creates the workhorse node pool most clusters run first: on-demand V
 - **02-spot-cost-optimized** — scale-to-zero Spot capacity for fault-tolerant batch
 - **03-gpu-accelerated** — GPU nodes for ML workloads
 
-## Related Components
+## Related Kinds
 
 - [GcpGkeCluster](/docs/catalog/gcp/gcpgkecluster) — the control plane this pool attaches to
 - [GcpServiceAccount](/docs/catalog/gcp/gcpserviceaccount) — the node identity

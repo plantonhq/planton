@@ -5,9 +5,9 @@ package dev.planton.azure.azurestorageencryptionscope.v1alpha1;
 import "catalog/azure/azurestorageencryptionscope/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-//azure-storage-encryption-scope stack-input
-message AzureStorageEncryptionScopeStackInput {
-  //target cloud-resource
+//azure-storage-encryption-scope iac-input
+message AzureStorageEncryptionScopeIacInput {
+  //target infra-component
   AzureStorageEncryptionScope target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

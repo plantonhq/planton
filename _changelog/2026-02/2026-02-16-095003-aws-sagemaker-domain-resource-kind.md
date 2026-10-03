@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added AwsSagemakerDomain as the twenty-sixth new AWS resource kind in the cloud provider expansion project. This component deploys SageMaker Studio domains — the most deeply nested AWS resource in the expansion — with IAM/SSO authentication, VPC networking, JupyterLab and KernelGateway IDE configurations, Docker access for custom containers, idle timeout for cost management, and notebook output sharing.
+Added AwsSagemakerDomain as the twenty-sixth new AWS resource kind in the cloud provider expansion project. This kind deploys SageMaker Studio domains — the most deeply nested AWS resource in the expansion — with IAM/SSO authentication, VPC networking, JupyterLab and KernelGateway IDE configurations, Docker access for custom containers, idle timeout for cost management, and notebook output sharing.
 
 ## Problem Statement / Motivation
 
-ML teams need managed JupyterLab environments integrated with their VPC, IAM roles, and security boundaries. SageMaker Domain is the foundational resource for Amazon SageMaker Studio, but its Terraform provider schema has 4 levels of nesting with ~17 optional nested blocks inside `default_user_settings` alone and 10 different app settings types. Without a well-scoped Planton component, teams face raw Terraform complexity that obscures the essential configuration choices.
+ML teams need managed JupyterLab environments integrated with their VPC, IAM roles, and security boundaries. SageMaker Domain is the foundational resource for Amazon SageMaker Studio, but its Terraform provider schema has 4 levels of nesting with ~17 optional nested blocks inside `default_user_settings` alone and 10 different app settings types. Without a well-scoped Planton kind, teams face raw Terraform complexity that obscures the essential configuration choices.
 
 ### Pain Points
 
@@ -49,14 +49,14 @@ Canvas app settings, RStudio Server Pro, Code Editor, R Session, TensorBoard, Ju
 
 ### Files Created
 
-- **Proto API**: spec.proto (10 messages, 44 fields, 9 CEL validations), stack_outputs.proto (6 outputs), api.proto, stack_input.proto
+- **Proto API**: spec.proto (10 messages, 44 fields, 9 CEL validations), outputs.proto (6 outputs), api.proto, iac_input.proto
 - **Tests**: spec_test.go (48 tests: 23 happy path, 20 failure, 5 envelope)
 - **Pulumi module**: main.go, locals.go, outputs.go, domain.go (single sagemaker.NewDomain with nested builder functions)
 - **Terraform module**: main.tf (dynamic blocks for all optional settings), variables.tf, locals.tf, outputs.tf, provider.tf
 - **Documentation**: README.md, examples.md (6 examples), docs/README.md (architecture, cost model, security)
 - **Presets**: 01-basic-jupyter-domain, 02-production-vpc-only, 03-ml-team-with-custom-images
 - **Catalog page**: sagemaker-domain.md + AWS index update
-- **Registration**: AwsSagemakerDomain = 270 in cloud_resource_kind.proto (id_prefix: sgmkd)
+- **Registration**: AwsSagemakerDomain = 270 in catalog_kind.proto (id_prefix: sgmkd)
 
 ### Key Technical Details
 
@@ -72,7 +72,7 @@ Canvas app settings, RStudio Server Pro, Code Editor, R Session, TensorBoard, Ju
 - VpcOnly + KMS + idle timeout preset provides security-hardened, cost-managed default
 - Custom image support enables standardized ML frameworks across teams
 - Docker access enables custom container workflows without leaving Studio
-- 6 stack outputs enable downstream resource composition (user profiles, IAM policies, monitoring)
+- 6 outputs enable downstream resource composition (user profiles, IAM policies, monitoring)
 
 ## Impact
 
@@ -84,7 +84,7 @@ Canvas app settings, RStudio Server Pro, Code Editor, R Session, TensorBoard, Ju
 
 - Part of [20260215.02.sp.aws-resource-expansion](/docs/projects/aws-resource-expansion) — R22 of ~32 AWS resource kinds
 - Follows patterns established by AwsMskCluster (R21), AwsRedshiftCluster (R20), and AwsEksCluster
-- Enables future AwsSagemakerUserProfile and AwsSagemakerSpace components
+- Enables future AwsSagemakerUserProfile and AwsSagemakerSpace kinds
 
 ---
 

@@ -30,7 +30,7 @@ var _ = ginkgo.Describe("GcpSpannerDatabaseSpec", func() {
 		return &GcpSpannerDatabase{
 			ApiVersion: "gcp.planton.dev/v1alpha1",
 			Kind:       "GcpSpannerDatabase",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-spanner-db",
 			},
 			Spec: &GcpSpannerDatabaseSpec{

@@ -2,14 +2,14 @@
 # from (formats live in catalog/cloudflare/aa_import/catalog.yaml). All six
 # cache resources are zone singletons importing as the bare zone id.
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: cloudflarecachesettings
 spec:
   values:
     - name: zone_id
       derivations:
-        - from_stack_output: zone_id
+        - from_output: zone_id
       where_to_find: >-
         Cloudflare dashboard -> the zone's Overview page (Zone ID in the
         right-hand API panel), or `GET /zones?name=<domain>` on the

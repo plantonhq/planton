@@ -21,8 +21,8 @@ import (
 // PREREQUISITE: a KubernetesKeycloakOperator watching this namespace
 // (with the default namespaced watch, the operator and its Keycloak
 // declarations live in the SAME namespace).
-func Resources(ctx *pulumi.Context, stackInput *kuberneteskeycloakv1alpha1.KubernetesKeycloakStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kuberneteskeycloakv1alpha1.KubernetesKeycloakIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// FAIL LOUDLY on names past the operator's naming budget: every
 	// child derives from this name by suffixing (`-network-policy` is
@@ -39,12 +39,12 @@ func Resources(ctx *pulumi.Context, stackInput *kuberneteskeycloakv1alpha1.Kuber
 	}
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to set up kubernetes provider")
 	}
 
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

@@ -4,7 +4,7 @@ Deploys a Kinesis Data Firehose delivery stream that captures, optionally transf
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Firehose Delivery Stream** -- a managed delivery pipeline named from your manifest's `metadata.name`, configured with exactly one destination (Extended S3, OpenSearch, OpenSearch Serverless, HTTP endpoint, Redshift, Splunk, Snowflake, or Iceberg)
 - **Source Configuration** -- Direct PUT by default; optionally reads from a Kinesis Data Stream (`kinesisStreamSource`) or an Amazon MSK topic (`mskSource`)
@@ -16,13 +16,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **An S3 bucket** -- required for every destination. Extended S3 uses it as the primary target; every other destination requires it for failed (or all) record backup, and Redshift additionally stages COPY data through it. Provide the bucket ARN directly or reference an AwsS3Bucket Cloud Resource via ValueFromRef.
-- **An IAM role** -- required per destination. The role must grant Firehose write access to the target service and, when used, to Lambda (transformation), Glue (format conversion or Iceberg), and Secrets Manager (credential resolution). Provide the ARN directly or reference an AwsIamRole Cloud Resource.
+- **An S3 bucket** -- required for every destination. Extended S3 uses it as the primary target; every other destination requires it for failed (or all) record backup, and Redshift additionally stages COPY data through it. Provide the bucket ARN directly or reference an AwsS3Bucket Infra Component via ValueFromRef.
+- **An IAM role** -- required per destination. The role must grant Firehose write access to the target service and, when used, to Lambda (transformation), Glue (format conversion or Iceberg), and Secrets Manager (credential resolution). Provide the ARN directly or reference an AwsIamRole Infra Component.
 - **A source stream or cluster** (optional) -- an existing Kinesis Data Stream or an MSK cluster with IAM access control enabled, when not using Direct PUT. Both must exist before the delivery stream is created.
 - **Destination infrastructure** -- the OpenSearch domain/collection, Redshift table, Splunk HEC input, Snowflake table, or Glue-cataloged Iceberg tables must exist first; Firehose delivers into existing infrastructure.
 - **A KMS key** (optional) -- for server-side encryption of the delivery stream buffer (Direct PUT only) or S3 object encryption.
@@ -59,7 +59,7 @@ spec:
 planton apply -f kinesis-firehose.yaml
 ```
 
-This creates a Direct PUT delivery stream that compresses records with GZIP and delivers them to S3 with date-partitioned prefixes. No encryption, transformation, or format conversion is configured. A Stack Job tracks the provisioning in real time.
+This creates a Direct PUT delivery stream that compresses records with GZIP and delivers them to S3 with date-partitioned prefixes. No encryption, transformation, or format conversion is configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -103,7 +103,7 @@ These are the most important decisions when configuring a Firehose delivery stre
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -119,9 +119,9 @@ These are the most important decisions when configuring a Firehose delivery stre
 
 The Secrets Manager `secretArn` and the Iceberg `catalogArn` are value-or-reference fields with no default catalog kind -- provide those ARNs directly.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -143,12 +143,12 @@ Six presets cover the common delivery shapes:
 
 ## Works With
 
-- [**AWS KMS Key**](/cloud-catalog/aws-kms-key) -- provides a customer-managed key for delivery stream buffer encryption and S3 SSE-KMS
-- [**AWS Kinesis Data Stream**](/cloud-catalog/aws-kinesis-stream) -- provides a streaming source for the delivery stream
-- [**AWS MSK Cluster**](/cloud-catalog/aws-msk-cluster) -- provides a Kafka topic source for the delivery stream
-- [**AWS IAM Role**](/cloud-catalog/aws-iam-role) -- provides service roles for Firehose to access S3, OpenSearch, Redshift, Lambda, Glue, and Secrets Manager
-- [**AWS S3 Bucket**](/cloud-catalog/aws-s3-bucket) -- provides the destination bucket for Extended S3, the staging bucket for Redshift, and backup buckets for every destination
-- [**AWS Lambda**](/cloud-catalog/aws-lambda) -- provides a transformation function for record processing before delivery
-- [**AWS Subnet**](/cloud-catalog/aws-subnet) -- provides subnets for VPC delivery to OpenSearch domains and collections
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- provides network access control for VPC delivery ENIs
-- [**AWS OpenSearch Domain**](/cloud-catalog/aws-open-search-domain) -- provides the OpenSearch domain for direct indexing
+- [**AWS KMS Key**](/infra-catalog/aws-kms-key) -- provides a customer-managed key for delivery stream buffer encryption and S3 SSE-KMS
+- [**AWS Kinesis Data Stream**](/infra-catalog/aws-kinesis-stream) -- provides a streaming source for the delivery stream
+- [**AWS MSK Cluster**](/infra-catalog/aws-msk-cluster) -- provides a Kafka topic source for the delivery stream
+- [**AWS IAM Role**](/infra-catalog/aws-iam-role) -- provides service roles for Firehose to access S3, OpenSearch, Redshift, Lambda, Glue, and Secrets Manager
+- [**AWS S3 Bucket**](/infra-catalog/aws-s3-bucket) -- provides the destination bucket for Extended S3, the staging bucket for Redshift, and backup buckets for every destination
+- [**AWS Lambda**](/infra-catalog/aws-lambda) -- provides a transformation function for record processing before delivery
+- [**AWS Subnet**](/infra-catalog/aws-subnet) -- provides subnets for VPC delivery to OpenSearch domains and collections
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- provides network access control for VPC delivery ENIs
+- [**AWS OpenSearch Domain**](/infra-catalog/aws-open-search-domain) -- provides the OpenSearch domain for direct indexing

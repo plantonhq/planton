@@ -1,4 +1,4 @@
-# Provider-config fixture: opts this component's e2e lane into a non-nil
+# Provider-config fixture: opts this kind's e2e lane into a non-nil
 # provider config on both engines (absent = the exact historical ambient
 # contract). Non-secret by design -- credentials stay on the ambient chain;
 # default_tags is the natural proof because it is observable on every

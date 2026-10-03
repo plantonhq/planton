@@ -27,7 +27,7 @@ func validSecret(spec *CloudflareSecretsStoreSecretSpec) *CloudflareSecretsStore
 	return &CloudflareSecretsStoreSecret{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareSecretsStoreSecret",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-secret",
 		},
 		Spec: spec,

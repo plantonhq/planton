@@ -82,7 +82,7 @@ Choose provisioned when:
 |---|---|---|---|
 | `user_group_id` | StringValueOrRef | No | Redis ACL user group via `AwsElasticacheUserGroup`. Exactly one group. |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |---|---|---|

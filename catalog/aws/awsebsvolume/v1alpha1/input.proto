@@ -5,9 +5,9 @@ package dev.planton.aws.awsebsvolume.v1alpha1;
 import "catalog/aws/awsebsvolume/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsEbsVolumeStackInput is the input for the IaC modules that manage
+// AwsEbsVolumeIacInput is the input for the IaC modules that manage
 // a standalone EBS volume.
-message AwsEbsVolumeStackInput {
+message AwsEbsVolumeIacInput {
   // target is the AwsEbsVolume resource to deploy.
   AwsEbsVolume target = 1;
   // provider_config contains the AWS provider credentials and configuration.

@@ -4,7 +4,7 @@ Creates a batch deployment on an Azure Machine Learning batch endpoint -- the jo
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Batch Deployment** -- an ARM child of the endpoint (`.../batchEndpoints/{endpoint}/deployments/{name}`) carrying the scoring recipe: model reference, compute target, mini-batch sizing, retry policy, and output shape
 
@@ -58,7 +58,7 @@ spec:
 planton apply -f azure-machine-learning-batch-deployment.yaml
 ```
 
-This registers a scoring recipe named `production` behind the endpoint -- registered model version 3, four cluster nodes per job; invoke the endpoint to run a job from it. A Stack Job tracks the provisioning in real time.
+This registers a scoring recipe named `production` behind the endpoint -- registered model version 3, four cluster nodes per job; invoke the endpoint to run a job from it. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -94,16 +94,16 @@ These are the most important decisions when configuring the deployment. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **AzureMachineLearningBatchEndpoint** | `endpointId` | `status.outputs.batch_endpoint_id` |
 | **AzureMachineLearningComputeCluster** | `computeId` | `status.outputs.machine_learning_compute_cluster_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -120,6 +120,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Azure Machine Learning Batch Endpoint**](/cloud-catalog/azure-machine-learning-batch-endpoint) -- the parent endpoint
-- [**Azure Machine Learning Compute Cluster**](/cloud-catalog/azure-machine-learning-compute-cluster) -- the pooled compute jobs run on
-- [**Azure Machine Learning Workspace**](/cloud-catalog/azure-machine-learning-workspace) -- the workspace everything lives in
+- [**Azure Machine Learning Batch Endpoint**](/infra-catalog/azure-machine-learning-batch-endpoint) -- the parent endpoint
+- [**Azure Machine Learning Compute Cluster**](/infra-catalog/azure-machine-learning-compute-cluster) -- the pooled compute jobs run on
+- [**Azure Machine Learning Workspace**](/infra-catalog/azure-machine-learning-workspace) -- the workspace everything lives in

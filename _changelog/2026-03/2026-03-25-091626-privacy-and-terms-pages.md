@@ -64,7 +64,7 @@ Markdown files in `content/legal/` are read at build time by server components a
 - Pages live under the `(root)` route group, inheriting `MainLayout` (Header + Footer) automatically
 - Content is read via `fs.readFileSync` at build time, compatible with Next.js `output: 'export'` static generation
 - `LegalContent.tsx` uses `ReactMarkdown` with `remark-gfm` and `rehype-raw` (same plugins as the existing `MDXRenderer`) but stripped of docs-specific features (sidebar, next-article, page actions)
-- Heading anchors use the existing `HeadingWithAnchor` and `generateHeadingId` components from `@/components/docs`
+- Heading anchors use the existing `HeadingWithAnchor` and `generateHeadingId` kinds from `@/components/docs`
 - Company details sourced from incorporation records: Planton Cloud, Inc., Delaware C-Corp, principal address in Fresno, CA
 
 ## Benefits

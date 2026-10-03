@@ -28,5 +28,5 @@ patch group.
 - `setAsDefaultBaseline: true` makes this the OS default for nodes in
   no governed group (delete restores AWS's own default)
 - Schedule the actual scan/install with
-  [AWS SSM Association](/cloud-catalog/aws-ssm-association) and
-  [AWS SSM Maintenance Window](/cloud-catalog/aws-ssm-maintenance-window)
+  [AWS SSM Association](/infra-catalog/aws-ssm-association) and
+  [AWS SSM Maintenance Window](/infra-catalog/aws-ssm-maintenance-window)

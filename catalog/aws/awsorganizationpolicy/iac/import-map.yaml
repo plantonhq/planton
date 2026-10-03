@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: awsorganizationpolicy
 spec:
@@ -9,7 +9,7 @@ spec:
   values:
     - name: policy_id
       derivations:
-        - from_stack_output: policy_id
+        - from_output: policy_id
       where_to_find: >-
         Organizations console -> Policies (the policy's ID), or `aws
         organizations list-policies --filter <type>` (Id, "p-...").

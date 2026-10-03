@@ -5,16 +5,16 @@ Pulumi (Go) IaC module for a bring-your-own TLS certificate uploaded to a Cloudf
 ## Architecture
 
 ```
-main.go                              — Entrypoint loading the stack input
+main.go                              — Entrypoint loading the IaC input
 module/main.go                       — Resources(): provider setup, resource, outputs
 module/locals.go                     — Locals initialization
 module/custom_ssl_certificate.go     — cloudflare.CustomSsl
-module/outputs.go                    — Stack output keys
+module/outputs.go                    — output keys
 ```
 
 ## Behavior
 
-Mirrors the Terraform module's contract exactly: replacement-on-rotation semantics, empty-string drops for `policy`/`custom_csr_id`, the nested geo restriction sent only when the label is present, and the `certificate_id` / `zone_id` / `expires_on` stack outputs. `priority` is deliberately absent (read-only at provider v5.23.0).
+Mirrors the Terraform module's contract exactly: replacement-on-rotation semantics, empty-string drops for `policy`/`custom_csr_id`, the nested geo restriction sent only when the label is present, and the `certificate_id` / `zone_id` / `expires_on` outputs. `priority` is deliberately absent (read-only at provider v5.23.0).
 
 ## Outputs
 

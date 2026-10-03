@@ -8,7 +8,7 @@ import (
 	"github.com/onsi/gomega"
 	kubernetes "github.com/plantonhq/planton/catalog/kubernetes"
 	"github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	foreignkeyv1 "github.com/plantonhq/planton/shared/foreignkey/v1"
 )
 
@@ -27,7 +27,7 @@ func literal(value string) *foreignkeyv1.StringValueOrRef {
 	}
 }
 
-func valueFrom(kind cloudresourcekind.CloudResourceKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
+func valueFrom(kind catalogkind.CatalogKind, name, fieldPath string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{
 		LiteralOrRef: &foreignkeyv1.StringValueOrRef_ValueFrom{
 			ValueFrom: &foreignkeyv1.ValueFromRef{
@@ -90,13 +90,13 @@ func r2Storage(name string) *KubernetesMongodbBackupStorage {
 		Name: name,
 		Backend: &KubernetesMongodbBackupStorage_R2{
 			R2: &KubernetesMongodbR2Storage{
-				Bucket:       valueFrom(cloudresourcekind.CloudResourceKind_CloudflareR2Bucket, "mongo-archive", "status.outputs.bucket_name"),
+				Bucket:       valueFrom(catalogkind.CatalogKind_CloudflareR2Bucket, "mongo-archive", "status.outputs.bucket_name"),
 				Prefix:       "prod-mongo",
-				AccountId:    valueFrom(cloudresourcekind.CloudResourceKind_CloudflareR2Bucket, "mongo-archive", "status.outputs.account_id"),
-				Jurisdiction: valueFrom(cloudresourcekind.CloudResourceKind_CloudflareR2Bucket, "mongo-archive", "status.outputs.jurisdiction"),
+				AccountId:    valueFrom(catalogkind.CatalogKind_CloudflareR2Bucket, "mongo-archive", "status.outputs.account_id"),
+				Jurisdiction: valueFrom(catalogkind.CatalogKind_CloudflareR2Bucket, "mongo-archive", "status.outputs.jurisdiction"),
 				Credentials: &KubernetesMongodbR2Credentials{
-					AccessKeyId:     valueFrom(cloudresourcekind.CloudResourceKind_CloudflareAccountApiToken, "mongo-archive-writer", "status.outputs.r2_access_key_id"),
-					SecretAccessKey: valueFrom(cloudresourcekind.CloudResourceKind_CloudflareAccountApiToken, "mongo-archive-writer", "status.outputs.r2_secret_access_key"),
+					AccessKeyId:     valueFrom(catalogkind.CatalogKind_CloudflareAccountApiToken, "mongo-archive-writer", "status.outputs.r2_access_key_id"),
+					SecretAccessKey: valueFrom(catalogkind.CatalogKind_CloudflareAccountApiToken, "mongo-archive-writer", "status.outputs.r2_secret_access_key"),
 				},
 			},
 		},
@@ -130,7 +130,7 @@ var _ = ginkgo.Describe("KubernetesMongodb Validation Tests", func() {
 		input = &KubernetesMongodb{
 			ApiVersion: "kubernetes.planton.dev/v1alpha1",
 			Kind:       "KubernetesMongodb",
-			Metadata: &shared.CloudResourceMetadata{
+			Metadata: &shared.CatalogObjectMetadata{
 				Name: "test-mongodb",
 			},
 			Spec: &KubernetesMongodbSpec{
@@ -146,7 +146,7 @@ var _ = ginkgo.Describe("KubernetesMongodb Validation Tests", func() {
 		})
 
 		ginkgo.It("namespace as a reference should be valid", func() {
-			input.Spec.Namespace = valueFrom(cloudresourcekind.CloudResourceKind_KubernetesNamespace, "databases", "spec.name")
+			input.Spec.Namespace = valueFrom(catalogkind.CatalogKind_KubernetesNamespace, "databases", "spec.name")
 			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
 		})
 
@@ -329,7 +329,7 @@ var _ = ginkgo.Describe("KubernetesMongodb Validation Tests", func() {
 			storage := gcsStorage("gcs-store")
 			storage.GetGcs().Credentials = &KubernetesMongodbGcsCredentials{
 				Source: &KubernetesMongodbGcsCredentials_ServiceAccountKey{
-					ServiceAccountKey: valueFrom(cloudresourcekind.CloudResourceKind_GcpServiceAccount, "mongo-backup", "status.outputs.key_base64"),
+					ServiceAccountKey: valueFrom(catalogkind.CatalogKind_GcpServiceAccount, "mongo-backup", "status.outputs.key_base64"),
 				},
 			}
 			input.Spec.Backup = &KubernetesMongodbBackup{Storages: []*KubernetesMongodbBackupStorage{storage}}

@@ -1,10 +1,10 @@
-# Estimate model: the authored half of this component's per-preset cost
+# Estimate model: the authored half of this kind's per-preset cost
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
-# ../estimates/. Schema: finops/componentcostestimatemodel/v1.
+# ../estimates/. Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostEstimateModel
+kind: CatalogKindCostEstimateModel
 metadata:
   name: awsroute53zone
 spec:
@@ -20,7 +20,7 @@ spec:
           quantity_basis: one hosted zone, billed monthly at the first-25-zones tier rate
       exclusions:
         - DNS queries bill per million answered and follow traffic
-        - records, health checks, and routing policies are separate components
+        - records, health checks, and routing policies are separate kinds
     - preset: 02-private-vpc-zone
       region_assumption: global
       currency: USD
@@ -31,7 +31,7 @@ spec:
           pricing_quantity: "1"
           quantity_basis: one hosted zone, billed monthly at the first-25-zones tier rate -- private zones pay the same fee
       exclusions:
-        - records and resolver-side monitoring are separate components
+        - records and resolver-side monitoring are separate kinds
       notes: In-VPC queries against a private zone are free, so the zone fee is this preset's whole bill.
     - preset: 03-dnssec-signed-zone
       region_assumption: global
@@ -44,5 +44,5 @@ spec:
           quantity_basis: one hosted zone, billed monthly at the first-25-zones tier rate -- DNSSEC signing adds no Route 53 charge
       exclusions:
         - DNS queries bill per million answered and follow traffic
-        - the DNSSEC signing key bills on its referenced AwsKmsKey component (monthly key fee plus per-request signing)
-        - records, health checks, and routing policies are separate components
+        - the DNSSEC signing key bills on its referenced AwsKmsKey kind (monthly key fee plus per-request signing)
+        - records, health checks, and routing policies are separate kinds

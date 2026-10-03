@@ -15,7 +15,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: awsrdsproxy
+    e2e-catalog-kind: awsrdsproxy
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AwsRdsInstance,catalog/aws/awsrdsproxy/e2e/prerequisites/db-credentials-secret.yaml"

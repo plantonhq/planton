@@ -3,10 +3,10 @@ syntax = "proto3";
 package dev.planton.kubernetes.kuberneteskeycloakoperator.v1alpha1;
 
 /**
- * **KubernetesKeycloakOperatorStackOutputs** — handles a deployed
+ * **KubernetesKeycloakOperatorOutputs** — handles a deployed
  * Keycloak Operator exports.
  */
-message KubernetesKeycloakOperatorStackOutputs {
+message KubernetesKeycloakOperatorOutputs {
   /**
    * Namespace the operator runs in (where namespaced-watch Keycloak
    * declarations must also live).

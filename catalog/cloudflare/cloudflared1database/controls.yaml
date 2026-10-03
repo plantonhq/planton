@@ -3,9 +3,9 @@
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract, the official modules, and Cloudflare's own documentation
 # (D1 data security and Time Travel pages, retrieved 2026-08-22). Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: cloudflared1database
 spec:

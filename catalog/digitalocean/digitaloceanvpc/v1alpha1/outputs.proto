@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package dev.planton.digitalocean.digitaloceanvpc.v1alpha1;
 
-// DigitalOceanVpcStackOutputs captures the resulting VPC info after provisioning.
-message DigitalOceanVpcStackOutputs {
+// DigitalOceanVpcOutputs captures the resulting VPC info after provisioning.
+message DigitalOceanVpcOutputs {
   // The unique identifier (UUID) of the created DigitalOcean VPC. Other kinds' `vpc`
   // references resolve against this output.
   string vpc_id = 1;

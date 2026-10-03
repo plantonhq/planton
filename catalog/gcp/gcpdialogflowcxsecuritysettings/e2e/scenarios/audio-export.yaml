@@ -14,7 +14,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: gcpdialogflowcxsecuritysettings
+    e2e-catalog-kind: gcpdialogflowcxsecuritysettings
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "catalog/gcp/gcpdialogflowcxsecuritysettings/e2e/prerequisites/gcpgcsbucket-audio.yaml"

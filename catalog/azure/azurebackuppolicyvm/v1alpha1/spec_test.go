@@ -31,7 +31,7 @@ func validResource() *AzureBackupPolicyVm {
 	return &AzureBackupPolicyVm{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureBackupPolicyVm",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-backup-policy-vm",
 		},
 		Spec: &AzureBackupPolicyVmSpec{

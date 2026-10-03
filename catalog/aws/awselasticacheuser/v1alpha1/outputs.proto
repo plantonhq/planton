@@ -2,11 +2,11 @@ syntax = "proto3";
 
 package dev.planton.aws.awselasticacheuser.v1alpha1;
 
-// AwsElasticacheUserStackOutputs captures observable identifiers from a
+// AwsElasticacheUserOutputs captures observable identifiers from a
 // provisioned ElastiCache user. These outputs are used by downstream
 // resources to wire dependencies via StringValueOrRef — most importantly
 // the user group's `user_ids` list.
-message AwsElasticacheUserStackOutputs {
+message AwsElasticacheUserOutputs {
   // The user's AWS identifier (the user id). This is what user groups
   // reference in their membership list and what the AWS CLI/API address.
   string user_id = 1;

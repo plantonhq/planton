@@ -1,5 +1,5 @@
 # Auth0 Prompt Test Manifest
-# This file is used for testing the Auth0Prompt component.
+# This file is used for testing the Auth0Prompt kind.
 #
 # Applying it CHANGES the login flow of the tenant the credential belongs to:
 # run it only against a test tenant nobody signs in to.

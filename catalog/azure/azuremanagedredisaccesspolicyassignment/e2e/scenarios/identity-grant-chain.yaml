@@ -16,7 +16,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azuremanagedredisaccesspolicyassignment
+    e2e-catalog-kind: azuremanagedredisaccesspolicyassignment
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AzureUserAssignedIdentity, catalog/azure/azuremanagedredisaccesspolicyassignment/e2e/keyless-cluster.yaml"

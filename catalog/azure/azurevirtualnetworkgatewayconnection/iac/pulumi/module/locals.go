@@ -5,7 +5,7 @@ import (
 
 	azurevirtualnetworkgatewayconnectionv1alpha1 "github.com/plantonhq/planton/catalog/azure/azurevirtualnetworkgatewayconnection/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -23,11 +23,11 @@ type Locals struct {
 	AzureTags map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurevirtualnetworkgatewayconnectionv1alpha1.AzureVirtualNetworkGatewayConnectionStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurevirtualnetworkgatewayconnectionv1alpha1.AzureVirtualNetworkGatewayConnectionIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureVirtualNetworkGatewayConnection = stackInput.Target
-	target := stackInput.Target
+	locals.AzureVirtualNetworkGatewayConnection = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
@@ -38,7 +38,7 @@ func initializeLocals(ctx *pulumi.Context, stackInput *azurevirtualnetworkgatewa
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureVirtualNetworkGatewayConnection.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureVirtualNetworkGatewayConnection.String()),
 	}
 
 	if target.Metadata.Id != "" {

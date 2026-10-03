@@ -5,9 +5,9 @@ package dev.planton.aws.awsbedrockagent.v1alpha1;
 import "catalog/aws/awsbedrockagent/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-// AwsBedrockAgentStackInput is the input for the IaC modules that deploy
+// AwsBedrockAgentIacInput is the input for the IaC modules that deploy
 // the Bedrock agent.
-message AwsBedrockAgentStackInput {
+message AwsBedrockAgentIacInput {
   // target is the AwsBedrockAgent resource to deploy.
   AwsBedrockAgent target = 1;
   // provider_config contains the AWS provider credentials and configuration.

@@ -4,7 +4,7 @@ This Pulumi (Go) module provisions a Kubernetes Secret in a Cloud Composer envir
 
 ## Overview
 
-The Secret's data updates in place; name, environment, region, and project are immutable. Values are base64-encoded secret material (the Kubernetes Secret contract). The module wraps the data map with `ToSecret`, so it is held encrypted in Pulumi state and never surfaced in stack outputs. No API enablement here: the Composer API is enabled by the environment this Secret is delivered into. An empty `project_id` falls back to the provider's default project.
+The Secret's data updates in place; name, environment, region, and project are immutable. Values are base64-encoded secret material (the Kubernetes Secret contract). The module wraps the data map with `ToSecret`, so it is held encrypted in Pulumi state and never surfaced in outputs. No API enablement here: the Composer API is enabled by the environment this Secret is delivered into. An empty `project_id` falls back to the provider's default project.
 
 ## Usage with Planton CLI
 
@@ -13,7 +13,7 @@ planton pulumi up --manifest ../../e2e/manifest.yaml --module-dir .
 planton pulumi destroy --manifest ../../e2e/manifest.yaml --module-dir .
 ```
 
-Credentials are provided via stack input (by the CLI), not in the manifest `spec`. Manifest file: `../../e2e/manifest.yaml`.
+Credentials are provided via IaC input (by the CLI), not in the manifest `spec`. Manifest file: `../../e2e/manifest.yaml`.
 
 ## Direct Pulumi Usage
 
@@ -25,11 +25,11 @@ pulumi up --stack dev
 
 ## Module Layout
 
-- `main.go` — entrypoint; loads the stack input and calls the module
+- `main.go` — entrypoint; loads the IaC input and calls the module
 - `module/main.go` — provider setup and resource orchestration
-- `module/locals.go` — resolved stack input values
+- `module/locals.go` — resolved IaC input values
 - `module/user_workloads_secret.go` — the Secret resource with the `ToSecret`-wrapped data map
-- `module/outputs.go` — stack output keys (must match `outputs.proto`)
+- `module/outputs.go` — output keys (must match `outputs.proto`)
 
 ## Outputs
 

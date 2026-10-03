@@ -19,7 +19,7 @@ metadata:
   env: e2e
   labels:
     managed-by: planton-e2e
-    e2e-component: azurecomputegalleryimage
+    e2e-catalog-kind: azurecomputegalleryimage
   annotations:
     planton.dev/e2e: "true"
     planton.dev/e2e-prerequisites: "AzureManagedDisk,AzureDiskSnapshot"

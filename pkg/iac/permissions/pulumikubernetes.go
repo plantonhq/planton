@@ -288,13 +288,13 @@ const PulumiKubernetesCustomResourcePackage = PulumiKubernetesSDK + "/apiextensi
 // The yaml constructors register every document as an ordinary resource of
 // its kind, which the provider awaits and deletes exactly as it would a
 // typed object. The gate cannot read the kinds from the source, so it holds
-// every kind the component's manifest grants create on to this table (see
+// every kind the kind's manifest grants create on to this table (see
 // the conformance gate). A Helm release is Helm's: installed, awaited and
 // uninstalled by Helm inside the provider, whose own wait is bounded by the
 // release's timeout.
 var PulumiKubernetesDelegated = map[string]string{
 	PulumiKubernetesSDK + "/helm/v3.NewRelease":     "a Helm release is installed, awaited and uninstalled by Helm inside the provider -- Helm's own wait, bounded by the release's timeout, reads what it needs; this table models the provider's informer waits only",
-	PulumiKubernetesSDK + "/helm/v3.NewChart":       "a Helm v3 Chart renders its templates into child resources at run time, each awaited by its own kind; no component with a manifest uses one, and one that does is held like a yaml file",
+	PulumiKubernetesSDK + "/helm/v3.NewChart":       "a Helm v3 Chart renders its templates into child resources at run time, each awaited by its own kind; no kind with a manifest uses one, and one that does is held like a yaml file",
 	PulumiKubernetesSDK + "/yaml.NewConfigFile":     "yaml",
 	PulumiKubernetesSDK + "/yaml.NewConfigGroup":    "yaml",
 	PulumiKubernetesSDK + "/yaml/v2.NewConfigGroup": "yaml",

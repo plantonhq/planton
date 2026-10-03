@@ -4,7 +4,7 @@ A Certificate Authority Service CA pool: the trust anchor your services trust an
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **API enablement** -- `privateca.googleapis.com` on the project (never disabled on destroy)
 - **CA pool** -- a `privateca_ca_pool` with its tier, issuance policy, publishing options, and optional at-rest encryption key
@@ -71,7 +71,7 @@ planton apply -f private-ca-pool.yaml
 - The identity constraints' CEL `expression` is required when `celExpression` is set.
 - OIDs have at least one non-negative arc; custom extensions need an OID and a value; `maxIssuerPathLength` is not negative.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -100,7 +100,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - **GcpPrivateCaCertificateAuthority** -- the authorities inside the pool
 - **GcpPrivateCaCertificate** -- certificates issued from the pool

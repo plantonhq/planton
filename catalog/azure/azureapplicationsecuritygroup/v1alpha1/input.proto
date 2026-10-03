@@ -5,10 +5,10 @@ package dev.planton.azure.azureapplicationsecuritygroup.v1alpha1;
 import "catalog/azure/azureapplicationsecuritygroup/v1alpha1/api.proto";
 import "catalog/azure/provider.proto";
 
-// AzureApplicationSecurityGroupStackInput is the input to the IaC modules
+// AzureApplicationSecurityGroupIacInput is the input to the IaC modules
 // (Pulumi/Terraform). It contains the target resource definition and Azure
 // provider credentials.
-message AzureApplicationSecurityGroupStackInput {
+message AzureApplicationSecurityGroupIacInput {
   // The application security group resource to deploy.
   AzureApplicationSecurityGroup target = 1;
 

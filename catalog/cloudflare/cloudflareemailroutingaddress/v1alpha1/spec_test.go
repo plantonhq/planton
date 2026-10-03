@@ -15,7 +15,7 @@ func validAddress() *CloudflareEmailRoutingAddress {
 	return &CloudflareEmailRoutingAddress{
 		ApiVersion: "cloudflare.planton.dev/v1alpha1",
 		Kind:       "CloudflareEmailRoutingAddress",
-		Metadata:   &shared.CloudResourceMetadata{Name: "test-address"},
+		Metadata:   &shared.CatalogObjectMetadata{Name: "test-address"},
 		Spec: &CloudflareEmailRoutingAddressSpec{
 			AccountId: validAccountID,
 			Email:     "ops@example.com",

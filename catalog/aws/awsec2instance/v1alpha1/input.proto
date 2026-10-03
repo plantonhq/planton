@@ -5,9 +5,9 @@ package dev.planton.aws.awsec2instance.v1alpha1;
 import "catalog/aws/awsec2instance/v1alpha1/api.proto";
 import "catalog/aws/provider.proto";
 
-//aws-ec2-instance stack-input
-message AwsEc2InstanceStackInput {
-  //target cloud-resource
+//aws-ec2-instance iac-input
+message AwsEc2InstanceIacInput {
+  //target infra-component
   AwsEc2Instance target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

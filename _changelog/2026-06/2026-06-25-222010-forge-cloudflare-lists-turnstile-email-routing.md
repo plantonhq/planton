@@ -6,7 +6,7 @@
 
 ## Summary
 
-Forged six new first-class, infra-chart-composable Cloudflare cloud resource kinds
+Forged six new first-class, infra-chart-composable Cloudflare catalog kinds
 across three Tier-1 product families — Lists, Turnstile, and Email Routing — each
 modeled to the Cloudflare v5 provider's depth with full Terraform + Pulumi parity
 (provider `~> 5.0`, `pulumi-cloudflare/sdk/v6 v6.17.0`). This extends the
@@ -84,7 +84,7 @@ whether the provider has fixed them — without any spec change.
 ## Validation
 
 - `make protos`, spec/CEL tests for all six kinds, scoped `go build` of each
-  package and each Pulumi entrypoint, `make generate-cloud-resource-kind-map`,
+  package and each Pulumi entrypoint, `make generate-catalog-kind-map`,
   gazelle, `pkg/outputs` conformance (6 new cases), `secret-coverage --check`.
 - `tofu validate` of all six modules against the real v5 provider.
 - **Live `tofu apply`/`destroy`** on the real account for Lists (List + ListItem)

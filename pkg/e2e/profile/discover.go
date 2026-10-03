@@ -9,36 +9,36 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/plantonhq/planton/pkg/crkreflect"
-	componentv1 "github.com/plantonhq/planton/qa/componente2eprofile/v1"
+	"github.com/plantonhq/planton/pkg/catalogkindreflect"
+	kindv1 "github.com/plantonhq/planton/qa/catalogkinde2eprofile/v1"
 	providerv1 "github.com/plantonhq/planton/qa/providere2eprofile/v1"
 	sharedpb "github.com/plantonhq/planton/shared"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
-// ComponentEntry pairs a component name with its loaded profile.
-type ComponentEntry struct {
+// KindEntry pairs a kind name with its loaded profile.
+type KindEntry struct {
 	Name    string
-	Profile *componentv1.ComponentE2EProfile
+	Profile *kindv1.CatalogKindE2EProfile
 }
 
-// FilterOpts controls which components are included in discovery.
+// FilterOpts controls which kinds are included in discovery.
 type FilterOpts struct {
-	// Only include components with this status. Empty means all.
-	Status componentv1.ComponentE2EProfileSpec_Status
-	// Only include components in this tier. 0 means all.
+	// Only include kinds with this status. Empty means all.
+	Status kindv1.CatalogKindE2EProfileSpec_Status
+	// Only include kinds in this tier. 0 means all.
 	Tier int32
-	// Only include components that have been validated with this provisioner. 0 means all.
+	// Only include kinds that have been validated with this provisioner. 0 means all.
 	Provisioner sharedpb.IacProvisioner
 }
 
 // DiscoverResult holds the full discovery output for a provider.
 type DiscoverResult struct {
-	Provider   *providerv1.ProviderE2EProfile
-	Components []ComponentEntry
+	Provider *providerv1.ProviderE2EProfile
+	Kinds    []KindEntry
 }
 
-// Discover scans all component E2E profiles under a provider and applies filters.
+// Discover scans all catalog kind E2E profiles under a provider and applies filters.
 func Discover(repoRoot, provider string, opts FilterOpts) (*DiscoverResult, error) {
 	pp, err := LoadProviderProfile(repoRoot, provider)
 	if err != nil {
@@ -51,17 +51,17 @@ func Discover(repoRoot, provider string, opts FilterOpts) (*DiscoverResult, erro
 		return nil, errors.Wrapf(err, "reading provider directory %s", provDir)
 	}
 
-	var components []ComponentEntry
+	var kindDirs []KindEntry
 	for _, entry := range entries {
 		if !entry.IsDir() {
 			continue
 		}
-		componentName := entry.Name()
+		kindName := entry.Name()
 
 		// A directory that does not resolve to a registered kind is not a
-		// component (e.g. the provider's aa_e2e/ or aa_import/ folders) —
-		// skip it, exactly as a component without a profile is skipped.
-		profilePath, err := ComponentProfilePath(repoRoot, provider, componentName)
+		// kind (e.g. the provider's aa_e2e/ or aa_import/ folders) —
+		// skip it, exactly as a kind without a profile is skipped.
+		profilePath, err := KindProfilePath(repoRoot, provider, kindName)
 		if err != nil {
 			continue
 		}
@@ -69,11 +69,11 @@ func Discover(repoRoot, provider string, opts FilterOpts) (*DiscoverResult, erro
 			continue
 		}
 
-		cp, err := LoadComponentProfile(repoRoot, provider, componentName)
+		cp, err := LoadKindProfile(repoRoot, provider, kindName)
 		if err != nil {
 			return nil, err
 		}
-		if err := checkValidatedProvisioners(componentName, cp); err != nil {
+		if err := checkValidatedProvisioners(kindName, cp); err != nil {
 			return nil, errors.Wrapf(err, "%s", profilePath)
 		}
 
@@ -81,33 +81,33 @@ func Discover(repoRoot, provider string, opts FilterOpts) (*DiscoverResult, erro
 			continue
 		}
 
-		components = append(components, ComponentEntry{
-			Name:    componentName,
+		kindDirs = append(kindDirs, KindEntry{
+			Name:    kindName,
 			Profile: cp,
 		})
 	}
 
-	sort.Slice(components, func(i, j int) bool {
-		ti, tj := components[i].Profile.Spec.Tier, components[j].Profile.Spec.Tier
+	sort.Slice(kindDirs, func(i, j int) bool {
+		ti, tj := kindDirs[i].Profile.Spec.Tier, kindDirs[j].Profile.Spec.Tier
 		if ti != tj {
 			return ti < tj
 		}
-		return components[i].Name < components[j].Name
+		return kindDirs[i].Name < kindDirs[j].Name
 	})
 
-	return &DiscoverResult{Provider: pp, Components: components}, nil
+	return &DiscoverResult{Provider: pp, Kinds: kindDirs}, nil
 }
 
 // checkValidatedProvisioners refuses a profile that claims an engine its kind
 // does not run on (kind_meta.provisioners): the matrix would schedule a lane
 // the CLI refuses before it starts.
-func checkValidatedProvisioners(componentName string, cp *componentv1.ComponentE2EProfile) error {
-	kind := crkreflect.KindFromString(componentName)
-	if kind == cloudresourcekind.CloudResourceKind_unspecified || cp.GetSpec() == nil {
+func checkValidatedProvisioners(kindName string, cp *kindv1.CatalogKindE2EProfile) error {
+	kind := catalogkindreflect.KindFromString(kindName)
+	if kind == catalogkind.CatalogKind_unspecified || cp.GetSpec() == nil {
 		return nil
 	}
 	for _, vp := range cp.GetSpec().GetValidatedProvisioners() {
-		ok, err := crkreflect.RunsOn(kind, vp)
+		ok, err := catalogkindreflect.RunsOn(kind, vp)
 		if err != nil {
 			return err
 		}
@@ -118,13 +118,13 @@ func checkValidatedProvisioners(componentName string, cp *componentv1.ComponentE
 	return nil
 }
 
-func matchesFilter(cp *componentv1.ComponentE2EProfile, opts FilterOpts) bool {
+func matchesFilter(cp *kindv1.CatalogKindE2EProfile, opts FilterOpts) bool {
 	spec := cp.Spec
 	if spec == nil {
 		return false
 	}
 
-	if opts.Status != componentv1.ComponentE2EProfileSpec_status_unspecified {
+	if opts.Status != kindv1.CatalogKindE2EProfileSpec_status_unspecified {
 		if spec.Status != opts.Status {
 			return false
 		}
@@ -152,12 +152,12 @@ func matchesFilter(cp *componentv1.ComponentE2EProfile, opts FilterOpts) bool {
 
 // MatrixCell represents one GitHub Actions matrix entry.
 type MatrixCell struct {
-	Name           string `json:"name"`
-	Tier           int32  `json:"tier"`
-	Engine         string `json:"engine"`
-	Timeout        int32  `json:"timeout"`
-	RunRegex       string `json:"run_regex"`
-	ComponentCount int    `json:"component_count"`
+	Name      string `json:"name"`
+	Tier      int32  `json:"tier"`
+	Engine    string `json:"engine"`
+	Timeout   int32  `json:"timeout"`
+	RunRegex  string `json:"run_regex"`
+	KindCount int    `json:"kind_count"`
 }
 
 // Matrix is the top-level GitHub Actions matrix JSON structure.
@@ -166,7 +166,7 @@ type Matrix struct {
 }
 
 // BuildGitHubMatrix generates the GitHub Actions matrix JSON from discovery results.
-// Groups components by tier and provisioner, constructs -run regexes for go test.
+// Groups kinds by tier and provisioner, constructs -run regexes for go test.
 func BuildGitHubMatrix(result *DiscoverResult) *Matrix {
 	type groupKey struct {
 		tier        int32
@@ -176,9 +176,9 @@ func BuildGitHubMatrix(result *DiscoverResult) *Matrix {
 	groups := make(map[groupKey][]string)
 	timeouts := make(map[groupKey]int32)
 
-	for _, ce := range result.Components {
+	for _, ce := range result.Kinds {
 		spec := ce.Profile.Spec
-		if spec == nil || spec.Status != componentv1.ComponentE2EProfileSpec_green {
+		if spec == nil || spec.Status != kindv1.CatalogKindE2EProfileSpec_green {
 			continue
 		}
 
@@ -198,18 +198,18 @@ func BuildGitHubMatrix(result *DiscoverResult) *Matrix {
 		if tierTimeout < 15 {
 			tierTimeout = 15
 		}
-		// Buffer: at least 15 min overhead for kind setup/teardown + per-component overhead
+		// Buffer: at least 15 min overhead for kind setup/teardown + per-kind overhead
 		groupTimeout := tierTimeout*int32(len(names)) + 15
 
 		runRegex := buildRunRegex(names, engineName)
 
 		cells = append(cells, MatrixCell{
-			Name:           fmt.Sprintf("Tier %d %s", key.tier, capitalize(engineName)),
-			Tier:           key.tier,
-			Engine:         engineName,
-			Timeout:        groupTimeout,
-			RunRegex:       runRegex,
-			ComponentCount: len(names),
+			Name:      fmt.Sprintf("Tier %d %s", key.tier, capitalize(engineName)),
+			Tier:      key.tier,
+			Engine:    engineName,
+			Timeout:   groupTimeout,
+			RunRegex:  runRegex,
+			KindCount: len(names),
 		})
 	}
 
@@ -233,20 +233,20 @@ func MatrixJSON(m *Matrix) (string, error) {
 }
 
 // buildRunRegex constructs a go test -run regex that matches all test functions
-// for the given components and engine. Component names are converted to PascalCase
+// for the given kinds and engine. Kind names are converted to PascalCase
 // Go test function names (e.g., "kubernetesvalkey" -> "KubernetesValkey").
-func buildRunRegex(components []string, engine string) string {
+func buildRunRegex(kindDirs []string, engine string) string {
 	var parts []string
-	for _, name := range components {
+	for _, name := range kindDirs {
 		parts = append(parts, toPascalCase(name))
 	}
 	engineSuffix := capitalize(engine)
 	return fmt.Sprintf("Test(%s)_%s", strings.Join(parts, "|"), engineSuffix)
 }
 
-// testNameOverrides maps the component directory names whose Go test
+// testNameOverrides maps the kind directory names whose Go test
 // entrypoint capitalization deviates from the registry's enum-derived kind
-// name. The registry is the source of truth for every other kind (component
+// name. The registry is the source of truth for every other kind (kind
 // directories are the lowercased enum names, and test entrypoints follow the
 // enum name), so keep this list to genuine, verified deviations only.
 var testNameOverrides = map[string]string{
@@ -255,7 +255,7 @@ var testNameOverrides = map[string]string{
 	"kubernetesargocd": "KubernetesArgoCD",
 }
 
-// toPascalCase converts a lowercase component directory name to the PascalCase
+// toPascalCase converts a lowercase kind directory name to the PascalCase
 // used in Go test entrypoint names (e.g. "awslambda" -> "AwsLambda" for
 // TestAwsLambda_Pulumi), resolving through the kind registry so no
 // hand-maintained per-kind table is needed.
@@ -268,14 +268,14 @@ func toPascalCase(name string) string {
 		return override
 	}
 
-	kind := crkreflect.KindFromString(name)
-	if kind != cloudresourcekind.CloudResourceKind_unspecified {
-		if pascal := crkreflect.ExtractKindNameByKind(kind); pascal != "" {
+	kind := catalogkindreflect.KindFromString(name)
+	if kind != catalogkind.CatalogKind_unspecified {
+		if pascal := catalogkindreflect.ExtractKindNameByKind(kind); pascal != "" {
 			return pascal
 		}
 	}
 
-	// Unregistered directory (should not happen for real components):
+	// Unregistered directory (should not happen for real kinds):
 	// capitalize the first letter so the regex at least stays syntactically
 	// valid; it will match zero tests, which the profile gates surface.
 	return strings.ToUpper(name[:1]) + name[1:]
@@ -288,7 +288,7 @@ func capitalize(s string) string {
 	return strings.ToUpper(s[:1]) + s[1:]
 }
 
-// StatusCounts tallies components by status.
+// StatusCounts tallies kinds by status.
 type StatusCounts struct {
 	Green        int
 	Deferred     int
@@ -299,26 +299,26 @@ type StatusCounts struct {
 	Total        int
 }
 
-// CountByStatus counts components in the discovery result by their E2E status.
+// CountByStatus counts kinds in the discovery result by their E2E status.
 func CountByStatus(result *DiscoverResult) StatusCounts {
 	var sc StatusCounts
-	for _, ce := range result.Components {
+	for _, ce := range result.Kinds {
 		sc.Total++
 		if ce.Profile.Spec == nil {
 			continue
 		}
 		switch ce.Profile.Spec.Status {
-		case componentv1.ComponentE2EProfileSpec_green:
+		case kindv1.CatalogKindE2EProfileSpec_green:
 			sc.Green++
-		case componentv1.ComponentE2EProfileSpec_deferred:
+		case kindv1.CatalogKindE2EProfileSpec_deferred:
 			sc.Deferred++
-		case componentv1.ComponentE2EProfileSpec_skip:
+		case kindv1.CatalogKindE2EProfileSpec_skip:
 			sc.Skip++
-		case componentv1.ComponentE2EProfileSpec_stub:
+		case kindv1.CatalogKindE2EProfileSpec_stub:
 			sc.Stub++
-		case componentv1.ComponentE2EProfileSpec_real_cluster:
+		case kindv1.CatalogKindE2EProfileSpec_real_cluster:
 			sc.RealCluster++
-		case componentv1.ComponentE2EProfileSpec_pending_proof:
+		case kindv1.CatalogKindE2EProfileSpec_pending_proof:
 			sc.PendingProof++
 		}
 	}

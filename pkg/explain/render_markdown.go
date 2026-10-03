@@ -25,7 +25,7 @@ import (
 //	## See Also         -- links to hand-written essays (never duplicated here)
 //
 // The page head additionally carries a `**Guide**:` line linking the kind's
-// authored GUIDE.md when one exists at the component root -- a line, not a
+// authored GUIDE.md when one exists at the kind root -- a line, not a
 // heading, but its prefix is part of the same stable grammar.
 //
 // Path spelling is deliberately asymmetric: spec paths use protojson names
@@ -49,12 +49,12 @@ func RenderMarkdown(report *Report, opts MarkdownOptions) string {
 	}
 	if opts.HasGuide {
 		// The link target is deliberately hardcoded: the guide is always the
-		// component root's GUIDE.md, one level above the version dir holding
+		// kind root's GUIDE.md, one level above the version dir holding
 		// this page -- in the repo, the zip, the skill, and the vendored copy
 		// alike (all preserve the tree shape) -- so the file a contributor
 		// edits is the file agents read, and the name never changes between
 		// source and artifact.
-		b.WriteString("**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this component: conventions, trade-offs, and what pairs well with it.\n\n")
+		b.WriteString("**Guide**: [GUIDE.md](../GUIDE.md) -- authored operational judgment for this kind: conventions, trade-offs, and what pairs well with it.\n\n")
 	}
 	if report.Doc != "" {
 		b.WriteString(strings.TrimSpace(report.Doc))

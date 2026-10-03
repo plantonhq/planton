@@ -5,13 +5,13 @@ Pulumi (Go) IaC module for the Secure Web Gateway configuration, logging control
 ## Architecture
 
 ```
-main.go                      — Entrypoint loading the stack input
+main.go                      — Entrypoint loading the IaC input
 module/main.go               — Resources(): provider setup, resources, outputs
 module/locals.go             — Locals initialization
 module/gateway_settings.go   — cloudflare.ZeroTrustGatewaySettings +
                                cloudflare.ZeroTrustGatewayLogging +
                                cloudflare.ZeroTrustGatewayPacfile (per row)
-module/outputs.go            — Stack output keys
+module/outputs.go            — output keys
 ```
 
 ## Behavior

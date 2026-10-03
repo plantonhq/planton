@@ -2,13 +2,13 @@ syntax = "proto3";
 
 package dev.planton.azure.azurecosmosdbsqldatabase.v1alpha1;
 
-// **AzureCosmosdbSqlDatabaseStackOutputs** captures the outputs of
+// **AzureCosmosdbSqlDatabaseOutputs** captures the outputs of
 // provisioning a Cosmos DB SQL (NoSQL) API database.
 //
 // No endpoint or credential outputs on purpose: connectivity and keys
 // live on the ACCOUNT (AzureCosmosdbAccount's endpoint and key outputs);
 // the database is addressed inside that connection by name.
-message AzureCosmosdbSqlDatabaseStackOutputs {
+message AzureCosmosdbSqlDatabaseOutputs {
   // The Azure Resource Manager ID of the database -- what
   // AzureCosmosdbSqlContainer's sql_database_id references, and the
   // management-plane scope for database-level operations.

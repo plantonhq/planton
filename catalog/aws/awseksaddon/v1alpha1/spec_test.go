@@ -27,7 +27,7 @@ func minimalValidAddon() *AwsEksAddon {
 	return &AwsEksAddon{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsEksAddon",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "platform-vpc-cni",
 		},
 		Spec: &AwsEksAddonSpec{

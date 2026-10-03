@@ -70,7 +70,7 @@ func TestPresetValidityGate(t *testing.T) {
 // confidence.
 func torturePreset(t *testing.T) string {
 	t.Helper()
-	path := filepath.Join(repoRoot(t), "catalog", "_test", "testcloudresourcegeneric", "presets", "01-default.yaml")
+	path := filepath.Join(repoRoot(t), "catalog", "_test", "testcatalogkindgeneric", "presets", "01-default.yaml")
 	content, err := os.ReadFile(path)
 	if err != nil {
 		t.Skipf("torture preset not present: %v", err)

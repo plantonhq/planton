@@ -18,13 +18,13 @@ import (
 // on first boot, registers itself under RunnerName, and receives its own
 // individually revocable identity; instance replacement re-joins with the
 // same token (its lineage re-admits the runner it originally admitted).
-func Resources(ctx *pulumi.Context, stackInput *gcpplantonrunnerv1alpha1.GcpPlantonRunnerStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *gcpplantonrunnerv1alpha1.GcpPlantonRunnerIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
-	// Build the GCP provider from the stack input via the shared builder,
+	// Build the GCP provider from the IaC input via the shared builder,
 	// which resolves the right credential mechanism (service-account key,
 	// keyless web identity, or ambient chain).
-	provider, err := pulumigoogleprovider.Get(ctx, stackInput.ProviderConfig)
+	provider, err := pulumigoogleprovider.Get(ctx, iacInput.ProviderConfig)
 	if err != nil {
 		return errors.Wrap(err, "failed to create GCP provider")
 	}

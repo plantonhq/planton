@@ -6,7 +6,7 @@ import (
 	gcpprovider "github.com/plantonhq/planton/catalog/gcp"
 	gcpmanagedkafkaclusterv1alpha1 "github.com/plantonhq/planton/catalog/gcp/gcpmanagedkafkacluster/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/gcp/gcplabelkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -28,9 +28,9 @@ type Locals struct {
 	Subnets []string
 }
 
-func initializeLocals(_ *pulumi.Context, stackInput *gcpmanagedkafkaclusterv1alpha1.GcpManagedKafkaClusterStackInput) *Locals {
+func initializeLocals(_ *pulumi.Context, iacInput *gcpmanagedkafkaclusterv1alpha1.GcpManagedKafkaClusterIacInput) *Locals {
 	locals := &Locals{}
-	locals.GcpManagedKafkaCluster = stackInput.Target
+	locals.GcpManagedKafkaCluster = iacInput.Target
 	metadata := locals.GcpManagedKafkaCluster.Metadata
 	spec := locals.GcpManagedKafkaCluster.Spec
 
@@ -51,7 +51,7 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpmanagedkafkaclusterv1alp
 	}
 	locals.GcpLabels[gcplabelkeys.Resource] = "true"
 	locals.GcpLabels[gcplabelkeys.ResourceName] = metadata.Name
-	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(cloudresourcekind.CloudResourceKind_GcpManagedKafkaCluster.String())
+	locals.GcpLabels[gcplabelkeys.ResourceKind] = strings.ToLower(catalogkind.CatalogKind_GcpManagedKafkaCluster.String())
 
 	if metadata.Org != "" {
 		locals.GcpLabels[gcplabelkeys.Organization] = metadata.Org
@@ -63,6 +63,6 @@ func initializeLocals(_ *pulumi.Context, stackInput *gcpmanagedkafkaclusterv1alp
 		locals.GcpLabels[gcplabelkeys.ResourceId] = metadata.Id
 	}
 
-	locals.GcpProviderConfig = stackInput.ProviderConfig
+	locals.GcpProviderConfig = iacInput.ProviderConfig
 	return locals
 }

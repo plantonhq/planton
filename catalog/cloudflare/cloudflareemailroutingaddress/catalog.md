@@ -4,7 +4,7 @@ Registers a verified destination address for Cloudflare Email Routing -- an acco
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Destination Address** -- an account-scoped verified mailbox usable as a forwarding target
 - **Verification Email** -- Cloudflare emails the address a confirmation link on creation; forwarding stays inert until it is verified
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Email Routing edit access. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Email Routing edit access. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -47,7 +47,7 @@ spec:
 planton apply -f cloudflare-email-routing-address.yaml
 ```
 
-This registers `ops@example.com` as a destination. A Stack Job tracks the provisioning in real time, and Cloudflare emails the mailbox a verification link.
+This registers `ops@example.com` as a destination. An Infra Job tracks the provisioning in real time, and Cloudflare emails the mailbox a verification link.
 
 ## Key Configuration
 
@@ -63,13 +63,13 @@ These are the most important decisions when configuring a destination address. E
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies -- a destination address is a leaf resource identified by the `accountId` string and the literal email.
+This kind has no foreign key dependencies -- a destination address is a leaf resource identified by the `accountId` string and the literal email.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -87,5 +87,5 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Cloudflare Email Routing Rule**](/cloud-catalog/cloudflare-email-routing-rule) -- forwards matched mail to this address
-- [**Cloudflare Email Routing Zone**](/cloud-catalog/cloudflare-email-routing-zone) -- a forwarding catch-all delivers unmatched mail to this address
+- [**Cloudflare Email Routing Rule**](/infra-catalog/cloudflare-email-routing-rule) -- forwards matched mail to this address
+- [**Cloudflare Email Routing Zone**](/infra-catalog/cloudflare-email-routing-zone) -- a forwarding catch-all delivers unmatched mail to this address

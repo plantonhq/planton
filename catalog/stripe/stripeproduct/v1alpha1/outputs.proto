@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package dev.planton.stripe.stripeproduct.v1alpha1;
 
-// StripeProductStackOutputs identifies the product and the links that grant its features.
+// StripeProductOutputs identifies the product and the links that grant its features.
 //
 // https://registry.terraform.io/providers/stripe/stripe/latest/docs/resources/product
-message StripeProductStackOutputs {
+message StripeProductOutputs {
   // id is the product's Stripe id (prod_...), the value a StripePrice's product references.
   string id = 1;
 

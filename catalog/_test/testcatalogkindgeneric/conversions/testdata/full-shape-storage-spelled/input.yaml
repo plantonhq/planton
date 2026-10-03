@@ -1,0 +1,26 @@
+# Golden corpus: the full-shape document in the STORAGE print's shape --
+# proto-name keys, 64-bit integers as strings -- exactly what a stored row
+# carries (the platform persists documents with proto field names). Both
+# engines canonicalize at their lane entries; this case proves the lane, and
+# the 64-bit fields pin the value-representation half of that translation.
+api_version: _test.planton.dev/v1alpha1
+kind: TestCatalogKindGeneric
+metadata:
+  name: torture-storage-spelled
+spec:
+  string_field: renamed-on-upgrade
+  string_no_default: lost-on-upgrade-with-declaration
+  int32_field: 7
+  int64_field: "9999"
+  uint64_field: "50000"
+  bool_field: true
+  nested:
+    nested_string: passes-through-untouched
+  required_ref:
+    value: literal-required-value
+  labels:
+    purpose: corpus
+  commands:
+    - first
+    - second
+  sensitive_string: $secret/not-a-real-secret

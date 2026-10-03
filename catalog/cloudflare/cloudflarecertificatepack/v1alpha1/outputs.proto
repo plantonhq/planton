@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package dev.planton.cloudflare.cloudflarecertificatepack.v1alpha1;
 
-// CloudflareCertificatePackStackOutputs captures the outputs after ordering a
+// CloudflareCertificatePackOutputs captures the outputs after ordering a
 // certificate pack.
-message CloudflareCertificatePackStackOutputs {
+message CloudflareCertificatePackOutputs {
   // The certificate pack identifier.
   string certificate_pack_id = 1;
 
@@ -22,7 +22,7 @@ message CloudflareCertificatePackStackOutputs {
   // asynchronously after the order (measured live 2026-08-29: absent in the
   // create response, "0" appears on the first read seconds later, and it
   // becomes the real certificate identifier as issuance progresses), so it
-  // can never be a stable stack output -- an output-only change fails every
+  // can never be a stable output -- an output-only change fails every
   // refresh-inclusive idempotency re-plan (the async-phase-output class,
   // scalar form). Read the pack's certificates from the Cloudflare API or
   // dashboard instead.

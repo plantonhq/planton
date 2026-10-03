@@ -7,15 +7,15 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Resources sets the partials of one prompt, from the stack input, on the tenant
+// Resources sets the partials of one prompt, from the IaC input, on the tenant
 // the provider's credential belongs to.
-func Resources(ctx *pulumi.Context, stackInput *auth0promptscreenpartialsv1alpha1.Auth0PromptScreenPartialsStackInput) error {
-	locals := initializeLocals(stackInput)
+func Resources(ctx *pulumi.Context, iacInput *auth0promptscreenpartialsv1alpha1.Auth0PromptScreenPartialsIacInput) error {
+	locals := initializeLocals(iacInput)
 
 	// Setup Auth0 provider with credentials from provider config.
 	var provider *auth0.Provider
 	var err error
-	providerConfig := stackInput.ProviderConfig
+	providerConfig := iacInput.ProviderConfig
 
 	if providerConfig == nil {
 		// Use default provider (assumes credentials from environment variables).

@@ -4,7 +4,7 @@ Declares a Karpenter EC2NodeClass — the AWS-level machine template NodePools l
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **EC2NodeClass** (cluster-scoped, named after `metadata.name`) -- the `karpenter.k8s.aws/v1` custom resource carrying the AMI, subnet, and security-group selector terms, the node IAM identity, block device mappings, kubelet configuration, IMDS options, tags, and extra user data
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with credentials for the target cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 
 ### AWS / Cluster
 
@@ -53,7 +53,7 @@ spec:
 planton apply -f node-class.yaml
 ```
 
-NodePools then reference the class through their node class ref, and every node they launch is built from this template. A Stack Job tracks the provisioning in real time.
+NodePools then reference the class through their node class ref, and every node they launch is built from this template. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -71,13 +71,13 @@ These are the most important decisions when configuring an EC2NodeClass. Explore
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies — the AWS selectors (AMI ids, tags, role name) are plain values validated by the CRD's own rules.
+This kind has no foreign key dependencies — the AWS selectors (AMI ids, tags, role name) are plain values validated by the CRD's own rules.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -95,5 +95,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Karpenter**](/cloud-catalog/kubernetes-karpenter) -- the controller that realizes this template; install it first
-- [**Karpenter Node Pool**](/cloud-catalog/kubernetes-karpenter-node-pool) -- references this class; one class typically serves a default pool, a spot pool, and a GPU pool
+- [**Karpenter**](/infra-catalog/kubernetes-karpenter) -- the controller that realizes this template; install it first
+- [**Karpenter Node Pool**](/infra-catalog/kubernetes-karpenter-node-pool) -- references this class; one class typically serves a default pool, a spot pool, and a GPU pool

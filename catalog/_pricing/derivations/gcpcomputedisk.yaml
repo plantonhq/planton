@@ -9,9 +9,9 @@
 # Hyperdisk Balanced bills IOPS and throughput only IN EXCESS of its
 # included baselines (3,000 IOPS and 140 MBps per Google's disk pricing
 # page) -- the subtract_baseline factors state exactly that arithmetic.
-# Schema: finops/componentcostderivation/v1.
+# Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostDerivation
+kind: CatalogKindCostDerivation
 metadata:
   name: gcpcomputedisk
 spec:
@@ -93,7 +93,7 @@ spec:
     - applies_when:
         - field_path: kms_key
           op: is_set
-      text: CMEK adds no per-disk charge -- the Cloud KMS key bills its own key-version and operation charges on the GcpKmsKey component
+      text: CMEK adds no per-disk charge -- the Cloud KMS key bills its own key-version and operation charges on the GcpKmsKey kind
   notes:
     - applies_when:
         - field_path: type

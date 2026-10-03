@@ -1,0 +1,181 @@
+---
+alwaysApply: false
+---
+RULE NUMBER
+017
+
+TITLE
+Forge: Test Validation (kind-scoped go test)
+
+ROLE
+You are the Planton Code Partner working inside the developer's local workspace in Cursor. This rule validates that the kind's unit tests pass by running `go test` scoped to the kind directory.
+
+SCOPE
+- Run `go test` scoped to the kind's version directory (`v1alpha1/`)
+- Execute only the kind's tests (spec_test.go)
+- Validate test correctness
+- Ensure all tests pass
+- Do not modify test files or source files
+- Do NOT run `make test` (that runs the entire monorepo's test suite and is unnecessary)
+
+PREREQUISITES
+This rule should be run after:
+- Rule 015: Proto stubs generated (make protos)
+- Rule 003: spec_test.go created
+- Rule 016: Build validation passed (go build)
+
+All test files must exist and code must compile before running tests.
+
+SEQUENTIAL STEPS
+1) Verify Prerequisites:
+   - Confirm proto stubs exist (.pb.go files)
+   - Check that test files exist:
+     * `catalog/<provider>/<kind>/v1alpha1/spec_test.go`
+   - Confirm code compiles (rule 016 passed)
+   - Confirm you are in the project root directory
+
+2) Execute Command:
+   - Run: `go test -v ./catalog/<provider>/<kind>/v1alpha1/`
+   - This runs only the kind's tests, not the entire monorepo
+   - Should complete in a few seconds
+
+3) Parse Output:
+   - Check exit code (0 = all tests passed, non-zero = failures)
+   - Count total tests run
+   - Count passed tests
+   - Count failed tests
+   - Identify which tests failed
+   - Extract failure messages
+
+4) Categorize Failures:
+   - **Assertion Failures**: Expected vs actual value mismatches
+   - **Nil Pointer Errors**: Unexpected nil values
+   - **Type Errors**: Type mismatches in test setup
+   - **Timeout Errors**: Tests taking too long
+   - **Panic Errors**: Unhandled panics in code
+
+5) Report Results:
+   - Show total test count
+   - Show pass/fail counts
+   - List failed tests with error messages
+   - Provide fix suggestions for failures
+
+SUCCESS CRITERIA
+- `go test -v ./catalog/<provider>/<kind>/v1alpha1/` exits with code 0
+- All kind tests pass (100% pass rate)
+- No test failures, errors, or panics
+- Tests complete within a few seconds
+
+COMMON ERRORS AND FIXES
+
+1. **Assertion Failure:**
+   ```
+   Error: assertion failed: expected "value1", got "value2"
+   ```
+   Fix: Check test logic, update expected values, or fix source code
+
+2. **Nil Pointer:**
+   ```
+   Error: panic: runtime error: invalid memory address or nil pointer dereference
+   ```
+   Fix: Add nil checks or ensure objects are initialized in test setup
+
+3. **Missing Test Dependency:**
+   ```
+   Error: cannot find package "github.com/stretchr/testify"
+   ```
+   Fix: Run `go mod download` or `go mod tidy` to fetch dependencies
+
+4. **Import Errors:**
+   ```
+   Error: imported and not used: "testing"
+   ```
+   Fix: Remove unused imports or use the imported package
+
+5. **Type Mismatch in Test:**
+   ```
+   Error: cannot use X (type Y) as type Z in argument
+   ```
+   Fix: Ensure test data types match function signatures
+
+6. **Validation Failure:**
+   ```
+   Error: validation failed for field X
+   ```
+   Fix: Check buf.validate rules in proto files match test expectations
+
+OUTPUT FORMAT
+Show results clearly:
+
+```
+✅ Prerequisites verified
+   - Proto stubs exist
+   - Test files exist
+   - Code compiles
+
+🧪 Running: go test -v ./catalog/<provider>/<kind>/v1alpha1/
+
+⏱️  Duration: 2s
+
+✅ Success: All tests passed
+
+📊 Test Results:
+   - Total tests: 17
+   - Passed: 17
+   - Failed: 0
+   - Pass rate: 100%
+
+✅ Test validation complete
+```
+
+On failure:
+```
+❌ Error: Exit code 1
+
+Tests failed: 2/17
+
+Failed tests:
+
+1. TestCloudflareDnsZoneSpec/should_return_a_validation_error_when_zone_name_does_not_end_with_a_dot
+   File: catalog/cloudflare/cloudflarednszone/v1alpha1/spec_test.go:88
+   
+   Error:
+   Expected error to not be nil
+   
+   Suggested fix:
+   The dns_domain validation pattern may be incorrect in spec.proto.
+   Check: (buf.validate.field).string.pattern = "^$|\\.$"
+   Regenerate stubs: make protos
+
+Next steps:
+1. Fix the failing tests
+2. Re-run: go test -v ./catalog/<provider>/<kind>/v1alpha1/
+3. Ensure 100% pass rate before proceeding
+```
+
+DEBUGGING TIPS
+1. **Run specific test**: `go test -v ./catalog/<provider>/<kind>/v1alpha1/ -run TestName`
+2. **Verbose output**: `-v` flag shows detailed test output per test case
+3. **Check test setup**: Ensure test data is properly initialized
+4. **Verify validations**: Proto validations must match test expectations
+5. **Re-generate stubs**: If proto changed, run `make protos` before testing
+
+TESTING OPTIONAL FIELDS
+- Fields with `(dev.planton.shared.options.default)` are marked `optional`
+- Generated Go code uses pointer types (`*string` vs `string`)
+- Tests must assign via pointers:
+  ```go
+  // WRONG: spec.RunnerGroup = "production"
+  // CORRECT:
+  runnerGroup := "production"
+  spec.RunnerGroup = &runnerGroup
+  ```
+
+NOTES
+- This is the final quality gate for the forge pipeline
+- Only the kind's tests are run, not the entire monorepo
+- Do not skip failing tests without good reason
+- Fix test failures immediately - don't accumulate technical debt
+- Run from project root directory
+- Tests validate both source code correctness and test quality
+- If tests fail after proto changes, regenerate stubs with `make protos`

@@ -40,7 +40,7 @@ The specification follows the **80/20 principle**—exposing only the most commo
 A KV namespace carries only an account and a title. There is no per-namespace TTL
 or description; TTL is applied per write. Seed entries with `CloudflareWorkersKvPair`.
 
-### Stack Outputs
+### Outputs
 
 After successful deployment, the following outputs are available:
 
@@ -87,7 +87,7 @@ Past the plan's included allotment (10 million reads/month, 1 million writes/mon
 - Additional writes bill per million too — at roughly an order of magnitude more than reads, so write-heavy workloads pay for their writes.
 - Storage beyond the included GB bills per GB-month.
 
-The verified per-preset figures live in the component's generated estimate at `catalog/_pricing/estimates/cloudflarekvnamespace.yaml`, computed from the pinned, source-dated price book — current rates belong there and on Cloudflare's published pricing page, never hand-typed in this document.
+The verified per-preset figures live in the kind's generated estimate at `catalog/_pricing/estimates/cloudflarekvnamespace.yaml`, computed from the pinned, source-dated price book — current rates belong there and on Cloudflare's published pricing page, never hand-typed in this document.
 
 ## Integration with Workers
 
@@ -96,7 +96,7 @@ After creating a namespace, bind it to your Worker in `wrangler.toml`:
 ```toml
 [[kv_namespaces]]
 binding = "CONFIG"
-id = "<namespace_id>"  # From stack outputs
+id = "<namespace_id>"  # From outputs
 ```
 
 Then access it in your Worker code:

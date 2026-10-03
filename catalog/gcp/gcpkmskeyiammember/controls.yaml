@@ -2,9 +2,9 @@
 # central catalog (catalog/_compliance/controls-catalog.yaml). Every control
 # is examined; not_applicable states why. Evidence is verifiable against the
 # spec contract and the official modules. Schema:
-# compliance/componentcontrolprofile/v1.
+# compliance/catalogkindcontrolprofile/v1.
 apiVersion: compliance.planton.dev/v1
-kind: ComponentControlProfile
+kind: CatalogKindControlProfile
 metadata:
   name: gcpkmskeyiammember
 spec:
@@ -14,7 +14,7 @@ spec:
       notes: The grant stores no customer data -- it is one (role, member) entry in the crypto key's IAM policy, control-plane metadata Google holds on its own encrypted infrastructure. The key material itself belongs to the GcpKmsKey resource.
     - control_id: enc-at-rest-cmk
       status: not_applicable
-      notes: No data at rest exists here to key -- but this component is the authorization edge CMEK runs on. Granting roles/cloudkms.cryptoKeyEncrypterDecrypter to a consuming service's agent on exactly one key is what makes that service's CMEK posture work; the CMEK stance itself is assessed on the encrypted resource and the key, not on this grant.
+      notes: No data at rest exists here to key -- but this kind is the authorization edge CMEK runs on. Granting roles/cloudkms.cryptoKeyEncrypterDecrypter to a consuming service's agent on exactly one key is what makes that service's CMEK posture work; the CMEK stance itself is assessed on the encrypted resource and the key, not on this grant.
     - control_id: enc-in-transit
       status: not_applicable
       notes: A policy entry terminates no connections -- it is consulted inside IAM's authorization checks, never on a wire the operator configures.
@@ -35,7 +35,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: This component IS role-based access control on the key -- the additive grant assigns exactly one role to one member, and managing the grant itself authorizes against cloudkms.cryptoKeys.setIamPolicy and getIamPolicy on the target key; no unauthenticated management path exists.
+        reference: This kind IS role-based access control on the key -- the additive grant assigns exactly one role to one member, and managing the grant itself authorizes against cloudkms.cryptoKeys.setIamPolicy and getIamPolicy on the target key; no unauthenticated management path exists.
       notes: Key-scoped grants are the least-privilege shape -- IAM also flows DOWN onto the key from its key ring and project, so a ring- or project-level grant silently covers every key beneath it; prefer this resource when different keys have different consumers.
     - control_id: workload-identity
       status: not_applicable

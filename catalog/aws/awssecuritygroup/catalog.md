@@ -4,7 +4,7 @@ Deploys an EC2 Security Group within a specified VPC with configurable ingress a
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Security Group** -- an EC2 security group in the specified VPC with a description and name matching your manifest's `metadata.name`
 - **Ingress Rules** -- one rule per entry in the `ingress` array, supporting protocol, port ranges, IPv4/IPv6 CIDRs, source security group references, and self-referencing
@@ -15,13 +15,13 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **AWS Provider Connection** -- an active connection in the Connect module with credentials for the target AWS account. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or cross-account trust authentication modes.
 
 ### AWS Account
 
-- **A VPC** -- the security group must belong to exactly one VPC. Provide the VPC ID directly or reference an AwsVpc Cloud Resource via ValueFromRef.
-- **Source/destination security groups** (optional) -- if rules reference other security groups, those groups must exist in the same VPC. Provide their IDs directly or reference other AwsSecurityGroup Cloud Resources via ValueFromRef.
+- **A VPC** -- the security group must belong to exactly one VPC. Provide the VPC ID directly or reference an AwsVpc Infra Component via ValueFromRef.
+- **Source/destination security groups** (optional) -- if rules reference other security groups, those groups must exist in the same VPC. Provide their IDs directly or reference other AwsSecurityGroup Infra Components via ValueFromRef.
 
 ## Deploy
 
@@ -65,7 +65,7 @@ spec:
 planton apply -f security-group.yaml
 ```
 
-This creates a security group allowing inbound HTTPS from all sources and unrestricted outbound traffic. No source or destination security group references are configured. A Stack Job tracks the provisioning in real time.
+This creates a security group allowing inbound HTTPS from all sources and unrestricted outbound traffic. No source or destination security group references are configured. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -104,7 +104,7 @@ These are the most important decisions when configuring a security group. Explor
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -113,9 +113,9 @@ These are the most important decisions when configuring a security group. Explor
 | **AwsSecurityGroup** (optional) | `ingress[].sourceSecurityGroupIds` | `status.outputs.security_group_id` |
 | **AwsSecurityGroup** (optional) | `egress[].destinationSecurityGroupIds` | `status.outputs.security_group_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -138,5 +138,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**AWS VPC**](/cloud-catalog/aws-vpc) -- provides the VPC where the security group is created
-- [**AWS Security Group**](/cloud-catalog/aws-security-group) -- provides source or destination security group IDs for cross-group rule references
+- [**AWS VPC**](/infra-catalog/aws-vpc) -- provides the VPC where the security group is created
+- [**AWS Security Group**](/infra-catalog/aws-security-group) -- provides source or destination security group IDs for cross-group rule references

@@ -4,7 +4,7 @@ Creates a PgBouncer connection pool on a DigitalOcean managed PostgreSQL cluster
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Connection Pool** -- a named PgBouncer pool on the referenced PostgreSQL cluster, with its own endpoint port
 - **Pool Identity** -- configured only when `user` is set; the pool authenticates as that cluster user. Omitted creates DigitalOcean's inbound-user pool where clients bring their own credentials
@@ -13,7 +13,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **A DigitalOceanDatabaseCluster** -- the owning PostgreSQL cluster, referenced by name (or an existing cluster's UUID as a literal). Pools exist only on PostgreSQL clusters.
 
 ### DigitalOcean Account
@@ -54,7 +54,7 @@ spec:
 planton apply -f do-connection-pool.yaml
 ```
 
-This creates a 20-connection transaction-mode pool on the referenced cluster, serving the `orders` database as the `orders-service` user. A Stack Job tracks the provisioning in real time.
+This creates a 20-connection transaction-mode pool on the referenced cluster, serving the `orders` database as the `orders-service` user. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -93,15 +93,15 @@ These are the most important decisions when configuring a connection pool. Explo
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **DigitalOceanDatabaseCluster** | `cluster` | `status.outputs.cluster_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -123,6 +123,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Database Cluster**](/cloud-catalog/digital-ocean-database-cluster) -- the PostgreSQL cluster the pool runs on, wired via the `cluster` reference
-- [**DigitalOcean Logical Database**](/cloud-catalog/digital-ocean-database-db) -- the database the pool serves; compose by writing the same name in `dbName`
-- [**DigitalOcean Database User**](/cloud-catalog/digital-ocean-database-user) -- the dedicated identity a single-service pool authenticates as
+- [**DigitalOcean Database Cluster**](/infra-catalog/digital-ocean-database-cluster) -- the PostgreSQL cluster the pool runs on, wired via the `cluster` reference
+- [**DigitalOcean Logical Database**](/infra-catalog/digital-ocean-database-db) -- the database the pool serves; compose by writing the same name in `dbName`
+- [**DigitalOcean Database User**](/infra-catalog/digital-ocean-database-user) -- the dedicated identity a single-service pool authenticates as

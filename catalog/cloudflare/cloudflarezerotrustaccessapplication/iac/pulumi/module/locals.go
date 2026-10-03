@@ -15,10 +15,10 @@ type Locals struct {
 // initializeLocals copies stack‑input fields into Locals.
 func initializeLocals(
 	_ *pulumi.Context,
-	stackInput *cloudflarezerotrustaccessapplicationv1alpha1.CloudflareZeroTrustAccessApplicationStackInput,
+	iacInput *cloudflarezerotrustaccessapplicationv1alpha1.CloudflareZeroTrustAccessApplicationIacInput,
 ) *Locals {
 	locals := &Locals{}
-	locals.CloudflareZeroTrustAccessApplication = stackInput.Target
-	locals.CloudflareProviderConfig = stackInput.ProviderConfig
+	locals.CloudflareZeroTrustAccessApplication = iacInput.Target
+	locals.CloudflareProviderConfig = iacInput.ProviderConfig
 	return locals
 }

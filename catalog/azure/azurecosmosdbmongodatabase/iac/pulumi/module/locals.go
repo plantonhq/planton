@@ -10,11 +10,11 @@ type Locals struct {
 	CosmosdbAccountId          string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azurecosmosdbmongodatabasev1alpha1.AzureCosmosdbMongoDatabaseStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azurecosmosdbmongodatabasev1alpha1.AzureCosmosdbMongoDatabaseIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureCosmosdbMongoDatabase = stackInput.Target
-	locals.CosmosdbAccountId = stackInput.Target.Spec.CosmosdbAccountId.GetValue()
+	locals.AzureCosmosdbMongoDatabase = iacInput.Target
+	locals.CosmosdbAccountId = iacInput.Target.Spec.CosmosdbAccountId.GetValue()
 
 	// No Azure tags: ARM does not support tags on Cosmos child
 	// resources, so the platform's identity tags live on the account.

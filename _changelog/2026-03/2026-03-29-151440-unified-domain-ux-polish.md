@@ -28,11 +28,11 @@ The inline `<head>` redirect script now checks `!window.location.search` before 
 
 ### 2. Session-Aware Logo Link
 
-The `HeaderLogo` component now uses the `useLoggedIn` hook to link to `/?preview` when logged in and `/` when logged out. This applies to both desktop and mobile headers.
+The `HeaderLogo` kind now uses the `useLoggedIn` hook to link to `/?preview` when logged in and `/` when logged out. This applies to both desktop and mobile headers.
 
 ### 3. Mobile P Logo
 
-Replaced the deprecated `<img src="/_site/images/header-logo-mobile.svg" />` with the `HeaderLogo` component, giving mobile the same P icon as desktop. Deleted the deprecated SVG file from the repo.
+Replaced the deprecated `<img src="/_site/images/header-logo-mobile.svg" />` with the `HeaderLogo` kind, giving mobile the same P icon as desktop. Deleted the deprecated SVG file from the repo.
 
 ### 4. Mobile Drawer Auto-Close
 

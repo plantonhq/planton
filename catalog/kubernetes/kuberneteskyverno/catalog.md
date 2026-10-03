@@ -4,7 +4,7 @@ Deploys Kyverno -- the Kubernetes-native policy engine -- from the official `kyv
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Kubernetes Namespace** -- created only when `createNamespace` is `true`; otherwise deploys into an existing namespace
 - **Helm Release** -- the `kyverno` chart, creating:
@@ -20,7 +20,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Kubernetes Provider Connection** -- an active connection in the Connect module with kubeconfig credentials for the target Kubernetes cluster. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline kubeconfig authentication.
 
 ### Kubernetes Cluster
@@ -73,11 +73,11 @@ spec:
 planton apply -f kyverno.yaml
 ```
 
-This deploys a three-replica admission path (the count Kyverno's own high-availability guidance names), all four controllers with explicit resource requests, and ServiceMonitors fanning out across every controller. A Stack Job tracks the provisioning in real time.
+This deploys a three-replica admission path (the count Kyverno's own high-availability guidance names), all four controllers with explicit resource requests, and ServiceMonitors fanning out across every controller. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
-When deploying as part of a multi-resource environment, use ValueFromRef to wire Kyverno to a namespace managed by another Cloud Resource:
+When deploying as part of a multi-resource environment, use ValueFromRef to wire Kyverno to a namespace managed by another Infra Component:
 
 ```yaml
 spec:
@@ -115,16 +115,16 @@ These are the most important decisions when configuring Kyverno. Explore the ful
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **KubernetesNamespace** | `namespace` | `spec.name` |
 | **KubernetesClusterIssuer** | `certificates.certManager.issuerName` | `metadata.name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -145,6 +145,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/cloud-catalog/kubernetes-namespace) -- provides the namespace for the Kyverno install
-- [**Cert Manager Cluster Issuer**](/cloud-catalog/kubernetes-cluster-issuer) -- signs the webhook certificates when issuance is switched to cert-manager
-- [**kube-prometheus-stack**](/cloud-catalog/kubernetes-kube-prometheus-stack) -- scrapes all four controllers when the ServiceMonitor is enabled
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the namespace for the Kyverno install
+- [**Cert Manager Cluster Issuer**](/infra-catalog/kubernetes-cluster-issuer) -- signs the webhook certificates when issuance is switched to cert-manager
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) -- scrapes all four controllers when the ServiceMonitor is enabled

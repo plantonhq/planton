@@ -4,7 +4,7 @@ Puts a Spaces bucket behind DigitalOcean's global edge network, optionally under
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **CDN Endpoint** -- the edge distribution fronting your referenced bucket, with your cache TTL and (optionally) your custom domain and certificate; the certificate is wired by its stable NAME, never by the deprecated numeric certificate id
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **DigitalOcean Provider Connection** -- an active connection in the Connect module with a DigitalOcean API token. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 - **A bucket** -- the DigitalOceanBucket whose content the CDN serves, referenced (or named by its Spaces FQDN) in `origin`.
 - **A certificate (optional)** -- a DigitalOceanCertificate, required only with `customDomain`.
@@ -48,7 +48,7 @@ spec:
 planton apply -f do-cdn.yaml
 ```
 
-This fronts the bucket with DigitalOcean's edge network and a one-day cache TTL; the edge hostname lands in the `endpoint` output. A Stack Job tracks the provisioning in real time.
+This fronts the bucket with DigitalOcean's edge network and a one-day cache TTL; the edge hostname lands in the `endpoint` output. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -87,16 +87,16 @@ These are the most important decisions when configuring a CDN endpoint. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
 | **DigitalOceanBucket** | `origin` | `status.outputs.bucket_domain_name` |
 | **DigitalOceanCertificate** (optional, with `customDomain`) | `certificate` | `status.outputs.certificate_id` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -115,7 +115,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**DigitalOcean Spaces Bucket**](/cloud-catalog/digital-ocean-bucket) -- the origin whose content the edge serves; its permissions decide what the CDN can deliver
-- [**DigitalOcean Certificate**](/cloud-catalog/digital-ocean-certificate) -- the managed TLS certificate a custom domain requires, referenced by its stable name
-- [**DigitalOcean DNS Record**](/cloud-catalog/digital-ocean-dns-record) -- the CNAME pointing your custom domain at the `endpoint` output
-- [**DigitalOcean DNS Zone**](/cloud-catalog/digital-ocean-dns-zone) -- hosts that CNAME when DigitalOcean serves your domain's DNS
+- [**DigitalOcean Spaces Bucket**](/infra-catalog/digital-ocean-bucket) -- the origin whose content the edge serves; its permissions decide what the CDN can deliver
+- [**DigitalOcean Certificate**](/infra-catalog/digital-ocean-certificate) -- the managed TLS certificate a custom domain requires, referenced by its stable name
+- [**DigitalOcean DNS Record**](/infra-catalog/digital-ocean-dns-record) -- the CNAME pointing your custom domain at the `endpoint` output
+- [**DigitalOcean DNS Zone**](/infra-catalog/digital-ocean-dns-zone) -- hosts that CNAME when DigitalOcean serves your domain's DNS

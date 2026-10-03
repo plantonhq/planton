@@ -1,5 +1,5 @@
 apiVersion: finops.planton.dev/v1
-kind: ComponentCostProfile
+kind: CatalogKindCostProfile
 metadata:
   name: awssagemakerdomain
 spec:

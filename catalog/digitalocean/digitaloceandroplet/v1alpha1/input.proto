@@ -5,9 +5,9 @@ package dev.planton.digitalocean.digitaloceandroplet.v1alpha1;
 import "catalog/digitalocean/digitaloceandroplet/v1alpha1/api.proto";
 import "catalog/digitalocean/provider.proto";
 
-//digital-ocean-droplet stack-input
-message DigitalOceanDropletStackInput {
-  //target cloud-resource
+//digital-ocean-droplet iac-input
+message DigitalOceanDropletIacInput {
+  //target infra-component
   DigitalOceanDroplet target = 1;
   //provider-config
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;

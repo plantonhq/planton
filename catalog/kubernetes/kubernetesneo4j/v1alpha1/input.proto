@@ -5,9 +5,9 @@ package dev.planton.kubernetes.kubernetesneo4j.v1alpha1;
 import "catalog/kubernetes/kubernetesneo4j/v1alpha1/api.proto";
 import "catalog/kubernetes/provider.proto";
 
-//neo4j-kubernetes stack-input
-message KubernetesNeo4jStackInput {
-  //target cloud-resource
+//neo4j-kubernetes iac-input
+message KubernetesNeo4jIacInput {
+  //target infra-component
   KubernetesNeo4j target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

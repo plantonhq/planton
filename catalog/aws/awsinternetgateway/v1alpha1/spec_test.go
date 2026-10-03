@@ -33,7 +33,7 @@ func minimalValidInternetGateway() *AwsInternetGateway {
 	return &AwsInternetGateway{
 		ApiVersion: "aws.planton.dev/v1alpha1",
 		Kind:       "AwsInternetGateway",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-internet-gateway",
 		},
 		Spec: &AwsInternetGatewaySpec{
@@ -64,7 +64,7 @@ var _ = ginkgo.Describe("AwsInternetGatewaySpec Validation Tests", func() {
 				input := &AwsInternetGateway{
 					ApiVersion: "aws.planton.dev/v1alpha1",
 					Kind:       "AwsInternetGateway",
-					Metadata: &shared.CloudResourceMetadata{
+					Metadata: &shared.CatalogObjectMetadata{
 						Name: "full-internet-gateway",
 						Org:  "acme-corp",
 						Env:  "production",
@@ -111,7 +111,7 @@ var _ = ginkgo.Describe("AwsInternetGatewaySpec Validation Tests", func() {
 				input := &AwsInternetGateway{
 					ApiVersion: "aws.planton.dev/v1alpha1",
 					Kind:       "AwsInternetGateway",
-					Metadata:   &shared.CloudResourceMetadata{Name: "test-internet-gateway"},
+					Metadata:   &shared.CatalogObjectMetadata{Name: "test-internet-gateway"},
 				}
 				err := protovalidate.Validate(input)
 				gomega.Expect(err).ToNot(gomega.BeNil())

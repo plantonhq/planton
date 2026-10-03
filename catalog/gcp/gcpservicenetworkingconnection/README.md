@@ -56,7 +56,7 @@ Once the connection exists, managed services in this network can use private IP 
 | `updateOnCreationFail` | `bool` | `false` | Adopt a pre-existing connection for the same pair instead of failing. |
 | `deletionPolicy` | `string` | `DELETE` | What destroy does: `DELETE` removes the peering (destroy producer instances first), `PREVENT` fails the destroy, `ABANDON` leaves the peering serving unmanaged. |
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -87,7 +87,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 - **`google_service_networking_peered_dns_domain`** — a separate provider resource that forwards a private DNS suffix over this peering; a real but second-order need (Tier-2 candidate on concrete pull).
 - **`google_service_networking_vpc_service_controls`** — the VPC-SC enablement toggle for this connection; enterprise perimeter tooling that belongs with a broader VPC Service Controls story (Tier-2).
 
-## Related Components
+## Related Kinds
 
 - [GcpVpcNetwork](/docs/catalog/gcp/gcpvpcnetwork) — the network being peered
 - [GcpGlobalAddress](/docs/catalog/gcp/gcpglobaladdress) — reserves the `VPC_PEERING` ranges this connection hands to the producer

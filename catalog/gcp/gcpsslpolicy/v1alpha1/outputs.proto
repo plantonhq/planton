@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton.gcp.gcpsslpolicy.v1alpha1;
 
 // Outputs produced after provisioning a GCP Compute Engine SSL policy.
-message GcpSslPolicyStackOutputs {
+message GcpSslPolicyOutputs {
   // Self-link URI of the SSL policy. This is the value a target HTTPS (or
   // SSL) proxy references in its ssl_policy field — the composition handle
   // that hardens TLS at the load balancer.

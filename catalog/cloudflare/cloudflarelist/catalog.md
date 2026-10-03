@@ -1,10 +1,10 @@
 # Cloudflare List
 
-Deploys a reusable, named Cloudflare List -- a collection you reference from rule expressions such as a WAF rule's `ip.src in $office_ips` or a Bulk Redirect ruleset's `from_list`. A list fixes a single entry shape at creation (IP/CIDR, redirect, hostname, or ASN); its entries are managed independently as List Item Cloud Resources, so one list can hold a handful of curated values or a large, separately-owned set. Lists are account-scoped, and an empty list is a valid, referenceable object -- the right shape for a container you fill later.
+Deploys a reusable, named Cloudflare List -- a collection you reference from rule expressions such as a WAF rule's `ip.src in $office_ips` or a Bulk Redirect ruleset's `from_list`. A list fixes a single entry shape at creation (IP/CIDR, redirect, hostname, or ASN); its entries are managed independently as List Item Infra Components, so one list can hold a handful of curated values or a large, separately-owned set. Lists are account-scoped, and an empty list is a valid, referenceable object -- the right shape for a container you fill later.
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **List** -- an account-scoped, named collection of the chosen kind (`ip`, `redirect`, `hostname`, or `asn`), created empty and ready for entries
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Account Filter Lists edit access. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Cloudflare Provider Connection** -- an active connection in the Connect module with a Cloudflare API token that has Account Filter Lists edit access. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline API token authentication.
 
 ### Cloudflare Account
@@ -47,7 +47,7 @@ spec:
 planton apply -f cloudflare-list.yaml
 ```
 
-This creates an empty IP list named `office_ips`, ready for entries and referenceable from rules as `$office_ips`. A Stack Job tracks the provisioning in real time.
+This creates an empty IP list named `office_ips`, ready for entries and referenceable from rules as `$office_ips`. An Infra Job tracks the provisioning in real time.
 
 ## Key Configuration
 
@@ -61,13 +61,13 @@ These are the most important decisions when configuring a list. Explore the full
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign-key dependencies -- a list is defined entirely by its own account, kind, and name.
+This kind has no foreign-key dependencies -- a list is defined entirely by its own account, kind, and name.
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|----------------------|
@@ -84,5 +84,5 @@ After provisioning, `status.outputs` contains values that downstream Cloud Resou
 
 ## Works With
 
-- [**Cloudflare List Item**](/cloud-catalog/cloudflare-list-item) -- adds entries to this list (via `listId`), one independently-managed entry at a time
-- [**Cloudflare Ruleset**](/cloud-catalog/cloudflare-ruleset) -- a Bulk Redirect rule references a redirect list by name (via `from_list`); WAF custom rules match against `$name`
+- [**Cloudflare List Item**](/infra-catalog/cloudflare-list-item) -- adds entries to this list (via `listId`), one independently-managed entry at a time
+- [**Cloudflare Ruleset**](/infra-catalog/cloudflare-ruleset) -- a Bulk Redirect rule references a redirect list by name (via `from_list`); WAF custom rules match against `$name`

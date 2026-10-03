@@ -1,5 +1,5 @@
 apiVersion: iac.planton.dev/v1
-kind: ComponentImportMap
+kind: CatalogKindImportMap
 metadata:
   name: kubernetesservicemonitor
 spec:
@@ -19,13 +19,13 @@ spec:
     - name: name
       derivations:
         - from_metadata_name: true
-        - from_stack_output: service_monitor_name
+        - from_output: service_monitor_name
       where_to_find: >-
         The ServiceMonitor's metadata.name (equals the Planton resource name) —
         `kubectl get servicemonitors -A` (NAME column).
     - name: namespace
       derivations:
-        - from_stack_output: namespace
+        - from_output: namespace
         - from_spec_field: namespace.value
       where_to_find: >-
         The namespace the resource lives in — `kubectl get servicemonitors -A`

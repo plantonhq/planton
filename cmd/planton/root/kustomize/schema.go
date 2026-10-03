@@ -16,7 +16,7 @@ var Schema = &cobra.Command{
 	Use:   "schema",
 	Short: "Generate the universal kustomize OpenAPI schema for all Planton resource kinds",
 	Long: `Generate a single kustomize-compatible OpenAPI schema JSON that covers all
-Planton cloud resource kinds. The schema declares strategic merge patch
+Planton catalog kinds. The schema declares strategic merge patch
 directives (x-kubernetes-patch-merge-key, x-kubernetes-patch-strategy) for
 list fields that should merge by name instead of being replaced.
 

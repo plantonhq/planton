@@ -23,13 +23,13 @@ The pricing page had separate issues: the Most Popular banner was rendered insid
 - Pricing cards were vertically misaligned due to the Most Popular banner
 - Calculator slider was bright blue (`#0099FF`)
 - FAQ section had purple gradient blobs and decorative SVGs
-- Pricing CTA was a bespoke one-off component unlike every other page
+- Pricing CTA was a bespoke one-off kind unlike every other page
 
 ## Solution / What's New
 
 ### Centralized Docs Theme (`src/theme/docs.ts`)
 
-Created a single file exporting all docs-specific style constants as Tailwind class strings. Every docs component imports from here instead of hardcoding colors. Constants include:
+Created a single file exporting all docs-specific style constants as Tailwind class strings. Every docs kind imports from here instead of hardcoding colors. Constants include:
 
 - `LINK_CLASSES` -- monochrome links with subtle underline decoration
 - `TAG_CLASSES` -- neutral pills replacing blue variants
@@ -80,7 +80,7 @@ Price and period text changed from `<sub>` to baseline-aligned `<span>`, fixing 
 
 ### Pricing CTA Standardization
 
-Replaced the bespoke `ReadyToTry` component (left-aligned dark strip with ghost button) with the standard CTA pattern used across all feature pages: centered `Card` with subtitle, heading, description, and `PrimaryButton` + `SecondaryButton`.
+Replaced the bespoke `ReadyToTry` kind (left-aligned dark strip with ghost button) with the standard CTA pattern used across all feature pages: centered `Card` with subtitle, heading, description, and `PrimaryButton` + `SecondaryButton`.
 
 ## Implementation Details
 
@@ -102,7 +102,7 @@ The `src/theme/docs.ts` file follows the same pattern as the landing page's `sha
 ## Benefits
 
 - **Single source of truth**: All docs styling lives in `src/theme/docs.ts`
-- **No more scattered colors**: Components import tokens instead of hardcoding
+- **No more scattered colors**: Kinds import tokens instead of hardcoding
 - **Cleaner sidebar**: Text-only navigation with indentation, matching cursor.com's pattern
 - **Aligned pricing cards**: All four cards at the same vertical position with consistent internal layout
 - **Consistent CTA**: Pricing page CTA now matches every other page on the site

@@ -1,4 +1,4 @@
-# Stack outputs — exactly the DigitalOceanCdnStackOutputs contract,
+# Outputs — exactly the DigitalOceanCdnOutputs contract,
 # identical across both provisioners.
 
 output "cdn_id" {

@@ -5,7 +5,7 @@ import (
 
 	azureloadbalancerv1alpha1 "github.com/plantonhq/planton/catalog/azure/azureloadbalancer/v1alpha1"
 	"github.com/plantonhq/planton/pkg/iac/pulumi/pulumimodule/provider/azure/azuretagkeys"
-	"github.com/plantonhq/planton/shared/cloudresourcekind"
+	"github.com/plantonhq/planton/shared/catalogkind"
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
@@ -15,18 +15,18 @@ type Locals struct {
 	AzureTags         map[string]string
 }
 
-func initializeLocals(ctx *pulumi.Context, stackInput *azureloadbalancerv1alpha1.AzureLoadBalancerStackInput) *Locals {
+func initializeLocals(ctx *pulumi.Context, iacInput *azureloadbalancerv1alpha1.AzureLoadBalancerIacInput) *Locals {
 	locals := &Locals{}
 
-	locals.AzureLoadBalancer = stackInput.Target
-	target := stackInput.Target
+	locals.AzureLoadBalancer = iacInput.Target
+	target := iacInput.Target
 
 	locals.ResourceGroupName = target.Spec.ResourceGroup.GetValue()
 
 	locals.AzureTags = map[string]string{
 		azuretagkeys.Resource:     "true",
 		azuretagkeys.ResourceName: target.Metadata.Name,
-		azuretagkeys.ResourceKind: strings.ToLower(cloudresourcekind.CloudResourceKind_AzureLoadBalancer.String()),
+		azuretagkeys.ResourceKind: strings.ToLower(catalogkind.CatalogKind_AzureLoadBalancer.String()),
 	}
 
 	if target.Metadata.Id != "" {

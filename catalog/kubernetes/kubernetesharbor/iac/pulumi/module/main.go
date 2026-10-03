@@ -28,8 +28,8 @@ import (
 // to adopt; the INTERNAL database and Redis volumes are
 // StatefulSet-template PVCs Helm never deletes regardless. Retiring an
 // install for good means sweeping those PVCs explicitly.
-func Resources(ctx *pulumi.Context, stackInput *kubernetesharborv1alpha1.KubernetesHarborStackInput) error {
-	locals := initializeLocals(ctx, stackInput)
+func Resources(ctx *pulumi.Context, iacInput *kubernetesharborv1alpha1.KubernetesHarborIacInput) error {
+	locals := initializeLocals(ctx, iacInput)
 
 	// NAME BUDGET (chart truth at 1.19.1): the chart truncates its
 	// fullname at 63 and then APPENDS component suffixes — the longest,
@@ -45,13 +45,13 @@ func Resources(ctx *pulumi.Context, stackInput *kubernetesharborv1alpha1.Kuberne
 	}
 
 	kubernetesProvider, err := pulumikubernetesprovider.GetWithKubernetesProviderConfig(ctx,
-		stackInput.ProviderConfig, "kubernetes")
+		iacInput.ProviderConfig, "kubernetes")
 	if err != nil {
 		return errors.Wrap(err, "failed to create kubernetes provider")
 	}
 
 	// ------------------------------ namespace ----------------------------
-	createdNamespace, err := namespace(ctx, stackInput, locals, kubernetesProvider)
+	createdNamespace, err := namespace(ctx, iacInput, locals, kubernetesProvider)
 	if err != nil {
 		return errors.Wrap(err, "failed to create namespace")
 	}

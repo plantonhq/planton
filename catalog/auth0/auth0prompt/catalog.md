@@ -1,10 +1,10 @@
 # Auth0 Prompt
 
-Sets how an existing Auth0 tenant's login flow behaves: Universal Login or the Classic pages, identifier-first login, and whether the device's own authenticator is offered as the first factor. One Cloud Resource per tenant.
+Sets how an existing Auth0 tenant's login flow behaves: Universal Login or the Classic pages, identifier-first login, and whether the device's own authenticator is offered as the first factor. One Infra Component per tenant.
 
 ## What Gets Created
 
-Nothing new: a tenant has one set of prompt settings, and Auth0 has no way to create or delete it. When you deploy this Cloud Resource, the IaC module sets the prompt settings of the tenant your Auth0 connection's credential belongs to:
+Nothing new: a tenant has one set of prompt settings, and Auth0 has no way to create or delete it. When you deploy this Infra Component, the IaC module sets the prompt settings of the tenant your Auth0 connection's credential belongs to:
 
 - **Login experience** -- `new` (Universal Login) or `classic` (the legacy Lock-based pages)
 - **Identifier first** -- the email or username on a first screen, the password on a second
@@ -14,7 +14,7 @@ Nothing new: a tenant has one set of prompt settings, and Auth0 has no way to cr
 
 ### Planton Setup
 
-- **Auth0 Provider Connection** -- an active connection in the Connect module with the tenant's domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **Auth0 Provider Connection** -- an active connection in the Connect module with the tenant's domain, client ID, and client secret. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credential authentication.
 
 ### Auth0 Account
@@ -48,7 +48,7 @@ spec:
 planton apply -f auth0-prompt.yaml
 ```
 
-The tenant's login page asks for the email first, then the password or the company's identity provider. A Stack Job tracks the change in real time.
+The tenant's login page asks for the email first, then the password or the company's identity provider. An Infra Job tracks the change in real time.
 
 ## Key Configuration
 
@@ -62,15 +62,15 @@ These are the decisions that matter. Explore the full field reference in the [AP
 
 **Device biometrics need their factor** -- `webauthnPlatformFirstFactor: true` is accepted only when WebAuthn with device biometrics is enabled as a multi-factor method; pair it with `identifierFirst: true`.
 
-**Destroy leaves the settings in place** -- Auth0 has no delete for the prompt settings, so destroying this Cloud Resource stops managing them and keeps their last-applied values.
+**Destroy leaves the settings in place** -- Auth0 has no delete for the prompt settings, so destroying this Infra Component stops managing them and keeps their last-applied values.
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
-This component has no foreign key dependencies. The tenant is the one the Auth0 connection's credential belongs to.
+This kind has no foreign key dependencies. The tenant is the one the Auth0 connection's credential belongs to.
 
-### What This Component Provides
+### What This Kind Provides
 
 After provisioning, `status.outputs` contains the settings as the tenant carries them:
 
@@ -90,6 +90,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Auth0 Connection**](/cloud-catalog/auth0-connection) -- the enterprise connections identifier-first login routes to.
-- [**Auth0 Tenant Settings**](/cloud-catalog/auth0-tenant-settings) -- the name and logo the login page shows.
-- [**Auth0 Prompt Custom Text**](/cloud-catalog/auth0-prompt-custom-text) -- the words each prompt shows, on the `new` experience.
+- [**Auth0 Connection**](/infra-catalog/auth0-connection) -- the enterprise connections identifier-first login routes to.
+- [**Auth0 Tenant Settings**](/infra-catalog/auth0-tenant-settings) -- the name and logo the login page shows.
+- [**Auth0 Prompt Custom Text**](/infra-catalog/auth0-prompt-custom-text) -- the words each prompt shows, on the `new` experience.

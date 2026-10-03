@@ -27,7 +27,7 @@ when BOTH constituent alarms are in ALARM — one page, one incident.
   rules
 - **Name-based composition** — the rule references alarms by their CloudWatch
   names; compose them from each `AwsCloudwatchAlarm`'s exported `alarm_name`
-  stack output
+  output
 - **Silence the constituents** — consider setting `actionsEnabled: false` on
   the underlying alarms so only the composite pages
 

@@ -26,7 +26,7 @@ func minimalSpec() *AzureWebApplicationFirewallPolicy {
 	return &AzureWebApplicationFirewallPolicy{
 		ApiVersion: "azure.planton.dev/v1alpha1",
 		Kind:       "AzureWebApplicationFirewallPolicy",
-		Metadata: &shared.CloudResourceMetadata{
+		Metadata: &shared.CatalogObjectMetadata{
 			Name: "test-waf",
 		},
 		Spec: &AzureWebApplicationFirewallPolicySpec{

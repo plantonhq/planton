@@ -58,7 +58,7 @@ resource "kubernetes_stateful_set_v1" "this" {
     # so spec.update_strategy.max_unavailable cannot be expressed here. A spec
     # setting it deploys correctly through the Pulumi module
     # (iac/pulumi/module/statefulset.go); on Terraform the rollout falls back
-    # to the universally supported one-pod-at-a-time default. Stack outputs
+    # to the universally supported one-pod-at-a-time default. Outputs
     # are unaffected.
     dynamic "update_strategy" {
       for_each = try(var.spec.update_strategy, null) != null ? [var.spec.update_strategy] : []
@@ -94,7 +94,7 @@ resource "kubernetes_stateful_set_v1" "this" {
     # `ordinals` block, so spec.ordinals.start cannot be expressed here. A spec
     # setting it deploys correctly through the Pulumi module
     # (iac/pulumi/module/statefulset.go); on Terraform replicas are always
-    # numbered from the default base 0. Stack outputs are unaffected.
+    # numbered from the default base 0. Outputs are unaffected.
 
     # Per-replica storage: one PVC per template per replica
     # (<template>-<name>-<ordinal>), re-bound across pod restarts and
@@ -701,7 +701,7 @@ resource "kubernetes_stateful_set_v1" "this" {
             # sleep action the Pulumi module renders. A spec using the sleep hook
             # deploys identically through Pulumi; on Terraform express the same
             # drain with exec ["/bin/sleep", "N"] (requires a sleep binary in the
-            # image). Stack outputs are unaffected.
+            # image). Outputs are unaffected.
             dynamic "lifecycle" {
               for_each = try(container.value.lifecycle, null) != null ? [container.value.lifecycle] : []
               content {

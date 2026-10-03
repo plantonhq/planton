@@ -4,7 +4,7 @@ Creates a Cloud Logging sink — the routing rule that exports log entries match
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Logging Sink** -- exactly one of `logging.ProjectSink` / `FolderSink` / `OrganizationSink` / `BillingAccountSink`, selected by `spec.scope`
 - **Logging API enablement** -- `logging.googleapis.com` enabled (project-scope sinks only; other scopes are not project resources)
@@ -71,7 +71,7 @@ Then grant the `writer_identity` output `roles/storage.objectCreator` on the buc
 - **Exactly one destination arm**; `usePartitionedTables` only with BigQuery, and BigQuery requires the unique writer.
 - **Children flags** only on folder/org scopes; **writer-identity controls** only on project scope — the other sink resources do not carry the arguments.
 
-## Stack Outputs
+## Outputs
 
 | Output | Type | Description |
 |--------|------|-------------|
@@ -98,7 +98,7 @@ See [`iac/tf/README.md`](iac/tf/README.md).
 
 For a complete example, see `e2e/manifest.yaml`. Scenario variants live under `e2e/scenarios/`.
 
-## Related Components
+## Related Kinds
 
 - [GcpGcsBucket](/docs/catalog/gcp/gcpgcsbucket) — the archival destination (grant the writer through a `GcpGcsBucketIamMember`)
 - [GcpBigQueryDataset](/docs/catalog/gcp/gcpbigquerydataset) — the queryable destination

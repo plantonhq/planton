@@ -4,7 +4,7 @@ The signing authority inside a private CA pool -- a root you trust directly, or 
 
 ## What Gets Created
 
-When you deploy this Cloud Resource, the IaC module provisions:
+When you deploy this Infra Component, the IaC module provisions:
 
 - **Certificate authority** -- a `privateca_certificate_authority` in the named pool, activated and enabled on create
 
@@ -12,7 +12,7 @@ When you deploy this Cloud Resource, the IaC module provisions:
 
 ### Planton Setup
 
-- **GCP Provider Connection** -- an active connection in the Connect module with CA Service admin permissions (`roles/privateca.caManager`) on the project. Map it as the default for your environment, or specify it explicitly when creating the Cloud Resource.
+- **GCP Provider Connection** -- an active connection in the Connect module with CA Service admin permissions (`roles/privateca.caManager`) on the project. Map it as the default for your environment, or specify it explicitly when creating the Infra Component.
 - **Planton Runner** -- required when using Runner-based credential delivery. Not needed for inline credentials or browser OAuth authentication modes.
 
 ### Required Dependencies
@@ -62,7 +62,7 @@ spec:
 planton apply -f root-ca.yaml
 ```
 
-This creates a ten-year root with a P-384 HSM key in `root-pool`, enabled and ready to sign. A Stack Job tracks the provisioning in real time.
+This creates a ten-year root with a P-384 HSM key in `root-pool`, enabled and ready to sign. An Infra Job tracks the provisioning in real time.
 
 ### InfraChart
 
@@ -82,7 +82,7 @@ These are the most important decisions when configuring this component. Explore 
 
 ## Outputs and Dependencies
 
-### What This Component Consumes
+### What This Kind Consumes
 
 | Dependency | Field | ValueFromRef Path |
 |------------|-------|-------------------|
@@ -92,9 +92,9 @@ These are the most important decisions when configuring this component. Explore 
 | **GcpKmsKey** | `keySpec.cloudKmsKeyVersion` | `status.outputs.initial_version_name` |
 | **GcpGcsBucket** | `gcsBucket` | `status.outputs.bucket_name` |
 
-### What This Component Provides
+### What This Kind Provides
 
-After provisioning, `status.outputs` contains values that downstream Cloud Resources can consume via ValueFromRef:
+After provisioning, `status.outputs` contains values that downstream Infra Components can consume via ValueFromRef:
 
 | Output | Description | Common Downstream Use |
 |--------|-------------|-----------------------|
@@ -113,6 +113,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**GCP Private CA Pool**](/cloud-catalog/gcp-private-ca-pool) -- the pool it lives in
-- [**GCP Private CA Certificate**](/cloud-catalog/gcp-private-ca-certificate) -- certificates it signs
-- [**GCP KMS Key**](/cloud-catalog/gcp-kms-key) -- your own signing key
+- [**GCP Private CA Pool**](/infra-catalog/gcp-private-ca-pool) -- the pool it lives in
+- [**GCP Private CA Certificate**](/infra-catalog/gcp-private-ca-certificate) -- certificates it signs
+- [**GCP KMS Key**](/infra-catalog/gcp-kms-key) -- your own signing key
