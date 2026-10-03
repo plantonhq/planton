@@ -22,7 +22,7 @@ This is the source for the planton.ai website, living in the `site/` folder of t
 
 ## What this is
 
-The public website at planton.ai: a Next.js static export, deployed on every push to `main` that touches `site/` to the Cloudflare Worker `planton-website` (`wrangler.jsonc`; static assets only, no code), and to GitHub Pages until the router below carries all of planton.ai. The push is the deploy, so all work happens on a branch and merges only when the founder approves.
+The public website at planton.ai: a Next.js static export, deployed on every push to `main` that touches `site/` to the Cloudflare Worker `planton-website` (`wrangler.jsonc`; static assets only, no code). The push is the deploy, so all work happens on a branch and merges only when the founder approves.
 
 **Every pull request that changes `site/` gets a preview** at `https://review-<pull request number>.planton.dev`, the exact build production would serve. Every push updates it, the pull request's one "Website preview" comment links it, and it closes when the pull request is merged or closed (`.github/workflows/preview.site.yaml`). Previews carry `noindex`, and a link into the console (`/login`, `/signup`) shows the site's 404 there: the console is tested on planton.ai. Pull requests from forks get no preview.
 

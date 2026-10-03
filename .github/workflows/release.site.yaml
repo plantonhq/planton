@@ -2,12 +2,9 @@
 # Website Deploy (planton.ai)
 # =============================================================================
 # Builds the public website from the site/ tree (Next.js static export) and
-# deploys it twice while the move to Cloudflare settles:
-#
-#   - to the Worker `planton-website` (site/wrangler.jsonc), which the router
-#     in front of planton.ai hands the website's paths to;
-#   - to this repository's GitHub Pages, the previous home, kept serving until
-#     the router carries all of planton.ai and then retired with its job.
+# deploys it to the Worker `planton-website` (site/wrangler.jsonc), which the
+# router in front of planton.ai (planton-platform's apex-router) hands the
+# website's paths to.
 #
 # The build job holds no key: it runs the website's own dependencies. The
 # Cloudflare job installs only the pinned wrangler in site/deploy and deploys
@@ -37,14 +34,11 @@ on:
       - ".github/workflows/release.site.yaml"
   workflow_dispatch:
 
-# Required permissions for actions/deploy-pages
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 concurrency:
-  group: "pages"
+  group: release.site
   cancel-in-progress: true
 
 jobs:
@@ -61,21 +55,12 @@ jobs:
         with:
           node-version-file: site/.nvmrc
 
-      # Enables Pages and provides metadata; safe to run in all builds
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-
       # Corepack activates the Yarn version pinned by site/package.json's
       # packageManager field; the Makefile owns everything after that.
       - name: Build site
         run: |
           corepack enable
           make -C site build
-
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: site/out
 
       - name: Upload the export for Cloudflare
         uses: actions/upload-artifact@v4
@@ -86,17 +71,6 @@ jobs:
           retention-days: 7
 
   deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
-
-  deploy-cloudflare:
     needs: build
     runs-on: ubuntu-latest
     timeout-minutes: 15
