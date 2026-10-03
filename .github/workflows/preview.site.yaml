@@ -193,7 +193,9 @@ jobs:
         run: |
           body="<!-- website-preview -->
           **Website preview:** closed with this pull request."
-          bash site/deploy/sticky-comment.sh "${NUMBER}" "${body}"
+          # A closed pull request may already be locked; the preview is closed either way.
+          bash site/deploy/sticky-comment.sh "${NUMBER}" "${body}" ||
+            echo "::warning::pull request #${NUMBER} refused the comment (locked); its preview is closed"
 
   sweep:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
