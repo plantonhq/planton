@@ -531,8 +531,12 @@ type KubernetesOtelCollectorScheduling struct {
 	// Node selector for the collector pods.
 	NodeSelector map[string]string `protobuf:"bytes,1,rep,name=node_selector,json=nodeSelector,proto3" json:"node_selector,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// *
-	// Tolerations for the collector pods. Daemonset log collectors
-	// typically tolerate control-plane taints to cover every node.
+	// Tolerations for the collector pods. A daemonset that reads every
+	// node's logs tolerates every NoSchedule taint (`operator: Exists`,
+	// `effect: NoSchedule`, no key): control-plane nodes and tainted pools
+	// alike (build or GPU pools keep other pods off with a taint), so no
+	// node's logs are skipped. A control-plane-only toleration silently
+	// misses every other tainted node.
 	Tolerations []*kubernetes.WorkloadToleration `protobuf:"bytes,2,rep,name=tolerations,proto3" json:"tolerations,omitempty"`
 	// *
 	// Priority class name for the collector pods.

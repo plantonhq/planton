@@ -145,7 +145,12 @@ Ask these before composing, in the person's words, not the chart's:
   (batching there and never in a `batch` processor, capped in bytes
   below Loki's burst, blocking when full) is the difference between a
   restart or a long Loki outage losing lines and losing none. Turn on
-  the collector's `service_monitor_enabled` so its queue is watched.
+  the collector's `service_monitor_enabled` so its queue is watched. Keep
+  its toleration of every `NoSchedule` taint: a cluster with a tainted
+  pool (builds, GPUs) otherwise never ships those nodes' logs, and the
+  daemonset still reads complete. To see coverage, compare the cluster's
+  nodes (`kube_node_info`) with the collector's ready pods; the
+  daemonset's own desired count never includes a node it can't tolerate.
 - **A `$var/` reference works in a plain-string field** (a Grafana
   `client_id`, for one): it resolves at deploy like any other.
 - **Dashboards are files, not clicks.** Ship each as a
@@ -232,6 +237,19 @@ to decide with the person, and what to watch for:
   `ingestion_burst_size_mb` above the collectors' batch cap (24 against
   4 MiB): Loki refuses a push larger than its burst every time, and a
   collector retrying forever then stalls that node's logs for good.
+- **Add a cluster to a running hub in order:**
+  1. Mint its token.
+  2. Add its key and principal to the door and re-apply the hub.
+  3. Write the token where its agent reads it.
+  4. Install the agent.
+  5. Only after the agent's first heartbeat, add the cluster to whatever
+     watches heartbeats.
+
+  Take a cluster away (or rebuild it) in reverse: out of the heartbeat
+  list, then its agent, then the cluster. Write that order into the
+  cluster's own rebuild runbook, so a rebuild brings monitoring back
+  instead of dropping it. A rebuilt cluster with the same name keeps
+  its token.
 - **Expect real alerts in the first hour** of a cluster that never had
   in-cluster alerting. Read them with the person and list their causes;
   never silence one by hand.

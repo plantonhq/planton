@@ -64,11 +64,29 @@ mode): `otelcol_receiver_accepted_log_records`,
 `otelcol_exporter_send_failed_log_records` and
 `otelcol_exporter_queue_size` against `otelcol_exporter_queue_capacity`.
 The queue's fill is the earliest sign that a backend is refusing or
-away, before any line is late enough to notice. The operator detects
+away, before any line is late enough to notice. The monitor is named
+`<name>-monitoring-collector` and scrapes the `monitoring` port of the
+`<name>-collector-monitoring` Service; the series carry no `_total`
+suffix, and the failed-send counter appears only after a first failure,
+so a query over it needs a zero fallback. The operator detects
 the Prometheus operator's CRDs once, when it starts, so a monitoring
 stack installed after it needs the operator restarted before monitors
 appear; declare the KubernetesOtelOperator `depends_on` the
 KubernetesKubePrometheusStack.
+
+## Every node, tainted pools included
+
+A cluster grows tainted node pools (builds, GPUs) that keep other pods
+off. A daemonset collector without a matching toleration is never
+scheduled there, and nothing reports the gap: the daemonset's own
+desired count leaves out every node it does not tolerate, so it reads
+complete. Give a log collector `scheduling.tolerations` of
+`operator: Exists, effect: NoSchedule` (no key), which is the node
+exporter's own default, and check coverage against the cluster's nodes
+rather than against the daemonset: `count(kube_node_info)` beside
+`kube_daemonset_status_number_ready` for the collector. At a low
+priority class the collector never preempts, so on a node already full
+it waits for room; that comparison shows it too.
 
 ## Operator prerequisite
 

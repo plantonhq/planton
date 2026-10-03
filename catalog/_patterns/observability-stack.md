@@ -629,6 +629,28 @@ a key the door never saw, with identical claims (401), the real token
 with an empty body (the store's own 400 or 422, so the door let it
 through), and the real token on any other path or method (403).
 
+**A cluster joins a running hub in one order:**
+1. Mint its token.
+2. Put its key and its principal in the door, and re-apply the hub.
+3. Write the token where its agent reads it.
+4. Install the agent.
+5. Only after the agent's first heartbeat, list the cluster with
+   whatever watches heartbeats.
+
+Each step needs the one before it. A watcher told first reports the
+cluster lost before it ever reported.
+
+A cluster leaves, or is rebuilt, in the reverse order: out of the
+heartbeat list, then its agent, then the cluster. Removing the cluster
+under a declared agent leaves resources for a cluster that no longer
+exists. A rebuilt cluster with the same name keeps its token, so only
+the agent and the heartbeat entry come back.
+
+**Every node, tainted pools included:** each cluster's log collector
+tolerates every `NoSchedule` taint (the `KubernetesOtelCollector` guide).
+Without that toleration, a build or GPU pool's logs never leave its
+nodes, and the daemonset still reads complete.
+
 ## Dashboards as code
 
 A Grafana nobody provisioned fills with hand-made screens no one can

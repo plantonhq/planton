@@ -26,8 +26,11 @@ writable hostPath at `/var/lib/otelcol-checkpoints`. The mount alone
 keeps nothing: the `file_storage` extension points at it, the receiver's
 `storage` keeps its offsets there (a restarted collector resumes where it
 left off), and the exporter's `sending_queue` keeps unsent lines there
-with retries that never give up. The control-plane toleration covers
-every node — remove it if control-plane logs should stay uncollected.
+with retries that never give up. The toleration admits every
+`NoSchedule` taint, so control-plane nodes and tainted pools (a build
+pool, a GPU pool) are read too; a toleration for one taint alone
+silently skips every other tainted node. Narrow it with a key only to
+leave a pool's logs uncollected on purpose.
 
 The sending queue is what makes the pipeline lose nothing, and three of
 its settings are load-bearing:
