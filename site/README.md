@@ -302,3 +302,4 @@ Canonical icons are selected from `catalog/<provider>/<kind>/logo.svg` and the e
 Run `node scripts/check-homepage-experience.mjs` for the hero, product proof, keyboard controls, responsive captures, zoom, and static fallbacks. `node scripts/measure-homepage.mjs /tmp/homepage-lab.json` records repeatable local LCP, CLS, sampled interaction timing, and JavaScript bytes; it is not field INP or a production-network benchmark. Export the hero with `yarn export:workflow hero /tmp/planton-hero.mp4`. Generated MP4s remain outside Git.
 
 <!-- preview lifecycle check: this pull request is opened and closed by the release process to prove website previews; never merged. -->
+<!-- second push -->
