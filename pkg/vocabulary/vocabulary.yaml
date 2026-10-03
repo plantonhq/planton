@@ -146,7 +146,7 @@ allow:
   - pattern: '(?i)cloud[ _-]?resource'
     paths: ['**/gcpbigqueryconnection/**']
     reason: BigQuery's own Cloud Resource connection type
-  - pattern: '(?i)\b(google|hetzner|alibaba|ali|oracle|ibm|tencent|huawei|sap|civo|scaleway|ovh|vultr|linode|akamai)[ _-]?cloud[ _-]?(resources?|objects?|catalogs?)'
+  - pattern: '(?i)\b(google|hetzner|alibaba|ali|oracle|ibm|tencent|huawei|sap|civo|scaleway|ovh|vultr|linode|akamai)[ _-]?cloud[ _-]?(resources?|objects?|catalogs?|components?)'
     reason: a provider whose name ends in Cloud (Google Cloud, Hetzner Cloud, Alibaba Cloud), followed by the provider's own word
   - pattern: '(?i)\b(open|cloud|dev|local)stack[ _-]?(inputs?|outputs?|jobs?)'
     reason: OpenStack, CloudStack, DevStack and LocalStack followed by an ordinary word
