@@ -318,15 +318,16 @@ locals {
   notification_text  = "{{ template \"planton.text\" . }}"
 
   # The one message shape every Discord and Pushover notification carries
-  # (twin: notificationTemplate, byte for byte). The title leads with
-  # environment and component; the body is the first alert's
-  # customer_impact (else summary, else name), a count when the group holds
-  # more, and the runbook. It renders ONLY those labels and annotations:
-  # never description, namespace or pod, because on a shared cluster a
-  # namespace can name a customer and upstream rule descriptions
-  # interpolate it.
+  # (twin: notificationTemplate, byte for byte, held equal by the Pulumi
+  # module's template_twin_test.go). The title leads with environment and
+  # component (else the scrape job, else "cluster": the alert is about the
+  # whole cluster); the body is the first alert's customer_impact (else
+  # summary, else name), a count when the group holds more, and the runbook.
+  # It renders ONLY those labels and annotations: never description,
+  # namespace or pod, because on a shared cluster a namespace can name a
+  # customer and upstream rule descriptions interpolate it.
   notification_template = <<EOT
-{{ define "planton.title" }}{{ if eq .Status "resolved" }}[RESOLVED] {{ end }}[{{ or (index .CommonLabels "${local.notification_env_label}") "unknown" }}] {{ or (index .CommonLabels "${local.notification_component_label}") .CommonLabels.job "unlabelled" }}: {{ .CommonLabels.alertname }}{{ end }}
+{{ define "planton.title" }}{{ if eq .Status "resolved" }}[RESOLVED] {{ end }}[{{ or (index .CommonLabels "${local.notification_env_label}") "unknown" }}] {{ or (index .CommonLabels "${local.notification_component_label}") .CommonLabels.job "cluster" }}: {{ .CommonLabels.alertname }}{{ end }}
 {{ define "planton.text" }}{{ with index .Alerts 0 }}{{ or .Annotations.customer_impact .Annotations.summary .Labels.alertname }}{{ end }}{{ if gt (len .Alerts) 1 }} ({{ len .Alerts }} alerts){{ end }}{{ with (index .Alerts 0).Annotations.runbook_url }}
 Runbook: {{ . }}{{ end }}{{ end }}
 EOT
@@ -615,7 +616,24 @@ EOT
       rules = length(try(var.spec.default_rules.disabled_groups, [])) > 0 ? {
         for group in var.spec.default_rules.disabled_groups : group => false
       } : null
+      # The chart gates every curated alert on defaultRules.disabled.<alert>.
+      disabled = length(try(var.spec.default_rules.disabled_alerts, [])) > 0 ? {
+        for alert in var.spec.default_rules.disabled_alerts : alert => true
+      } : null
     } : k => v if v != null
+  }
+
+  # The chart reads a curated alert's hold and severity from the top-level
+  # customRules map; only the keys the manifest sets are rendered, so an
+  # override of one keeps the chart's own value for the other. ("for" is
+  # quoted: bare, HCL reads it as a for expression.)
+  custom_rules_values = {
+    for o in try(var.spec.default_rules.alert_overrides, []) : o.alert => {
+      for k, v in {
+        "for"    = o.for_duration != "" ? o.for_duration : null
+        severity = o.severity != "" ? o.severity : null
+      } : k => v if v != null
+    }
   }
 
   # ---- crds subchart ---------------------------------------------------------------------------------
@@ -673,6 +691,7 @@ EOT
     local.kube_state_metrics_resources != null ? { "kube-state-metrics" = { resources = local.kube_state_metrics_resources } } : {},
     local.node_exporter_resources != null ? { "prometheus-node-exporter" = { resources = local.node_exporter_resources } } : {},
     local.scraper_toggles,
-    length(local.default_rules_values) > 0 ? { defaultRules = local.default_rules_values } : {}
+    length(local.default_rules_values) > 0 ? { defaultRules = local.default_rules_values } : {},
+    length(local.custom_rules_values) > 0 ? { customRules = local.custom_rules_values } : {}
   )
 }

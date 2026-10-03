@@ -20,6 +20,9 @@ because most production clusters are managed — on a self-hosted
 control plane (kubeadm, datacenter) DROP the `control_plane_scrapers`
 and `default_rules` blocks so the controller-manager, scheduler,
 etcd and kube-proxy are scraped and their curated alerts stay armed.
+The overcommit alerts are off because managed node pools usually
+autoscale; on fixed-size pools remove `disabled_alerts`, where they
+are true.
 
 Alert delivery is declared, not left for later: every alert posts to
 the team's Discord channel, `severity=page` alerts also ring the

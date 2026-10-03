@@ -76,13 +76,32 @@ Ask these before composing, in the person's words, not the chart's:
   and on GKE the CoreDNS scraper too, because GKE runs kube-dns. Left on,
   each is a target that is down forever and an alert that never clears,
   which teaches the person to ignore the channel on day one.
+- Ask whether the node pools autoscale and whether the cluster runs CI
+  builds or batch machines. On autoscaled pools put `KubeCPUOvercommit`
+  and `KubeMemoryOvercommit` in `default_rules.disabled_alerts`: they
+  count today's nodes and fire on every burst. A curated alert that
+  misreads work done on purpose (Tekton build pods read not-ready once a
+  step ends; a build machine sits at full CPU) is replaced, not muted:
+  disable it and declare the same alert name in a `KubernetesPrometheusRule`
+  that leaves the work out (`kube_pod_owner{owner_kind!~"Job|TaskRun"}`;
+  `unless` the build taint in `kube_node_spec_taint`), keeping upstream's
+  `for`, severity and `namespace` label (Alertmanager's info inhibition
+  matches on it). Then the work's real failure needs its own alert: a
+  build machine that runs out of memory goes dark and is replaced before
+  `KubeNodeNotReady`'s 15 minutes or the node-memory alert's 15 minutes
+  pass, so nothing fires for it unless you add a short-hold rule on the
+  build machines' free memory. `alert_overrides` changes a kept alert's
+  `for` or `severity` instead. Read `/api/v1/rules?type=alert` after the
+  change: a name that matches no rule is skipped silently.
 - Pushover's emergency priority repeats every minute until someone
   acknowledges it in the app, even after the alert resolves. Say so before
   the person's phone starts ringing.
 - The person's own alert and recording rules are `KubernetesPrometheusRule`
   objects beside each cluster's agent stack, one object per owner, never
   rules pasted into the stack's `helm_values`. Each alerting rule carries
-  `severity` and `component` labels and a `runbook_url` annotation. A rule
+  `severity` and `component` labels and a `runbook_url` annotation, with
+  static annotation text (a `{{ $labels.x }}` can carry a customer's name
+  into a message, and a templating chart engine mangles it). A rule
   object loads into every stack on the default `all_monitors` discovery;
   a stack on `release_managed_only` (a hub receiver) loads it only when
   the rule's own `labels` carry `release: <that stack's release_name>`.

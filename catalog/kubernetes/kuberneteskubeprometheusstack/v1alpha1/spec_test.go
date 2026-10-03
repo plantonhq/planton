@@ -468,6 +468,80 @@ var _ = ginkgo.Describe("KubernetesKubePrometheusStack Validation Tests", func()
 			})
 		})
 	})
+
+	ginkgo.Describe("per-alert tuning of the curated rules", func() {
+		ginkgo.It("an autoscaled cluster's posture (overcommit off, a hold and a severity changed) should be valid", func() {
+			input.Spec.DefaultRules = &KubernetesKubePrometheusStackDefaultRules{
+				DisabledAlerts: []string{"KubeCPUOvercommit", "KubeMemoryOvercommit"},
+				AlertOverrides: []*KubernetesKubePrometheusStackAlertOverride{
+					{Alert: "KubePodNotReady", ForDuration: "30m"},
+					{Alert: "CPUThrottlingHigh", Severity: "info"},
+					{Alert: "KubeJobFailed", ForDuration: "1h30m", Severity: "warning"},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(input)).To(gomega.BeNil())
+		})
+
+		ginkgo.It("an alert listed twice in disabled_alerts should fail", func() {
+			input.Spec.DefaultRules = &KubernetesKubePrometheusStackDefaultRules{
+				DisabledAlerts: []string{"KubeCPUOvercommit", "KubeCPUOvercommit"},
+			}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("a disabled alert name that is not an alert name should fail", func() {
+			input.Spec.DefaultRules = &KubernetesKubePrometheusStackDefaultRules{
+				DisabledAlerts: []string{"kubernetes-apps/KubePodNotReady"},
+			}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("an override that changes nothing should fail", func() {
+			input.Spec.DefaultRules = &KubernetesKubePrometheusStackDefaultRules{
+				AlertOverrides: []*KubernetesKubePrometheusStackAlertOverride{{Alert: "KubePodNotReady"}},
+			}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("an override without an alert name should fail", func() {
+			input.Spec.DefaultRules = &KubernetesKubePrometheusStackDefaultRules{
+				AlertOverrides: []*KubernetesKubePrometheusStackAlertOverride{{ForDuration: "30m"}},
+			}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("two overrides for one alert should fail", func() {
+			input.Spec.DefaultRules = &KubernetesKubePrometheusStackDefaultRules{
+				AlertOverrides: []*KubernetesKubePrometheusStackAlertOverride{
+					{Alert: "KubePodNotReady", ForDuration: "30m"},
+					{Alert: "KubePodNotReady", Severity: "info"},
+				},
+			}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("overriding an alert that is also disabled should fail", func() {
+			input.Spec.DefaultRules = &KubernetesKubePrometheusStackDefaultRules{
+				DisabledAlerts: []string{"KubePodNotReady"},
+				AlertOverrides: []*KubernetesKubePrometheusStackAlertOverride{{Alert: "KubePodNotReady", ForDuration: "30m"}},
+			}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("a hold that is not a Prometheus duration should fail", func() {
+			input.Spec.DefaultRules = &KubernetesKubePrometheusStackDefaultRules{
+				AlertOverrides: []*KubernetesKubePrometheusStackAlertOverride{{Alert: "KubePodNotReady", ForDuration: "30 minutes"}},
+			}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+
+		ginkgo.It("a severity with uppercase should fail", func() {
+			input.Spec.DefaultRules = &KubernetesKubePrometheusStackDefaultRules{
+				AlertOverrides: []*KubernetesKubePrometheusStackAlertOverride{{Alert: "KubePodNotReady", Severity: "Warning"}},
+			}
+			gomega.Expect(protovalidate.Validate(input)).NotTo(gomega.BeNil())
+		})
+	})
 })
 
 // validNotifications is a delivery block exercising every integration: a

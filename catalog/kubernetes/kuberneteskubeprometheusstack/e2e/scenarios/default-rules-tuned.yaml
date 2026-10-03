@@ -1,0 +1,33 @@
+# The curated rules tuned one alert at a time, the posture of a cluster whose
+# node pools autoscale: the two overcommit alerts are left out (the
+# autoscaler absorbs a burst they would page about), one alert holds longer
+# before firing and one carries another severity. The verifier reads the
+# rules Prometheus actually LOADED (/api/v1/rules) and proves each declared
+# change there: the disabled alerts are absent, each overridden alert
+# carries its declared hold and severity, and the rest of the curated set
+# (the Watchdog among it) still loads, so the switch removed exactly what it
+# named. A name that matched no rule would pass the apply and fail here.
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesKubePrometheusStack
+metadata:
+  name: e2e-kps-rules
+spec:
+  namespace:
+    value: e2e-kps-rules
+  create_namespace: true
+  prometheus:
+    disk_size: 5Gi
+  alertmanager:
+    disk_size: 1Gi
+  default_rules:
+    disabled_alerts:
+      - KubeCPUOvercommit
+      - KubeMemoryOvercommit
+    alert_overrides:
+      - alert: KubePodNotReady
+        for: 45m
+      - alert: CPUThrottlingHigh
+        severity: warning
+      - alert: KubeJobFailed
+        for: 1h30m
+        severity: info

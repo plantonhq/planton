@@ -31,7 +31,11 @@ go_library(
 
 go_test(
     name = "module_test",
-    srcs = ["notifications_test.go"],
+    srcs = [
+        "notifications_test.go",
+        "template_twin_test.go",
+        "values_test.go",
+    ],
     embed = [":module"],
     deps = [
         "//catalog/kubernetes/kuberneteskubeprometheusstack/v1alpha1",

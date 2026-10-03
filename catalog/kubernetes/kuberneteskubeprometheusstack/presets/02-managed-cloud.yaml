@@ -35,3 +35,9 @@ spec:
       - kubeSchedulerAlerting
       - kubeSchedulerRecording
       - kubeProxy
+    # The node pools autoscale (the managed default): the overcommit alerts
+    # count today's nodes and fire on every burst the autoscaler absorbs.
+    # Drop these two lines on fixed-size pools, where they are true.
+    disabled_alerts:
+      - KubeCPUOvercommit
+      - KubeMemoryOvercommit

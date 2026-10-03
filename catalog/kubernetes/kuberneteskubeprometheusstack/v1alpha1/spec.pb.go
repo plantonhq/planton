@@ -2640,6 +2640,27 @@ type KubernetesKubePrometheusStackDefaultRules struct {
 	// control_plane_scrapers you disable — a scraper without its rule
 	// group silences the alerts that could never fire truthfully.
 	DisabledGroups []string `protobuf:"bytes,2,rep,name=disabled_groups,json=disabledGroups,proto3" json:"disabled_groups,omitempty"`
+	// *
+	// Single alerts to leave out of the curated set, by alert name (e.g.
+	// "KubeCPUOvercommit"), while the rest of their group stays. Names
+	// are the `alert:` names in the chart's rule files for its version; a
+	// name that matches no rule changes nothing and is not reported, so
+	// read the loaded rules back (Prometheus's /api/v1/rules) after a
+	// change. Two postures make an alert misread a cluster: an autoscaled
+	// node pool (KubeCPUOvercommit and KubeMemoryOvercommit assume a fixed
+	// node count, so they fire on every burst the autoscaler is about to
+	// absorb), and work that is busy or briefly not ready on purpose (CI
+	// build pods, dedicated batch machines). For the second, prefer to
+	// replace rather than only silence: leave the alert out here and
+	// declare the same alert name in a KubernetesPrometheusRule whose
+	// expression leaves out what the cluster does on purpose, so the
+	// signal stays for everything else.
+	DisabledAlerts []string `protobuf:"bytes,3,rep,name=disabled_alerts,json=disabledAlerts,proto3" json:"disabled_alerts,omitempty"`
+	// *
+	// Per-alert changes to a curated alert that stays on: how long it must
+	// hold before it fires, and the severity it carries (which decides its
+	// route). One entry per alert name.
+	AlertOverrides []*KubernetesKubePrometheusStackAlertOverride `protobuf:"bytes,4,rep,name=alert_overrides,json=alertOverrides,proto3" json:"alert_overrides,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
 }
@@ -2688,6 +2709,98 @@ func (x *KubernetesKubePrometheusStackDefaultRules) GetDisabledGroups() []string
 	return nil
 }
 
+func (x *KubernetesKubePrometheusStackDefaultRules) GetDisabledAlerts() []string {
+	if x != nil {
+		return x.DisabledAlerts
+	}
+	return nil
+}
+
+func (x *KubernetesKubePrometheusStackDefaultRules) GetAlertOverrides() []*KubernetesKubePrometheusStackAlertOverride {
+	if x != nil {
+		return x.AlertOverrides
+	}
+	return nil
+}
+
+// *
+// A change to one curated alert, applied where the chart renders it.
+type KubernetesKubePrometheusStackAlertOverride struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// *
+	// The alert's name in the chart's rule files (e.g. "KubePodNotReady").
+	Alert string `protobuf:"bytes,1,opt,name=alert,proto3" json:"alert,omitempty"`
+	// *
+	// How long the alert's expression must keep returning a series before
+	// it fires, as a Prometheus duration ("30m", "1h30m"). Empty = the
+	// chart's own. About ten curated alerts fire on their first evaluation
+	// and have no hold to change; for those it changes nothing. The
+	// manifest key is `for`, as upstream spells it; the proto field is
+	// named for_duration because `for` is a reserved word in the
+	// validation language and in several of the generated SDKs' languages.
+	ForDuration string `protobuf:"bytes,2,opt,name=for_duration,json=for,proto3" json:"for_duration,omitempty"`
+	// *
+	// The severity label the alert carries ("critical", "warning", "info",
+	// or a severity your routes match, such as "page"). Empty = the
+	// chart's own. Routes match on severity, so this moves the alert to
+	// another route; Alertmanager's standard inhibitions also read it
+	// (critical holds back warning, and the info inhibitor holds back info).
+	Severity      string `protobuf:"bytes,3,opt,name=severity,proto3" json:"severity,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *KubernetesKubePrometheusStackAlertOverride) Reset() {
+	*x = KubernetesKubePrometheusStackAlertOverride{}
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *KubernetesKubePrometheusStackAlertOverride) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*KubernetesKubePrometheusStackAlertOverride) ProtoMessage() {}
+
+func (x *KubernetesKubePrometheusStackAlertOverride) ProtoReflect() protoreflect.Message {
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use KubernetesKubePrometheusStackAlertOverride.ProtoReflect.Descriptor instead.
+func (*KubernetesKubePrometheusStackAlertOverride) Descriptor() ([]byte, []int) {
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *KubernetesKubePrometheusStackAlertOverride) GetAlert() string {
+	if x != nil {
+		return x.Alert
+	}
+	return ""
+}
+
+func (x *KubernetesKubePrometheusStackAlertOverride) GetForDuration() string {
+	if x != nil {
+		return x.ForDuration
+	}
+	return ""
+}
+
+func (x *KubernetesKubePrometheusStackAlertOverride) GetSeverity() string {
+	if x != nil {
+		return x.Severity
+	}
+	return ""
+}
+
 // *
 // Pod scheduling for one stack component.
 type KubernetesKubePrometheusStackScheduling struct {
@@ -2707,7 +2820,7 @@ type KubernetesKubePrometheusStackScheduling struct {
 
 func (x *KubernetesKubePrometheusStackScheduling) Reset() {
 	*x = KubernetesKubePrometheusStackScheduling{}
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[26]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[27]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -2719,7 +2832,7 @@ func (x *KubernetesKubePrometheusStackScheduling) String() string {
 func (*KubernetesKubePrometheusStackScheduling) ProtoMessage() {}
 
 func (x *KubernetesKubePrometheusStackScheduling) ProtoReflect() protoreflect.Message {
-	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[26]
+	mi := &file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes[27]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2732,7 +2845,7 @@ func (x *KubernetesKubePrometheusStackScheduling) ProtoReflect() protoreflect.Me
 
 // Deprecated: Use KubernetesKubePrometheusStackScheduling.ProtoReflect.Descriptor instead.
 func (*KubernetesKubePrometheusStackScheduling) Descriptor() ([]byte, []int) {
-	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{26}
+	return file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *KubernetesKubePrometheusStackScheduling) GetNodeSelector() map[string]string {
@@ -2984,12 +3097,24 @@ const file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_
 	"\n" +
 	"_kube_etcdB\x11\n" +
 	"\x0f_kube_schedulerB\r\n" +
-	"\v_kube_proxy\"\x89\x01\n" +
+	"\v_kube_proxy\"\x85\x06\n" +
 	")KubernetesKubePrometheusStackDefaultRules\x12'\n" +
 	"\aenabled\x18\x01 \x01(\bB\b\x8a\xa6\x1d\x04trueH\x00R\aenabled\x88\x01\x01\x12'\n" +
-	"\x0fdisabled_groups\x18\x02 \x03(\tR\x0edisabledGroupsB\n" +
+	"\x0fdisabled_groups\x18\x02 \x03(\tR\x0edisabledGroups\x12N\n" +
+	"\x0fdisabled_alerts\x18\x03 \x03(\tB%\xbaH\"\x92\x01\x1f\x18\x01\"\x1br\x192\x17^[A-Za-z][A-Za-z0-9_]*$R\x0edisabledAlerts\x12\x92\x01\n" +
+	"\x0falert_overrides\x18\x04 \x03(\v2i.dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertOverrideR\x0ealertOverrides:\x94\x03\xbaH\x90\x03\x1a\xb5\x01\n" +
+	")spec.default_rules.alert_overrides.unique\x12+each alert has one entry in alert_overrides\x1a[this.alert_overrides.all(o, this.alert_overrides.filter(p, p.alert == o.alert).size() == 1)\x1a\xd5\x01\n" +
+	"/spec.default_rules.alert_overrides.not_disabled\x12aan alert in disabled_alerts is not rendered, so it cannot also be overridden: drop one of the two\x1a?this.alert_overrides.all(o, !(o.alert in this.disabled_alerts))B\n" +
 	"\n" +
-	"\b_enabled\"\x88\x03\n" +
+	"\b_enabled\"\xeb\x06\n" +
+	"*KubernetesKubePrometheusStackAlertOverride\x12\xbf\x01\n" +
+	"\x05alert\x18\x01 \x01(\tB\xa8\x01\xbaH\xa4\x01\xba\x01\x9d\x01\n" +
+	"(spec.default_rules.alert_overrides.alert\x12Han alert name is letters, digits and underscores, starting with a letter\x1a'this.matches('^[A-Za-z][A-Za-z0-9_]*$')\xc8\x01\x01R\x05alert\x12\x80\x02\n" +
+	"\ffor_duration\x18\x02 \x01(\tB\xe4\x01\xbaH\xe0\x01\xba\x01\xdc\x01\n" +
+	"&spec.default_rules.alert_overrides.for\x127for must be a Prometheus duration like '30m' or '1h30m'\x1aythis == '' || this.matches('^(0|(([0-9]+)y)?(([0-9]+)w)?(([0-9]+)d)?(([0-9]+)h)?(([0-9]+)m)?(([0-9]+)s)?(([0-9]+)ms)?)$')R\x03for\x12\xde\x01\n" +
+	"\bseverity\x18\x03 \x01(\tB\xc1\x01\xbaH\xbd\x01\xba\x01\xb9\x01\n" +
+	"+spec.default_rules.alert_overrides.severity\x12Xa severity is lowercase letters, digits, hyphens and underscores, starting with a letter\x1a0this == '' || this.matches('^[a-z][a-z0-9_-]*$')R\bseverity:\x96\x01\xbaH\x92\x01\x1a\x8f\x01\n" +
+	"4spec.default_rules.alert_overrides.changes_something\x12'an override sets for, severity, or both\x1a.this.for_duration != '' || this.severity != ''\"\x88\x03\n" +
 	"'KubernetesKubePrometheusStackScheduling\x12\x9d\x01\n" +
 	"\rnode_selector\x18\x01 \x03(\v2x.dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling.NodeSelectorEntryR\fnodeSelector\x12L\n" +
 	"\vtolerations\x18\x02 \x03(\v2*.dev.planton.kubernetes.WorkloadTolerationR\vtolerations\x12.\n" +
@@ -3030,7 +3155,7 @@ func file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_r
 }
 
 var file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_enumTypes = make([]protoimpl.EnumInfo, 3)
-var file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 29)
+var file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_msgTypes = make([]protoimpl.MessageInfo, 30)
 var file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_goTypes = []any{
 	(KubernetesKubePrometheusStackMonitorDiscovery)(0),        // 0: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackMonitorDiscovery
 	(KubernetesKubePrometheusStackPushoverPriority)(0),        // 1: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPushoverPriority
@@ -3061,15 +3186,16 @@ var file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_go
 	(*KubernetesKubePrometheusStackExporters)(nil),            // 26: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackExporters
 	(*KubernetesKubePrometheusStackControlPlaneScrapers)(nil), // 27: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackControlPlaneScrapers
 	(*KubernetesKubePrometheusStackDefaultRules)(nil),         // 28: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackDefaultRules
-	(*KubernetesKubePrometheusStackScheduling)(nil),           // 29: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling
-	nil,                                   // 30: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.ExternalLabelsEntry
-	nil,                                   // 31: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling.NodeSelectorEntry
-	(*v1.StringValueOrRef)(nil),           // 32: dev.planton.shared.foreignkey.v1.StringValueOrRef
-	(*kubernetes.ContainerResources)(nil), // 33: dev.planton.kubernetes.ContainerResources
-	(*kubernetes.WorkloadToleration)(nil), // 34: dev.planton.kubernetes.WorkloadToleration
+	(*KubernetesKubePrometheusStackAlertOverride)(nil),        // 29: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertOverride
+	(*KubernetesKubePrometheusStackScheduling)(nil),           // 30: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling
+	nil,                                   // 31: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.ExternalLabelsEntry
+	nil,                                   // 32: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling.NodeSelectorEntry
+	(*v1.StringValueOrRef)(nil),           // 33: dev.planton.shared.foreignkey.v1.StringValueOrRef
+	(*kubernetes.ContainerResources)(nil), // 34: dev.planton.kubernetes.ContainerResources
+	(*kubernetes.WorkloadToleration)(nil), // 35: dev.planton.kubernetes.WorkloadToleration
 }
 var file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_depIdxs = []int32{
-	32, // 0: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	33, // 0: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.namespace:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	4,  // 1: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.prometheus:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus
 	10, // 2: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.alertmanager:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertmanager
 	21, // 3: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.grafana:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafana
@@ -3077,12 +3203,12 @@ var file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_de
 	26, // 5: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.exporters:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackExporters
 	27, // 6: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.control_plane_scrapers:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackControlPlaneScrapers
 	28, // 7: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSpec.default_rules:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackDefaultRules
-	32, // 8: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	33, // 9: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	30, // 10: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.external_labels:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.ExternalLabelsEntry
+	33, // 8: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	34, // 9: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	31, // 10: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.external_labels:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.ExternalLabelsEntry
 	0,  // 11: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.discovery:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackMonitorDiscovery
 	5,  // 12: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.remote_write:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWrite
-	29, // 13: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.scheduling:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling
+	30, // 13: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPrometheus.scheduling:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling
 	6,  // 14: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWrite.basic_auth:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteBasicAuth
 	9,  // 15: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWrite.bearer_token_secret:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSecretKeyRef
 	7,  // 16: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWrite.sigv4:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteSigv4
@@ -3090,9 +3216,9 @@ var file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_de
 	9,  // 18: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteBasicAuth.password_secret:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSecretKeyRef
 	9,  // 19: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteSigv4.access_key_secret:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSecretKeyRef
 	9,  // 20: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackRemoteWriteSigv4.secret_key_secret:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackSecretKeyRef
-	32, // 21: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertmanager.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	33, // 22: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertmanager.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	29, // 23: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertmanager.scheduling:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling
+	33, // 21: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertmanager.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	34, // 22: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertmanager.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	30, // 23: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertmanager.scheduling:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling
 	11, // 24: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertmanager.notifications:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertNotifications
 	12, // 25: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertNotifications.receivers:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertReceiver
 	16, // 26: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertNotifications.route:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertRoute
@@ -3101,31 +3227,32 @@ var file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_de
 	13, // 29: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertReceiver.discord:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertDiscord
 	14, // 30: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertReceiver.pushover:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertPushover
 	15, // 31: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertReceiver.webhook:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertWebhook
-	32, // 32: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertDiscord.webhook_url:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	32, // 33: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertPushover.token:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	32, // 34: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertPushover.user_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	33, // 32: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertDiscord.webhook_url:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	33, // 33: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertPushover.token:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	33, // 34: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertPushover.user_key:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	1,  // 35: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertPushover.priority:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackPushoverPriority
-	32, // 36: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertWebhook.bearer_token:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	33, // 36: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertWebhook.bearer_token:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	17, // 37: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertRoute.routes:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertChildRoute
 	18, // 38: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertChildRoute.matchers:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertMatcher
 	2,  // 39: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertMatcher.operator:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertMatchOperator
-	32, // 40: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertHeartbeat.bearer_token:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	33, // 40: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertHeartbeat.bearer_token:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
 	22, // 41: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafana.admin_secret:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafanaAdminSecret
 	23, // 42: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafana.storage:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafanaStorage
-	33, // 43: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafana.resources:type_name -> dev.planton.kubernetes.ContainerResources
-	32, // 44: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafanaStorage.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
-	33, // 45: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackOperator.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	34, // 43: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafana.resources:type_name -> dev.planton.kubernetes.ContainerResources
+	33, // 44: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackGrafanaStorage.storage_class:type_name -> dev.planton.shared.foreignkey.v1.StringValueOrRef
+	34, // 45: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackOperator.resources:type_name -> dev.planton.kubernetes.ContainerResources
 	25, // 46: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackOperator.admission_webhooks:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAdmissionWebhooks
-	29, // 47: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackOperator.scheduling:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling
-	33, // 48: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackExporters.kube_state_metrics_resources:type_name -> dev.planton.kubernetes.ContainerResources
-	33, // 49: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackExporters.node_exporter_resources:type_name -> dev.planton.kubernetes.ContainerResources
-	31, // 50: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling.node_selector:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling.NodeSelectorEntry
-	34, // 51: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
-	52, // [52:52] is the sub-list for method output_type
-	52, // [52:52] is the sub-list for method input_type
-	52, // [52:52] is the sub-list for extension type_name
-	52, // [52:52] is the sub-list for extension extendee
-	0,  // [0:52] is the sub-list for field type_name
+	30, // 47: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackOperator.scheduling:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling
+	34, // 48: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackExporters.kube_state_metrics_resources:type_name -> dev.planton.kubernetes.ContainerResources
+	34, // 49: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackExporters.node_exporter_resources:type_name -> dev.planton.kubernetes.ContainerResources
+	29, // 50: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackDefaultRules.alert_overrides:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackAlertOverride
+	32, // 51: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling.node_selector:type_name -> dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling.NodeSelectorEntry
+	35, // 52: dev.planton.kubernetes.kuberneteskubeprometheusstack.v1alpha1.KubernetesKubePrometheusStackScheduling.tolerations:type_name -> dev.planton.kubernetes.WorkloadToleration
+	53, // [53:53] is the sub-list for method output_type
+	53, // [53:53] is the sub-list for method input_type
+	53, // [53:53] is the sub-list for extension type_name
+	53, // [53:53] is the sub-list for extension extendee
+	0,  // [0:53] is the sub-list for field type_name
 }
 
 func init() { file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_init() }
@@ -3158,7 +3285,7 @@ func file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_i
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDesc), len(file_catalog_kubernetes_kuberneteskubeprometheusstack_v1alpha1_spec_proto_rawDesc)),
 			NumEnums:      3,
-			NumMessages:   29,
+			NumMessages:   30,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

@@ -712,11 +712,13 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 	// Prometheus and Alertmanager; the behavioral-notifications scenario
 	// proves typed alert delivery reaches a sink (heartbeat with its
 	// token, a page reaching the pager and the channel, no customer label
-	// in the message, rotation without a restart). Destroy asserts the
-	// crds-subchart keep posture (the monitoring CRDs must SURVIVE
+	// in the message, rotation without a restart). Any manifest that tunes
+	// single curated alerts is proven against the rules Prometheus loaded.
+	// Destroy asserts the crds-subchart keep posture (the monitoring CRDs must SURVIVE
 	// uninstall).
 	case "kuberneteskubeprometheusstack":
 		spec := manifestSpecMap(manifestPath)
+		disabledAlerts, alertOverrides := kpsRuleTuning(spec)
 		return &KubePrometheusStackVerifier{
 			Namespace:               info.Namespace,
 			Name:                    info.Name,
@@ -728,6 +730,8 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 			Notifications:           strings.Contains(manifestPath, "behavioral-notifications"),
 			OperatorEnabled:         kpsOperatorEnabled(spec),
 			KubeStateMetricsEnabled: kpsKubeStateMetricsEnabled(spec),
+			DisabledAlerts:          disabledAlerts,
+			AlertOverrides:          alertOverrides,
 		}, nil
 
 	// A PrometheusRule: the live object carries exactly the declared spec,

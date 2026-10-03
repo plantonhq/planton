@@ -13,6 +13,11 @@ because Cilium's kube-proxy-replacement leaves nothing to scrape;
 re-enable it only after you have verified the target is up on your
 distribution.
 
+The two overcommit alerts are off for the same reason: managed node
+pools usually autoscale, and those alerts count today's nodes, so they
+fire on every burst the autoscaler is about to absorb. On fixed-size
+pools they are true; remove `disabled_alerts` there.
+
 Set `prometheus.external_labels.cluster` to the cluster's real name
 so multi-cluster federation and remote-write destinations can tell
 series apart. Compose exposure for Grafana or Prometheus over the

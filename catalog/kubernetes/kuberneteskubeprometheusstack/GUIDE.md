@@ -76,6 +76,43 @@ GKE runs kube-dns instead of CoreDNS, so nothing answers on CoreDNS's
 metrics port there: set `core_dns: false` too. The check that the posture
 is right: minutes after install, every active target reads `up`.
 
+## Quiet the curated rules where they misread the cluster
+
+The curated rules assume a cluster that holds still. Two common postures
+break that assumption, and every alert that misreads the cluster teaches
+the people reading the channel to stop reading it before a real page
+arrives:
+
+- **Autoscaled node pools.** `KubeCPUOvercommit` and
+  `KubeMemoryOvercommit` ask whether the cluster could lose its largest
+  node, counting the nodes it has now. With an autoscaler that adds a node
+  when pods can't fit, every burst trips them and resolves minutes later.
+  Name both in `default_rules.disabled_alerts`: on these pools capacity is
+  the autoscaler's job, and a pod that truly cannot fit still shows up as
+  `KubePodNotReady` (Pending for 15 minutes).
+- **Work that is busy or not ready on purpose.** CI build pods (Tekton's
+  task pods read not-ready once their first step ends), dedicated build or
+  batch machines running at full CPU. Don't just silence the alert for
+  everyone: **replace it**. Leave the curated alert out with
+  `disabled_alerts`, then declare the same alert name in a
+  `KubernetesPrometheusRule` whose expression leaves out what the cluster
+  does on purpose (`kube_pod_owner{owner_kind!~"Job|TaskRun"}` for build
+  pods; `unless` the machine carries your build taint, from
+  `kube_node_spec_taint`, for build machines). Both series ship with
+  kube-state-metrics and need no label allowlist. Keep the upstream name,
+  `for` and severity, so runbooks and habits carry over, and keep the
+  labels Alertmanager's inhibitions and your routes read (`namespace`,
+  `severity`).
+
+`alert_overrides` changes a curated alert that stays on: a longer `for`
+(the hold before it fires) or another `severity` (which moves it to
+another route). Upstream exposes exactly these two per alert.
+
+A name that matches no rule changes nothing and nothing reports it, so
+after any change read the rules Prometheus loaded:
+`curl -s <prometheus>/api/v1/rules?type=alert` lists every alert by name.
+A switched-off alert must be absent, and its replacement present once.
+
 ## Alerts that reach a person
 
 Out of the box Alertmanager notifies nobody. Monitoring exists only when
@@ -104,7 +141,9 @@ same day. Five things decide whether it works:
   (Pushover plus the channel's Discord), or follow it with a catch-all
   channel route.
 - **Messages carry no customer names.** Every title is `[<environment>]
-  <component>: <alertname>`, and the body is the alert's
+  <component>: <alertname>` (an alert without `component` is titled by its
+  scrape `job`, and one with neither, such as an overcommit sum, by
+  `cluster`), and the body is the alert's
   `customer_impact` annotation (else `summary`) plus `runbook_url`.
   `namespace`, `pod` and `description` are never rendered, because on a
   shared cluster a namespace can name a customer. Put `environment` on

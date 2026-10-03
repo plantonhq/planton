@@ -23,6 +23,8 @@ import (
 //     the pager webhook with its token and the Discord channel through the
 //     continuing route, titled with environment and component, with no
 //     trace of the customer (the message template's allowlist);
+//   - an alert with neither a component nor a job label (the shape of a
+//     cluster-wide sum) is titled by its subject, the cluster;
 //   - a rotated credential is picked up with no restart (Alertmanager reads
 //     `_file` credentials per notification and the kubelet refreshes the
 //     mounted Secret).
@@ -44,6 +46,8 @@ const (
 	notifyExpectedTitle     = "[e2e] notification-proof: E2ENotificationProof"
 	notifyExpectedSummary   = "Synthetic notification proof."
 	notifyCustomerMarker    = "acme"
+	notifyClusterWideAlert  = "E2EClusterWideProof"
+	notifyClusterWideTitle  = "[e2e] cluster: E2EClusterWideProof"
 	notifyAlertmanagerURL   = "http://localhost:9093"
 	notifyLoadedConfigPath  = "/etc/alertmanager/config_out/alertmanager.env.yaml"
 	notifyCredentialsSuffix = "-alertmanager-notifications"
@@ -123,6 +127,19 @@ func (v *KubePrometheusStackVerifier) proveNotifications(ctx context.Context, ku
 		return errors.Errorf("NOTIFICATIONS: the Discord message carries a customer's name: %s", discord.Body)
 	}
 	fmt.Printf("  [verify] NOTIFICATIONS: the Discord message reads %q with no customer label: %s\n", notifyExpectedTitle, discord.Body)
+
+	if out, err := v.amtool(ctx, kubeconfig, alertmanagerPod, "alert", "add",
+		"alertname="+notifyClusterWideAlert, "environment=e2e", "severity=warning",
+		"--annotation=summary=Synthetic cluster-wide proof.",
+		"--alertmanager.url="+notifyAlertmanagerURL); err != nil {
+		return errors.Wrapf(err, "NOTIFICATIONS: firing the cluster-wide alert failed: %s", out)
+	}
+	if err := v.awaitDelivery(ctx, kubeconfig, 3*time.Minute, func(d sinkDelivery) bool {
+		return d.Path == notifyDiscordPath && strings.Contains(d.Body, notifyClusterWideTitle)
+	}); err != nil {
+		return errors.Wrapf(err, "NOTIFICATIONS: an alert with neither a component nor a job was not titled %q", notifyClusterWideTitle)
+	}
+	fmt.Printf("  [verify] NOTIFICATIONS: an alert with neither a component nor a job reads %q\n", notifyClusterWideTitle)
 
 	// Rotation: rewrite the heartbeat token in the module-owned Secret and
 	// expect the next heartbeats to present it with no pod restart.

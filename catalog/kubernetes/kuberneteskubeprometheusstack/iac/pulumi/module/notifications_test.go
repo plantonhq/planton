@@ -16,7 +16,8 @@ import (
 // continue, and the message template never renders a label that can name a
 // customer.
 // The OpenTofu twin is held to the same shapes by the live notifications
-// scenario, which asserts both engines deliver the identical message.
+// scenario, which asserts both engines deliver the identical message, and its
+// template text by template_twin_test.go.
 
 func literal(v string) *foreignkeyv1.StringValueOrRef {
 	return &foreignkeyv1.StringValueOrRef{LiteralOrRef: &foreignkeyv1.StringValueOrRef_Value{Value: v}}
@@ -168,6 +169,9 @@ func TestNotificationTemplateRendersNoCustomerLabel(t *testing.T) {
 	}
 	if !strings.Contains(tmpl, `index .CommonLabels "environment"`) || !strings.Contains(tmpl, `index .CommonLabels "component"`) {
 		t.Error("the title must lead with the environment and component labels")
+	}
+	if !strings.Contains(tmpl, `.CommonLabels.job "cluster" }}`) {
+		t.Error("an alert with neither a component nor a job must be titled by its subject, the cluster")
 	}
 }
 
