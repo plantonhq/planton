@@ -130,6 +130,13 @@ phrases:
     use: the ID prefix ic_, ij_ or infstk_
 
 allow:
+  # Current words followed by an ordinary word, which would otherwise read as
+  # a retired spelling: the InfraStack Input tab, an InfraStack job,
+  # InfraComponentCostEstimate.
+  - pattern: '(?i)infra[ _-]?stack[ _-]?(inputs?|outputs?|jobs?|execute)'
+    reason: InfraStack followed by an ordinary word
+  - pattern: '(?i)infra[ _-]?component[ _-]?(cost[ _-]?(profile|estimate|derivation)|control[ _-]?profile|e2e[ _-]?profile|permissions|import[ _-]?map|capacity[ _-]?derivation)'
+    reason: InfraComponent followed by an ordinary word
   - pattern: '(?i)cloud[ _-]?resource[ _-]?manager'
     reason: Google Cloud's Resource Manager API (cloudresourcemanager.googleapis.com)
   - pattern: '(?i)google[ _-]?cloud[ _-]?resource'
@@ -141,6 +148,8 @@ allow:
     reason: BigQuery's own Cloud Resource connection type
   - pattern: '(?i)\b(google|hetzner|alibaba|ali|oracle|ibm|tencent|huawei|sap|civo|scaleway|ovh|vultr|linode|akamai)[ _-]?cloud[ _-]?(resources?|objects?|catalogs?)'
     reason: a provider whose name ends in Cloud (Google Cloud, Hetzner Cloud, Alibaba Cloud), followed by the provider's own word
+  - pattern: '(?i)\b(open|cloud|dev|local)stack[ _-]?(inputs?|outputs?|jobs?)'
+    reason: OpenStack, CloudStack, DevStack and LocalStack followed by an ordinary word
   - pattern: '(?i)solr[ _-]?cloud[ _-]?resources?'
     reason: Apache Solr's SolrCloud custom resource
   - pattern: '(?i)barman[ _-]?cloud[ _-]?object'
