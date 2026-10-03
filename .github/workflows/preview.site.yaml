@@ -121,6 +121,10 @@ jobs:
           corepack enable
           yarn install --immutable
 
+      - name: Check wrangler reads the whole export
+        working-directory: site/deploy
+        run: bash check-export-read.sh --env preview
+
       - name: Upload the preview
         working-directory: site/deploy
         env:

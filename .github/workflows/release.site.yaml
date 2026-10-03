@@ -133,6 +133,10 @@ jobs:
           corepack enable
           yarn install --immutable
 
+      - name: Check wrangler reads the whole export
+        working-directory: site/deploy
+        run: bash check-export-read.sh --env=""
+
       - name: Deploy planton-website
         working-directory: site/deploy
         env:
