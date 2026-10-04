@@ -2011,7 +2011,8 @@ type KubernetesKubePrometheusStackAlertMessage struct {
 	EnvironmentLabel *string `protobuf:"bytes,1,opt,name=environment_label,json=environmentLabel,proto3,oneof" json:"environment_label,omitempty"`
 	// *
 	// The label that names the component. Default `component`; an alert
-	// without it is titled by its scrape `job` instead.
+	// without it is titled by its scrape `job` instead, and one with
+	// neither (an overcommit sum, a cluster-wide aggregate) by `cluster`.
 	ComponentLabel *string `protobuf:"bytes,2,opt,name=component_label,json=componentLabel,proto3,oneof" json:"component_label,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
@@ -2524,8 +2525,11 @@ type KubernetesKubePrometheusStackControlPlaneScrapers struct {
 	// disable — it is provider-internal and unreachable. Default true.
 	KubeControllerManager *bool `protobuf:"varint,3,opt,name=kube_controller_manager,json=kubeControllerManager,proto3,oneof" json:"kube_controller_manager,omitempty"`
 	// *
-	// Scrape CoreDNS (runs as pods in kube-system — reachable everywhere).
-	// Default true.
+	// Scrape CoreDNS on its metrics port (9153). Default true. GKE runs
+	// kube-dns, not CoreDNS: this scraper then dials a port kube-dns never
+	// opens and stays down, so turn it off there and scrape kube-dns's
+	// sidecar (`metrics`, 10054) with a KubernetesPodMonitor on
+	// `k8s-app: kube-dns` in kube-system.
 	CoreDns *bool `protobuf:"varint,4,opt,name=core_dns,json=coreDns,proto3,oneof" json:"core_dns,omitempty"`
 	// *
 	// Scrape etcd. Managed clouds: disable — etcd is provider-internal.

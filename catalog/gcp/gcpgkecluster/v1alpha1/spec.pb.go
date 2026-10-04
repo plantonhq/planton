@@ -3825,12 +3825,19 @@ type GcpGkeClusterMonitoring struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// Components exposing metrics: SYSTEM_COMPONENTS, APISERVER, SCHEDULER,
 	// CONTROLLER_MANAGER, STORAGE, HPA, POD, DAEMONSET, DEPLOYMENT,
-	// STATEFULSET, KUBELET, CADVISOR, DCGM, JOBSET. An empty list disables
-	// Cloud Monitoring integration.
+	// STATEFULSET, KUBELET, CADVISOR, DCGM, JOBSET. An empty list sends
+	// nothing, so GKE keeps whatever it runs now (its default turns on the
+	// kube-state, cAdvisor, kubelet and DCGM packages beside
+	// SYSTEM_COMPONENTS). Everything but SYSTEM_COMPONENTS is billed per
+	// sample ingested; a cluster that runs its own Prometheus agent names
+	// SYSTEM_COMPONENTS alone, with managed_prometheus_enabled false, in one
+	// update.
 	Components []string `protobuf:"bytes,1,rep,name=components,proto3" json:"components,omitempty"`
 	// Google Cloud Managed Service for Prometheus: managed collection of
 	// Prometheus metrics (GKE's default on current versions). Disabling it
-	// means running your own Prometheus stack.
+	// means running your own Prometheus stack; name SYSTEM_COMPONENTS alone
+	// in `components` in the same update, or the billed packages keep
+	// running.
 	ManagedPrometheusEnabled *bool `protobuf:"varint,2,opt,name=managed_prometheus_enabled,json=managedPrometheusEnabled,proto3,oneof" json:"managed_prometheus_enabled,omitempty"`
 	// Managed Prometheus auto-monitoring scope: ALL deploys packaged
 	// PodMonitorings for supported workloads automatically; NONE leaves

@@ -1,0 +1,23 @@
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesPodMonitor
+metadata:
+  name: front-doors
+spec:
+  namespace:
+    value: <agent_namespace>
+  job_label: gateway.networking.k8s.io/gateway-name
+  sample_limit: 20000
+  namespace_selector:
+    any: true
+  selector:
+    match_labels:
+      gateway.networking.k8s.io/gateway-class-name: istio
+  pod_metrics_endpoints:
+    - port: http-envoy-prom
+      path: /stats/prometheus
+      interval: 30s
+      metric_relabelings:
+        - source_labels:
+            - __name__
+          regex: istio_requests_total|istio_request_duration_milliseconds_(bucket|sum|count)|istio_tcp_connections_(opened|closed)_total|envoy_server_live
+          action: keep

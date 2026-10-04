@@ -73,8 +73,18 @@ switch those `control_plane_scrapers` off AND name their groups in
 left on is a target that is down forever and a `TargetDown` that never
 clears; a rule group left on is an alert that can never fire truthfully.
 GKE runs kube-dns instead of CoreDNS, so nothing answers on CoreDNS's
-metrics port there: set `core_dns: false` too. The check that the posture
-is right: minutes after install, every active target reads `up`.
+metrics port there: set `core_dns: false` too, and watch kube-dns with a
+[KubernetesPodMonitor](../kubernetespodmonitor/GUIDE.md) on `k8s-app:
+kube-dns` in kube-system, port `metrics` (its sidecar's 10054, whose probe
+series `kubedns_probe_kubedns_errors` and `..._latency_ms` say whether
+cluster DNS answers and how fast). The check that the posture is right:
+minutes after install, every active target reads `up`.
+
+The components the cluster's own composition installs before this stack
+(the gateway, istiod, cert-manager, external-dns, the database operator)
+cannot carry their own monitor switches, because the monitor CRDs arrive
+with this stack: watch each kind from this stack's composition with one
+cluster-wide class monitor (the pattern's "Scraping as declared objects").
 
 ## Quiet the curated rules where they misread the cluster
 

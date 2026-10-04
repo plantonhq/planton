@@ -23,6 +23,31 @@ every proposal to that bar and say so plainly when a plan stops short of it.
    kind's `serviceMonitor` toggle needs. Each cluster keeps its OWN
    Alertmanager, so a cluster pages on its own and a central hub going down
    never silences it.
+   - **What the cluster installed before the stack is watched from the
+     stack's side.** The gateway, istiod, cert-manager, external-dns and
+     the database operator come with the cluster, before the monitor CRDs
+     exist, so their own `serviceMonitor` switches stay off (on a fresh
+     cluster they fail the install). Declare one class monitor per kind of
+     component beside the stack instead: a `KubernetesPodMonitor` or
+     `KubernetesServiceMonitor` with `namespace_selector: {any: true}` and
+     a selector every instance carries (the PodMonitor's `istio-gateways`
+     preset; `cnpg.io/podRole: instance` for every CloudNativePG
+     instance). Components installed after the stack (an environment's
+     vault, caches, workflow engine) turn their own switches on.
+   - **Every namespace with a NetworkPolicy admits the stack's Prometheus**
+     on the metrics ports, in one peer (namespace
+     `kubernetes.io/metadata.name: <stack namespace>` with pods
+     `app.kubernetes.io/name: prometheus`), applied before the monitors. A
+     fenced target reads down with a dial timeout and posts `TargetDown`
+     ten minutes later.
+   - **Read the serving code for the port.** A Planton runner and runner
+     tunnel (embedded konnectivity) serve `/metrics` on their health port
+     (8093); their admin port listens on the pod's loopback only. Neo4j
+     community serves no metrics at all.
+   - **On GKE, turn the managed collection off** on the cluster:
+     `monitoring.managed_prometheus_enabled: false` with
+     `monitoring.components: [SYSTEM_COMPONENTS]` in one update (an empty
+     list keeps the billed packages).
 2. **Alert delivery in the same change**: `alertmanager.notifications`, not
    a follow-up. Out of the box Alertmanager notifies nobody.
 3. **The outside heartbeat**: `notifications.heartbeat` to a monitor that
@@ -297,8 +322,12 @@ to decide with the person, and what to watch for:
 Do these with the person, and report what arrived and when:
 
 0. Minutes after install, confirm every active scrape target reads `up`
-   (Prometheus's targets page or API). A target that is down now is a
-   wrong scraper posture, not an incident.
+   (Prometheus's targets page or API) and every monitor has at least one
+   target (`/api/v1/scrape_pools` against the active targets: a monitor
+   whose selector matches nothing has no target and no error anywhere).
+   A target that is down now is a wrong scraper posture or a fence, not an
+   incident; a target that reads `unknown` was found since the last scrape,
+   so read again after one interval.
 1. Fire a channel alert from inside the Alertmanager pod:
    `amtool alert add alertname=Drill severity=warning environment=<env> --alertmanager.url=http://localhost:9093`.
    It must arrive in the channel, titled with the environment. Double-quote

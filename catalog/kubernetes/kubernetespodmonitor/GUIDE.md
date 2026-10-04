@@ -16,6 +16,10 @@ Choose a [KubernetesServiceMonitor](../kubernetesservicemonitor/GUIDE.md) when a
 
 Exactly as for a ServiceMonitor: a [KubernetesKubePrometheusStack](../kuberneteskubeprometheusstack/GUIDE.md) on `all_monitors` loads every PodMonitor; one on `release_managed_only` loads only objects labelled `release: <its release name>`. `labels` and `annotations` are the object's own metadata and never reach the series.
 
+## One monitor for a class of components
+
+A PodMonitor with `namespace_selector: {any: true}` and a selector every instance carries reads every instance on the cluster: every CloudNativePG instance (`cnpg.io/podRole: instance`), every Istio gateway (`gateway.networking.k8s.io/gateway-class-name: istio`, the `istio-gateways` preset). That is how a component installed **before** the agent stack is watched: its own composition cannot carry a monitor, because the monitor's CRD arrives with the agent, so the class monitor lives in the agent's composition and reads the instance an environment adds tomorrow with no change. Where an instance's namespace has a NetworkPolicy, it must admit the Prometheus pods on the metrics port, or the target reads down with a dial timeout.
+
 ## The selector, the namespace and the port
 
 - **`selector` matches pod labels** (the workload's pod template labels, `kubectl get pods -n <ns> --show-labels`). Match labels the workload controls and keeps stable: `cnpg.io/cluster: <name>` for a CloudNativePG cluster's instances, `app.kubernetes.io/name` for most charts. Never match `pod-template-hash`, which changes on every rollout.

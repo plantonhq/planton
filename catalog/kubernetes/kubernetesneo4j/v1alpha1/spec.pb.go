@@ -143,7 +143,10 @@ type KubernetesNeo4JSpec struct {
 	Scheduling *KubernetesNeo4JScheduling `protobuf:"bytes,17,opt,name=scheduling,proto3" json:"scheduling,omitempty"`
 	// *
 	// Create a ServiceMonitor for Prometheus scraping (requires the
-	// Prometheus Operator CRDs). Chart default: false.
+	// Prometheus Operator CRDs). Chart default: false. Neo4j serves
+	// Prometheus metrics in the enterprise edition only; on community
+	// the monitor scrapes nothing, so leave it off and watch the pod's
+	// readiness instead.
 	ServiceMonitorEnabled bool `protobuf:"varint,18,opt,name=service_monitor_enabled,json=serviceMonitorEnabled,proto3" json:"service_monitor_enabled,omitempty"`
 	// *
 	// Override the Neo4j image (air-gap path). Empty = the chart's
