@@ -96,13 +96,13 @@ var verifiers = map[string]Verifier{
 	"azureeventgridnamespacetopic":                   &eventgridNamespaceTopicVerifier{},
 	"azureeventgridsystemtopic":                      &eventgridSystemTopicVerifier{},
 	"azureeventgridtopic":                            &eventgridTopicVerifier{},
-	"azureeventhub":                                  &eventHubResourceVerifier{component: "azureeventhub", idOutputKey: "event_hub_id"},
-	"azureeventhubauthorizationrule":                 &eventHubResourceVerifier{component: "azureeventhubauthorizationrule", idOutputKey: "authorization_rule_id"},
-	"azureeventhubcluster":                           &eventHubResourceVerifier{component: "azureeventhubcluster", idOutputKey: "cluster_id"},
-	"azureeventhubconsumergroup":                     &eventHubResourceVerifier{component: "azureeventhubconsumergroup", idOutputKey: "consumer_group_id"},
-	"azureeventhubdisasterrecoveryconfig":            &eventHubResourceVerifier{component: "azureeventhubdisasterrecoveryconfig", idOutputKey: "disaster_recovery_config_id"},
-	"azureeventhubnamespace":                         &eventHubResourceVerifier{component: "azureeventhubnamespace", idOutputKey: "namespace_id"},
-	"azureeventhubschemagroup":                       &eventHubResourceVerifier{component: "azureeventhubschemagroup", idOutputKey: "schema_group_id"},
+	"azureeventhub":                                  &eventHubResourceVerifier{kind: "azureeventhub", idOutputKey: "event_hub_id"},
+	"azureeventhubauthorizationrule":                 &eventHubResourceVerifier{kind: "azureeventhubauthorizationrule", idOutputKey: "authorization_rule_id"},
+	"azureeventhubcluster":                           &eventHubResourceVerifier{kind: "azureeventhubcluster", idOutputKey: "cluster_id"},
+	"azureeventhubconsumergroup":                     &eventHubResourceVerifier{kind: "azureeventhubconsumergroup", idOutputKey: "consumer_group_id"},
+	"azureeventhubdisasterrecoveryconfig":            &eventHubResourceVerifier{kind: "azureeventhubdisasterrecoveryconfig", idOutputKey: "disaster_recovery_config_id"},
+	"azureeventhubnamespace":                         &eventHubResourceVerifier{kind: "azureeventhubnamespace", idOutputKey: "namespace_id"},
+	"azureeventhubschemagroup":                       &eventHubResourceVerifier{kind: "azureeventhubschemagroup", idOutputKey: "schema_group_id"},
 	"azureexpressroutecircuit":                       &expressRouteCircuitVerifier{},
 	"azureexpressroutecircuitpeering":                &expressRouteCircuitPeeringVerifier{},
 	"azureexpressroutegateway":                       &expressRouteGatewayVerifier{},
@@ -187,12 +187,12 @@ var verifiers = map[string]Verifier{
 	"azureroledefinition":                            &roleDefinitionVerifier{},
 	"azureroutetable":                                &routeTableVerifier{},
 	"azuresearchservice":                             &searchServiceVerifier{},
-	"azureservicebusauthorizationrule":               &serviceBusResourceVerifier{component: "azureservicebusauthorizationrule", idOutputKey: "authorization_rule_id"},
-	"azureservicebusdisasterrecoveryconfig":          &serviceBusResourceVerifier{component: "azureservicebusdisasterrecoveryconfig", idOutputKey: "disaster_recovery_config_id"},
-	"azureservicebusnamespace":                       &serviceBusResourceVerifier{component: "azureservicebusnamespace", idOutputKey: "namespace_id"},
-	"azureservicebusqueue":                           &serviceBusResourceVerifier{component: "azureservicebusqueue", idOutputKey: "queue_id"},
-	"azureservicebussubscription":                    &serviceBusResourceVerifier{component: "azureservicebussubscription", idOutputKey: "subscription_id"},
-	"azureservicebustopic":                           &serviceBusResourceVerifier{component: "azureservicebustopic", idOutputKey: "topic_id"},
+	"azureservicebusauthorizationrule":               &serviceBusResourceVerifier{kind: "azureservicebusauthorizationrule", idOutputKey: "authorization_rule_id"},
+	"azureservicebusdisasterrecoveryconfig":          &serviceBusResourceVerifier{kind: "azureservicebusdisasterrecoveryconfig", idOutputKey: "disaster_recovery_config_id"},
+	"azureservicebusnamespace":                       &serviceBusResourceVerifier{kind: "azureservicebusnamespace", idOutputKey: "namespace_id"},
+	"azureservicebusqueue":                           &serviceBusResourceVerifier{kind: "azureservicebusqueue", idOutputKey: "queue_id"},
+	"azureservicebussubscription":                    &serviceBusResourceVerifier{kind: "azureservicebussubscription", idOutputKey: "subscription_id"},
+	"azureservicebustopic":                           &serviceBusResourceVerifier{kind: "azureservicebustopic", idOutputKey: "topic_id"},
 	"azureserviceplan":                               &servicePlanVerifier{},
 	"azurestorageaccount":                            &storageAccountVerifier{},
 	"azurestoragecontainer":                          &storageContainerVerifier{},
@@ -224,10 +224,10 @@ var verifiers = map[string]Verifier{
 }
 
 // GetVerifier returns the verifier for a component, or an error if none is registered.
-func GetVerifier(component string) (Verifier, error) {
-	v, ok := verifiers[component]
+func GetVerifier(kind string) (Verifier, error) {
+	v, ok := verifiers[kind]
 	if !ok {
-		return nil, errors.Errorf("no Azure verifier registered for component %q", component)
+		return nil, errors.Errorf("no Azure verifier registered for kind %q", kind)
 	}
 	return v, nil
 }

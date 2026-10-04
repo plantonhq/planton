@@ -108,7 +108,7 @@ Use the dedicated kind the moment a second tenant appears or the
 namespace itself needs configuration.
 
 The canonical instances of this case are the cluster's shared
-infrastructure kinds — an ingress controller in "ingress-nginx",
+Infra Components — an ingress controller in "ingress-nginx",
 cert-manager in "cert-manager", ExternalDNS, a shared-chart operator in a
 namespace of its own. Each conventionally owns a dedicated namespace no
 other tenant will ever join, so the flag is the NORMAL shape there, not a

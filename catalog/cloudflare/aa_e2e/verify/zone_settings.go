@@ -36,7 +36,7 @@ import (
 // zone in the common case; account-scoped singletons (the Zero Trust
 // organization, the Gateway configuration) set idKey to "account_id".
 type settingsSingletonVerifier struct {
-	component string
+	kind string
 	// pathFormat is the settings surface's GET path with one %s for the
 	// scope id.
 	pathFormat string
@@ -74,16 +74,16 @@ func (v *settingsSingletonVerifier) VerifyAbsent(ctx context.Context, api API, o
 func (v *settingsSingletonVerifier) assertSurfaceAnswers(ctx context.Context, api API, outputs map[string]string, when string) error {
 	scopeID := outputs[v.identityKey()]
 	if scopeID == "" {
-		return errors.Errorf("%s outputs carry no %s -- cannot verify", v.component, v.identityKey())
+		return errors.Errorf("%s outputs carry no %s -- cannot verify", v.kind, v.identityKey())
 	}
 	path := fmt.Sprintf(v.pathFormat, scopeID)
 	exists, err := api.ResourceExists(ctx, path)
 	if err != nil {
-		return errors.Wrapf(err, "%s settings-surface probe failed %s", v.component, when)
+		return errors.Wrapf(err, "%s settings-surface probe failed %s", v.kind, when)
 	}
 	if !exists {
 		return errors.Errorf("%s settings surface for scope %s does not answer %s (GET %s)",
-			v.component, scopeID, when, path)
+			v.kind, scopeID, when, path)
 	}
 	return nil
 }

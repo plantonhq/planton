@@ -64,7 +64,7 @@ spec:
       notes: Platform-level audit surfaces belong to the deployed product (its own activity/audit records), versioned with spec.version — not modeled as installation configuration. Operator mutations are Kubernetes API operations captured by the cluster's audit policy.
     - control_id: monitoring-integration
       status: not_applicable
-      notes: No monitoring seam is modeled on this spec — the operator publishes per-kind health in the CR's status (phase, per-kind messages, the Ready condition), which cluster monitoring can watch; metrics endpoints are a product surface versioned with spec.version.
+      notes: No monitoring seam is modeled on this spec — the operator publishes per-component health in the CR's status (phase, per-component messages, the Ready condition), which cluster monitoring can watch; metrics endpoints are a product surface versioned with spec.version.
     - control_id: backup-recovery
       status: configurable
       field_path: database.postgresql.backup

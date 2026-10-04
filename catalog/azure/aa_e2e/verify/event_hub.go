@@ -23,7 +23,7 @@ const eventHubAPIVersion = "2024-01-01"
 // meaningless and that kind carries no verifier registration; CMK is
 // add-only by Azure's own contract.)
 type eventHubResourceVerifier struct {
-	component   string
+	kind        string
 	idOutputKey string
 }
 
@@ -34,10 +34,10 @@ func (v *eventHubResourceVerifier) IDOutputKey() string {
 func (v *eventHubResourceVerifier) VerifyExists(ctx context.Context, cred azcore.TokenCredential, subscriptionID, id string) error {
 	exists, err := armResourceExists(ctx, cred, subscriptionID, id, eventHubAPIVersion)
 	if err != nil {
-		return pkgerrors.Wrapf(err, "%s verify-exists failed for %q", v.component, id)
+		return pkgerrors.Wrapf(err, "%s verify-exists failed for %q", v.kind, id)
 	}
 	if !exists {
-		return pkgerrors.Errorf("%s %q not found after deploy", v.component, id)
+		return pkgerrors.Errorf("%s %q not found after deploy", v.kind, id)
 	}
 	return nil
 }
@@ -45,10 +45,10 @@ func (v *eventHubResourceVerifier) VerifyExists(ctx context.Context, cred azcore
 func (v *eventHubResourceVerifier) VerifyAbsent(ctx context.Context, cred azcore.TokenCredential, subscriptionID, id string) error {
 	exists, err := armResourceExists(ctx, cred, subscriptionID, id, eventHubAPIVersion)
 	if err != nil {
-		return pkgerrors.Wrapf(err, "%s verify-absent failed for %q", v.component, id)
+		return pkgerrors.Wrapf(err, "%s verify-absent failed for %q", v.kind, id)
 	}
 	if exists {
-		return pkgerrors.Errorf("%s %q still exists after destroy", v.component, id)
+		return pkgerrors.Errorf("%s %q still exists after destroy", v.kind, id)
 	}
 	return nil
 }

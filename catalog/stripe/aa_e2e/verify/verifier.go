@@ -63,12 +63,12 @@ const signingSecretPrefix = "whsec_"
 
 // CheckSecretShape refuses a reported secret that is not a Stripe signing secret, and a missing
 // one the kind requires. It names the output, never the value.
-func CheckSecretShape(component string, sv SecretVerifier, secret string) error {
+func CheckSecretShape(kind string, sv SecretVerifier, secret string) error {
 	switch {
 	case secret == "" && sv.SecretRequired():
-		return errors.Errorf("%s: output %s is empty after create, but Stripe returns the signing secret at creation", component, sv.SecretOutput())
+		return errors.Errorf("%s: output %s is empty after create, but Stripe returns the signing secret at creation", kind, sv.SecretOutput())
 	case secret != "" && !strings.HasPrefix(secret, signingSecretPrefix):
-		return errors.Errorf("%s: output %s is not a signing secret (it does not begin %s)", component, sv.SecretOutput(), signingSecretPrefix)
+		return errors.Errorf("%s: output %s is not a signing secret (it does not begin %s)", kind, sv.SecretOutput(), signingSecretPrefix)
 	}
 	return nil
 }
@@ -77,8 +77,8 @@ func CheckSecretShape(component string, sv SecretVerifier, secret string) error 
 // and answer 404 after destroy. Stripe can delete such an object outright, so the out-of-band act
 // applies to it.
 type deletedVerifier struct {
-	component string
-	path      string // the API collection, e.g. "v1/webhook_endpoints"
+	kind string
+	path string // the API collection, e.g. "v1/webhook_endpoints"
 	// secretOutput names the module's signing-secret output, when the kind has one.
 	secretOutput   string
 	secretRequired bool
@@ -92,14 +92,14 @@ func (v *deletedVerifier) SecretRequired() bool { return v.secretRequired }
 func (v *deletedVerifier) DeleteOutOfBand(client ResourceClient, id string) error {
 	path := v.path + "/" + url.PathEscape(id)
 	if err := client.DeleteResource(path); err != nil {
-		return errors.Wrapf(err, "%s: deleting %s outside Planton", v.component, id)
+		return errors.Wrapf(err, "%s: deleting %s outside Planton", v.kind, id)
 	}
 	_, exists, err := client.ReadResource(path)
 	if err != nil {
-		return errors.Wrapf(err, "%s: reading %s after deleting it outside Planton", v.component, id)
+		return errors.Wrapf(err, "%s: reading %s after deleting it outside Planton", v.kind, id)
 	}
 	if exists {
-		return errors.Errorf("%s: %s still exists after Stripe answered its delete", v.component, id)
+		return errors.Errorf("%s: %s still exists after Stripe answered its delete", v.kind, id)
 	}
 	return nil
 }
@@ -107,10 +107,10 @@ func (v *deletedVerifier) DeleteOutOfBand(client ResourceClient, id string) erro
 func (v *deletedVerifier) VerifyExists(checker ResourceChecker, id string) error {
 	_, exists, err := checker.ReadResource(v.path + "/" + url.PathEscape(id))
 	if err != nil {
-		return errors.Wrapf(err, "%s: reading %s after deploy", v.component, id)
+		return errors.Wrapf(err, "%s: reading %s after deploy", v.kind, id)
 	}
 	if !exists {
-		return errors.Errorf("%s: %s not found after deploy", v.component, id)
+		return errors.Errorf("%s: %s not found after deploy", v.kind, id)
 	}
 	return nil
 }
@@ -118,10 +118,10 @@ func (v *deletedVerifier) VerifyExists(checker ResourceChecker, id string) error
 func (v *deletedVerifier) VerifyDestroyed(checker ResourceChecker, id string) error {
 	_, exists, err := checker.ReadResource(v.path + "/" + url.PathEscape(id))
 	if err != nil {
-		return errors.Wrapf(err, "%s: reading %s after destroy", v.component, id)
+		return errors.Wrapf(err, "%s: reading %s after destroy", v.kind, id)
 	}
 	if exists {
-		return errors.Errorf("%s: %s still exists after destroy, which deletes it", v.component, id)
+		return errors.Errorf("%s: %s still exists after destroy, which deletes it", v.kind, id)
 	}
 	return nil
 }
@@ -131,9 +131,9 @@ func (v *deletedVerifier) VerifyDestroyed(checker ResourceChecker, id string) er
 // every honest run. Most objects report it as active true or false; a billing meter reports it
 // as status "active" or "inactive" (byStatus).
 type deactivatedVerifier struct {
-	component string
-	path      string // the API collection, e.g. "v1/billing_portal/configurations"
-	byStatus  bool
+	kind     string
+	path     string // the API collection, e.g. "v1/billing_portal/configurations"
+	byStatus bool
 }
 
 func (v *deactivatedVerifier) VerifyExists(checker ResourceChecker, id string) error {
@@ -147,10 +147,10 @@ func (v *deactivatedVerifier) VerifyDestroyed(checker ResourceChecker, id string
 func (v *deactivatedVerifier) requireActive(checker ResourceChecker, id string, want bool, when string) error {
 	object, exists, err := checker.ReadResource(v.path + "/" + url.PathEscape(id))
 	if err != nil {
-		return errors.Wrapf(err, "%s: reading %s %s", v.component, id, when)
+		return errors.Wrapf(err, "%s: reading %s %s", v.kind, id, when)
 	}
 	if !exists {
-		return errors.Errorf("%s: %s not found %s", v.component, id, when)
+		return errors.Errorf("%s: %s not found %s", v.kind, id, when)
 	}
 	if v.byStatus {
 		wantStatus := "inactive"
@@ -158,12 +158,12 @@ func (v *deactivatedVerifier) requireActive(checker ResourceChecker, id string, 
 			wantStatus = "active"
 		}
 		if status, _ := object["status"].(string); status != wantStatus {
-			return errors.Errorf("%s: %s reads status=%q %s, want %q", v.component, id, status, when, wantStatus)
+			return errors.Errorf("%s: %s reads status=%q %s, want %q", v.kind, id, status, when, wantStatus)
 		}
 		return nil
 	}
 	if active, _ := object["active"].(bool); active != want {
-		return errors.Errorf("%s: %s reads active=%t %s, want %t", v.component, id, active, when, want)
+		return errors.Errorf("%s: %s reads active=%t %s, want %t", v.kind, id, active, when, want)
 	}
 	return nil
 }
@@ -173,8 +173,8 @@ func (v *deactivatedVerifier) requireActive(checker ResourceChecker, id string, 
 // forgets the object and Stripe keeps it. Asserting absence would fail every honest run, and
 // accepting absence would hide a provider change that started deleting.
 type forgottenVerifier struct {
-	component string
-	path      string // the API collection, e.g. "v1/payment_method_domains"
+	kind string
+	path string // the API collection, e.g. "v1/payment_method_domains"
 }
 
 func (v *forgottenVerifier) VerifyExists(checker ResourceChecker, id string) error {
@@ -188,10 +188,10 @@ func (v *forgottenVerifier) VerifyDestroyed(checker ResourceChecker, id string) 
 func (v *forgottenVerifier) requirePresent(checker ResourceChecker, id, when string) error {
 	_, exists, err := checker.ReadResource(v.path + "/" + url.PathEscape(id))
 	if err != nil {
-		return errors.Wrapf(err, "%s: reading %s %s", v.component, id, when)
+		return errors.Wrapf(err, "%s: reading %s %s", v.kind, id, when)
 	}
 	if !exists {
-		return errors.Errorf("%s: %s not found %s", v.component, id, when)
+		return errors.Errorf("%s: %s not found %s", v.kind, id, when)
 	}
 	return nil
 }
@@ -220,7 +220,7 @@ const (
 // withChildren adds a folded child's checks to a parent's verifier.
 type withChildren struct {
 	Verifier
-	component string
+	kind      string
 	output    string
 	childPath func(parentID, childID string) string
 	fate      childFate
@@ -233,7 +233,7 @@ func (v *withChildren) ChildOutput() string { return v.output }
 func (v *withChildren) DeleteOutOfBand(client ResourceClient, id string) error {
 	d, ok := v.Verifier.(OutOfBandDeletable)
 	if !ok {
-		return errors.Errorf("%s: Stripe keeps this object after its destroy, so it cannot be deleted outside Planton", v.component)
+		return errors.Errorf("%s: Stripe keeps this object after its destroy, so it cannot be deleted outside Planton", v.kind)
 	}
 	return d.DeleteOutOfBand(client, id)
 }
@@ -263,14 +263,14 @@ func (v *withChildren) VerifyChildrenDestroyed(checker ResourceChecker, parentID
 func (v *withChildren) requireChild(checker ResourceChecker, parentID, key, childID string, wantPresent bool, when string) error {
 	_, exists, err := checker.ReadResource(v.childPath(parentID, childID))
 	if err != nil {
-		return errors.Wrapf(err, "%s: reading %s %q (%s) %s", v.component, v.output, key, childID, when)
+		return errors.Wrapf(err, "%s: reading %s %q (%s) %s", v.kind, v.output, key, childID, when)
 	}
 	if exists != wantPresent {
 		state := "not found"
 		if exists {
 			state = "still exists"
 		}
-		return errors.Errorf("%s: %s %q (%s) %s %s", v.component, v.output, key, childID, state, when)
+		return errors.Errorf("%s: %s %q (%s) %s %s", v.kind, v.output, key, childID, state, when)
 	}
 	return nil
 }
@@ -286,38 +286,38 @@ func sortedKeys(m map[string]string) []string {
 
 // verifiers maps each Stripe component directory to its verifier.
 var verifiers = map[string]Verifier{
-	"stripewebhookendpoint":            &deletedVerifier{component: "stripewebhookendpoint", path: "v1/webhook_endpoints", secretOutput: "secret", secretRequired: true},
-	"stripeeventdestination":           &deletedVerifier{component: "stripeeventdestination", path: "v2/core/event_destinations", secretOutput: "signing_secret"},
-	"stripebillingportalconfiguration": &deactivatedVerifier{component: "stripebillingportalconfiguration", path: "v1/billing_portal/configurations"},
-	"stripepaymentmethodconfiguration": &deactivatedVerifier{component: "stripepaymentmethodconfiguration", path: "v1/payment_method_configurations"},
-	"stripepaymentmethoddomain":        &forgottenVerifier{component: "stripepaymentmethoddomain", path: "v1/payment_method_domains"},
+	"stripewebhookendpoint":            &deletedVerifier{kind: "stripewebhookendpoint", path: "v1/webhook_endpoints", secretOutput: "secret", secretRequired: true},
+	"stripeeventdestination":           &deletedVerifier{kind: "stripeeventdestination", path: "v2/core/event_destinations", secretOutput: "signing_secret"},
+	"stripebillingportalconfiguration": &deactivatedVerifier{kind: "stripebillingportalconfiguration", path: "v1/billing_portal/configurations"},
+	"stripepaymentmethodconfiguration": &deactivatedVerifier{kind: "stripepaymentmethodconfiguration", path: "v1/payment_method_configurations"},
+	"stripepaymentmethoddomain":        &forgottenVerifier{kind: "stripepaymentmethoddomain", path: "v1/payment_method_domains"},
 	"striperadarvaluelist": &withChildren{
-		Verifier:  &deletedVerifier{component: "striperadarvaluelist", path: "v1/radar/value_lists"},
-		component: "striperadarvaluelist",
+		Verifier:  &deletedVerifier{kind: "striperadarvaluelist", path: "v1/radar/value_lists"},
+		kind:      "striperadarvaluelist",
 		output:    "item_ids",
 		childPath: func(_, id string) string { return "v1/radar/value_list_items/" + url.PathEscape(id) },
 		fate:      childDeleted,
 	},
 	"stripeproduct": &withChildren{
-		Verifier:  &deactivatedVerifier{component: "stripeproduct", path: "v1/products"},
-		component: "stripeproduct",
-		output:    "product_feature_ids",
+		Verifier: &deactivatedVerifier{kind: "stripeproduct", path: "v1/products"},
+		kind:     "stripeproduct",
+		output:   "product_feature_ids",
 		childPath: func(product, id string) string {
 			return "v1/products/" + url.PathEscape(product) + "/features/" + url.PathEscape(id)
 		},
 		fate: childDeleted,
 	},
-	"stripeprice":              &deactivatedVerifier{component: "stripeprice", path: "v1/prices"},
-	"stripeentitlementfeature": &deactivatedVerifier{component: "stripeentitlementfeature", path: "v1/entitlements/features"},
-	"stripecoupon":             &deletedVerifier{component: "stripecoupon", path: "v1/coupons"},
-	"stripepromotioncode":      &deactivatedVerifier{component: "stripepromotioncode", path: "v1/promotion_codes"},
-	"stripeshippingrate":       &deactivatedVerifier{component: "stripeshippingrate", path: "v1/shipping_rates"},
-	"stripetaxrate":            &deactivatedVerifier{component: "stripetaxrate", path: "v1/tax_rates"},
-	"stripetaxregistration":    &forgottenVerifier{component: "stripetaxregistration", path: "v1/tax/registrations"},
-	"stripepaymentlink":        &deactivatedVerifier{component: "stripepaymentlink", path: "v1/payment_links"},
+	"stripeprice":              &deactivatedVerifier{kind: "stripeprice", path: "v1/prices"},
+	"stripeentitlementfeature": &deactivatedVerifier{kind: "stripeentitlementfeature", path: "v1/entitlements/features"},
+	"stripecoupon":             &deletedVerifier{kind: "stripecoupon", path: "v1/coupons"},
+	"stripepromotioncode":      &deactivatedVerifier{kind: "stripepromotioncode", path: "v1/promotion_codes"},
+	"stripeshippingrate":       &deactivatedVerifier{kind: "stripeshippingrate", path: "v1/shipping_rates"},
+	"stripetaxrate":            &deactivatedVerifier{kind: "stripetaxrate", path: "v1/tax_rates"},
+	"stripetaxregistration":    &forgottenVerifier{kind: "stripetaxregistration", path: "v1/tax/registrations"},
+	"stripepaymentlink":        &deactivatedVerifier{kind: "stripepaymentlink", path: "v1/payment_links"},
 	"stripebillingmeter": &withChildren{
-		Verifier:  &deactivatedVerifier{component: "stripebillingmeter", path: "v1/billing/meters", byStatus: true},
-		component: "stripebillingmeter",
+		Verifier:  &deactivatedVerifier{kind: "stripebillingmeter", path: "v1/billing/meters", byStatus: true},
+		kind:      "stripebillingmeter",
 		output:    "alert_ids",
 		childPath: func(_, id string) string { return "v1/billing/alerts/" + url.PathEscape(id) },
 		fate:      childForgotten,
@@ -325,10 +325,10 @@ var verifiers = map[string]Verifier{
 }
 
 // GetVerifier returns the verifier for a component, or an error naming the unknown component.
-func GetVerifier(component string) (Verifier, error) {
-	v, ok := verifiers[component]
+func GetVerifier(kind string) (Verifier, error) {
+	v, ok := verifiers[kind]
 	if !ok {
-		return nil, errors.Errorf("no Stripe verifier registered for component %q", component)
+		return nil, errors.Errorf("no Stripe verifier registered for kind %q", kind)
 	}
 	return v, nil
 }

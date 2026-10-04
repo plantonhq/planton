@@ -522,7 +522,7 @@ The `manifestprotobuf.SetProtoField` function supports any valid proto path:
 
 - [Documentation](https://planton.ai/docs) - User-facing manifest documentation
 - [Proto Defaults README](./protodefaults/README.md) - Default value system
-- [CRK Reflect Package](../../pkg/catalogkindreflect/README.md) - Kind resolution system
+- [Catalog kind reflection](../../pkg/catalogkindreflect/) - Kind resolution system
 
 ---
 

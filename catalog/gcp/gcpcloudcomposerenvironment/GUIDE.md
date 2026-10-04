@@ -29,7 +29,7 @@ enforced pre-deploy.
 ## Size with environment_size first, workloads_config second
 
 `environmentSize` sets the managed infrastructure class (GKE + metadata
-database); `workloadsConfig` then tunes per-kind CPU/memory/storage
+database); `workloadsConfig` then tunes per-component CPU/memory/storage
 within it — scheduler, workers (min/max for autoscaling), web server,
 triggerer (all three fields or none), and on Composer 3 the DAG
 processor. Both update in place: start SMALL, measure DAG parse and

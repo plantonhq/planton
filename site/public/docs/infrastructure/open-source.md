@@ -78,7 +78,7 @@ Planton imports the open-source core at the API layer:
 - **Catalog Providers** — The provider taxonomy identifies supported cloud platforms
 - **Cross-resource dependencies** — The dependency mechanism enables resources in Infra Charts to reference outputs of other resources
 - **IaC provisioner selection** — The provisioner taxonomy determines whether Pulumi, Terraform, or OpenTofu executes the deployment
-- **Kind APIs** — Each provider-specific component API defines the configuration structure stored in an Infra Component's spec
+- **Kind APIs** — Each catalog kind's API defines the configuration structure stored in an Infra Component's spec
 
 When an Infra Job executes, it uses the open-source IaC module corresponding to the catalog kind. The module receives an IaC input (derived from the Infra Component spec), provisions the infrastructure, and returns outputs that are stored in the resource status.
 
@@ -123,5 +123,5 @@ Planton adds value through orchestration, governance, and collaboration — not 
 
 - [Infra Components](/docs/infrastructure/infra-components) — Deployed instances of open-source components
 - [Catalog Kinds](/docs/infrastructure/catalog-kinds) — The taxonomy defined by Planton open source
-- [Infra Charts](/docs/infrastructure/infra-charts) — Composing open-source components into templates
+- [Infra Charts](/docs/infrastructure/infra-charts) — Composing catalog kinds into templates
 - [Infra Jobs](/docs/infrastructure/infra-jobs) — How open-source IaC modules are executed

@@ -37,7 +37,7 @@ var (
 //     monetary preset states its exclusions and pins region, currency,
 //     and the hours-per-month convention, and lines are ordered largest
 //     cost first.
-//  6. Cluster-capacity components state a capacity footprint INSTEAD of
+//  6. Cluster-capacity kinds state a capacity footprint INSTEAD of
 //     dollars -- their price is the target cluster's economics, and a
 //     fabricated figure would be a lie with a dollar sign.
 func TestCostEstimateConformance(t *testing.T) {

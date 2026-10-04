@@ -1299,7 +1299,7 @@ func TestAzureContainerAppEnvironmentStorage_Terraform(t *testing.T) {
 	runAllScenariosForKind(t, "azurecontainerappenvironmentstorage", "terraform")
 }
 
-// --- Azure Container App Environment Dapr Component (composed: fixture RG -> fixture environment -> backendless cron-binding kind) ---
+// --- Azure Container App Environment Dapr Component (composed: fixture RG -> fixture environment -> backendless cron-binding component) ---
 
 func TestAzureContainerAppEnvironmentDaprComponent_Pulumi(t *testing.T) {
 	runAllScenariosForKind(t, "azurecontainerappenvironmentdaprcomponent", "pulumi")

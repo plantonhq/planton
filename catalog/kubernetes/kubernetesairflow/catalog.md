@@ -119,7 +119,7 @@ These are the most important decisions when configuring Airflow. Explore the ful
 
 **Task logs live somewhere, decide where** -- empty `logging` = pod-local (lost on rotation, dev only). `persistence` puts them on the shared volume; the `elasticsearch`/`opensearch` remote-read arms point the UI's READ path at a search backend your tasks ALREADY ship logs to -- shipping is your log pipeline's job (an OTel collector composes), never implied by this field.
 
-**The escape hatch, merged LAST** -- `helmValues` is raw chart values with Helm `-f` semantics for what the typed fields don't model (Kerberos, per-kind env/volumes, cleanup CronJobs, network policies). NEVER secret material -- credentials ride Secrets through the typed fields; NEVER re-enable the postgresql subchart.
+**The escape hatch, merged LAST** -- `helmValues` is raw chart values with Helm `-f` semantics for what the typed fields don't model (Kerberos, per-component env/volumes, cleanup CronJobs, network policies). NEVER secret material -- credentials ride Secrets through the typed fields; NEVER re-enable the postgresql subchart.
 
 ## Outputs and Dependencies
 

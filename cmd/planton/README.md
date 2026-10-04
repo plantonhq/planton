@@ -498,7 +498,7 @@ Most operations are idempotent:
 
 - [CLI Reference](/docs/cli/cli-reference) - User-facing CLI reference
 - [Manifest Package](../../internal/manifest/README.md) - Manifest loading
-- [CRK Reflect Package](../../pkg/catalogkindreflect/README.md) - Kind resolution
+- [Catalog kind reflection](../../pkg/catalogkindreflect/) - Kind resolution
 
 ---
 

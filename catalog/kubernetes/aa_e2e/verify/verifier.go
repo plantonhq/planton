@@ -147,9 +147,9 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 		return nil, err
 	}
 
-	component := strings.ToLower(info.Kind)
+	kind := strings.ToLower(info.Kind)
 
-	switch component {
+	switch kind {
 	case "kubernetesnamespace":
 		return &NamespaceVerifier{Name: info.Name}, nil
 
@@ -1656,7 +1656,7 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 		return newPlantonPlatformVerifier(info.Namespace, info.Name, manifestPath), nil
 
 	default:
-		if crdNames, ok := crdInstallKinds[component]; ok {
+		if crdNames, ok := crdInstallKinds[kind]; ok {
 			return &CRDInstallVerifier{
 				ComponentName: info.Name,
 				CRDNames:      crdNames,
@@ -1667,7 +1667,7 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 		// route Accepted, its Gateway Programmed, and a live request routed
 		// through the auto-provisioned gateway. Scenarios without it keep the
 		// object as the verifiable contract.
-		if component == "kuberneteshttproute" && manifestHasPrerequisite(manifestPath, "KubernetesIstio") {
+		if kind == "kuberneteshttproute" && manifestHasPrerequisite(manifestPath, "KubernetesIstio") {
 			hostname, _ := manifestSpecFirstString(manifestPath, "hostnames")
 			return &GatewayRoutingBehavioralVerifier{
 				Namespace:   info.Namespace,
@@ -1679,13 +1679,13 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 		// Gateway: the aws-lb-address scenario (real-cluster profile, LB-
 		// default mesh fixture) proves Programmed + a real cloud address in
 		// .status.addresses — the half the kind lanes pin away.
-		if component == "kubernetesgateway" && strings.Contains(manifestPath, "aws-lb-address") {
+		if kind == "kubernetesgateway" && strings.Contains(manifestPath, "aws-lb-address") {
 			return &GatewayLbAddressVerifier{
 				Namespace: info.Namespace,
 				Name:      info.Name,
 			}, nil
 		}
-		if gw, ok := gatewayApiKinds[component]; ok {
+		if gw, ok := gatewayApiKinds[kind]; ok {
 			namespace := info.Namespace
 			if gw.clusterScoped {
 				namespace = ""
@@ -1701,7 +1701,7 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 		// meshed client's request must actually be DENIED (403) and succeed
 		// again once the policy is destroyed. Scenarios without it keep the
 		// object as the verifiable contract.
-		if component == "kubernetesauthorizationpolicy" && manifestHasPrerequisite(manifestPath, "KubernetesIstio") {
+		if kind == "kubernetesauthorizationpolicy" && manifestHasPrerequisite(manifestPath, "KubernetesIstio") {
 			return &AuthzDenyBehavioralVerifier{
 				Namespace:        info.Namespace,
 				PolicyName:       info.Name,
@@ -1713,7 +1713,7 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 		// the fixtures — a stranger's token must be refused (401), a request
 		// with no token left to the policy (403) and the trusted token let
 		// through (200), and the 401 must stop once the check is destroyed.
-		if component == "kubernetesrequestauthentication" && manifestHasPrerequisite(manifestPath, "KubernetesIstio") {
+		if kind == "kubernetesrequestauthentication" && manifestHasPrerequisite(manifestPath, "KubernetesIstio") {
 			return &JwtBehavioralVerifier{
 				Namespace:        info.Namespace,
 				CheckName:        info.Name,
@@ -1721,25 +1721,25 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 				BackendURL:       "http://e2e-jwt-backend." + info.Namespace + ".svc.cluster.local/",
 			}, nil
 		}
-		if resource, ok := istioApiKinds[component]; ok {
+		if resource, ok := istioApiKinds[kind]; ok {
 			return &ResourceExistenceVerifier{
 				Namespace: info.Namespace,
 				Kind:      resource,
 				Name:      info.Name,
 			}, nil
 		}
-		if operatorKinds[component] {
+		if operatorKinds[kind] {
 			return &OperatorComponentVerifier{
 				Namespace:     info.Namespace,
 				ComponentName: info.Name,
 			}, nil
 		}
-		if helmTier2Kinds[component] {
+		if helmTier2Kinds[kind] {
 			return &HelmComponentVerifier{
 				Namespace:     info.Namespace,
 				ComponentName: info.Name,
 			}, nil
 		}
-		return &GenericVerifier{Component: component}, nil
+		return &GenericVerifier{Component: kind}, nil
 	}
 }

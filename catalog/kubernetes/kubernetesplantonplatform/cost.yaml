@@ -10,7 +10,7 @@ spec:
   cost_drivers:
     - field_path: storage.size
       sku_meter: cluster persistent-volume capacity
-      impact: The platform-wide default size for EVERY persistent volume it creates (PostgreSQL, cache, workflow engine, secrets manager, runner state, and the opt-in components) — one value multiplies across all of them, and per-kind sizes override it.
+      impact: The platform-wide default size for EVERY persistent volume it creates (PostgreSQL, cache, workflow engine, secrets manager, runner state, and the opt-in components) — one value multiplies across all of them, and per-component sizes override it.
     - field_path: database.postgresql.replicas
       sku_meter: cluster CPU, memory, and volume capacity
       impact: Each PostgreSQL instance is a full copy — compute AND a volume of storage_size. 2+ buys automatic failover at roughly double the database footprint.
@@ -27,7 +27,7 @@ spec:
       sku_meter: cluster CPU, memory, and volume capacity
       impact: The in-cluster runner (on by default) — a standing worker pod plus its state volume; disabling it removes the platform's ability to deploy infrastructure.
   estimate_exclusions:
-    - the platform is a whole product stack (a dozen workloads at defaults) — its footprint depends on the version deployed and the operator's per-kind sizing, which this catalog reads as defaults, not guarantees
+    - the platform is a whole product stack (a dozen workloads at defaults) — its footprint depends on the version deployed and the operator's per-component sizing, which this catalog reads as defaults, not guarantees
     - the infrastructure the platform DEPLOYS (through its runner, to your cloud accounts) is billed by your cloud providers and is unbounded by anything in this spec
     - the object store a declared backup (database.postgresql.backup) archives to is billed by ITS provider on the bucket resource (storage for base backups and WAL under the retention policy, plus the provider's request and egress charges — none on Cloudflare R2 egress), not on this component
     - the cloud key a declared vault seal (vault.auto_unseal) wraps the secrets manager's master key with is billed by ITS provider on the key resource (a KMS key's monthly price plus per-request charges for the wrap at init and the unwrap at every start), not on this component; the transit arm reaches a central OpenBao you already run

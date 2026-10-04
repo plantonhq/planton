@@ -355,10 +355,10 @@ var verifiers = map[string]Verifier{
 }
 
 // GetVerifier returns the verifier for a component, or an error if none is registered.
-func GetVerifier(component string) (Verifier, error) {
-	v, ok := verifiers[component]
+func GetVerifier(kind string) (Verifier, error) {
+	v, ok := verifiers[kind]
 	if !ok {
-		return nil, errors.Errorf("no GCP verifier registered for component %q", component)
+		return nil, errors.Errorf("no GCP verifier registered for kind %q", kind)
 	}
 	return v, nil
 }

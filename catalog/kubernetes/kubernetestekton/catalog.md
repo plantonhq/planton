@@ -30,7 +30,7 @@ When you deploy this Infra Component, the IaC module renders the TektonConfig an
 
 ### Console
 
-Open the deployment store, find **Tekton**, and click **Deploy**. The creation wizard walks you through the singleton contract, the profile ladder, the immutable target namespace, placement, the pipeline surface (execution defaults, feature flags, resolvers, metrics, performance), the per-kind steps (Triggers, Dashboard, Chains — shown only on profiles that install them), the pruner, and the additional-params escape surface. Start from the **CI standard preset** in the [Presets](#presets) tab.
+Open the deployment store, find **Tekton**, and click **Deploy**. The creation wizard walks you through the singleton contract, the profile ladder, the immutable target namespace, placement, the pipeline surface (execution defaults, feature flags, resolvers, metrics, performance), the per-component steps (Triggers, Dashboard, Chains — shown only on profiles that install them), the pruner, and the additional-params escape surface. Start from the **CI standard preset** in the [Presets](#presets) tab.
 
 ### CLI
 

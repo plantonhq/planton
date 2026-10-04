@@ -12,7 +12,7 @@ When you deploy this Infra Component, the IaC module provisions:
 - **Jobs** -- created from `spec.jobs`; run around a deployment (`pre_deploy`, `post_deploy`, or `failed_deploy`)
 - **Static sites, functions, in-app databases** -- created from the matching spec lists when present
 - **Domains and ingress** -- created from `spec.domains` and `spec.ingress` when present
-- **Environment variables** -- from `spec.envs` and per-kind `envs`; `secret` values are stored in App Platform's secret store
+- **Environment variables** -- from `spec.envs` and per-component `envs`; `secret` values are stored in App Platform's secret store
 
 ## Before You Deploy
 

@@ -36,7 +36,7 @@ When you deploy this Infra Component, the IaC module provisions:
 
 ### Console
 
-Open the deployment store, find **Harbor**, and click **Deploy**. The creation wizard walks you through placement, the registry address, exposure, admin credentials, the database/cache/storage arms, the Trivy scanner, per-kind sizing, and the Helm-values escape hatch. Start from the **Minimal — evaluation registry, zero dependencies** preset for evaluation or **Production — composed data plane, object storage, HA components** for the fully-composed production shape in the [Presets](#presets) tab.
+Open the deployment store, find **Harbor**, and click **Deploy**. The creation wizard walks you through placement, the registry address, exposure, admin credentials, the database/cache/storage arms, the Trivy scanner, per-component sizing, and the Helm-values escape hatch. Start from the **Minimal — evaluation registry, zero dependencies** preset for evaluation or **Production — composed data plane, object storage, HA components** for the fully-composed production shape in the [Presets](#presets) tab.
 
 ### CLI
 
@@ -108,7 +108,7 @@ These are the most important decisions when configuring Harbor on Kubernetes. Ex
 
 **Name budget** -- `metadata.name` caps at 39 characters (the chart appends up to 24 characters of component suffix and Kubernetes caps names at 63) -- enforced fail-loud in both engines.
 
-**Helm value overrides** -- `helmValues` is a YAML document merged LAST over everything the typed fields render (Helm `-f` semantics). Use it for surfaces deliberately not modeled (per-kind probes/placement, the swift/oss backends, GDPR knobs, registry middleware); the module re-pins `fullnameOverride` and the exposure Service name after the merge. Never put secret material in it.
+**Helm value overrides** -- `helmValues` is a YAML document merged LAST over everything the typed fields render (Helm `-f` semantics). Use it for surfaces deliberately not modeled (per-component probes/placement, the swift/oss backends, GDPR knobs, registry middleware); the module re-pins `fullnameOverride` and the exposure Service name after the merge. Never put secret material in it.
 
 ## Outputs and Dependencies
 

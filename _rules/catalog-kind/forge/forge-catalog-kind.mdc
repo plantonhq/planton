@@ -764,7 +764,7 @@ mid-session working tree.
 A new kind is only exercised once it is registered in the provider harness:
 
 - `aa_e2e/verify/verifier.go` — add a verifier keyed on the kind dir name.
-  SaaS providers use the `apiPathVerifier` pattern (`&apiPathVerifier{component:
+  SaaS providers use the `apiPathVerifier` pattern (`&apiPathVerifier{kind:
   "<kind>", pathFormat: "<api-path>/%s"}`); cloud-SDK providers (e.g. AWS)
   implement the three-method `Verifier` interface against the provider SDK,
   keyed on the API's own identifier for the resource and treating the provider's

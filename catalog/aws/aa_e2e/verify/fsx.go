@@ -24,7 +24,7 @@ import (
 type fsxFileSystemVerifier struct {
 	// component names the kind in error messages so a chain failure reads
 	// unambiguously.
-	component string
+	kind string
 }
 
 func (v *fsxFileSystemVerifier) IDOutputKey() string { return "file_system_id" }
@@ -32,10 +32,10 @@ func (v *fsxFileSystemVerifier) IDOutputKey() string { return "file_system_id" }
 func (v *fsxFileSystemVerifier) VerifyExists(ctx context.Context, cfg aws.Config, id, region string) error {
 	exists, err := fsxFileSystemExists(ctx, cfg, id, region)
 	if err != nil {
-		return pkgerrors.Wrapf(err, "%s verify-exists failed for %q", v.component, id)
+		return pkgerrors.Wrapf(err, "%s verify-exists failed for %q", v.kind, id)
 	}
 	if !exists {
-		return pkgerrors.Errorf("%s %q not found after deploy", v.component, id)
+		return pkgerrors.Errorf("%s %q not found after deploy", v.kind, id)
 	}
 	return nil
 }
@@ -43,10 +43,10 @@ func (v *fsxFileSystemVerifier) VerifyExists(ctx context.Context, cfg aws.Config
 func (v *fsxFileSystemVerifier) VerifyAbsent(ctx context.Context, cfg aws.Config, id, region string) error {
 	exists, err := fsxFileSystemExists(ctx, cfg, id, region)
 	if err != nil {
-		return pkgerrors.Wrapf(err, "%s verify-absent failed for %q", v.component, id)
+		return pkgerrors.Wrapf(err, "%s verify-absent failed for %q", v.kind, id)
 	}
 	if exists {
-		return pkgerrors.Errorf("%s %q still exists after destroy", v.component, id)
+		return pkgerrors.Errorf("%s %q still exists after destroy", v.kind, id)
 	}
 	return nil
 }

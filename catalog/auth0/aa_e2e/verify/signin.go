@@ -219,13 +219,13 @@ func requireTemplateEnabled(checker ResourceChecker, template string, want bool,
 }
 
 // requireAnswers asserts a per-tenant Management API object answers.
-func requireAnswers(checker ResourceChecker, component, path, when string) error {
+func requireAnswers(checker ResourceChecker, kind, path, when string) error {
 	exists, err := checker.ResourceExists(path)
 	if err != nil {
-		return errors.Wrapf(err, "%s: reading %s failed", component, path)
+		return errors.Wrapf(err, "%s: reading %s failed", kind, path)
 	}
 	if !exists {
-		return errors.Errorf("%s: %s did not answer %s", component, path, when)
+		return errors.Errorf("%s: %s did not answer %s", kind, path, when)
 	}
 	return nil
 }

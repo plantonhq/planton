@@ -4540,7 +4540,7 @@ func (CatalogKind) EnumDescriptor() ([]byte, []int) {
 	return file_shared_catalogkind_catalog_kind_proto_rawDescGZIP(), []int{0}
 }
 
-// api-resource-kind infra-component meta
+// CatalogKindMeta is what the catalog states about one catalog kind.
 type CatalogKindMeta struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// catalog provider

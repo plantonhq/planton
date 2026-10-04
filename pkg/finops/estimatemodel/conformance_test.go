@@ -26,7 +26,7 @@ var decimalPattern = regexp.MustCompile(`^[0-9]+(\.[0-9]+)?$`)
 //     cost driver sku_meter in the kind's cost.yaml), a price-book
 //     entry reference, a plain-decimal quantity, and its quantity_basis
 //     prose -- the audit trail back to the preset's values.
-//  4. Cluster-capacity components state a capacity footprint and no
+//  4. Cluster-capacity kinds state a capacity footprint and no
 //     quantity lines; monetary presets pin region, currency, and the
 //     hours-per-month convention, and state their exclusions.
 //

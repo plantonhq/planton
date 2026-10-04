@@ -43,7 +43,7 @@ The controller ServiceAccount name is fixed to `external-secrets` and exported (
 - **`spec.concurrent`**: parallel ExternalSecret reconciliation (chart default 1; raise for clusters with hundreds of ExternalSecrets)
 - **`spec.replicas` + `spec.leader_elect`**: controller redundancy — validation enforces leader election with more than one replica
 - **`spec.workload_identity`**: the ambient-identity binding for stores without their own auth
-- **`spec.webhook` / `spec.cert_controller`**: per-kind replicas and resources
+- **`spec.webhook` / `spec.cert_controller`**: per-component replicas and resources
 - **`spec.prometheus.service_monitor`**: opt-in ServiceMonitor (requires the Prometheus operator CRDs — the release fails without them)
 - **`spec.helm_values`**: escape hatch for chart values beyond the typed fields — never the primary interface
 

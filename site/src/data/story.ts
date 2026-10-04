@@ -141,7 +141,7 @@ export const CHAPTERS: readonly Chapter[] = [
     number: 5,
     title: 'Every Deployment Leaves a Record',
     claim:
-      'Every change to infrastructure runs as one infra job, and every infra job is kept: the exact configuration that was deployed, the cost fact, the budget verdict, who approved and why, who triggered it, what happened in every phase, and a snapshot of what exists afterward.',
+      'Every change to infrastructure runs as one Infra Job, and every Infra Job is kept: the exact configuration that was deployed, the cost fact, the budget verdict, who approved and why, who triggered it, what happened in every phase, and a snapshot of what exists afterward.',
     proof: [
       'The full configuration is embedded into the job when it is created, and the job is immutable: the resource may change later; the job never does.',
       'Every job is retained and queryable by resource, organization, environment, time, and outcome.',

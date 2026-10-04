@@ -92,7 +92,7 @@ These are the most important decisions when configuring a Loki log store. Explor
 
 **Alerting on logs** — the ruler evaluates LogQL alerting/recording rules discovered from ConfigMaps labeled `loki_rule: "1"` (the same sidecar contract Grafana dashboards use) and fires at `alertmanagerUrl` — a literal URL or a KubernetesKubePrometheusStack reference (its Alertmanager endpoint), the one-line wiring into the cluster's alerting.
 
-**`helmValues` merges last** — the escape hatch for chart surface beyond the typed fields (bloom filters, the pattern ingester, zone-aware rollouts, per-kind overrides, ruler storage tuning). Anything here silently overrides the typed fields on every deploy; never put secrets in it, and leave `fullnameOverride` alone — the naming contract the outputs derive from depends on it.
+**`helmValues` merges last** — the escape hatch for chart surface beyond the typed fields (bloom filters, the pattern ingester, zone-aware rollouts, per-component overrides, ruler storage tuning). Anything here silently overrides the typed fields on every deploy; never put secrets in it, and leave `fullnameOverride` alone — the naming contract the outputs derive from depends on it.
 
 ## Outputs and Dependencies
 

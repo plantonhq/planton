@@ -80,7 +80,7 @@ never the primary interface.
 # operator sizing with cert-manager-issued webhook certificates, exporter
 # sizing, the managed-cloud scraper posture with its matching rule-group
 # disables, the CRD upgrade hook, global registry + pull-secret plumbing,
-# per-kind scheduling, and an escape-hatch entry — so the offline tofu
+# per-component scheduling, and an escape-hatch entry — so the offline tofu
 # plan and pulumi preview proofs cover the full typed surface. Placeholder
 # values; never applied to a real cluster.
 apiVersion: kubernetes.planton.dev/v1alpha1

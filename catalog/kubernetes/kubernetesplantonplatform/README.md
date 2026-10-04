@@ -38,7 +38,7 @@ resource's outputs.
   edit.
 - **Everything else is opt-in refinement** — a real hostname and TLS
   through the cluster's Ingress controller or its Gateway API Gateway
-  (`ingress`), storage classes and sizes (`storage` + per-kind
+  (`ingress`), storage classes and sizes (`storage` + per-component
   overrides), database HA (`database.postgresql.replicas: 2` grows a
   streaming-replication pair LIVE), cloud identity for the runner
   (workload-identity annotations or a customer-owned Secret — the

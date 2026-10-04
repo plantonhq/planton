@@ -123,7 +123,7 @@ Three proof points:
   [trace: `planton.domain.connect.local-cloud-credential-autodetect.md`]
 - **700+ resource kinds across 8 providers.** The full catalog, seeded into your local instance at first boot.
   [trace: `PLATFORM_STATS`; catalog seeding — desktop GTM changelogs 008/011]
-- **A map of everything you run.** Accounts, environments, Infra Stacks, Infra Components, and the services that span them — one living picture, drill-down to each project's diagram.
+- **A map of everything you run.** Accounts, environments, Infra Stacks, Infra Components, and the services that span them — one living picture, drill-down to each Infra Stack's diagram.
   [trace: `_projects/.completed/20260819.04.infrastructure-map/README.md`]
 
 **Visual:** screenshot of Planton Studio's canvas with the cost odometer and the Runner Policy panel (session 2)

@@ -50,7 +50,7 @@ Until the provider reads destinations back: set them on Pulumi stacks, or leave 
 
 ## Deprecated App Spec surfaces are not modeled
 
-Per-kind `routes` / `cors` and the old top-level `domains` list are schema-deprecated on the provider. Ingress and `spec.domains` (the current domain list) replace them. Do not expect those old blocks on this kind.
+Per-component `routes` / `cors` and the old top-level `domains` list are schema-deprecated on the provider. Ingress and `spec.domains` (the current domain list) replace them. Do not expect those old blocks on this kind.
 
 ## In-app databases vs DigitalOceanDatabaseCluster
 

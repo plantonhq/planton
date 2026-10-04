@@ -98,7 +98,7 @@ type CatalogEntryCostSummary struct {
 	BillingModel string `json:"billingModel"`
 	// Currency is the ISO 4217 currency of the range below. Empty when no
 	// priced preset estimate exists (rate-delegated and cluster-capacity
-	// components state no dollar figure -- an honest absence, never 0).
+	// kinds state no dollar figure -- an honest absence, never 0).
 	Currency string `json:"currency,omitempty"`
 	// MonthlyMin and MonthlyMax bound the monthly totals across the
 	// kind's priced preset estimates, as decimal strings. A genuine

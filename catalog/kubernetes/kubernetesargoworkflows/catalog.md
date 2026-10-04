@@ -86,7 +86,7 @@ These are the most important decisions when configuring an Argo Workflows engine
 
 **The image override maps onto the chart's registry/repository split.** `image.registry` replaces the registry part (default `quay.io`) for all three components — workflow-controller, argocli, argoexec — while the repository paths stay upstream; a mirror that re-paths repositories overrides those via `helmValues`. `image.tag` pins all three; `pullSecretName` names an existing image-pull Secret.
 
-**`helmValues` merges last** — the escape hatch for chart surface beyond the typed fields (workflowDefaults documents, executor resources, the `server.sso` block, extra env, per-kind priority classes). Anything here silently overrides the typed fields on every deploy; never put secret material in it — every credential path in this spec rides existing Secrets.
+**`helmValues` merges last** — the escape hatch for chart surface beyond the typed fields (workflowDefaults documents, executor resources, the `server.sso` block, extra env, per-component priority classes). Anything here silently overrides the typed fields on every deploy; never put secret material in it — every credential path in this spec rides existing Secrets.
 
 ## Outputs and Dependencies
 

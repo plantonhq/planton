@@ -129,10 +129,10 @@ func (v *TemporalVerifier) VerifyExists(ctx context.Context, kubeconfig string) 
 	// Workflow state lives in the database, never in the pods: after
 	// UID-verified replacements, the COMPLETED workflow's history must
 	// still describe, and a fresh workflow must run end to end.
-	for _, component := range []string{"history", "frontend"} {
+	for _, kind := range []string{"history", "frontend"} {
 		if err := deletePodAwaitReplacement(ctx, kubeconfig, v.Namespace,
-			"app.kubernetes.io/instance="+v.Name+",app.kubernetes.io/component="+component, 10*time.Minute); err != nil {
-			return errors.Wrapf(err, "the %s pod did not recover after deletion", component)
+			"app.kubernetes.io/instance="+v.Name+",app.kubernetes.io/component="+kind, 10*time.Minute); err != nil {
+			return errors.Wrapf(err, "the %s pod did not recover after deletion", kind)
 		}
 	}
 	if err := v.proveWorkflowSurvived(ctx, kubeconfig, "e2e-proof"); err != nil {

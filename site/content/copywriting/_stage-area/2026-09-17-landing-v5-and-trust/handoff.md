@@ -4,7 +4,7 @@
 
 ## What changed about the workflow
 
-The copy for these pages is not in a draft file and not in kinds. It is data: `src/data/story.ts` (the thirteen chapters, each with claim, proof, and never-say), `src/data/trust.ts` (each Trust page's lede, proof points, illustrated record, honesty statements, doors), `src/data/personas.ts`, `src/data/testimonials.ts`, `src/data/platform-stats.ts`, and `src/data/pricing.ts`. The canonical narrative these mirror is `company/marketing/positioning/the-planton-story.md` in the company repository. A copy change is a data edit; the sections re-render.
+The copy for these pages is not in a draft file and not in components. It is data: `src/data/story.ts` (the thirteen chapters, each with claim, proof, and never-say), `src/data/trust.ts` (each Trust page's lede, proof points, illustrated record, honesty statements, doors), `src/data/personas.ts`, `src/data/testimonials.ts`, `src/data/platform-stats.ts`, and `src/data/pricing.ts`. The canonical narrative these mirror is `company/marketing/positioning/the-planton-story.md` in the company repository. A copy change is a data edit; the sections re-render.
 
 The same session wrote the data and the sections, so the rendered page was the preview. No `draft-N.md` or `preview-N.html` was produced.
 

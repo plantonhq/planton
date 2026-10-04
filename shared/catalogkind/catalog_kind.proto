@@ -11,7 +11,7 @@ extend google.protobuf.EnumValueOptions {
   CatalogKindMeta kind_meta = 10100;
 }
 
-//api-resource-kind infra-component meta
+// CatalogKindMeta is what the catalog states about one catalog kind.
 message CatalogKindMeta {
   //catalog provider
   CatalogProvider provider = 1;

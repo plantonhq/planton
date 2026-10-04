@@ -1,4 +1,4 @@
-# Secret-coverage baseline -- the accepted backlog of infra-component fields that
+# Secret-coverage baseline -- the accepted backlog of catalog kind spec fields that
 # LOOK sensitive by name (the secret heuristic) but are not yet annotated with the
 # Planton `sensitive` option. This is the annotation-sweep TODO list.
 #

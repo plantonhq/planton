@@ -71,8 +71,8 @@ var verifiers = map[string]Verifier{
 	"awsbudget":                       &budgetVerifier{},
 	"awscostanomalymonitor":           &costAnomalyMonitorVerifier{},
 	"awscostcategory":                 &costCategoryVerifier{},
-	"awsalb":                          &loadBalancerVerifier{component: "awsalb"},
-	"awsnlb":                          &loadBalancerVerifier{component: "awsnlb"},
+	"awsalb":                          &loadBalancerVerifier{kind: "awsalb"},
+	"awsnlb":                          &loadBalancerVerifier{kind: "awsnlb"},
 	"awslbtargetgroup":                &targetGroupVerifier{},
 	"awslblistener":                   &listenerVerifier{},
 	"awslblistenerrule":               &listenerRuleVerifier{},
@@ -247,10 +247,10 @@ var verifiers = map[string]Verifier{
 
 	"awsglobalaccelerator": &globalAcceleratorVerifier{},
 
-	"awsfsxlustrefilesystem":           &fsxFileSystemVerifier{component: "awsfsxlustrefilesystem"},
-	"awsfsxopenzfsfilesystem":          &fsxFileSystemVerifier{component: "awsfsxopenzfsfilesystem"},
-	"awsfsxwindowsfilesystem":          &fsxFileSystemVerifier{component: "awsfsxwindowsfilesystem"},
-	"awsfsxontapfilesystem":            &fsxFileSystemVerifier{component: "awsfsxontapfilesystem"},
+	"awsfsxlustrefilesystem":           &fsxFileSystemVerifier{kind: "awsfsxlustrefilesystem"},
+	"awsfsxopenzfsfilesystem":          &fsxFileSystemVerifier{kind: "awsfsxopenzfsfilesystem"},
+	"awsfsxwindowsfilesystem":          &fsxFileSystemVerifier{kind: "awsfsxwindowsfilesystem"},
+	"awsfsxontapfilesystem":            &fsxFileSystemVerifier{kind: "awsfsxontapfilesystem"},
 	"awsfsxontapstoragevirtualmachine": &fsxStorageVirtualMachineVerifier{},
 	"awsfsxontapvolume":                &fsxVolumeVerifier{},
 	"awsfsxdatarepositoryassociation":  &fsxDataRepositoryAssociationVerifier{},
@@ -271,10 +271,10 @@ var verifiers = map[string]Verifier{
 }
 
 // GetVerifier returns the verifier for a component, or an error if none is registered.
-func GetVerifier(component string) (Verifier, error) {
-	v, ok := verifiers[component]
+func GetVerifier(kind string) (Verifier, error) {
+	v, ok := verifiers[kind]
 	if !ok {
-		return nil, errors.Errorf("no AWS verifier registered for component %q", component)
+		return nil, errors.Errorf("no AWS verifier registered for kind %q", kind)
 	}
 	return v, nil
 }

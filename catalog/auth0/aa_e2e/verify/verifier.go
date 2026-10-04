@@ -43,7 +43,7 @@ const defaultIDOutput = "id"
 
 // apiPathVerifier is the common implementation: one Management API path template.
 type apiPathVerifier struct {
-	component  string
+	kind       string
 	pathFormat string // e.g. "clients/%s"
 	idOutput   string // the output carrying the id; "" means defaultIDOutput
 }
@@ -52,10 +52,10 @@ func (v *apiPathVerifier) VerifyExists(checker ResourceChecker, id string) error
 	path := v.formatPath(id)
 	exists, err := checker.ResourceExists(path)
 	if err != nil {
-		return errors.Wrapf(err, "%s verify-exists failed", v.component)
+		return errors.Wrapf(err, "%s verify-exists failed", v.kind)
 	}
 	if !exists {
-		return errors.Errorf("%s %s not found after deploy", v.component, id)
+		return errors.Errorf("%s %s not found after deploy", v.kind, id)
 	}
 	return nil
 }
@@ -64,10 +64,10 @@ func (v *apiPathVerifier) VerifyAbsent(checker ResourceChecker, id string) error
 	path := v.formatPath(id)
 	exists, err := checker.ResourceExists(path)
 	if err != nil {
-		return errors.Wrapf(err, "%s verify-absent failed", v.component)
+		return errors.Wrapf(err, "%s verify-absent failed", v.kind)
 	}
 	if exists {
-		return errors.Errorf("%s %s still exists after destroy", v.component, id)
+		return errors.Errorf("%s %s still exists after destroy", v.kind, id)
 	}
 	return nil
 }
@@ -88,19 +88,19 @@ func (v *apiPathVerifier) formatPath(id string) string {
 
 // verifiers maps component name to the Management API path used for verification.
 var verifiers = map[string]Verifier{
-	"auth0client":         &apiPathVerifier{component: "auth0client", pathFormat: "clients/%s"},
-	"auth0connection":     &apiPathVerifier{component: "auth0connection", pathFormat: "connections/%s"},
-	"auth0resourceserver": &apiPathVerifier{component: "auth0resourceserver", pathFormat: "resource-servers/%s"},
-	"auth0action":         &apiPathVerifier{component: "auth0action", pathFormat: "actions/actions/%s"},
-	"auth0eventstream":    &apiPathVerifier{component: "auth0eventstream", pathFormat: "event-streams/%s"},
-	"auth0role":           &apiPathVerifier{component: "auth0role", pathFormat: "roles/%s"},
-	"auth0user":           &apiPathVerifier{component: "auth0user", pathFormat: "users/%s", idOutput: "user_id"},
-	"auth0customdomain":   &apiPathVerifier{component: "auth0customdomain", pathFormat: "custom-domains/%s"},
+	"auth0client":         &apiPathVerifier{kind: "auth0client", pathFormat: "clients/%s"},
+	"auth0connection":     &apiPathVerifier{kind: "auth0connection", pathFormat: "connections/%s"},
+	"auth0resourceserver": &apiPathVerifier{kind: "auth0resourceserver", pathFormat: "resource-servers/%s"},
+	"auth0action":         &apiPathVerifier{kind: "auth0action", pathFormat: "actions/actions/%s"},
+	"auth0eventstream":    &apiPathVerifier{kind: "auth0eventstream", pathFormat: "event-streams/%s"},
+	"auth0role":           &apiPathVerifier{kind: "auth0role", pathFormat: "roles/%s"},
+	"auth0user":           &apiPathVerifier{kind: "auth0user", pathFormat: "users/%s", idOutput: "user_id"},
+	"auth0customdomain":   &apiPathVerifier{kind: "auth0customdomain", pathFormat: "custom-domains/%s"},
 
 	// An application registered from its Client ID Metadata Document is an
 	// ordinary client of the tenant once registered, read by its client id.
 	"auth0clientfrommetadatadocument": &apiPathVerifier{
-		component:  "auth0clientfrommetadatadocument",
+		kind:       "auth0clientfrommetadatadocument",
 		pathFormat: "clients/%s",
 		idOutput:   "client_id",
 	},
@@ -116,10 +116,10 @@ var verifiers = map[string]Verifier{
 }
 
 // GetVerifier returns the verifier for a component, or an error if unknown.
-func GetVerifier(component string) (Verifier, error) {
-	v, ok := verifiers[component]
+func GetVerifier(kind string) (Verifier, error) {
+	v, ok := verifiers[kind]
 	if !ok {
-		return nil, errors.Errorf("no Auth0 verifier registered for component %q", component)
+		return nil, errors.Errorf("no Auth0 verifier registered for kind %q", kind)
 	}
 	return v, nil
 }

@@ -40,7 +40,7 @@ own component -- instead of folding it into the load balancer -- lets you:
 
 - **Forward**: one target group, or up to five weighted groups with optional
   group-level stickiness -- the blue/green and canary primitive.
-- **Redirect**: HTTP_301/HTTP_302 with per-kind overrides; the canonical
+- **Redirect**: HTTP_301/HTTP_302 with per-component overrides; the canonical
   HTTP-to-HTTPS redirect is two fields.
 - **Fixed response**: serve a canned status/body straight from the load
   balancer -- the classic 404 default under rule-based routing.

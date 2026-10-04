@@ -47,7 +47,7 @@ spec:
         reference: Exporter credentials normally ride env_from_secrets Secret references (expanded as ${env:VAR} at start, never landing in the rendered ConfigMap). Pointing service_account at a cloud-annotated account (EKS IRSA, GKE Workload Identity) lets exporters reach cloud backends keylessly instead.
     - control_id: no-legacy-auth
       status: not_applicable
-      notes: The collector carries no authentication surface of its own -- receiver/exporter auth is per-kind configuration inside config_yaml, and the spec's credential path keeps secrets as environment references rather than inline config. There is no legacy path to disable.
+      notes: The collector carries no authentication surface of its own -- receiver/exporter auth is per-component configuration inside config_yaml, and the spec's credential path keeps secrets as environment references rather than inline config. There is no legacy path to disable.
     - control_id: strong-user-auth
       status: not_applicable
       notes: The component itself enforces no end-user sign-in -- it packages no human sign-in surface; any credentials it carries are workload or administrative access, whose posture rbac and workload-identity carry.

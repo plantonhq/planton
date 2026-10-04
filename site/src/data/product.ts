@@ -66,7 +66,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
       { title: 'Describe', text: 'Say what you need: in the console, from the CLI, or through your coding agent. Every component is a typed schema, so a wrong field fails before it touches your cloud.' },
       { title: 'Compose', text: 'Watch it compose on a live canvas: the components, how they connect, what each needs from the others.' },
       { title: 'Verify', text: 'See the monthly cost with its coverage stated, the least-privilege policy, and the controls each component enforces. Nothing exists yet.' },
-      { title: 'Deploy', text: 'One infra job, kept: the exact configuration, the cost fact, the verdicts, who approved, and what exists afterward.' },
+      { title: 'Deploy', text: 'One Infra Job, kept: the exact configuration, the cost fact, the verdicts, who approved, and what exists afterward.' },
       { title: 'Publish', text: 'Publish it as an Infra Chart, a template your team redeploys into the next environment. A prompt cannot be redeployed; a chart can.' },
     ],
     points: [
@@ -161,13 +161,13 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
   {
     path: '/product/cli',
     chapters: ['runs-where-you-decide', 'your-rules-hold', 'every-deployment-leaves-a-record'],
-    lede: 'Everything Planton does, from your terminal: validate a manifest before it touches your cloud, deploy one component or a whole directory in dependency order, stream the infra job as it runs, install an Infra Chart, and bring in what already exists.',
+    lede: 'Everything Planton does, from your terminal: validate a manifest before it touches your cloud, deploy one component or a whole directory in dependency order, stream the Infra Job as it runs, install an Infra Chart, and bring in what already exists.',
     forWhom: 'For the engineer who lives in a shell, and the pipeline that runs without one.',
     steps: [
       { title: 'Install', text: 'One Homebrew line on macOS; direct downloads for Linux and Windows.' },
       { title: 'Write the Manifest', text: 'The shape you already know: apiVersion, kind, metadata, spec. Validation catches a wrong field in seconds, before anything is created.' },
       { title: 'Apply', text: 'Deploy one manifest or a directory of them in dependency order, the way you already apply Kubernetes manifests, on every cloud.' },
-      { title: 'Watch the Record', text: 'The infra job streams as it runs. The same event stream drives the console and the audit log, so every surface tells one story.' },
+      { title: 'Watch the Record', text: 'The Infra Job streams as it runs. The same event stream drives the console and the audit log, so every surface tells one story.' },
     ],
     points: [
       { label: 'The Exit Path Is the Same CLI', text: runs.proof[1] },
@@ -230,7 +230,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
       { title: 'Adopt', text: 'Register the resource in Planton without deploying anything. Nothing in your cloud is touched, and the page says so: adopted, not yet deployed.' },
       { title: 'Import', text: 'From the resource\u2019s page or the CLI, name the provider resource that already exists. Import only writes state; the provider resource itself is never modified.' },
       { title: 'Verify', text: 'A wrong import fails before it lands. Import never writes a configuration it did not apply.' },
-      { title: 'Continue', text: 'From then on the resource carries the same record as everything Planton created: every change one infra job, kept.' },
+      { title: 'Continue', text: 'From then on the resource carries the same record as everything Planton created: every change one Infra Job, kept.' },
     ],
     points: [
       { label: 'Proven in a Live Round Trip', text: bring.proof[2] },
@@ -246,7 +246,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
         { label: 'operation', value: 'state import \u00b7 identifier derived by recipe' },
         { label: 'verify', value: 'refresh, then preview \u00b7 0 changes pending' },
         { label: 'state', value: 'written once, only what was applied' },
-        { label: 'record', value: 'infra job kept \u00b7 queryable by resource, environment, time' },
+        { label: 'record', value: 'Infra Job kept \u00b7 queryable by resource, environment, time' },
       ],
       footer: illustratedFooter(),
     },

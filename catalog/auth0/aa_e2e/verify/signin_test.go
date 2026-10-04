@@ -24,9 +24,9 @@ func (c *pathChecker) ReadResource(path string) (map[string]interface{}, bool, e
 	return body, ok, nil
 }
 
-func mustVerifier(t *testing.T, component string) Verifier {
+func mustVerifier(t *testing.T, kind string) Verifier {
 	t.Helper()
-	v, err := GetVerifier(component)
+	v, err := GetVerifier(kind)
 	if err != nil {
 		t.Fatal(err)
 	}

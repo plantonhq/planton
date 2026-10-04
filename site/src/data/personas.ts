@@ -107,13 +107,13 @@ export const PERSONAS: readonly Persona[] = [
     doors: { primary: 'hosted', secondary: 'desktop' },
     decidingProof: [
       { label: 'Rules Written Once', text: 'Budgets, protected environments, and a curated catalog hold whether the request came from the console, the CLI, or an agent at two in the morning.' },
-      { label: 'A Record, Not a Transcript', text: 'Every deploy is one infra job you can query by resource, environment, time, and outcome, with the exact configuration embedded.' },
+      { label: 'A Record, Not a Transcript', text: 'Every deploy is one Infra Job you can query by resource, environment, time, and outcome, with the exact configuration embedded.' },
       { label: 'Your Terraform Stays Yours', text: 'Every module is open-source Terraform and Pulumi under Apache 2.0. What you already run is adopted, not rewritten, and if you leave you keep deploying your manifests with the open-source CLI.' },
     ],
     beats: [
       { chapter: 'your-rules-hold', weight: 'lead', angle: 'You write the budget, the protected environments, and the allowed catalog once. Every door reads the same rules and refuses the same things, so an agent cannot do what a person could not.', proof: [0, 1, 2, 3], provenAt: '/trust/rules-and-approvals' },
       { chapter: 'verified-before-it-exists', weight: 'lead', angle: 'Before an agent\u2019s design exists, you see its monthly cost with its coverage stated, the least-privilege policy it needs, and the controls each component enforces.', proof: [0, 2, 3], provenAt: '/trust/verified-before-deploy' },
-      { chapter: 'every-deployment-leaves-a-record', weight: 'lead', angle: 'The deploy nobody watched is an infra job with the configuration embedded, the verdicts stamped, and the approver named. You read it; you do not reconstruct it.', proof: [0, 1, 3], provenAt: '/trust/the-record' },
+      { chapter: 'every-deployment-leaves-a-record', weight: 'lead', angle: 'The deploy nobody watched is an Infra Job with the configuration embedded, the verdicts stamped, and the approver named. You read it; you do not reconstruct it.', proof: [0, 1, 3], provenAt: '/trust/the-record' },
       { chapter: 'what-planton-is', weight: 'supporting', angle: 'Two halves: Infra Hub, where a design becomes a template your team redeploys, and Service Hub, where a push becomes a deployment inside your environments\u2019 gates.', proof: [0, 1], provenAt: '/product/infra-hub' },
       { chapter: 'runs-where-you-decide', weight: 'supporting', angle: 'Start on your laptop for free and move to hosted or your own cluster with the same manifests. Connections can be keyless, and every module is open source.', proof: [0, 1, 3], provenAt: '/distributions' },
       { chapter: 'services-ship-from-git', weight: 'supporting', angle: 'Once the infrastructure exists, developers connect a repository and every push obeys the promotion order and the gates you declared.', proof: [1, 2], provenAt: '/product/service-hub' },
@@ -139,7 +139,7 @@ export const PERSONAS: readonly Persona[] = [
     decidingProof: [
       { label: 'Cost Before Creation', text: 'Every deployment-changing job is born with a verified monthly cost, its coverage stated, and how much more or less it will cost than what runs today.' },
       { label: 'No New Team', text: 'Your platform engineer stays the user and writes the rules once; developers and their agents self-serve inside them. What reaches you is the proof.' },
-      { label: 'A Record That Does Not Depend on Asking', text: 'Every change is one immutable infra job: configuration, cost, verdict, approver, outcome. Queryable whenever you want it, never reconstructed because you asked.' },
+      { label: 'A Record That Does Not Depend on Asking', text: 'Every change is one immutable Infra Job: configuration, cost, verdict, approver, outcome. Queryable whenever you want it, never reconstructed because you asked.' },
     ],
     beats: [
       { chapter: 'verified-before-it-exists', weight: 'lead', angle: 'Cost, permissions, and controls become properties of what gets deployed, checked before it exists rather than found after.', proof: [0, 1, 3], provenAt: '/trust/verified-before-deploy' },
@@ -175,7 +175,7 @@ export const PERSONAS: readonly Persona[] = [
       { chapter: 'what-planton-is', weight: 'lead', angle: 'Describe the client\u2019s environment, verify it, deploy it, and publish it as an Infra Chart. The next client starts from the chart, not from a blank prompt.', proof: [0, 1], provenAt: '/product/infra-hub' },
       { chapter: 'runs-where-you-decide', weight: 'lead', angle: 'The client\u2019s account, the client\u2019s keys, the client\u2019s bill. Connections can be keyless, so you never hold a long-lived credential for an account you do not own.', proof: [0, 1, 3], provenAt: '/trust/your-cloud-your-keys' },
       { chapter: 'verified-before-it-exists', weight: 'supporting', angle: 'The monthly cost with its coverage stated, before the client\u2019s infrastructure exists. The estimate is the conversation with the client, not the invoice.', proof: [0, 1], provenAt: '/trust/verified-before-deploy' },
-      { chapter: 'every-deployment-leaves-a-record', weight: 'supporting', angle: 'Every change in every client organization is an infra job you can hand over: what was deployed, what it cost, who approved it.', proof: [0, 1], provenAt: '/trust/the-record' },
+      { chapter: 'every-deployment-leaves-a-record', weight: 'supporting', angle: 'Every change in every client organization is an Infra Job you can hand over: what was deployed, what it cost, who approved it.', proof: [0, 1], provenAt: '/trust/the-record' },
       { chapter: 'services-ship-from-git', weight: 'supporting', angle: 'Connect the client\u2019s repositories and every push is built and deployed through the environments you declared.', proof: [0, 1], provenAt: '/product/service-hub' },
     ],
     objections: [
@@ -227,12 +227,12 @@ export const PERSONAS: readonly Persona[] = [
     decidingProof: [
       { label: 'Prevention at the Write Boundary', text: 'Budgets, protected environments, a curated catalog, and managed secrets hold before anything exists, whether the request came from a person, a script, or an agent.' },
       { label: 'Controls Stated, Never Asserted', text: `Every covered component states which of ${CONTROL_COUNT} technical controls it enforces, with evidence for each claim, and never calls itself compliant.` },
-      { label: 'A Record of Every Change', text: 'Every change is one immutable infra job, queryable by resource, environment, time, and outcome, with identity tags on every resource it created.' },
+      { label: 'A Record of Every Change', text: 'Every change is one immutable Infra Job, queryable by resource, environment, time, and outcome, with identity tags on every resource it created.' },
     ],
     beats: [
       { chapter: 'your-rules-hold', weight: 'lead', angle: 'The rules are enforced at the one place infrastructure is created, so a coding agent cannot do what a person could not, and the refusal is identical at every door.', proof: [0, 1, 2, 3], provenAt: '/trust/rules-and-approvals' },
       { chapter: 'verified-before-it-exists', weight: 'lead', angle: 'Least-privilege permissions derived from exactly what is composed, and the technical controls each component enforces, stated with evidence before it exists.', proof: [2, 3, 4], provenAt: '/trust/security-posture' },
-      { chapter: 'every-deployment-leaves-a-record', weight: 'lead', angle: 'The immutable infra job: configuration, verdicts, approver, outcome, and identity tags on every resource created. Evidence that exists whether or not anyone asked.', proof: [0, 1, 3], provenAt: '/trust/the-record' },
+      { chapter: 'every-deployment-leaves-a-record', weight: 'lead', angle: 'The immutable Infra Job: configuration, verdicts, approver, outcome, and identity tags on every resource created. Evidence that exists whether or not anyone asked.', proof: [0, 1, 3], provenAt: '/trust/the-record' },
       { chapter: 'how-it-compares', weight: 'supporting', angle: 'Posture platforms observe after the fact; Planton prevents at creation. They complement each other, and neither replaces the other.', proof: [0, 1], provenAt: '/compare' },
       { chapter: 'runs-where-you-decide', weight: 'supporting', angle: 'Keyless connections mean no long-lived cloud credential is stored anywhere. Self-hosted runs on your cluster with a license that verifies offline.', proof: [0, 1, 2], provenAt: '/trust/your-cloud-your-keys' },
       { chapter: 'what-planton-is', weight: 'supporting', angle: 'One platform in the customer\u2019s own account, with one door every request goes through. That door is where the rules live.', proof: [0, 1], provenAt: '/product' },

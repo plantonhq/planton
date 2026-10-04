@@ -9,7 +9,7 @@ many clusters environments need.
 
 - An **organization** owns everything; **environments** partition it
   (dev, prod, …).
-- **Infra components are environment-scoped** — the same resource name can
+- **Infra Components are environment-scoped** — the same resource name can
   exist in dev and prod without collision (which is why chart resource names
   carry `{{ values.env }}`).
 - **Connections and charts are organization-scoped** — one AWS connection,
