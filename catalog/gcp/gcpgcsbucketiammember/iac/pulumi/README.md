@@ -61,7 +61,7 @@ target:
 ### 3. Deploy
 
 ```bash
-export IAC_INPUT_FILE_PATH=iac-input.yaml
+export IAC_INPUT_YAML_FILE=iac-input.yaml
 pulumi up
 ```
 

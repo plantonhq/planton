@@ -17,11 +17,24 @@ The Auth0Connection Pulumi module creates and manages Auth0 identity connections
 
 ## Environment Variables
 
-The module reads IaC input from the `IAC_INPUT_FILE` environment variable:
+The module reads its `Auth0ConnectionIacInput` (the manifest under `target`, plus an optional Auth0 `provider_config`) from the Pulumi config key `planton:iac-input`, the `IAC_INPUT_YAML` environment variable (YAML content), or `IAC_INPUT_YAML_FILE` (a path to that YAML):
 
 ```bash
-export IAC_INPUT_FILE=/path/to/manifest.yaml
+export IAC_INPUT_YAML_FILE=/path/to/iac-input.yaml
 ```
+
+```yaml
+# iac-input.yaml
+target:
+  apiVersion: auth0.planton.dev/v1alpha1
+  kind: Auth0Connection
+  metadata:
+    name: ...
+  spec:
+    ...
+```
+
+`planton pulumi` builds this file from a manifest for you (see Usage).
 
 Alternatively, Auth0 credentials can be provided via environment variables:
 - `AUTH0_DOMAIN`: Your Auth0 tenant domain
@@ -30,38 +43,20 @@ Alternatively, Auth0 credentials can be provided via environment variables:
 
 ## Usage
 
-### Build the Module
-
-```bash
-make build
-```
-
-### Install Pulumi Plugins
-
-```bash
-make install-pulumi-plugins
-```
-
-### Run with Test Manifest
-
-```bash
-make test
-```
-
-### Direct Pulumi Commands
+Run the module from this directory with the planton CLI (the directory holds `Pulumi.yaml`, so the CLI runs this module). Pass Auth0 credentials with `-p <provider-config.yaml>`, or leave it off to use the environment variables above:
 
 ```bash
 # Initialize stack
-pulumi stack init local
+planton pulumi init --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack>
 
 # Preview changes
-IAC_INPUT_FILE=../../e2e/manifest.yaml pulumi preview
+planton pulumi preview --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack>
 
 # Apply changes
-IAC_INPUT_FILE=../../e2e/manifest.yaml pulumi up
+planton pulumi update --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack>
 
 # Destroy resources
-IAC_INPUT_FILE=../../e2e/manifest.yaml pulumi destroy
+planton pulumi destroy --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack>
 ```
 
 ## Module Structure
@@ -70,10 +65,8 @@ IAC_INPUT_FILE=../../e2e/manifest.yaml pulumi destroy
 pulumi/
 ├── main.go           # Entry point, loads IaC input and calls module
 ├── Pulumi.yaml       # Pulumi project configuration
-├── Makefile          # Build and test automation
-├── debug.sh          # Debug helper script
+├── BUILD.bazel       # Bazel build target
 ├── README.md         # This file
-├── overview.md       # Architecture overview
 └── module/
     ├── main.go       # Resources orchestration
     ├── locals.go     # Local value initialization
@@ -110,9 +103,9 @@ Auth0 connection names must be unique within a tenant. Either:
 
 ### Plugin Not Found
 
-Run `make install-pulumi-plugins` to install the Auth0 provider plugin.
+Run `pulumi plugin install resource auth0` to install the Auth0 provider plugin.
 
 ## Related Documentation
 
-- [Auth0Connection spec.proto](../../spec.proto)
+- [Auth0Connection spec.proto](../../v1alpha1/spec.proto)
 

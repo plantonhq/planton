@@ -32,11 +32,11 @@ planton pulumi up --manifest ../../e2e/manifest.yaml
 ### Direct Pulumi usage
 
 The entrypoint loads the `KubernetesEnvoyFilterIacInput` from the `IAC_INPUT_YAML_FILE`
-environment variable (path to a manifest) or `IAC_INPUT_YAML` (inline YAML content):
+environment variable (path to the IaC input, with the manifest under `target`) or `IAC_INPUT_YAML` (inline YAML content). The CLI builds that input from a manifest
+and runs Pulumi:
 
 ```bash
-export IAC_INPUT_YAML_FILE=../../e2e/manifest.yaml
-pulumi up
+planton pulumi up --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack>
 ```
 
 ## Outputs

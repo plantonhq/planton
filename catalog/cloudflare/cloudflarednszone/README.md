@@ -142,9 +142,10 @@ spec:
 | `status` | The zone status on Cloudflare |
 | `dnssec_ds` and friends | DS record material to enter at your registrar (only when DNSSEC is enabled) |
 
+Read them from the deployed resource, under `status.outputs` (`zoneId`, `nameservers`, and so on):
+
 ```bash
-planton output zone_id
-planton output nameservers
+planton get CloudflareDnsZone my-zone -o yaml
 ```
 
 ## Zone Hold and Plan

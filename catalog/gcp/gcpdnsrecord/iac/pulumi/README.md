@@ -17,24 +17,25 @@ planton pulumi up --manifest dns-record.yaml
 
 ### Standalone Usage
 
-1. Set the IaC input as an environment variable:
+1. Set the IaC input as an environment variable. The module reads a `GcpDnsRecordIacInput` from `IAC_INPUT_YAML` (YAML content), `IAC_INPUT_YAML_FILE` (a path to that YAML) or the Pulumi config key `planton:iac-input`; the manifest goes under `target`:
 
 ```bash
-export PLANTON_CATALOG_OBJECT_MANIFEST=$(cat <<EOF
-apiVersion: gcp.planton.dev/v1alpha1
-kind: GcpDnsRecord
-metadata:
-  name: www-example
-spec:
-  projectId:
-    value: my-gcp-project
-  managedZone:
-    value: example-zone
-  type: A
-  name: www.example.com.
-  values:
-    - value: 192.0.2.1
-  ttlSeconds: 300
+export IAC_INPUT_YAML=$(cat <<EOF
+target:
+  apiVersion: gcp.planton.dev/v1alpha1
+  kind: GcpDnsRecord
+  metadata:
+    name: www-example
+  spec:
+    projectId:
+      value: my-gcp-project
+    managedZone:
+      value: example-zone
+    type: A
+    name: www.example.com.
+    values:
+      - value: 192.0.2.1
+    ttlSeconds: 300
 EOF
 )
 ```

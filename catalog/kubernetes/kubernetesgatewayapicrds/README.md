@@ -145,7 +145,7 @@ ListenerSet from v1.5.0.
 
 1. Review the examples for your cluster type
 2. Create a KubernetesGatewayApiCrds manifest
-3. Deploy via `planton deploy`
+3. Deploy it with `planton apply -f <manifest.yaml>`
 4. Install a Gateway API implementation (Istio, Envoy Gateway, etc.)
 5. Create Gateway and HTTPRoute resources
 

@@ -98,11 +98,11 @@ definition, and Protobuf-driven validations.
 3. **Deploy**  
    Use the CLI to provision via Pulumi or Terraform:
    ```bash
-   # Pulumi
-   planton pulumi up --manifest security-group.yaml --stack myorg/dev
+   # Pulumi (the stack is <org>/<project>/<stack>)
+   planton pulumi up --manifest security-group.yaml --stack myorg/myproject/dev
 
-   # Terraform
-   planton terraform apply --manifest security-group.yaml --stack myorg/dev
+   # Terraform (the state backend comes from the manifest's annotations)
+   planton terraform apply --manifest security-group.yaml
    ```
 
 4. **Verify**  

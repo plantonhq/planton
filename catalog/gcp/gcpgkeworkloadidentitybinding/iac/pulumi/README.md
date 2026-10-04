@@ -17,21 +17,22 @@ planton pulumi up --manifest workload-identity-binding.yaml
 
 ### Standalone Usage
 
-1. Set the IaC input as an environment variable:
+1. Set the IaC input as an environment variable. The module reads a `GcpGkeWorkloadIdentityBindingIacInput` from `IAC_INPUT_YAML` (YAML content), `IAC_INPUT_YAML_FILE` (a path to that YAML) or the Pulumi config key `planton:iac-input`; the manifest goes under `target`:
 
 ```bash
-export PLANTON_CATALOG_OBJECT_MANIFEST=$(cat <<EOF
-apiVersion: gcp.planton.dev/v1alpha1
-kind: GcpGkeWorkloadIdentityBinding
-metadata:
-  name: cert-manager-binding
-spec:
-  projectId:
-    value: prod-project
-  serviceAccountEmail:
-    value: dns01-solver@prod-project.iam.gserviceaccount.com
-  ksaNamespace: cert-manager
-  ksaName: cert-manager
+export IAC_INPUT_YAML=$(cat <<EOF
+target:
+  apiVersion: gcp.planton.dev/v1alpha1
+  kind: GcpGkeWorkloadIdentityBinding
+  metadata:
+    name: cert-manager-binding
+  spec:
+    projectId:
+      value: prod-project
+    serviceAccountEmail:
+      value: dns01-solver@prod-project.iam.gserviceaccount.com
+    ksaNamespace: cert-manager
+    ksaName: cert-manager
 EOF
 )
 ```

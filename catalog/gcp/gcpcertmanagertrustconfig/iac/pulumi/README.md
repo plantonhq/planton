@@ -14,23 +14,24 @@ planton pulumi up --manifest trust-config.yaml
 
 ### Standalone Usage
 
-1. Set the IaC input as an environment variable:
+1. Set the IaC input as an environment variable. The module reads a `GcpCertManagerTrustConfigIacInput` from `IAC_INPUT_YAML` (YAML content), `IAC_INPUT_YAML_FILE` (a path to that YAML) or the Pulumi config key `planton:iac-input`; the manifest goes under `target`:
 
 ```bash
-export PLANTON_CATALOG_OBJECT_MANIFEST=$(cat <<EOT
-apiVersion: gcp.planton.dev/v1alpha1
-kind: GcpCertManagerTrustConfig
-metadata:
-  name: partner-mtls-trust
-spec:
-  projectId:
-    value: my-gcp-project
-  trustStores:
-    - trustAnchors:
-        - |
-          -----BEGIN CERTIFICATE-----
-          <partner-root-ca-pem-body>
-          -----END CERTIFICATE-----
+export IAC_INPUT_YAML=$(cat <<EOT
+target:
+  apiVersion: gcp.planton.dev/v1alpha1
+  kind: GcpCertManagerTrustConfig
+  metadata:
+    name: partner-mtls-trust
+  spec:
+    projectId:
+      value: my-gcp-project
+    trustStores:
+      - trustAnchors:
+          - |
+            -----BEGIN CERTIFICATE-----
+            <partner-root-ca-pem-body>
+            -----END CERTIFICATE-----
 EOT
 )
 ```

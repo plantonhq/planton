@@ -17,13 +17,13 @@ The module applies the official Gateway API CRD manifests from the [kubernetes-s
 ### Install Pulumi Plugins
 
 ```bash
-make install-pulumi-plugins
+pulumi plugin install resource kubernetes
 ```
 
 ### Build
 
 ```bash
-make build
+go build .
 ```
 
 ## Usage
@@ -36,10 +36,10 @@ planton pulumi up --manifest gateway-api-crds.yaml
 
 ### Direct Pulumi Usage
 
-1. Set the IaC input as an environment variable:
+1. Set the IaC input as an environment variable. It points at a `KubernetesGatewayApiCrdsIacInput` YAML file, with the manifest under `target` (the module also reads `IAC_INPUT_YAML` content or the Pulumi config key `planton:iac-input`):
 
 ```bash
-export IAC_INPUT_FILE_PATH=/path/to/manifest.yaml
+export IAC_INPUT_YAML_FILE=/path/to/iac-input.yaml
 ```
 
 2. Run Pulumi:
@@ -71,7 +71,7 @@ The module accepts configuration via the `KubernetesGatewayApiCrdsIacInput` prot
 Run a preview with the test manifest:
 
 ```bash
-make test
+planton pulumi preview --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack>
 ```
 
 ## Module Structure
@@ -80,7 +80,7 @@ make test
 pulumi/
 ├── main.go           # Pulumi entrypoint
 ├── Pulumi.yaml       # Pulumi project configuration
-├── Makefile          # Build and test automation
+├── BUILD.bazel       # Bazel build target
 ├── README.md         # This file
 └── module/
     ├── main.go       # Resource creation logic

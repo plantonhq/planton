@@ -14,22 +14,23 @@ planton pulumi up --manifest issuance-config.yaml
 
 ### Standalone Usage
 
-1. Set the IaC input as an environment variable:
+1. Set the IaC input as an environment variable. The module reads a `GcpCertManagerIssuanceConfigIacInput` from `IAC_INPUT_YAML` (YAML content), `IAC_INPUT_YAML_FILE` (a path to that YAML) or the Pulumi config key `planton:iac-input`; the manifest goes under `target`:
 
 ```bash
-export PLANTON_CATALOG_OBJECT_MANIFEST=$(cat <<EOT
-apiVersion: gcp.planton.dev/v1alpha1
-kind: GcpCertManagerIssuanceConfig
-metadata:
-  name: internal-tls-issuance
-spec:
-  projectId:
-    value: my-gcp-project
-  caPool:
-    value: projects/my-gcp-project/locations/us-central1/caPools/internal-pool
-  keyAlgorithm: ECDSA_P256
-  lifetime: 2592000s
-  rotationWindowPercentage: 66
+export IAC_INPUT_YAML=$(cat <<EOT
+target:
+  apiVersion: gcp.planton.dev/v1alpha1
+  kind: GcpCertManagerIssuanceConfig
+  metadata:
+    name: internal-tls-issuance
+  spec:
+    projectId:
+      value: my-gcp-project
+    caPool:
+      value: projects/my-gcp-project/locations/us-central1/caPools/internal-pool
+    keyAlgorithm: ECDSA_P256
+    lifetime: 2592000s
+    rotationWindowPercentage: 66
 EOT
 )
 ```

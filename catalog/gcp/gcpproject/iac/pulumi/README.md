@@ -17,22 +17,23 @@ planton pulumi up --manifest project.yaml
 
 ### Standalone Usage
 
-1. Set the IaC input as an environment variable:
+1. Set the IaC input as an environment variable. The module reads a `GcpProjectIacInput` from `IAC_INPUT_YAML` (YAML content), `IAC_INPUT_YAML_FILE` (a path to that YAML) or the Pulumi config key `planton:iac-input`; the manifest goes under `target`:
 
 ```bash
-export PLANTON_CATALOG_OBJECT_MANIFEST=$(cat <<EOF
-apiVersion: gcp.planton.dev/v1alpha1
-kind: GcpProject
-metadata:
-  name: prod-workloads
-spec:
-  projectId: acme-prod-workloads
-  parentType: folder
-  parentId: "123456789012"   # or folderId: {valueFrom: {kind: GcpFolder, name: ...}}
-  billingAccountId: 0123AB-4567CD-89EFGH
-  deletionPolicy: PREVENT
-  enabledApis:
-    - compute.googleapis.com
+export IAC_INPUT_YAML=$(cat <<EOF
+target:
+  apiVersion: gcp.planton.dev/v1alpha1
+  kind: GcpProject
+  metadata:
+    name: prod-workloads
+  spec:
+    projectId: acme-prod-workloads
+    parentType: folder
+    parentId: "123456789012"   # or folderId: {valueFrom: {kind: GcpFolder, name: ...}}
+    billingAccountId: 0123AB-4567CD-89EFGH
+    deletionPolicy: PREVENT
+    enabledApis:
+      - compute.googleapis.com
 EOF
 )
 ```

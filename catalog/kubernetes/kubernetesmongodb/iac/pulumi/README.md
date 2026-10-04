@@ -30,7 +30,7 @@ The MongoDB Kubernetes module adheres to a standard Kubernetes resource structur
 - **Automated Password Generation**: A random password for MongoDB authentication is generated and securely stored in a Kubernetes secret, simplifying the process of credential management.
 
 ### Key Features of the Pulumi Module:
-- **Dynamic Resource Creation**: The module dynamically creates Kubernetes resources based on the `MongodbKubernetesIacInput`, including namespaces, PerconaServerMongoDB CRDs, services, and persistent volumes.
+- **Dynamic Resource Creation**: The module dynamically creates Kubernetes resources based on the `KubernetesMongodbIacInput`, including namespaces, PerconaServerMongoDB CRDs, services, and persistent volumes.
 - **Kubernetes Provider Integration**: The module uses Pulumi's Kubernetes provider to manage resources and interact with the Kubernetes cluster using provided credentials.
 - **Operator-Based Management**: Deploys MongoDB using the Percona operator, which provides automated lifecycle management, failover, and recovery.
 - **CRD-Based Deployment**: Creates `PerconaServerMongoDB` custom resources that the operator reconciles into running MongoDB clusters.
@@ -38,14 +38,14 @@ The MongoDB Kubernetes module adheres to a standard Kubernetes resource structur
 
 ## Prerequisites
 
-The **Percona Server for MongoDB Operator** must be installed on your Kubernetes cluster before deploying MongoDB instances. Use the `PerconaServerMongodbOperator` module to install the operator:
+The **Percona Server for MongoDB Operator** must be installed on your Kubernetes cluster before deploying MongoDB instances. Use the `KubernetesPerconaMongoOperator` module to install the operator:
 
 ```bash
 planton pulumi up --manifest percona-operator.yaml \
-  --module-dir apis/project/planton/provider/kubernetes/perconaservermongodboperator/v1/iac/pulumi
+  --module-dir catalog/kubernetes/kubernetesperconamongooperator/iac/pulumi
 ```
 
-The operator typically installs in the `mongodb-operator` namespace and watches all namespaces for `PerconaServerMongoDB` resources.
+The operator installs into the namespace named in its `spec.namespace`. By default it watches only that namespace; set `spec.watch.cluster_wide` or `spec.watch.namespaces` so it covers every namespace that will hold `PerconaServerMongoDB` resources.
 
 ## Status and Outputs
 
@@ -58,7 +58,7 @@ The module provides the following outputs to simplify the operational management
 
 ## Usage
 
-To deploy and manage a MongoDB Kubernetes cluster using this module, create a YAML file representing the MongoDB Kubernetes resource. Use the CLI command `planton pulumi up --iac-input <api-resource.yaml>` to apply the configuration and provision the resources.
+To deploy and manage a MongoDB Kubernetes cluster using this module, create a YAML file representing the MongoDB Kubernetes resource. Use the CLI command `planton pulumi up --manifest <api-resource.yaml>` to apply the configuration and provision the resources.
 
 Refer to the example section for usage instructions.
 
@@ -134,13 +134,13 @@ You can install this Pulumi module from GitHub by cloning the repository and run
 1. Clone the repository:
     ```bash
     git clone https://github.com/plantonhq/planton.git
-    cd planton/apis/project/planton/provider/kubernetes/mongodbkubernetes/v1/iac/pulumi
+    cd planton/catalog/kubernetes/kubernetesmongodb/iac/pulumi
     ```
 
-2. Install dependencies and initialize Pulumi:
+2. Initialize the stack and deploy from this directory (it holds `Pulumi.yaml`, so the CLI runs this module):
     ```bash
-    pulumi stack init <stack-name>
-    pulumi config set <config-parameters>
+    planton pulumi init --manifest <api-resource.yaml> --stack <org>/<project>/<stack>
+    planton pulumi update --manifest <api-resource.yaml> --stack <org>/<project>/<stack>
     ```
 
 ## Contributing

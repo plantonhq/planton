@@ -12,8 +12,7 @@ This module implements the CloudflareD1Database resource using Pulumi's Go SDK a
 iac/pulumi/
 ├── main.go              # Entrypoint - loads IaC input and calls module
 ├── Pulumi.yaml          # Pulumi project configuration
-├── Makefile            # Build and deployment targets
-├── debug.sh            # Debug helper script
+├── BUILD.bazel          # Bazel build target
 └── module/
     ├── main.go         # Module entry point
     ├── locals.go       # Locals initialization
@@ -106,7 +105,11 @@ For debugging or manual execution:
    ```
 
 2. **Create IaC Input File**:
-   Create a `iac-input.json` file with the CloudflareD1DatabaseIacInput protobuf structure serialized to JSON.
+   Create a `iac-input.json` file with the CloudflareD1DatabaseIacInput protobuf structure serialized to JSON (the manifest under `target`), and point the module at it:
+   ```bash
+   export IAC_INPUT_YAML_FILE=iac-input.json
+   ```
+   The module reads its input from the Pulumi config key `planton:iac-input`, `IAC_INPUT_YAML` (content) or `IAC_INPUT_YAML_FILE` (a path); JSON is valid YAML.
 
 3. **Run Pulumi**:
    ```bash
@@ -115,13 +118,11 @@ For debugging or manual execution:
 
 ### Debug Mode
 
-Use the provided `debug.sh` script to run Pulumi with verbose logging:
+Run Pulumi with verbose logging:
 
 ```bash
-./debug.sh
+pulumi up --logtostderr -v=9
 ```
-
-This sets `PULUMI_LOG_LEVEL=debug` and runs `pulumi up` with detailed output.
 
 ## Implementation Details
 
@@ -191,7 +192,7 @@ To test the module end-to-end:
 1. Create a test manifest in `e2e/manifest.yaml`
 2. Run `planton apply -f e2e/manifest.yaml`
 3. Verify the database is created in the Cloudflare dashboard
-4. Verify outputs: `planton output database-id`
+4. Verify outputs: the update prints them under `Outputs:`; read one again with `pulumi stack output database_id --stack <org>/<project>/<stack>`
 5. Clean up: `planton destroy -f e2e/manifest.yaml`
 
 ## Dependencies
@@ -257,8 +258,8 @@ export CLOUDFLARE_API_TOKEN="your-token"
 ## Support
 
 For issues specific to this Pulumi module, check:
-1. Kind tests pass: `go test ./v1/`
-2. Pulumi build succeeds: `make build`
+1. Kind tests pass: `go test ./catalog/cloudflare/cloudflared1database/...`
+2. Pulumi build succeeds: `go build .` in this directory
 3. IaC input is valid: Validate against protobuf schema
 
 For general Cloudflare D1 questions, see [../../README.md](../../README.md).

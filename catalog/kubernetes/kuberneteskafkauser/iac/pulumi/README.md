@@ -26,20 +26,23 @@
 
 ## Usage
 
+Run from this directory (it holds `Pulumi.yaml`, so the planton CLI runs this module). With no Kubernetes provider config, the module uses your kubeconfig; `--kube-context` picks the context:
+
 ```bash
-export IAC_INPUT=$(cat ../../e2e/manifest.yaml | base64)
-pulumi up
+planton pulumi init --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack>
+planton pulumi update --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack> --kube-context <context>
 ```
+
+The CLI wraps the manifest into a `KubernetesKafkaUserIacInput` (under `target`) and hands it to the module through `IAC_INPUT_YAML_FILE`. The module also reads that input from the Pulumi config key `planton:iac-input` or from `IAC_INPUT_YAML` (YAML content).
 
 ## Local Development
 
 ```bash
-make deps
-make build
+go build .
 ```
 
 ## Debug
 
 ```bash
-bash debug.sh ../../e2e/manifest.yaml
+planton pulumi preview --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack> --kube-context <context> --diff
 ```

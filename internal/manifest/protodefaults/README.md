@@ -212,7 +212,7 @@ spec:
 
 **2. Via CLI flags**:
 ```bash
-planton deploy cert-manager.yaml \
+planton pulumi up --manifest cert-manager.yaml \
   --set spec.namespace=custom-namespace \
   --set spec.certManagerVersion=v1.14.0
 ```

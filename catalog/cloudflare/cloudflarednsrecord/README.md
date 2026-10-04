@@ -152,9 +152,10 @@ Structured types use the matching top-level typed block: CAA, CERT, DNSKEY, DS, 
 | `record_type` | The DNS record type that was created |
 | `proxied` | Whether the record is proxied through Cloudflare |
 
+Read them from the deployed resource, under `status.outputs` (`recordId`, `recordName`, and so on):
+
 ```bash
-planton output record_id
-planton output record_name
+planton get CloudflareDnsRecord www-a-record -o yaml
 ```
 
 ## Orange Cloud vs Grey Cloud

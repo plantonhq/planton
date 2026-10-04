@@ -114,11 +114,10 @@ After deployment, the following outputs are available:
 A Worker reaches D1 through its `d1` binding (referencing `database_id`); there is
 no connection string.
 
-Access outputs:
+Read the outputs from the deployed resource; they are under `status.outputs` (`databaseId`, `databaseName`, `version`):
 
 ```bash
-planton output database_id
-planton output database_name
+planton get CloudflareD1Database my-dev-db -o yaml
 ```
 
 ## Schema Management

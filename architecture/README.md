@@ -799,7 +799,7 @@ environment variables — and validates the spec before any resource is
 created:
 
 ```go
-iacInput := &postgreskubernetesv1.PostgresKubernetesIacInput{}
+iacInput := &kubernetespostgresv1alpha1.KubernetesPostgresIacInput{}
 if err := iacinput.LoadIacInput(ctx, iacInput); err != nil {
     return err
 }

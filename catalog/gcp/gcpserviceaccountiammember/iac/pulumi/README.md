@@ -63,14 +63,14 @@ target:
 ### 3. Deploy
 
 ```bash
-export IAC_INPUT_FILE_PATH=iac-input.yaml
-make up
+export IAC_INPUT_YAML_FILE=iac-input.yaml
+pulumi up
 ```
 
 ### 4. Destroy
 
 ```bash
-make destroy
+pulumi destroy
 ```
 
 Destroy removes exactly this (role, member) pair from the account's policy — no other grant is touched.

@@ -15,7 +15,7 @@ main.go (entrypoint)
 
 ## How It Works
 
-1. `main.go` loads the `CloudflareRulesetIacInput` from the `IAC_INPUT` environment variable (base64-encoded YAML).
+1. `main.go` loads the `CloudflareRulesetIacInput` (the manifest as `target`, plus the Cloudflare `provider_config`) from the Pulumi config key `planton:iac-input`, the `IAC_INPUT_YAML` environment variable (YAML content), or `IAC_INPUT_YAML_FILE` (a path to that YAML).
 2. `module.Resources()` initializes locals, creates a Cloudflare provider, and provisions the ruleset.
 3. `ruleset.go` maps proto `CloudflareRulesetRule` messages to Pulumi `cloudflare.RulesetRuleArgs` — including all action parameter sub-types (origin, response, uri, headers, from_value, overrides, cache settings).
 4. Outputs are exported matching `CloudflareRulesetOutputs`.
@@ -31,16 +31,21 @@ tofu↔Pulumi parity on provider v5.
 
 ## Local Development
 
+Run the module from this directory with the planton CLI. It builds the IaC input from the manifest and the provider config file, and hands it to the module through `IAC_INPUT_YAML_FILE`:
+
 ```bash
-# Build the binary
-make build
+# Create the stack once
+planton pulumi init --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack>
 
-# Preview with test manifest
-make test
+# Preview with the test manifest
+planton pulumi preview --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack> -p cloudflare-provider-config.yaml
 
-# Or use debug.sh for a specific manifest
-./debug.sh ../../e2e/manifest.yaml
+# Deploy, then tear down
+planton pulumi update --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack> -p cloudflare-provider-config.yaml
+planton pulumi destroy --manifest ../../e2e/manifest.yaml --stack <org>/<project>/<stack> -p cloudflare-provider-config.yaml
 ```
+
+Without `-p`, the Cloudflare provider reads `CLOUDFLARE_API_TOKEN` from the environment.
 
 ## Dependencies
 

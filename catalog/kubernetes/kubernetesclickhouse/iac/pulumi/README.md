@@ -39,24 +39,24 @@ This module deploys production-grade ClickHouse clusters on Kubernetes using the
 
 See ../../e2e/manifest.yaml for usage details and step-by-step examples. In general:
 
-1. Define a YAML resource describing your ClickHouse cluster using the **ClickHouseKubernetes** API.
+1. Define a YAML resource describing your ClickHouse cluster using the **KubernetesClickHouse** API.
 2. Run:
    ```bash
-   planton pulumi up --iac-input <your-clickhouse-file.yaml>
+   planton pulumi up --manifest <your-clickhouse-file.yaml>
    ```
 
 to apply the resource on your cluster.
 
 ## Prerequisites
 
-The **Altinity ClickHouse Operator** must be installed on your Kubernetes cluster before deploying ClickHouse instances. Use the `ClickhouseOperatorKubernetes` module to install the operator:
+The **Altinity ClickHouse Operator** must be installed on your Kubernetes cluster before deploying ClickHouse instances. Use the `KubernetesAltinityOperator` module to install the operator:
 
 ```bash
-planton pulumi up --iac-input clickhouse-operator.yaml \
-  --module-dir apis/project/planton/provider/kubernetes/clickhouseoperatorkubernetes/v1/iac/pulumi
+planton pulumi up --manifest clickhouse-operator.yaml \
+  --module-dir catalog/kubernetes/kubernetesaltinityoperator/iac/pulumi
 ```
 
-The operator typically installs in the `clickhouse-operator` namespace and watches all namespaces for ClickHouseInstallation resources.
+The operator installs into the namespace named in its `spec.namespace`. By default it watches only that namespace; list every namespace that will hold KubernetesClickHouse resources in its `spec.watch_namespaces` (or `[".*"]` for all).
 
 ## Getting Started
 
@@ -67,7 +67,7 @@ The operator typically installs in the `clickhouse-operator` namespace and watch
    Create a YAML specification with cluster name, resources, persistence, and clustering settings. See ../../e2e/manifest.yaml for common configurations.
 
 3. **Deploy the Cluster**  
-   Execute `planton pulumi up --iac-input <clickhouse-spec.yaml>`. The module generates a ClickHouseInstallation CRD, and the operator creates all necessary Kubernetes resources.
+   Execute `planton pulumi up --manifest <clickhouse-spec.yaml>`. The module generates a ClickHouseInstallation CRD, and the operator creates all necessary Kubernetes resources.
 
 4. **Verify Deployment**  
    Check that ClickHouse pods are running, services are created, and the cluster is accessible. Use the exported port-forward command for local testing.
@@ -75,7 +75,7 @@ The operator typically installs in the `clickhouse-operator` namespace and watch
 ## Module Architecture
 
 1. **Initialization**  
-   Reads your `ClickHouseKubernetesIacInput` (cluster credentials, resource definitions), initializes local variables, and prepares Kubernetes labels.
+   Reads your `KubernetesClickHouseIacInput` (cluster credentials, resource definitions), initializes local variables, and prepares Kubernetes labels.
 
 2. **Provider Setup**  
    Establishes a Pulumi Kubernetes Provider using the supplied cluster credentials.
