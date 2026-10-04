@@ -178,8 +178,9 @@ dashboard exists.
   alert that misreads work done on purpose (CI build pods, a build
   machine at full CPU), disable it and declare the same alert name in a
   KubernetesPrometheusRule whose expression leaves that work out
-  (`kube_pod_owner{owner_kind!~"Job|TaskRun"}`, or `unless` the
-  machine's build taint from `kube_node_spec_taint`), keeping the
+  (`kube_pod_owner{owner_kind!~"Job|TaskRun"}`, every pod on a build
+  machine, or `unless` the machine's build taint from
+  `kube_node_spec_taint`), keeping the
   upstream `for`, severity and the `namespace` label Alertmanager's
   inhibitions read. Then read the loaded rules back
   (`/api/v1/rules?type=alert`): a name that matched nothing changed

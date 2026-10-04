@@ -83,8 +83,9 @@ Ask these before composing, in the person's words, not the chart's:
   misreads work done on purpose (Tekton build pods read not-ready once a
   step ends; a build machine sits at full CPU) is replaced, not muted:
   disable it and declare the same alert name in a `KubernetesPrometheusRule`
-  that leaves the work out (`kube_pod_owner{owner_kind!~"Job|TaskRun"}`;
-  `unless` the build taint in `kube_node_spec_taint`), keeping upstream's
+  that leaves the work out (`kube_pod_owner{owner_kind!~"Job|TaskRun"}`,
+  and every pod on a build machine, whose pods all go not ready when it
+  goes dark; `unless` the build taint in `kube_node_spec_taint`), keeping upstream's
   `for`, severity and `namespace` label (Alertmanager's info inhibition
   matches on it). Then the work's real failure needs its own alert: a
   build machine that runs out of memory goes dark and is replaced before

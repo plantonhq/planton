@@ -98,7 +98,14 @@ arrives:
   `KubernetesPrometheusRule` whose expression leaves out what the cluster
   does on purpose (`kube_pod_owner{owner_kind!~"Job|TaskRun"}` for build
   pods; `unless` the machine carries your build taint, from
-  `kube_node_spec_taint`, for build machines). Both series ship with
+  `kube_node_spec_taint`, for build machines). Leave every pod ON a build
+  machine out of the not-ready replacement too (join `kube_pod_info` to
+  the taint): when a packed build machine runs out of memory and goes
+  dark, its log collector, node agents and the builds' affinity
+  assistants all go not ready together, an echo of the machine's failure.
+  Name that failure once, with a short-hold alert on the build machines'
+  free memory, because the cloud replaces a dark machine inside the 15
+  minutes `KubeNodeNotReady` waits. Both series ship with
   kube-state-metrics and need no label allowlist. Keep the upstream name,
   `for` and severity, so runbooks and habits carry over, and keep the
   labels Alertmanager's inhibitions and your routes read (`namespace`,
