@@ -10,7 +10,7 @@ configures how users reach and authenticate to it.
 ## Composable by design
 
 In Cloudflare's v5 model, an application references reusable policies; each policy
-references reusable groups. This component mirrors that: `policies[]` are foreign-key
+references reusable groups. This kind mirrors that: `policies[]` are foreign-key
 references to `CloudflareZeroTrustAccessPolicy` resources, so the same policy can
 guard many applications and authorization logic lives in one place.
 

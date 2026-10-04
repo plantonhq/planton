@@ -12,7 +12,7 @@ resource "google_project_service" "monitoring_api" {
 # The custom Monitoring service the SLO measures, when the spec's service
 # arm asks for one (one kind, up to two service resources, count-gated —
 # exactly one of the three arms is set, spec-validated). The service
-# follows the kind's deletion contract: destroying the SLO kind destroys
+# follows the kind's deletion contract: destroying the SLO component destroys
 # the service it created.
 resource "google_monitoring_custom_service" "this" {
   count = local.create_custom_service ? 1 : 0

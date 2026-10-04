@@ -31,7 +31,7 @@ func Resources(ctx *pulumi.Context, iacInput *kubernetesrequestauthenticationv1a
 
 // createRequestAuthentication creates the namespaced Istio RequestAuthentication
 // using the typed crd2pulumi SDK (istiosecurityv1.NewRequestAuthentication),
-// consistent with every other Planton Istio component. The typed approach catches
+// consistent with every other Planton Istio kind. The typed approach catches
 // field-name and structure errors at compile time. Each optional upstream block is
 // only attached when present, so unset fields fall through to istiod's defaults.
 func createRequestAuthentication(

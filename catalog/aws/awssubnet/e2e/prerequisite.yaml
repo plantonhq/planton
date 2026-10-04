@@ -5,7 +5,7 @@
 # that need fewer reference the instances they want by name (e.g.
 # AwsNatGateway takes only the first). All subnets resolve their vpcId against
 # the AwsVpc prerequisite. CIDRs are carved high in the VPC's 10.0.0.0/16 to
-# avoid colliding with any component scenario's own ranges. Full metadata is
+# avoid colliding with any kind scenario's own ranges. Full metadata is
 # supplied for tagging/orphan cleanup.
 apiVersion: aws.planton.dev/v1alpha1
 kind: AwsSubnet

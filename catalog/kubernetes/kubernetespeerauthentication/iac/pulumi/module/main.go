@@ -33,7 +33,7 @@ func Resources(ctx *pulumi.Context, iacInput *kubernetespeerauthenticationv1alph
 
 // createPeerAuthentication creates the namespaced Istio PeerAuthentication using
 // the typed crd2pulumi SDK (istiosecurityv1.NewPeerAuthentication), consistent
-// with every other Planton Istio component. The typed approach catches
+// with every other Planton Istio kind. The typed approach catches
 // field-name and structure errors at compile time rather than at deployment
 // time. Each optional upstream block is only attached when present, so unset
 // fields fall through to istiod's defaults (inheritance).

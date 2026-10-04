@@ -31,7 +31,7 @@ func Resources(ctx *pulumi.Context, iacInput *kubernetesdestinationrulev1alpha1.
 
 // createDestinationRule creates the namespaced Istio DestinationRule using the typed
 // crd2pulumi SDK (istionetworkingv1.NewDestinationRule), consistent with every other Planton
-// Istio component. The typed approach catches field-name and structure errors at compile time.
+// Istio kind. The typed approach catches field-name and structure errors at compile time.
 // Only `host` is always set (it is required upstream); every other block is attached
 // only when present (the per-path builders in traffic_policy.go return nil for absent protos),
 // so unset fields fall through to istiod's defaults.

@@ -1,4 +1,4 @@
-# Import map: where each {placeholder} in this component's import IDs comes
+# Import map: where each {placeholder} in this kind's import IDs comes
 # from (formats live in catalog/cloudflare/aa_import/catalog.yaml). The
 # singletons import as the bare zone id; CA associations add the mTLS
 # certificate id when adopting a certificate's list. Per-hostname overrides

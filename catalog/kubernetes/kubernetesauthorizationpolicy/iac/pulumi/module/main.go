@@ -31,7 +31,7 @@ func Resources(ctx *pulumi.Context, iacInput *kubernetesauthorizationpolicyv1alp
 
 // createAuthorizationPolicy creates the namespaced Istio AuthorizationPolicy using
 // the typed crd2pulumi SDK (istiosecurityv1.NewAuthorizationPolicy), consistent with
-// every other Planton Istio component. The typed approach catches field-name and
+// every other Planton Istio kind. The typed approach catches field-name and
 // structure errors at compile time. Each optional upstream block is only attached
 // when present, so unset fields fall through to istiod's defaults (e.g. an absent
 // `action` becomes the upstream default ALLOW).

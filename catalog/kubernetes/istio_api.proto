@@ -5,7 +5,7 @@ package dev.planton.kubernetes;
 import "buf/validate/validate.proto";
 import "shared/foreignkey/v1/foreign_key.proto";
 
-// Shared Istio API types used across multiple Planton Istio components
+// Shared Istio API types used across multiple Planton Istio kinds
 // (DestinationRule, ServiceEntry, PeerAuthentication, RequestAuthentication,
 // AuthorizationPolicy, Telemetry, EnvoyFilter). Translated from istio.io/api 1.30
 // (pinned at tag 1.30.3). Mirrors the sibling `gateway_api.proto` convention:
