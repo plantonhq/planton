@@ -58,7 +58,7 @@ export const VerifiedBeforeDeploy: FC = () => (
     </Grid>
 
     <Typography className="text-center text-xs text-[#555] mt-8">
-      Coverage grows with the catalog — components without verified data say
+      Coverage grows with the catalog — kinds without verified data say
       so, instead of guessing.
     </Typography>
   </Section>

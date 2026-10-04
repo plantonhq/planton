@@ -2,7 +2,7 @@
 
 This Pulumi module creates a namespaced Istio `Telemetry` resource on a target cluster.
 
-> Note: unlike the other Istio components, Telemetry is created via the generic
+> Note: unlike the other Istio kinds, Telemetry is created via the generic
 > `apiextensions.CustomResource` rather than the typed crd2pulumi SDK. crd2pulumi cannot
 > faithfully type the `tracing[].customTags` map (nested object-valued `oneOf`), so the
 > `spec` is built as a map from the strongly-typed proto getters instead. See

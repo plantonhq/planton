@@ -12,7 +12,7 @@ Evaluation is ascending priority, first match wins — an ALLOW at 100 defeats a
 
 ## Mutation protection blocks its own destroy
 
-An association with mutation_protection ENABLED refuses deletion — including the declarative destroy of this very kind. Enable it only on associations whose lifecycle is deliberately manual, and disable it before decommissioning.
+An association with mutation_protection ENABLED refuses deletion — including the declarative destroy of this very component. Enable it only on associations whose lifecycle is deliberately manual, and disable it before decommissioning.
 
 ## ALERT before BLOCK for threat rules
 

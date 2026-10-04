@@ -16,6 +16,6 @@ func initializeLocals(_ *pulumi.Context, iacInput *gcpcloudtasksqueuev1alpha1.Gc
 	locals.GcpCloudTasksQueue = iacInput.Target
 	locals.GcpProviderConfig = iacInput.ProviderConfig
 	// Note: Cloud Tasks queues do NOT support GCP labels.
-	// No label computation needed (unlike most GCP components).
+	// No label computation needed (unlike most GCP kinds).
 	return locals
 }

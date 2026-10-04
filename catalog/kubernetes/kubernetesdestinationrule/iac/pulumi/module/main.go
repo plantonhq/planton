@@ -44,7 +44,7 @@ func createDestinationRule(
 
 	// The typed resource's Spec field is a PtrInput satisfied by the Args value itself
 	// (not the SpecPtr() wrapper, which marshals to the wrong element type); assigned
-	// directly below, mirroring the sibling Istio components.
+	// directly below, mirroring the sibling Istio kinds.
 	//
 	// host is a StringValueOrRef foreign key (default: a KubernetesService's
 	// in-cluster FQDN output); the platform resolves valueFrom references before

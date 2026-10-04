@@ -44,7 +44,7 @@ func createEnvoyFilter(
 
 	// The typed resource's Spec field is a PtrInput satisfied by the Args value itself
 	// (not the SpecPtr() wrapper, which marshals to the wrong element type and panics at
-	// `pulumi up`); assigned directly below, mirroring the sibling Istio components.
+	// `pulumi up`); assigned directly below, mirroring the sibling Istio kinds.
 	efSpec := istionetworkingv1alpha3.EnvoyFilterSpecArgs{}
 
 	if patches := spec.GetConfigPatches(); len(patches) > 0 {

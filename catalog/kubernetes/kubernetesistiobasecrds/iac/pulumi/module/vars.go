@@ -5,7 +5,7 @@ package module
 // IstioRelease MUST stay in sync with `istio_release` in
 // pkg/kubernetes/kubernetestypes/Makefile. That Makefile pin is the single source of
 // truth for the Istio version this Planton release targets: it drives the
-// crd2pulumi-generated typed SDK that the Istio components are built against, and this
+// crd2pulumi-generated typed SDK that the Istio kinds are built against, and this
 // constant drives the CRDs installed on the cluster. Keeping them equal guarantees the
 // installed CRD schema matches the typed custom resources (no silent field pruning).
 const (

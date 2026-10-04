@@ -16,6 +16,6 @@ func initializeLocals(_ *pulumi.Context, iacInput *gcpcloudschedulerjobv1alpha1.
 	locals.GcpCloudSchedulerJob = iacInput.Target
 	locals.GcpProviderConfig = iacInput.ProviderConfig
 	// Note: Cloud Scheduler jobs do NOT support GCP labels.
-	// No label computation needed (unlike most GCP components).
+	// No label computation needed (unlike most GCP kinds).
 	return locals
 }
