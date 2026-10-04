@@ -141,10 +141,10 @@ phrases:
   - pattern: '\bplanton projects? (create|get|list|delete|apply|checkout|undeploy|purge)\b'
     anchors: ['planton project']
     use: planton infra stack <verb>; planton chart install creates one
-  # The job-log bucket and every other IaC-execution setting.
+  # Every IaC-execution setting.
   - pattern: '(?i)\bstack[_-]execution[_-]'
     anchors: ['stack_execution', 'stack-execution']
-    use: IAC_EXECUTION_ (IAC_EXECUTION_LOGS_GCS_BUCKET)
+    use: IAC_EXECUTION_ (iac-execution- in kebab case)
 
 allow:
   # Current words followed by an ordinary word, which would otherwise read as

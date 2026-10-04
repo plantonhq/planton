@@ -970,7 +970,6 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		// modules at its own catalog release, exactly as it seeds charts from
 		// it (below). The per-install override is appended after this block,
 		// by presence.
-		{Name: "IAC_EXECUTION_LOGS_GCS_BUCKET", Value: "local"},
 		// The control plane seeds the InfraChart catalog from the bundle of its
 		// OWN catalog release: the charts are validated against its protos at
 		// apply, so only the release those protos came from can ever be right,

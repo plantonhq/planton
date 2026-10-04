@@ -21,7 +21,7 @@ A platform engineer, a developer and an agent now meet one word per idea, the sa
 - Every kind's module receives `<Kind>IacInput` and returns `<Kind>Outputs` (held in `status.outputs`).
 - A Pulumi module reads its input under the config key `planton:iac-input`, or from `IAC_INPUT_YAML` / `IAC_INPUT_YAML_FILE`, through `iacinput.LoadIacInput`.
 - The CLI's flag is `--iac-input`.
-- The operator hands the control plane its Temporal queues as `TEMPORAL_TASK_QUEUE_INFRA_JOB` (`infra-job`), `TEMPORAL_TASK_QUEUE_INFRA_JOB_IAC_OPERATION`, `TEMPORAL_TASK_QUEUE_INFRA_COMPONENT_PURGE` and `TEMPORAL_TASK_QUEUE_INFRA_STACK_PURGE`, and the job-log bucket as `IAC_EXECUTION_LOGS_GCS_BUCKET`.
+- The operator hands the control plane its Temporal queues as `TEMPORAL_TASK_QUEUE_INFRA_JOB` (`infra-job`), `TEMPORAL_TASK_QUEUE_INFRA_JOB_IAC_OPERATION`, `TEMPORAL_TASK_QUEUE_INFRA_COMPONENT_PURGE` and `TEMPORAL_TASK_QUEUE_INFRA_STACK_PURGE`.
 - The catalog bundle's entries link each kind's `iacInput` and `outputs`; the bundle declares format `2`, and a consumer that understands another format refuses it with both versions named.
 - IDs carry `ic_` (an Infra Component, with its kind segment), `ij_` (an Infra Job), `infstk_` (an Infra Stack) and `infpipe_` (an Infra Pipeline).
 - A folder checked out from a deployed stack carries `.planton/stack.yaml` (`stackId`, `stackName`, `org`, `env`).
