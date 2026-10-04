@@ -1,6 +1,6 @@
 # AwsBedrockGuardrail — Kind Guide
 
-Authored operational judgment for the Bedrock guardrail component: the
+Authored operational judgment for the Bedrock guardrail kind: the
 design decisions behind the spec's shape, and what to know before running
 guardrails in production.
 

@@ -1,6 +1,6 @@
 # AwsBedrockModelAccess — Kind Guide
 
-Authored operational judgment for the Bedrock model access component.
+Authored operational judgment for the Bedrock model access kind.
 
 ## Design decisions
 

@@ -1,6 +1,6 @@
 # AwsSsmParameter — Kind Guide
 
-Authored operational judgment for the parameter component: the design
+Authored operational judgment for the parameter kind: the design
 decisions behind the spec's shape, and what to know before operating
 parameters in production.
 

@@ -1,6 +1,6 @@
 # AwsRestApiGateway — Kind Guide
 
-Authored operational judgment for the REST API Gateway component: the
+Authored operational judgment for the REST API Gateway kind: the
 design decisions behind the spec's shape, and what to know before
 running REST APIs in production.
 

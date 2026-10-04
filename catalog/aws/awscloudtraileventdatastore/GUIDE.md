@@ -1,6 +1,6 @@
 # AwsCloudTrailEventDataStore — Kind Guide
 
-Authored operational judgment for the CloudTrail Lake component: the
+Authored operational judgment for the CloudTrail Lake kind: the
 design decisions behind the spec's shape, and what to know before
 operating event data stores in production.
 

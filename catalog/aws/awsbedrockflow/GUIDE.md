@@ -1,6 +1,6 @@
 # AwsBedrockFlow — Kind Guide
 
-Authored operational judgment for the Bedrock flow component: the design
+Authored operational judgment for the Bedrock flow kind: the design
 decisions behind the spec's shape, and what to know before running flows
 in production.
 

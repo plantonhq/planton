@@ -1,6 +1,6 @@
 # AwsBackupRestoreTestingPlan — Kind Guide
 
-Authored operational judgment for the restore testing component: the
+Authored operational judgment for the restore testing kind: the
 design decisions behind the spec's shape, and what to know before
 operating restore tests in production.
 

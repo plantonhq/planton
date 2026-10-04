@@ -1,6 +1,6 @@
 # AwsCloudTrail — Kind Guide
 
-Authored operational judgment for the CloudTrail component: the design
+Authored operational judgment for the CloudTrail kind: the design
 decisions behind the spec's shape, and what to know before operating
 audit trails in production.
 

@@ -43,7 +43,7 @@ disables the distribution, which is itself a propagation).
 
 ## Examples
 
-See [`e2e/manifest.yaml`](../../e2e/manifest.yaml) and the component presets
+See [`e2e/manifest.yaml`](../../e2e/manifest.yaml) and the kind's presets
 for sample manifests covering private S3 origins with OAC and custom-domain
 serving.
 

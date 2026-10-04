@@ -1,6 +1,6 @@
 # AwsBedrockKnowledgeBase — Kind Guide
 
-Authored operational judgment for the Bedrock knowledge base component:
+Authored operational judgment for the Bedrock knowledge base kind:
 the design decisions behind the spec's shape, and what to know before
 running knowledge bases in production.
 

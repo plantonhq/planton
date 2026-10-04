@@ -1,6 +1,6 @@
 # AwsSsmAssociation — Kind Guide
 
-Authored operational judgment for the association component: the
+Authored operational judgment for the association kind: the
 design decisions behind the spec's shape, and what to know before
 operating associations in production.
 

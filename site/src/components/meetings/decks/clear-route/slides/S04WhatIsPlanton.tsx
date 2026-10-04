@@ -28,7 +28,7 @@ export default function S04WhatIsPlanton() {
               • <strong className="text-white">600+ catalog kinds</strong> across 17
               clouds
             </li>
-            <li>• Every component ships a Pulumi and an OpenTofu module</li>
+            <li>• Every catalog kind ships a Pulumi and an OpenTofu module</li>
             <li>
               • <strong className="text-white">Infra Charts</strong> are Helm
               charts for cloud infrastructure

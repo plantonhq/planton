@@ -1,6 +1,6 @@
 # AwsRestApiDomain — Kind Guide
 
-Authored operational judgment for the REST API custom-domain component:
+Authored operational judgment for the REST API custom-domain kind:
 the design decisions behind the spec's shape, and what to know before
 fronting APIs with your own hostname.
 

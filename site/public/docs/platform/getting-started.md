@@ -123,7 +123,7 @@ With a cloud provider connected and authorized, you can deploy infrastructure.
 
 1. Open the **Infra Catalog** — click the store icon in the header (right side)
 2. Browse or search for a kind (e.g., search "VPC" and filter by your cloud provider)
-3. Click on the component to see its details
+3. Click the kind to see its details
 4. Click **Deploy**
 5. Fill in the configuration form with your desired settings
 6. Click **Deploy**

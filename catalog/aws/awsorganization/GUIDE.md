@@ -1,6 +1,6 @@
 # AwsOrganization — Kind Guide
 
-Authored operational judgment for the organization component: the
+Authored operational judgment for the organization kind: the
 design decisions behind the spec's shape, and what to know before
 operating an organization in production.
 

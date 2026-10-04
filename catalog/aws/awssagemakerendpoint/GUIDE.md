@@ -1,6 +1,6 @@
 # AwsSagemakerEndpoint — Kind Guide
 
-Authored operational judgment for the SageMaker endpoint component:
+Authored operational judgment for the SageMaker endpoint kind:
 the design decisions behind the spec's shape, and what to know before
 running real-time inference in production.
 

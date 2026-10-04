@@ -1,6 +1,6 @@
 # AwsConfigConformancePack — Kind Guide
 
-Authored operational judgment for the conformance pack component: the
+Authored operational judgment for the conformance pack kind: the
 design decisions behind the spec's shape, and what to know before
 operating packs in production.
 

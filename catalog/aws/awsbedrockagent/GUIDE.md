@@ -1,6 +1,6 @@
 # AwsBedrockAgent — Kind Guide
 
-Authored operational judgment for the Bedrock agent component: the design
+Authored operational judgment for the Bedrock agent kind: the design
 decisions behind the spec's shape, and what to know before running agents
 in production.
 

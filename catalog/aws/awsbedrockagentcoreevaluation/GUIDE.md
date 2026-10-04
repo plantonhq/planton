@@ -1,6 +1,6 @@
 # AwsBedrockAgentCoreEvaluation — Kind Guide
 
-Authored operational judgment for the AgentCore Evaluations component:
+Authored operational judgment for the AgentCore Evaluations kind:
 the design decisions behind the spec's shape, and what to know before
 scoring agents in production.
 

@@ -1,6 +1,6 @@
 # AwsSsmDocument — Kind Guide
 
-Authored operational judgment for the document component: the design
+Authored operational judgment for the document kind: the design
 decisions behind the spec's shape, and what to know before operating
 documents in production.
 

@@ -1,6 +1,6 @@
 # AwsSsmPatchBaseline — Kind Guide
 
-Authored operational judgment for the patch baseline component: the
+Authored operational judgment for the patch baseline kind: the
 design decisions behind the spec's shape, and what to know before
 operating baselines in production.
 

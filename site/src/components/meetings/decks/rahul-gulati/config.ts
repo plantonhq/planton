@@ -67,7 +67,7 @@ export const rahulGulatiSlides: SlideConfig[] = [
     component: S04WhatIsPlanton,
     presenterNotes: [
       '"Two halves. Infra Hub creates the platform. Service Hub deploys applications onto it."',
-      'If asked for an exact component count: <strong>"north of six hundred and climbing"</strong> — never a precise number.',
+      'If asked for an exact catalog kind count: <strong>"north of six hundred and climbing"</strong> — never a precise number.',
       'The failed-copilot story goes here or on the next slide: "we spent a year and a half building a generic DevOps copilot. It hallucinated. We killed it. That failure is why the AI never writes infrastructure code."',
       'Do not skip the bottom callout — runs in THEIR cloud, open source underneath, no lock-in.',
     ],

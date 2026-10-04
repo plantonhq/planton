@@ -1,6 +1,6 @@
 # AwsSsmMaintenanceWindow — Kind Guide
 
-Authored operational judgment for the maintenance window component:
+Authored operational judgment for the maintenance window kind:
 the design decisions behind the spec's shape, and what to know before
 operating windows in production.
 

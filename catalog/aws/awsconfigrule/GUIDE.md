@@ -1,6 +1,6 @@
 # AwsConfigRule — Kind Guide
 
-Authored operational judgment for the Config rule component: the
+Authored operational judgment for the Config rule kind: the
 design decisions behind the spec's shape, and what to know before
 operating compliance rules in production.
 

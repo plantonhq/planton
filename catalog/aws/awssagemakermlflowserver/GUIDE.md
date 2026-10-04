@@ -1,6 +1,6 @@
 # AwsSagemakerMlflowServer — Kind Guide
 
-Authored operational judgment for the MLflow tracking server component:
+Authored operational judgment for the MLflow tracking server kind:
 the design decisions behind the spec's shape, and what to know before
 running managed MLflow in production.
 

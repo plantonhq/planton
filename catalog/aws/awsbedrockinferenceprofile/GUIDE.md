@@ -1,7 +1,7 @@
 # AwsBedrockInferenceProfile — Kind Guide
 
 Authored operational judgment for the Bedrock application inference
-profile component.
+profile kind.
 
 ## Design decisions
 

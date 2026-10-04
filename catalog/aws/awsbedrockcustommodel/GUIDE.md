@@ -1,6 +1,6 @@
 # AwsBedrockCustomModel — Kind Guide
 
-Authored operational judgment for the Bedrock custom model component.
+Authored operational judgment for the Bedrock custom model kind.
 
 ## Design decisions
 

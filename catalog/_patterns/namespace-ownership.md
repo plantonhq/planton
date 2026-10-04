@@ -5,7 +5,7 @@ kinds:
   - KubernetesValkey
 ---
 
-# Namespace Ownership: Dedicated Kind vs the createNamespace Flag
+# Namespace Ownership: Dedicated Component vs the createNamespace Flag
 
 Most Kubernetes workload kinds carry a `createNamespace` convenience flag, and
 composing several of them into one namespace with that flag set is the single
@@ -34,7 +34,7 @@ deploy time:
 
 ## The composition
 
-Give the namespace one owner: a dedicated KubernetesNamespace kind.
+Give the namespace one owner: a dedicated KubernetesNamespace component.
 Every workload references it and leaves `createNamespace` unset. The
 `spec.namespace` field on workload kinds is a foreign key whose default
 target is exactly this kind — the wiring below is what the schema itself
@@ -81,7 +81,7 @@ spec:
       fieldPath: spec.name
 ```
 
-Deploy order follows the reference: the namespace kind first, then the
+Deploy order follows the reference: the namespace component first, then the
 workloads in any order. Adding a third workload later is a reference, not a
 race.
 
@@ -90,21 +90,21 @@ race.
 | Choice | What it buys | What it costs / risks |
 |---|---|---|
 | Dedicated KubernetesNamespace + references | One owner in one state; teardown of any workload never deletes the namespace; the namespace's own surface opens up (resource quotas, default-deny network policies, pod security standards, service-mesh injection); **renders as a visible node on the architecture diagram** with reference edges from each workload | One more kind to declare |
-| `createNamespace: true` on a single workload | One less manifest for a genuinely single-tenant namespace | The workload owns the namespace: destroying it deletes the namespace; a second kind with the flag fails on already-exists; namespace stays bare (no quotas, no network policies — nothing beyond the standard governance labels the module applies); **invisible on the diagram** — the namespace exists in the cluster but appears nowhere in the architecture |
-| `createNamespace: true` on several kinds sharing a namespace | Nothing | The failure in "The problem" — first deploy wins, second fails |
+| `createNamespace: true` on a single workload | One less manifest for a genuinely single-tenant namespace | The workload owns the namespace: destroying it deletes the namespace; a second component with the flag fails on already-exists; namespace stays bare (no quotas, no network policies — nothing beyond the standard governance labels the module applies); **invisible on the diagram** — the namespace exists in the cluster but appears nowhere in the architecture |
+| `createNamespace: true` on several components sharing a namespace | Nothing | The failure in "The problem" — first deploy wins, second fails |
 
 The diagram consequence deserves weight when composing for a user:
 architectures on this platform render as resource graphs, and a dedicated
-namespace kind is part of the picture a user sees and reasons about. A
+namespace component is part of the picture a user sees and reasons about. A
 flag is not.
 
 ## When not to use this
 
-A genuinely single-tenant namespace — one kind, nothing else ever
+A genuinely single-tenant namespace — one component, nothing else ever
 planned in it, no quota/network/security requirements on the namespace
 itself — is exactly what `createNamespace: true` is for. One manifest,
-correct ownership (the kind IS the only tenant), one fewer moving part.
-Use the dedicated kind the moment a second tenant appears or the
+correct ownership (the component IS the only tenant), one fewer moving part.
+Use the dedicated component the moment a second tenant appears or the
 namespace itself needs configuration.
 
 The canonical instances of this case are the cluster's shared

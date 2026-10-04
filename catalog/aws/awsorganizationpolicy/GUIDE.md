@@ -1,6 +1,6 @@
 # AwsOrganizationPolicy — Kind Guide
 
-Authored operational judgment for the organization-policy component:
+Authored operational judgment for the organization-policy kind:
 the design decisions behind the spec's shape, and what to know before
 operating guardrails in production.
 

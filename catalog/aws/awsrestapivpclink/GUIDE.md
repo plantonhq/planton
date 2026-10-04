@@ -1,6 +1,6 @@
 # AwsRestApiVpcLink — Kind Guide
 
-Authored operational judgment for the REST API VPC-link component: the
+Authored operational judgment for the REST API VPC-link kind: the
 design decisions behind the spec's shape, and what to know before
 fronting private NLBs with REST APIs.
 

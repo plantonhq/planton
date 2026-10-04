@@ -1,6 +1,6 @@
 # AwsBedrockAgentCoreMemory — Kind Guide
 
-Authored operational judgment for the AgentCore memory component: the
+Authored operational judgment for the AgentCore memory kind: the
 design decisions behind the spec's shape, and what to know before
 running agent memory in production.
 

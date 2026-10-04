@@ -1,6 +1,6 @@
 # AwsGuardDuty — Kind Guide
 
-Authored operational judgment for the GuardDuty component: the design
+Authored operational judgment for the GuardDuty kind: the design
 decisions behind the spec's shape, and what to know before operating
 threat detection in production.
 

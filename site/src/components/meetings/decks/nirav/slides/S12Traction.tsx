@@ -15,7 +15,7 @@ export default function S12Traction(_props: SlideComponentProps) {
         stats={[
           { icon: '📅', value: '3+', label: 'Years Building' },
           { icon: '💰', value: '$500K+', label: 'Self-Funded' },
-          { icon: '📦', value: '370+', label: 'Infra Components' },
+          { icon: '📦', value: '370+', label: 'Catalog Kinds' },
           { icon: '👥', value: '3', label: 'Active Customers' },
           { icon: '🖥️', value: '4', label: 'App Surfaces' },
         ]}

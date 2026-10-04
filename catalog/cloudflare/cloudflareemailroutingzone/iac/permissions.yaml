@@ -5,7 +5,7 @@
 # of the module sources, cited in notes) until the live capture lane
 # upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
-# HONEST UNKNOWN, deliberately NOT declared as data: the component's
+# HONEST UNKNOWN, deliberately NOT declared as data: the kind's
 # catalog.md prose requires "DNS edit access for the auto-provisioned
 # records" (a zone-scoped DNS Write / DNS Read pair), but the modules never
 # call the dns_records API directly -- enabling routing auto-provisions

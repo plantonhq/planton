@@ -30,4 +30,4 @@ to take 5-15 minutes each while the distribution converges (and destroy first
 disables the distribution, which is itself a propagation).
 
 For more examples, see [`e2e/manifest.yaml`](../../e2e/manifest.yaml) and the
-component presets.
+kind's presets.

@@ -1,6 +1,6 @@
 # AwsSagemakerFeatureGroup — Kind Guide
 
-Authored operational judgment for the feature group component: the
+Authored operational judgment for the feature group kind: the
 design decisions behind the spec's shape, and what to know before
 running a feature store in production.
 

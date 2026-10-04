@@ -1,6 +1,6 @@
 # AwsRestApiUsagePlan — Kind Guide
 
-Authored operational judgment for the REST API usage-plan component:
+Authored operational judgment for the REST API usage-plan kind:
 the design decisions behind the spec's shape, and what to know before
 metering API consumers.
 

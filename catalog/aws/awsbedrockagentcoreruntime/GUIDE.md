@@ -1,6 +1,6 @@
 # AwsBedrockAgentCoreRuntime — Kind Guide
 
-Authored operational judgment for the AgentCore runtime component: the
+Authored operational judgment for the AgentCore runtime kind: the
 design decisions behind the spec's shape, and what to know before
 hosting agents in production.
 
