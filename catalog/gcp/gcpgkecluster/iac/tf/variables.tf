@@ -652,13 +652,20 @@ variable "spec" {
     monitoring = optional(object({
       # Components exposing metrics: SYSTEM_COMPONENTS, APISERVER, SCHEDULER,
       # CONTROLLER_MANAGER, STORAGE, HPA, POD, DAEMONSET, DEPLOYMENT,
-      # STATEFULSET, KUBELET, CADVISOR, DCGM, JOBSET. An empty list disables
-      # Cloud Monitoring integration.
+      # STATEFULSET, KUBELET, CADVISOR, DCGM, JOBSET. An empty list sends
+      # nothing, so GKE keeps whatever it runs now (its default turns on the
+      # kube-state, cAdvisor, kubelet and DCGM packages beside
+      # SYSTEM_COMPONENTS). Everything but SYSTEM_COMPONENTS is billed per
+      # sample ingested; a cluster that runs its own Prometheus agent names
+      # SYSTEM_COMPONENTS alone, with managed_prometheus_enabled false, in one
+      # update.
       components = optional(list(string), [])
 
       # Google Cloud Managed Service for Prometheus: managed collection of
       # Prometheus metrics (GKE's default on current versions). Disabling it
-      # means running your own Prometheus stack.
+      # means running your own Prometheus stack; name SYSTEM_COMPONENTS alone
+      # in `components` in the same update, or the billed packages keep
+      # running.
       managed_prometheus_enabled = optional(bool)
 
       # Managed Prometheus auto-monitoring scope: ALL deploys packaged

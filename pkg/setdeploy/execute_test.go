@@ -75,7 +75,7 @@ func TestExecute_OutputsFeedDownstreamReferences(t *testing.T) {
 	deployer := &fakeDeployer{
 		outputs: map[string]*outputs.CaptureResult{
 			"TestCatalogKindGeneric/producer@dev": {
-				Flat: map[string]string{"id": "tcrg-producer"},
+				Flat: map[string]string{"id": "tckg-producer"},
 			},
 		},
 	}
@@ -93,7 +93,7 @@ func TestExecute_OutputsFeedDownstreamReferences(t *testing.T) {
 	// The consumer's annotated reference must have become the producer's
 	// literal id output by handoff time.
 	consumerManifest := deployer.manifests["TestCatalogKindGeneric/consumer@dev"]
-	if !strings.Contains(consumerManifest, "tcrg-producer") {
+	if !strings.Contains(consumerManifest, "tckg-producer") {
 		t.Fatalf("the consumer's handoff manifest must carry the resolved literal; got:\n%s", consumerManifest)
 	}
 	if strings.Contains(consumerManifest, "valueFrom") {

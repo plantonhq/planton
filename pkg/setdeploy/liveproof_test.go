@@ -73,7 +73,7 @@ func TestLiveProof_TwoNodeSetDeploysThroughTofu(t *testing.T) {
 	// deterministic ("tckg-" + name), so the capture path is provable.
 	producerID := plan.Set.Nodes[plan.Order[0]].Identity
 	captured := result.Outputs[producerID]
-	if captured == nil || captured.Flat["id"] != "tcrg-producer" {
+	if captured == nil || captured.Flat["id"] != "tckg-producer" {
 		t.Fatalf("expected the producer's captured id output; got %+v", captured)
 	}
 	if captured.Flat["url"] != "test://producer" {
@@ -99,7 +99,7 @@ func TestLiveProof_TwoNodeSetDeploysThroughTofu(t *testing.T) {
 		t.Fatalf("the producer's local state must persist in its identity-keyed workspace: %v", err)
 	}
 	b, err := os.ReadFile(stateFile)
-	if err != nil || !strings.Contains(string(b), "tcrg-producer") {
+	if err != nil || !strings.Contains(string(b), "tckg-producer") {
 		t.Fatalf("the persisted state must hold the producer's resource")
 	}
 }
