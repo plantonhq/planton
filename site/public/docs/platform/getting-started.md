@@ -121,18 +121,18 @@ The connection now appears in the **Connected Providers** list and is ready for 
 
 With a cloud provider connected and authorized, you can deploy infrastructure.
 
-1. Open the **Catalog Kind Store** — click the store icon in the header (right side)
+1. Open the **Infra Catalog** — click the store icon in the header (right side)
 2. Browse or search for a kind (e.g., search "VPC" and filter by your cloud provider)
 3. Click on the component to see its details
 4. Click **Deploy**
 5. Fill in the configuration form with your desired settings
 6. Click **Deploy**
 
-<!-- SCREENSHOT: Catalog Kind Store
+<!-- SCREENSHOT: Infra Catalog
   Page: /platform/deployment-store
   Action: Show the kind catalog with provider filter active
   Focus: The kind grid with deploy buttons
-  Alt: Catalog Kind Store showing infrastructure kinds filterable by cloud provider
+  Alt: Infra Catalog showing infrastructure kinds filterable by cloud provider
 -->
 
 An Infra Job is created automatically. Infra Jobs are the execution units that run Pulumi, Terraform, or OpenTofu to provision your infrastructure. You can watch the deployment progress in real-time as each operation (init, refresh, plan, apply) completes.
@@ -172,7 +172,7 @@ You can complete these tasks in any order, and dismiss the checklist at any time
 
 With your first resource deployed, here are the natural next steps:
 
-- **Deploy more resources** — return to the Catalog Kind Store and deploy a database, Kubernetes cluster, or storage bucket. See [Infrastructure](/docs/infrastructure).
+- **Deploy more resources** — return to the Infra Catalog and deploy a database, Kubernetes cluster, or storage bucket. See [Infrastructure](/docs/infrastructure).
 - **Deploy an Infra Chart** — instead of individual resources, deploy a coordinated set of resources (e.g., VPC + ECS Cluster + ALB) as a single Infra Chart. See [Infra Charts](/docs/infrastructure/infra-charts).
 - **Deploy an application** — connect GitHub, create a Service, and push code to trigger an automated build and deployment pipeline. See [CI/CD](/docs/ci-cd).
 - **Invite your team** — go to **Settings > Manage Members** to invite colleagues and assign roles. See [Teams and Access](/docs/teams-and-access).

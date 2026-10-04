@@ -18,7 +18,7 @@
 # Rules Write", "Dynamic URL Redirects Write", "Origin Write", "Zone
 # Settings Write"), each plausibly scoped to its own phase, but no
 # Cloudflare page states which group unlocks which phase, so this file does
-# not guess. This component's README has long claimed "Zone > Zone Settings
+# not guess. This kind's README has long claimed "Zone > Zone Settings
 # > Edit for most phases" (migrated here verbatim as the README's claim,
 # not Cloudflare's). The live capture lane resolves the zone-scope story to
 # proven.

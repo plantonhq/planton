@@ -83,4 +83,4 @@ module "orders_pls" {
 
 ## Required Permissions
 
-Least-privilege runner permissions for this component are declared in [`../permissions.yaml`](../permissions.yaml).
+Least-privilege runner permissions for this kind are declared in [`../permissions.yaml`](../permissions.yaml).

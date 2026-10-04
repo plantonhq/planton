@@ -6,7 +6,7 @@ AWS Elastic File System (EFS) — a fully managed, elastic NFS file system that 
 
 EFS provides a shared file system accessible over the Network File System (NFS) protocol. It is a regional, multi-AZ service by default: data is replicated across multiple Availability Zones within a region for durability and availability. Storage grows and shrinks automatically with your data; you pay only for what you use.
 
-This component bundles the file system with its mount targets (one per subnet/AZ, with optional static IPv4/IPv6 addressing), backup policy, resource policy, replication-overwrite protection, and cross-region/cross-AZ replication. Access points are a separate, first-class resource — see [AwsEfsAccessPoint](../awsefsaccesspoint/README.md) — that references this file system and is itself referenced by Lambda and ECS task definitions.
+This kind bundles the file system with its mount targets (one per subnet/AZ, with optional static IPv4/IPv6 addressing), backup policy, resource policy, replication-overwrite protection, and cross-region/cross-AZ replication. Access points are a separate, first-class resource — see [AwsEfsAccessPoint](../awsefsaccesspoint/README.md) — that references this file system and is itself referenced by Lambda and ECS task definitions.
 
 ## When to Use It
 

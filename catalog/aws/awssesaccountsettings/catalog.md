@@ -4,7 +4,7 @@ Manages the account-level SES settings for one AWS region: the account suppressi
 
 ## What Gets Created
 
-This component creates nothing new at AWS — it adopts the region's existing SES account object and configures its account-wide attributes:
+This kind creates nothing new at AWS — it adopts the region's existing SES account object and configures its account-wide attributes:
 
 - **Suppression List Posture** — which events (hard bounces, spam complaints) automatically add recipient addresses to the account-level suppression list, skipping them on every future send from the account.
 - **VDM Posture** — whether the Virtual Deliverability Manager is enabled, with its engagement-metrics dashboard and Guardian delivery-optimization sub-toggles.

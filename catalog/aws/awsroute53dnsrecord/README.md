@@ -8,7 +8,7 @@ Route53's alias records are a powerful AWS-specific feature that allows pointing
 
 ## Purpose
 
-This component simplifies DNS record management by:
+This kind simplifies DNS record management by:
 
 - **Declarative Record Management**: Define DNS records as code with full validation
 - **Resource References**: Wire records to zones and alias targets using `value_from` references

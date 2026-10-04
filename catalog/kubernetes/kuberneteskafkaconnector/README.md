@@ -3,7 +3,7 @@
 ## When NOT to Use This
 
 **A Connect cluster must already exist — in the SAME namespace.**
-This component declares one connector (a data pipe);
+This kind declares one connector (a data pipe);
 KubernetesKafkaConnect is the worker fleet that runs it. The
 placement contract is strict: a KafkaConnector in another namespace,
 or naming a Connect cluster that does not exist there, is accepted by

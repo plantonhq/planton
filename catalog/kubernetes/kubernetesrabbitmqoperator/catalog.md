@@ -2,7 +2,7 @@
 
 Installs the RabbitMQ Cluster Operator — the MPL-2.0 operator maintained by the RabbitMQ team — from its official single-file release manifest (the operator has no Helm chart). The operator reconciles `RabbitmqCluster` custom resources (declared with **RabbitMQ**) into running RabbitMQ clusters: one StatefulSet per cluster, the client and inter-node Services, generated administrator credentials, and rolling upgrades.
 
-This component installs and configures the **engine**. RabbitMQ clusters themselves are declared with RabbitMQ resources — one per cluster — which this operator reconciles.
+This kind installs and configures the **engine**. RabbitMQ clusters themselves are declared with RabbitMQ resources — one per cluster — which this operator reconciles.
 
 ## What Gets Created
 

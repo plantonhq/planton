@@ -60,7 +60,7 @@ Before an Infra Job starts running, the platform resolves four things automatica
 
 ### IaC Module
 
-The Pulumi, Terraform, or OpenTofu module that contains the provisioning logic for the resource type. If the Infra Component specifies a custom module, that module is used. Otherwise, the platform looks up the registered module for the resource type — first in the organization's module registry, then in the platform-level registry.
+The Pulumi, Terraform, or OpenTofu module that contains the provisioning logic for the catalog kind. If the Infra Component specifies a custom module, that module is used. Otherwise, the platform looks up the registered module for the catalog kind — first in the organization's module registry, then in the platform-level registry.
 
 ### Provider Credentials
 
@@ -134,7 +134,7 @@ planton infra job rerun <infra-job-id>
 
 ## Preflight Checks
 
-Before committing to execution, verify that all four essentials are in place for a given resource type and environment:
+Before committing to execution, verify that all four essentials are in place for a given catalog kind and environment:
 
 ```bash
 planton infra job preflight-checks --catalog-kind <kind>
@@ -170,13 +170,13 @@ planton infra job preflight-checks --catalog-kind <kind>
 planton infra job iac-input <infra-job-id>
 ```
 
-The `--operation` flag on `create-infra-job` accepts: `refresh`, `preview`, `update`, `destroy`, `destroy_preview`. The default is `preview`. Any other value is refused as **Unknown Operation**, naming the valid ones, and no job is created.
+The `--operation` flag on `infra job create` accepts: `refresh`, `preview`, `update`, `destroy`, `destroy_preview`. The default is `preview`. Any other value is refused as **Unknown Operation**, naming the valid ones, and no job is created.
 
 Every `infra-job` subcommand names its argument on its usage line (`<infra-component-id>` or `<infra-job-id>`), and `--help` shows an example.
 
 The summary printed when a job finishes names each operation by the engine that ran it: `tofu apply` and `tofu destroy` for OpenTofu (`terraform apply` for a resource set to Terraform), `pulumi up` and `pulumi destroy` for Pulumi.
 
-Additional flags for `create-infra-job`, `resume`, and `rerun`:
+Additional flags for `create`, `resume`, and `rerun`:
 
 - `--tail` / `-t` — Follow the job's progress events after creation
 - `--show-stack-summary` — Display the resource summary at completion (default: on)

@@ -7,7 +7,7 @@ spot interruptions and maintenance events are drained ahead of, not
 reacted to. Karpenter is one installation per cluster — it owns the
 cluster-wide `karpenter.sh` label domain and node lifecycle.
 
-This component installs the ENGINE only: an installation without at least
+This kind installs the ENGINE only: an installation without at least
 one `KubernetesKarpenterNodePool` (plus its
 `KubernetesKarpenterEc2NodeClass`) provisions nothing.
 

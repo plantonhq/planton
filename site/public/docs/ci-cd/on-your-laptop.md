@@ -89,7 +89,7 @@ planton local build-cluster keep-warm on  # hold it up between builds (off to re
 planton local build-cluster remove        # remove it and its files; the next "yes" sets it up again
 planton service watch <service>           # when GitHub was last checked and what it saw
 planton service watch <service> --history # what the watch recorded: gaps and why, pushes seen, pauses
-planton daemon status                     # every kind of the local instance, the build cluster included
+planton daemon status                     # every component of the local instance, the build cluster included
 ```
 
 ## When something goes wrong

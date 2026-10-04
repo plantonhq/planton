@@ -67,7 +67,7 @@ Both surfaces share the same design principles: monochrome chrome, semantic-only
 
 ### Website Palette
 
-The website palette is defined once, in the website-shell package's `tokens.ts`, and projected into both the MUI theme and Tailwind. Kinds use the role-named Tailwind classes below and never type a hex; the hex column is for the reader, not for code.
+The website palette is defined once, in the website-shell package's `tokens.ts`, and projected into both the MUI theme and Tailwind. Components use the role-named Tailwind classes below and never type a hex; the hex column is for the reader, not for code.
 
 | Role | Hex | Tailwind class |
 |------|-----|----------------|
@@ -224,7 +224,7 @@ Both surfaces use a **unified canvas** approach where the header, sidebar, and c
 
 ### Card Separation
 
-Cards are separated by borders, not background color differences. The console applies a global `MuiCard` override with `border: 1px solid ${theme.palette.divider}`. The website uses `border-[#2a2a2a]` on card elements. Individual kinds do not declare their own borders — the system provides them.
+Cards are separated by borders, not background color differences. The console applies a global `MuiCard` override with `border: 1px solid ${theme.palette.divider}`. The website uses `border-[#2a2a2a]` on card elements. Individual components do not declare their own borders — the system provides them.
 
 MUI's dark-mode elevation overlay (`backgroundImage: linear-gradient(rgba(255,255,255,...))`) is disabled globally via `backgroundImage: 'none'` on `MuiPaper.root` and `MuiAppBar.root`. All surfaces render at their exact `backgroundColor` with no hidden gradients.
 
@@ -301,7 +301,7 @@ The console's error boundary (`global-error.tsx`) has its own independent theme 
 The console's color system flows through a strict five-layer pipeline. There are no alternative styling systems.
 
 ```
-Token ramps           →  Palette config        →  createTheme()     →  ThemeProvider      →  Kinds
+Token ramps           →  Palette config        →  createTheme()     →  ThemeProvider      →  Components
 (dark-colors.ts)         (dark.tsx)                (theme.ts)           (appContext.tsx)       (styled.ts)
 (light-colors.ts)        (light.tsx)
 ```
@@ -324,7 +324,7 @@ Files `dark-colors.ts` and `light-colors.ts` each export 9 color ramps (objects 
 
 ### Layer 2: Palette Config
 
-Files `dark.tsx` and `light.tsx` map raw ramp slots to MUI semantic roles (`palette.background.default`, `palette.text.primary`, `palette.divider`, etc.) and define kind overrides. The palette config uses direct ramp imports. Kind overrides use `theme.palette.*` exclusively — never direct ramp imports.
+Files `dark.tsx` and `light.tsx` map raw ramp slots to MUI semantic roles (`palette.background.default`, `palette.text.primary`, `palette.divider`, etc.) and define component overrides. The palette config uses direct ramp imports. Component overrides use `theme.palette.*` exclusively — never direct ramp imports.
 
 ### Layer 3: Theme Creation
 
@@ -338,7 +338,7 @@ File `appContext.tsx` manages theme state with the 3-step resolution chain (cook
 
 The console's 61+ library packages access the theme through two mechanisms:
 - **`useTheme()`** — MUI's built-in hook for `theme.palette.*` in styled-components.
-- **`PlantonThemeContext`** — A lightweight context providing `{ mode: 'light' | 'dark' }` for cases where a library kind needs the current mode explicitly (e.g., selecting a dark variant of a provider icon).
+- **`PlantonThemeContext`** — A lightweight context providing `{ mode: 'light' | 'dark' }` for cases where a library component needs the current mode explicitly (e.g., selecting a dark variant of a provider icon).
 
 ### Graph and Visualization Colors
 
@@ -462,7 +462,7 @@ Sidebar badge colors preserve semantic meaning: `Popular` uses green (`#10b981`)
 
 ## Rules for Contributors
 
-These rules apply to all Planton surfaces. Every kind, every styled file, every new feature must follow them.
+These rules apply to all Planton surfaces. Every component, every styled file, every new feature must follow them.
 
 ### Always Do
 
@@ -472,7 +472,7 @@ These rules apply to all Planton surfaces. Every kind, every styled file, every 
 
 3. **Use `alpha()` from `@mui/material` for opacity variations** in the console. Never write raw `rgba()` with theme colors.
 
-4. **Use theme callbacks in MUI kind overrides.** All overrides use `({ theme }) => ({...})`.
+4. **Use theme callbacks in MUI component overrides.** All overrides use `({ theme }) => ({...})`.
 
 5. **Use `background.default` for CTA inversion** in the console. When text sits on a `primary.main` background, use `background.default` for the text color — not `common.white`.
 
@@ -484,11 +484,11 @@ These rules apply to all Planton surfaces. Every kind, every styled file, every 
 
 ### Never Do
 
-1. **Never hardcode hex values in kind files.** No `'#0d1117'`, `'#e6edf3'`, `'#30363d'` in console kinds. No arbitrary hex outside the established website palette.
+1. **Never hardcode hex values in component files.** No `'#0d1117'`, `'#e6edf3'`, `'#30363d'` in console components. No arbitrary hex outside the established website palette.
 
 2. **Never use CSS named colors.** No `'white'`, `'black'`, `'red'`. Use `'common.white'`, `'common.black'`, `theme.palette.error.main` (console) or the corresponding Tailwind classes (website).
 
-3. **Never import from token ramp files in console kind code.** `dark-colors.ts` and `light-colors.ts` are consumed only by `dark.tsx` and `light.tsx`.
+3. **Never import from token ramp files in console component code.** `dark-colors.ts` and `light-colors.ts` are consumed only by `dark.tsx` and `light.tsx`.
 
 4. **Never use `info.main` for decoration.** Info is reserved for informational severity status only.
 
@@ -521,8 +521,8 @@ These rules apply to all Planton surfaces. Every kind, every styled file, every 
 |------|---------|
 | `src/themes/dark-colors.ts` | Dark token ramps (source of truth for dark hex values) |
 | `src/themes/light-colors.ts` | Light token ramps (source of truth for light hex values) |
-| `src/themes/dark.tsx` | Dark MUI ThemeOptions + kind overrides |
-| `src/themes/light.tsx` | Light MUI ThemeOptions + kind overrides |
+| `src/themes/dark.tsx` | Dark MUI ThemeOptions + component overrides |
+| `src/themes/light.tsx` | Light MUI ThemeOptions + component overrides |
 | `src/themes/theme.ts` | `createTheme` + shared override helpers |
 | `src/themes/graph-colors.ts` | Centralized graph/chart/syntax color constants |
 | `src/contexts/appContext.tsx` | Theme state management, dark-first fallback, ThemeProvider |

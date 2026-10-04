@@ -6,7 +6,7 @@ Catalog kind for provisioning Google Cloud AlloyDB clusters with a bundled prima
 
 AlloyDB is Google Cloud's fully managed, PostgreSQL-compatible database designed for demanding enterprise workloads. It delivers high throughput, low latency, and strong consistency while maintaining full PostgreSQL compatibility.
 
-This component bundles an AlloyDB cluster with its primary instance. A cluster without a primary instance cannot serve queries, so they are provisioned together as a single unit.
+This kind bundles an AlloyDB cluster with its primary instance. A cluster without a primary instance cannot serve queries, so they are provisioned together as a single unit.
 
 ## Key Features
 

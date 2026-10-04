@@ -8,7 +8,7 @@ A batch endpoint provisions no compute and bills nothing at rest: it is a stable
 
 ## Authentication is Entra-only; stop looking for keys
 
-Every job submission presents a Microsoft Entra token for a principal (user or service principal). There are no endpoint keys: ARM's shared enum advertises `Key` and `AMLToken`, but the batch service rejects both with "AuthMode must be 'AADToken'" -- this component's validation stops those values before they reach Azure. Plan the caller side accordingly: the submitting principal needs rights to create jobs in the workspace, and CI schedulers authenticate as service principals, not with copied secrets.
+Every job submission presents a Microsoft Entra token for a principal (user or service principal). There are no endpoint keys: ARM's shared enum advertises `Key` and `AMLToken`, but the batch service rejects both with "AuthMode must be 'AADToken'" -- this kind's validation stops those values before they reach Azure. Plan the caller side accordingly: the submitting principal needs rights to create jobs in the workspace, and CI schedulers authenticate as service principals, not with copied secrets.
 
 ## The submitter's identity runs the job -- grant THAT, not the endpoint
 

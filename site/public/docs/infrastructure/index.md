@@ -11,7 +11,7 @@ tags:
 
 # Infra Hub
 
-Infra Hub is Planton's infrastructure half — Cursor for Cloud Infrastructure. Describe or configure what you need, verify cost and permissions, deploy into your own account, and publish it as an Infra Chart — a template your team reuses. It handles the full lifecycle of your infrastructure — from browsing a catalog of Catalog Kinds, to deploying them as Infra Components, to orchestrating multi-resource deployments through Infra Charts and Infra Pipelines.
+Infra Hub is Planton's infrastructure half — Cursor for Cloud Infrastructure. Describe or configure what you need, verify cost and permissions, deploy into your own account, and publish it as an Infra Chart — a template your team reuses. It handles the full lifecycle of your infrastructure — from browsing a catalog of catalog kinds, to deploying them as Infra Components, to orchestrating multi-resource deployments through Infra Charts and Infra Pipelines.
 
 Infrastructure is provisioned using Pulumi, Terraform, or OpenTofu modules, executed through Infra Jobs, with credentials managed automatically via Connections.
 
@@ -34,11 +34,11 @@ The fundamental unit of infrastructure in Planton. An Infra Component is a deplo
 
 The taxonomy of available catalog kinds. Planton supports resource kinds across AWS, GCP, Azure, Kubernetes, Cloudflare, and other providers.
 
-[Browse Catalog Kinds](/docs/infrastructure/catalog-kinds)
+[Browse catalog kinds](/docs/infrastructure/catalog-kinds)
 
 ### Infra Charts
 
-Composed collections of Catalog Kinds that deploy together as a coordinated unit. An Infra Chart handles dependency ordering, shared configuration, and multi-resource orchestration.
+Composed collections of catalog kinds that deploy together as a coordinated unit. An Infra Chart handles dependency ordering, shared configuration, and multi-resource orchestration.
 
 [Learn about Infra Charts](/docs/infrastructure/infra-charts)
 

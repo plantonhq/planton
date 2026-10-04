@@ -25,7 +25,7 @@ Every catalog kind in Planton open source is defined as a Protocol Buffer API fo
 - **iac_input.proto** — The input contract for IaC modules
 - **outputs.proto** — The output contract from IaC modules
 
-These protobuf definitions are the canonical source of truth for Catalog Kinds. Planton imports them directly — the resource kind taxonomy, the provider classifications, and the cross-resource dependency mechanism all originate in the open-source core.
+These protobuf definitions are the canonical source of truth for catalog kinds. Planton imports them directly — the resource kind taxonomy, the provider classifications, and the cross-resource dependency mechanism all originate in the open-source core.
 
 ### IaC Modules
 
@@ -80,7 +80,7 @@ Planton imports the open-source core at the API layer:
 - **IaC provisioner selection** — The provisioner taxonomy determines whether Pulumi, Terraform, or OpenTofu executes the deployment
 - **Kind APIs** — Each provider-specific component API defines the configuration structure stored in an Infra Component's spec
 
-When an Infra Job executes, it uses the open-source IaC module corresponding to the Catalog Kind. The module receives an IaC input (derived from the Infra Component spec), provisions the infrastructure, and returns outputs that are stored in the resource status.
+When an Infra Job executes, it uses the open-source IaC module corresponding to the catalog kind. The module receives an IaC input (derived from the Infra Component spec), provisions the infrastructure, and returns outputs that are stored in the resource status.
 
 ## Catalog Kind Structure
 

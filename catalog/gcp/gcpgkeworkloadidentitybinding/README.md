@@ -13,7 +13,7 @@ handshake is one precise IAM grant — `roles/iam.workloadIdentityUser` on the
 GSA, to the principal
 `serviceAccount:{project}.svc.id.goog[{namespace}/{ksa}]`.
 
-This component owns exactly that grant, and constructs the brittle principal
+This kind owns exactly that grant, and constructs the brittle principal
 string from simple validated inputs — a typo'd principal is impossible by
 construction, and namespace/name are validated against Kubernetes naming
 rules before anything deploys.

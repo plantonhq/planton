@@ -14,7 +14,7 @@ AWS API Gateway HTTP APIs (API Gateway v2) are designed for building low-latency
 - **Automatic deployments** — Changes to routes and integrations are automatically deployed to the stage
 - **Native CORS support** — Built-in CORS configuration without custom integration responses
 
-This component bundles the API, a single stage, routes with inline integrations, and optional authorizers into one declarative resource. The underlying IaC modules create and wire together the necessary API Gateway resources automatically. Custom domains are the separate `AwsHttpApiDomain` component (a domain outlives any one API and maps many APIs); VPC links are the separate `AwsHttpApiVpcLink` component (one link is shared by many APIs).
+This kind bundles the API, a single stage, routes with inline integrations, and optional authorizers into one declarative resource. The underlying IaC modules create and wire together the necessary API Gateway resources automatically. Custom domains are the separate `AwsHttpApiDomain` component (a domain outlives any one API and maps many APIs); VPC links are the separate `AwsHttpApiVpcLink` component (one link is shared by many APIs).
 
 ## When to Use
 

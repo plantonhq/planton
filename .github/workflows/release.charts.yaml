@@ -25,8 +25,9 @@
 # builds age out.)
 #
 # Called by: .github/workflows/release.yaml (after its github-release job
-# publishes the release). Not triggered directly - it rides the strict-semver
-# release so every pinnable tag carries its own bundle.
+# publishes the release). Not triggered directly - it rides every release,
+# stable and release candidate alike, so every pinnable tag carries its own
+# bundle; a candidate's release is a pre-release, which `latest` never names.
 # =============================================================================
 
 name: release.charts

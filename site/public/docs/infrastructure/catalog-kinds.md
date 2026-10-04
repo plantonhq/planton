@@ -11,13 +11,13 @@ tags:
 
 # Catalog Kinds
 
-Planton supports over 700 types of infrastructure across 8 cloud providers. Each type — an AWS VPC, a GCP Cloud SQL instance, a Kubernetes deployment, a Cloudflare DNS zone — is a Catalog Kind. When you browse the Infra Catalog in the web console, you are browsing Catalog Kinds with their descriptions, icons, and provider information.
+Planton supports over 700 types of infrastructure across 8 cloud providers. Each type — an AWS VPC, a GCP Cloud SQL instance, a Kubernetes deployment, a Cloudflare DNS zone — is a catalog kind. When you browse the Infra Catalog in the web console, you are browsing catalog kinds with their descriptions, icons, and provider information.
 
 ## Why a Unified Catalog
 
 Each cloud provider has its own console, API, and documentation for provisioning resources. An engineer managing infrastructure across AWS, GCP, and Kubernetes would normally switch between three different interfaces with three different sets of conventions.
 
-The Infra Catalog brings all of these into a single browsable catalog. You see everything you can deploy in one place, organized by provider, with consistent configuration and lifecycle management regardless of the underlying cloud. When you select a resource type from the catalog, Planton handles the rest — resolving the correct IaC module, connecting to the right provider credentials, and tracking the resource through its lifecycle.
+The Infra Catalog brings all of these into a single browsable catalog. You see everything you can deploy in one place, organized by provider, with consistent configuration and lifecycle management regardless of the underlying cloud. When you select a catalog kind, Planton handles the rest — resolving the correct IaC module, connecting to the right provider credentials, and tracking the resource through its lifecycle.
 
 ## What You Can Deploy
 
@@ -44,7 +44,7 @@ Unlike cloud provider resources that provision infrastructure directly, Kubernet
 Additional providers include Cloudflare, DigitalOcean, Auth0, and OpenFGA.
 
 <!-- SCREENSHOT: Infra Catalog
-  Page: /platform/deployment-store
+  Page: /infra-catalog
   Action: Show the catalog filtered by a specific provider (e.g., AWS)
   Focus: The grid of available kinds with icons and descriptions
   Alt: Infra Catalog showing AWS resources including VPC, RDS, EKS, and Lambda
@@ -54,9 +54,9 @@ Additional providers include Cloudflare, DigitalOcean, Auth0, and OpenFGA.
 
 ### Web Console
 
-Navigate to the **Catalog Kind Store** in the web console to browse the full catalog. Resources are displayed as cards with icons, provider branding, and descriptions. You can filter by provider to narrow the view.
+Navigate to the **Infra Catalog** in the web console to browse the full catalog. Resources are displayed as cards with icons, provider branding, and descriptions. You can filter by provider to narrow the view.
 
-When you select a resource type, Planton takes you to the creation form where you configure the resource for your target environment and deploy it.
+When you select a catalog kind, Planton takes you to the creation form where you configure the Infra Component for your target environment and deploy it.
 
 ### CLI
 

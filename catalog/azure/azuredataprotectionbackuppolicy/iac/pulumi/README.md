@@ -28,4 +28,4 @@ Creates a Data Protection backup policy -- the schedule and retention rules for 
 
 ## Required Permissions
 
-Least-privilege runner permissions for this component are declared in [`../permissions.yaml`](../permissions.yaml).
+Least-privilege runner permissions for this kind are declared in [`../permissions.yaml`](../permissions.yaml).

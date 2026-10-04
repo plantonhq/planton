@@ -115,7 +115,8 @@ phrases:
     anchors: ['lego block']
     use: catalog kinds
   # Retired ID shapes. An InfraComponent ID is ic_<kind id prefix>_<ulid>, an
-  # InfraJob ID ij_<ulid>, an InfraStack ID infstk_<ulid>.
+  # InfraJob ID ij_<ulid>, an InfraStack ID infstk_<ulid>, an InfraPipeline ID
+  # infpipe_<ulid>.
   - pattern: '(?i)\b(cr|sj|infpj|infproj)_([a-z0-9]+_)?[0-9a-hjkmnp-tv-z]{26}\b'
     anchors: ['cr_', 'sj_', 'infpj_', 'infproj_']
     use: ic_<kind id prefix>_<ulid> for an InfraComponent, ij_<ulid> for an InfraJob, infstk_<ulid> for an InfraStack

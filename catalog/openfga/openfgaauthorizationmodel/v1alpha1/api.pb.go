@@ -38,7 +38,7 @@ const (
 // IMPORTANT: Authorization models are immutable. Each model_json change creates a new model ID.
 //
 // IMPORTANT: OpenFGA only has a Terraform provider - there is no Pulumi provider available.
-// This component runs on OpenTofu or Terraform (kind_meta.provisioners), and Planton refuses
+// This kind runs on OpenTofu or Terraform (kind_meta.provisioners), and Planton refuses
 // Pulumi for it before anything runs.
 //
 // Use cases:

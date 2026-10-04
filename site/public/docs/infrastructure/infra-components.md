@@ -11,13 +11,13 @@ tags:
 
 # Infra Components
 
-An Infra Component is a deployed instance of a catalog kind — an AWS VPC, a GCP Cloud SQL database, an Azure AKS cluster, a Kubernetes deployment. Every piece of infrastructure managed through Infrastructure exists as an Infra Component.
+An Infra Component is a deployed instance of a catalog kind — an AWS VPC, a GCP Cloud SQL database, an Azure AKS cluster, a Kubernetes deployment. Every piece of infrastructure Infra Hub manages exists as an Infra Component.
 
 ## Why Infra Components Exist
 
 Managing infrastructure across multiple cloud providers typically means juggling different APIs, CLIs, and consoles — each with its own conventions for creating, updating, and destroying resources. A VPC in AWS has nothing in common with a GKE cluster in GCP, at least at the API level.
 
-Infra Components provide a single, unified interface for all of it. Regardless of which provider or resource type you are working with, you define what you want, Planton provisions it through the appropriate Infrastructure-as-Code engine (Pulumi, Terraform, or OpenTofu), and the resource is tracked through its full lifecycle — from creation through updates to eventual teardown. One API, one CLI, one web console for infrastructure across 8 cloud providers and 700+ resource types.
+Infra Components provide a single, unified interface for all of it. Regardless of which provider or catalog kind you are working with, you define what you want, Planton provisions it through the appropriate Infrastructure-as-Code engine (Pulumi, Terraform, or OpenTofu), and the resource is tracked through its full lifecycle — from creation through updates to eventual teardown. One API, one CLI, one web console for infrastructure across 8 cloud providers and 700+ resource types.
 
 ## What an Infra Component Represents
 
@@ -52,7 +52,7 @@ Infra Components support five primary operations:
 
 The distinction between destroy and purge matters for compliance and auditing. Destroy leaves a record of what existed and when it was torn down. Purge removes all traces.
 
-A destroy reads only what it destroys. A `$secret/` or `$var/` reference the resource was deployed with that has since been deleted does not stop the destroy: the job names the references it could not read and tears the resource down. And a destroy that empties the stack removes the state it left behind -- the state object in your bucket, or a Pulumi stack with its backups -- and the job says so (`state removed: <key>`); a Terraform Cloud workspace or a Pulumi Cloud stack is kept, holding its history, and a backend that refuses the delete keeps the state, with its reason.
+A destroy reads only what it destroys. A `$secret/` or `$var/` reference the resource was deployed with that has since been deleted does not stop the destroy: the job names the references it could not read and tears the resource down. And a destroy that leaves the IaC state empty removes that state -- the state object in your bucket, or a Pulumi stack with its backups -- and the job says so (`state removed: <key>`); a Terraform Cloud workspace or a Pulumi Cloud stack is kept, holding its history, and a backend that refuses the delete keeps the state, with its reason.
 
 <!-- SCREENSHOT: Infra Component detail page
   Page: /[org]/infra-component/[env]/[resourceKind]/[resourceName]
@@ -77,7 +77,7 @@ The Infra Components tab in Infra Hub guides you through a three-step process:
 
 1. **Create an Environment** — All Infra Components belong to an environment (dev, staging, production).
 2. **Connect a Provider** — Bring your cloud account or Kubernetes cluster into Planton through [Connections](/docs/connections).
-3. **Select, Configure, and Deploy** — Browse the [Infra Catalog](/docs/infrastructure/catalog-kinds) to find the resource type you need, configure it, and deploy.
+3. **Select, Configure, and Deploy** — Browse the [Infra Catalog](/docs/infrastructure/catalog-kinds) to find the catalog kind you need, configure it, and deploy.
 
 <!-- SCREENSHOT: Infra Component creation flow
   Page: /resource/infra-hub/infra-component/[provider]/[resource-kind]/create

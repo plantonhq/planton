@@ -2,7 +2,7 @@
 
 Installs the Apache Solr Operator — the Apache Solr project's own operator for running SolrCloud on Kubernetes — from the official `solr-operator` Helm chart. The operator reconciles `SolrCloud` custom resources (declared with **Apache Solr**) into running Solr clusters with managed rolling updates, scaling with replica movement, and backup repositories.
 
-This component installs and configures the **engine**. Solr clusters themselves are declared with **Apache Solr** resources — one per cluster — which this operator reconciles.
+This kind installs and configures the **engine**. Solr clusters themselves are declared with **Apache Solr** resources — one per cluster — which this operator reconciles.
 
 ## What Gets Created
 

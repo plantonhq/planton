@@ -15,7 +15,7 @@ Use `GcpVertexAiIndexEndpoint` when you need:
 
 ## What This Kind Creates
 
-This component provisions a single Vector Search index endpoint. Placing an index onto it is modeled by `GcpVertexAiDeployedIndex` -- the endpoint alone serves nothing.
+This kind provisions a single Vector Search index endpoint. Placing an index onto it is modeled by `GcpVertexAiDeployedIndex` -- the endpoint alone serves nothing.
 
 ## Key Configuration Options
 

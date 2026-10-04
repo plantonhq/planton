@@ -5,7 +5,7 @@
 # of the module sources, cited in notes) until the live capture lane
 # upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
-# The component's README states the same requirement in prose ("a Cloudflare
+# The kind's README states the same requirement in prose ("a Cloudflare
 # API token with DNS:Edit") -- migrated here losslessly; "DNS:Edit" is the
 # dashboard-name spelling of the same write grant on the permissions
 # reference.

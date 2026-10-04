@@ -17,12 +17,12 @@ This page introduces the key concepts used across the Planton platform. Understa
 
 ### Infra Components
 
-An Infra Component is a deployed infrastructure instance — a VPC, a database, a Kubernetes cluster, or any other catalog kind managed through Planton. Infra Components are the fundamental unit of infrastructure in the platform.
+An Infra Component is a deployed infrastructure instance — a VPC, a database, a Kubernetes cluster: one deployed instance of any catalog kind Planton manages. Infra Components are the fundamental unit of infrastructure in the platform.
 
 Each Infra Component:
 
 - Belongs to an environment (dev, staging, prod)
-- Has a specific Catalog Kind (e.g., AWS VPC, GCP GKE Cluster)
+- Has a specific catalog kind (e.g., AWS VPC, GCP GKE Cluster)
 - Is deployed and managed through Infra Jobs
 - Tracks its own lifecycle, configuration, and deployment history
 
@@ -35,11 +35,11 @@ Each Infra Component:
 
 ### Catalog Kinds
 
-A Catalog Kind is a catalog entry — a template that defines how to provision a specific type of Infra Component. The Infra Catalog is the starting point for deploying infrastructure.
+A catalog kind is a type the Infra Catalog offers — a typed schema with its IaC modules, defining how to provision one kind of Infra Component. The Infra Catalog is the starting point for deploying infrastructure.
 
-When you deploy a Catalog Kind, it creates an Infra Component instance with your specific configuration.
+When you deploy a catalog kind, it creates an Infra Component instance with your specific configuration.
 
-Examples of Catalog Kinds:
+Examples of catalog kinds:
 
 - AWS VPC (networking)
 - AWS RDS (managed database)
@@ -55,7 +55,7 @@ Examples of Catalog Kinds:
 
 ### Infra Charts
 
-An Infra Chart is a composed collection of Catalog Kinds that work together. Instead of deploying resources individually, an Infra Chart deploys an entire set of related resources in the correct dependency order.
+An Infra Chart is a composed collection of catalog kinds that work together. Instead of deploying resources individually, an Infra Chart deploys an entire set of related resources in the correct dependency order.
 
 Example: An AWS ECS Environment Infra Chart might include a VPC, ECS Cluster, ALB, Route53 Zone, Security Groups, IAM Roles, and ECR Repositories — all deployed as a coordinated unit.
 

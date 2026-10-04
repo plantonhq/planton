@@ -2,7 +2,7 @@
 
 Installs the OpenSearch Kubernetes Operator — the opensearch-project's operator for running OpenSearch (the Apache-2.0 search and analytics engine) on Kubernetes — from the official `opensearch-operator` Helm chart. The operator reconciles `OpenSearchCluster` custom resources (declared with **OpenSearch**) into running search clusters with managed TLS, security bootstrap, safe rolling upgrades, and OpenSearch Dashboards.
 
-This component installs and configures the **engine**. Search clusters themselves are declared with OpenSearch resources — one per cluster — which this operator reconciles.
+This kind installs and configures the **engine**. Search clusters themselves are declared with OpenSearch resources — one per cluster — which this operator reconciles.
 
 ## What Gets Created
 

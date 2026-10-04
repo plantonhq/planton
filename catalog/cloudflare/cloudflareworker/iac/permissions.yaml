@@ -24,7 +24,7 @@
 # that call is not stated on the permissions reference page; the live capture
 # lane should settle it.
 #
-# The component README and catalog.md carried no named permission prose to
+# The kind's README and catalog.md carried no named permission prose to
 # migrate.
 apiVersion: iac.planton.dev/v1
 kind: CatalogKindPermissions

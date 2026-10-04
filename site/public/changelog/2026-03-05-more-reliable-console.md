@@ -30,7 +30,7 @@ Beyond fixing the specific crashes, we made a structural improvement to how the 
 
 **The recovery screen is actionable.** Instead of a blank white page or a generic "Application error" message, you'll see clear options: retry the current page, ask for help on Discord, or report an issue on GitHub. Technical details are available in an expandable section for debugging.
 
-**Dashboard kinds are more resilient.** Several dashboard widgets were crashing when API responses were incomplete or still loading. These now handle missing data gracefully, showing loading states instead of crashing.
+**Dashboard components are more resilient.** Several dashboard widgets were crashing when API responses were incomplete or still loading. These now handle missing data gracefully, showing loading states instead of crashing.
 
 ## Catalog Page Fixes
 

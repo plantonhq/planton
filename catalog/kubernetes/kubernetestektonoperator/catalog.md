@@ -2,7 +2,7 @@
 
 Installs the Tekton Operator — the lifecycle manager maintained by the Tekton project — from its official single-file release manifest (the in-repo Helm chart is unpublished and is not a distribution channel). The operator reconciles a `TektonConfig` declaration (declared with **Tekton**) into running Tekton components — Pipelines, Triggers, Dashboard, Chains — managing their installation, upgrades, and removal through `TektonInstallerSet` resources.
 
-This component installs the **manager only**. Installing it deploys NO pipeline runtime: automatic component installation is disabled by design, so the KubernetesTekton declaration is the single owner of what Tekton actually runs on the cluster.
+This kind installs the **manager only**. Installing it deploys NO pipeline runtime: automatic component installation is disabled by design, so the KubernetesTekton declaration is the single owner of what Tekton actually runs on the cluster.
 
 ## What Gets Created
 

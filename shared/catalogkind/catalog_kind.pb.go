@@ -1065,7 +1065,7 @@ const (
 	// scenarios bring their own scenario-local account + share fixtures.
 	CatalogKind_AzureContainerAppEnvironmentStorage CatalogKind = 2046
 	// AzureContainerAppEnvironment is a prerequisite because the Dapr
-	// kind is registered on a referenced environment.
+	// component is registered on a referenced environment.
 	CatalogKind_AzureContainerAppEnvironmentDaprComponent CatalogKind = 2047
 	// AzureContainerAppEnvironment is a prerequisite because the
 	// certificate is stored on a referenced environment.

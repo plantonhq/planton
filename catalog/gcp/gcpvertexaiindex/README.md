@@ -13,7 +13,7 @@ Use `GcpVertexAiIndex` when you need:
 
 ## What This Kind Creates
 
-This component provisions a single Vector Search index. Loading vectors (beyond the optional initial `contentsDeltaUri`), deploying the index to an endpoint, and querying it are separate steps -- deployment is modeled by `GcpVertexAiDeployedIndex`.
+This kind provisions a single Vector Search index. Loading vectors (beyond the optional initial `contentsDeltaUri`), deploying the index to an endpoint, and querying it are separate steps -- deployment is modeled by `GcpVertexAiDeployedIndex`.
 
 ## Key Configuration Options
 

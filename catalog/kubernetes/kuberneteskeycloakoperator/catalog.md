@@ -2,7 +2,7 @@
 
 Installs the official Keycloak Operator from the pinned keycloak-k8s-resources release manifests. Keycloak ships **no official Helm chart** — the operator IS the first-party Kubernetes distribution. It reconciles Keycloak declarations (declared with **Keycloak**) into running Keycloak StatefulSets, managing their Services, network policy, and the one-time bootstrap admin credential.
 
-This component installs the **manager only**. Installing it deploys NO Keycloak server: declare `KubernetesKeycloak` resources and the operator turns each into a running server.
+This kind installs the **manager only**. Installing it deploys NO Keycloak server: declare `KubernetesKeycloak` resources and the operator turns each into a running server.
 
 ## What Gets Created
 

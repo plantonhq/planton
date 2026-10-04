@@ -15,7 +15,7 @@ Use `GcpCloudArmorPolicy` when you need:
 
 ## What This Kind Creates
 
-This component provisions a single Google Cloud Armor security policy with inline rules — global when `region` is empty, regional when it is set — and, when a regional network policy declares `networkEdgeSecurityService`, the region's network edge security service that enrolls it in advanced network DDoS protection. The policy can be attached to backend services, load balancers, or CDN configurations. It does not create or modify backends—you attach the policy to your existing infrastructure.
+This kind provisions a single Google Cloud Armor security policy with inline rules — global when `region` is empty, regional when it is set — and, when a regional network policy declares `networkEdgeSecurityService`, the region's network edge security service that enrolls it in advanced network DDoS protection. The policy can be attached to backend services, load balancers, or CDN configurations. It does not create or modify backends—you attach the policy to your existing infrastructure.
 
 ## One kind, two scopes
 

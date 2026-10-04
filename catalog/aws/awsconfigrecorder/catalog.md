@@ -4,7 +4,7 @@ Manages a region's AWS Config recording posture -- what changed, when, and what 
 
 ## What Gets Created
 
-This component owns the region's Config recording singletons -- AWS permits one of each per region and fixes their names (`metadata.name` never reaches AWS):
+This kind owns the region's Config recording singletons -- AWS permits one of each per region and fixes their names (`metadata.name` never reaches AWS):
 
 - **Configuration Recorder** -- the region's one recorder (AWS-conventional name `default`), with the service role, recording group (all / inclusion / exclusion), and recording mode (continuous or daily, with per-type overrides)
 - **Delivery Channel** -- created only when `deliveryChannel` is set (required whenever the recorder runs); the region's one channel delivering history and snapshots to the S3 bucket, optionally KMS-encrypted and SNS-notified

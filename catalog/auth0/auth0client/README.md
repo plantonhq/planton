@@ -4,7 +4,7 @@
 
 `Auth0Client` is a catalog kind that enables declarative management of Auth0 Applications. In the Auth0 dashboard, these are shown as "Applications" - they represent OAuth 2.0 clients that can authenticate users and request access to APIs.
 
-This component abstracts the complexity of Auth0 application configuration into a simple, declarative YAML manifest that follows the Kubernetes Resource Model (KRM) structure.
+This kind abstracts the complexity of Auth0 application configuration into a simple, declarative YAML manifest that follows the Kubernetes Resource Model (KRM) structure.
 
 ## Purpose
 

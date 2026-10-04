@@ -4,7 +4,7 @@ Manages an AWS account's IAM-wide settings in one place: the console sign-in ali
 
 ## What Gets Created
 
-This component adopts and configures IAM settings objects that exist on every AWS account -- nothing new is created at AWS; the module writes the values of account-level singletons:
+This kind adopts and configures IAM settings objects that exist on every AWS account -- nothing new is created at AWS; the module writes the values of account-level singletons:
 
 - **Sign-In Alias** -- managed only when `accountAlias` is set; the friendly console URL (`https://<alias>.signin.aws.amazon.com/console`). An account has exactly one alias, so applying this arm REPLACES whatever alias existed
 - **Password Policy** -- managed only when `passwordPolicy` is set; the account's one IAM-user password policy, replaced whole on every apply

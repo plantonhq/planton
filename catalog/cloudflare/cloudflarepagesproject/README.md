@@ -3,7 +3,7 @@
 Deploy a Cloudflare Pages project — a managed host for a static site or
 full-stack app (static assets + Pages Functions) served from Cloudflare's edge.
 
-This component manages the durable **project**: its build configuration, optional
+This kind manages the durable **project**: its build configuration, optional
 git connection, per-environment runtime configuration (bindings, env vars,
 compatibility), and custom domains. The actual **deployments** (the built
 versions of the site) are produced out-of-band — see "How versions are deployed".

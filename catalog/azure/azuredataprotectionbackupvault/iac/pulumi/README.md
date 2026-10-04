@@ -25,4 +25,4 @@ Creates a Data Protection backup vault -- the safe that modern Azure Backup data
 
 ## Required Permissions
 
-Least-privilege runner permissions for this component are declared in [`../permissions.yaml`](../permissions.yaml).
+Least-privilege runner permissions for this kind are declared in [`../permissions.yaml`](../permissions.yaml).

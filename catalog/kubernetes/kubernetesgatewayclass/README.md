@@ -6,7 +6,7 @@
 
 KubernetesGatewayClass creates a cluster-scoped Gateway API [GatewayClass](https://gateway-api.sigs.k8s.io/api-types/gatewayclass/) that identifies the controller (Istio, Envoy Gateway, NGINX Gateway Fabric, etc.) responsible for managing Gateways of that class. It is the infrastructure-provider layer of the Gateway API role model: a GatewayClass is to a Gateway what a StorageClass is to a PersistentVolume.
 
-This component mirrors the upstream Gateway API v1 `GatewayClass` spec with 100% fidelity, so any value you can express in raw Gateway API YAML, you can express here -- with proto validation, typed SDKs, and InfraChart composability on top.
+This kind mirrors the upstream Gateway API v1 `GatewayClass` spec with 100% fidelity, so any value you can express in raw Gateway API YAML, you can express here -- with proto validation, typed SDKs, and InfraChart composability on top.
 
 ## Prerequisites
 

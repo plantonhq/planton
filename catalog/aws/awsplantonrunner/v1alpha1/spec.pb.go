@@ -52,7 +52,7 @@ const (
 // The spec models intent -- where the runner lives (subnets), how big it is
 // (cpu/memory), which build it runs (runner_version), and the token it
 // joins with. The compute substrate is an implementation detail of the IaC
-// modules (see the component README); it deliberately has no
+// modules (see the kind's README); it deliberately has no
 // representation here.
 type AwsPlantonRunnerSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`

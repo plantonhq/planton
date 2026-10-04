@@ -66,7 +66,7 @@ type AwsS3ObjectSetSpec struct {
 	// Example: "us-west-2", "eu-west-1"
 	Region string `protobuf:"bytes,1,opt,name=region,proto3" json:"region,omitempty"`
 	// The target S3 bucket for every object in the set.
-	// Can be a literal bucket name or a reference to an AwsS3Bucket component
+	// Can be a literal bucket name or a reference to an AwsS3Bucket Infra Component
 	// (resolved from status.outputs.bucket_id). The literal arm also accepts an
 	// access-point ARN or an S3 Express directory-bucket name for buckets
 	// managed outside this catalog.
@@ -533,7 +533,7 @@ func (*AwsS3Object_CopyFrom) isAwsS3Object_Source() {}
 type AwsS3ObjectCopyFrom struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// The bucket holding the source object.
-	// Can be a literal bucket name or a reference to an AwsS3Bucket component
+	// Can be a literal bucket name or a reference to an AwsS3Bucket Infra Component
 	// (resolved from status.outputs.bucket_id). The literal arm also accepts
 	// an S3 access-point ARN (`arn:aws:s3:<region>:<account>:accesspoint/
 	// <name>`) for sources reached through an access point. The deploying

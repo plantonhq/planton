@@ -131,7 +131,7 @@ sudo mount -t nfs -o nfsvers=4.1 <dns_name>:/fsx/child-vol /mnt/child-vol
 
 ## Scope
 
-This component creates the file system and configures its root volume. **Not included** (independent lifecycle resources, referenced via the `root_volume_id` / `file_system_id` outputs):
+This kind creates the file system and configures its root volume. **Not included** (independent lifecycle resources, referenced via the `root_volume_id` / `file_system_id` outputs):
 
 - **Child volumes** (`aws_fsx_openzfs_volume`) — a separate composable resource surface
 - **Snapshots** (`aws_fsx_openzfs_snapshot`) — point-in-time operations, not declarative infrastructure

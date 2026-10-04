@@ -6,7 +6,7 @@ Catalog kind for provisioning Google Cloud Bigtable instances with one or more c
 
 Cloud Bigtable is Google Cloud's fully managed, wide-column NoSQL database designed for large analytical and operational workloads. It provides consistent sub-10ms latency, scales to billions of rows and thousands of columns, and is ideal for time-series data, IoT, ad-tech, fintech, and machine-learning feature stores.
 
-This component bundles a Bigtable instance (the logical container for data) with one or more clusters (the physical replicas serving the data). An instance without at least one cluster cannot store or serve data, so they are provisioned together as a single unit.
+This kind bundles a Bigtable instance (the logical container for data) with one or more clusters (the physical replicas serving the data). An instance without at least one cluster cannot store or serve data, so they are provisioned together as a single unit.
 
 ## Key Features
 

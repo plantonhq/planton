@@ -4,7 +4,7 @@ Configures the registry-level ECR posture for one AWS region: what scans your im
 
 ## What Gets Created
 
-This component adopts the account's existing ECR registry in the target region — the registry itself is never created or destroyed — and configures its posture arm by arm:
+This kind adopts the account's existing ECR registry in the target region — the registry itself is never created or destroyed — and configures its posture arm by arm:
 
 - **Registry permissions policy** — configured only when `registryPolicy` is set: the IAM resource policy granting other accounts registry-level actions (replication in, pull-through cache sharing). Destroying this arm deletes the policy
 - **Scanning configuration** — configured only when `scanning` is set: the BASIC or ENHANCED (Amazon Inspector) engine plus per-repository-pattern frequency rules. Destroying this arm resets the registry to BASIC scanning with no rules — AWS has no delete, so the modules put the empty default back

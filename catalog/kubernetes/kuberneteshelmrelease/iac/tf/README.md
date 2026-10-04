@@ -4,7 +4,7 @@
 
 This Terraform module installs an upstream Helm chart as a **real Helm release** via the `helm_release` resource: hooks run, the release secret is written, and `helm list` shows the release exactly as if the Helm CLI had installed it. It is the semantic twin of the component's Pulumi module — every lifecycle knob maps 1:1 between the two, and both merge the values layers with identical precedence.
 
-This component is the catalog's sole intentional passthrough — for charts no first-class component covers. Where a typed component exists for the workload, it always wins.
+This kind is the catalog's sole intentional passthrough — for charts no first-class kind covers. Where a typed kind exists for the workload, it always wins.
 
 ## Architecture
 

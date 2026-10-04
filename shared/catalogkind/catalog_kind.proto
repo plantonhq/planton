@@ -2932,7 +2932,7 @@ enum CatalogKind {
     service_group: azure_containers
   }];
   // AzureContainerAppEnvironment is a prerequisite because the Dapr
-  // kind is registered on a referenced environment.
+  // component is registered on a referenced environment.
   AzureContainerAppEnvironmentDaprComponent = 2047 [(kind_meta) = {
     provider: azure
     version: "v1alpha1"

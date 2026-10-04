@@ -10,7 +10,7 @@
 # outputs -- the modules never call those services' APIs. The git-provider
 # authorization for git-connected projects is a one-time, browser-driven
 # dashboard step outside any token this inventory covers (the spec's own
-# contract records this). The component README and catalog.md carried no
+# contract records this). The kind's README and catalog.md carried no
 # named permission prose to migrate.
 apiVersion: iac.planton.dev/v1
 kind: CatalogKindPermissions

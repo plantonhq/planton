@@ -149,7 +149,7 @@ throwaway data.
 
 ## Environment Injection
 
-This component calls no cloud APIs; managed-Kubernetes integration
+This kind calls no cloud APIs; managed-Kubernetes integration
 rides the Service annotations and the keystore.
 
 | Cloud / posture | Where | Mechanism |

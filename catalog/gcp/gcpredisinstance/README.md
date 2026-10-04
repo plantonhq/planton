@@ -8,7 +8,7 @@ Memorystore for Redis provides a managed Redis service on GCP with automatic pat
 
 ## Purpose
 
-This component exists to give platform engineers a declarative, infrastructure-as-code interface for provisioning Redis on GCP. It abstracts the underlying Terraform/Pulumi resources behind a consistent spec, supports cross-resource references (project, VPC, KMS key), and exports connection details and secrets as outputs for downstream consumers.
+This kind exists to give platform engineers a declarative, infrastructure-as-code interface for provisioning Redis on GCP. It abstracts the underlying Terraform/Pulumi resources behind a consistent spec, supports cross-resource references (project, VPC, KMS key), and exports connection details and secrets as outputs for downstream consumers.
 
 ## Key Features
 

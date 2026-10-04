@@ -4,7 +4,7 @@ Sets the encryption posture of a region's AgentCore token vault — the store Ag
 
 ## What Gets Created
 
-This component creates nothing at AWS. The vault already exists — AWS provisions one default token vault per account and region — and the IaC module adopts that existing account object and configures it:
+This kind creates nothing at AWS. The vault already exists — AWS provisions one default token vault per account and region — and the IaC module adopts that existing account object and configures it:
 
 - **Token Vault Key Setting** — the vault's key ownership: your symmetric, same-region KMS key under `CustomerManagedKey`, or AWS's owned-and-rotated key under `ServiceManagedKey`. When a customer-managed key is applied, AWS creates its own grants on the key and re-encrypts stored credentials under it
 

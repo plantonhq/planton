@@ -66,7 +66,7 @@ const (
 //
 // EXPOSURE IS COMPOSED, never embedded: the store is in-cluster plumbing
 // reachable at the exported `kube_endpoint`. To reach it from outside,
-// compose a first-class exposure kind — this component never creates
+// compose a first-class exposure kind — this kind never creates
 // one. (The service block's type/annotations exist for the LoadBalancer
 // arm of managed-cloud recipes, documented per environment.)
 //

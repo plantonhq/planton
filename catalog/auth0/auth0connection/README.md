@@ -4,7 +4,7 @@
 
 `Auth0Connection` is a catalog kind that enables declarative management of Auth0 identity connections. Connections in Auth0 are the bridge between your applications and identity providers, allowing users to authenticate using various methods including databases, social providers, and enterprise identity systems.
 
-This component abstracts the complexity of Auth0 connection configuration into a simple, declarative YAML manifest that follows the Kubernetes Resource Model (KRM) structure.
+This kind abstracts the complexity of Auth0 connection configuration into a simple, declarative YAML manifest that follows the Kubernetes Resource Model (KRM) structure.
 
 ## Purpose
 

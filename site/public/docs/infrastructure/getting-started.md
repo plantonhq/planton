@@ -44,17 +44,17 @@ See [Environment Mappings](/docs/connections/environment-mappings) and [Default 
 
 ## Step 3: Browse the Catalog
 
-Navigate to the **Catalog Kind Store** in the web console to see what you can deploy. The catalog shows all available resource types — AWS VPCs, GCP Cloud SQL instances, Kubernetes deployments, and more — organized by provider.
+Navigate to the **Infra Catalog** in the web console to see what you can deploy. The catalog shows all available resource types — AWS VPCs, GCP Cloud SQL instances, Kubernetes deployments, and more — organized by provider.
 
 Select a resource type to start configuring it for deployment.
 
 See [Catalog Kinds](/docs/infrastructure/catalog-kinds) for an overview of the full catalog.
 
-<!-- SCREENSHOT: Catalog Kind Store
+<!-- SCREENSHOT: Infra Catalog
   Page: /platform/deployment-store
   Action: Show the catalog with resource types from multiple providers
   Focus: The kind grid with provider branding and deploy buttons
-  Alt: Catalog Kind Store showing available infrastructure types organized by cloud provider
+  Alt: Infra Catalog showing available infrastructure types organized by cloud provider
 -->
 
 ## Step 4: Create an Infra Component

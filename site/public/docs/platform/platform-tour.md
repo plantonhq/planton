@@ -1,6 +1,6 @@
 ---
 title: "Platform Tour"
-description: "A walkthrough of the Planton console — sidebar navigation, context selector, Catalog Kind Store, and what each section contains."
+description: "A walkthrough of the Planton console — sidebar navigation, context selector, Infra Catalog, and what each section contains."
 icon: tour
 order: 20
 tags:
@@ -17,7 +17,7 @@ This page walks through the Planton web console section by section, explaining w
 
 The console has three main areas:
 
-- **Header** — context selector (top-left), search, Catalog Kind Store and IaC Module Registry (top-right)
+- **Header** — context selector (top-left), search, Infra Catalog and IaC Module Registry (top-right)
 - **Sidebar** — primary navigation to all platform sections
 - **Main content** — the active page, which changes based on your sidebar selection and context
 
@@ -163,23 +163,23 @@ Organization-wide configuration with three tabs:
 
 Beyond the context selector, the header provides quick access to two important features:
 
-### Catalog Kind Store
+### Infra Catalog
 
 Click the store icon in the header (right side) to open the catalog of deployable infrastructure kinds. The store has two sections:
 
 - **Catalog Kinds** — individual Infra Component templates (e.g., AWS VPC, GCP GKE Cluster, Azure AKS). Filter by cloud provider and search by name. Click **Deploy** on any kind to start the deployment wizard.
-- **Infra Charts** — pre-composed collections of Catalog Kinds that deploy together as a coordinated unit (e.g., an AWS ECS environment with VPC, cluster, load balancer, and DNS).
+- **Infra Charts** — pre-composed collections of catalog kinds that deploy together as a coordinated unit (e.g., an AWS ECS environment with VPC, cluster, load balancer, and DNS).
 
-<!-- SCREENSHOT: Catalog Kind Store
+<!-- SCREENSHOT: Infra Catalog
   Page: /platform/deployment-store
   Action: Show the kind catalog with provider filter
   Focus: The kind grid with deploy buttons
-  Alt: Catalog Kind Store showing infrastructure kinds filterable by cloud provider
+  Alt: Infra Catalog showing infrastructure kinds filterable by cloud provider
 -->
 
 ### IaC Module Registry
 
-Click the IaC Module Registry icon in the header to browse the Pulumi, Terraform, and OpenTofu modules that back each Catalog Kind. This is useful for understanding what infrastructure-as-code runs behind a deployment, or for referencing module parameters.
+Click the IaC Module Registry icon in the header to browse the Pulumi, Terraform, and OpenTofu modules that back each catalog kind. This is useful for understanding what infrastructure-as-code runs behind a deployment, or for referencing module parameters.
 
 ## Navigation Patterns
 
@@ -196,7 +196,7 @@ The console adapts based on your current context:
 There are three ways to find what you need:
 
 1. **Sidebar navigation** — click the section name to see all resources of that type
-2. **Catalog Kind Store** — browse or search the catalog when you want to deploy something new
+2. **Infra Catalog** — browse or search the catalog when you want to deploy something new
 3. **Context selector** — switch environments to see resources in a different deployment stage
 
 ## Related Documentation

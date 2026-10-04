@@ -20,7 +20,7 @@ variable "spec" {
     region = string
 
     # The target S3 bucket for every object in the set.
-    # Can be a literal bucket name or a reference to an AwsS3Bucket component
+    # Can be a literal bucket name or a reference to an AwsS3Bucket Infra Component
     # (resolved from status.outputs.bucket_id). The literal arm also accepts an
     # access-point ARN or an S3 Express directory-bucket name for buckets
     # managed outside this catalog.
@@ -52,7 +52,7 @@ variable "spec" {
       # source object.
       copy_from = optional(object({
         # The bucket holding the source object.
-        # Can be a literal bucket name or a reference to an AwsS3Bucket component
+        # Can be a literal bucket name or a reference to an AwsS3Bucket Infra Component
         # (resolved from status.outputs.bucket_id). The literal arm also accepts
         # an S3 access-point ARN (`arn:aws:s3:<region>:<account>:accesspoint/
         # <name>`) for sources reached through an access point. The deploying

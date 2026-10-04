@@ -27,7 +27,7 @@ resource names, and leader-election identity all derive from
 `metadata.name`, so instances never collide. What the host cloud
 provisions for the controller's LoadBalancer Service is driven entirely
 by `service.annotations` (NLB vs ALB on AWS, internal LB on GCP/Azure,
-...) — see the per-cloud recipes in the component README.
+...) — see the per-cloud recipes in the kind's README.
 
 The typed fields below cover the chart's meaningful configuration surface;
 `helm_values` remains as the escape hatch for chart values beyond them
@@ -432,7 +432,7 @@ AWS NLB: {"service.beta.kubernetes.io/aws-load-balancer-type": "external",
           "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type": "ip"};
 GCP internal: {"networking.gke.io/load-balancer-type": "Internal"};
 Azure internal: {"service.beta.kubernetes.io/azure-load-balancer-internal": "true"}.
-Full per-cloud recipes in the component README.
+Full per-cloud recipes in the kind's README.
 
 The AWS recipe above requires the AWS Load Balancer Controller
 installed in the cluster — the "external" type family is its

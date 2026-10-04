@@ -2,7 +2,7 @@
 
 Declares the cluster's Tekton installation — which components run (Pipelines, Triggers, Dashboard, Chains), where they install, the pipeline feature flags and execution defaults, and the cleanup policy — as a `TektonConfig` custom resource that the Tekton Operator reconciles into running components and keeps converged.
 
-This component shapes the **engine**, never your pipelines: Tasks, Pipelines, and their runs are plain custom resources once this converges — declare them via Kubernetes Manifest resources, your platform, or the Tekton CLI. Exactly one KubernetesTekton per cluster is allowed (the operator's own admission rule), and the operator (declared with **Tekton Operator**) must be installed first.
+This kind shapes the **engine**, never your pipelines: Tasks, Pipelines, and their runs are plain custom resources once this converges — declare them via Kubernetes Manifest resources, your platform, or the Tekton CLI. Exactly one KubernetesTekton per cluster is allowed (the operator's own admission rule), and the operator (declared with **Tekton Operator**) must be installed first.
 
 ## What Gets Created
 

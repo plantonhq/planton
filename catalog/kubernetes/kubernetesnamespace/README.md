@@ -15,7 +15,7 @@ A Kubernetes namespace by itself is merely a logical partition. To function as a
 - **Pod Security Standards** to enforce security posture
 - **Service Mesh Integration** for observability and traffic management
 
-This component abstracts all that complexity into a simple, declarative API that follows the 80/20 principle: exposing the 20% of configuration options that deliver 80% of the value.
+This kind abstracts all that complexity into a simple, declarative API that follows the 80/20 principle: exposing the 20% of configuration options that deliver 80% of the value.
 
 ## Key Features
 

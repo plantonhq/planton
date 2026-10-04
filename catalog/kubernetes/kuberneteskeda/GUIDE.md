@@ -17,7 +17,7 @@ controller reads; the three-lane comparison is the
 
 ## Engine here, declarations beside the workload
 
-This component installs the operator. The scaling rules — ScaledObject,
+This kind installs the operator. The scaling rules — ScaledObject,
 ScaledJob, TriggerAuthentication — are KEDA custom resources deployed
 per workload (via KubernetesManifest today), in the workload's namespace.
 Installing KEDA alone scales nothing; a complete proposal names the

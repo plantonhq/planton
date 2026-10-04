@@ -30,7 +30,7 @@ Roles are the primary mechanism for enforcing least privilege in Auth0 RBAC. Gra
 
 ### Authoritative Permission Management
 
-This component manages a role's permission set authoritatively. A permission removed from the spec is removed from the role on the next apply. This is a security strength: the manifest is the single source of truth, so out-of-band privilege escalation (a scope added directly in the dashboard) is reconciled away on the next deployment. Review changes to the `permissions` list with the same rigor as any access-control change.
+This kind manages a role's permission set authoritatively. A permission removed from the spec is removed from the role on the next apply. This is a security strength: the manifest is the single source of truth, so out-of-band privilege escalation (a scope added directly in the dashboard) is reconciled away on the next deployment. Review changes to the `permissions` list with the same rigor as any access-control change.
 
 ### Permissions Are References, Not Grants of New Capability
 

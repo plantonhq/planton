@@ -6,7 +6,7 @@ This Pulumi (Go) module installs an upstream Helm chart as a **real Helm release
 
 The module is the semantic twin of the component's Terraform module: every lifecycle knob maps 1:1 onto a `helm_release` argument, and both engines merge the values layers with identical precedence.
 
-This component is the catalog's sole intentional passthrough — for charts no first-class component covers. Where a typed component exists for the workload, it always wins.
+This kind is the catalog's sole intentional passthrough — for charts no first-class kind covers. Where a typed kind exists for the workload, it always wins.
 
 ## Architecture
 
