@@ -92,7 +92,7 @@ YYYY-MM-DD-HHMMSS.{area}.{type}.{slug}.md
 2025-12-26-150815.cli.feat.manifest-validation-command.md
 2025-12-26-162430.forge.bug.pulumi-code-generation.md
 2025-12-26-091205.pkg.refactor.kubernetes-client-helpers.md
-2025-12-26-134512.apis.feat.new-infra-component-api.md
+2025-12-26-134512.apis.feat.new-catalog-kind-api.md
 ```
 
 ## Area Detection Heuristics

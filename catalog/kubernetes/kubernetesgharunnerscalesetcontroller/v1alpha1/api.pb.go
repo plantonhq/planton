@@ -29,7 +29,7 @@ const (
 // workflow demand.
 //
 // Use this component to deploy the controller first, then deploy runner scale sets using the
-// separate gha-runner-scale-set Helm chart (or a corresponding Planton component).
+// separate gha-runner-scale-set Helm chart (or the corresponding Planton catalog kind).
 type KubernetesGhaRunnerScaleSetController struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// api-version

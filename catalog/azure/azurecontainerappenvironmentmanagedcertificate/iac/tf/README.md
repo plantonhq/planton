@@ -1,7 +1,7 @@
 # AzureContainerAppEnvironmentManagedCertificate - Terraform Module
 
 Terraform implementation for the
-AzureContainerAppEnvironmentManagedCertificate component.
+AzureContainerAppEnvironmentManagedCertificate kind.
 
 ## Resources Created
 

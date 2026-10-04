@@ -1,7 +1,7 @@
 # AzureEventHubNamespaceCustomerManagedKey - Pulumi Module
 
 Pulumi (Go) implementation for the
-AzureEventHubNamespaceCustomerManagedKey component, at 100%
+AzureEventHubNamespaceCustomerManagedKey kind, at 100%
 behavioral parity with the Terraform module.
 
 ## Resources Created

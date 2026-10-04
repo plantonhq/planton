@@ -13,7 +13,7 @@ A role assignment is the atomic unit of authorization in Azure. Everything a
 user, group, service principal, or managed identity is allowed to do is the
 sum of the role assignments that target it. Because grants are the
 most-repeated pattern in any Azure environment -- every identity needs
-permissions on the resources it touches -- this component models them as
+permissions on the resources it touches -- this kind models them as
 first-class, composable nodes: one assignment per resource, referenceable in
 infra charts, with an independent lifecycle from both the principal and the
 scope it binds.

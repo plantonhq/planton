@@ -1,7 +1,7 @@
 # GcpBigQueryDataset -- Terraform Module
 
 This directory contains the Terraform/OpenTofu implementation for the
-GcpBigQueryDataset component.
+GcpBigQueryDataset kind.
 
 ## Module Structure
 

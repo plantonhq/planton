@@ -131,7 +131,7 @@ type KubernetesHarborSpec struct {
 	Jobservice *KubernetesHarborJobservice `protobuf:"bytes,14,opt,name=jobservice,proto3" json:"jobservice,omitempty"`
 	// *
 	// Sizing for the nginx front door (always deployed — it terminates
-	// client traffic for every exposure mode this component models).
+	// client traffic for every exposure mode this kind models).
 	Nginx *KubernetesHarborComponent `protobuf:"bytes,15,opt,name=nginx,proto3" json:"nginx,omitempty"`
 	// *
 	// TLS between Harbor's own components (core ↔ registry ↔

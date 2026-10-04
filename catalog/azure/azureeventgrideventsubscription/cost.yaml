@@ -1,6 +1,6 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate quantities: a subscription is free to HOLD -- Microsoft's Basic
 # tier has no meter for the subscription object -- and everything it does
 # cost is operations (delivery attempts, billable filter evaluations)

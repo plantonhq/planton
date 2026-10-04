@@ -2,7 +2,7 @@
 
 **Date**: September 14, 2026
 **Type**: Documentation
-**Components**: KubernetesOpenBao (spec comments, reference page, guide), the stateful-kind disaster-recovery pattern, the multi-cloud-catalog skill (research recipes, pack layout, contributing guide), component update rule
+**Components**: KubernetesOpenBao (spec comments, reference page, guide), the stateful-kind disaster-recovery pattern, the multi-cloud-catalog skill (research recipes, pack layout, contributing guide), catalog-kind update rule
 
 ## Summary
 

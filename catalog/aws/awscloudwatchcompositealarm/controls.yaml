@@ -46,7 +46,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: spec_validation
-        reference: alarm_rule is a required field -- a composite alarm without a boolean expression over other alarms' states is unrepresentable, so every instance of this component exists to combine and route monitoring signals.
+        reference: alarm_rule is a required field -- a composite alarm without a boolean expression over other alarms' states is unrepresentable, so every instance of this kind exists to combine and route monitoring signals.
       notes: alarm_actions, ok_actions, and insufficient_data_actions route the combined state to SNS topics or OpsItems. actions_suppressor silences actions (not evaluation) while a designated maintenance alarm is in ALARM -- the deliberate quiet-hours mechanism.
     - control_id: backup-recovery
       status: not_applicable

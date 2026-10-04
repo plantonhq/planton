@@ -2,7 +2,7 @@
 
 **Date**: October 1, 2026
 **Type**: Feature
-**Components**: 14 Stripe kinds' modules, docs and E2E assets; `catalog/stripe/aa_e2e`, `catalog/stripe/aa_import`; `e2e/framework/runner`, `e2e/framework/provider`; `pkg/iac/importmap`; `.github/workflows/e2e-stripe.yaml`; the component forge rule, flow rule 012 and the E2E README
+**Components**: 14 Stripe kinds' modules, docs and E2E assets; `catalog/stripe/aa_e2e`, `catalog/stripe/aa_import`; `e2e/framework/runner`, `e2e/framework/provider`; `pkg/iac/importmap`; `.github/workflows/e2e-stripe.yaml`; the catalog-kind forge rule, flow rule 012 and the E2E README
 
 ## Summary
 

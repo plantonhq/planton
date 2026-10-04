@@ -1891,7 +1891,7 @@ and this module always disables it.
 
 - `broker.required_for_celery`: A Celery-family executor needs a message broker: set spec.broker (bundled Redis, a composed KubernetesValkey, or an existing broker-URL Secret) when executor contains CeleryExecutor or CeleryKubernetesExecutor.
 - `broker.forbidden_without_celery`: spec.broker only applies to Celery-family executors — remove it, or set spec.executor to include CeleryExecutor explicitly (unset executor defaults to KubernetesExecutor, which runs tasks without a message broker).
-- `airflow_version.v3_line_only`: This component models the Airflow 3 line — set airflow_version to 3.0.0 or newer. Airflow 2 installs use the chart's webserver-era surfaces this spec deliberately does not model.
+- `airflow_version.v3_line_only`: This kind models the Airflow 3 line — set airflow_version to 3.0.0 or newer. Airflow 2 installs use the chart's webserver-era surfaces this spec deliberately does not model.
 - `pgbouncer.postgres_only`: PgBouncer pools PostgreSQL connections — it cannot front a MySQL metadata database. Remove spec.pgbouncer or switch the database to the postgres arm.
 
 ## Outputs

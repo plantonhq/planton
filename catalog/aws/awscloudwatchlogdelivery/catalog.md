@@ -105,7 +105,7 @@ These are the most important decisions when configuring a log delivery. Explore 
 
 **One delivery per (source, destination-type)** — AWS accepts at most one delivery from a source to each destination type: S3 plus Firehose is fine, two S3 destinations from one source is a ConflictException. Fan out to multiple buckets via Firehose or replicate downstream.
 
-**Source identity is total** — the source's `name`, `logType`, and `resourceArn` all replace the source on change, and AWS models sources per (resource, log type). Shipping a second log type from the same resource means a second instance of this component.
+**Source identity is total** — the source's `name`, `logType`, and `resourceArn` all replace the source on change, and AWS models sources per (resource, log type). Shipping a second log type from the same resource means a second instance of this kind.
 
 **Own the shared destination once** — a destination shared by many pipelines lives in one owning instance; every other instance's deliveries reference it through `destinationArn` (fed by the owner's `destination_arns` output). The owner also carries the destination `policy` granting producer accounts `logs:CreateDelivery` — same-account pipelines never need that policy.
 

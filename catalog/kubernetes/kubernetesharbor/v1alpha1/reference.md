@@ -1472,7 +1472,7 @@ PVC). Empty = "1Gi" (chart default).
 `KubernetesHarborComponent`
 
 Sizing for the nginx front door (always deployed — it terminates
-client traffic for every exposure mode this component models).
+client traffic for every exposure mode this kind models).
 
 ### spec.nginx.replicas
 

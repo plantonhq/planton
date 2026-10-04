@@ -142,7 +142,7 @@ KubernetesExternalDns publishes DNS records for the LB address the cloud
 assigns; cert-manager kinds (KubernetesCertManager, issuers,
 KubernetesCertificate) mint the certificates that Ingresses — or the
 `default_tls_certificate` field — consume. A cluster with a public +
-internal split runs two instances of this component, each with its own
+internal split runs two instances of this kind, each with its own
 ingress class and Service annotations.
 
 ```yaml

@@ -2,7 +2,7 @@
 
 **Date**: September 14, 2026
 **Type**: Fix
-**Components**: KubernetesOpenBao (Pulumi and Terraform modules, spec comments, guide, presets, E2E fixtures and seed script), Kubernetes E2E harness (gcp-gke batch), component update rule
+**Components**: KubernetesOpenBao (Pulumi and Terraform modules, spec comments, guide, presets, E2E fixtures and seed script), Kubernetes E2E harness (gcp-gke batch), catalog-kind update rule
 
 ## Summary
 

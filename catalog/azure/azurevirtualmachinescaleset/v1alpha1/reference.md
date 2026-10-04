@@ -13,7 +13,7 @@ disks, network), the fleet controls (instance count, zones, upgrade
 policy, spot economics, instance repair), and the orchestration mode.
 
 ARM has exactly ONE scale-set resource type with an orchestration-mode
-property, and this component models it that way:
+property, and this kind models it that way:
 - FLEXIBLE (the default, and Azure's recommendation for new workloads)
   spreads instances across fault domains like a resilient VM group;
   individual VMs can even attach to the set (an AzureVirtualMachine's

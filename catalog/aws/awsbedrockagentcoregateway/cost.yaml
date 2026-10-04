@@ -1,6 +1,6 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate: with semantic search enabled -- and BOTH catalog presets
 # enable it -- the gateway commits real spend (Tool Indexing bills $0.02
 # per 100 tools indexed per month while the index exists, at zero

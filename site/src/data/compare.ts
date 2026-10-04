@@ -134,7 +134,7 @@ export const COMPARE: ComparePage = {
     {
       // Chapters 2 and 11. The engines are named as the CLI runs them: the Terraform module runs under OpenTofu or Terraform, the other module under Pulumi.
       question: 'Why not just Terraform?',
-      answer: 'Planton does not compete with Terraform; it runs the modules. Every component ships with a pre-written, tested open-source module in Terraform, which OpenTofu or Terraform runs, and another for Pulumi, and you choose the engine without changing your manifest. What changes is who writes what: the manifest is yours, short and typed; the module is Planton\u2019s, and it does the rest.',
+      answer: 'Planton does not compete with Terraform; it runs the modules. Every kind ships with a pre-written, tested open-source module in Terraform, which OpenTofu or Terraform runs, and another for Pulumi, and you choose the engine without changing your manifest. What changes is who writes what: the manifest is yours, short and typed; the module is Planton\u2019s, and it does the rest.',
       readMore: '/product/open-source',
     },
     {

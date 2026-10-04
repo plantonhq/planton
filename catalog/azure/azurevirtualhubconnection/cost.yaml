@@ -1,6 +1,6 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate: the attachment itself carries no meter -- Azure's Virtual WAN
 # price list has hourly connection units for BRANCHES (VPN, ExpressRoute,
 # point-to-site), not for VNet attachments -- so an idle connection bills

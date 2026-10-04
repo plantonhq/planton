@@ -2,7 +2,7 @@
 
 **Date**: September 30, 2026
 **Type**: Feature
-**Components**: StripeWebhookEndpoint, StripeBillingPortalConfiguration, StripePaymentMethodConfiguration; the permissions schema (`iac/catalogkindpermissions/v1`), `pkg/iac/provider/stripe/stripekey`, `pkg/iac/iacinput/providerenvvars`, `pkg/providerparity`, `pkg/catalogbundle`, `pkg/cataloglogo`, `catalog/stripe/aa_e2e`, `catalog/stripe/aa_import`, `e2e/stripe`, `e2e/framework/runner`; the component forge rule and flow rules 014 and 021
+**Components**: StripeWebhookEndpoint, StripeBillingPortalConfiguration, StripePaymentMethodConfiguration; the permissions schema (`iac/catalogkindpermissions/v1`), `pkg/iac/provider/stripe/stripekey`, `pkg/iac/iacinput/providerenvvars`, `pkg/providerparity`, `pkg/catalogbundle`, `pkg/cataloglogo`, `catalog/stripe/aa_e2e`, `catalog/stripe/aa_import`, `e2e/stripe`, `e2e/framework/runner`; the catalog-kind forge rule and flow rules 014 and 021
 
 ## Summary
 

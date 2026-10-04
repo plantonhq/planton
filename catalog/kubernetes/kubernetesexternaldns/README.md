@@ -2,7 +2,7 @@
 
 ## When NOT to Use This
 
-**If you manage a handful of DNS records by hand, you do not need a controller.** ExternalDNS earns its keep when records must FOLLOW workloads — Services, Ingresses, and Gateway API routes appearing, moving, and disappearing faster than humans update zones. For static records that change a few times a year, manage them directly on the zone resource (AwsRoute53Zone, GcpDnsZone, AzureDnsZone, CloudflareDnsZone). And one installation manages ONE DNS provider: clusters publishing to several providers (or with different ownership boundaries) deploy multiple instances of this component, not one instance with more configuration.
+**If you manage a handful of DNS records by hand, you do not need a controller.** ExternalDNS earns its keep when records must FOLLOW workloads — Services, Ingresses, and Gateway API routes appearing, moving, and disappearing faster than humans update zones. For static records that change a few times a year, manage them directly on the zone resource (AwsRoute53Zone, GcpDnsZone, AzureDnsZone, CloudflareDnsZone). And one installation manages ONE DNS provider: clusters publishing to several providers (or with different ownership boundaries) deploy multiple instances of this kind, not one instance with more configuration.
 
 ## Overview
 
@@ -64,7 +64,7 @@ The controller ServiceAccount name is pinned to `metadata.name` and exported (`s
 
 ## Composing in Infra Charts
 
-The standard chart wiring: the zone and this component deploy in one run, with the zone ID flowing into `zone_id_filters` as a reference (`AwsRoute53Zone` → `status.outputs.zone_id`, likewise for GCP/Azure/Cloudflare zone kinds) and the IAM role/GCP SA/managed identity flowing into `workload_identity`. A cluster publishing public records to Route 53 and internal records to Cloud DNS runs two instances of this component — each with its own provider arm, `txt_owner_id`, and filters. ExternalDNS pairs naturally with KubernetesCertManager: external-dns publishes the names, cert-manager proves ownership of them for certificates.
+The standard chart wiring: the zone and this component deploy in one run, with the zone ID flowing into `zone_id_filters` as a reference (`AwsRoute53Zone` → `status.outputs.zone_id`, likewise for GCP/Azure/Cloudflare zone kinds) and the IAM role/GCP SA/managed identity flowing into `workload_identity`. A cluster publishing public records to Route 53 and internal records to Cloud DNS runs two instances of this kind — each with its own provider arm, `txt_owner_id`, and filters. ExternalDNS pairs naturally with KubernetesCertManager: external-dns publishes the names, cert-manager proves ownership of them for certificates.
 
 ```yaml
 apiVersion: kubernetes.planton.dev/v1alpha1

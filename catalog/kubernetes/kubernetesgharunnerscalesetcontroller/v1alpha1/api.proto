@@ -13,7 +13,7 @@ import "shared/metadata.proto";
 // workflow demand.
 //
 // Use this component to deploy the controller first, then deploy runner scale sets using the
-// separate gha-runner-scale-set Helm chart (or a corresponding Planton component).
+// separate gha-runner-scale-set Helm chart (or the corresponding Planton catalog kind).
 message KubernetesGhaRunnerScaleSetController {
   // api-version
   string api_version = 1 [(buf.validate.field).string.const = 'kubernetes.planton.dev/v1alpha1'];

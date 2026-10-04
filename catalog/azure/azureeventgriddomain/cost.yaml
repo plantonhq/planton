@@ -1,6 +1,6 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate quantities: an Event Grid domain is free at rest -- the Basic
 # tier's single meter bills OPERATIONS (publishes across all domain topics,
 # delivery attempts, advanced filtering), and the count of domain topics

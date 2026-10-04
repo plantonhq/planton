@@ -2,7 +2,7 @@
 
 **Date**: September 30, 2026
 **Type**: Feature
-**Components**: StripeEntitlementFeature, StripeProduct, StripePrice, StripeEventDestination, StripePaymentMethodDomain, StripeRadarValueList, StripeBillingPortalConfiguration; `e2e/framework/runner`, `catalog/stripe/aa_e2e`, `catalog/stripe/aa_import`, `e2e/stripe`, `pkg/providerparity`, `pkg/catalogkindreflect`, `pkg/explain/refgen`; the component forge rule and flow rules 012 and 014
+**Components**: StripeEntitlementFeature, StripeProduct, StripePrice, StripeEventDestination, StripePaymentMethodDomain, StripeRadarValueList, StripeBillingPortalConfiguration; `e2e/framework/runner`, `catalog/stripe/aa_e2e`, `catalog/stripe/aa_import`, `e2e/stripe`, `pkg/providerparity`, `pkg/catalogkindreflect`, `pkg/explain/refgen`; the catalog-kind forge rule and flow rules 012 and 014
 
 ## Summary
 

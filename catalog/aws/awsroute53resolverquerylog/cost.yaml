@@ -1,6 +1,6 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate model: Route 53 charges nothing for the configuration, and
 # the spend that does start rides the referenced destination's meters
 # at rates researched on THAT kind -- this manifest names the

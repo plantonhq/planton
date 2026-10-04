@@ -27,7 +27,7 @@ const (
 // Resource Servers represent the APIs that your applications can request access to.
 // They are essential for implementing OAuth 2.0 API authorization with Auth0.
 //
-// This component supports:
+// This kind supports:
 //   - Defining API identifiers (audiences) for authorization flows
 //   - Configuring token settings (lifetime, signing algorithm, dialect)
 //   - Setting up scopes (permissions) for fine-grained access control

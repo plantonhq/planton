@@ -1,6 +1,6 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate: the image DEFINITION is free (catalog metadata, like the
 # gallery that holds it), but every declared VERSION commits real spend --
 # Microsoft bills each version's regional replicas as managed-disk

@@ -2,7 +2,7 @@
 
 **Date**: September 30, 2026
 **Type**: Feature
-**Components**: StripeTaxRegistration; StripePromotionCode's E2E assets; `catalog/stripe/aa_e2e`, `catalog/stripe/aa_import`, `e2e/stripe`, `pkg/providerparity`, `pkg/catalogkindreflect`, `pkg/explain/refgen`; the component forge rule and flow rule 014
+**Components**: StripeTaxRegistration; StripePromotionCode's E2E assets; `catalog/stripe/aa_e2e`, `catalog/stripe/aa_import`, `e2e/stripe`, `pkg/providerparity`, `pkg/catalogkindreflect`, `pkg/explain/refgen`; the catalog-kind forge rule and flow rule 014
 
 ## Summary
 

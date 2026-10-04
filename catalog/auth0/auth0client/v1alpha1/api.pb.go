@@ -27,7 +27,7 @@ const (
 // In the Auth0 dashboard, these are shown as "Applications" - they represent clients
 // that can authenticate users and request access to APIs.
 //
-// This component supports all Auth0 application types:
+// This kind supports all Auth0 application types:
 // - Native applications (mobile, desktop, CLI)
 // - Single Page Applications (SPAs)
 // - Regular web applications (server-side rendered)

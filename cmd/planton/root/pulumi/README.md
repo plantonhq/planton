@@ -1073,7 +1073,7 @@ pulumi stack --show-urns --stack <stack-fqdn>
 
 ```bash
 # Option 1: Import existing resources (advanced)
-pulumi import <type> <name> <infra-component-id> --stack <stack-fqdn>
+pulumi import <type> <name> <provider-resource-id> --stack <stack-fqdn>
 
 # Option 2: Manually delete provider resources
 # (Use cloud provider console/CLI to delete conflicting resources)

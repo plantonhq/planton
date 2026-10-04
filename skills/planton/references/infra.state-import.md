@@ -1,4 +1,4 @@
-# State Import — Adopting Infra Components That Exist but Aren't in State
+# State Import — Adopting Provider Resources That Exist but Aren't in State
 
 Read this when a deploy fails saying something **already exists** — the
 signature of an orphaned resource: an earlier run created it in the cloud,

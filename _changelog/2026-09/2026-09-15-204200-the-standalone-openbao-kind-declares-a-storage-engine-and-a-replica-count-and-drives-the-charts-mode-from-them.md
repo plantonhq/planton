@@ -2,7 +2,7 @@
 
 **Date**: September 15, 2026
 **Type**: Feature
-**Components**: `catalog/kubernetes/kubernetesopenbao` (the spec and its tests, both IaC engines and the Pulumi module's first tests, the permissions, cost, control, and capacity profiles, the presets and every E2E fixture, the guide and catalog page), `catalog/_patterns/stateful-kind-disaster-recovery.md`, `charts/kubernetes/identity-and-access-platform`, the component update rule, the regenerated reference pages, graph, and cost estimates
+**Components**: `catalog/kubernetes/kubernetesopenbao` (the spec and its tests, both IaC engines and the Pulumi module's first tests, the permissions, cost, control, and capacity profiles, the presets and every E2E fixture, the guide and catalog page), `catalog/_patterns/stateful-kind-disaster-recovery.md`, `charts/kubernetes/identity-and-access-platform`, the catalog-kind update rule, the regenerated reference pages, graph, and cost estimates
 
 ## Summary
 

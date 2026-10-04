@@ -27,7 +27,7 @@ const (
 // Connections are the bridge between Auth0 and identity sources, enabling users to authenticate
 // using various methods including databases, social providers, and enterprise identity providers.
 //
-// This component supports:
+// This kind supports:
 // - Database connections (Auth0's hosted user database)
 // - Social connections (Google, Facebook, GitHub, LinkedIn, etc.)
 // - Enterprise connections (SAML, OIDC, Azure AD/Entra ID)

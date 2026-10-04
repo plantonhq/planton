@@ -32,7 +32,7 @@ Key design choices:
 - REST APIs deploy by EXPLICIT snapshot, not auto-deploy: the modules
   create one deployment whose trigger hashes the full API definition,
   so every spec change redeploys automatically - the declarative
-  behavior a Planton component owes its users.
+  behavior a Planton catalog kind owes its users.
 - A single stage, since Planton resources are already
   environment-scoped. Canary traffic shifting is a deploy-workflow
   surface (it needs two live deployments) and is not modeled.

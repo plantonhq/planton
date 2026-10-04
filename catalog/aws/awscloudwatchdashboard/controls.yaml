@@ -46,7 +46,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: spec_validation
-        reference: dashboard_body is a required field, so an instance of this component without monitoring content is unrepresentable -- every dashboard IS a monitoring integration, a curated canvas of metric graphs, Logs Insights queries, and alarm status widgets.
+        reference: dashboard_body is a required field, so an instance of this kind without monitoring content is unrepresentable -- every dashboard IS a monitoring integration, a curated canvas of metric graphs, Logs Insights queries, and alarm status widgets.
       notes: What the dashboard watches is decided entirely by the widget layout; the component adds visualization, not collection -- metrics and logs must already flow into CloudWatch from their sources.
     - control_id: backup-recovery
       status: not_applicable

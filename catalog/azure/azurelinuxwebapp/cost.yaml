@@ -1,6 +1,6 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate model: the web app's compute rides the REFERENCED App Service
 # plan (service_plan_id), whose SKU -- invisible in this manifest -- sets
 # the instance-hour rate, and the plan bills those instances the same

@@ -18,4 +18,4 @@ This preset adds a public Azure resource -- here a Public IP fronting a regional
 | Placeholder | Description | Where to Find |
 | --- | --- | --- |
 | `<your-azure-traffic-manager-profile-resource-name>` | The AzureTrafficManagerProfile component's resource name | Your Planton catalog |
-| `<your-azure-public-ip-resource-name>` | The AzurePublicIp kind fronting the regional deployment | Your Planton catalog |
+| `<your-azure-public-ip-resource-name>` | The AzurePublicIp component fronting the regional deployment | Your Planton catalog |

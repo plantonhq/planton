@@ -1,6 +1,6 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships no
+# catalog-data conformance gate. This kind deliberately ships no
 # estimate: a runtime deployed from a direct code bundle (the 01 preset's
 # shape) commits real spend -- AWS stores the deployed artifact and bills
 # it monthly at S3 Standard rates from the moment it deploys, at zero

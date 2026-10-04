@@ -208,7 +208,7 @@ export const PERSONAS: readonly Persona[] = [
       { chapter: 'every-deployment-leaves-a-record', weight: 'supporting', angle: 'When you hire the first engineer who asks what is running and why, the answer is a record, not a memory.', proof: [0, 1], provenAt: '/trust/the-record' },
     ],
     objections: [
-      { question: 'I do not know what a multi\u2011AZ database is. Is this for me?', answer: 'The prompt can be one sentence of intent: say what you built and where you want it to run. The depth is there when you have it, and every component is a typed schema, so a wrong field fails before it touches your cloud.', chapter: 'what-planton-is' },
+      { question: 'I do not know what a multi\u2011AZ database is. Is this for me?', answer: 'The prompt can be one sentence of intent: say what you built and where you want it to run. The depth is there when you have it, and every kind is a typed schema, so a wrong field fails before it touches your cloud.', chapter: 'what-planton-is' },
       { question: 'Why not let my agent write the Terraform?', answer: 'It can, and you get different Terraform every time, with nobody pricing it and nothing remembering it. Through Planton the agent writes a small validated manifest; the module that runs is pre-written, tested, and open source; and the design becomes a template you redeploy.', chapter: 'the-wall', readMore: '/product/coding-agents' },
       { question: 'What happens when there are five of us?', answer: `Nothing is redone: the same manifests and the same model run on every shape. The hosted free tier covers ${FREE_TIER_SEATS} seats with no card; after that, teams pay per seat, and below the self-serve ceiling nobody talks to sales.`, chapter: 'start', readMore: '/pricing' },
     ],

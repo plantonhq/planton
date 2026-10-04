@@ -270,7 +270,7 @@ message KubernetesAirflowSpec {
 
   option (buf.validate.message).cel = {
     id: "airflow_version.v3_line_only"
-    message: "This component models the Airflow 3 line — set airflow_version to 3.0.0 or newer. Airflow 2 installs use the chart's webserver-era surfaces this spec deliberately does not model."
+    message: "This kind models the Airflow 3 line — set airflow_version to 3.0.0 or newer. Airflow 2 installs use the chart's webserver-era surfaces this spec deliberately does not model."
     expression: "!has(this.airflow_version) || !this.airflow_version.matches('^[0-2]\\\\.')"
   };
 

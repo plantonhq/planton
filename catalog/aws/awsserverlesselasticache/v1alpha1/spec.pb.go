@@ -31,7 +31,7 @@ const (
 // AWS automatically scales compute (measured in ElastiCache Processing Units,
 // ECPU) and storage (measured in GB) within the limits you configure.
 //
-// This component supports all three ElastiCache engines:
+// This kind supports all three ElastiCache engines:
 //
 //   - **Redis** — in-memory data store with persistence, replication, and
 //     fine-grained access control via Redis ACL user groups.

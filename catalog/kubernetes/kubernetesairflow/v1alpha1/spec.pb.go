@@ -2953,7 +2953,7 @@ var File_catalog_kubernetes_kubernetesairflow_v1alpha1_spec_proto protoreflect.F
 
 const file_catalog_kubernetes_kubernetesairflow_v1alpha1_spec_proto_rawDesc = "" +
 	"\n" +
-	"8catalog/kubernetes/kubernetesairflow/v1alpha1/spec.proto\x121dev.planton.kubernetes.kubernetesairflow.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xf3\x17\n" +
+	"8catalog/kubernetes/kubernetesairflow/v1alpha1/spec.proto\x121dev.planton.kubernetes.kubernetesairflow.v1alpha1\x1a\x1bbuf/validate/validate.proto\x1a#catalog/kubernetes/kubernetes.proto\x1a%catalog/kubernetes/workload_pod.proto\x1a&shared/foreignkey/v1/foreign_key.proto\x1a\x1cshared/options/options.proto\"\xee\x17\n" +
 	"\x15KubernetesAirflowSpec\x12j\n" +
 	"\tnamespace\x18\x01 \x01(\v22.dev.planton.shared.foreignkey.v1.StringValueOrRefB\x18\xbaH\x03\xc8\x01\x01\x88\xd4a\xa0\x1f\x92\xd4a\tspec.nameR\tnamespace\x12)\n" +
 	"\x10create_namespace\x18\x02 \x01(\bR\x0fcreateNamespace\x124\n" +
@@ -2980,12 +2980,12 @@ const file_catalog_kubernetes_kubernetesairflow_v1alpha1_spec_proto_rawDesc = ""
 	"scheduling\x12b\n" +
 	"\x06images\x18\x11 \x01(\v2J.dev.planton.kubernetes.kubernetesairflow.v1alpha1.KubernetesAirflowImagesR\x06images\x12\x1f\n" +
 	"\vhelm_values\x18\x12 \x01(\tR\n" +
-	"helmValues:\xb9\n" +
-	"\xbaH\xb5\n" +
+	"helmValues:\xb4\n" +
+	"\xbaH\xb0\n" +
 	"\x1a\x81\x03\n" +
 	"\x1abroker.required_for_celery\x12\xd2\x01A Celery-family executor needs a message broker: set spec.broker (bundled Redis, a composed KubernetesValkey, or an existing broker-URL Secret) when executor contains CeleryExecutor or CeleryKubernetesExecutor.\x1a\x8d\x01!(has(this.executor) && (this.executor.contains('CeleryExecutor') || this.executor.contains('CeleryKubernetesExecutor'))) || has(this.broker)\x1a\x8c\x03\n" +
-	"\x1fbroker.forbidden_without_celery\x12\xd8\x01spec.broker only applies to Celery-family executors — remove it, or set spec.executor to include CeleryExecutor explicitly (unset executor defaults to KubernetesExecutor, which runs tasks without a message broker).\x1a\x8d\x01!has(this.broker) || (has(this.executor) && (this.executor.contains('CeleryExecutor') || this.executor.contains('CeleryKubernetesExecutor')))\x1a\x9f\x02\n" +
-	"\x1cairflow_version.v3_line_only\x12\xb4\x01This component models the Airflow 3 line — set airflow_version to 3.0.0 or newer. Airflow 2 installs use the chart's webserver-era surfaces this spec deliberately does not model.\x1aH!has(this.airflow_version) || !this.airflow_version.matches('^[0-2]\\\\.')\x1a\xfd\x01\n" +
+	"\x1fbroker.forbidden_without_celery\x12\xd8\x01spec.broker only applies to Celery-family executors — remove it, or set spec.executor to include CeleryExecutor explicitly (unset executor defaults to KubernetesExecutor, which runs tasks without a message broker).\x1a\x8d\x01!has(this.broker) || (has(this.executor) && (this.executor.contains('CeleryExecutor') || this.executor.contains('CeleryKubernetesExecutor')))\x1a\x9a\x02\n" +
+	"\x1cairflow_version.v3_line_only\x12\xaf\x01This kind models the Airflow 3 line — set airflow_version to 3.0.0 or newer. Airflow 2 installs use the chart's webserver-era surfaces this spec deliberately does not model.\x1aH!has(this.airflow_version) || !this.airflow_version.matches('^[0-2]\\\\.')\x1a\xfd\x01\n" +
 	"\x17pgbouncer.postgres_only\x12\x97\x01PgBouncer pools PostgreSQL connections — it cannot front a MySQL metadata database. Remove spec.pgbouncer or switch the database to the postgres arm.\x1aH!has(this.pgbouncer) || !has(this.database) || !has(this.database.mysql)B\x10\n" +
 	"\x0e_chart_versionB\x12\n" +
 	"\x10_airflow_versionB\v\n" +

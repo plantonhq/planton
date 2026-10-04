@@ -654,7 +654,7 @@ After deploying the VPC, you typically need:
 
 - [Terraform Google Provider Documentation](https://registry.terraform.io/providers/hashicorp/google/latest/docs)
 - [GCP VPC Documentation](https://cloud.google.com/vpc/docs)
-- [Planton Component API Reference](../../README.md)
+- [Planton Catalog Kind API Reference](../../README.md)
 - [Terraform Best Practices](https://www.terraform-best-practices.com/)
 
 ## Support

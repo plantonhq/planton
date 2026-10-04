@@ -2,7 +2,7 @@
 
 **Date**: September 30, 2026
 **Type**: Feature
-**Components**: StripeCoupon, StripePromotionCode, StripeShippingRate, StripeTaxRate, StripeBillingMeter, StripePaymentLink, StripePrice; `catalog/stripe/aa_e2e`, `catalog/stripe/aa_import`, `e2e/stripe`, `pkg/providerparity`, `pkg/catalogkindreflect`, `pkg/explain/refgen`, `pkg/iac/importmap`; the component forge rule and flow rules 012 and 014
+**Components**: StripeCoupon, StripePromotionCode, StripeShippingRate, StripeTaxRate, StripeBillingMeter, StripePaymentLink, StripePrice; `catalog/stripe/aa_e2e`, `catalog/stripe/aa_import`, `e2e/stripe`, `pkg/providerparity`, `pkg/catalogkindreflect`, `pkg/explain/refgen`, `pkg/iac/importmap`; the catalog-kind forge rule and flow rules 012 and 014
 
 ## Summary
 
