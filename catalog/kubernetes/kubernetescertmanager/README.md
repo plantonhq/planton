@@ -56,7 +56,7 @@ The controller ServiceAccount name is exported (`status.outputs.service_account_
 
 ## Composing in Infra Charts
 
-The standard chart wiring: this component first, then issuers referencing `status.outputs.cluster_resource_namespace`, then certificates referencing the issuers. Catalog kinds (an IAM role for Route53, a GCP service account for Cloud DNS) deploy in the same run and flow their handles into `workload_identity` — the cross-cloud composition (e.g. EKS cluster + Cloudflare DNS) needs no identity at all, since the Cloudflare token rides the issuer.
+The standard chart wiring: this component first, then issuers referencing `status.outputs.cluster_resource_namespace`, then certificates referencing the issuers. Cloud-side Infra Components (an IAM role for Route53, a GCP service account for Cloud DNS) deploy in the same run and flow their handles into `workload_identity` — the cross-cloud composition (e.g. EKS cluster + Cloudflare DNS) needs no identity at all, since the Cloudflare token rides the issuer.
 
 ---
 

@@ -161,8 +161,8 @@ allow:
   - pattern: '(?i)cloud[ _-]?resource[ _-]?service[ _-]?account'
     reason: the service account BigQuery creates for a Cloud Resource connection
   - pattern: '(?i)gcp[ _-]?big[ _-]?query[ _-]?connection[ _-]?cloud[ _-]?resource|cloud[ _-]?resource[ _-]?(connection|arm)|\bcloud_resource\b|\bcloudResource\b|\bGetCloudResource\b|\bCloudResource\b|\bConnectionCloudResource\w*|biglake-cloud-resource|scenarios/cloud-resource'
-    paths: ['**/gcpbigqueryconnection/**', 'catalog/gcp/aa_e2e/verify/bigquery_connection.go']
-    reason: BigQuery's own Cloud Resource connection type, its field, its REST key and the files named after it
+    paths: ['**/gcpbigqueryconnection/**', '**/gcpdatastreamstream/**', 'catalog/gcp/aa_e2e/verify/bigquery_connection.go']
+    reason: BigQuery's own Cloud Resource connection type, its field, its REST key, the files named after it, and the Datastream stream that writes through one
   - pattern: '(?i)cloud_?resource'
     paths: ['catalog/gcp/gcpbigqueryconnection/v1alpha1/*.pb.go']
     reason: the same BigQuery field as protoc encodes it in the generated descriptor, where an escape sequence runs into the name

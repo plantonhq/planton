@@ -12,7 +12,7 @@ type Locals struct {
 	CloudflareR2Bucket       *cloudflarer2bucketv1alpha1.CloudflareR2Bucket
 }
 
-// initializeLocals copies stack‑input fields into the Locals struct.
+// initializeLocals copies IaC input fields into the Locals struct.
 func initializeLocals(_ *pulumi.Context, iacInput *cloudflarer2bucketv1alpha1.CloudflareR2BucketIacInput) *Locals {
 	locals := &Locals{}
 

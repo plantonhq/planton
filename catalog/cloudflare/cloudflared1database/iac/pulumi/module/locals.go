@@ -12,7 +12,7 @@ type Locals struct {
 	CloudflareD1Database     *cloudflared1databasev1alpha1.CloudflareD1Database
 }
 
-// initializeLocals copies stack‑input fields into the Locals struct.
+// initializeLocals copies IaC input fields into the Locals struct.
 // Mirrors the style used in other Planton modules.
 func initializeLocals(_ *pulumi.Context, iacInput *cloudflared1databasev1alpha1.CloudflareD1DatabaseIacInput) *Locals {
 	locals := &Locals{}

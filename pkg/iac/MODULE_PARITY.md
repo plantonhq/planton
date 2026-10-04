@@ -2,7 +2,7 @@
 
 Every catalog kind ships two IaC implementations under `catalog/.../<kind>/v1/iac/`:
 a Pulumi module (`pulumi/module/*.go`) and an OpenTofu module (`tf/*.tf`). For a given
-`iac-input` they MUST produce the same catalog objects, names, labels, selectors,
+`iac-input` they MUST produce the same provider resources, names, labels, selectors,
 environment, and outputs. A divergence here is not cosmetic: it silently changes
 what gets deployed depending on which provisioner a resource happens to use.
 

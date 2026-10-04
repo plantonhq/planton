@@ -338,7 +338,7 @@ PROACTIVE CREATE-TIME-REQUIRED IDENTIFICATION (MANDATORY STEP)
   when the kind is a thin composition and the name feels like the resource's
   Planton identity. Planton metadata names are routinely longer than a
   cloud's cap (App Platform: 32 characters) and are unique only within an
-  org and environment, so a module that names the catalog object from
+  org and environment, so a module that names the provider resource from
   `metadata.name` passes every offline gate and fails at plan for most real
   names. Model the name with the cloud's own rule (length, pattern,
   uniqueness scope) in the field's validation and comment.

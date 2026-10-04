@@ -4,7 +4,7 @@ import (
 	"github.com/plantonhq/planton/shared/catalogkind"
 )
 
-// GetProvider returns the Cloud‑resource **provider** recorded in the
+// GetProvider returns the catalog **provider** recorded in the
 // (provider) enum‑value option of the given CatalogKind.
 //
 // If the kind is unknown or the option is absent, the function returns the

@@ -21,7 +21,7 @@ PARITY WITH PULUMI (MANDATORY -- read before writing any HCL)
 Terraform is authored AFTER the Pulumi module in the sequence, so the Pulumi module
 (`iac/pulumi/module/*.go`) already exists and is the thing to reconcile against. This rule's
 job is to produce a Terraform module that is at **100% behavioral parity** with it -- the
-same catalog objects, names, labels, selectors, environment, dependency ordering, and
+same provider resources, names, labels, selectors, environment, dependency ordering, and
 outputs for an identical `iac-input`. Neither engine is privileged: the proto contract
 (`spec.proto` + `outputs.proto`) and intended behavior decide correctness, so if the
 Pulumi module is the one that is wrong, fix it too. Do not author Terraform "from the proto"

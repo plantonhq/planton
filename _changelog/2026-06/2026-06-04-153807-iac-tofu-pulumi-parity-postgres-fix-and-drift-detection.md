@@ -19,7 +19,7 @@ tofu↔pulumi parity as the default — deviating only with a documented technic
 
 A kind ships two IaC implementations of one contract — a Pulumi module
 (`iac/pulumi/module/`) and an OpenTofu module (`iac/tf/`). They are supposed to produce
-the same catalog objects for the same `iac-input`. Nothing enforced that, so the Postgres
+the same provider resources for the same `iac-input`. Nothing enforced that, so the Postgres
 tofu module had drifted from Pulumi across several dimensions, two of them
 deploy-breaking. Reading both modules side by side surfaced the gaps.
 

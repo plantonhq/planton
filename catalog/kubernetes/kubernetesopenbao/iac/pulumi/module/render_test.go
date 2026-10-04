@@ -35,7 +35,7 @@ func auditSink(s kubernetesopenbaov1alpha1.KubernetesOpenBaoAudit_Sink) *kuberne
 }
 func strPtr(s string) *string { return &s }
 
-// localsFor builds the module's locals the way Resources does, from a IaC
+// localsFor builds the module's locals the way Resources does, from an IaC
 // input carrying the given spec. References arrive at the module already
 // resolved to values, so the fixtures use literals throughout. The manifest
 // loader fills a present block's declared scalar defaults before either

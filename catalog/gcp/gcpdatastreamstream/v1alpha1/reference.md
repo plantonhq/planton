@@ -1559,7 +1559,7 @@ The folder inside the bucket.
 The BigQuery connection whose service account writes the bucket -- a
 GcpBigQueryConnection reference (its name output, which the modules
 convert to Google's {project}.{location}.{connection_id} form) or a
-literal in the dotted form. Use an infra_component connection and grant
+literal in the dotted form. Use a cloud_resource connection and grant
 its service account storage access on the bucket.
 
 - references: GcpBigQueryConnection (`status.outputs.name`)

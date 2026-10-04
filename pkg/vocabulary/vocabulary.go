@@ -276,6 +276,7 @@ func (s *Scanner) Excluded(path string) bool {
 // ScanText returns the findings in one file's content. path is
 // repository-relative and slash-separated; it scopes path allowances.
 func (s *Scanner) ScanText(path string, content []byte) []Finding {
+	content = []byte(lookalikes.Replace(string(content)))
 	if !s.mayMatch(bytes.ToLower(wrapJoined.ReplaceAll(content, []byte(" ")))) {
 		return nil
 	}
@@ -307,6 +308,10 @@ func (s *Scanner) ScanText(path string, content []byte) []Finding {
 }
 
 // commentMarker is the indentation and comment leader a wrapped line opens with.
+// lookalikes maps the Unicode hyphens and the no-break space to their ASCII
+// forms, so a name written with them reads the way the rules spell it.
+var lookalikes = strings.NewReplacer("\u2010", "-", "\u2011", "-", "\u2012", "-", "\u00a0", " ")
+
 var commentMarker = regexp.MustCompile(`^\s*(//+|#+|\*|--|;+)?\s*`)
 
 // keyLine is a line that opens with a key (YAML, a struct literal): it

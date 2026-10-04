@@ -6,7 +6,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// Locals bundles quick references copied from the stack‑input.
+// Locals bundles quick references copied from the IaC input.
 type Locals struct {
 	CloudflareProviderConfig *cloudflareprovider.CloudflareProviderConfig
 	CloudflareWorker         *cloudflareworkerv1alpha1.CloudflareWorker

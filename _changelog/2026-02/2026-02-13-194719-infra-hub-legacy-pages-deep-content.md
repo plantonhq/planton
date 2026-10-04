@@ -6,7 +6,7 @@
 
 ## Summary
 
-Deep content pass on the 6 remaining Infra Hub legacy pages. Rewrote 3 pages from scratch (infra-jobs, flow-control, getting-started), deleted 3 redundant pages (what-is-a-infra-job, catalog-kinds, credentials-and-mappings), and updated cross-references across 4 files. Infra Hub section consolidated from 13 pages to 10, with all pages now at quality bar.
+Deep content pass on the 6 remaining Infra Hub legacy pages. Rewrote 3 pages from scratch (infra-jobs, flow-control, getting-started), deleted 3 redundant pages (what-is-an-infra-job, a second catalog page, credentials-and-mappings), and updated cross-references across 4 files. Infra Hub section consolidated from 13 pages to 10, with all pages now at quality bar.
 
 ## Problem Statement / Motivation
 
@@ -14,8 +14,8 @@ Six Infra Hub pages remained untouched from the original documentation — the o
 
 ### Pain Points
 
-- `what-is-a-infra-job.md` and `infra-jobs.md` were two separate pages covering the same concept (620 combined lines), with the Information Architecture explicitly calling for a merge
-- `catalog-kinds.md` (665 lines) duplicated the already-rewritten `catalog-kinds.md` — both covered the catalog taxonomy and browsing experience
+- `what-is-an-infra-job.md` and `infra-jobs.md` were two separate pages covering the same concept (620 combined lines), with the Information Architecture explicitly calling for a merge
+- A second catalog page (665 lines) duplicated the already-rewritten `catalog-kinds.md` — both covered the catalog taxonomy and browsing experience
 - `credentials-and-mappings.md` (633 lines) duplicated the Connect section (8 pages) — credential management, environment mappings, and default connections were already documented
 - `getting-started.md` (463 lines) contained fabricated YAML manifests with invented `apiVersion`/`kind` values, fake CLI commands, and fake resource outputs
 - `flow-control.md` (617 lines) contained fabricated YAML examples and unverified policy hierarchy claims
@@ -32,16 +32,16 @@ Six Infra Hub pages remained untouched from the original documentation — the o
 
 ### Pages Deleted (3 redundant)
 
-- `what-is-a-infra-job.md` — Content merged into the new `infra-jobs.md`
-- `catalog-kinds.md` — Content covered by `catalog-kinds.md`
+- `what-is-an-infra-job.md` — Content merged into the new `infra-jobs.md`
+- The second catalog page — Content covered by `catalog-kinds.md`
 - `credentials-and-mappings.md` — Content covered by the Connect section
 
 ### Cross-References Fixed (4 files)
 
-- `infra-hub/index.md` — Removed Catalog Kinds and Credentials and Mappings entries, updated Mermaid diagram, updated Getting Started links
-- `infra-hub/catalog-kinds.md` — Removed catalog-kinds link from Related Documentation
-- `infra-hub/infra-components.md` — Updated catalog-kinds link to catalog-kinds
-- `infra-hub/openmcf.md` — Updated catalog-kinds link to catalog-kinds
+- `infra-hub/index.md` — Removed the second catalog page's and Credentials and Mappings entries, updated Mermaid diagram, updated Getting Started links
+- `infra-hub/catalog-kinds.md` — Removed the second catalog page's link from Related Documentation
+- `infra-hub/infra-components.md` — Pointed its catalog link at catalog-kinds
+- `infra-hub/openmcf.md` — Pointed its catalog link at catalog-kinds
 
 ## Implementation Details
 
@@ -61,7 +61,7 @@ Six Infra Hub pages remained untouched from the original documentation — the o
 
 ### Key Decisions
 
-- **Merged two pages into one**: `what-is-a-infra-job.md` (introductory) and `infra-jobs.md` (deep dive) had significant overlap; IA explicitly called for merge
+- **Merged two pages into one**: `what-is-an-infra-job.md` (introductory) and `infra-jobs.md` (deep dive) had significant overlap; IA explicitly called for merge
 - **Deleted rather than redirected**: Three redundant pages deleted entirely rather than converted to thin redirect pages — reduces maintenance burden
 - **Getting Started as navigation page**: Concise orientation rather than tutorial — each step links to deep-content pages, avoiding duplication and staleness
 - **Flow control labels from web console**: Used exact labels from `FlowControlDisplay` component for user-facing consistency

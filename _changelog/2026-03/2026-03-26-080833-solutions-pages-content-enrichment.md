@@ -66,7 +66,7 @@ Every piece of new content maps to a verified source:
 - **Pipeline stages** — `what-is-service-hub.md`
 - **CloudOps (pod access)** — `what-is-planton-runner.md`
 - **Infra Chart structure** — `what-is-an-infra-chart.md`
-- **Infra Job audit trail** — `what-is-a-infra-job.md`
+- **Infra Job audit trail** — `what-is-an-infra-job.md`
 - **Custom module contract** — Thingularity demo notes
 
 ### Component Reuse

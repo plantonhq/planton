@@ -158,7 +158,7 @@ A complete kind includes:
 
 A kind ships **two** IaC implementations of the SAME contract: a Pulumi
 module (`iac/pulumi/module/`) and an OpenTofu/Terraform module (`iac/tf/`). For an
-identical `iac-input` they MUST produce the **same** catalog objects, names, labels,
+identical `iac-input` they MUST produce the **same** provider resources, names, labels,
 selectors, environment, dependency ordering, and outputs. **The default is 100%
 behavioral parity.** This is not a "nice to have" -- a silent divergence means the
 deployed result depends on which provisioner a resource happens to use, which on a real

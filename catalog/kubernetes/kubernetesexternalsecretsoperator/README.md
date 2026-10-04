@@ -57,7 +57,7 @@ The controller ServiceAccount name is fixed to `external-secrets` and exported (
 
 ## Composing in Infra Charts
 
-The standard chart wiring: this component first, then stores (KubernetesClusterSecretStore for cluster-wide backends, KubernetesSecretStore for namespace-scoped ones), then KubernetesExternalSecret resources referencing the stores. Catalog kinds (an IAM role for Secrets Manager, a GCP service account for Secret Manager) deploy in the same run and flow their handles into `workload_identity` — or into the stores' own auth blocks for per-team isolation.
+The standard chart wiring: this component first, then stores (KubernetesClusterSecretStore for cluster-wide backends, KubernetesSecretStore for namespace-scoped ones), then KubernetesExternalSecret resources referencing the stores. Cloud-side Infra Components (an IAM role for Secrets Manager, a GCP service account for Secret Manager) deploy in the same run and flow their handles into `workload_identity` — or into the stores' own auth blocks for per-team isolation.
 
 ```yaml
 apiVersion: kubernetes.planton.dev/v1alpha1

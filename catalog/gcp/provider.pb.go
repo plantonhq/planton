@@ -124,7 +124,7 @@ func (x *GcpProviderConfig) GetAccessToken() string {
 // GitLab CI, etc.).
 //
 // The token is carried in memory (web_identity_token) and never written to disk: each pulumi
-// operation re-mints a fresh JWT before it runs, so an infra job's runtime is never bound by a
+// operation re-mints a fresh JWT before it runs, so an Infra Job's runtime is never bound by a
 // single token's TTL and no file-based credential refresh is needed.
 //
 // These provider-config fields are constructed by the caller (e.g. the Planton runner) at deploy

@@ -14,7 +14,7 @@ The Scaleway provider expansion requires container registry support for teams to
 
 - Kapsule cluster workloads cannot pull from Scaleway-hosted private registries through the infra-chart composition model
 - Serverless functions and containers (R17, R18) will have no declarative way to reference their image source registry
-- CI/CD pipelines lack a IaC-managed push target
+- CI/CD pipelines lack an IaC-managed push target
 
 ### Pain Points
 

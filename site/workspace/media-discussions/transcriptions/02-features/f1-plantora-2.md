@@ -26,7 +26,7 @@ Swarup Donepudi  5:26
 yeah. So when you say resource, you're talking about any multi cloud deployment,
 
 Suresh Attaluri  5:30  
-deployment. AP, yeah, catalog kind, any deployed resource, yeah, yeah, will have a chat associated with it, okay? And any, anything, any request put over there will be communicated or will be shown to sorry.
+deployment. AP, yeah, infra component, any deployed resource, yeah, yeah, will have a chat associated with it, okay? And any, anything, any request put over there will be communicated or will be shown to sorry.
 
 Swarup Donepudi  5:53  
 Everyone can access conversation. It's not intentionally, anyone sharing anything, the very default nature of those conversations, they begin right close to where the deployment configuration can be found on the console app, and the conversation is going to live there, so anyone who has access to that configuration can also Explore historical conversation that happened on that resource. Right? So

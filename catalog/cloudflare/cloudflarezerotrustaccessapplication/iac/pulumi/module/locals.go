@@ -12,7 +12,7 @@ type Locals struct {
 	CloudflareZeroTrustAccessApplication *cloudflarezerotrustaccessapplicationv1alpha1.CloudflareZeroTrustAccessApplication
 }
 
-// initializeLocals copies stack‑input fields into Locals.
+// initializeLocals copies IaC input fields into Locals.
 func initializeLocals(
 	_ *pulumi.Context,
 	iacInput *cloudflarezerotrustaccessapplicationv1alpha1.CloudflareZeroTrustAccessApplicationIacInput,

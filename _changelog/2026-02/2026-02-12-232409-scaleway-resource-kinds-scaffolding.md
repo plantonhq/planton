@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added foundational scaffolding for 19 Scaleway cloud resource kinds in Planton. This includes registering all enum values in `catalog_kind.proto`, creating the Pulumi provider helper and label keys packages, and adding the first community (pulumiverse) Pulumi SDK dependency. All builds pass -- proto compilation, Go compilation, and Gazelle-managed BUILD.bazel generation.
+Added foundational scaffolding for 19 Scaleway catalog kinds in Planton. This includes registering all enum values in `catalog_kind.proto`, creating the Pulumi provider helper and label keys packages, and adding the first community (pulumiverse) Pulumi SDK dependency. All builds pass -- proto compilation, Go compilation, and Gazelle-managed BUILD.bazel generation.
 
 ## Problem Statement / Motivation
 

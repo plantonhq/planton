@@ -89,6 +89,8 @@ func TestWrappedNamesAreFound(t *testing.T) {
 		"Pulumi implementation for the AwsVpc deployment\ncomponent.",
 		"// the value a\n// cloud resource carries",
 		"# then a\n# catalog\n# component",
+		"returns the Cloud\u2011resource provider",
+		"one cloud\u00a0resource",
 	} {
 		if len(s.ScanText("README.md", []byte(text))) == 0 {
 			t.Errorf("no finding in wrapped %q", text)

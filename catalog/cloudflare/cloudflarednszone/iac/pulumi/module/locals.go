@@ -12,7 +12,7 @@ type Locals struct {
 	CloudflareDnsZone        *cloudflarednszonev1alpha1.CloudflareDnsZone
 }
 
-// initializeLocals copies fields from the stack‑input into Locals.
+// initializeLocals copies fields from the IaC input into Locals.
 func initializeLocals(_ *pulumi.Context, iacInput *cloudflarednszonev1alpha1.CloudflareDnsZoneIacInput) *Locals {
 	locals := &Locals{}
 

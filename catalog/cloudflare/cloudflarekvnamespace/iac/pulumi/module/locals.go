@@ -12,7 +12,7 @@ type Locals struct {
 	CloudflareKvNamespace    *cloudflarekvnamespacev1alpha1.CloudflareKvNamespace
 }
 
-// initializeLocals copies stack‑input fields into the Locals struct.
+// initializeLocals copies IaC input fields into the Locals struct.
 func initializeLocals(_ *pulumi.Context, iacInput *cloudflarekvnamespacev1alpha1.CloudflareKvNamespaceIacInput) *Locals {
 	locals := &Locals{}
 	locals.CloudflareKvNamespace = iacInput.Target

@@ -17,7 +17,7 @@ type Locals struct {
 	DigitalOceanLabels          map[string]string
 }
 
-// initializeLocals copies stack‑input fields into the Locals struct and builds
+// initializeLocals copies IaC input fields into the Locals struct and builds
 // a reusable label map. Mirrors the pattern of the DigitalOcean VPC module.
 func initializeLocals(_ *pulumi.Context, iacInput *digitaloceandatabaseclusterv1alpha1.DigitalOceanDatabaseClusterIacInput) *Locals {
 	locals := &Locals{}

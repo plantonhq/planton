@@ -63,8 +63,8 @@ are compiled into the CLI binary. It is the authoritative grounding surface
 for chart authors, and it covers platform API resources too (`planton explain
 infra-chart` is the chart manifest's own schema, with fields the tooling
 assembles labeled so you never hand-author them).
-(`planton catalog kind schema <Kind>` still works as an alias that renders
-the same reference for catalog kinds.)
+(`planton infra component schema <Kind>` renders the same reference for a
+catalog kind.)
 
 ## Reading an explain report
 
