@@ -56,7 +56,7 @@ a Secret carrying the chart's `seaweedfs_s3_config` contract via
   Deployment scales the API independently of metadata); both shapes
   expose the same `<name>-s3` Service on port 8333.
 - **PVCs, not hostPath.** The chart's out-of-the-box storage is
-  hostPath (bare-metal grain); this component deliberately maps every
+  hostPath (bare-metal grain); this kind deliberately maps every
   data volume to a PersistentVolumeClaim and every logs volume to
   emptyDir — portable across every managed cloud and kind cluster.
   Declare sizes and (optionally) a StorageClass per tier.

@@ -25,6 +25,6 @@ spec:
       steps:
         - done:
             return: "received"
-  description: Workflow fixture for consuming components' E2E chains.
+  description: Workflow fixture for consuming kinds' E2E chains.
   deletionProtection: false
   deletionPolicy: DELETE

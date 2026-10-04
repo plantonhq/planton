@@ -47,7 +47,7 @@ token).
 ## Schema and retention
 
 Loki normally makes every user hand-author a `schema_config`; this
-component derives it (TSDB, schema v13). `retention_period` enables the
+kind derives it (TSDB, schema v13). `retention_period` enables the
 compactor's deletion (a multiple of 24h). `schema_from_date` exists only
 for importing an existing cluster.
 

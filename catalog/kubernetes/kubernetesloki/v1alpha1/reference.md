@@ -41,7 +41,7 @@ by the chart itself and is never enabled by this component.
 
 SCHEMA: Loki requires a `schema_config` naming the index schema and
 its start date — upstream makes every user hand-author it. This
-component derives it (TSDB, schema v13, the object store matching
+kind derives it (TSDB, schema v13, the object store matching
 your storage backend) so a new install never writes one. The
 `schema_from_date` override exists solely for IMPORTING clusters
 whose existing schema started on a real date.
@@ -1102,7 +1102,7 @@ KubernetesKubePrometheusStack first).
 `bool` · optional (explicit presence)
 
 Send anonymous usage statistics about this install to Grafana Labs.
-Default false — this component deliberately diverges from Loki's
+Default false — this kind deliberately diverges from Loki's
 report-by-default so no data leaves the cluster without an explicit
 opt-in.
 

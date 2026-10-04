@@ -153,7 +153,7 @@ Use **KubernetesHelmRelease** when — and only when — the catalog has no firs
 
 - A first-class catalog kind covers the workload — it always wins (validation before deploy, composable outputs, documented trade-offs)
 - You have raw manifests rather than a chart — that is KubernetesManifest's job
-- You want to render a chart without creating a release — this component deliberately does not do that; hooks and Helm tooling are the point
+- You want to render a chart without creating a release — this kind deliberately does not do that; hooks and Helm tooling are the point
 
 ## Prerequisites
 

@@ -8,7 +8,7 @@ Judgment calls that matter when you run DigitalOcean load balancers.
 
 ## Certificates are names, not UUIDs
 
-DigitalOcean Let's Encrypt certificates rotate their UUID on every auto-renewal. The provider's `certificate_id` argument is deprecated for that reason; this component only models `certificateName`. A `DigitalOceanCertificate` reference resolves to `status.outputs.certificate_id`, which at the pinned provider is the certificate NAME — the stable handle. Never paste a certificate UUID into `certificateName`.
+DigitalOcean Let's Encrypt certificates rotate their UUID on every auto-renewal. The provider's `certificate_id` argument is deprecated for that reason; this kind only models `certificateName`. A `DigitalOceanCertificate` reference resolves to `status.outputs.certificate_id`, which at the pinned provider is the certificate NAME — the stable handle. Never paste a certificate UUID into `certificateName`.
 
 ## Type decides the rest of the spec
 

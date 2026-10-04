@@ -18,7 +18,7 @@ OpenBao server starts UNINITIALIZED and SEALED. Initialization
 (`bao operator init` — generates the unseal key shares and the
 initial root token) and unsealing are RUNTIME operations performed
 against the API after deploy; no Kubernetes deployment tool can do
-them declaratively, and this component deliberately does not try.
+them declaratively, and this kind deliberately does not try.
 Until a server is initialized and unsealed, its pod reports
 NotReady BY DESIGN (the readiness probe is `bao status`, which
 exits non-zero for sealed servers) — the chart keeps sealed pods

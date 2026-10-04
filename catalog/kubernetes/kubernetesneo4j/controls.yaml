@@ -26,7 +26,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: module_default
-        reference: The chart's own default exposure Service is a LoadBalancer -- this component deliberately overrides it to ClusterIP, so the database is reachable solely inside the cluster network. LoadBalancer or NodePort exposure is an explicit opt-in through service.type.
+        reference: The chart's own default exposure Service is a LoadBalancer -- this kind deliberately overrides it to ClusterIP, so the database is reachable solely inside the cluster network. LoadBalancer or NodePort exposure is an explicit opt-in through service.type.
       notes: The 02-production preset restates ClusterIP for the record and documents the LoadBalancer recipe as the deliberate alternative.
     - control_id: restricted-ingress
       status: not_applicable

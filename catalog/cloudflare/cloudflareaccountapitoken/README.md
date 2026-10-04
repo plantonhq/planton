@@ -23,7 +23,7 @@
 **Not ideal for:**
 
 - A person's own credential -- that is Cloudflare's user-scoped API token, a different resource with a different ownership model
-- Cloudflare's legacy global API key, which this component deliberately never models
+- Cloudflare's legacy global API key, which this kind deliberately never models
 
 ## API Specification
 

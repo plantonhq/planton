@@ -9,7 +9,7 @@ The grain is deliberate: **this kind is the single-binary Tempo** — one Statef
 When you deploy this Infra Component, the IaC module provisions:
 
 - **Helm release** (official grafana-community `tempo` chart, default pin `2.2.3` pairing with Tempo `2.10.7`, named `metadata.name`) — one Tempo StatefulSet with OTLP receivers on gRPC 4317 and HTTP 4318 always on
-- **A PersistentVolumeClaim** (default 10Gi on the cluster's default StorageClass) — the chart's own default is an emptyDir that loses every trace on pod restart; this component deliberately inverts that. With local storage the volume holds ALL trace blocks; with an object-storage backend it holds only the write-ahead log. `ephemeral: true` restores the chart's throwaway posture
+- **A PersistentVolumeClaim** (default 10Gi on the cluster's default StorageClass) — the chart's own default is an emptyDir that loses every trace on pod restart; this kind deliberately inverts that. With local storage the volume holds ALL trace blocks; with an object-storage backend it holds only the write-ahead log. `ephemeral: true` restores the chart's throwaway posture
 - **Object-storage wiring** when a backend is declared — S3/S3-compatible (bucket AND endpoint required; Tempo never derives the endpoint from the region), GCS, or Azure Blob. Empty credentials mean the pod's ambient identity (IRSA on EKS, workload identity on GKE, federated identity on AKS — the recommended keyless postures); declared credentials are references to existing Secrets, injected as environment variables and never rendered into config
 - **Kubernetes Namespace** — created only when `createNamespace` is true; otherwise the namespace must already exist
 
@@ -80,7 +80,7 @@ These are the most important decisions when configuring a Tempo installation. Ex
 
 **Retention speaks Go durations — there is no day unit** — `retention` accepts minutes or hours only (`30m`, `24h`; a week is `168h`, never `7d`). The chart default of 24h suits a dev loop; raise it for anything users depend on. Longer retention costs volume capacity with local storage and object-store bytes with a backend.
 
-**OTLP-first ingest** — gRPC 4317 and HTTP 4318 are always on; they are the 2026 wire standard. `jaegerReceiversEnabled` opens the four legacy Jaeger protocols (gRPC 14250, thrift-binary 6832, thrift-compact 6831, thrift-http 14268) for fleets still migrating — the component deliberately narrows the chart's all-receivers default, because every closed port is one less ingest surface.
+**OTLP-first ingest** — gRPC 4317 and HTTP 4318 are always on; they are the 2026 wire standard. `jaegerReceiversEnabled` opens the four legacy Jaeger protocols (gRPC 14250, thrift-binary 6832, thrift-compact 6831, thrift-http 14268) for fleets still migrating — the kind deliberately narrows the chart's all-receivers default, because every closed port is one less ingest surface.
 
 **Multi-tenancy is a header contract** — with `multiTenancyEnabled`, an `X-Scope-OrgID` tenant header is required on every push AND every query; senders and the Grafana datasource must both carry it, or queries return empty results rather than errors.
 

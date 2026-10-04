@@ -20,4 +20,4 @@ Destroying the instance stops protection AND removes the backup data. With the v
 
 ## The Kubernetes variant is a bigger commitment
 
-The AKS variant needs the Backup extension installed on the cluster and a trusted-access role binding to the vault before the instance can be created -- cluster-side setup this component deliberately does not own. It is also immutable end to end: every change, including the policy binding, replaces the instance. Model AKS backup as part of cluster provisioning, not an afterthought.
+The AKS variant needs the Backup extension installed on the cluster and a trusted-access role binding to the vault before the instance can be created -- cluster-side setup this kind deliberately does not own. It is also immutable end to end: every change, including the policy binding, replaces the instance. Model AKS backup as part of cluster provisioning, not an afterthought.

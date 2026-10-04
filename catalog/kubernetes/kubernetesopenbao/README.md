@@ -21,7 +21,7 @@ Not the right kind when:
 The fact everything else follows from: a fresh server starts
 UNINITIALIZED and SEALED. `bao operator init` (which generates the
 unseal key shares and the root token) and unsealing are RUNTIME API
-operations no deployment tool performs — this component deliberately
+operations no deployment tool performs — this kind deliberately
 does not try. Until then the pod reports NotReady BY DESIGN (the
 readiness probe is `bao status`, non-zero for sealed servers); the
 chart keeps sealed pods addressable through its Services, so

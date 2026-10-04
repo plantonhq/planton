@@ -1,5 +1,5 @@
 // Lifecycle lanes: scenarios whose PROOF is what happens to a deployed
-// kind AFTER its first install. The standard lifecycle deploys once,
+// component AFTER its first install. The standard lifecycle deploys once,
 // verifies, destroys, and verifies absence; three annotations extend it so a
 // scenario can prove the promises a module makes about its second act:
 //

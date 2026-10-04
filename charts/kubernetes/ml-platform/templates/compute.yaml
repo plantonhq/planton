@@ -41,7 +41,7 @@ spec:
     valueFrom:
       name: "{{ values.env }}-ml-ns"
   createNamespace: false
-  # Version and image move in LOCKSTEP: the component derives the node
+  # Version and image move in LOCKSTEP: the kind derives the node
   # image from this version, and Ray's client protocol requires notebooks
   # and jobs to run a closely matching Ray — which is why the version is
   # a parameter teams pin to their code, not a chart constant.

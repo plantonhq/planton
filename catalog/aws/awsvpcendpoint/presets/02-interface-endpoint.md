@@ -23,7 +23,7 @@ zero code changes.
   VPC CIDR is the production shape.
 - **`privateDnsEnabled: true`** -- the service's public name resolves
   to the endpoint inside the VPC. Requires the VPC to have DNS support
-  and DNS hostnames enabled (the `AwsVpc` component's recommended
+  and DNS hostnames enabled (the `AwsVpc` kind's recommended
   defaults).
 
 ## Placeholders to Replace

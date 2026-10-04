@@ -11,7 +11,7 @@
 # and workloads sizing directly. Each modeled sub-block below is one subtree
 # mapping -- matching resumes name-for-name beneath it. The excluded
 # arguments are the Composer 1.x generation's knobs: Google deprecated
-# Composer 1, this component deliberately targets Composer 2/3 only, and
+# Composer 1, this kind deliberately targets Composer 2/3 only, and
 # every exclusion quotes the provider's own version constraint.
 
 resources:

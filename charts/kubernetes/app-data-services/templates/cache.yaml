@@ -30,7 +30,7 @@ spec:
     # source of truth.
     maxMemory: "{{ values.valkey_max_memory }}"
     maxMemoryPolicy: allkeys-lru
-  # Authentication is DECLARED because the component ships with auth OFF
+  # Authentication is DECLARED because the kind ships with auth OFF
   # by upstream default (anyone with network reach gets full read/write).
   # The "default" user is the one plain AUTH <password> clients map to —
   # and the one the spec requires, since without it unauthenticated

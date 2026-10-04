@@ -72,7 +72,7 @@ spec:
       notes: Snapshot retention is a property of the snapshot-schedule resource policy or of manual snapshot lifecycle -- both outside this spec, which carries no retention field.
     - control_id: multi-zone-ha
       status: not_applicable
-      notes: This kind models a zonal disk -- the spec's own contract; regional persistent disks (synchronous two-zone replication) are a separate GCP resource shape this component deliberately does not model. Cross-zone durability here means snapshots, which are regional objects.
+      notes: This kind models a zonal disk -- the spec's own contract; regional persistent disks (synchronous two-zone replication) are a separate GCP resource shape this kind deliberately does not model. Cross-zone durability here means snapshots, which are regional objects.
     - control_id: deletion-protection
       status: configurable
       field_path: deletion_policy

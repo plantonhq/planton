@@ -208,7 +208,7 @@ type KubernetesTempoSpec struct {
 	ServiceMonitorEnabled bool `protobuf:"varint,15,opt,name=service_monitor_enabled,json=serviceMonitorEnabled,proto3" json:"service_monitor_enabled,omitempty"`
 	// *
 	// Send anonymous usage statistics about this install to Grafana
-	// Labs. Default false — this component deliberately diverges from
+	// Labs. Default false — this kind deliberately diverges from
 	// Tempo's report-by-default so no data leaves the cluster without an
 	// explicit opt-in.
 	UsageReporting *bool `protobuf:"varint,16,opt,name=usage_reporting,json=usageReporting,proto3,oneof" json:"usage_reporting,omitempty"`

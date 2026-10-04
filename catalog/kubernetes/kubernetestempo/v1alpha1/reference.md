@@ -696,7 +696,7 @@ KubernetesKubePrometheusStack first).
 `bool` · optional (explicit presence)
 
 Send anonymous usage statistics about this install to Grafana
-Labs. Default false — this component deliberately diverges from
+Labs. Default false — this kind deliberately diverges from
 Tempo's report-by-default so no data leaves the cluster without an
 explicit opt-in.
 
