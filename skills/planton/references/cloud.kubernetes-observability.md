@@ -400,11 +400,28 @@ that trace's id. Compose it like this:
   handler throw the way the count does. Then a TraceQL query on the
   outcome lists exactly what the burn measures, and one on unary calls
   over a second lists exactly what the latency objective measures.
+- **Open the server span where the count's timer starts.** Put the
+  tracing interceptor in the same slot as the counting one, outside
+  authentication. Otherwise a sign-in that takes a second, and every call
+  refused at sign-in (an authentication backend that cannot answer
+  included), is in the count and its latency but in no trace.
 - **Fold tenant-named queues into classes.** A workflow engine's per-tenant
   task queues (one per organization, say) carry a customer's name into
   every series label. Map them to a class (`label_replace` on the queue
   name) before a dashboard or an alert reads them, so no screen and no
   alert message names a customer.
+
+- **A counter that appears on first use reads zero where its software
+  reports, and blank where it does not.** A restarted service has counted
+  nothing yet, so its series are absent, not zero. Fall back to
+  `0 * up{job="<service>", endpoint="metrics"}` for its environment: zero
+  where the service serves its metrics, a blank (said in words) where an
+  older release serves none.
+- **Stage a drill with traffic that reaches the dependency.** An idle
+  environment shows nothing when a dependency fails, and some calls (cached
+  lists, searches) never ask it. Drive reads that do, for the length of
+  the window, then let someone who was not told what broke diagnose it from
+  the screens alone.
 
 ## The alerts that page, and the ones that post
 

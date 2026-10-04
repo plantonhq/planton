@@ -719,6 +719,12 @@ the way the count does. Then `{span.<outcome>="server_fault"}` lists what the
 error budget spends, and `{span.<kind>="unary" && duration > 1s}` what the
 latency objective measures.
 
+**Open the span where the count's timer starts.** The tracing interceptor
+belongs in the same slot as the counting one, outside authentication. A span
+opened after sign-in misses a slow sign-in that the latency histogram shows,
+and never exists for a call refused at sign-in, including one the
+authentication backend could not judge.
+
 **Queue names can carry a tenant.** A workflow engine's per-tenant task queues
 (one per organization) put a customer's name into every series label. Fold them
 into a class with `label_replace` on the queue name before a dashboard or an
@@ -1097,14 +1103,29 @@ spec:
   healthy answer, and TraceQL has no `or vector(0)`: set the panel's
   `noValue` to that answer in words, and let a checker accept the empty
   table only after a probe of the same service
-  (`{resource.service.name="<it>"}`, limit 1) finds spans over the same
-  range. Otherwise an empty panel hides a broken query or a silent service.
+  (`{resource.service.name="<it>"}`, limit 1) finds spans over the
+  dashboard's own default range. Otherwise an empty panel hides a broken
+  query or a silent service. Probe the default range, not the zoom being
+  checked: a service that did no traced work in the last hour is quiet,
+  and a call refused before the tracing step (an expired sign-in) leaves
+  no span at all.
 - **Write a generated dashboard's JSON compact.** Pretty-printing nearly
   doubles it, and an infra chart's rendered templates travel inside every
   deploy run. Compact JSON forms `}}` where objects close together, which a
   chart engine reads as a delimiter, so set adjacent closing braces apart
   (`} }`). JSON's own structure can form no other delimiter, so a check on
   strings covers the rest. One panel to a line keeps the diffs readable.
+- **A counter born on first use reads zero where its software reports.**
+  After a restart the series are absent, not zero. Fall back to
+  `0 * up{job="<service>", endpoint="metrics"}` grouped like the panel, so
+  a restarted service reads zero and a release that serves no metrics
+  reads blank.
+- **Collapse kube-state-metrics before a join.** While it restarts, its old
+  and new instances both report every pod for up to five minutes, and
+  `* on (namespace, pod) group_left (node) kube_pod_info` refuses to
+  evaluate. Join to `max by (namespace, pod, node) (kube_pod_info)`. The
+  same holds in alert rules, where a refused evaluation is a silent blind
+  spot.
 - **Provisioned dashboards are read-only**, even for an Admin, and the
   rest of the rules (delimiters in an infra chart, `schemaVersion`,
   catching a hand-made copy) are in the `KubernetesGrafana` guide,
