@@ -53,7 +53,9 @@
 # key by design instead of breaking every pinned consumer of it.
 # After the sync, every staged key is verified SERVING through the public
 # CDN URL (200 + image/svg+xml) -- a release whose logos fail to serve
-# fails loudly here instead of shipping broken icons silently.
+# fails loudly here instead of shipping broken icons silently. A release
+# candidate (prerelease input) publishes its zips at its own tag and leaves
+# the versionless logos to the stable releases.
 #
 # Called by: .github/workflows/release.yaml (after its github-release job creates the release)
 # =============================================================================
@@ -62,6 +64,12 @@ name: release.content
 
 on:
   workflow_call:
+    inputs:
+      # True for a release candidate (vX.Y.Z-rc.N), decided once by
+      # release.yaml's github-release job.
+      prerelease:
+        type: boolean
+        default: false
     secrets:
       CLOUDFLARE_R2_ACCESS_KEY_ID:
         required: true
@@ -113,6 +121,7 @@ jobs:
           echo "uploaded: https://downloads.planton.dev/${R2_KEY}"
 
   logos:
+    if: ${{ !inputs.prerelease }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:

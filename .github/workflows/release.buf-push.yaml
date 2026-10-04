@@ -22,6 +22,10 @@
 # a ~120s server-side ceiling this proto surface exceeds, which is why remote
 # plugins were retired and must not return.
 #
+# A release candidate (prerelease input) is pushed with its own tag as the
+# only label: a platform can pin it, and `main` keeps tracking stable
+# releases.
+#
 # Called by: .github/workflows/release.yaml (after its github-release job)
 # =============================================================================
 
@@ -29,6 +33,12 @@ name: release.buf-push
 
 on:
   workflow_call:
+    inputs:
+      # True for a release candidate (vX.Y.Z-rc.N), decided once by
+      # release.yaml's github-release job.
+      prerelease:
+        type: boolean
+        default: false
     secrets:
       BUF_TOKEN:
         required: true
@@ -52,10 +62,16 @@ jobs:
       - name: Push module to the BSR with the release tag as label
         env:
           BUF_TOKEN: ${{ secrets.BUF_TOKEN }}
+          PRERELEASE: ${{ inputs.prerelease }}
         run: |
           set -euo pipefail
           # The tag label is the consumed contract (the platform's pinned dep);
-          # main is ALSO moved so the BSR UI's default view tracks releases
-          # instead of showing a stale "Latest" forever.
-          buf push --label "${GITHUB_REF_NAME}" --label main
-          echo "pushed buf.build/planton/planton with labels ${GITHUB_REF_NAME} + main"
+          # a stable release ALSO moves main so the BSR UI's default view
+          # tracks releases instead of showing a stale "Latest" forever.
+          if [ "${PRERELEASE}" = "true" ]; then
+            buf push --label "${GITHUB_REF_NAME}"
+            echo "pushed buf.build/planton/planton with label ${GITHUB_REF_NAME} (release candidate; main unchanged)"
+          else
+            buf push --label "${GITHUB_REF_NAME}" --label main
+            echo "pushed buf.build/planton/planton with labels ${GITHUB_REF_NAME} + main"
+          fi

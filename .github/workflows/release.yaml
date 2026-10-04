@@ -28,7 +28,18 @@
 #   - Definitions    -> Cloudflare R2 (downloads.planton.dev/releases/{tag}/definitions/)
 #
 # Trigger: git tag v0.1.0 && git push origin v0.1.0
-# Note: Only triggers on strict semver tags (v1.2.3), not auto-release tags (v1.2.3+cli.*)
+# Note: Only triggers on strict semver tags (v1.2.3) and release candidates
+# (v1.2.3-rc.1), not auto-release tags (v1.2.3+cli.*, v1.2.3-pulumi.*).
+#
+# Release candidates: a vX.Y.Z-rc.N tag publishes everything a platform pins
+# -- the Go module version, a BSR label, every per-tag R2 artifact, the
+# definitions at the candidate's own tag, and the module matrices that
+# compile every kind -- and moves no shared channel: the GitHub release is a
+# pre-release that is never "latest", the BSR `main` label, the versionless
+# logos, the definitions stable pointer and releases index, the
+# plantonhq/skills distribution repository and the Stigmer skills all stay
+# on the last stable release. The github-release job decides which a tag is,
+# once, and every job below reads its `prerelease` output.
 # =============================================================================
 
 name: release
@@ -36,8 +47,9 @@ name: release
 on:
   push:
     tags:
-      # Strict semver only - excludes auto-release tags (v*+*)
+      # Strict semver and release candidates - excludes auto-release tags (v*+*, v*-pulumi.*)
       - 'v[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+-rc.[0-9]+'
 
 permissions:
   contents: write
@@ -52,18 +64,42 @@ jobs:
   github-release:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    outputs:
+      prerelease: ${{ steps.channel.outputs.prerelease }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Classify the tag (stable release or release candidate)
+        id: channel
+        run: |
+          set -euo pipefail
+          if [[ "${GITHUB_REF_NAME}" =~ ^v[0-9]+\.[0-9]+\.[0-9]+-rc\.[0-9]+$ ]]; then
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+            echo "${GITHUB_REF_NAME} is a release candidate: per-tag artifacts only, no shared channel moves"
+          else
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+            echo "${GITHUB_REF_NAME} is a stable release"
+          fi
+
       - name: Create the GitHub Release for the tag
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PRERELEASE: ${{ steps.channel.outputs.prerelease }}
         run: |
           set -euo pipefail
           VERSION="${GITHUB_REF_NAME}"
           if gh release view "${VERSION}" --repo "${GITHUB_REPOSITORY}" > /dev/null 2>&1; then
             echo "Release ${VERSION} already exists"
+          elif [ "${PRERELEASE}" = "true" ]; then
+            # A candidate never becomes /releases/latest, which chart and
+            # module consumers resolve.
+            gh release create "${VERSION}" \
+              --repo "${GITHUB_REPOSITORY}" \
+              --title "${VERSION}" \
+              --generate-notes \
+              --prerelease \
+              --latest=false
           else
             gh release create "${VERSION}" \
               --repo "${GITHUB_REPOSITORY}" \
@@ -100,6 +136,8 @@ jobs:
   content:
     needs: github-release
     uses: ./.github/workflows/release.content.yaml
+    with:
+      prerelease: ${{ needs.github-release.outputs.prerelease == 'true' }}
     secrets:
       CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
       CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
@@ -112,6 +150,8 @@ jobs:
   buf-push:
     needs: github-release
     uses: ./.github/workflows/release.buf-push.yaml
+    with:
+      prerelease: ${{ needs.github-release.outputs.prerelease == 'true' }}
     secrets:
       BUF_TOKEN: ${{ secrets.BUF_TOKEN }}
 
@@ -141,6 +181,8 @@ jobs:
   definitions:
     needs: github-release
     uses: ./.github/workflows/release.definitions.yaml
+    with:
+      prerelease: ${{ needs.github-release.outputs.prerelease == 'true' }}
     secrets:
       CLOUDFLARE_R2_ACCESS_KEY_ID: ${{ secrets.CLOUDFLARE_R2_ACCESS_KEY_ID }}
       CLOUDFLARE_R2_SECRET_ACCESS_KEY: ${{ secrets.CLOUDFLARE_R2_SECRET_ACCESS_KEY }}
@@ -149,10 +191,12 @@ jobs:
 
   # ============================================================================
   # Stigmer Skills - push the same deterministic skill archives to the hosted
-  # Stigmer engine (one job per skill; unchanged content is a no-op)
+  # Stigmer engine (one job per skill; unchanged content is a no-op). Agents
+  # resolve the engine's latest, so a release candidate never publishes here.
   # ============================================================================
   stigmer-skills:
     needs: github-release
+    if: needs.github-release.outputs.prerelease != 'true'
     uses: ./.github/workflows/release.stigmer-skills.yaml
     secrets:
       STIGMER_API_KEY_PLANTON_PROD: ${{ secrets.STIGMER_API_KEY_PLANTON_PROD }}
