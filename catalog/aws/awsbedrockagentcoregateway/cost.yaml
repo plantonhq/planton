@@ -48,7 +48,7 @@ spec:
       impact: A customer-managed key bills its per-request meter on the referenced AwsKmsKey for the gateway's encrypt/decrypt traffic; unset means the service-managed key at no charge.
   free_tier: "No permanent free allotment exists on any Gateway meter -- API invocations bill from the first call, Search API from the first query, and tool indexing from the first indexed tool-month. The up-to-$200 AWS Free Tier credit for new customers is a one-time trial credit, not a permanent tier. Customer-defined rate limiting carries no extra charge."
   estimate_exclusions:
-    - the committed tool-indexing quantity is not manifest-visible -- targets register tools from referenced OpenAPI/Smithy documents, Lambda tool schemas, API Gateway routes, or live MCP server listings, which is why no estimate document exists for this component
+    - the committed tool-indexing quantity is not manifest-visible -- targets register tools from referenced OpenAPI/Smithy documents, Lambda tool schemas, API Gateway routes, or live MCP server listings, which is why no estimate document exists for this kind
     - gateway API invocations bill $0.005 per 1,000 (ListTools, InvokeTool, Ping) and Search API calls $0.025 per 1,000 -- volume is entirely agent-driven
     - policy authorization bills $0.000025 per evaluated tool call when a Cedar engine is attached
     - interceptor Lambda invocations bill on the referenced AwsLambda; backend charges (Lambda invokes, API Gateway requests, agent-runtime sessions) bill on their own components

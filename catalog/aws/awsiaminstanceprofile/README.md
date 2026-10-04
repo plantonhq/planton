@@ -8,7 +8,7 @@ directly -- it can only be launched with an instance profile carrying one.
 
 The instance profile is a real AWS object with its own lifecycle, sitting
 between a role and the EC2-shaped resources that use it. Modeling it as a
-first-class component keeps the identity graph honest. It lets you:
+first-class kind keeps the identity graph honest. It lets you:
 
 - **Keep roles universal**: a role serves Lambda, ECS, EKS, and EC2 alike; only
   EC2 needs the profile wrapper, so only EC2 topologies create one.

@@ -24,7 +24,7 @@ spec:
       notes: The 03-ddos-protected preset sets ALLOW_UNENCRYPTED enforcement. Payload-level TLS between workloads remains the workloads' responsibility.
     - control_id: no-public-access
       status: not_applicable
-      notes: The network itself has no public reachability -- internet exposure is created by public IPs, load balancers, and gateways, each a separate catalog kind with its own posture.
+      notes: The network itself has no public reachability -- internet exposure is created by public IPs, load balancers, and gateways, each a separate component with its own posture.
     - control_id: restricted-ingress
       status: not_applicable
       notes: Ingress restriction lives on network security groups and their subnet/NIC associations -- separate catalog kinds that attach into the network.

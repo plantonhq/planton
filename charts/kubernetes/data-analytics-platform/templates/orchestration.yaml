@@ -59,7 +59,7 @@ spec:
       # add a credential Secret on the deployed resource — the README's
       # day-2 notes walk through it. When dags_git_repo is empty this
       # whole block is absent and DAGs come baked into the image (the
-      # component's documented default posture).
+      # kind's documented default posture).
       repo: "{{ values.dags_git_repo }}"
       ref: "{{ values.dags_git_ref }}"
 {% endif %}

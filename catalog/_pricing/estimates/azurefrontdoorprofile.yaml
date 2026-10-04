@@ -32,7 +32,7 @@ spec:
       exclusions:
         - client requests bill per 10,000 by the client's pricing zone and follow traffic -- PREMIUM's request rate is higher than STANDARD's
         - data transfer out from edge to client bills per GB by the client's pricing zone; edge-to-origin transfer bills a separate per-GB meter; inbound transfer is free
-        - endpoints, origin groups, origins, routes, custom domains, and security policies are separate kinds carrying no meters of their own -- their requests and bytes land on this profile's usage meters
+        - endpoints, origin groups, origins, routes, custom domains, and security policies are separate components carrying no meters of their own -- their requests and bytes land on this profile's usage meters
         - custom domains beyond the first 100 bill per domain-month; the first 100 are free
       notes: WAF enforcement adds no meter on these tiers -- custom rules are free on both and Microsoft's managed rule sets are free on PREMIUM; they are part of what the tenfold base-fee difference buys. The separately-metered per-policy and per-rule WAF charges belong to Front Door (classic), a different product this spec does not admit.
     - preset: 02-premium-private-origins
@@ -53,7 +53,7 @@ spec:
       exclusions:
         - client requests bill per 10,000 by the client's pricing zone and follow traffic -- PREMIUM's request rate is higher than STANDARD's
         - data transfer out from edge to client bills per GB by the client's pricing zone; edge-to-origin transfer bills a separate per-GB meter; inbound transfer is free
-        - endpoints, origin groups, origins, routes, custom domains, and security policies are separate kinds carrying no meters of their own -- their requests and bytes land on this profile's usage meters
+        - endpoints, origin groups, origins, routes, custom domains, and security policies are separate components carrying no meters of their own -- their requests and bytes land on this profile's usage meters
         - custom domains beyond the first 100 bill per domain-month; the first 100 are free
       notes: WAF enforcement adds no meter on these tiers -- custom rules are free on both and Microsoft's managed rule sets are free on PREMIUM; they are part of what the tenfold base-fee difference buys. The separately-metered per-policy and per-rule WAF charges belong to Front Door (classic), a different product this spec does not admit. PREMIUM is one-way -- Azure refuses a downgrade back to STANDARD, so the committed base fee cannot be reduced without replacing the profile and everything nested under it.
     - preset: 03-compliance-log-scrubbing
@@ -74,6 +74,6 @@ spec:
       exclusions:
         - client requests bill per 10,000 by the client's pricing zone and follow traffic -- PREMIUM's request rate is higher than STANDARD's
         - data transfer out from edge to client bills per GB by the client's pricing zone; edge-to-origin transfer bills a separate per-GB meter; inbound transfer is free
-        - endpoints, origin groups, origins, routes, custom domains, and security policies are separate kinds carrying no meters of their own -- their requests and bytes land on this profile's usage meters
+        - endpoints, origin groups, origins, routes, custom domains, and security policies are separate components carrying no meters of their own -- their requests and bytes land on this profile's usage meters
         - custom domains beyond the first 100 bill per domain-month; the first 100 are free
       notes: WAF enforcement adds no meter on these tiers -- custom rules are free on both and Microsoft's managed rule sets are free on PREMIUM; they are part of what the tenfold base-fee difference buys. The separately-metered per-policy and per-rule WAF charges belong to Front Door (classic), a different product this spec does not admit.

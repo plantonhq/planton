@@ -596,7 +596,7 @@ gateway into its own Deployment.
 
 `bool` · optional (explicit presence)
 
-Serve the S3 API. Component default: true (unset renders as
+Serve the S3 API. Kind default: true (unset renders as
 enabled — this kind IS the catalog's S3 store); set false
 explicitly for a pure filer/POSIX deployment.
 
@@ -606,7 +606,7 @@ explicitly for a pure filer/POSIX deployment.
 
 `bool` · optional (explicit presence)
 
-Require S3 credentials. Component default: true — the chart
+Require S3 credentials. Kind default: true — the chart
 materializes admin + read-only credential pairs in the
 `<name>-s3-secret` Secret (generated once, stable across
 upgrades, kept on uninstall; surfaced in the outputs).

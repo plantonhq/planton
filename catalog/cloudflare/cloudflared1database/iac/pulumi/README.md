@@ -257,7 +257,7 @@ export CLOUDFLARE_API_TOKEN="your-token"
 ## Support
 
 For issues specific to this Pulumi module, check:
-1. Component tests pass: `go test ./v1/`
+1. Kind tests pass: `go test ./v1/`
 2. Pulumi build succeeds: `make build`
 3. IaC input is valid: Validate against protobuf schema
 

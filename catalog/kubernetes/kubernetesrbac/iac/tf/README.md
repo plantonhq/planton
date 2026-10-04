@@ -2,7 +2,7 @@
 
 ## Overview
 
-This Terraform module deploys one Kubernetes RBAC grant: a role (created or existing) plus, when subjects are present, a binding that points every subject at that role. One module covers all four Kubernetes RBAC object kinds — Role, ClusterRole, RoleBinding, and ClusterRoleBinding — selected by the grant's scope. It is behaviorally identical to the Pulumi module for this component.
+This Terraform module deploys one Kubernetes RBAC grant: a role (created or existing) plus, when subjects are present, a binding that points every subject at that role. One module covers all four Kubernetes RBAC object kinds — Role, ClusterRole, RoleBinding, and ClusterRoleBinding — selected by the grant's scope. It is behaviorally identical to the Pulumi module for this kind.
 
 ## Architecture
 

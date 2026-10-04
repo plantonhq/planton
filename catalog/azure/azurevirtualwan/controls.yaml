@@ -30,7 +30,7 @@ spec:
       notes: Ingress restriction lives on the hubs' gateways, firewalls, and route tables -- separate resources. The WAN's allow_branch_to_branch_traffic (default true) shapes REACHABILITY between connected sites -- set it false to force hub-and-spoke-only topologies where branches must not see each other -- but it is transit policy, not an ingress filter on this object.
     - control_id: edge-protection
       status: not_applicable
-      notes: Request-level filtering (Azure Firewall in secured hubs, WAFs in front of applications) belongs to the resources deployed onto the WAN's hubs, separate kinds.
+      notes: Request-level filtering (Azure Firewall in secured hubs, WAFs in front of applications) belongs to the resources deployed onto the WAN's hubs, separate components.
     - control_id: rbac
       status: not_applicable
       notes: Management access is subscription/resource-group RBAC posture, not a component choice; the WAN exposes no authentication plane of its own.

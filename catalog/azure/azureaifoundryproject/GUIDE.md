@@ -1,7 +1,7 @@
 # AzureAiFoundryProject Guide
 
 Judgment and internal conventions for the AI Foundry project
-component -- what the schema alone cannot carry.
+kind -- what the schema alone cannot carry.
 
 ## Parity accounting
 

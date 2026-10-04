@@ -152,7 +152,7 @@ Raw CloudWatch metric definition within a metric query.
 
 ## What Is Deliberately Omitted (v1)
 
-- **Composite alarms** — Combining the states of multiple alarms with boolean logic is its own first-class component, `AwsCloudwatchCompositeAlarm` (independent AWS identity and lifecycle; compose by this alarm's exported `alarm_name`).
+- **Composite alarms** — Combining the states of multiple alarms with boolean logic is its own first-class kind, `AwsCloudwatchCompositeAlarm` (independent AWS identity and lifecycle; compose by this alarm's exported `alarm_name`).
 - **Dashboard integration** — CloudWatch Dashboards are a distinct resource type. Alarm widgets on dashboards reference the alarm ARN from `status.outputs.alarm_arn`.
 - **Extended statistic regex validation** — The `extendedStatistic` field accepts freeform strings (`p95`, `TM(10%:90%)`, etc.). The full pattern grammar (trimmed means, winsorized ranges) is validated by the AWS API at deploy time.
 - **Tags** — Tags are automatically derived from `metadata` fields (org, env, resource kind, resource ID); custom user tags are a platform-wide concern, not per-kind scope.

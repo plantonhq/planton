@@ -16,7 +16,7 @@ spec:
     BALANCED_B3 clusters (the geo-replication SKU floor) in different
     regions, each provisioning and deleting in tens of minutes -- the
     most expensive fixture pair in the Azure suite, for a link/unlink
-    seam the offline gate fully renders. The component stands on its
+    seam the offline gate fully renders. The kind stands on its
     green offline gate; the scenario runs unchanged once a live window
     is approved.
   validated_provisioners: []

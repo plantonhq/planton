@@ -10,7 +10,7 @@ When you deploy this Infra Component, the IaC module provisions:
 - **Neo4j Helm Release** — the official chart at the pinned `chartVersion`, which creates:
   - a StatefulSet with a single Neo4j pod, your CPU/memory resources, and the memory split rendered into `neo4j.conf`
   - the always-created **default Service** (named after the resource) carrying bolt 7687, http 7474 and https 7473 — what in-cluster clients use, and what the exported endpoints point at
-  - the **exposure Service** `<name>-lb-neo4j`, ClusterIP by this component's deliberate default (the chart's own default is LoadBalancer)
+  - the **exposure Service** `<name>-lb-neo4j`, ClusterIP by this kind's deliberate default (the chart's own default is LoadBalancer)
   - a PersistentVolumeClaim for the data volume (10Gi on the cluster's default StorageClass unless configured)
 - **Auth Secret** — the module materializes the admin password (declared, or generated when `auth` is empty) as the `<name>-auth` Secret (key `NEO4J_AUTH`, the chart's contract, plus a bare `password` key); the password never lands in rendered Helm values
 - **ServiceMonitor** — only when `serviceMonitorEnabled` is `true` (requires the Prometheus Operator CRDs on the cluster)

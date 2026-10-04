@@ -23,7 +23,7 @@ Set `time_zone` (an IANA name like `America/New_York`) whenever the wall-clock t
 - **`Allow`** — run them concurrently
 - **`Replace`** — cancel the running Job and start the new one
 
-Upstream Kubernetes defaults to `Allow`. This component deliberately defaults to `Forbid`: overlapping cron runs are the classic scheduled-workload incident — two backups writing the same target, two migrations racing — so overlap is opt-in here rather than a surprise. Pair `Forbid` with `active_deadline_seconds` in the template, so a hung run cannot silently block every subsequent run.
+Upstream Kubernetes defaults to `Allow`. This kind deliberately defaults to `Forbid`: overlapping cron runs are the classic scheduled-workload incident — two backups writing the same target, two migrations racing — so overlap is opt-in here rather than a surprise. Pair `Forbid` with `active_deadline_seconds` in the template, so a hung run cannot silently block every subsequent run.
 
 ## Run-to-Completion Semantics
 

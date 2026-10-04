@@ -62,7 +62,7 @@ spec:
       pricing_unit: GB
       impact: The Service Connect proxy consumes part of each task's cpu/memory allocation, and its access logs ship to CloudWatch at ingestion rates.
   estimate_exclusions:
-    - the per-task rate is the referenced AwsEcsTaskDefinition's cpu/memory times Fargate's unit prices -- this manifest sets the count, never the size, which is why no estimate document exists for this component
+    - the per-task rate is the referenced AwsEcsTaskDefinition's cpu/memory times Fargate's unit prices -- this manifest sets the count, never the size, which is why no estimate document exists for this kind
     - the load balancer and target groups referenced by load_balancers bill on their own components
     - EC2 launch type bills through the cluster's capacity providers instead of per task
     - data transfer between zones and out of the region follows traffic

@@ -11,7 +11,7 @@ spec:
   controls:
     - control_id: enc-at-rest
       status: not_applicable
-      notes: The setting stores routing configuration, not telemetry; routed data rests at the destinations (Log Analytics workspace, storage account, Event Hub), each of which owns its encryption posture as its own catalog kind.
+      notes: The setting stores routing configuration, not telemetry; routed data rests at the destinations (Log Analytics workspace, storage account, Event Hub), each of which owns its encryption posture as its own component.
     - control_id: enc-at-rest-cmk
       status: not_applicable
       notes: No data at rest to encrypt on the setting itself (see enc-at-rest); customer-managed-key levers live on the destination kinds.

@@ -44,7 +44,7 @@ spec:
       evidence:
         type: spec_default
         reference: "grant_types empty lets Auth0 assign defaults based on application_type; listing grants explicitly is how weak flows are kept off. The spec contract itself flags the legacy paths: 'implicit' is marked legacy and not recommended, and 'password' (resource owner password grant) not recommended -- a client whose grant_types omits them cannot exercise them. oidc_conformant (default true per the spec contract) enforces strict OIDC behavior on the flows that remain."
-      notes: "A second legacy path lives at refresh_token.rotation_type: the spec contract calls non-rotating refresh tokens 'legacy behavior' -- set rotating so each use retires the old token. Both fields exist in v1alpha1/spec.proto; presets are not shipped for this component, so the manifest author carries the posture."
+      notes: "A second legacy path lives at refresh_token.rotation_type: the spec contract calls non-rotating refresh tokens 'legacy behavior' -- set rotating so each use retires the old token. Both fields exist in v1alpha1/spec.proto; presets are not shipped for this kind, so the manifest author carries the posture."
     - control_id: strong-user-auth
       status: not_applicable
       notes: The client selects OAuth flows, token lifetimes, and redirect surfaces -- it enforces no credential policy on the humans signing in through it. Password strength, brute-force protection, and MFA live on the tenant's connections (the Auth0Connection kind models password_policy and brute_force_protection) and tenant-level policy, none of it reachable from this spec.

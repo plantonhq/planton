@@ -20,7 +20,7 @@ spec:
       notes: The group filters traffic; it does not encrypt it. Transport encryption belongs to the workloads it guards and to the parent network's encryption posture.
     - control_id: no-public-access
       status: not_applicable
-      notes: The group itself has no reachability -- it is the enforcement point for OTHER resources' exposure, worn under restricted-ingress. It attaches through AzureSubnet's network_security_group_id, and internet exposure is created by public IPs, load balancers, and gateways, each a separate catalog kind.
+      notes: The group itself has no reachability -- it is the enforcement point for OTHER resources' exposure, worn under restricted-ingress. It attaches through AzureSubnet's network_security_group_id, and internet exposure is created by public IPs, load balancers, and gateways, each a separate component.
     - control_id: restricted-ingress
       status: configurable
       field_path: security_rules

@@ -95,7 +95,7 @@ ServiceAccount to it (anchored on the cluster's OIDC issuer — consumed by
 reference, since the issuer URL only exists once the cluster does), and the
 narrowest RBAC grants Azure offers (zone-scoped for DNS, vault-scoped for
 secrets, account- and node-resource-group-scoped for backups). The
-`azure.workload.identity` pod machinery is wired by each component's
+`azure.workload.identity` pod machinery is wired by each kind's
 module; no secret exists at any point.
 
 ## Parameters

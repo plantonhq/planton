@@ -2,7 +2,7 @@
 
 A person asking to "set up monitoring" on a cluster is asking one question:
 will someone know when this breaks, before a user says so? This reference is
-the craft for answering it with the catalog's assembled stack. Component
+the craft for answering it with the catalog's assembled stack. Kind
 facts (every field, default and validation) live in the catalog pack, on
 `KubernetesKubePrometheusStack`'s reference page and guide and in the
 observability-stack pattern; read them there, never from memory.

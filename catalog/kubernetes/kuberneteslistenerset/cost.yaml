@@ -8,4 +8,4 @@ metadata:
 spec:
   billing_model: free
   free_tier: A ListenerSet is a Gateway API configuration object -- a namespaced set of listeners (port, protocol, hostname, TLS material) merged into an existing Gateway. The Kubernetes API object itself consumes no cluster compute and no cloud SKU bills for it.
-  notes: "No field of this spec buys anything: listeners declare where and how the parent Gateway's data plane should accept traffic, but the data plane belongs to the Gateway. Real spend lives in the parent KubernetesGateway component -- the gateway controller's proxy pods (cluster node capacity) and any cloud load balancer fronting them -- and in the routed backend workloads, each a separate catalog kind with its own cost profile."
+  notes: "No field of this spec buys anything: listeners declare where and how the parent Gateway's data plane should accept traffic, but the data plane belongs to the Gateway. Real spend lives in the parent KubernetesGateway component -- the gateway controller's proxy pods (cluster node capacity) and any cloud load balancer fronting them -- and in the routed backend workloads, each a separate component with its own cost profile."

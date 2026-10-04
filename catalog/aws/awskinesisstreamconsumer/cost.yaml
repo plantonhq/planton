@@ -23,7 +23,7 @@ spec:
       pricing_unit: consumer-shard-hours
       impact: The only lever this manifest holds -- which stream the consumer registers with decides how many shards multiply the hourly fee. A 10-shard stream makes this consumer five times the committed cost of a 2-shard one.
   estimate_exclusions:
-    - the consumer-shard-hour quantity is the referenced AwsKinesisStream's shard count times the hours in the month -- this manifest names the stream, never its size, which is why no estimate document exists for this component
+    - the consumer-shard-hour quantity is the referenced AwsKinesisStream's shard count times the hours in the month -- this manifest names the stream, never its size, which is why no estimate document exists for this kind
     - enhanced fan-out data retrieval bills per GB delivered through SubscribeToShard and follows read traffic
     - the referenced stream's own shard-hours, retention, and data charges bill on its AwsKinesisStream component
   notes: "The honest estimate lives at composition time: the consumer registration from this manifest, the shard count from the referenced stream, the rate from the price book. Each piece is verified data -- only their join is deferred, to the surface that sees both components together."

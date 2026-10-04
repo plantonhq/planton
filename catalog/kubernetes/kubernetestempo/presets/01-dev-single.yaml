@@ -6,7 +6,7 @@ spec:
   namespace:
     value: dev-tempo
   create_namespace: true
-  # The component's defaults: a single monolithic replica on a persistent
+  # The kind's defaults: a single monolithic replica on a persistent
   # volume (traces survive restarts — the chart's own emptyDir default
   # would not), OTLP receivers on 4317/4318, single-tenant. Send spans
   # with a KubernetesOtelCollector traces pipeline pointed at the exported

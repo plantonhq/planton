@@ -1,4 +1,4 @@
-# Component defaults end to end: three webhook replicas, fail-open
+# Kind defaults end to end: three webhook replicas, fail-open
 # policy webhook, the 60s audit loop, chart-managed certificates, the
 # namespace-labeling and webhook-probe hooks on. The verifier proves the
 # ENGINE on every lane: both deployments rolled out, the chart-owned

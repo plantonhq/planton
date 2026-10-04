@@ -10,7 +10,7 @@ spec:
   # the soft-deleted vault (and its name) for the retention period (7+
   # days), so an ephemeral create-verify-destroy cycle cannot leave zero
   # orphans. Every other Azure vault-bearing lane purges the vault on
-  # destroy; this one structurally cannot. The component stands on its
+  # destroy; this one structurally cannot. The kind stands on its
   # green offline gate: 100% parity audit, full tofu plan rendering the
   # identity block, key reference, encryption type, and rotation flag, spec
   # tests covering every validation rule, and the outputs conformance case.

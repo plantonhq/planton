@@ -1,6 +1,6 @@
 # Cost profile: what drives this component's bill. Field paths are
 # spec-relative proto field names, held to the served contract by the
-# catalog-data conformance gate. This component deliberately ships a
+# catalog-data conformance gate. This kind deliberately ships a
 # zero-committed estimate: the account object carries no meter of its own
 # -- Azure's retail price family for AI services (published under "Foundry
 # Tools", formerly Cognitive Services) has NO account- or endpoint-hour

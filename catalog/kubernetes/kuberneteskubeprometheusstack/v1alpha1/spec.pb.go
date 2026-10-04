@@ -36,7 +36,7 @@ const (
 	// Discover every ServiceMonitor/PodMonitor/PrometheusRule/Probe/
 	// ScrapeConfig in the cluster, whoever created it — what makes other
 	// components' service_monitor toggles and user-authored monitors work
-	// with zero extra wiring. The component default.
+	// with zero extra wiring. The kind default.
 	KubernetesKubePrometheusStackMonitorDiscovery_all_monitors KubernetesKubePrometheusStackMonitorDiscovery = 1
 	// The chart's own fenced default: discover only objects carrying this
 	// release's label. For multi-tenant clusters running several

@@ -43,7 +43,7 @@ spec:
   free_tier: "No permanent free allotment exists -- microVM CPU bills from the first second of actual consumption and memory from the first second of a session (1-second minimum, 128 MB memory floor), though I/O-wait and idle CPU is free by design when no background process runs. The up-to-$200 AWS Free Tier credit for new customers is a one-time trial credit, not a permanent tier."
   estimate_exclusions:
     - compute is genuinely scale-to-zero -- microVM CPU bills $0.0895 per vCPU-hour on ACTUAL consumption and memory $0.00945 per GB-hour on per-second peak, only across session lifetimes; a runtime with no sessions bills no compute, and session volume is entirely workload-driven
-    - the committed code-artifact quantity (the bundle's size) is not stated in the manifest -- only an S3 key -- which is why no estimate document exists for this component
+    - the committed code-artifact quantity (the bundle's size) is not stated in the manifest -- only an S3 key -- which is why no estimate document exists for this kind
     - the spec has no Instances/capacity-provider surface, so the EC2-instance-plus-management-fee compute type cannot start from this manifest
     - managed session storage is in public preview with pricing not yet published -- AWS states the experience changes, including pricing, before GA
     - the source code bundle bills the referenced AwsS3Bucket's storage; container images bill your ECR repository; EFS and S3 access-point mounts bill their referenced components

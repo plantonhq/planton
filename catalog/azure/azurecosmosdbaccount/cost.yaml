@@ -68,7 +68,7 @@ spec:
       impact: "Zone redundancy carries no separate charge on autoscale-provisioned throughput; on single-region serverless accounts it multiplies consumed RUs by 1.25. Standard provisioned single-write accounts historically billed a zone-redundancy uplift -- Microsoft's current pricing page states the multipliers only for autoscale (none) and serverless (1.25)."
   free_tier: "One account per Azure subscription can enable free tier at creation: the first 1000 RU/s of provisioned throughput and 25 GB of storage are free for the account's lifetime, applied at the account level across regions. Not applicable to serverless accounts (Microsoft's Cosmos DB pricing page, retrieved 2026-08-18)."
   estimate_exclusions:
-    - "the RU/s quantities and stored GB that anchor the bill are declared on the child components -- AzureCosmosdbSqlDatabase, AzureCosmosdbSqlContainer, AzureCosmosdbMongoDatabase, and AzureCosmosdbMongoCollection -- which is why no estimate document exists for this component"
+    - "the RU/s quantities and stored GB that anchor the bill are declared on the child components -- AzureCosmosdbSqlDatabase, AzureCosmosdbSqlContainer, AzureCosmosdbMongoDatabase, and AzureCosmosdbMongoCollection -- which is why no estimate document exists for this kind"
     - "serverless consumption (request units actually burned) is pure runtime behavior no manifest can predict"
     - "inter-region replication traffic and internet egress bill at Azure bandwidth rates (first 5 GB per month free, then per-GB by source geography), driven by write volume and reader placement"
     - "a point-in-time restore from continuous backup bills per GB restored, only when invoked"

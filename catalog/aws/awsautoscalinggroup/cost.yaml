@@ -63,7 +63,7 @@ spec:
       pricing_unit: instance-hours
       impact: Bounded instance lifetime forces rolling replacements -- during each replacement the group briefly runs old and new instances side by side within the maintenance policy's surge bounds, a small recurring overlap on the baseline.
   estimate_exclusions:
-    - the instance-hour rate is set by the referenced AwsLaunchTemplate's instance type (and OS pricing) -- this manifest holds every quantity dial but never the rate, which is why no estimate document exists for this component
+    - the instance-hour rate is set by the referenced AwsLaunchTemplate's instance type (and OS pricing) -- this manifest holds every quantity dial but never the rate, which is why no estimate document exists for this kind
     - Spot rates fluctuate per pool and interruptions reshape which pools a mixed fleet actually bills
     - EBS volumes, public IPv4 addresses, and anything else the launch template attaches to each instance bill per that template's configuration
     - CloudWatch alarms created by scaling policies, and any detailed instance monitoring, bill on CloudWatch

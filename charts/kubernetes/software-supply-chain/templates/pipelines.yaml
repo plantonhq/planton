@@ -27,7 +27,7 @@ spec: {}
 ---
 # The TektonConfig declaration — the single owner of the cluster's Tekton
 # installation. Profile `all` = Pipelines + Triggers + Dashboard, into
-# the operator-owned `tekton-pipelines` target namespace (the component
+# the operator-owned `tekton-pipelines` target namespace (the kind
 # default). KNOW THIS about that namespace: the operator creates AND
 # DELETES it with this resource — it is never chart-owned, and nothing
 # else should live there. Destroy ordering is designed-in: this

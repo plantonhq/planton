@@ -1,6 +1,6 @@
 # Kubernetes Manifest
 
-Deploys raw Kubernetes YAML manifests to any Kubernetes cluster, acting as a generic escape hatch for resources that do not have a dedicated component. Supports single-document and multi-document manifests (separated by `---`), including Deployments, Services, ConfigMaps, CRDs, Custom Resources, and any other valid Kubernetes resource types. The manifest content is applied exactly as written -- no injected labels, no rewritten fields -- with automatic CRD-before-custom-resource ordering inside one manifest.
+Deploys raw Kubernetes YAML manifests to any Kubernetes cluster, acting as a generic escape hatch for resources that do not have a dedicated kind. Supports single-document and multi-document manifests (separated by `---`), including Deployments, Services, ConfigMaps, CRDs, Custom Resources, and any other valid Kubernetes resource types. The manifest content is applied exactly as written -- no injected labels, no rewritten fields -- with automatic CRD-before-custom-resource ordering inside one manifest.
 
 ## What Gets Created
 
@@ -108,7 +108,7 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 
 Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
-**Config bundle** -- A multi-document manifest (a ConfigMap and a Secret) anchored in one namespace: write plain documents once, point the whole bundle at a namespace from the outside. Check the catalog first -- a single ConfigMap belongs in the typed KubernetesConfigMap component. Start from the **Config Bundle** preset.
+**Config bundle** -- A multi-document manifest (a ConfigMap and a Secret) anchored in one namespace: write plain documents once, point the whole bundle at a namespace from the outside. Check the catalog first -- a single ConfigMap belongs in the typed KubernetesConfigMap kind. Start from the **Config Bundle** preset.
 
 **CRD and custom resource in one pass** -- A CustomResourceDefinition and a custom resource of that new type ship in the same manifest; the module orders the CRD install first, avoiding the two-apply dance that breaks a naive `kubectl apply -f`. Start from the **CRD and Custom Resource** preset.
 

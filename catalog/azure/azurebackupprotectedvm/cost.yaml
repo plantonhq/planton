@@ -26,7 +26,7 @@ spec:
     - field_path: source_vm_id
       sku_meter: protected instance fee
       pricing_unit: instance-months
-      impact: The referenced VM's protected data size is THE price input -- it picks the instance-fee band and seeds the storage volume -- and this manifest never sees it. A 100 GB VM and a 1.2 TB VM registered by identical manifests bill one and three instance-fee units respectively, which is why no estimate document exists for this component.
+      impact: The referenced VM's protected data size is THE price input -- it picks the instance-fee band and seeds the storage volume -- and this manifest never sees it. A 100 GB VM and a 1.2 TB VM registered by identical manifests bill one and three instance-fee units respectively, which is why no estimate document exists for this kind.
     - field_path: backup_policy_id
       sku_meter: backup storage
       pricing_unit: GB-months
@@ -44,7 +44,7 @@ spec:
       pricing_unit: GB-months
       impact: ProtectionStopped halts new backups but does NOT stop the bill -- Microsoft's pricing FAQ is explicit that retained data keeps billing BOTH the protected-instance fee (at the last successful backup's size) and storage until the data is deleted. Destroying this resource is what deletes the data (the modules keep the engines' delete-on-destroy default).
   estimate_exclusions:
-    - the instance-fee band and the backup storage volume follow the protected VM's data size and daily churn -- delegated to the referenced AzureVirtualMachine's disks and unknowable here, which is why no estimate document exists for this component
+    - the instance-fee band and the backup storage volume follow the protected VM's data size and daily churn -- delegated to the referenced AzureVirtualMachine's disks and unknowable here, which is why no estimate document exists for this kind
     - backup storage grows with the policy's retention arithmetic (recovery points held x churn), carried on the referenced AzureBackupPolicyVm
     - Instant Restore snapshots kept in the VM's own resource group bill managed-disk snapshot rates outside the vault
     - backup data tiered to Archive bills its own lower per-GB rate plus a 180-day early-deletion charge when removed prematurely

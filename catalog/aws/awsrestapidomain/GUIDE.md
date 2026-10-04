@@ -11,7 +11,7 @@ fronting APIs with your own hostname.
   every mapping to share an API lifecycle.
 - **`routing_mode` is modeled; routing rules are not.** Rules are an
   API Gateway v2 surface that also attaches to v1 domains, and they
-  already live on AwsHttpApiDomain. This component exposes the v1
+  already live on AwsHttpApiDomain. This kind exposes the v1
   knob that chooses between base-path mappings and those rules.
 - **DNS stays outside.** The domain exists independently of any
   record pointing at it. Alias targets and zone IDs are outputs so

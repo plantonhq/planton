@@ -26,7 +26,7 @@ spec:
     - field_path: source_storage_account_id
       sku_meter: protected instance fee
       pricing_unit: instance-months
-      impact: The account is the billed instance -- protecting a second share in the SAME account grows one instance's size rather than adding a second fee, while protecting a share in a different account starts a new instance. The combined protected size is invisible here, which is why no estimate document exists for this component.
+      impact: The account is the billed instance -- protecting a second share in the SAME account grows one instance's size rather than adding a second fee, while protecting a share in a different account starts a new instance. The combined protected size is invisible here, which is why no estimate document exists for this kind.
     - field_path: source_file_share_name
       sku_meter: snapshot storage
       pricing_unit: GB-months
@@ -36,7 +36,7 @@ spec:
       pricing_unit: GB-months
       impact: The referenced policy's schedule and retention decide how many snapshots exist at once -- daily snapshots kept 30 days hold a month of churn in the account. The policy is the snapshot bill's throttle, and it lives on its own component.
   estimate_exclusions:
-    - the instance-fee band count and the snapshot volume follow the protected shares' combined data size and churn -- delegated to the referenced share and storage-account components and unknowable here, which is why no estimate document exists for this component
+    - the instance-fee band count and the snapshot volume follow the protected shares' combined data size and churn -- delegated to the referenced share and storage-account components and unknowable here, which is why no estimate document exists for this kind
     - snapshot storage bills on the source storage account at Azure Files snapshot rates (by the account's redundancy and media tier), on that component
     - restore operations may add transaction and egress charges on the storage account
   notes: "The honest estimate lives at composition time: this manifest contributes the binding, the referenced shares contribute the sizes that band the fee, and the referenced policy contributes the retention that multiplies snapshots. Microsoft's pricing page (2026-08-18) defines the protected instance as the storage account holding backed-up shares, bands the fee per 500 GB increment of combined share size (5.00 per unit at eastus list, 60 percent of a unit for instances at or under 250 GB), and keeps snapshot data in the customer's own account rather than the vault -- this is the snapshot-management flavor of Azure Files backup, not the vaulted flavor. The deletion economics mirror VM backup: stopping protection keeps billing on retained data, and destroying this resource deletes the backup data (vault soft delete may hold it 14 more days)."

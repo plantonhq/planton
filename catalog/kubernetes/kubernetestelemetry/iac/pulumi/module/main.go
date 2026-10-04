@@ -32,7 +32,7 @@ func Resources(ctx *pulumi.Context, iacInput *kubernetestelemetryv1alpha1.Kubern
 
 // createTelemetry creates the namespaced Istio Telemetry resource.
 //
-// Unlike every other typed Istio component, Telemetry is provisioned via the generic
+// Unlike every other typed Istio kind, Telemetry is provisioned via the generic
 // apiextensions.CustomResource rather than a crd2pulumi-generated typed resource. The
 // reason is a concrete crd2pulumi limitation: the Telemetry CRD's
 // `spec.tracing[].customTags` field is a map whose values are nested objects with a

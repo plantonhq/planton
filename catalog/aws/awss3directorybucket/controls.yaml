@@ -16,7 +16,7 @@ spec:
         reference: Every object in a directory bucket is server-side encrypted -- S3 applies SSE-S3 as the base-level encryption for the bucket, and unencrypted storage is not representable.
     - control_id: enc-at-rest-cmk
       status: not_applicable
-      notes: AWS's s3express control plane accepts a bucket encryption configuration (SSE-KMS under a customer managed key), but this spec exposes no key field and the modules manage no encryption configuration -- a CMK posture is not representable on this component today; objects rest under the SSE-S3 default.
+      notes: AWS's s3express control plane accepts a bucket encryption configuration (SSE-KMS under a customer managed key), but this spec exposes no key field and the modules manage no encryption configuration -- a CMK posture is not representable on this kind today; objects rest under the SSE-S3 default.
     - control_id: enc-in-transit
       status: not_applicable
       notes: The spec carries no bucket-policy surface, so an enforced TLS-only posture (a deny on insecure transport, the standard S3 pattern) is not representable here. Clients reach the bucket over the HTTPS Regional and Zonal endpoints; requiring that at the bucket is a policy statement this kind cannot yet make.

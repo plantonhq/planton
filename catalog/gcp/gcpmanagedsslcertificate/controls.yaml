@@ -25,7 +25,7 @@ spec:
       notes: The TLS protocol floor (minimum version, ciphers) is the SSL policy on the serving proxy. Until DNS points each domain at the balancer the certificate stays PROVISIONING and the domain serves Google's default certificate -- a provisioning gap operators should sequence around, not a weakening of this resource.
     - control_id: no-public-access
       status: not_applicable
-      notes: A certificate has no network endpoint of its own -- public exposure belongs to the forwarding rule and proxy that serve it, each a separate catalog kind with its own posture.
+      notes: A certificate has no network endpoint of its own -- public exposure belongs to the forwarding rule and proxy that serve it, each a separate component with its own posture.
     - control_id: restricted-ingress
       status: not_applicable
       notes: No network surface exists to filter; the certificate is control-plane configuration consumed by load balancer proxies.

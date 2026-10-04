@@ -1,4 +1,4 @@
-# Component defaults end to end: all four controllers single-replica,
+# Kind defaults end to end: all four controllers single-replica,
 # runtime-generated webhook certificates, chart-default config. The
 # verifier proves the ENGINE on every lane: controllers rolled out, the
 # runtime-registered webhook configurations present, then a

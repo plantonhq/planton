@@ -28,7 +28,7 @@ spec:
   estimate_exclusions:
     - hub data processing bills per GB for VNet-to-VNet traffic transiting the router -- branch-to-branch and VNet-to-branch flows through the same hub carry no hub processing charge
     - routing infrastructure units the router autoscales above the provisioned floor follow traffic load
-    - gateways created on the hub (site-to-site VPN, point-to-site VPN, ExpressRoute) are their own kinds billing scale units and connection units
+    - gateways created on the hub (site-to-site VPN, point-to-site VPN, ExpressRoute) are their own components billing scale units and connection units
     - an Azure Firewall referenced by routing intent bills its secured-hub deployment and data-processing meters on its own component
     - hub-to-hub and inter-region flows bill standard inter-region data-transfer rates on top of hub processing
   notes: "Azure bills a Virtual WAN hub as a flat hourly router fee plus capacity and traffic: the Standard deployment meter runs from creation, routing infrastructure units above the included 2 add unit-hours, and the router's VNet-to-VNet transit bills per GB processed. Two facts stop bill surprises: adding route maps replaces the hub's base meter with a dearer one rather than adding a line, and a Basic-WAN hub is genuinely free at the hub -- its spend is entirely in the VPN gateway units of the one gateway type it supports. Custom route tables, BGP peerings with NVAs, and static routes carry no meters of their own."

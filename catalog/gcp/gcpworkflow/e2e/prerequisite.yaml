@@ -1,5 +1,5 @@
 # Install profile used when GcpWorkflow is a PREREQUISITE of another
-# component's lanes (e.g. a GcpEventarcTrigger workflow-destination
+# kind's lanes (e.g. a GcpEventarcTrigger workflow-destination
 # scenario): the smallest ACTIVE workflow an Eventarc destination can
 # reference. deletion_protection false so the consuming lane's teardown
 # runs.

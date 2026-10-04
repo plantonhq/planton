@@ -24,7 +24,7 @@ spec:
       evidence:
         type: spec_default
         reference: Defaults to true, Azure's historical implicit outbound internet access; setting it false removes the implicit public path so egress must be explicit (a NAT gateway via nat_gateway_id, a firewall via route_table_id) -- the posture the spec recommends for production as Microsoft retires implicit outbound. On the Azure-services side, service_endpoints keeps traffic to listed services (Storage, SQL, Key Vault) on the Azure backbone instead of the public internet, with service_endpoint_policy_ids narrowing each endpoint's reach to specific resources.
-      notes: The subnet's own address space has no inbound path from the internet -- inbound exposure is created by public IPs, load balancers, and gateways on the resources deployed into it, each a separate catalog kind. private_endpoint_network_policies governs whether NSG and route rules also apply to private-endpoint traffic, a zero-trust refinement.
+      notes: The subnet's own address space has no inbound path from the internet -- inbound exposure is created by public IPs, load balancers, and gateways on the resources deployed into it, each a separate component. private_endpoint_network_policies governs whether NSG and route rules also apply to private-endpoint traffic, a zero-trust refinement.
     - control_id: restricted-ingress
       status: configurable
       field_path: network_security_group_id

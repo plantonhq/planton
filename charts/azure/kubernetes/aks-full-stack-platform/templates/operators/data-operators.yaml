@@ -136,7 +136,7 @@ metadata:
 spec:
   # Conventional home; permanent while the kept CRDs pin release ownership
   # to it. Internal TLS stays on KEDA's own certificate operator (the
-  # component default) — wiring it to the in-chart Let's Encrypt issuers
+  # kind default) — wiring it to the in-chart Let's Encrypt issuers
   # would be wrong: public ACME cannot issue for cluster-internal names.
   namespace:
     value: keda

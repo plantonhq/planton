@@ -72,7 +72,7 @@ throwaway data.
 
 - **Declare `security` with generated TLS** (the recommended default):
   the operator issues a CA and per-layer certificates — per-node
-  transport certificates by component default (the stronger posture;
+  transport certificates by kind default (the stronger posture;
   the operator's own default is a shared certificate). Provided
   certificates ride the cert-manager seam (`secret` referencing a
   KubernetesCertificate) with `nodes_dn`/`admin_dn` required.

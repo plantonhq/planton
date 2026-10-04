@@ -25,7 +25,7 @@ spec:
       name: "{{ values.env }}-gitops-ns"
   createNamespace: false
   # Only the volume-server tier (the disk actually holding object data) is
-  # sized by parameter; the master and filer tiers keep the component's
+  # sized by parameter; the master and filer tiers keep the kind's
   # small defaults, which carry this single-instance topology comfortably.
   volume:
     dataVolume:

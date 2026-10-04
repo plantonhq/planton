@@ -11,7 +11,7 @@ spec:
   controls:
     - control_id: enc-at-rest
       status: not_applicable
-      notes: The endpoint is a routing object and stores no data; job inputs and outputs rest in the workspace's datastores and storage account, separate kinds with their own at-rest posture.
+      notes: The endpoint is a routing object and stores no data; job inputs and outputs rest in the workspace's datastores and storage account, separate components with their own at-rest posture.
     - control_id: enc-at-rest-cmk
       status: not_applicable
       notes: No data at rest to key (see enc-at-rest); CMK for workspace-held metadata is the workspace's encryption posture.

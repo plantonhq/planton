@@ -684,7 +684,7 @@ DISCOVERY note on the spec.
 Allowed values (use exactly as shown):
 
 - `kubernetes_kube_prometheus_stack_monitor_discovery_unspecified` -- Unspecified. Defaults to all_monitors.
-- `all_monitors` -- Discover every ServiceMonitor/PodMonitor/PrometheusRule/Probe/ ScrapeConfig in the cluster, whoever created it — what makes other components' service_monitor toggles and user-authored monitors work with zero extra wiring. The component default.
+- `all_monitors` -- Discover every ServiceMonitor/PodMonitor/PrometheusRule/Probe/ ScrapeConfig in the cluster, whoever created it — what makes other components' service_monitor toggles and user-authored monitors work with zero extra wiring. The kind default.
 - `release_managed_only` -- The chart's own fenced default: discover only objects carrying this release's label. For multi-tenant clusters running several Prometheus servers with deliberate ownership boundaries.
 
 ### spec.prometheus.remoteWrite

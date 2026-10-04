@@ -11,7 +11,7 @@ The launch template is the composition anchor of EC2 fleet compute. It has
 its own lifecycle and is referenced from many places at once: auto-scaling
 groups (directly or through mixed-instances overrides), EKS managed node
 groups, AWS Batch compute environments, and EC2 Fleet. Modeling it as a
-first-class component -- instead of burying launch configuration inside
+first-class kind -- instead of burying launch configuration inside
 every fleet definition -- lets you:
 
 - **Define the golden image once**: an org-wide hardened template (IMDSv2

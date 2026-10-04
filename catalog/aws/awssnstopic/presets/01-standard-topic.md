@@ -30,4 +30,4 @@ This preset uses a generic `my-topic` name. Rename `metadata.name` to match your
 
 - **02-fifo-with-deduplication** — use when you need exactly-once delivery and strict ordering
 - **03-fifo-with-archive** — adds a message archive so new consumers can replay history
-- The `AwsSnsSubscription` component's **01-sqs-fanout** preset — the fan-out pattern with SQS endpoints and filtering
+- The `AwsSnsSubscription` kind's **01-sqs-fanout** preset — the fan-out pattern with SQS endpoints and filtering

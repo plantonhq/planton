@@ -26,7 +26,7 @@ spec:
       notes: The TLS protocol floor (minimum version, cipher suites) is the SSL policy on the serving proxy, not this resource. Wildcard and pre-traffic issuance require dns_authorizations -- the managed.wildcards_need_dns_auth validation refuses a wildcard the chosen authorization mode cannot validate.
     - control_id: no-public-access
       status: not_applicable
-      notes: A certificate has no network endpoint of its own -- public exposure belongs to the forwarding rule and proxy that serve it, each a separate catalog kind with its own posture.
+      notes: A certificate has no network endpoint of its own -- public exposure belongs to the forwarding rule and proxy that serve it, each a separate component with its own posture.
     - control_id: restricted-ingress
       status: not_applicable
       notes: No network surface exists to filter; the certificate is control-plane configuration consumed by load balancer proxies.
