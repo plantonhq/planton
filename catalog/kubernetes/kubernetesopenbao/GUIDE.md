@@ -239,6 +239,11 @@ the first to run them.
   `/v1/sys/metrics`, `params: {format: {values: [prometheus]}}`) with a
   `metric_relabelings` step `{regex: cluster, action: labeldrop}`.
   `vault_core_unsealed` then reads 1 per vault, by the Kubernetes cluster.
+  It never reads 0: a sealed node is neither active nor ready (its
+  readiness check is `bao status`), so it leaves that Service and its
+  series vanish. Alert on the workload instead,
+  `kube_statefulset_status_replicas_ready{statefulset="<name>"} == 0`,
+  which reads sealed and down alike.
 - **"Restore again" is a changed declaration, never a deleted Job.** The
   restore Job is named by a hash of the declaration; naming a different
   `snapshotKey` (or switching to `latest`) is a new Job and a new restore.
