@@ -13,7 +13,7 @@ var Tofu = &cobra.Command{
 }
 
 func init() {
-	Tofu.PersistentFlags().String(string(flag.Manifest), "", "path of the kind manifest file")
+	Tofu.PersistentFlags().String(string(flag.Manifest), "", "path of the manifest file")
 
 	// The shared manifest resolver reads this flag on every source-resolution
 	// path, so every IaC command group must register it (the pulumi group does

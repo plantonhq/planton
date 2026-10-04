@@ -13,7 +13,7 @@ tags:
 
 Planton turns your own cloud account into a self-service platform. AI designs the infrastructure, verifies the cost and permissions before anything is created, and publishes it as templates your whole team can deploy. Your services then ship onto that infrastructure straight from Git. It deploys to your own cloud accounts (AWS, GCP, Azure, Kubernetes) while managing the workflow, governance, and operational complexity.
 
-The platform is organized around a clear resource hierarchy and a set of interconnected kinds.
+The platform is organized around a clear resource hierarchy and a set of interconnected parts.
 
 ## Platform Architecture
 
@@ -47,7 +47,7 @@ Secure, reusable integrations with external services. Connect your AWS credentia
 
 ### Infrastructure
 
-Declarative infrastructure provisioning. Browse a catalog of catalog kinds, compose them into Infra Charts, and deploy with automated Infra Job execution using Pulumi, Terraform, or OpenTofu.
+Declarative infrastructure provisioning. Browse the Infra Catalog's kinds, compose them into Infra Charts, and deploy with automated Infra Job execution using Pulumi, Terraform, or OpenTofu.
 
 [Explore Infrastructure](/docs/infrastructure)
 

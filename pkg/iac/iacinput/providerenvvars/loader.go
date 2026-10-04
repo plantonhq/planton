@@ -82,7 +82,7 @@ type keylessResolvers struct {
 var cloudResolvers = keylessResolvers{aws: awswebidentity.ResolveCredentials, gcp: gcpwebidentity.ResolveAccessToken}
 
 // keylessExchangeTimeout bounds each keyless exchange done for an environment-reading engine. The
-// exchange runs once, before any engine command; the ceiling protects the infra job from a hung
+// exchange runs once, before any engine command; the ceiling protects the Infra Job from a hung
 // token endpoint. A fresh context.Background() is used rather than a caller's so the public
 // providerenvvars and tofumodule signatures stay stable; the minted token's own short lifetime
 // bounds the credential independently.

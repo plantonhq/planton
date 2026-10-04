@@ -47,7 +47,7 @@ export const CLOUD_PROVIDERS = [
 
 /** Exact counts behind the printed figures, for the record and for llms.txt. */
 export const PLATFORM_COUNTS = {
-  componentKinds: 719,
+  catalogKinds: 719,
   providers: 8,
   infraCharts: 18,
   controlProfiles: 718,

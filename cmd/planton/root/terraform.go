@@ -13,7 +13,7 @@ var Terraform = &cobra.Command{
 }
 
 func init() {
-	Terraform.PersistentFlags().String(string(flag.Manifest), "", "path of the kind manifest file")
+	Terraform.PersistentFlags().String(string(flag.Manifest), "", "path of the manifest file")
 
 	Terraform.PersistentFlags().String(string(flag.InputDir), "", "directory containing target.yaml and credential yaml files")
 	Terraform.PersistentFlags().String(string(flag.KustomizeDir), "", "directory containing kustomize configuration")

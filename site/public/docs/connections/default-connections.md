@@ -201,7 +201,7 @@ Nothing ran: environment staging may not use the aws connection aws-prod. Author
 --environments staging), or make it the organization's (--scope organization), then run the job again.
 ```
 
-Following an Infra Pipeline, the CLI adds: `Refused before any resource ran: no infra job started, so nothing in the cloud changed.`
+Following an Infra Pipeline, the CLI adds: `Refused before any resource ran: no Infra Job started, so nothing in the cloud changed.`
 
 **Fix**:
 1. Authorize the connection: `planton connection auth create --provider <provider> --connection <slug> --scope environment --environments <env>` (or `--scope organization`). If the connection already has an environment-scoped authorization, `planton connection auth delete --provider <provider> --connection <slug>` first, then create it again with every environment it should reach.

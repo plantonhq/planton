@@ -20,7 +20,7 @@ import (
 // The binaryName parameter specifies which CLI binary to use ("tofu" or "terraform").
 //
 // ctx controls the lifetime of the child process: cancelling it terminates the entire
-// tofu process group (see newReapableCommand), so a cancelled/superseded infra job never
+// tofu process group (see newReapableCommand), so a cancelled/superseded Infra Job never
 // orphans a tofu that would keep holding the state lock.
 func RunOperation(
 	ctx context.Context,

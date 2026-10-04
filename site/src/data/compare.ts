@@ -109,7 +109,7 @@ export const COMPARE: ComparePage = {
         // Chapter 11's claim; the validation the Coding Agents page already documents.
         { label: 'Typed Self-Service, Not Authoring', text: 'Every kind is a typed schema over an open-source module. A person or an agent writes a short manifest, the schema validates it before anything touches your cloud, and the module that runs is the same one every time.' },
         // Chapter 11, proof 1, second sentence
-        { label: 'One Vocabulary, Not a Hundred Field Names', text: 'Every covered component reports its controls against the same fixed list of 17, so what you check is one vocabulary, not each kind\u2019s field names.' },
+        { label: 'One Vocabulary, Not a Hundred Field Names', text: 'Every covered kind reports its controls against the same fixed list of 17, so what you check is one vocabulary, not each kind\u2019s field names.' },
         { label: 'Every Door Obeys the Same Rules', text: rules.claim },
       ],
       provenAt: '/product/open-source',

@@ -11,7 +11,7 @@ tags:
 
 # Infra Hub
 
-Infra Hub is Planton's infrastructure half — Cursor for Cloud Infrastructure. Describe or configure what you need, verify cost and permissions, deploy into your own account, and publish it as an Infra Chart — a template your team reuses. It handles the full lifecycle of your infrastructure — from browsing a catalog of catalog kinds, to deploying them as Infra Components, to orchestrating multi-resource deployments through Infra Charts and Infra Pipelines.
+Infra Hub is Planton's infrastructure half — Cursor for Cloud Infrastructure. Describe or configure what you need, verify cost and permissions, deploy into your own account, and publish it as an Infra Chart — a template your team reuses. It handles the full lifecycle of your infrastructure — from browsing the Infra Catalog's kinds, to deploying them as Infra Components, to orchestrating multi-resource deployments through Infra Charts and Infra Pipelines.
 
 Infrastructure is provisioned using Pulumi, Terraform, or OpenTofu modules, executed through Infra Jobs, with credentials managed automatically via Connections.
 

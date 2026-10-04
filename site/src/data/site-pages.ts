@@ -119,7 +119,7 @@ export const SITE_PAGES: readonly SitePage[] = [
     path: '/trust/verified-before-deploy',
     title: 'Verified Before Deploy',
     description:
-      'Before anything is created, Planton states the monthly cost with its coverage, the least-privilege permissions, and the controls each component enforces.',
+      'Before anything is created, Planton states the monthly cost with its coverage, the least-privilege permissions, and the controls each kind enforces.',
     group: 'trust',
     chapters: ['verified-before-it-exists'],
   },
@@ -143,7 +143,7 @@ export const SITE_PAGES: readonly SitePage[] = [
     path: '/trust/security-posture',
     title: 'Security Posture',
     description:
-      'Seventeen technical controls with evidence per component, crosswalked to four frameworks, stated honestly: a component enforces controls; it is never called compliant.',
+      'Seventeen technical controls with evidence per kind, crosswalked to four frameworks, stated honestly: a kind enforces controls; it is never called compliant.',
     group: 'trust',
     chapters: ['verified-before-it-exists', 'runs-where-you-decide'],
   },

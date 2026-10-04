@@ -44,7 +44,7 @@ import (
 // when a module needs more than one provider.
 func Get(ctx *pulumi.Context, awsProviderConfig *awsprovider.AwsProviderConfig,
 	region string, nameSuffixes ...string) (*awsnative.Provider, error) {
-	// ctx.Context() is the infra job's Go context; the STS exchange (when needed) runs on it.
+	// ctx.Context() is the Infra Job's Go context; the STS exchange (when needed) runs on it.
 	providerArgs, err := buildProviderArgs(ctx.Context(), awsProviderConfig, region, awswebidentity.ResolveCredentials)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to build aws-native provider args")

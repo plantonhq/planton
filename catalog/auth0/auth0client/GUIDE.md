@@ -85,7 +85,7 @@ read:client_grants create:client_grants update:client_grants delete:client_grant
 ## Compliance
 ## Regulatory Frameworks
 
-The table below records Auth0's own published compliance posture for their hosted platform, as Auth0 states it (verify current status in Auth0's trust documentation). These are vendor facts about the service this component configures — not properties of the component or of your deployment, and nothing here transfers to your application without your own assessment.
+The table below records Auth0's own published compliance posture for their hosted platform, as Auth0 states it (verify current status in Auth0's trust documentation). These are vendor facts about the service this catalog kind configures — not properties of the catalog kind or of your deployment, and nothing here transfers to your application without your own assessment.
 
 Auth0's published framework posture:
 

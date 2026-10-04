@@ -44,7 +44,7 @@ const (
 	controlPlaneTerminationGracePeriodSeconds = 60
 
 	// controlPlaneIacModulesVersionEnv is the control plane's per-install
-	// OVERRIDE of the release its infra jobs download official IaC modules
+	// OVERRIDE of the release its Infra Jobs download official IaC modules
 	// from. Rendered only when the platform resource declares
 	// spec.controlPlane.iacModulesVersion; absent otherwise, because the
 	// control plane resolves modules at its own catalog release -- the pin

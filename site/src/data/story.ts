@@ -110,12 +110,12 @@ export const CHAPTERS: readonly Chapter[] = [
     number: 3,
     title: 'Verified Before It Exists',
     claim:
-      'Before anything is created, Planton tells you what it will cost each month with its coverage stated honestly, which permissions it needs and no more, and which technical controls the components enforce. Proof at creation, not detection after.',
+      'Before anything is created, Planton tells you what it will cost each month with its coverage stated honestly, which permissions it needs and no more, and which technical controls each kind enforces. Proof at creation, not detection after.',
     proof: [
       'Every deployment-changing job is born with a verified monthly cost: an exact figure with line items when the pricing rules can derive one, a range otherwise, and plainly \u201cunpriced\u201d when neither is possible. A zero never stands in for unknown.',
       'The cost names the catalog release its prices came from and, when both can be priced exactly, how much more or less this will cost each month than what is deployed today.',
       'The least-privilege permission policy is derived from exactly what is composed, per kind.',
-      'Every covered component states which of a fixed list of 17 technical controls it enforces, with evidence for each claim.',
+      'Every covered kind states which of a fixed list of 17 technical controls it enforces, with evidence for each claim.',
       'The console, the CLI, and the assistant render the same server-stamped statement word for word.',
     ],
     neverSay: ['saves you $X', 'compliant', 'an estimate presented as a bill', 'estimate versus actual (not shipped)'],
@@ -231,7 +231,7 @@ export const CHAPTERS: readonly Chapter[] = [
       'Governance platforms observe your estate after the fact and tell you what to fix; Planton prevents at the moment of creation and stamps the proof on the record, alongside those tools rather than instead of them. Infrastructure-as-code tools work on Terraform you still write, field name by field name; Planton gives you typed self-service: every kind a typed schema over an open-source module, and controls stated against one fixed list rather than a hundred field names. Developer portals catalog what you have; Planton deploys what you need.',
     proof: [
       'Prevent at creation versus observe after: a complement to posture tools, never a replacement.',
-      'Your Terraform stays yours: the modules are open-source Terraform and Pulumi, and what you already run is adopted, not rewritten. Every covered component reports its controls against the same fixed list, so what you check is one vocabulary, not each kind\u2019s field names.',
+      'Your Terraform stays yours: the modules are open-source Terraform and Pulumi, and what you already run is adopted, not rewritten. Every covered kind reports its controls against the same fixed list, so what you check is one vocabulary, not each kind\u2019s field names.',
       'The execution layer behind the catalog: it deploys, with the record attached.',
     ],
     neverSay: ['any vendor name', 'DevSecOps platform', 'FinOps', 'a feature table with a competitor column'],
