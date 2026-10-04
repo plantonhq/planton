@@ -371,6 +371,13 @@ that trace's id. Compose it like this:
   (otherwise the store receives them twice), then a `severity_parser`
   and a `move` of the message to the body. Loki then keeps `trace_id`,
   and Grafana's derived field opens the trace from the line.
+- **Name each line's service after its workload.** A `KubernetesDeployment`
+  names its container `app`, so Loki's `service_name` reads `app` for
+  every service. Give the log collector's `k8s_attributes` an explicit
+  `pod_association` on `k8s.pod.uid` (a file-read line has no connection
+  to match), and extract the pod's `app` label as `service.name`. Then
+  `{service_name="control-plane"}` selects one service, and matches the
+  service name its traces carry.
 - **The id in the log must be the id that was stored.** A server that
   roots a trace under an invented all-zero parent span gets a brand-new
   random trace id from the SDK (the parent is invalid), so its log lines

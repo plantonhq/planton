@@ -674,6 +674,23 @@ after the `container` operator:
   on_error: send_quiet
 ```
 
+Name each line's service after its workload, too. A `KubernetesDeployment` names
+its container `app`, so without this every service's lines read
+`service_name="app"`:
+
+```yaml
+k8s_attributes:
+  pod_association:            # a file-read line has no connection to match
+    - sources:
+        - from: resource_attribute
+          name: k8s.pod.uid
+  extract:
+    labels:
+      - tag_name: service.name
+        key: app
+        from: pod
+```
+
 Loki then keeps `trace_id` on the line, and a `KubernetesGrafana` Loki
 datasource's derived field on `trace_id` opens the trace in Tempo. The id has to
 be the stored one. A server that roots a trace under an invented all-zero parent
