@@ -146,7 +146,7 @@ The outputs also mirror the declared ClickHouse connection back (`clickhouse_use
 
 Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
-**Development** — the smallest honest SigNoz: the component's defaults against a composed ClickHouse named `telemetry` in the same namespace, wired through three references. Start from the **SigNoz for development** preset.
+**Development** — the smallest honest SigNoz: the kind's defaults against a composed ClickHouse named `telemetry` in the same namespace, wired through three references. Start from the **SigNoz for development** preset.
 
 **Production** — verified TLS to ClickHouse, alert email over secret-safe SMTP, the external URL that makes alert links resolve, sized server resources, and an autoscaling ingestion collector. Start from the **SigNoz for production** preset.
 

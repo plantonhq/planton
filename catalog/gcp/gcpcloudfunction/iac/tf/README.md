@@ -4,4 +4,4 @@ Provisions a `google_cloudfunctions2_function` (plus the public-invoker `google_
 
 A `secretEnvironmentVariables` entry with a `value` gets its own `google_secret_manager_secret` (user-managed replication in the function's region), a pinned `google_secret_manager_secret_version` holding the value, and a `google_secret_manager_secret_iam_member` granting `secretmanager.secretAccessor` on that secret alone to the runtime identity (the default compute account when `serviceAccountEmail` is empty). The function reads the stored version natively and depends on the grant. The resources live in `secrets.tf`.
 
-See the component [README](../../README.md) for the full configuration reference.
+See the kind's [README](../../README.md) for the full configuration reference.

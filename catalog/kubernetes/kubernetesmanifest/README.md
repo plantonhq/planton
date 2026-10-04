@@ -16,7 +16,7 @@ Hand the component any valid Kubernetes manifest — a single document or many s
 
 ## Namespace Semantics
 
-The one piece of defaulting the component performs, identical on both engines:
+The one piece of defaulting the kind performs, identical on both engines:
 
 - Documents that declare their own `metadata.namespace` **keep it**
 - Namespaced documents that declare none **land in `spec.namespace`** (the anchor)

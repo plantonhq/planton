@@ -752,7 +752,7 @@ Issue one certificate per node (hostname-pinned) instead of a
 shared certificate. Component default: true (the stronger
 posture); the operator's OWN default is a single shared
 certificate — the modules always render this field explicitly, so
-the component default governs.
+the kind's default governs.
 
 - default: `true`
 

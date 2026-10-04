@@ -2,7 +2,7 @@
 
 The **AwsSecurityGroup** API resource configures and manages an AWS EC2 Security Group for inbound and outbound traffic
 control. It allows you to define ingress and egress rules via a straightforward YAML manifest, making it easier to
-enforce least-privilege network policies within your VPC. This component is part of Planton’s multi-cloud
+enforce least-privilege network policies within your VPC. This kind is part of Planton’s multi-cloud
 deployment framework, with support for Pulumi and Terraform under the hood.
 
 By specifying `apiVersion`, `kind`, `metadata`, and `spec`, you can quickly validate and provision your AWS Security

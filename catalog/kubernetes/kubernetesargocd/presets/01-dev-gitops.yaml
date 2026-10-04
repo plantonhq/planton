@@ -6,7 +6,7 @@ spec:
   namespace:
     value: dev-argocd
   create_namespace: true
-  # Everything else is the component's defaults: the pinned chart
+  # Everything else is the kind's defaults: the pinned chart
   # version, all seven components at chart grain (bundled single-pod
   # Redis cache, dex + notifications on, commit server off), and the
   # local admin user enabled — Argo CD generates the first password

@@ -8,4 +8,4 @@ metadata:
 spec:
   billing_model: free
   free_tier: The registration is free -- a one-time control-plane binding between a storage account and a Recovery Services vault that moves no data and carries no meter. Azure charges nothing for a registered-but-unprotected account.
-  notes: "No field of this spec buys anything: all three fields are references naming the vault and the account. The real spend begins when individual file shares are protected -- AzureBackupProtectedFileShare carries the per-protected-instance fee and the snapshot/vault backup-storage GB meters; the storage account and vault bill as their own catalog kinds."
+  notes: "No field of this spec buys anything: all three fields are references naming the vault and the account. The real spend begins when individual file shares are protected -- AzureBackupProtectedFileShare carries the per-protected-instance fee and the snapshot/vault backup-storage GB meters; the storage account and vault bill as their own components."

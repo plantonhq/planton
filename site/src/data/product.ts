@@ -82,7 +82,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
         { label: 'components', value: 'vpc \u00b7 eks cluster \u00b7 rds postgres \u00b7 s3 bucket \u00b7 iam role \u00b7 dns record' },
         { label: 'verified cost', value: '~$412/mo est.\u00a0\u00b7\u00a05 of 6 components priced, 1 usage-based' },
         { label: 'permissions', value: 'least privilege \u00b7 derived from the 6 components composed' },
-        { label: 'controls', value: '6 of 6 components carry a control profile with evidence' },
+        { label: 'controls', value: '6 of 6 kinds carry a control profile with evidence' },
         { label: 'budget', value: 'within the environment\u2019s $600/mo est. deployment budget' },
         { label: 'published as', value: 'Infra Chart production-baseline \u00b7 redeployable into the next environment' },
       ],

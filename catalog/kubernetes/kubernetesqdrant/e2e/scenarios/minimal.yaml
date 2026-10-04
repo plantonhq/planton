@@ -1,4 +1,4 @@
-# The component defaults on their own: a single node on a PVC,
+# The kind defaults on their own: a single node on a PVC,
 # unauthenticated (the upstream default posture) — the verifier proves the
 # live vector round-trip (collection create → upsert → similarity search).
 apiVersion: kubernetes.planton.dev/v1alpha1

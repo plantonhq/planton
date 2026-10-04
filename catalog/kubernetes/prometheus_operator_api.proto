@@ -22,7 +22,7 @@ import "shared/options/options.proto";
 // namespaces.
 //
 // Status types are intentionally excluded -- Planton captures deployment
-// outputs via each component's outputs.proto, not CRD status subresources.
+// outputs via each kind's outputs.proto, not CRD status subresources.
 //
 // Modeling conventions:
 //   - Field JSON names are the upstream keys, so the custom resource's spec is

@@ -13,7 +13,7 @@ single-CIDR wrapper that silently created subnets, NAT gateways, and DNS links.
 Two new Tier-0 kinds join the catalog: `AzureRouteTable` (418, user-defined routing)
 and `AzurePrivateDnsZoneVirtualNetworkLink` (419, the zone-to-network attachment),
 and `AzurePrivateDnsZone` is reworked to zone-only with its bundled one-link
-limitation removed. All four components ship both engines at 100% behavioral parity
+limitation removed. All four kinds ship both engines at 100% behavioral parity
 on the shared keyless-capable provider builder, with live dual-engine E2E proof.
 
 ## Problem Statement / Motivation

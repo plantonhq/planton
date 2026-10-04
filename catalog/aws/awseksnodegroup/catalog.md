@@ -1,6 +1,6 @@
 # AWS EKS Node Group
 
-Deploys a managed EKS node group — an EC2 fleet AWS provisions, health-checks, and rolls for you, registered as workers of an existing EKS cluster. The component supports inline instance configuration or launch-template-driven fleets, On-Demand/Spot/Capacity-Block purchase models, auto-scaling bounds, Kubernetes labels and taints, controlled version rollouts, and managed node auto-repair.
+Deploys a managed EKS node group — an EC2 fleet AWS provisions, health-checks, and rolls for you, registered as workers of an existing EKS cluster. The kind supports inline instance configuration or launch-template-driven fleets, On-Demand/Spot/Capacity-Block purchase models, auto-scaling bounds, Kubernetes labels and taints, controlled version rollouts, and managed node auto-repair.
 
 ## What Gets Created
 

@@ -2,7 +2,7 @@
 
 **Date**: September 30, 2026
 **Type**: Feature
-**Components**: the provider enum and kind band (`shared/catalogkind`), `catalog/stripe`, `pkg/iac/iacinput/providerenvvars`, `pkg/iac/iacinput/providerdetect`, `pkg/iac/iacinput/iacinputproviderconfig`, `pkg/providerparity`, `pkg/catalogkindreflect`, `pkg/anatomy`, `pkg/iac/provisioner`, `pkg/iac/tofu/tofumodule`, `pkg/iac/pulumi/pulumimodule`, `pkg/setdeploy`, `pkg/iac/moduleverify`, `pkg/iac/eject`, `pkg/e2e/profile`, the CLI's engine prompt; OpenFgaStore, OpenFgaAuthorizationModel, OpenFgaRelationshipTuple; the provider and component forge rules
+**Components**: the provider enum and kind band (`shared/catalogkind`), `catalog/stripe`, `pkg/iac/iacinput/providerenvvars`, `pkg/iac/iacinput/providerdetect`, `pkg/iac/iacinput/iacinputproviderconfig`, `pkg/providerparity`, `pkg/catalogkindreflect`, `pkg/anatomy`, `pkg/iac/provisioner`, `pkg/iac/tofu/tofumodule`, `pkg/iac/pulumi/pulumimodule`, `pkg/setdeploy`, `pkg/iac/moduleverify`, `pkg/iac/eject`, `pkg/e2e/profile`, the CLI's engine prompt; OpenFgaStore, OpenFgaAuthorizationModel, OpenFgaRelationshipTuple; the provider and catalog-kind forge rules
 
 ## Summary
 

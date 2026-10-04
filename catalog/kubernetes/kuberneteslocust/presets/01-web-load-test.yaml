@@ -35,7 +35,7 @@ spec:
       limits:
         cpu: "1"
         memory: 512Mi
-  # Everything else is the component's defaults — and the defaults are
+  # Everything else is the kind's defaults — and the defaults are
   # deliberately SECURED: the web-UI login is ON with a
   # module-generated credential (Secret `load-test-auth`, key
   # `password` — upstream ships the UI OPEN, able to fire load at any

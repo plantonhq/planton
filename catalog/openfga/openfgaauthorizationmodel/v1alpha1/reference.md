@@ -19,7 +19,7 @@ IMPORTANT: Authorization models are immutable in OpenFGA. Creating a new model c
 version. Changing the model will trigger a replacement (new model ID).
 
 IMPORTANT: OpenFGA only has a Terraform provider - there is no Pulumi provider available.
-This component must use Terraform/Tofu as the provisioner.
+This kind supports only Terraform/Tofu as the provisioner.
 
 Reference:
 - Terraform: https://registry.terraform.io/providers/openfga/openfga/latest/docs/resources/authorization_model

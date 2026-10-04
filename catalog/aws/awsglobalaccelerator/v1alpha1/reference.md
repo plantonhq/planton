@@ -30,7 +30,7 @@ Key characteristics:
 - Protocol-agnostic: TCP and UDP at Layer 4 (not HTTP-aware like CloudFront)
 - Client affinity: Optional SOURCE_IP stickiness per listener
 
-This component covers standard accelerators. Custom routing accelerators
+This kind covers standard accelerators. Custom routing accelerators
 (deterministic port-based routing to specific VPC subnet destinations) are a
 distinct AWS resource family with its own listener and endpoint-group shapes
 and are deliberately not modeled here.

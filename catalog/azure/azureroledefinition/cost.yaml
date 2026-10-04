@@ -8,4 +8,4 @@ metadata:
 spec:
   billing_model: free
   free_tier: A custom role definition is a named bundle of permission patterns stored by Azure Resource Manager's authorization engine. Microsoft.Authorization resources carry no meter; the spec itself documents that definitions are metadata and cost nothing (the only limit is the tenant's 5,000-custom-role cap, a quota, not a charge).
-  notes: "No field of this spec buys anything: permission blocks, assignable scopes, and the pinned GUID are all authorization metadata. A definition grants nothing by itself -- permissions only take effect when an AzureRoleAssignment (also free) binds it to a principal -- and the real spend lives in the resources those permissions unlock, each billing as its own catalog kind."
+  notes: "No field of this spec buys anything: permission blocks, assignable scopes, and the pinned GUID are all authorization metadata. A definition grants nothing by itself -- permissions only take effect when an AzureRoleAssignment (also free) binds it to a principal -- and the real spend lives in the resources those permissions unlock, each billing as its own component."

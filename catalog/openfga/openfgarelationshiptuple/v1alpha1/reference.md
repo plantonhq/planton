@@ -24,7 +24,7 @@ IMPORTANT: Relationship tuples are immutable in OpenFGA. Changing any field requ
 deleting the old tuple and creating a new one. Terraform handles this automatically.
 
 IMPORTANT: OpenFGA only has a Terraform provider - there is no Pulumi provider available.
-This component must use Terraform/Tofu as the provisioner.
+This kind supports only Terraform/Tofu as the provisioner.
 
 Reference:
 - Terraform: https://registry.terraform.io/providers/openfga/openfga/latest/docs/resources/relationship_tuple

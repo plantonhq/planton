@@ -1,4 +1,4 @@
-# The component defaults on their own: one controller replica watching
+# The kind defaults on their own: one controller replica watching
 # all namespaces. The verifier proves the ENGINE on every lane: the
 # controller Deployment rolled out and the actions.github.com CRDs
 # (AutoscalingRunnerSet, AutoscalingListener, EphemeralRunnerSet,

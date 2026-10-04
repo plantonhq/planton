@@ -4,7 +4,7 @@
 # required internal-communication shared secret, and fail-closed plain
 # HTTP on the data plane are all composed by the component — nothing to
 # configure here, nothing to weaken. The in-image tpch/tpcds sample
-# catalogs stay on (the component default), so SQL works on the first
+# catalogs stay on (the kind's default), so SQL works on the first
 # login before any pipeline has landed data.
 apiVersion: kubernetes.planton.dev/v1alpha1
 kind: KubernetesTrino

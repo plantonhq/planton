@@ -38,7 +38,7 @@ type Locals struct {
 	ChartVersion string
 
 	// The S3 gateway posture, resolved from the spec's optional bools
-	// (component defaults: enabled with auth). Dedicated means the
+	// (kind defaults: enabled with auth). Dedicated means the
 	// gateway runs as its own Deployment; embedded runs it on the filer.
 	S3Enabled    bool
 	S3Auth       bool

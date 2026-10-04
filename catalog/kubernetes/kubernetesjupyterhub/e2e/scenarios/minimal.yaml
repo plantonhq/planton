@@ -1,4 +1,4 @@
-# The component defaults: sqlite-PVC hub state, shared-password sign-in
+# The kind defaults: sqlite-PVC hub state, shared-password sign-in
 # with the module-generated password (the chart's open-door default —
 # any username, NO password — never ships), the chart's sample notebook
 # image, dynamic per-user home volumes, culling on. Co-located with the

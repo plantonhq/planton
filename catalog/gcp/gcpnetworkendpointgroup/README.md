@@ -106,7 +106,7 @@ See [`iac/tf/README.md`](iac/tf/README.md) for Terraform-specific deployment ins
 - **The list is the membership.** An endpoint removed from `endpoints` is detached in place; one added is attached. Leave the list empty to let an autoscaler or another controller own membership.
 - **Nearly everything is immutable** -- name, scope, network, subnetwork, type, default port, description all recreate the group; only the endpoint list changes in place.
 - **A VM endpoint without `ipAddress`** uses the instance's primary internal IP; without `port`, the group's `defaultPort`.
-- **Cost**: the group and its endpoints are free; the load balancer that consumes it bills under its own kinds.
+- **Cost**: the group and its endpoints are free; the load balancer that consumes it bills under its own components.
 
 ## Examples
 

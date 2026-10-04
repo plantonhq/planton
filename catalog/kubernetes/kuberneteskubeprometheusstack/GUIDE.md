@@ -8,7 +8,7 @@ run it at all is the assembled-vs-all-in-one decision, which lives in the
 
 ## The serviceMonitor seam — the trap that spans the catalog
 
-Components across the catalog carry a `serviceMonitor` (or metrics)
+Kinds across the catalog carry a `serviceMonitor` (or metrics)
 toggle — ingress-nginx, databases, operators. Every one of those toggles
 creates a ServiceMonitor, and ServiceMonitor is a CRD THIS stack installs:
 enable any component's monitor before the stack exists and THAT

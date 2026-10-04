@@ -2,7 +2,7 @@
 
 This preset is the production shape for a chart from a private repository: repository credentials for the pull, `set_sensitive` for a secret chart value, and the two lifecycle knobs (`atomic`, `cleanup_on_fail`) that keep a failed deploy from leaving the release half-installed. Every value specific to your chart is a placeholder.
 
-**Before reaching for this component at all:** if the catalog has a first-class kind for what you're deploying, use it instead. KubernetesHelmRelease is the intentional passthrough for charts no kind covers.
+**Before reaching for this kind at all:** if the catalog has a first-class kind for what you're deploying, use it instead. KubernetesHelmRelease is the intentional passthrough for charts no kind covers.
 
 ## When to Use
 

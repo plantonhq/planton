@@ -6,7 +6,7 @@ spec:
   namespace:
     value: mlflow
   create_namespace: true
-  # Everything else is the component's defaults — and the defaults are
+  # Everything else is the kind's defaults — and the defaults are
   # deliberately SECURED and self-contained: basic authentication ON
   # with a module-generated admin password (Secret `mlflow-admin-auth`,
   # key `password` — upstream's open server and its admin/password1234

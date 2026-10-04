@@ -15,7 +15,7 @@ Separate stores can be created for separate authorization needs or isolated envi
 (e.g., development/staging/production).
 
 IMPORTANT: OpenFGA only has a Terraform provider - there is no Pulumi provider available.
-This component must use Terraform/Tofu as the provisioner.
+This kind supports only Terraform/Tofu as the provisioner.
 
 Reference:
 - Terraform: https://registry.terraform.io/providers/openfga/openfga/latest/docs/resources/store

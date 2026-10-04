@@ -22,7 +22,7 @@ spec:
         - debug sessions bill the same vCore-hour meter for as long as the debug cluster stays up
         - each execution also bills one orchestration activity run on the factory, and Microsoft notes data flows additionally bill the managed disk and blob storage required for execution and debugging
         - Data Factory operations bill read/write per 50,000 entity operations and monitoring per 50,000 run records on the factory
-        - the stores behind the source and sink linked services bill their own storage and request meters as their own kinds
+        - the stores behind the source and sink linked services bill their own storage and request meters as their own components
       notes: "Zero committed cost -- the definition never appears on the invoice; an idle mapping data flow bills nothing, and every dollar it can cause is decided by the pipeline that runs it and the runtime it runs on."
     - preset: 02-reusable-flowlet
       region_assumption: eastus

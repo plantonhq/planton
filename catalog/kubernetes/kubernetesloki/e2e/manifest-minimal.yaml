@@ -1,4 +1,4 @@
-# Minimal offline-proof manifest: the component's defaults — a single
+# Minimal offline-proof manifest: the kind's defaults — a single
 # monolithic replica on filesystem storage with the nginx gateway. Proves
 # the minimal render path (the shape most likely to expose a nil-deref on
 # an absent optional block). Placeholder values; never applied.

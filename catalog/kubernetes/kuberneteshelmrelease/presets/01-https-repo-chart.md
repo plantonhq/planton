@@ -1,8 +1,8 @@
 # HTTPS Repo Chart
 
-This preset installs [podinfo](https://github.com/stefanprodan/podinfo) 6.9.2 from its HTTPS Helm repository, with a `values_yaml` block overriding the chart's defaults. It is the baseline shape for the component: a public HTTP(S) chart repository, a pinned version, and a values file — the equivalent of `helm install -f values.yaml` expressed declaratively.
+This preset installs [podinfo](https://github.com/stefanprodan/podinfo) 6.9.2 from its HTTPS Helm repository, with a `values_yaml` block overriding the chart's defaults. It is the baseline shape for the kind: a public HTTP(S) chart repository, a pinned version, and a values file — the equivalent of `helm install -f values.yaml` expressed declaratively.
 
-**Before reaching for this component at all:** if the catalog has a first-class kind for what you're deploying, use it instead. Typed kinds validate their configuration before deploy and export composable outputs; KubernetesHelmRelease is the intentional passthrough for charts no kind covers.
+**Before reaching for this kind at all:** if the catalog has a first-class kind for what you're deploying, use it instead. Typed kinds validate their configuration before deploy and export composable outputs; KubernetesHelmRelease is the intentional passthrough for charts no kind covers.
 
 ## When to Use
 
@@ -20,7 +20,7 @@ This preset installs [podinfo](https://github.com/stefanprodan/podinfo) 6.9.2 fr
 
 ## Placeholders to Replace
 
-This preset has no placeholders — it deploys as-is on any cluster and serves as a working smoke test for the component. Adapt it to your chart by replacing `repo`, `chart`, `version`, and the `values_yaml` content.
+This preset has no placeholders — it deploys as-is on any cluster and serves as a working smoke test for the kind. Adapt it to your chart by replacing `repo`, `chart`, `version`, and the `values_yaml` content.
 
 ## Related Presets
 

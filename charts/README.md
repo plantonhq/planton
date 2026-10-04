@@ -23,7 +23,7 @@ whole thing as one coherent unit.
 
 Every chart earns its place: the catalog is deliberately small enough that
 each entry is a complete architecture a team recognizes and wants, built only
-from components whose schemas and modules meet the catalog's full depth bar.
+from kinds whose schemas and modules meet the catalog's full depth bar.
 
 ## Where a chart lives
 

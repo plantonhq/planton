@@ -6,7 +6,7 @@ spec:
   namespace:
     value: dev-grafana
   create_namespace: true
-  # Everything else is the component's defaults: one replica, the
+  # Everything else is the kind's defaults: one replica, the
   # pinned chart version, chart-generated admin credentials in the
   # `dev-grafana` Secret (created once, stable across upgrades; name
   # exported in the outputs), the dashboard-discovery sidecar on.

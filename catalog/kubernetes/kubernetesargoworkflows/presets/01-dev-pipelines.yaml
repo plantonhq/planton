@@ -6,7 +6,7 @@ spec:
   namespace:
     value: dev-workflows
   create_namespace: true
-  # Everything else is the component's defaults: the pinned chart
+  # Everything else is the kind's defaults: the pinned chart
   # version, the workflow controller, the Argo server in `client` auth
   # mode (callers present a Kubernetes token and act with ITS
   # permissions), and the runner ServiceAccount `argo-workflow` created

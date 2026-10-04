@@ -930,7 +930,7 @@ type KubernetesOpenSearchTlsTransport struct {
 	// shared certificate. Component default: true (the stronger
 	// posture); the operator's OWN default is a single shared
 	// certificate — the modules always render this field explicitly, so
-	// the component default governs.
+	// the kind's default governs.
 	PerNode *bool `protobuf:"varint,2,opt,name=per_node,json=perNode,proto3,oneof" json:"per_node,omitempty"`
 	// *
 	// Existing TLS Secret (ca.crt, tls.key, tls.crt) to use when

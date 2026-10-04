@@ -1,4 +1,4 @@
-# The component defaults on their own: all seven components at chart
+# The kind defaults on their own: all seven components at chart
 # defaults (bundled single-pod Redis, dex + notifications on, commit
 # server off), the local admin user enabled. The verifier proves the
 # PRODUCT on every lane: server/repo-server/controller rolled out, the

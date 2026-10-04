@@ -24,7 +24,7 @@ func seaweedfsS3Dedicated(spec map[string]interface{}) bool {
 // seaweedfsCredentialsSecret resolves the S3 credentials Secret the
 // verifier reads: the referenced existing config secret, else the
 // chart-generated "<name>-s3-secret" — or "" when auth is explicitly off
-// (the component default is auth ON).
+// (the kind's default is auth ON).
 func seaweedfsCredentialsSecret(spec map[string]interface{}, resourceName string) string {
 	s3 := seaweedfsS3Map(spec)
 	enabled := true

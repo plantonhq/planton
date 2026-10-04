@@ -385,7 +385,7 @@ exposing the server directly.
 
 `string` · optional (explicit presence)
 
-Service type: ClusterIP (the component default — NOT the chart's
+Service type: ClusterIP (the kind's default — NOT the chart's
 LoadBalancer default), NodePort, or LoadBalancer.
 
 - default: `ClusterIP`

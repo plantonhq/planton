@@ -18,7 +18,7 @@ spec:
       sku_meter: cluster CPU and memory reservations
       impact: The collector image the operator injects fleet-wide into OpenTelemetryCollector CRs that declare none -- it shapes what the OPERAND pods run, not what this operator's pods reserve.
   estimate_exclusions:
-    - no capacity derivation is published for this component -- neither committed preset declares resources and the chart ships no default requests or limits for the manager container, so a manifest-time footprint would state zero reservation, which is the truth but not a useful capacity statement; set resources to reserve capacity deliberately
+    - no capacity derivation is published for this kind -- neither committed preset declares resources and the chart ships no default requests or limits for the manager container, so a manifest-time footprint would state zero reservation, which is the truth but not a useful capacity statement; set resources to reserve capacity deliberately
     - the collector fleets this operator creates are the real capacity story -- each rides its own KubernetesOtelCollector (or directly authored opentelemetry.io CR), never this component's footprint
     - "helm_values merges LAST over the typed rendering and can override modeled values, including resources and replicas -- this profile describes the spec's declaration"
     - the price of reserved CPU and memory is the target cluster's node economics, which this catalog cannot know

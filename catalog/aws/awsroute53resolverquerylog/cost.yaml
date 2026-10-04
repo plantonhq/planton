@@ -33,5 +33,5 @@ spec:
     - CloudWatch Vended Logs delivery charges apply for every destination type -- even direct-to-S3 delivery, per the Route 53 developer guide -- at the rates on the CloudWatch pricing page's Vended Logs section
     - a CloudWatch log group destination bills its own ingestion, storage, and retention on the referenced AwsCloudwatchLogGroup
     - an S3 bucket destination bills storage and requests on the referenced AwsS3Bucket, plus KMS key use on the bucket's key when the archive is SSE-KMS encrypted
-    - a Firehose delivery stream destination bills ingestion on that stream and whatever its downstream targets (OpenSearch, Redshift) bill on their own kinds
+    - a Firehose delivery stream destination bills ingestion on that stream and whatever its downstream targets (OpenSearch, Redshift) bill on their own components
   notes: "The honest estimate lives at composition time: the logging pipeline from this manifest, the query volume from the workloads, the rates from the destination kind's price research. Each piece is verified data -- only their join is deferred, to the surface that sees both components together. The census's committed-idle check holds: both presets (a CloudWatch log group destination and an S3 archive destination, one VPC each) commit exactly zero dollars on existence."

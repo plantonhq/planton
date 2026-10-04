@@ -1,4 +1,4 @@
-# The component defaults on their own: profile `all` (Pipelines +
+# The kind defaults on their own: profile `all` (Pipelines +
 # Triggers + Dashboard, plus Chains) in the upstream default
 # tekton-pipelines namespace. The registry-prerequisite
 # KubernetesTektonOperator installs first; the harness then applies this

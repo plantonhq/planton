@@ -7,7 +7,7 @@
 # login and the same Application still reporting Synced/Healthy: Argo
 # CD's config and state live in CRs and the cluster, not its pods.
 #
-# This lane also proves the KEEP posture (the component default): destroy
+# This lane also proves the KEEP posture (the kind's default): destroy
 # must leave the argoproj CRDs behind; the verifier asserts survival and
 # then removes them — kept TEMPLATED CRDs carry this release's Helm
 # ownership metadata and would fail any later lane's install.

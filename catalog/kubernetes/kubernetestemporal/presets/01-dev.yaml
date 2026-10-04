@@ -29,7 +29,7 @@ spec:
   # `temporal_visibility` with one line of post_init_sql —
   #   CREATE DATABASE temporal_visibility OWNER temporal;
   #
-  # Everything else is the component's defaults: the pinned chart, one
+  # Everything else is the kind's defaults: the pinned chart, one
   # replica of each server service, the Web UI and admin-tools pod on,
   # 512 history shards, and the schema Jobs preparing both databases
   # before the server starts.

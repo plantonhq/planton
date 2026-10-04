@@ -1,4 +1,4 @@
-# The component defaults on their own: the operator + webhook Deployments
+# The kind defaults on their own: the operator + webhook Deployments
 # in the fixed tekton-operator namespace, the 14 operator.tekton.dev CRDs
 # — and NO Tekton components. The verifier proves the DESIGN INVARIANT on
 # every lane: auto-install is disabled, so no TektonConfig exists after

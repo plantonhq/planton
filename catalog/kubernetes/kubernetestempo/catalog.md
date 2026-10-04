@@ -120,7 +120,7 @@ After provisioning, `status.outputs` contains values that downstream Infra Compo
 
 Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
-**Dev single-node** — one monolithic replica on a persistent volume with OTLP receivers — the smallest honest trace store; the component defaults carry the whole posture. Start from the **Dev single-node Tempo** preset.
+**Dev single-node** — one monolithic replica on a persistent volume with OTLP receivers — the smallest honest trace store; the kind's defaults carry the whole posture. Start from the **Dev single-node Tempo** preset.
 
 **Production on object storage** — two replicas against an S3-compatible backend (an in-cluster SeaweedFS; AWS S3, GCS or Azure by swapping the block), a two-week retention window, and the metrics generator remote-writing to the cluster's Prometheus. Start from the **Production Tempo on object storage** preset.
 

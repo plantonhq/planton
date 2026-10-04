@@ -70,7 +70,7 @@ export const clearRouteSlides: SlideConfig[] = [
       '"600+ catalog kinds across 17 clouds, and every one ships both a Pulumi and an OpenTofu module — the customer picks, without changing the manifest."',
       'Infra Charts: "Helm charts, but for cloud infrastructure. An Infra Chart is to an Infra Stack what a Helm chart is to a Helm release."',
       'If asked for an exact catalog kind count, say <strong>"north of six hundred and climbing"</strong>. Do not quote a precise number — three internal sources count differently.',
-      'If someone says our GitHub README claims 400 components and 49 charts: "The README is stale. We clean-slated the chart catalog deliberately and rebuilt it as a curated set of 17."',
+      'If someone says our GitHub README claims 400 kinds and 49 charts: "The README is stale. We clean-slated the chart catalog deliberately and rebuilt it as a curated set of 17."',
       '<strong>Do not skip the bottom callout.</strong> This room is full of platform engineers waiting to catch us claiming to abstract the clouds. Say it plainly: "we are not an abstraction layer."',
     ],
   },

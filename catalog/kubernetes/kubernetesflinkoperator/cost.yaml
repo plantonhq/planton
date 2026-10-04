@@ -18,7 +18,7 @@ spec:
       sku_meter: cluster CPU and memory reservations
       impact: Entries become cluster-wide defaults for every FlinkDeployment this operator manages (reconcile intervals, autoscaler defaults) -- they shape the OPERANDS' capacity behavior, not this pod's reservation.
   estimate_exclusions:
-    - no capacity derivation is published for this component -- neither committed preset declares resources and the chart ships no default requests or limits for the operator container, so a manifest-time footprint would state zero reservation, which is the truth but not a useful capacity statement; set resources to reserve capacity deliberately
+    - no capacity derivation is published for this kind -- neither committed preset declares resources and the chart ships no default requests or limits for the operator container, so a manifest-time footprint would state zero reservation, which is the truth but not a useful capacity statement; set resources to reserve capacity deliberately
     - the Flink clusters this operator creates are the real capacity story -- each rides its own KubernetesFlinkDeployment (or directly authored flink.apache.org CR), never this component's footprint
     - "helm_values merges LAST over the typed rendering and can override modeled values, including resources and replicas -- this profile describes the spec's declaration"
     - the price of reserved CPU and memory is the target cluster's node economics, which this catalog cannot know

@@ -8,4 +8,4 @@ metadata:
 spec:
   billing_model: free
   free_tier: The Resource Guard is pure governance configuration -- an approval gate for Multi-User Authorization -- and never bills, however many vaults reference it or how many critical operations it gates.
-  notes: "No field of this spec buys anything: the exclusion list, region, and tags are all free configuration, and Azure meters no per-approval or per-guarded-vault charge. The vaults that reference the guard and the backup data they hold bill as their own catalog kinds (AzureRecoveryServicesVault, AzureDataProtectionBackupVault, and their protection bindings)."
+  notes: "No field of this spec buys anything: the exclusion list, region, and tags are all free configuration, and Azure meters no per-approval or per-guarded-vault charge. The vaults that reference the guard and the backup data they hold bill as their own components (AzureRecoveryServicesVault, AzureDataProtectionBackupVault, and their protection bindings)."

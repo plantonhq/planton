@@ -11,4 +11,4 @@ spec:
   notes: "No field of this spec buys anything on the producer side. Private Service Connect bills on the CONSUMER side: each connected consumer endpoint (a regional forwarding rule with an empty scheme) bills forwarding-rule hours in the consumer project's band, and the traffic through it bills PSC data processing per GiB to the consumer project. The producer's own meters are the internal load balancer behind target_service (GcpGlobalForwardingRule, GcpBackendService) and the backends, which exist whether or not the service is published."
   estimate_exclusions:
     - consumer endpoint hours and PSC data processing bill to the consumer projects, whose count and traffic are unknowable from this manifest
-    - the producer's internal load balancer and backends bill under their own kinds
+    - the producer's internal load balancer and backends bill under their own components

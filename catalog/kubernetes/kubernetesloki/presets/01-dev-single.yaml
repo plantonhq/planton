@@ -14,7 +14,7 @@ spec:
   caching:
     chunks_cache_memory_mb: 256
     results_cache_memory_mb: 128
-  # Everything else is the component's defaults: a single-replica
+  # Everything else is the kind's defaults: a single-replica
   # monolithic Loki on a filesystem PersistentVolume with the nginx
   # gateway front door, single-tenant (no X-Scope-OrgID header needed),
   # the canary and both memcached caches on. Right for a dev loop or a

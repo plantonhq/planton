@@ -1,4 +1,4 @@
-# The component defaults against the composed database: the PostgreSQL
+# The kind defaults against the composed database: the PostgreSQL
 # fixture (registry prerequisite chain: CloudNativePgOperator →
 # Postgres) wired through one valueFrom per field. Co-located with the
 # fixture's namespace (create_namespace false) because the password

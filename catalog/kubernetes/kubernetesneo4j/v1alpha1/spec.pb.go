@@ -563,7 +563,7 @@ func (x *KubernetesNeo4JMemory) GetPageCache() string {
 type KubernetesNeo4JService struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	// *
-	// Service type: ClusterIP (the component default — NOT the chart's
+	// Service type: ClusterIP (the kind's default — NOT the chart's
 	// LoadBalancer default), NodePort, or LoadBalancer.
 	Type *string `protobuf:"bytes,1,opt,name=type,proto3,oneof" json:"type,omitempty"`
 	// *

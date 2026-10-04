@@ -75,7 +75,7 @@ spec:
     failed: 10
     errored: 10
 {% endif %}
-  # Everything else rides the component's defaults: the Argo server on
+  # Everything else rides the kind's defaults: the Argo server on
   # (plain HTTP behind composed exposure), `server` auth mode, the runner
   # ServiceAccount created in the install namespace only, CRDs installed
   # full-schema and KEPT on uninstall (removing them would delete every

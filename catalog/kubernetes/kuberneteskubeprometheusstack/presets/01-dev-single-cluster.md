@@ -6,7 +6,7 @@ Alertmanager volumes, short retention, and the control-plane scrapers
 that cannot succeed on those platforms turned off (with their matching
 rule groups disabled so the target list and alert set stay truthful).
 
-Everything else is the component default — cluster-wide ServiceMonitor
+Everything else is the kind's default — cluster-wide ServiceMonitor
 discovery (so every catalog kind's `service_monitor_enabled`
 toggle lights up without extra wiring), Alertmanager on, the bundled
 Grafana on with a chart-generated admin Secret, and both exporters.

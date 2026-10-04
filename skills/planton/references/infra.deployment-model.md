@@ -31,7 +31,7 @@ Practical implications worth sharing at the right moment:
 
 ## Every resource deploys through an open-source module
 
-Each catalog kind is deployed by its IaC module in the open-source
+Each Infra Component is deployed by its kind's IaC module in the open-source
 repository `github.com/plantonhq/planton`, at:
 
 ```

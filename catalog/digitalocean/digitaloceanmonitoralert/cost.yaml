@@ -7,4 +7,4 @@ metadata:
   name: digitaloceanmonitoralert
 spec:
   billing_model: free
-  notes: Alert policies ride DigitalOcean's built-in monitoring, which is included with the resources being watched -- policies, metrics, email, and Slack delivery all carry no charge. The watched droplets, load balancers, and database clusters are billed by their own kinds.
+  notes: Alert policies ride DigitalOcean's built-in monitoring, which is included with the resources being watched -- policies, metrics, email, and Slack delivery all carry no charge. The watched droplets, load balancers, and database clusters are billed by their own components.

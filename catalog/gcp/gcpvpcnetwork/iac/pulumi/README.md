@@ -371,7 +371,7 @@ After deploying the VPC, you typically need:
 ## Further Reading
 
 - [Pulumi GCP Provider Documentation](https://www.pulumi.com/registry/packages/gcp/)
-- [Component API Reference](../../README.md)
+- [Kind API Reference](../../README.md)
 - [Pulumi Best Practices](https://www.pulumi.com/docs/guides/best-practices/)
 
 ## Support

@@ -56,7 +56,7 @@ spec:
       # The artifact seam, entirely by reference: endpoint resolves the
       # store's S3 gateway endpoint, and the credentials Secret name
       # resolves its generated `-s3-secret` — the key names inside it
-      # keep the component's defaults (the admin pair), so they are
+      # keep the kind's defaults (the admin pair), so they are
       # deliberately not restated. The bucket is a render-known literal
       # matching what artifacts.yaml declares — both sides render from
       # this chart's own design, which is what keeps the pairing honest.

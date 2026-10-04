@@ -1,6 +1,6 @@
 # AWS Step Functions
 
-Deploys a Step Functions state machine that orchestrates distributed workflows using Amazon States Language (ASL) definitions expressed as native YAML. The component supports both STANDARD (long-running, exactly-once) and EXPRESS (high-volume, short-duration) state machine types, with configurable CloudWatch Logs logging, X-Ray tracing, and customer-managed KMS encryption. The execution role, log group, and KMS key all accept ValueFromRef wiring, so a state machine composes with AwsIamRole, AwsCloudwatchLogGroup, and AwsKmsKey resources in the same InfraChart. The state machine type is a one-way door — it cannot be changed after creation.
+Deploys a Step Functions state machine that orchestrates distributed workflows using Amazon States Language (ASL) definitions expressed as native YAML. The kind supports both STANDARD (long-running, exactly-once) and EXPRESS (high-volume, short-duration) state machine types, with configurable CloudWatch Logs logging, X-Ray tracing, and customer-managed KMS encryption. The execution role, log group, and KMS key all accept ValueFromRef wiring, so a state machine composes with AwsIamRole, AwsCloudwatchLogGroup, and AwsKmsKey resources in the same InfraChart. The state machine type is a one-way door — it cannot be changed after creation.
 
 ## What Gets Created
 

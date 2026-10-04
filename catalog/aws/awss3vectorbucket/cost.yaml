@@ -26,5 +26,5 @@ spec:
     - uploads bill $0.20 per logical GB with a 128 KB minimum charge per PUT request -- batching many vectors per PUT is the page's own cost advice
     - every query bills a $2.50-per-million request fee plus data processed across the index's vectors (tiered $0.004/$0.002/$0.0004 per TB) plus data returned at $0.01 per GB beyond the free first 512 KB, with a 256-byte per-result minimum
     - read and list request meters (GetVectors, ListVectors) are not yet published on the pricing page -- treated as absence, never as $0
-    - an aws:kms encryption choice routes KMS request and key charges to the referenced AwsKmsKey, billed on its own kind
+    - an aws:kms encryption choice routes KMS request and key charges to the referenced AwsKmsKey, billed on its own component
   notes: "A NEW surface priced for RAG economics: you pay for logical bytes stored, logical bytes uploaded, and bytes scanned per query -- no cluster, no hourly node, no committed capacity anywhere. Both presets create empty indexes, so committed cost is zero and every dollar tracks the workload's embeddings and queries. The dimension choice deserves the most care: it is create-only, must match the embedding model, and silently sets the slope of both the storage and per-query meters."

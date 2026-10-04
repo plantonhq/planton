@@ -28,6 +28,6 @@ spec:
       - kubeSchedulerAlerting
       - kubeSchedulerRecording
       - kubeProxy
-  # Everything else is the component default: cluster-wide monitor
+  # Everything else is the kind's default: cluster-wide monitor
   # discovery, Alertmanager on, bundled Grafana on with its own
   # chart-generated admin Secret, both exporters on.

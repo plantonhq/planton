@@ -13,7 +13,7 @@ import "shared/foreignkey/v1/foreign_key.proto";
 // (kept out of the `KubernetesIstio` mesh-install kind's own message namespace).
 //
 // Status types are intentionally excluded — Planton captures deployment outputs via
-// each component's outputs.proto, not CRD status subresources.
+// each kind's outputs.proto, not CRD status subresources.
 //
 // Modeling conventions:
 //   - Istio `oneof`s are never carried as proto `oneof` (that changes the JSON shape).
