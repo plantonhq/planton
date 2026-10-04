@@ -708,6 +708,22 @@ answers HTTP 200, so the gateway never sees it. The burn rule's ratio adds the
 gateway's 5xx to both sides, so a service that is down, and emits nothing,
 still burns.
 
+**A trace that speaks the count's language.** A span's error status marks every
+non-OK answer, a caller's own `NOT_FOUND` included, and long polls and streams
+are the slowest spans. A list of failed or slow requests read straight from
+spans therefore shows the callers' mistakes and the long-held calls. Record on
+the server span the classification the count already makes, from the same
+function: its outcome (`ok`, `caller_error`, `server_fault`) and its kind
+(`unary`, `streaming`, `long_held`). End the span on a cancel or a handler throw
+the way the count does. Then `{span.<outcome>="server_fault"}` lists what the
+error budget spends, and `{span.<kind>="unary" && duration > 1s}` what the
+latency objective measures.
+
+**Queue names can carry a tenant.** A workflow engine's per-tenant task queues
+(one per organization) put a customer's name into every series label. Fold them
+into a class with `label_replace` on the queue name before a dashboard or an
+alert reads them.
+
 ## Who can open the hub
 
 Grafana shows every system at once, so who can sign in is part of the
@@ -1074,6 +1090,21 @@ spec:
   Deployment, other owners are named as they are, and a pod owned by
   nothing or by its node is its own workload. Operators act on the
   workload, not on a pod hash.
+- **Put the requests one click from the number.** A Tempo panel drawn as
+  Grafana's spans table (`queryType: traceql`, `tableType: spans`) lists one
+  span to a row, its id a link that opens the trace, and the attributes the
+  query `select`s as columns. An empty list ("no request failed") is a
+  healthy answer, and TraceQL has no `or vector(0)`: set the panel's
+  `noValue` to that answer in words, and let a checker accept the empty
+  table only after a probe of the same service
+  (`{resource.service.name="<it>"}`, limit 1) finds spans over the same
+  range. Otherwise an empty panel hides a broken query or a silent service.
+- **Write a generated dashboard's JSON compact.** Pretty-printing nearly
+  doubles it, and an infra chart's rendered templates travel inside every
+  deploy run. Compact JSON forms `}}` where objects close together, which a
+  chart engine reads as a delimiter, so set adjacent closing braces apart
+  (`} }`). JSON's own structure can form no other delimiter, so a check on
+  strings covers the rest. One panel to a line keeps the diffs readable.
 - **Provisioned dashboards are read-only**, even for an Admin, and the
   rest of the rules (delimiters in an infra chart, `schemaVersion`,
   catching a hand-made copy) are in the `KubernetesGrafana` guide,

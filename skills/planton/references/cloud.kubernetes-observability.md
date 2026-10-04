@@ -389,6 +389,22 @@ that trace's id. Compose it like this:
   or its ending once, at the write that first records it, by comparing
   with the stored row. Never count in replayed workflow code or on every
   checkpoint.
+- **Make the trace speak the count's language.** A span's error status
+  marks every non-OK answer, a caller's own NOT_FOUND included, so a list
+  of "failed requests" built on `status=error` lists the callers'
+  mistakes. Long polls and streams are also the slowest spans, so a list
+  of "slow requests" fills with them. Record on the server span the
+  classification the count already makes, from the same function: the
+  outcome (`ok`, `caller_error`, `server_fault`) and the call's kind
+  (`unary`, `streaming`, `long_held`). End the span on a cancel or a
+  handler throw the way the count does. Then a TraceQL query on the
+  outcome lists exactly what the burn measures, and one on unary calls
+  over a second lists exactly what the latency objective measures.
+- **Fold tenant-named queues into classes.** A workflow engine's per-tenant
+  task queues (one per organization, say) carry a customer's name into
+  every series label. Map them to a class (`label_replace` on the queue
+  name) before a dashboard or an alert reads them, so no screen and no
+  alert message names a customer.
 
 ## The alerts that page, and the ones that post
 
