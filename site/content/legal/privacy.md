@@ -2,7 +2,7 @@
 
 *Effective date: March 25, 2026*
 
-*Last updated: March 25, 2026*
+*Last updated: October 4, 2026*
 
 ## Introduction
 
@@ -21,6 +21,8 @@ This Policy does not apply where Planton acts as a data processor on behalf of c
 - **Infrastructure Configuration.** You may submit infrastructure deployment manifests, service configurations, environment variables, and related YAML or form-based inputs ("**Inputs**") to the Service. The Service processes these Inputs to provision infrastructure, build container images, and deploy services, producing deployment outputs, logs, and status information ("**Outputs**"). Inputs and Outputs are collectively referred to as "**Content**."
 
 - **Communication Information.** If you contact us for support or other inquiries, we collect your name, contact information, and the contents of any messages you send.
+
+- **Status Page Subscriptions.** When you subscribe to updates on status.planton.ai, we collect what you give us for that purpose: an email address; a webhook address and a contact email; or, when you add a Slack or Discord channel through that app's own approval screen, the address the app gives us for posting to that channel, the channel's name and, for Slack, the name of its workspace. We use it only to send status updates and messages about your subscription. Every email and every channel message links to a page where you can change or end the subscription, and removing Planton Status from a Slack or Discord channel ends it too. The Subscribe page uses Cloudflare Turnstile to check that a request comes from a person; Turnstile processes your IP address and signals from your browser for that check. To limit how often one visitor can subscribe, we keep a keyed one-way fingerprint of your IP address for an hour, never the address itself.
 
 - **Feedback.** If you provide feedback, feature requests, bug reports, or rate any aspect of the Service, we may store that information along with relevant context.
 
@@ -84,7 +86,7 @@ We may aggregate or de-identify data so that it no longer identifies you, and us
 
 We may disclose personal data in the following circumstances:
 
-- **Service Providers.** We share data with third-party vendors who help us operate the Service, including cloud hosting providers (Google Cloud Platform), identity providers (Auth0), payment processors (Stripe), analytics services, and customer support tools. These parties process data only as necessary to perform services on our behalf.
+- **Service Providers.** We share data with third-party vendors who help us operate the Service, including cloud hosting providers (Google Cloud Platform, and Cloudflare, which runs status.planton.ai and its bot check), identity providers (Auth0), payment processors (Stripe), email delivery (Resend, which sends the Service's email, including status updates), Slack and Discord (which deliver status messages to the channels you add), analytics services, and customer support tools. These parties process data only as necessary to perform services on our behalf.
 
 - **Business Transfers.** In the event of a merger, acquisition, or similar corporate transaction, personal data may be disclosed to counterparties and advisers as part of due diligence or transferred as part of the transaction.
 
@@ -142,6 +144,8 @@ We retain personal data for as long as necessary to provide the Service and fulf
 
 Infrastructure deployment history, audit trails, and configuration versions are retained as part of the Service's core functionality (versioning and auditability). You may request deletion of your account and associated personal data, subject to our legal obligations.
 
+Status page subscriptions are kept until you unsubscribe or remove Planton Status from the channel. The status page's database, which includes subscribers' addresses, is copied every hour for recovery, and each copy is deleted after 30 days, so an address you remove is gone from every copy within 30 days. When an email address bounces or draws a spam complaint, we keep a one-way fingerprint of it so that nothing more is sent to it.
+
 When personal data is no longer needed, we follow procedures to delete, de-identify, or anonymize it in compliance with applicable law.
 
 ## 7. Security
@@ -188,7 +192,7 @@ We use cookies and similar technologies to:
 | **Functional** | User preferences, language settings | Persistent (up to 1 year) |
 | **Analytics** | Usage patterns, feature adoption, performance | Persistent (up to 2 years) |
 
-We do not use advertising or tracking cookies. You can control cookies through your browser settings. Disabling essential cookies may prevent you from using the Service.
+status.planton.ai sets no cookie unless you choose a theme (a preference cookie) or add a Slack or Discord channel (an essential cookie that lasts ten minutes and ties the app's approval to your browser). We do not use advertising or tracking cookies. You can control cookies through your browser settings. Disabling essential cookies may prevent you from using the Service.
 
 ## 10. International Data Transfers
 
