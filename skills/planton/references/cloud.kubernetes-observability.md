@@ -326,6 +326,49 @@ to decide with the person, and what to watch for:
   in-cluster alerting. Read them with the person and list their causes;
   never silence one by hand.
 
+## The alerts that page, and the ones that post
+
+Write the user's page-class rules once the components they read are
+scraped (`KubernetesPrometheusRule`, beside each cluster's agent; the
+pattern's alert section is the reference). The ones a platform owes its
+customers, and how each misfires if written naively:
+
+- **A front door burning its error budget** (14.4x over 1h and 5m, 6x
+  over 6h and 30m of a 99.5% target). Record the gateway's traffic per
+  window once and alert on the recorded ratio; give the long window a
+  floor of failed requests, or two failures at night page at low traffic;
+  say that a gRPC call failing inside HTTP 200 is not counted. If the
+  user has a public status page that colours a part from an alert's
+  `component`, naming a burn rule after that part is a decision about
+  what customers read: ask, never assume.
+- **A database without a recent backup or archive.** Hold a database to a
+  backup only once it is older than the threshold (its volume's creation
+  time), or every new database pages before its first nightly; require
+  WAL segments waiting before calling an old archive stale.
+- **A certificate within seven days.** cert-manager renews 30 days
+  ahead, so also post "renewal overdue" to the channel three weeks
+  earlier.
+- **Channel alerts** for what fails quietly: the outside prober not
+  running (scraped by one agent, read without `absent()`), a Ready node
+  with no log collector (per node, by uid), a sealed vault (read from its
+  StatefulSet's ready pods: a sealed vault's own metrics vanish), a
+  workflow backlog aging, a runner tunnel holding no runner, and metrics
+  not reaching the hub.
+
+Each rule sets `environment` from its namespace when one cluster serves
+several environments (external labels never reach a rule's result),
+carries a runbook whose first line is a command, and has a promtool test.
+Prove each with a deliberately fired alert: a real failure where one can
+be declared safely (a podless Service behind one route answers 503 for a
+burn), a synthetic alert with the production labels on production's own
+Alertmanager otherwise, and `amtool config routes test` for every name
+the pager route lists.
+
+Silences are part of the design, not a click: one drops the alert before
+routing (the status page's webhook included), and one matching only an
+environment silences the heartbeat too. Give the user a command that
+silences one exact alert for at most a day, tied to a record.
+
 ## Proving it
 
 Do these with the person, and report what arrived and when:

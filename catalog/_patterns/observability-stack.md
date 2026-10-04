@@ -347,6 +347,71 @@ spec:
             runbook_url: https://runbooks.example.com/api-error-budget-burn
 ```
 
+What running the rules on real clusters teaches, each a way an alert
+silently misfires:
+
+- **External labels never reach a rule's result.** `environment` and
+  `cluster` are added when an alert is sent (and a sample written), and
+  only to one that lacks the label. A cluster that serves several
+  environments, one namespace each, sets `environment` in the rule:
+  `label_replace(<expr>, "environment", "$1", "namespace", "<prefix>-(.+)")`,
+  so a title reads `[dev]` instead of the cluster's name, and a
+  per-environment pager route matches.
+- **A component's own labels win.** Some exporters label series with a
+  name of their own (`cnpg_collector_up` carries `cluster="<database>"`,
+  OpenBao `cluster="vault-cluster-..."`), which the external label never
+  replaces. Aggregate by the labels the alert needs (`max by (namespace,
+  job)`) so a stray `cluster` never reaches a title or a route.
+- **Burn rules on an Istio gateway.** With no sidecars every request is
+  reported once, as `reporter="source"`. The route is
+  `destination_service_name` and its environment
+  `destination_service_namespace` (the gateway has no host label);
+  requests matched to no route read `unknown` and belong to none. A gRPC
+  call that fails returns HTTP 200 with `grpc_response_status`, so a 5xx
+  ratio sees hard failures only. At low traffic two failures in five
+  minutes clear 14.4x a 99.5% budget, so give the long window a floor of
+  failed requests (`... * 3600 >= 10`), and record the traffic per window
+  once (`front_door:requests:rate5m` ... `rate6h`) so the alert, the
+  dashboard and an agent read one definition.
+- **Read a sealed vault from kube-state-metrics.** OpenBao's monitor
+  scrapes the active pod's Service, and a sealed pod is neither active nor
+  ready, so `vault_core_unsealed` vanishes rather than reading 0. Alert on
+  `kube_statefulset_status_replicas_ready{statefulset="<vault>"} == 0`.
+- **Hold a database to its own age.** Under the barman-cloud plugin the
+  backup time is `barman_cloud_cloudnative_pg_io_last_available_backup_timestamp`
+  (`cnpg_collector_last_available_backup_timestamp` reads 0). A database
+  whose schedule has no immediate backup has none for up to a day, so
+  only one older than the threshold (its volume's
+  `kube_persistentvolumeclaim_created`; a pod is recreated on every
+  restart) is held to a backup newer than the threshold, which then can
+  only be its own, never a predecessor's. WAL age alone misreads an idle
+  database: require segments waiting
+  (`cnpg_collector_pg_wal_archive_status{value="ready"} > 0`), and read a
+  failure as `last_failed_time > last_archived_time`, never the lifetime
+  failure counter.
+- **Join pods by uid as well as name.** A StatefulSet pod recreated under
+  its name keeps its old series for five minutes, and a join on
+  `(namespace, pod)` refuses to evaluate until they go stale.
+- **Watch the watcher from one agent.** A hub that only stores has no
+  Alertmanager, so the outside prober's `/metrics` is scraped by exactly
+  one cluster's agent (`additional_scrape_configs`, labelled with where
+  the prober lives so it never reads as that cluster's). Rule objects go
+  to every cluster, so the rule reads only series that exist (`up == 0`,
+  a stale last-run time), never `absent()`, which would fire wherever the
+  prober is not scraped.
+- **Narrow who pages per cluster with the route, not the rule.** Rules
+  are the same everywhere; the typed pager route takes a second matcher,
+  `alertname` `matches_regex`, so one cluster pages only for the alerts
+  its operator chose while the rest of its page-class alerts post to the
+  channel. Keep the hand-fired drill alert in the list, or the pager test
+  stops ringing.
+- **A silence drops the alert before routing.** It silences every
+  receiver, the webhook a status page reads included, and one matching
+  `environment` alone also silences the always-firing heartbeat, so the
+  outside prober pages for a lost cluster. Silence by exact `alertname`,
+  never the heartbeat, for a bounded time, tied to a record of why, and
+  never by hand in Alertmanager's page.
+
 ### Scraping as declared objects
 
 What a cluster's agent scrapes beyond Kubernetes itself is declared the

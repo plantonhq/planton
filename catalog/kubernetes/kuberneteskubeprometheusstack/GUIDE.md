@@ -130,6 +130,19 @@ after any change read the rules Prometheus loaded:
 `curl -s <prometheus>/api/v1/rules?type=alert` lists every alert by name.
 A switched-off alert must be absent, and its replacement present once.
 
+Two curated alerts are worth replacing once your own rules exist. The
+remote-write lag alert (`PrometheusRemoteWriteBehind`) names no component
+and links no runbook; your replacement can also catch an agent whose queue
+to the hub is gone (`absent(prometheus_remote_storage_queue_highest_sent_timestamp_seconds{remote_name="<name>"})`),
+which the curated one cannot. Rules that join pods (`kube_pod_info` to
+readiness) should match on `uid` as well as `(namespace, pod)`: after a
+StatefulSet pod is recreated under its name, the old series linger for
+five minutes and a name-only join refuses to evaluate, the curated
+node-exporter joins included. The pattern's alert section
+([observability-stack](../../_patterns/observability-stack.md)) carries the
+rest: environment labels set in the rule, burn rules on a gateway,
+backups held to the database's age, the watcher watched, and silences.
+
 ## Alerts that reach a person
 
 Out of the box Alertmanager notifies nobody. Monitoring exists only when
