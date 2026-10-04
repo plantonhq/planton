@@ -1110,8 +1110,8 @@ spec:
   and a call refused before the tracing step (an expired sign-in) leaves
   no span at all.
 - **Write a generated dashboard's JSON compact.** Pretty-printing nearly
-  doubles it, and an infra chart's rendered templates travel inside every
-  deploy run. Compact JSON forms `}}` where objects close together, which a
+  doubles it, and the platform stores an infra chart's rendered templates
+  several times over. Compact JSON forms `}}` where objects close together, which a
   chart engine reads as a delimiter, so set adjacent closing braces apart
   (`} }`). JSON's own structure can form no other delimiter, so a check on
   strings covers the rest. One panel to a line keeps the diffs readable.
