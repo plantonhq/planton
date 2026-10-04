@@ -34,6 +34,8 @@ const (
 	controlPlaneWebhookPortName = "webhook"
 
 	controlPlaneDefaultLogLevel          = "info"
+	controlPlaneLogFormat                = "json"
+	controlPlaneMetricsPortOff           = "-1"
 	controlPlaneDefaultTemporalNamespace = "default"
 
 	// A stopping pod drains before the kubelet's kill: the gRPC server's
@@ -823,6 +825,15 @@ func controlPlaneEnvVars(cfg ControlPlaneConfig) []corev1.EnvVar {
 		{Name: "SERVICE_NAME", Value: "control-plane"},
 		{Name: "DEPLOYMENT_VERSION", Value: cfg.Version},
 		{Name: "LOG_LEVEL", Value: controlPlaneDefaultLogLevel},
+		// One JSON object per line: the operator only ever runs the control plane in a cluster,
+		// where a collector reads each line (and its trace_id) into a record. Required from
+		// platform v0.0.134 on -- the image refuses to boot without it -- and ignored by older
+		// images, so the floor does not move.
+		{Name: "LOG_FORMAT", Value: controlPlaneLogFormat},
+		// The metrics surface stays off, like the rest of this block: the operator declares no
+		// metrics port or scrape target, so a listener here would serve nobody. -1 is the control
+		// plane's own off switch; required from v0.0.134 on, ignored before.
+		{Name: "METRICS_PORT", Value: controlPlaneMetricsPortOff},
 		{Name: "OBSERVABILITY_ENABLED", Value: "false"},
 		{Name: "OTEL_EXPORTER_OTLP_ENDPOINT", Value: "http://localhost:4317"},
 		{Name: "OTEL_EXPORTER_OTLP_TRANSPORT", Value: "grpc"},
