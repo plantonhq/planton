@@ -37,6 +37,9 @@ allowed:
   - "catalog/kubernetes/kubernetesexternalsecret/catalog.md:$1"
   - "catalog/kubernetes/kubernetesexternalsecret/presets/02-extract-json-document.md:$1"
   - "catalog/kubernetes/kubernetesexternalsecret/v1alpha1/reference.md:$1"
+  # Prometheus relabeling replacement capture groups ("$1"), not prices.
+  - "catalog/kubernetes/kubernetespodmonitor/v1alpha1/reference.md:$1"
+  - "catalog/kubernetes/kubernetesservicemonitor/v1alpha1/reference.md:$1"
   # nginx rewrite-target annotation syntax ("/$2"), not a price.
   - "catalog/kubernetes/kubernetesingress/README.md:$2"
   - "catalog/kubernetes/kubernetesingress/v1alpha1/reference.md:$2"

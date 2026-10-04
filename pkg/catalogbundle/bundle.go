@@ -48,7 +48,7 @@ package catalogbundle
 
 // FormatVersion identifies the bundle layout. Consumers refuse versions they
 // do not understand -- loudly, with the version named.
-const FormatVersion = "1"
+const FormatVersion = "2"
 
 // Manifest is the bundle's self-description (manifest.yaml).
 type Manifest struct {

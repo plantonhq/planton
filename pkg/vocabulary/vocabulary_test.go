@@ -70,6 +70,12 @@ func TestRetiredSpellingsAreFound(t *testing.T) {
 		`strings.HasPrefix(id, "cr_")`,
 		"run planton cloud-resource:apply",
 		"Stack Outputs",
+		"projectId: infpj_01ABC…",
+		"InfraStack (infproj_…)",
+		"a working copy of a deployed project",
+		"cat .planton/project.yaml",
+		"planton project create --from-chart gcp/cloud-run-environment",
+		"- name: STACK_EXECUTION_LOGS_GCS_BUCKET",
 	} {
 		if len(matches(t, s, "README.md", line)) == 0 {
 			t.Errorf("no finding in %q", line)
@@ -84,6 +90,7 @@ func TestOtherPeoplesWordsAreAllowed(t *testing.T) {
 		{"docs/gcp.md", "Google Cloud Resource Manager"},
 		{"catalog/gcp/gcpbigqueryconnection/v1alpha1/spec.proto", "GcpBigQueryConnectionCloudResource cloud_resource = 5;"},
 		{"pkg/x.go", "service account of a google_cloud_resource"},
+		{"catalog/gcp/gcpbigqueryconnection/iac/pulumi/module/connection.go", "args.CloudResource = &bigquery.ConnectionCloudResourceArgs{}"},
 		{"catalog/kubernetes/kubernetespostgres/iac/x.go", "BarmanCloudObjectStore"},
 		{"docs/x.md", "the multi-cloud-catalog skill"},
 		{"docs/x.md", "every Google Cloud resource in the project"},
@@ -97,6 +104,10 @@ func TestOtherPeoplesWordsAreAllowed(t *testing.T) {
 		{"site/src/components/Hero.tsx", "import { Hero } from '@/components/Hero'"},
 		{"catalog/aws/awsvpc/cost.yaml", "# what drives this component's bill"},
 		{"pkg/x.go", "cr_terms := local.terms"},
+		{"catalog/gcp/gcpproject/v1/spec.proto", "string project_id = 1; // projectId of the deployed GCP project's parent"},
+		{"docs/x.md", "Pulumi stack execution is orchestrated by the runner"},
+		{"docs/x.md", "planton-os project create --name q4-launch"},
+		{"docs/x.md", "the Dockerfile in the service's project root"},
 	} {
 		if got := matches(t, s, c.path, c.line); len(got) != 0 {
 			t.Errorf("%s: %q flagged %v", c.path, c.line, got)
