@@ -576,6 +576,121 @@ Three things decide whether it holds: the token is scoped to the one bucket
 workload's retention, and the location hint is chosen where the cluster
 runs, because R2 honours it only at creation.
 
+## Your applications' own signals
+
+Once the platform's components report, the user's own services need three
+signals per request that lead to each other: a count of how each call ended, a
+trace of what it did, and log lines that carry that trace's id. The kinds
+compose it without any untyped manifest.
+
+**Traces: a gateway collector of their own.** Do not add an OTLP receiver to the
+node log reader. That reader queues on disk and blocks when full, which is right
+for logs and wrong for an application, which must never stall behind its
+telemetry. Use a small deployment-mode `KubernetesOtelCollector` (the
+traces-gateway preset's shape) on OTLP/HTTP, and a network policy that admits
+only the user's own namespaces:
+
+```yaml
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesOtelCollector
+metadata:
+  name: cluster-traces
+spec:
+  namespace:
+    value: observability
+  mode: deployment
+  replicas: 2
+  configYaml: |
+    receivers:
+      otlp:
+        protocols:
+          http:
+            endpoint: 0.0.0.0:4318   # say so: newer collectors bind localhost by default
+    processors:
+      memory_limiter: {check_interval: 1s, limit_mib: 200, spike_limit_mib: 50}
+      k8s_attributes: {}
+      batch: {}
+    exporters:
+      otlp_http:
+        traces_endpoint: http://traces.observability-hub.svc.cluster.local:4318/v1/traces
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          processors: [memory_limiter, k8s_attributes, batch]
+          exporters: [otlp_http]
+---
+apiVersion: kubernetes.planton.dev/v1alpha1
+kind: KubernetesNetworkPolicy
+metadata:
+  name: cluster-traces-intake
+spec:
+  namespace:
+    value: observability
+  name: cluster-traces-intake
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: observability.cluster-traces   # the OTel operator's label: <namespace>.<name>
+  policyTypes: [ingress]
+  ingressRules:
+    - from:
+        - namespaceSelector:
+            matchExpressions:
+              - key: kubernetes.io/metadata.name
+                operator: In
+                values: [shop-prod]
+      ports:
+        - protocol: TCP
+          port: "4318"
+```
+
+Applications send to `cluster-traces-collector.observability:4318`, the Service
+the operator derives from the receiver's port. A hub on another cluster takes
+the same exporter pointed at its door's `/v1/traces`, with the cluster's token.
+
+**Logs that open their trace.** Have the service write one JSON object per line,
+with `trace_id` and `span_id` as top-level fields. In the cluster-logs collector,
+after the `container` operator:
+
+```yaml
+- type: json_parser
+  if: 'body matches "^\\s*\\{"'
+  on_error: send_quiet
+- type: trace_parser
+  if: '"trace_id" in attributes'
+  trace_id: {parse_from: attributes.trace_id}
+  span_id: {parse_from: attributes.span_id}
+  on_error: send_quiet
+- type: remove        # held once, as the record's trace context
+  if: '"trace_id" in attributes'
+  field: attributes.trace_id
+- type: remove
+  if: '"span_id" in attributes'
+  field: attributes.span_id
+- type: move          # the message becomes the line
+  if: '"message" in attributes'
+  from: attributes.message
+  to: body
+  on_error: send_quiet
+```
+
+Loki then keeps `trace_id` on the line, and a `KubernetesGrafana` Loki
+datasource's derived field on `trace_id` opens the trace in Tempo. The id has to
+be the stored one. A server that roots a trace under an invented all-zero parent
+span gets a fresh random trace id from the SDK, because the parent is invalid.
+Its logs then name a trace that does not exist.
+
+**Metrics on a private port.** Serve the scrape on a named port (`metrics`) that
+no route reaches. Select it with a `KubernetesServiceMonitor` per path, and admit
+the agent's Prometheus on that port in the namespace's network policy. Name
+request labels `rpc_service` and `rpc_method`: a label called `service`
+collides with the target label Prometheus adds and arrives as
+`exported_service`. Measure an API's success inside the service, by gRPC status
+in an interceptor outside authentication. A gRPC-Web call that fails still
+answers HTTP 200, so the gateway never sees it. The burn rule's ratio adds the
+gateway's 5xx to both sides, so a service that is down, and emits nothing,
+still burns.
+
 ## Who can open the hub
 
 Grafana shows every system at once, so who can sign in is part of the

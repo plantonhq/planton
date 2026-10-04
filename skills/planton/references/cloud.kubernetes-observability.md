@@ -326,6 +326,63 @@ to decide with the person, and what to watch for:
   in-cluster alerting. Read them with the person and list their causes;
   never silence one by hand.
 
+## The user's own software: metrics, traces and logs that lead to each other
+
+Once the platform's components report, the user's own services are next.
+The goal is three signals per request that lead to each other: a count
+of how each call ended, a trace of what it did, and log lines carrying
+that trace's id. Compose it like this:
+
+- **Measure success inside the service, not only at the gateway.** A
+  gRPC-Web door (and any API that wraps errors in a 200) answers HTTP 200
+  for a failed call, so a gateway's 5xx share misses it. Count every
+  call by its gRPC status in a server interceptor placed outside
+  authentication (refusals count). Split the status codes into the
+  caller's (INVALID_ARGUMENT, NOT_FOUND, PERMISSION_DENIED, UNAUTHENTICATED,
+  CANCELLED...) and the service's own (INTERNAL, UNKNOWN, UNAVAILABLE,
+  DEADLINE_EXCEEDED, UNIMPLEMENTED, DATA_LOSS); only the second class
+  spends an error budget. The burn rule adds the gateway's 5xx to both
+  sides of the ratio, so a dead service, which emits nothing, still burns.
+  Leave long polls out of latency and out of the budget, or a minute-long
+  wait reads as slow and its deadline as a failure. An authentication
+  step that cannot run (its key cache is down) should answer UNAVAILABLE,
+  not UNAUTHENTICATED: that is the platform's failure, and the caller's
+  next step is to retry, not to sign in again.
+- **Serve the scrape on a private port.** Use a named port (`metrics`) that
+  no route reaches, a `KubernetesServiceMonitor` per path, and the
+  namespace's network policy admitting the agent's Prometheus on that
+  port. Name labels `rpc_service` and `rpc_method`: a label called
+  `service` collides with the one Prometheus stamps on every scraped
+  series and arrives renamed `exported_service`. Deny per-method library
+  meters at the source, before keep-lists at the monitor: a gRPC
+  framework's own metrics, for example, add a histogram per method.
+- **Traces go to a gateway collector of their own,** not the node log
+  reader. The log DaemonSet blocks when its queue fills, because a lost
+  line is lost evidence; an application must never stall behind its
+  telemetry. Run a small `KubernetesOtelCollector` in deployment mode
+  (the catalog's traces-gateway preset), OTLP/HTTP on 4318, with a
+  network policy admitting only the user's own namespaces, so a
+  workload sharing the cluster cannot write into the trace store.
+- **JSON logs whose trace ids the collector reads.** Have the service
+  write one JSON object per line with `trace_id` and `span_id` as
+  top-level fields. In the log collector, after the `container`
+  operator, add a conditional `json_parser`, then a `trace_parser` that
+  sets the record's trace context, then `remove` for the two attributes
+  (otherwise the store receives them twice), then a `severity_parser`
+  and a `move` of the message to the body. Loki then keeps `trace_id`,
+  and Grafana's derived field opens the trace from the line.
+- **The id in the log must be the id that was stored.** A server that
+  roots a trace under an invented all-zero parent span gets a brand-new
+  random trace id from the SDK (the parent is invalid), so its log lines
+  name a trace that does not exist. Root a true span and log the span's
+  own id. Re-apply the id around every callback: a gRPC call's callbacks
+  run on any executor thread, and a thread-local set once when the call
+  is accepted mislabels the handler's lines.
+- **Count an event where it becomes durable.** Count a deployment's start
+  or its ending once, at the write that first records it, by comparing
+  with the stored row. Never count in replayed workflow code or on every
+  checkpoint.
+
 ## The alerts that page, and the ones that post
 
 Write the user's page-class rules once the components they read are
