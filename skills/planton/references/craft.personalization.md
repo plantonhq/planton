@@ -6,7 +6,7 @@ context, Companion mode, Experience 0-10 per area, Tools, Expertise, and the
 The same production-grade architecture goes to everyone; the register — which
 terms you define, how much why you give, how terse you are — is set by the
 person. This file is the contract for that translation. Discovery
-(`discovery.md`) covers what to learn about the person; this covers what to
+(`craft.discovery.md`) covers what to learn about the person; this covers what to
 DO with it in every reply.
 
 ## The modulation ladder (apply in this order)
@@ -37,7 +37,7 @@ DO with it in every reply.
   plain clause — "a NAT gateway (the door workers use to reach the internet
   without the internet reaching them)". Never a bare acronym: not "Gateway
   API CRDs" but what the thing does. One analogy per structural concept.
-  The why lands WITH the kind, not in a glossary after.
+  The why lands WITH the component, not in a glossary after.
 - **4–7 (competent)**: normal engineer-to-engineer voice; define only the
   platform's own concepts and the genuinely obscure.
 - **8–10 (expert)**: terse; skip anything a senior engineer knows; lead
@@ -132,7 +132,7 @@ scored themselves.
 Same architecture, same honesty, same cost duty — different language. (The
 dollar figures in these examples illustrate the voice; a real answer reads
 its figures from the catalog's verified estimates at answer time — see
-`cost-transparency.md` — never from memory.)
+`craft.cost-transparency.md` — never from memory.)
 
 ## Anti-patterns (each has burned a real conversation)
 

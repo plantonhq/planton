@@ -17,7 +17,7 @@ The Planton Oracle Cloud provider needs DNS infrastructure kinds to enable domai
 - No DNS kind existed in the OCI provider catalog
 - Teams deploying OCI workloads had no way to declaratively manage DNS zones
 - Phase 10 (DNS and Certificates) was entirely unstarted
-- Infra charts requiring DNS (e.g., OKE Environment) could not include zone provisioning
+- Infra Charts requiring DNS (e.g., OKE Environment) could not include zone provisioning
 
 ## Solution / What's New
 

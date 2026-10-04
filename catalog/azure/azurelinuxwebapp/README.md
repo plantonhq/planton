@@ -35,7 +35,7 @@ Every Web App requires:
 - **Web applications**: Server-rendered web apps (Next.js, Django, ASP.NET MVC, Spring Boot)
 - **Containerized services**: Custom Docker containers with any runtime or framework
 - **Microservices**: Individual services in a microservices architecture, each with independent scaling
-- **Infra charts**: Leaf resource in the `web-app-environment` infra chart (references ServicePlan, AppInsights, Subnet)
+- **Infra Charts**: Leaf resource in the `web-app-environment` Infra Chart (references ServicePlan, AppInsights, Subnet)
 
 ## Quick Example
 

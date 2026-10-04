@@ -10,13 +10,13 @@ Added AzureNetworkSecurityGroup (R06) as a catalog kind in the Azure provider, c
 
 ## Problem Statement / Motivation
 
-Enterprise Azure deployments require per-tier network security controls. NSGs are the primary mechanism for implementing network segmentation and the principle of least privilege in Azure. Without an NSG resource kind, the enterprise-network-foundation infra chart (planned as T03) cannot enforce traffic rules between web, application, and data tiers.
+Enterprise Azure deployments require per-tier network security controls. NSGs are the primary mechanism for implementing network segmentation and the principle of least privilege in Azure. Without an NSG resource kind, the enterprise-network-foundation Infra Chart (planned as T03) cannot enforce traffic rules between web, application, and data tiers.
 
 ### Pain Points
 
 - No way to declare network security policies as code in Planton for Azure
 - Enterprise architectures need per-subnet firewall rules that are version-controlled
-- The enterprise-network-foundation infra chart requires NSGs as a core building block
+- The enterprise-network-foundation Infra Chart requires NSGs as a core building block
 
 ## Solution / What's New
 
@@ -80,7 +80,7 @@ All enum-like fields use Azure's exact API values as strings with CEL validation
 
 ## Benefits
 
-- **Infra chart enablement** -- enterprise-network-foundation can now create per-tier NSGs
+- **Infra Chart enablement** -- enterprise-network-foundation can now create per-tier NSGs
 - **Complete validation** -- 30 tests covering all valid and invalid input combinations
 - **Production-quality docs** -- 6 YAML examples covering minimal, web-tier, app-tier, data-tier, multi-source, and infra-chart patterns
 - **Dual IaC** -- Both Pulumi and Terraform with feature parity
@@ -88,7 +88,7 @@ All enum-like fields use Azure's exact API values as strings with CEL validation
 ## Impact
 
 - **Azure resource coverage**: 7 of 24 resources completed (R00-R06)
-- **Downstream consumers**: AzureVirtualMachine (network_security_group_id), infra charts (subnet association)
+- **Downstream consumers**: AzureVirtualMachine (network_security_group_id), Infra Charts (subnet association)
 - **Next resource**: R07 AzurePrivateDnsZone
 
 ## Related Work

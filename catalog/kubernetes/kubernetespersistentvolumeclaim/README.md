@@ -14,7 +14,7 @@ A standalone claim is the right shape for storage whose lifecycle is independent
 
 - **Schema-level validation**: Kubernetes-quantity format checks on sizes, access-mode vocabulary enforcement, selector operator contracts, and the class-name conflict rule — all caught before anything reaches the cluster
 - **The empty-vs-absent class distinction, made typed**: Kubernetes distinguishes an EMPTY `storageClassName` (bind only pre-provisioned volumes) from an ABSENT one (cluster default applies) — a distinction a single string field cannot carry. The spec carries `disable_dynamic_provisioning` as its own field, and validation rejects combining it with a named class
-- **Namespace and class by value or reference**: `spec.namespace` and `spec.storage_class_name` accept literal names or references to `KubernetesNamespace` / `KubernetesStorageClass` resources, so an infra chart can create the class, the namespace, and the claim in one run
+- **Namespace and class by value or reference**: `spec.namespace` and `spec.storage_class_name` accept literal names or references to `KubernetesNamespace` / `KubernetesStorageClass` resources, so an Infra Chart can create the class, the namespace, and the claim in one run
 - **Deploys never hang on binding**: Neither engine waits for the claim to reach Bound — deliberate, because a claim under a `wait_for_first_consumer` class is correctly Pending until a pod consumes it
 - **Dual IaC support**: Both Pulumi and Terraform implementations with feature parity (one documented exception: data sources, below)
 - **Lifecycle management**: Integrated with Planton's deployment lifecycle for status tracking and outputs

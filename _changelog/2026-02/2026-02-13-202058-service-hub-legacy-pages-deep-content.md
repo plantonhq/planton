@@ -67,7 +67,7 @@ All content verified against:
 - `ServicePipelineConfiguration` proto — `kustomize_base_directory` field
 - `PipelineDeploymentStage` and `PipelineDeploymentTask` proto — task structure, env field, manual gates
 - CLI Go source — `planton service dot-env` (flags: `--version`, `--set`), `planton service kustomize init` (flag: `--new`), `planton service kustomize build`, `planton service deploy` (flags: `--project`, `--version-message`, `--set`)
-- Web console — `WizardOrchestrator.tsx` (10-step wizard), `ServiceDeploymentEnvironments` kind (modal, checkbox list)
+- Web console — `WizardOrchestrator.tsx` (10-step wizard), `ServiceDeploymentEnvironments` component (modal, checkbox list)
 - ADR: UI-based service deployment configuration (dual-path logic, `DeploymentConfigSource` enum)
 - Product docs: `what-is-the-role-of-kustomize-in-service-hub.md` (why Kustomize was chosen)
 

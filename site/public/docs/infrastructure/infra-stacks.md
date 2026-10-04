@@ -1,6 +1,6 @@
 ---
 title: "Infra Stacks"
-sidebar_title: "Projects"
+sidebar_title: "Infra Stacks"
 description: "An Infra Chart rendered into one environment: the configured, versioned instance that deploys and manages a collection of Infra Components through deploy and undeploy pipelines."
 icon: infrastructure
 order: 40
@@ -14,24 +14,24 @@ tags:
 
 An Infra Chart defines what you *can* deploy — a reusable template with parameterized placeholders. But a template alone does not answer the questions that matter for a specific deployment: which region, which domain name, how many availability zones, which environment. An Infra Stack captures those answers. It is a configured instance of a template with your specific parameter values filled in, ready to deploy as real infrastructure.
 
-The relationship mirrors how Helm works: an Infra Chart is to an Infra Stack as a Helm chart is to a Helm release. The chart is reusable; the project is the deployed instance with specific values. This separation enables teams to capture infrastructure patterns once and instantiate them many times — across different environments, regions, or customers — each instance tracked as a distinct, versioned project.
+The relationship mirrors how Helm works: an Infra Chart is to an Infra Stack as a Helm chart is to a Helm release. The chart is reusable; the stack is the deployed instance with specific values. This separation enables teams to capture infrastructure patterns once and instantiate them many times — across different environments, regions, or customers — each instance tracked as a distinct, versioned Infra Stack.
 
 ## Why Infra Stacks Exist
 
-Before Infra Stacks, the platform had Infra Charts for reusability but no persistent record of each deployment instance. Consider an organization that deploys five ECS environments from the same chart — development, staging, production-us, production-eu, and production-asia. Each uses different parameter values. Without a project record, fundamental questions have no answers:
+Before Infra Stacks, the platform had Infra Charts for reusability but no persistent record of each deployment instance. Consider an organization that deploys five ECS environments from the same chart — development, staging, production-us, production-eu, and production-asia. Each uses different parameter values. Without a stack record, fundamental questions have no answers:
 
 - Which parameters deployed production-us last month?
 - Did staging update to the latest chart version?
 - Who changed the load balancer domain in production-eu?
 - Can we redeploy production-asia with last week's configuration?
 
-Infra Stacks solve this by introducing a persistent, versioned record of every template instantiation. Each project captures the chart's templates, the exact parameter values used, the environment, the rendered catalog object manifests, the dependency graph, and a link to every pipeline that deployed it. Pipelines are transient — they run and complete. Projects persist as the source of truth for what was configured and when.
+Infra Stacks solve this by introducing a persistent, versioned record of every template instantiation. Each stack captures the chart's templates, the exact parameter values used, the environment, the rendered catalog object manifests, the dependency graph, and a link to every pipeline that deployed it. Pipelines are transient — they run and complete. Infra Stacks persist as the source of truth for what was configured and when.
 
 ## One Chart, One Environment
 
-You select an Infra Chart from the catalog, pick the environment it deploys into, provide parameter values, and the project renders the chart's templates into concrete catalog object manifests.
+You select an Infra Chart from the catalog, pick the environment it deploys into, provide parameter values, and the stack renders the chart's templates into concrete catalog object manifests.
 
-When the project is created, the complete template is copied from the chart into the project. This ensures that chart updates do not break or silently change existing projects — each project is a self-contained snapshot of the template it was created from, and it can be checked out to disk and edited with no chart in reach.
+When the stack is created, the complete template is copied from the chart into the stack. This ensures that chart updates do not break or silently change existing stacks — each stack is a self-contained snapshot of the template it was created from, and it can be checked out to disk and edited with no chart in reach.
 
 The web console provides a creation wizard: browse the chart catalog, pick the environment, fill in the parameter form (auto-generated from the chart's parameter definitions), preview the rendered output, and deploy.
 
@@ -44,9 +44,9 @@ The web console provides a creation wizard: browse the chart catalog, pick the e
 
 ## Automatic Pipeline Triggering
 
-Creating or updating an Infra Stack starts an [Infra Pipeline](/docs/infrastructure/infra-pipelines). The pipeline takes the project's Infra Component dependency graph and executes deployments in the correct order. There is no separate "apply" step — a project is the declaration of an environment's infrastructure, and the platform acts on it.
+Creating or updating an Infra Stack starts an [Infra Pipeline](/docs/infrastructure/infra-pipelines). The pipeline takes the stack's Infra Component dependency graph and executes deployments in the correct order. There is no separate "apply" step — an Infra Stack is the declaration of an environment's infrastructure, and the platform acts on it.
 
-Deploying again without changing anything, and tearing the environment down, are explicit operations on the project: `deploy` and `undeploy` are a pair, and both hand back the project with the new run's id.
+Deploying again without changing anything, and tearing the environment down, are explicit operations on the stack: `deploy` and `undeploy` are a pair, and both hand back the stack with the new run's id.
 
 ## Dependency Graph Visualization
 
@@ -60,19 +60,19 @@ This visualization makes it easy to understand the deployment topology and diagn
 
 <!-- SCREENSHOT: Infra Stack DAG visualization
   Page: /[org]/infra-stack/[infraStackSlug]
-  Action: Show the project detail page with the DAG tab active
+  Action: Show the Infra Stack detail page with the DAG tab active
   Focus: The dependency graph visualization showing resources and their connections
   Alt: Infra Stack DAG visualization showing an AWS VPC connected to subnets, security groups, and an RDS instance
 -->
 
-## Project Lifecycle
+## Infra Stack Lifecycle
 
 ### Create
 
-Create a project from a chart with the CLI:
+Create an Infra Stack from a chart with the CLI:
 
 ```bash
-planton chart install my-project ./my-chart -f values.yaml --org <org> --env <env> -m "why"
+planton chart install my-stack ./my-chart -f values.yaml --org <org> --env <env> -m "why"
 ```
 
 A values file lists only the parameters it changes; every other parameter keeps the chart's value (see [how parameter values resolve](/docs/infrastructure/infra-charts)). Add `--dry-run` to see every parameter and the rendered documents first, without creating anything.
@@ -81,56 +81,56 @@ Or from the web console's chart catalog by selecting a chart, picking the enviro
 
 ### Redeploy
 
-Trigger a new pipeline without changing the project's configuration. Useful for drift correction (re-applying desired state after manual cloud console changes), retrying after a failed deployment, or re-running after fixing external issues like quota limits or permissions:
+Trigger a new pipeline without changing the stack's configuration. Useful for drift correction (re-applying desired state after manual cloud console changes), retrying after a failed deployment, or re-running after fixing external issues like quota limits or permissions:
 
 ```bash
-planton infra stack deploy <project-name-or-id>
+planton infra stack deploy <stack-name-or-id>
 ```
 
 ### Undeploy
 
-Destroy all Infra Components owned by the project without deleting the project record. The project configuration is preserved and can be redeployed later — useful for temporarily tearing down infrastructure to save costs:
+Destroy all Infra Components owned by the stack without deleting the stack record. The stack configuration is preserved and can be redeployed later — useful for temporarily tearing down infrastructure to save costs:
 
 ```bash
-planton infra stack undeploy <project-name-or-id>
+planton infra stack undeploy <stack-name-or-id>
 ```
 
 ### Purge
 
-Destroy all Infra Components and delete the project record permanently:
+Destroy all Infra Components and delete the stack record permanently:
 
 ```bash
-planton infra stack purge <project-name-or-id>
+planton infra stack purge <stack-name-or-id>
 ```
 
-Deleting a project does not automatically destroy its infrastructure. You must explicitly undeploy first if the infrastructure should be removed. This is a deliberate safety measure — deleting a configuration record should never accidentally destroy production resources.
+Deleting an Infra Stack does not automatically destroy its infrastructure. You must explicitly undeploy first if the infrastructure should be removed. This is a deliberate safety measure — deleting a configuration record should never accidentally destroy production resources.
 
 ## Using the CLI
 
 ```bash
-# Create a project from a chart (triggers deployment automatically)
-planton chart install my-project ./chart-dir -f values.yaml
+# Create an Infra Stack from a chart (triggers deployment automatically)
+planton chart install my-stack ./chart-dir -f values.yaml
 
-# Deploy an existing project (starts a deploy run and follows it)
-planton infra stack deploy <project-name-or-id>
+# Deploy an existing stack (starts a deploy run and follows it)
+planton infra stack deploy <stack-name-or-id>
 
-# List pipelines for a project
-planton infra stack infra-pipelines <project-name-or-id>
+# List pipelines for a stack
+planton infra stack infra-pipelines <stack-name-or-id>
 
-# Get the last pipeline for a project
-planton infra stack last-pipeline <project-name-or-id>
+# Get the last pipeline for a stack
+planton infra stack last-pipeline <stack-name-or-id>
 
-# Undeploy (destroy resources, keep project)
-planton infra stack undeploy <project-name-or-id>
+# Undeploy (destroy resources, keep stack)
+planton infra stack undeploy <stack-name-or-id>
 
-# Purge (destroy resources and delete project)
-planton infra stack purge <project-name-or-id>
+# Purge (destroy resources and delete stack)
+planton infra stack purge <stack-name-or-id>
 
-# Get project details
-planton infra stack get <project-name-or-id>
+# Get stack details
+planton infra stack get <stack-name-or-id>
 
-# Check a project out as a chart-shaped folder you can edit and install again
-planton infra stack checkout <project-name-or-id>
+# Check a stack out as a chart-shaped folder you can edit and install again
+planton infra stack checkout <stack-name-or-id>
 ```
 
 ## When to Use Infra Stacks vs. Direct Infra Components
@@ -146,8 +146,8 @@ planton infra stack checkout <project-name-or-id>
 
 ## Related Documentation
 
-- [Infra Charts](/docs/infrastructure/infra-charts) — The templates that projects instantiate
-- [Infra Pipelines](/docs/infrastructure/infra-pipelines) — How project deployments are orchestrated
-- [Infra Components](/docs/infrastructure/infra-components) — The resources that projects own and manage
+- [Infra Charts](/docs/infrastructure/infra-charts) — The templates that Infra Stacks instantiate
+- [Infra Pipelines](/docs/infrastructure/infra-pipelines) — How Infra Stack deployments are orchestrated
+- [Infra Components](/docs/infrastructure/infra-components) — The deployed instances that Infra Stacks own and manage
 - [Infra Jobs](/docs/infrastructure/infra-jobs) — The atomic execution units within pipelines
 - [Flow Control](/docs/infrastructure/flow-control) — Governance policies that affect pipeline execution

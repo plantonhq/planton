@@ -151,7 +151,7 @@ Comprehensive user-facing documentation:
 **Each example includes:**
 - Complete YAML manifest
 - Use case explanation
-- Prerequisites (infra component creation)
+- Prerequisites (provider resource creation)
 - Expected results
 - Deployment verification
 
@@ -304,7 +304,7 @@ Integrated locals:
 
 #### Created `iac/pulumi/overview.md` (5KB+)
 - Architecture diagram with data flow
-- Kind flow (5 steps)
+- Component flow (5 steps)
 - Load balancer annotation logic
 - Cloud provider detection
 - Design decisions
@@ -544,7 +544,7 @@ spec:
 
 **Pulumi overview.md** documents:
 - Architecture with diagrams
-- Kind flow
+- Component flow
 - Load balancer annotation logic
 - Cloud provider detection
 - Design decisions (why Helm, why LoadBalancer, why fixed namespace)

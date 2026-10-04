@@ -10,7 +10,7 @@ Implemented the eleventh Scaleway resource kind: `ScalewayMongodbInstance`. This
 
 ## Problem Statement / Motivation
 
-The Scaleway provider in Planton needed managed MongoDB support to complete the database tier. MongoDB is a widely-used document database that complements the existing relational (RDB) and in-memory (Redis) offerings. The `database-stack` infra chart needs all three database types to provide comprehensive data platform coverage.
+The Scaleway provider in Planton needed managed MongoDB support to complete the database tier. MongoDB is a widely-used document database that complements the existing relational (RDB) and in-memory (Redis) offerings. The `database-stack` Infra Chart needs all three database types to provide comprehensive data platform coverage.
 
 ### Pain Points
 
@@ -132,7 +132,7 @@ When no PN is set, Scaleway creates a public endpoint by default (no explicit bl
 - R09: ScalewayRdbInstance (primary reference for composite database pattern)
 - R10: ScalewayRedisCluster (CEL validation pattern reference)
 - DD02: Private Network as universal connector
-- IC03: scaleway/database-stack infra chart (will compose all three database kinds)
+- IC03: scaleway/database-stack Infra Chart (will compose all three database kinds)
 
 ---
 

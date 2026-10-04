@@ -99,7 +99,7 @@ graph TD
 
 - Adds 1 new CatalogKind to the OCI provider (R21 of 37)
 - Opens Phase 5 (Storage) -- OciFileSystem and OciBlockVolume follow next
-- Enables the OCI Serverless Stack and Data Platform infra charts that require object storage
+- Enables the OCI Serverless Stack and Data Platform Infra Charts that require object storage
 
 ## Related Work
 

@@ -21,7 +21,7 @@ The KubernetesPerconaMongoOperator kind was at 90.40% completion with several bl
 
 ### Impact
 
-Without these kinds:
+Without these components:
 - **Testing Risk**: No automated validation of spec.proto rules could lead to runtime failures
 - **Maintainability**: Non-standard file naming made codebase navigation confusing
 - **Consistency**: Terraform modules didn't follow the expected structure pattern

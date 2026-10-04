@@ -6,11 +6,11 @@
 
 ## Summary
 
-Implemented a comprehensive Infra Job API service that enables asynchronous Pulumi CLI deployments for infra components. The system provides gRPC APIs to deploy infra components using Pulumi, track deployment jobs, and retrieve deployment status and output. This enables the backend to execute Pulumi commands (`pulumi up`) asynchronously and store deployment results in MongoDB for tracking and monitoring.
+Implemented a comprehensive Infra Job API service that enables asynchronous Pulumi CLI deployments for Infra Components. The system provides gRPC APIs to deploy Infra Components using Pulumi, track deployment jobs, and retrieve deployment status and output. This enables the backend to execute Pulumi commands (`pulumi up`) asynchronously and store deployment results in MongoDB for tracking and monitoring.
 
 ## Problem Statement / Motivation
 
-The system needed a way to execute Pulumi deployments for infra components managed in the database, track their execution status, and provide visibility into deployment outcomes. Without this capability, infra components could only be stored but not actually deployed to cloud providers.
+The system needed a way to execute Pulumi deployments for Infra Components managed in the database, track their execution status, and provide visibility into deployment outcomes. Without this capability, Infra Components could only be stored but not actually deployed to cloud providers.
 
 ### Pain Points
 
@@ -24,7 +24,7 @@ The system needed a way to execute Pulumi deployments for infra components manag
 
 Implemented a complete Infra Job service with gRPC APIs that:
 
-1. Accepts infra component deployment requests
+1. Accepts Infra Component deployment requests
 2. Creates stack-update records in MongoDB with `in_progress` status
 3. Executes Pulumi CLI commands asynchronously in the background
 4. Captures Pulumi output (stdout, stderr, exit codes)
@@ -74,9 +74,9 @@ StackUpdate (MongoDB)
 
 Three main RPC methods:
 
-- **DeployInfraComponent**: Initiates deployment for an infra component
+- **DeployInfraComponent**: Initiates deployment for an Infra Component
 
-  - Validates infra component exists
+  - Validates Infra Component exists
   - Creates stack-update record
   - Returns immediately with job ID
   - Executes Pulumi deployment asynchronously
@@ -87,7 +87,7 @@ Three main RPC methods:
   - Used for polling deployment status
 
 - **ListStackUpdates**: Lists stack-updates with optional filters
-  - Filter by infra component ID
+  - Filter by Infra Component ID
   - Filter by status (success, failed, in_progress)
   - Sorted by creation date (newest first)
 
@@ -134,7 +134,7 @@ Deployment results stored as JSON in the `output` field:
 
 **5. Error Handling**
 
-- Validates infra component exists before deployment
+- Validates Infra Component exists before deployment
 - Handles missing stack FQDN gracefully (continues with best effort)
 - Captures Pulumi errors in stderr
 - Stores error details in job output JSON
@@ -254,7 +254,7 @@ Provides data access methods:
 
 - **Create**: Insert new stack-update with timestamps
 - **FindByID**: Retrieve job by MongoDB ObjectID
-- **FindByInfraComponentID**: Get all jobs for an infra component (sorted newest first)
+- **FindByInfraComponentID**: Get all jobs for an Infra Component (sorted newest first)
 - **Update**: Update job status and output
 - **List**: Query jobs with optional filters (infra_component_id, status)
 
@@ -657,7 +657,7 @@ Updated with Pulumi environment variables:
 
 **New Capabilities**:
 
-- Deploy infra components via API
+- Deploy Infra Components via API
 - Track deployment jobs and status
 - Retrieve deployment history
 - Monitor Pulumi execution output
@@ -665,7 +665,7 @@ Updated with Pulumi environment variables:
 **System Integration**:
 
 - Pulumi CLI integrated into backend Docker image
-- Infra jobs stored in MongoDB `stackupdates` collection
+- Infra Jobs stored in MongoDB `stackupdates` collection
 - gRPC service available for frontend integration
 
 ### Developer Experience
@@ -808,7 +808,7 @@ ListStackUpdatesResponse {
 
 This work builds on:
 
-- **Infra Component APIs** - Existing infra component management
+- **Infra Component APIs** - Existing Infra Component management
 - **Pulumi Integration** - Existing Pulumi CLI and module infrastructure
 - **Manifest Processing** - Existing manifest loading and parsing
 

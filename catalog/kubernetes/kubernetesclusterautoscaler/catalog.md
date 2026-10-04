@@ -124,4 +124,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 - [**Karpenter**](/infra-catalog/kubernetes-karpenter) -- the alternative fleet controller for just-in-time, right-sized nodes; never both on the same capacity.
 - [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- unschedulable pods from any workload (Deployments, StatefulSets, Jobs) trigger scale-up; no per-workload wiring needed.
 - [**Kubernetes PodDisruptionBudget**](/infra-catalog/kubernetes-pod-disruption-budget) -- shapes what the autoscaler may evict during scale-down.
-- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference it when installing outside `kube-system` so infra charts create the namespace first.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference it when installing outside `kube-system` so Infra Charts create the namespace first.

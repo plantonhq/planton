@@ -7,7 +7,7 @@ through a long create). The cloud has the resource; the state file does not;
 every rerun tries to create it again and collides.
 
 Recognize the signature in the failed node's engine logs (step 3 of the
-diagnosis workflow in `planton-cli.md`):
+diagnosis workflow in `craft.planton-cli.md`):
 
 ```
 googleapi: Error 409: Already exists: projects/.../clusters/prod-cluster   # GCP
@@ -17,14 +17,14 @@ Error: ... a resource with the ID "..." already exists                     # gen
 ```
 
 **The repair is import, not delete-and-retry.** The platform has first-class
-state-import commands: they run an infra job that adopts the existing cloud
+state-import commands: they run an Infra Job that adopts the existing cloud
 resource into the InfraComponent's IaC state — **the cloud is never touched,
 only the state file is updated** — and then a fresh apply reconciles the
 desired configuration against what was adopted.
 
 ## The commands
 
-The provisioner family matters (check `.planton/project.yaml` or the stack
+The provisioner family matters (check `.planton/stack.yaml` or the stack
 job record; OpenTofu and Terraform are interchangeable here):
 
 ```
@@ -48,7 +48,7 @@ planton pulumi state import <IC_ID | Kind name> \
   the real one.
 - The import job is **idempotent** (importing an already-tracked resource
   succeeds) and runs `init → import → refresh → preview → capture` as one
-  infra job. It reports drift but does not apply it — reconciling is the
+  Infra Job. It reports drift but does not apply it — reconciling is the
   follow-up deploy.
 - One import command adopts ONE resource; run it once per orphan.
 
@@ -92,8 +92,8 @@ to show the user exactly what would run before committing.
 - An import is a **platform mutation** (it changes the stack's recorded
   state): explain what it adopts and get a yes — one confirmation per
   import. `--dry-run` and every lookup above run freely.
-- Never repair by deleting the infra component so the rerun "works" unless
+- Never repair by deleting the provider resource so the rerun "works" unless
   the user explicitly chooses that instead — deletion destroys whatever the
   resource already holds and is a cloud mutation with its own confirmation.
 - After a successful import, the deploy is still pending: save/rerun (its
-  own consent, per `deployed-projects.md`) and confirm the run goes green.
+  own consent, per `infra.deployed-stacks.md`) and confirm the run goes green.

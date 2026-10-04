@@ -10,7 +10,7 @@ Added the OciFunctionsApplication catalog kind -- OCI's organizational container
 
 ## Problem Statement / Motivation
 
-Planton's OCI provider had comprehensive infrastructure coverage across networking, compute, containers, databases, storage, and security (Phases 1-6, 27 resources), but no serverless function support. OCI Functions is Oracle's managed serverless platform (similar to AWS Lambda) where functions run in user-specified subnets with optional NSG controls. Without a declarative Functions Application kind, platform teams cannot provision the execution environment that functions are deployed into, blocking the Serverless Stack infra chart.
+Planton's OCI provider had comprehensive infrastructure coverage across networking, compute, containers, databases, storage, and security (Phases 1-6, 27 resources), but no serverless function support. OCI Functions is Oracle's managed serverless platform (similar to AWS Lambda) where functions run in user-specified subnets with optional NSG controls. Without a declarative Functions Application kind, platform teams cannot provision the execution environment that functions are deployed into, blocking the Serverless Stack Infra Chart.
 
 ## Solution / What's New
 
@@ -74,7 +74,7 @@ A complete OciFunctionsApplication catalog kind with both Pulumi (Go) and Terraf
 ## Benefits
 
 - Enables declarative provisioning of OCI serverless function environments
-- Unblocks the Serverless Stack infra chart (Chart 4)
+- Unblocks the Serverless Stack Infra Chart (Chart 4)
 - Full attribute coverage: networking, architecture selection, image verification, config, tracing
 - Infra-chart composable via StringValueOrRef on subnet_ids, NSG IDs, and KMS key references
 
@@ -82,7 +82,7 @@ A complete OciFunctionsApplication catalog kind with both Pulumi (Go) and Terraf
 
 - **Platform teams**: Can now declaratively create function application environments with proper networking isolation and security controls
 - **OCI provider coverage**: 28/37 resources complete (75.7%), Phase 7 started
-- **Infra charts**: Serverless Stack chart prerequisites advancing (needs R29 OciApiGateway to complete)
+- **Infra Charts**: Serverless Stack chart prerequisites advancing (needs R29 OciApiGateway to complete)
 
 ## Validation Results
 

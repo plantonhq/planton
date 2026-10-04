@@ -230,7 +230,7 @@ the README. Conventions:
 - One file per architectural concern (e.g. `network.yaml`, `database.yaml`), not
   one file per resource; multiple documents separated by `---`.
 - **Template files may be grouped in subdirectories** — every loader (the
-  offline validator and the platform's project loader) walks `templates/`
+  offline validator and the platform's Infra Stack loader) walks `templates/`
   recursively and identifies each file by its path relative to `templates/`.
   Use folders when the chart's concerns form real architectural layers a
   reader navigates (`templates/exposure/ingress.yaml` beside

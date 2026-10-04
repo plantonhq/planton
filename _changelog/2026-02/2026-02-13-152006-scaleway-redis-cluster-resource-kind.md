@@ -75,12 +75,12 @@ flowchart TD
 ### Documentation (2 files)
 
 - `README.md`: Overview, deployment modes table, networking mutual exclusivity explanation, lifecycle warnings (TLS recreation, cluster mode PN immutability), production checklist, security best practices.
-- `examples.md`: 7 examples covering standalone dev, production HA with PN, cluster mode sharding, ACL lockdown, session store with custom settings, infra chart valueFrom pattern, and bare cluster.
+- `examples.md`: 7 examples covering standalone dev, production HA with PN, cluster mode sharding, ACL lockdown, session store with custom settings, Infra Chart valueFrom pattern, and bare cluster.
 
 ## Benefits
 
 - **CEL validation catches conflicts early**: Users get a clear error message about ACL/PN mutual exclusivity before any API calls
-- **Infra-chart ready**: `StringValueOrRef` on `private_network_id` enables DAG composition in the database-stack infra chart
+- **Infra-chart ready**: `StringValueOrRef` on `private_network_id` enables DAG composition in the database-stack Infra Chart
 - **Three deployment modes documented**: Standalone, HA, and Cluster mode with clear lifecycle implications
 - **Consistent patterns**: Follows the same locals/provider/resource structure as all other Scaleway kinds
 
@@ -88,7 +88,7 @@ flowchart TD
 
 - **10 of 19 Scaleway resource kinds** now implemented (53% complete)
 - **Database tier advancing**: R10 (Redis) done, R11 (MongoDB) is next
-- **database-stack infra chart** (IC03) can now plan Redis composition alongside RDB
+- **database-stack Infra Chart** (IC03) can now plan Redis composition alongside RDB
 - **First Scaleway kind with CEL validation**: Establishes the pattern for future cross-field constraints
 
 ## Related Work
@@ -97,7 +97,7 @@ flowchart TD
 - **R09: ScalewayRdbInstance** -- Sibling database resource (composite, unlike Redis which is standalone)
 - **DigitalOceanDatabaseCluster** -- Reference implementation (single resource, similar scope)
 - **AzureVirtualMachineSpec** -- Established the `buf.validate.message` CEL pattern used here
-- **IC03: database-stack** -- Planned infra chart that composes VPC + PrivateNetwork + RdbInstance + RedisCluster + optional MongoDB
+- **IC03: database-stack** -- Planned Infra Chart that composes VPC + PrivateNetwork + RdbInstance + RedisCluster + optional MongoDB
 
 ---
 

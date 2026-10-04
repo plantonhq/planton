@@ -118,7 +118,7 @@ Kind registered as `OciApplicationLoadBalancer = 3320` in `catalog_kind.proto`.
 ## Impact
 
 - First kind in Phase 3 (Advanced Networking) of the OCI provider expansion
-- Enables the OKE Environment infra chart (requires LB for ingress)
+- Enables the OKE Environment Infra Chart (requires LB for ingress)
 - 11 of 37 OCI resource kinds now implemented (30%)
 - Users can now build complete OCI web application stacks with networking, compute, containers, and load balancing
 

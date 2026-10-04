@@ -103,7 +103,7 @@ A Next.js 14 web application with Material-UI providing a modern dashboard inter
 
 **Layout System** (`src/components/layout/`):
 
-- Header kind with navigation
+- Header component with navigation
 - Sidebar with collapsible menu
 - Responsive layout using Material-UI Grid2
 - Theme-aware styling with Emotion

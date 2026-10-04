@@ -173,7 +173,7 @@ For each resolved manifest (excluding the local overlay), the deployment stage c
 1. **Environment matching** — If the service has deployment environment filters configured, only matching overlays produce tasks. See [Deployment Environments](/docs/ci-cd/deployment-environments).
 2. **Ordering** — Tasks execute sequentially following the organization's promotion policy (for example: dev, then staging, then production).
 3. **Manual gates** — If a deployment target requires manual approval, the pipeline pauses at that task until a team member approves or rejects. See [Pipelines](/docs/ci-cd/pipelines#manual-approval-gates).
-4. **Infra Job creation** — Each task provisions the catalog object manifest through a [Infra Job](/docs/infrastructure/infra-jobs). The Infra Job applies the infrastructure changes and reports completion.
+4. **Infra Job creation** — Each task provisions the catalog object manifest through an [Infra Job](/docs/infrastructure/infra-jobs). The Infra Job applies the infrastructure changes and reports completion.
 5. **Failure handling** — If a deployment task fails, all subsequent tasks are cancelled. No partial rollouts across environments.
 
 ## How the Image Is Pulled
@@ -182,7 +182,7 @@ The deployment stage injects the built image into every manifest that receives o
 
 - **Kubernetes workloads** get their registry login filled onto `pod.imageRegistries` from the service's registry connection when that connection holds a login a cluster can keep — a stored token or key, or GHCR's read-only pull token — with the password as a `$secret/` reference the runner resolves inside the cluster's account. The run's environment row states what was filled, or why nothing was (*ECR issues only twelve-hour tokens — the cluster pulls with its own AWS identity*; *add a read-only pull token to the registry connection, or declare the login on the workload's imageRegistries*). A login you already declared for the same registry is never overwritten.
 - **Cloud Run** pulls private images only from Artifact Registry; the service wizard warns at authoring time when the registry is anything else. **ECS** pulls from ECR with the task execution role and from other registries with the Secrets Manager credential the task definition declares.
-- **A reference that has no value yet** — a pull secret named in `pod.imagePullSecrets` that was never deployed — is refused before the infra job is created, naming the field and the resource, instead of producing a pod stuck in `ImagePullBackOff`.
+- **A reference that has no value yet** — a pull secret named in `pod.imagePullSecrets` that was never deployed — is refused before the Infra Job is created, naming the field and the resource, instead of producing a pod stuck in `ImagePullBackOff`.
 
 The three ways a workload can pull, and when to use each, are in [Pulling Private Images](/docs/connections/container-registries#pulling-private-images).
 

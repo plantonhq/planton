@@ -9,7 +9,7 @@ headless and monitoring Services, and the rendered config ConfigMap
 are all operator-created from it. The CR applies through
 `kubectl_manifest` (alekc/kubectl provider, server-side apply), which
 needs no cluster connection at plan time — a collector can be planned
-before the operator's CRDs exist, so an infra chart can deploy the
+before the operator's CRDs exist, so an Infra Chart can deploy the
 operator and its collectors in one run.
 
 Prerequisite at apply time: a KubernetesOtelOperator on the cluster

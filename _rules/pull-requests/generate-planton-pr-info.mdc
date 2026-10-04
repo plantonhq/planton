@@ -76,7 +76,7 @@ Determine the `<scope-path>` from the changed files. Use the most impacted area 
   - Multiple kinds under the same provider → `catalog/<provider>`
   - Shared proto surfaces (`shared/**`, `qa/**`, `iac/**`) → `shared`, `qa`, or `iac`
 
-- Charts (multi-catalog kinds)
+- Charts (multi-kind compositions)
   - `charts/<provider>/<chart>/**` → `charts/<provider>/<chart>`
     - Examples: `charts/aws/eks-platform`, `charts/gcp/gke-environment`, `charts/azure/aks-environment`, `charts/digital-ocean/doks-environment`
   - Multiple charts under the same provider → `charts/<provider>`
@@ -124,10 +124,10 @@ If context is insufficient to infer details, choose the best effort scope from f
 Use Mermaid diagrams to visualize:
 - **Workflows and processes** - Show step-by-step flows with decision points
 - **Before/after architecture** - Illustrate system changes side by side
-- **Sequence diagrams** - Demonstrate interactions between kinds
+- **Sequence diagrams** - Demonstrate interactions between components
 - **State transitions** - Depict lifecycle or status changes
 - **Data flows** - Trace how data moves through the system
-- **Kind relationships** - Show how modules/services connect
+- **Component relationships** - Show how modules/services connect
 
 **Common diagram types for PRs:**
 
@@ -161,7 +161,7 @@ stateDiagram-v2
 ```
 
 **When to include diagrams:**
-- ✅ Architecture or kind relationship changes
+- ✅ Architecture or component relationship changes
 - ✅ Workflow modifications (CLI flows, deployment processes)
 - ✅ Multi-step processes with conditional logic
 - ✅ Breaking changes requiring migration paths

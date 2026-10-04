@@ -13,7 +13,7 @@ Terraform state management.
 Backend configuration lives in annotations — never labels — because
 `metadata.labels` are derived into cloud-provider tags by planton IaC modules;
 a platform key there would leak internal configuration onto the user's real
-infra components.
+provider resources.
 
 ## Provisioner-Aware Annotation Keys
 

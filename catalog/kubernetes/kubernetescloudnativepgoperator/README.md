@@ -150,7 +150,7 @@ Kubernetes runs in.
 - **KubernetesPostgres resources need no reference to this component** —
   they compose against the CRDs it installs; deploy the operator first,
   the databases after.
-- **Backups are a chain of three**: an infra chart deploying
+- **Backups are a chain of three**: an Infra Chart deploying
   KubernetesCertManager → this component → KubernetesCnpgBarmanCloudPlugin
   (its `namespace` referencing this resource) → KubernetesPostgres (with
   a backup block) lands the whole story in dependency order; the

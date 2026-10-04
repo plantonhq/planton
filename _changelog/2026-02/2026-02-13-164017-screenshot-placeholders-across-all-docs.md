@@ -60,7 +60,7 @@ Converted 9 blockquote-style placeholders in `platform/resource-hierarchy.md` (1
 
 - 21 files changed, +201/-9 lines
 - All placeholders mapped to actual web console routes verified against the route definitions in `client-apps/web/console/src/routes/index.ts`
-- Runner section placeholders comply with the IP preservation guidelines — no internal architecture details, kind names, or port numbers in any description
+- Runner section placeholders comply with the IP preservation guidelines — no internal architecture details, component names, or port numbers in any description
 - Placeholders placed adjacent to the paragraph that references the visual, following the convention of "before or after the referencing content"
 
 ## Benefits

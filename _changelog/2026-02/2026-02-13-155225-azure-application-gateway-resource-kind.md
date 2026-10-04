@@ -103,14 +103,14 @@ Single `azurerm_application_gateway` resource with dynamic blocks for all repeat
 ## Benefits
 
 - **L7 load balancing**: SSL termination, host-based routing, WAF -- the core enterprise networking primitives
-- **Infra chart ready**: All references use `StringValueOrRef` for composability in enterprise-network-foundation
+- **Infra Chart ready**: All references use `StringValueOrRef` for composability in enterprise-network-foundation
 - **Production-quality**: 57 tests, comprehensive documentation, both IaC implementations
 - **Clean 80/20**: Covers the primary use cases without the complexity of path-based routing, redirects, or rewrite rules
 
 ## Impact
 
 - **Azure provider**: 11th resource kind (R10 of 24 in the expansion queue)
-- **Infra charts**: Enables the L7 ingress point in enterprise-network-foundation
+- **Infra Charts**: Enables the L7 ingress point in enterprise-network-foundation
 - **Users**: Can deploy production Application Gateways with SSL, WAF, host routing, and health probes
 - **Next resource**: R11 AzurePostgresqlFlexibleServer (database tier begins)
 

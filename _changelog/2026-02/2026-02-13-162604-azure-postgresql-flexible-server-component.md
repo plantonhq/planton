@@ -10,7 +10,7 @@ Forged the AzurePostgresqlFlexibleServer catalog kind (R11 in the Azure resource
 
 ## Problem Statement / Motivation
 
-The Azure resource expansion sub-project (20260212.05) requires 24 new Azure resource kinds to enable enterprise infra charts. PostgreSQL Flexible Server is the first database resource in the queue and a critical building block for the database-stack, container-apps-environment, and web-app-environment infra charts.
+The Azure resource expansion sub-project (20260212.05) requires 24 new Azure resource kinds to enable enterprise Infra Charts. PostgreSQL Flexible Server is the first database resource in the queue and a critical building block for the database-stack, container-apps-environment, and web-app-environment Infra Charts.
 
 ### Pain Points
 
@@ -93,7 +93,7 @@ flowchart TD
 
 ## Benefits
 
-- **First database resource** in the Azure expansion, unlocking the database-stack infra chart
+- **First database resource** in the Azure expansion, unlocking the database-stack Infra Chart
 - **37 validation tests** ensuring all buf.validate rules are correct and exercised
 - **Dual IaC** with Pulumi and Terraform feature parity
 - **6 YAML examples** covering minimal, VNet, HA, infra-chart valueFrom, database-stack pattern, and geo-redundant backup
@@ -103,7 +103,7 @@ flowchart TD
 
 - **Azure resource count**: 12 of 24 complete (was 11)
 - **Database resources**: 1 of 5 complete (PostgreSQL done; MySQL, MSSQL, CosmosDB, Redis pending)
-- **Infra chart readiness**: database-stack chart can now be prototyped
+- **Infra Chart readiness**: database-stack chart can now be prototyped
 - **Pattern established**: Database resource pattern (bundled server + databases + firewall rules) reusable for MySQL and MSSQL
 
 ## Related Work

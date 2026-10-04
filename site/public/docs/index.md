@@ -17,9 +17,9 @@ This documentation covers every shipped feature of the platform, from connecting
 
 <!-- SCREENSHOT: Planton console dashboard
   Page: /dashboard
-  Action: Show the main dashboard with resource cards, recent pipelines, and infra components
+  Action: Show the main dashboard with resource cards, recent pipelines, and Infra Components
   Focus: Full dashboard view with summary cards and activity lists
-  Alt: Planton console dashboard showing resource counts, recent pipelines, and infra component summary
+  Alt: Planton console dashboard showing resource counts, recent pipelines, and Infra Component summary
 -->
 
 ## Platform
@@ -48,7 +48,7 @@ Application CI/CD from Git push to production deployment. Build with Buildpacks 
 
 ## Operations
 
-Runtime operations gateway for Kubernetes pod management, log streaming, shell access, and multi-infra component browsing.
+Runtime operations gateway for Kubernetes pod management, log streaming, shell access, and multi-cloud browsing of provider resources.
 
 [Learn about Operations](/docs/operations)
 

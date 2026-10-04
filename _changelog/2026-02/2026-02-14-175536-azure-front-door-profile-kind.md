@@ -99,7 +99,7 @@ Custom domains, WAF policies, rule sets, security policies, secrets, and identit
 
 - **Azure provider**: 34 total resource kinds (10 original + 24 new)
 - **Project milestone**: All 24 Azure expansion resources complete
-- **Next phase**: T03 infra charts (6 charts)
+- **Next phase**: T03 Infra Charts (6 charts)
 
 ## Related Work
 

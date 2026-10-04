@@ -15,7 +15,7 @@ EventBridge rules are the core routing mechanism for event-driven architectures 
 ### Pain Points
 
 - No way to define EventBridge routing rules through Planton
-- Infra charts for event-driven architectures were blocked without rule support
+- Infra Charts for event-driven architectures were blocked without rule support
 - Manual Terraform/Pulumi code was required for event routing configuration
 
 ## Solution / What's New
@@ -82,14 +82,14 @@ Comprehensive coverage: happy path (8), rule-level CEL (4), field constraints (2
 
 - **Complete event routing**: Bus + Rule covers the full EventBridge lifecycle
 - **Production-ready reliability**: Per-target DLQ and retry policy out of the box
-- **Infra chart composability**: StringValueOrRef enables wiring rules to buses, Lambda functions, SQS queues, and IAM roles in dependency-aware templates
+- **Infra Chart composability**: StringValueOrRef enables wiring rules to buses, Lambda functions, SQS queues, and IAM roles in dependency-aware templates
 - **80/20 coverage**: Supports 90%+ of real-world EventBridge target types without spec bloat
 
 ## Impact
 
 - **New kind**: `apis/dev/planton/provider/aws/awseventbridgerule/v1/` (~48 files, ~3200 lines)
 - **Enum registration**: AwsEventBridgeRule = 228 in catalog_kind.proto
-- **Infra charts**: Unblocks event-driven architecture charts that require rule routing
+- **Infra Charts**: Unblocks event-driven architecture charts that require rule routing
 - **Downstream references**: Rules reference AwsEventBridgeBus (bus_name), AwsLambda (function_arn), AwsSqsQueue (queue_arn), AwsSnsTopic (topic_arn), AwsIamRole (role_arn)
 
 ## Related Work

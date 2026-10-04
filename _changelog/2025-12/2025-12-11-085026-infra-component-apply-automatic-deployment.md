@@ -6,11 +6,11 @@
 
 ## Summary
 
-Enhanced the `infra-component:apply` command to automatically trigger Pulumi deployments when creating or updating infra components. The command now uses the `ApplyInfraComponent` API for a simpler, more reliable upsert operation, and provides clear feedback about deployment status to users.
+Enhanced the `infra-component:apply` command to automatically trigger Pulumi deployments when creating or updating Infra Components. The command now uses the `ApplyInfraComponent` API for a simpler, more reliable upsert operation, and provides clear feedback about deployment status to users.
 
 ## Problem Statement
 
-The `infra-component:apply` command was missing automatic deployment triggering. When users applied an infra component, the resource was created or updated in the database, but Pulumi deployment was not automatically triggered. This required users to manually call the deployment API separately, creating a poor user experience.
+The `infra-component:apply` command was missing automatic deployment triggering. When users applied an Infra Component, the resource was created or updated in the database, but Pulumi deployment was not automatically triggered. This required users to manually call the deployment API separately, creating a poor user experience.
 
 Additionally, the command implementation was using manual create/update logic instead of leveraging the existing `ApplyInfraComponent` API, which already handled the upsert operation correctly.
 
@@ -107,7 +107,7 @@ Updated the `infra-component:apply` documentation to:
    - If not exists: Creates resource
 3. **Automatic Deployment** → Triggers `DeployInfraComponent` asynchronously
    - Credentials resolved from database based on provider
-   - Infra job created with "in_progress" status
+   - Infra Job created with "in_progress" status
    - Pulumi deployment runs in background
 4. **Response** → Returns resource with `created` flag
 

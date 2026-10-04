@@ -102,7 +102,7 @@ This demonstrates edge compute with durable data and asynchronous work. Use smal
 - Keyboard-accessible tabs with visible focus and correct tab/panel semantics. Without JavaScript, provide all four stories as readable static sections/disclosures. Reduced motion renders completed diagrams plus the narrative.
 - Blue moving dots always mean dependency handoffs in the infrastructure stories. The surrounding copy explicitly says deployment order. Add no runtime traffic animation in this iteration.
 - An optional “Explore This Stack” disclosure identifies what each card represents, supporting resources, and the meaning of its edges. This is an illustrative architecture until a deployable blueprint has been validated; do not offer a misleading “Deploy This Stack” button.
-- Keep the existing living-architecture message, tied to dependencies, deployment status, and resource inspection. No claim of automatically discovering arbitrary infra components or continuously detecting drift.
+- Keep the existing living-architecture message, tied to dependencies, deployment status, and resource inspection. No claim of automatically discovering arbitrary provider resources or continuously detecting drift.
 - Labels sit outside connector routes. The current fan-out labels overlap the moving paths; remove that collision in the provider layouts.
 
 ## Connector Correction: Delivery and Coding Agents
@@ -130,7 +130,7 @@ Share geometry/ports and arc-length sampling across browser and video. If the ou
 2. Author static desktop/mobile layouts and correct delivery/agent connectors. Inspect all labels, arrowheads, return curves, and card reading order before animation.
 3. Add tabs and connect the existing deterministic playback. Keep the user-requested dark presentation and controls.
 4. Replace the internal-cluster disclosure with each story's own resource explorer and text inventory. Update machine-readable page content and evidence/handoff documentation.
-5. Validate schema-backed blueprint examples offline where feasible. Confirm kinds exist in the intended released catalog before calling a story deployable. A catalog enum, a module directory, or a successful website build is not an end-to-end cloud deployment test. No infra components are provisioned for this website work.
+5. Validate schema-backed blueprint examples offline where feasible. Confirm kinds exist in the intended released catalog before calling a story deployable. A catalog enum, a module directory, or a successful website build is not an end-to-end cloud deployment test. No provider resources are provisioned for this website work.
 6. Run site build and targeted browser tests for tab keyboard behavior, hidden playback, reduced motion, no-JS content, graph focus, deterministic phases, and viewport fit at 1366×768, 1440×900, and 1920×1080. Inspect mobile at 320/390 px and tablet separately; never shrink text just to force a fit.
 7. Export each provider story and the revised sequence scenes through the same renderer. Inspect start, transfer, approval, and completed frames in both browser and MP4; verify export composition is legible at social-media sizes, not merely a scaled desktop screenshot.
 8. Refresh the local preview for the ongoing visual review. The earlier authorization to create/merge the eventual PR remains, but this turn requests a plan; no implementation or merge occurs in this planning pass.

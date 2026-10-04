@@ -38,7 +38,7 @@ order `chart install` uses, which adds `--set-file name=path` before `--set`.
 An unknown name in a file or a flag is exit 2, with the declared names listed.
 
 `--show` prints the rendered documents (the params applied), the same
-documents an install stores as the project's render; `--output-dir` writes both
+documents an install stores as the stack's render; `--output-dir` writes both
 `template.yaml` (the combined templates) and `rendered.yaml`. To see exactly
 what an install would apply against a real environment without creating
 anything, use `planton chart install <name> <chart> -f <file> --dry-run`: it

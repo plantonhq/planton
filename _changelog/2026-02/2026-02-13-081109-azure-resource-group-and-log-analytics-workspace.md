@@ -108,11 +108,11 @@ Note: `daily_quota_gb` uses `double` (not `int32`) because Azure's API supports 
 
 ### Design Decision DD05
 
-AzureResourceGroup as a first-class resource supersedes DD02 (which had decided against modeling resource groups). The rationale: `StringValueOrRef` composability is the core architecture of infra charts, and resource groups were the only Azure dependency that didn't use it.
+AzureResourceGroup as a first-class resource supersedes DD02 (which had decided against modeling resource groups). The rationale: `StringValueOrRef` composability is the core architecture of Infra Charts, and resource groups were the only Azure dependency that didn't use it.
 
 ## Benefits
 
-- **Complete DAG visibility** -- infra charts can now express the full Azure dependency graph starting from resource groups at Layer 0
+- **Complete DAG visibility** -- Infra Charts can now express the full Azure dependency graph starting from resource groups at Layer 0
 - **Impact analysis** -- the platform can answer "what resources are affected if this resource group is deleted?"
 - **Monitoring foundation** -- LAW enables Container Insights, Application Insights, and Sentinel integration for all downstream Azure resources
 - **Pattern established** -- all 22 remaining Azure resources will follow the `StringValueOrRef resource_group` pattern

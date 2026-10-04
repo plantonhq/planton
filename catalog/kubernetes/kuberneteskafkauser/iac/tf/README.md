@@ -10,7 +10,7 @@
   lockstep, so the two engines apply byte-equivalent declarations.
 - **`kubectl_manifest` apply**: the alekc/kubectl provider needs no
   cluster connection at plan time — a user can be PLANNED before the
-  Strimzi CRDs exist, which is what lets an infra chart deploy the
+  Strimzi CRDs exist, which is what lets an Infra Chart deploy the
   operator, the cluster, and its users in one run.
 - **Placement rendered from the spec**: the CR lands in the Kafka
   cluster's own namespace with the `strimzi.io/cluster` label — without

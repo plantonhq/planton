@@ -95,7 +95,7 @@ flowchart LR
 ## Impact
 
 - **R11 HetznerCloudLoadBalancer** can now reference `certificate_id` for HTTPS services
-- **Infra charts** (hetzner-load-balanced-app) gain TLS capability
+- **Infra Charts** (hetzner-load-balanced-app) gain TLS capability
 - Establishes the oneof type-switch pattern for any future either/or kinds
 
 ## Related Work

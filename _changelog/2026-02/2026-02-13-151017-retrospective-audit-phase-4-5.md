@@ -43,14 +43,14 @@ The documentation pages written in Sessions 1-3 were correct under the original 
 Each rewrite was verified against:
 - **CLI commands**: Go source in `client-apps/cli/cmd/planton/root/domain/` — exact command names, subcommands, and flag names
 - **ADRs and README files**: Design rationale for pipeline architecture, Infra Component abstraction, Kind taxonomy, and DAG orchestration
-- **Web console kinds**: Pipeline list table columns, status labels, trigger modal, Infra Component creation flow, DAG visualization
+- **Web console components**: Pipeline list table columns, status labels, trigger modal, Infra Component creation flow, DAG visualization
 
 ### Key Corrections
 
 - Pipeline CLI uses `planton service pipeline <subcommand>`, not `planton pipeline <subcommand>`
-- Infra pipeline manual gate commands are `resolve-env-manual-gate` (with env-name argument) and `resolve-node-manual-gate` (with env-name and node-id arguments)
+- Infra Pipeline manual gate commands are `resolve-env-manual-gate` (with env-name argument) and `resolve-node-manual-gate` (with env-name and node-id arguments)
 - Infra component creation uses `planton create -f manifest.yaml` (generic create command), not `planton create catalog object manifest.yaml`
-- `stream-status` for infra pipelines exists in code but is not registered as a subcommand
+- `stream-status` for Infra Pipelines exists in code but is not registered as a subcommand
 
 ## Benefits
 

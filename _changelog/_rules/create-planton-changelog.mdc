@@ -112,7 +112,7 @@ Every changelog should start with metadata in this format:
 [2-4 sentence overview of what was accomplished and why it matters]
 ```
 
-**Common Kinds**:
+**Common Components**:
 - Pulumi CLI Integration
 - CLI Flags
 - Kubernetes Provider
@@ -155,7 +155,7 @@ Every changelog should include:
 
 ### [Key Features/Components]
 
-[Visual diagrams using Mermaid, kind descriptions as needed]
+[Visual diagrams using Mermaid, component descriptions as needed]
 
 ## Implementation Details
 
@@ -230,7 +230,7 @@ Add these sections only when they provide meaningful value:
 Use Mermaid diagrams to visualize:
 - **Workflows and processes** - Show CLI flows, deployment steps, execution sequences
 - **Before/after architecture** - Illustrate system changes side by side
-- **Kind relationships** - Show how modules, providers, or services interact
+- **Component relationships** - Show how modules, providers, or services interact
 - **Sequence diagrams** - Demonstrate interactions between CLI, Pulumi, and cloud providers
 - **State transitions** - Depict resource lifecycle or status changes
 - **Data flows** - Trace how manifests, configurations, or data move through the system
@@ -247,7 +247,7 @@ flowchart TB
     E --> F[Generate Outputs]
 ```
 
-#### Sequence Diagrams - For kind interactions
+#### Sequence Diagrams - For component interactions
 ```mermaid
 sequenceDiagram
     participant User
@@ -382,7 +382,7 @@ Match diagram complexity to change scope:
 Before finalizing a changelog:
 
 - [ ] Title clearly describes the change
-- [ ] Metadata includes Date, Type, and Kinds
+- [ ] Metadata includes Date, Type, and Components
 - [ ] Summary captures essence in 2-4 sentences
 - [ ] Problem statement explains why work was needed
 - [ ] Solution section describes the approach
@@ -408,7 +408,7 @@ Before finalizing a changelog:
 
 **Medium feature** (500 lines):
 - Problem: 2-3 paragraphs with pain points
-- Solution: Kind descriptions with examples
+- Solution: Component descriptions with examples
 - Implementation: 3-4 key changes with code snippets
 - Benefits: Categorized list with metrics
 - Impact: User experience + developer improvements
@@ -416,7 +416,7 @@ Before finalizing a changelog:
 **Large feature** (900 lines):
 - Problem: Comprehensive context with examples
 - Solution: Full architecture with diagrams and phases
-- Implementation: Detailed technical sections per kind
+- Implementation: Detailed technical sections per component
 - Benefits: Quantitative and qualitative analysis
 - Testing: Strategy and verification steps
 - Impact: Multi-dimensional (users, developers, operations)
@@ -457,9 +457,9 @@ planton pulumi up --manifest postgres.yaml --yes
 planton outputs --manifest postgres.yaml
 ```
 
-### Kind Categories
+### Component Categories
 
-Use these kind categories consistently:
+Use these component categories consistently:
 
 **CLI Layer**:
 - CLI Commands, CLI Flags, Command Handlers, User Experience
@@ -488,7 +488,7 @@ When creating the changelog:
 1. **Get current timestamp**: Run `date +"%Y-%m-%d-%H%M%S"` to get the actual current date and time for the filename
 2. **Analyze the conversation**: Extract key decisions, changes, outcomes
 3. **Assess scope**: Count files, commands, providers affected
-4. **Determine kinds**: Map changes to kind categories
+4. **Determine components**: Map changes to component categories
 5. **Choose type**: Enhancement, Bug Fix, Feature, Refactoring, Breaking Change
 6. **Size appropriately**: Match detail level to impact
 7. **Write the file**: Create in `_changelog/YYYY-MM/` (year-month directory) with proper naming using the timestamp from step 1

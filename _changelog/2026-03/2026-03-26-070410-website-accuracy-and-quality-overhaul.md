@@ -28,7 +28,7 @@ The previous two sessions (copywriting overhaul + structural overhaul) updated c
 - ServiceHub showed fabricated promotion config YAML and Kustomize interpolation syntax
 - Agent Fleet showed fabricated `runbook.skill.yaml` workflow format
 - Overview page said "150+" resource types while detail pages said "350+"
-- Three pages rendered empty `ScreenshotPlaceholder` kinds visible to users
+- Three pages rendered empty `ScreenshotPlaceholder` components visible to users
 - Agent Fleet hero and deep-dive showed nearly identical terminal animations
 - Vanity metrics ("0 Generic Chatbots", "0 Config Required") communicated nothing
 - Enterprise page used "Start Free Trial" as primary CTA instead of "Book a Demo"
@@ -58,7 +58,7 @@ The previous two sessions (copywriting overhaul + structural overhaul) updated c
 
 ### Tier 2: Visible Problems Fixed
 
-15. **Screenshot placeholders removed**: 3 empty `ScreenshotPlaceholder` kinds removed from InfraHub, ServiceHub, CLI pages. Replaced with rich JSX comments describing ideal screenshots for future AI agents
+15. **Screenshot placeholders removed**: 3 empty `ScreenshotPlaceholder` components removed from InfraHub, ServiceHub, CLI pages. Replaced with rich JSX comments describing ideal screenshots for future AI agents
 16. **Duplicate terminal**: Agent Fleet deep-dive terminal replaced with distinct security-auditor scenario
 17. **Security messaging reframed**: "No plaintext secrets" changed to "No plaintext in production" to align with real dot-env feature
 

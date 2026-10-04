@@ -82,7 +82,7 @@ kind-cluster E2E including real certificate issuance.
 The three CR kinds' modules previously used `kubernetes_manifest`, which
 requires a reachable cluster AND the CRD's OpenAPI schema at PLAN time — an
 issuer could never be planned before cert-manager existed, breaking
-single-run infra charts and offline plan proofs. All three now apply
+single-run Infra Charts and offline plan proofs. All three now apply
 through `kubectl_manifest` (server-side apply, no plan-time cluster
 dependency), consistent with the raw-manifest kind.
 

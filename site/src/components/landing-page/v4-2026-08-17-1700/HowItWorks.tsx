@@ -23,7 +23,7 @@ import {
 const steps = [
   {
     title: 'Describe',
-    description: 'Say what you need in one sentence. The AI composes it from a typed catalog of 700+ catalog kinds.',
+    description: 'Say what you need in one sentence. The AI composes it from a typed catalog of 700+ kinds.',
     icon: <CodeIcon />,
   },
   {

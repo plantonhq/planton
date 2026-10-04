@@ -6,7 +6,7 @@
 
 ## Summary
 
-Deep-rebuilt `GcpCloudSql` (604) to the released-provider floor with full dual-engine parity, forged `GcpCloudSqlDatabase` (637) and `GcpCloudSqlUser` (638) as first-class composable kinds, extended the GCP E2E harness with a `sqladmin` client and three verifiers, and reworked both consuming infra charts onto the new spec shape — including fixing the `cloud-run-environment` chart's missing private-services-access chain.
+Deep-rebuilt `GcpCloudSql` (604) to the released-provider floor with full dual-engine parity, forged `GcpCloudSqlDatabase` (637) and `GcpCloudSqlUser` (638) as first-class composable kinds, extended the GCP E2E harness with a `sqladmin` client and three verifiers, and reworked both consuming Infra Charts onto the new spec shape — including fixing the `cloud-run-environment` chart's missing private-services-access chain.
 
 ## Problem Statement / Motivation
 

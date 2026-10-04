@@ -6,7 +6,7 @@ the craft for answering it with the catalog's assembled stack. Component
 facts (every field, default and validation) live in the catalog pack, on
 `KubernetesKubePrometheusStack`'s reference page and guide and in the
 observability-stack pattern; read them there, never from memory.
-`kubernetes-architecture.md` covers what else runs on the cluster, and
+`cloud.kubernetes-architecture.md` covers what else runs on the cluster, and
 `infra.config-references.md` covers the `$secret/` grammar.
 
 ## What "monitored" means
@@ -198,7 +198,7 @@ Ask these before composing, in the person's words, not the chart's:
   question, with each panel's description the question it answers;
   offer that before any generic community dashboard. Grafana refuses to
   save over a provisioned dashboard, so tell the person screens change
-  only through the files. In an infra chart, keep double braces out of
+  only through the files. In an Infra Chart, keep double braces out of
   the dashboard JSON (the chart engine renders it): pretty-print it and
   name series with `${__field.labels.<label>}` display names.
 - **When several clusters report to one hub, answer per cluster.** Join

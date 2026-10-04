@@ -45,7 +45,7 @@ Route `parent_refs[].name` (→ KubernetesGateway), backend `name`s
 (→ KubernetesService), listener TLS `certificate_refs[].name`
 (→ KubernetesSecret — the cert-manager seam), frontend CA references
 (→ KubernetesConfigMap), and the ListenerSet's `parent_ref.name`
-(→ KubernetesGateway) are now `StringValueOrRef` foreign keys: infra charts
+(→ KubernetesGateway) are now `StringValueOrRef` foreign keys: Infra Charts
 wire them with `valueFrom` and get real dependency edges instead of manual
 relationship hints. ReferenceGrant's from/to fields deliberately stay plain
 — they are trust assertions about kinds, not pointers to instances.
@@ -64,7 +64,7 @@ same pattern ReferenceGrant already used, now uniform across the family.
 
 All seven existing CR kinds moved from `kubernetes_manifest` (which needs a
 live cluster at plan time) to alekc/kubectl's `kubectl_manifest`: routes and
-gateways can now be planned before the CRDs exist — single-run infra charts
+gateways can now be planned before the CRDs exist — single-run Infra Charts
 and offline plan proofs work. Identity labels converged on the `planton.ai/*`
 convention in both engines. Pre-anatomy debt paid: per-kind Pulumi project
 names, iac-input entrypoints, full-surface hack manifests.

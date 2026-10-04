@@ -5,11 +5,11 @@ import (
 	"strings"
 )
 
-// IdPrefixFromId extracts the id prefix from an infra component id
+// IdPrefixFromId extracts the id prefix from an InfraComponent id
 // For the new pattern: ic_<prefix>_<ulid>, it extracts <prefix>
 // For legacy pattern: <prefix>_<rest>, it extracts <prefix>
 func IdPrefixFromId(resourceId string) (string, error) {
-	// Check if it follows the new infra component pattern
+	// Check if it follows the new InfraComponent pattern
 	if strings.HasPrefix(resourceId, "ic_") {
 		// Pattern: ic_<prefix>_<ulid>
 		parts := strings.SplitN(resourceId, "_", 3)

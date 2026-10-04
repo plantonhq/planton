@@ -4,8 +4,8 @@ The catalog's Kubernetes kinds compose into a platform, and some roads through
 them are paved — deeper modules, presets, first-class integration — while
 others are technically present but shallow. Recommending well means knowing
 which is which. This reference is judgment for what runs ON the cluster;
-`aws-architecture.md` covers the cloud around it, `environments.md` covers how
-many clusters and environments, and `kubernetes-on-cluster.md` covers the
+`cloud.aws-architecture.md` covers the cloud around it, `infra.environments.md` covers how
+many clusters and environments, and `infra.kubernetes-on-cluster.md` covers the
 wiring mechanics.
 
 ## The paved road: traffic, DNS, and TLS
@@ -55,7 +55,7 @@ record automatically whenever you add a route; you never touch Route 53" is
 the canonical example. These moments are where developers discover what the
 platform (and Kubernetes) can do, and they are the single best use of
 education. Everything else about the machinery stays in reserve per
-`deployment-model.md`.
+`infra.deployment-model.md`.
 
 ## The two-chart pattern: shared infrastructure + environment chart
 
@@ -64,11 +64,11 @@ by name, up front:
 
 - **The shared-infrastructure chart** (deployed once): VPC/network, the EKS
   cluster, Gateway API CRDs, Istio, GatewayClass, cert-manager, external-dns,
-  and the Route 53 zone. This is Scenario 1 of `kubernetes-on-cluster.md` —
+  and the Route 53 zone. This is Scenario 1 of `infra.kubernetes-on-cluster.md` —
   it publishes the cluster's connection for everything that follows.
 - **The environment chart** (deployed once per environment — dev, prod, …):
   the environment's namespace and the `KubernetesGateway` its apps' routes
-  attach to. Scenario 2 of `kubernetes-on-cluster.md` — it carries NO
+  attach to. Scenario 2 of `infra.kubernetes-on-cluster.md` — it carries NO
   connection wiring (the shared cluster's materialized connection is the
   platform's default binding); `values.env` differentiates the deployments so
   one chart serves every environment.
@@ -80,7 +80,7 @@ by name, up front:
   service's URL from its own environment's resources, and the service's
   delete cascade removes only what the service declares
   (`service.configuring-deployments.md`, "What belongs on the service, and
-  what belongs on the infra stack" — the one-question test, and the
+  what belongs on the Infra Stack" — the one-question test, and the
   three-step move when a chart already carries them). Only when there is no
   service — the user wants the infrastructure alone — does the environment
   chart carry a **placeholder `KubernetesDeployment`** (image as a param) and
@@ -98,7 +98,7 @@ the cluster, the shared ingress controller and gateway, the DNS zone, the
 namespace — and a service keeps what exists because of it. When the
 environment chart needs a VALUE the shared chart's resources produce (a
 zone id, a cluster name), it wires a cross-chart `valueFrom` reference —
-never a param the user must fill (`dependencies.md`, "References cross
+never a param the user must fill (`infra.dependencies.md`, "References cross
 chart boundaries").
 
 **The validated-base philosophy:** the goal is the fastest *validated
@@ -121,7 +121,7 @@ chart made. In your
 workspace, each chart is its own top-level subfolder (the identity check in
 the skill), so both live side by side in one conversation; when the folder
 you were given IS a single chart, finish it and have the user open or
-create the second chart's folder — the grounding duty (`discovery.md`)
+create the second chart's folder — the grounding duty (`craft.discovery.md`)
 means the next conversation discovers the deployed cluster automatically.
 Either way, one folder holds one chart: never mix two charts' files into
 one chart folder.
@@ -129,7 +129,7 @@ one chart folder.
 ## Cost shape on the cluster
 
 The cluster itself is the big always-on charge (control plane + nodes + NAT —
-see `cost-transparency.md`); everything in the paved road above is free
+see `craft.cost-transparency.md`); everything in the paved road above is free
 software running on nodes the user already pays for. One more reason the
 shared-infrastructure/environment-chart split is cost-honest: environments
-share the paid platform instead of multiplying it (`environments.md`).
+share the paid platform instead of multiplying it (`infra.environments.md`).

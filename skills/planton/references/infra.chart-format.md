@@ -90,7 +90,7 @@ Design guidance:
   (image, hostname, region, CIDRs, sizes, toggles). Internal wiring never
   becomes a param -- an id, ARN, or endpoint another resource produces is a
   `valueFrom` reference, even when the producer lives in a different chart
-  (`dependencies.md`, the cross-boundary check).
+  (`infra.dependencies.md`, the cross-boundary check).
 - Fewer params is a feature: every exposed knob is a question the user must
   answer before they can deploy. Default everything that has a sane default
   and name the default in the description; lead the list with the
@@ -114,7 +114,7 @@ Design guidance:
   and diffs stay reviewable. Multiple manifests per file separated by `---`
   remain legal -- many existing charts use them; respect a chart's existing
   layout when editing, adopt the per-file layout when composing fresh.
-- Every manifest is a full Planton infra component:
+- Every manifest is a full catalog object:
 
 ```yaml
 apiVersion: aws.planton.dev/v1alpha1        # <provider>.planton.dev/v1
@@ -154,4 +154,4 @@ spec:
 - Literal resource IDs copied between resources (use valueFrom).
 - Secrets or credentials of any sort — a sensitive field holds a
   `$secret/...` reference to a managed secret instead
-  (`config-references.md` has the grammar and the lookup workflow).
+  (`infra.config-references.md` has the grammar and the lookup workflow).

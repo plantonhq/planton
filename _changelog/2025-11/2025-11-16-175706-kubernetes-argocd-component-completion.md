@@ -387,7 +387,7 @@ Added 4 comprehensive examples:
 
 **Created `iac/tf/README.md`** (3.5KB):
 - Prerequisites and usage instructions
-- What gets deployed (namespace, Helm release, kinds)
+- What gets deployed (namespace, Helm release, components)
 - Configuration guide
 - Accessing Argo CD (port-forward and ingress)
 - Default admin credentials retrieval

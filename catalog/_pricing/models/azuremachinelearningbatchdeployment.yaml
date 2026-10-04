@@ -23,7 +23,7 @@ spec:
         - job inputs and the AppendRow predictions output rest in workspace datastores, billing storage capacity and transactions on the storage account's own kind
         - network egress follows what jobs move
       notes: Zero committed cost -- the recipe object carries no meter under Azure Machine Learning's no-additional-charge model; an idle deployment on a scale-to-zero pool bills nothing at all.
-    - preset: 02-pipeline-kind-recipe
+    - preset: 02-pipeline-component-recipe
       region_assumption: eastus
       currency: USD
       hours_per_month: 730
@@ -31,4 +31,4 @@ spec:
         - pipeline jobs' node-hours bill on whatever compute pools the settings name (default_compute here) -- each step's runtime lands on that pool's own kind at plain VM rates, only while the pipeline runs
         - the pipeline's intermediate and final outputs rest in workspace datastores, billing storage on the storage account's own kind
         - network egress follows what pipeline steps move
-      notes: Zero committed cost -- a pipeline-kind recipe is a stable trigger address for a whole batch pipeline, and holding the trigger costs nothing; spend materializes per invocation on the pools the pipeline names.
+      notes: Zero committed cost -- a pipeline-component recipe is a stable trigger address for a whole batch pipeline, and holding the trigger costs nothing; spend materializes per invocation on the pools the pipeline names.

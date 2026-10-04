@@ -319,7 +319,7 @@ Files `dark-colors.ts` and `light-colors.ts` each export 9 color ramps (objects 
 | `warning*` | Warning severity ramp |
 | `success*` | Success severity ramp |
 | `info*` | Info severity ramp (neutral gray, not blue) |
-| `exceptions*` | One-off UI chrome slots (infra job logs, triggers, banners) |
+| `exceptions*` | One-off UI chrome slots (Infra Job logs, triggers, banners) |
 | `crimson*` | Code syntax highlighting (editor-specific) |
 
 ### Layer 2: Palette Config

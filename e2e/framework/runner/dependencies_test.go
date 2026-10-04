@@ -212,7 +212,7 @@ func TestSplitManifestDocuments_MultiDocumentSplits(t *testing.T) {
 // one dependency's destroy failure must not stop the remaining teardowns
 // (stopping early would leak everything deployed before it), yet every
 // failure must surface in the returned error so the run FAILS instead of
-// silently leaking infra components -- the exact failure mode when an
+// silently leaking provider resources -- the exact failure mode when an
 // ephemeral backend's state disappears before teardown ("no stack named").
 func TestTeardownDependencies_AggregatesFailures(t *testing.T) {
 	origDestroy, origRemove := pulumiDestroyFn, pulumiRemoveStackFn

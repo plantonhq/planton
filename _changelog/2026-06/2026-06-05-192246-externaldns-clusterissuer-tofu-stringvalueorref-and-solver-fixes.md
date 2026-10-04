@@ -6,7 +6,7 @@
 
 ## Summary
 
-Two `tofu` provisioner infra jobs in the `gosilver-networking-stack` infra pipeline
+Two `tofu` provisioner Infra Jobs in the `gosilver-networking-stack` Infra Pipeline
 failed against Planton modules pinned at `v0.3.75`. `KubernetesExternalDns` failed
 variable parsing with `attribute "cloudflare": attribute "dns_zone_id": object
 required, but have string`, and `KubernetesClusterIssuer` failed the
@@ -158,7 +158,7 @@ planton validate-outputs --kind KubernetesClusterIssuer --module-dir <clusteriss
 
 ## Benefits
 
-- Unblocks the `gosilver-networking-stack` ExternalDNS and ClusterIssuer infra jobs
+- Unblocks the `gosilver-networking-stack` ExternalDNS and ClusterIssuer Infra Jobs
   on the tofu provisioner.
 - Removes the only `StringValueOrRef`-as-object divergence in the Terraform module
   set, so the flattening contract now holds uniformly.

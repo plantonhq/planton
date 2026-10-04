@@ -10,7 +10,7 @@ Added `AwsEventBridgeBus` (enum 227, R03) as the third new AWS resource kind in 
 
 ## Problem Statement / Motivation
 
-EventBridge is the backbone of event-driven architectures on AWS. Without a custom bus kind in Planton, users building event-driven infra charts had to fall back to the default bus or manage custom buses outside the framework, breaking the declarative model.
+EventBridge is the backbone of event-driven architectures on AWS. Without a custom bus kind in Planton, users building event-driven Infra Charts had to fall back to the default bus or manage custom buses outside the framework, breaking the declarative model.
 
 ### Pain Points
 
@@ -91,14 +91,14 @@ Both were included in the Pulumi module. The TF module (v5.82.0) does not suppor
 
 ## Benefits
 
-- Enables event-driven infra chart patterns (EventBridge bus -> rules -> Lambda/SQS/SNS targets)
-- `StringValueOrRef` fields ensure composability: KMS key and DLQ wire via `valueFrom` in infra charts
+- Enables event-driven Infra Chart patterns (EventBridge bus -> rules -> Lambda/SQS/SNS targets)
+- `StringValueOrRef` fields ensure composability: KMS key and DLQ wire via `valueFrom` in Infra Charts
 - `bus_arn` output enables downstream `AwsEventBridgeRule` (R04) to reference this bus
 
 ## Impact
 
 - **AWS resource coverage**: 27 of ~57 target kinds (25 existing + R01 SQS + R02 SNS + R03 EventBridge Bus)
-- **Infra chart readiness**: Foundation for event-driven architecture charts
+- **Infra Chart readiness**: Foundation for event-driven architecture charts
 - **Next resource**: R04 `AwsEventBridgeRule` — attaches rules to this bus for event routing
 
 ## Related Work

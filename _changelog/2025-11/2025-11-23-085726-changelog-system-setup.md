@@ -30,13 +30,13 @@ Created a cursor rule (`@create-planton-ai-changelog`) that provides:
 1. **Explicit Invocation Model**: Only creates changelogs when explicitly requested via `@create-planton-ai-changelog`
 2. **Proportional Sizing**: Guidelines for 150-300 lines (small), 300-600 lines (medium), 600-1000+ lines (large) based on impact
 3. **Structured Format**: Consistent sections including Summary, Problem Statement, Solution, Implementation Details, Benefits, Impact
-4. **Website-Specific Context**: Tailored for Next.js marketing website needs with relevant kinds and examples
+4. **Website-Specific Context**: Tailored for Next.js marketing website needs with relevant components and examples
 5. **Visual Documentation**: Emphasis on screenshots and visual evidence for UI changes
 6. **Timestamp-Based Naming**: `YYYY-MM-DD-HHMMSS-brief-descriptive-slug.md` for automatic chronological sorting
 
 ### Planton.ai Specific Customizations
 
-The rule includes website-specific kind categories:
+The rule includes website-specific component categories:
 
 **Pages & Routes**: Landing Page, Solutions Pages, Features Pages, Pricing Page, Documentation, Blog System, Tour/Walkthrough
 
@@ -103,7 +103,7 @@ Maintained the same core structure as planton-cloud and openmcf rules:
 - Same proportionality guidance and sizing examples
 - Same quality checklist and writing guidelines
 - Same file naming convention with timestamps
-- Same metadata structure (Date, Type, Kinds, Summary)
+- Same metadata structure (Date, Type, Components, Summary)
 
 ## Benefits
 
@@ -191,7 +191,7 @@ This changelog itself serves as the first test of the system:
 - ✅ Follows the structure defined in the rule
 - ✅ Sized proportionally to the change (small-medium at ~300 lines)
 - ✅ Includes all required sections
-- ✅ Uses website-specific kind categories
+- ✅ Uses website-specific component categories
 - ✅ Written for future maintainers
 
 ## Known Limitations

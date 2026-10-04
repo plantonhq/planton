@@ -33,7 +33,7 @@ The cross-cloud combinations this table implies are first-class, not workarounds
 - **GKE cluster + Route 53**: GKE has no AWS federation, so the `aws_route53` arm carries static keys (also a Secret) — or `assume_role` on top for cross-account zones
 - **Any cluster + any webhook provider**: the `webhook` arm's sidecar carries its own provider-specific configuration
 
-The controller ServiceAccount name is pinned to `metadata.name` and exported (`status.outputs.service_account_name`) precisely so the cloud-side half of a keyless binding (IAM trust policy, Workload Identity binding, federated credential) can be composed in the same infra chart.
+The controller ServiceAccount name is pinned to `metadata.name` and exported (`status.outputs.service_account_name`) precisely so the cloud-side half of a keyless binding (IAM trust policy, Workload Identity binding, federated credential) can be composed in the same Infra Chart.
 
 ## Essential Configuration Fields
 

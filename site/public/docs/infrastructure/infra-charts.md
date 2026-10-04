@@ -198,10 +198,10 @@ planton chart publish ./my-chart
 planton chart list
 
 # See exactly what an install would apply, and create nothing
-planton chart install my-project ./my-chart -f values-prod.yaml --dry-run
+planton chart install my-stack ./my-chart -f values-prod.yaml --dry-run
 
 # Create an Infra Stack from a chart (deploys immediately)
-planton chart install my-project ./my-chart -f values-prod.yaml
+planton chart install my-stack ./my-chart -f values-prod.yaml
 ```
 
 The `chart install` command is the primary entry point for deploying a chart. It creates an Infra Stack with the provided parameter values and automatically triggers an Infra Pipeline.

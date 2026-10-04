@@ -129,7 +129,7 @@ flowchart TB
 ## Impact
 
 - Adds the 10th new AWS resource kind in the expansion project (R08)
-- Enables future infra charts: data-pipeline, log-analytics, search-platform
+- Enables future Infra Charts: data-pipeline, log-analytics, search-platform
 - Domain outputs (endpoint, ARN) can be referenced by downstream resources
 
 ## Related Work

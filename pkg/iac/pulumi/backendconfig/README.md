@@ -31,7 +31,7 @@ Extracts Pulumi backend configuration from a manifest's metadata annotations.
 
 **Priority Logic:**
 1. If `stack.fqdn` annotation is present, it takes precedence
-2. If not, all three kind annotations must be present
+2. If not, all three component annotations must be present
 3. Returns an error if neither approach provides complete configuration
 
 **Example Usage:**
@@ -56,7 +56,7 @@ fmt.Printf("Stack: %s\n", config.StackFqdn)
 
 ### Stack FQDN Parsing
 
-When a `stack.fqdn` annotation is provided, it's automatically parsed into its kinds:
+When a `stack.fqdn` annotation is provided, it's automatically parsed into its components:
 
 ```
 "demo-org/aws-infrastructure/production" 
@@ -67,16 +67,16 @@ StackName:    "production"
 ```
 
 The parser:
-- Validates the format (must have exactly 3 kinds)
-- Trims whitespace from each kind
-- Ensures no kind is empty
+- Validates the format (must have exactly 3 components)
+- Trims whitespace from each component
+- Ensures no component is empty
 
 ### Validation Rules
 
 1. **Stack FQDN Format**: Must be `organization/project/stack`
-2. **Required Annotations**: Either stack.fqdn OR all three kind annotations
+2. **Required Annotations**: Either stack.fqdn OR all three component annotations
 3. **Non-Empty Values**: All annotation values must be non-empty strings
-4. **No Partial Config**: Cannot specify only some kind annotations
+4. **No Partial Config**: Cannot specify only some component annotations
 
 ## Error Handling
 
@@ -99,10 +99,10 @@ The package provides detailed error messages for common issues:
 ## Testing
 
 The package includes comprehensive tests covering:
-- Stack FQDN precedence over kind annotations
+- Stack FQDN precedence over component annotations
 - FQDN parsing with various formats
 - Error cases (missing annotations, invalid formats, empty values)
-- Edge cases (spaces in FQDN, empty kinds)
+- Edge cases (spaces in FQDN, empty components)
 
 Run tests:
 ```bash
@@ -143,7 +143,7 @@ if manifestConfig != nil {
 ## Design Decisions
 
 1. **Proto-Agnostic**: Uses `proto.Message` interface to work with any manifest type
-2. **Clear Precedence**: Stack FQDN always wins over kind annotations
+2. **Clear Precedence**: Stack FQDN always wins over component annotations
 3. **Fail-Fast Validation**: Returns errors immediately for invalid configurations
 4. **Nil-Safe**: Returns nil for manifests without metadata or annotations
 

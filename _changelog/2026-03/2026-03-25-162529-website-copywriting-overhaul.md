@@ -15,7 +15,7 @@ A friend navigated through every page on planton.ai via the sitemap and reported
 ### Pain Points
 
 - Feature pages used arbitrary marketing labels ("Self-Service DevOps", "Auditable Intelligence") instead of actual product module names
-- "Plantora" / "Planton Copilot" referenced on 20+ kind files despite being deprecated since December 2025
+- "Plantora" / "Planton Copilot" referenced on 20+ component files despite being deprecated since December 2025
 - No pages existed for Connect (integrations), Runner (self-hosted execution), Security (secrets/IAM/audit), or OpenMCF (open source)
 - Multiple CTA buttons had no `href` attribute
 - Solutions page copy mentioned "your startup's growth" on the Enterprises page
@@ -51,7 +51,7 @@ Solutions menu updated: "ChatOps" use case replaced with "Self-Hosted DevOps", "
 4. **Runner** (`/features/runner`) — Architecture, CloudOps, IaC execution, security model, deployment options, secure tunnel
 5. **Security** (`/features/security`) — Secrets management, multi-backend secrets, Runner trust model, identity & access, audit trails, connection security, zero-trust architecture
 6. **Agent Fleet** (`/agents`) — Marketplace, skills, sub-agents, MCP integration, testing, sessions & streaming
-7. **CLI** (`/cli`) — Manifest-driven, infra job operations, connection management, kubernetes access, environment config
+7. **CLI** (`/cli`) — Manifest-driven, Infra Job operations, connection management, kubernetes access, environment config
 8. **Open Source** (`/features/open-source`) — OpenMCF, portable manifests, Infra Charts, Forge workflow
 
 ### 11 Solutions Pages Rewritten
@@ -91,9 +91,9 @@ Systematic sweep to remove internal technology names from all marketing pages:
 
 ## Implementation Details
 
-### Kind Architecture
+### Component Architecture
 
-Each product page follows a consistent 3-kind pattern:
+Each product page follows a consistent 3-component pattern:
 
 ```
 src/components/product/<module>/
@@ -103,7 +103,7 @@ src/components/product/<module>/
   └── cta.tsx       (bottom call-to-action)
 ```
 
-Solutions pages use a single kind per page (simpler structure).
+Solutions pages use a single component per page (simpler structure).
 
 All pages use the v3 design system from `shared.tsx`: Section, SectionTitle, Card, FeatureCard, Badge, PrimaryButton, SecondaryButton.
 

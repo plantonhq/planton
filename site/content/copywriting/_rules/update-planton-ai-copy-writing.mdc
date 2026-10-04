@@ -32,7 +32,7 @@ If a sentence the page needs contradicts the story, or the story overclaims wher
 
 ## The handoff
 
-Write `handoff.md` in the same folder: the routes; where the copy is (which record, which chapter each sentence names); the argument in one paragraph; the kind mapping (which template renders the record, which primitives it composes, anything lifted to `components/marketing/`); the revisions the cold reads made; what the page must not claim; how it will be verified. The handoff is the record a future session reads to understand why the page says what it says.
+Write `handoff.md` in the same folder: the routes; where the copy is (which record, which chapter each sentence names); the argument in one paragraph; the component mapping (which template renders the record, which primitives it composes, anything lifted to `components/marketing/`); the revisions the cold reads made; what the page must not claim; how it will be verified. The handoff is the record a future session reads to understand why the page says what it says.
 
 ## Then
 

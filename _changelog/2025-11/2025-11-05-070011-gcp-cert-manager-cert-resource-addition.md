@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added `GcpCertManagerCert`, a new infra component for provisioning and managing SSL/TLS certificates on Google Cloud Platform. The resource supports both Google Certificate Manager (modern, feature-rich) and Google-managed SSL certificates for load balancers (classic), with automatic DNS validation through Google Cloud DNS. This enables teams to declaratively manage SSL/TLS certificates as infrastructure-as-code alongside other GCP resources.
+Added `GcpCertManagerCert`, a new catalog kind for provisioning and managing SSL/TLS certificates on Google Cloud Platform. The resource supports both Google Certificate Manager (modern, feature-rich) and Google-managed SSL certificates for load balancers (classic), with automatic DNS validation through Google Cloud DNS. This enables teams to declaratively manage SSL/TLS certificates as infrastructure-as-code alongside other GCP resources.
 
 ## Motivation
 
@@ -34,7 +34,7 @@ Organizations deploying applications on GCP need SSL/TLS certificates for secure
 
 ### New Infra Component: GcpCertManagerCert
 
-A fully-featured infra component that provisions SSL/TLS certificates on GCP with automatic DNS validation, following Planton's uniform resource model.
+A fully-featured catalog kind that provisions SSL/TLS certificates on GCP with automatic DNS validation, following Planton's uniform resource model.
 
 **Key Capabilities**:
 - ✅ Dual certificate type support (Certificate Manager + Load Balancer)

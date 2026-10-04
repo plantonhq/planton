@@ -47,7 +47,7 @@ Think of Pulumi as your infrastructure's version control system. Just as Git let
 - Reads the stack FQDN from your manifest's `pulumi.planton.dev/stack.name` label
 - Creates the stack in your configured Pulumi backend
 - If the stack already exists, gracefully skips initialization (idempotent operation)
-- Does NOT create any infra components—it only prepares the state tracking
+- Does NOT create any provider resources—it only prepares the state tracking
 
 **Usage**:
 
@@ -112,7 +112,7 @@ Created stack 'planton/planton/prod.CloudflareR2Bucket.pipeline-logs'
 **Behavior**:
 - Compares your manifest against the current infrastructure state
 - Shows a detailed diff: additions (+), modifications (~), deletions (-)
-- Does NOT modify any infra components
+- Does NOT modify any provider resources
 - Does NOT modify Pulumi state
 - Requires the stack to exist (run `init` first if needed)
 
@@ -165,7 +165,7 @@ Resources:
 
 ### `up` (or `update`) - Deploy Infrastructure
 
-**What it does**: Applies your manifest to create, update, or configure infra components. This is the "make it so" command—it actually executes the infrastructure changes.
+**What it does**: Applies your manifest to create, update, or configure provider resources. This is the "make it so" command—it actually executes the infrastructure changes.
 
 **When to use**:
 - After reviewing changes with `preview` and confirming they look correct
@@ -177,7 +177,7 @@ Resources:
 - Creates the stack if it doesn't exist (no need to run `init` separately)
 - Shows a preview of changes (unless you use `--yes` flag)
 - Waits for your confirmation before proceeding (unless `--yes` is provided)
-- Creates/updates/deletes infra components to match your manifest
+- Creates/updates/deletes provider resources to match your manifest
 - Updates Pulumi state to reflect the new infrastructure state
 - Rolls back automatically if deployment fails (where provider supports it)
 
@@ -284,7 +284,7 @@ Duration: 3m21s
 **Behavior**:
 - Queries your cloud provider for the current state of managed resources
 - Updates Pulumi state to reflect actual resource properties
-- Does NOT modify any infra components
+- Does NOT modify any provider resources
 - Does NOT change your manifest file
 - Shows what changed in the state (if anything)
 - Detects resources that were deleted outside Pulumi
@@ -370,7 +370,7 @@ After refresh:
 
 ### `destroy` - Teardown Infrastructure
 
-**What it does**: Deletes all infra components managed by the Pulumi stack. This is the "rm -rf" of infrastructure—use with caution. The stack itself remains (with empty state) unless you manually delete it.
+**What it does**: Deletes all provider resources managed by the Pulumi stack. This is the "rm -rf" of infrastructure—use with caution. The stack itself remains (with empty state) unless you manually delete it.
 
 **When to use**:
 - Tearing down temporary environments (dev, testing, ephemeral previews)
@@ -481,7 +481,7 @@ planton pulumi destroy --manifest prod.yaml
 
 ### `delete` (or `rm`) - Remove Stack Metadata
 
-**What it does**: Deletes a Pulumi stack and all its configuration/state from the backend. This removes the stack metadata itself, not the infra components. Think of this as "deleting the Git repository" for your infrastructure tracking.
+**What it does**: Deletes a Pulumi stack and all its configuration/state from the backend. This removes the stack metadata itself, not the provider resources. Think of this as "deleting the Git repository" for your infrastructure tracking.
 
 **When to use**:
 - After destroying all resources and you no longer need the stack tracking
@@ -492,7 +492,7 @@ planton pulumi destroy --manifest prod.yaml
 **Behavior**:
 - Removes the stack from your Pulumi backend (state storage)
 - Deletes all stack configuration and history
-- Does NOT destroy infra components (run `destroy` first if resources exist)
+- Does NOT destroy provider resources (run `destroy` first if resources exist)
 - By default, refuses to delete stacks that still have resources
 - With `--force`, removes stack even if resources exist (dangerous!)
 - **Cannot be undone** once executed
@@ -559,7 +559,7 @@ Stack 'planton/planton/dev.TestResource.temp' has been removed!
 **⚠️ Critical Warnings**:
 
 1. **Resources check**: By default, Pulumi refuses to delete stacks that still have resources. This is your safety net.
-2. **Destroy first**: Always run `destroy` before `delete` to properly clean up infra components.
+2. **Destroy first**: Always run `destroy` before `delete` to properly clean up provider resources.
 3. **State loss**: Once deleted, you lose all stack history, outputs, and configuration. No undo.
 4. **Force flag danger**: Using `--force` bypasses resource checks. Only use if you're absolutely certain resources are gone or managed elsewhere.
 5. **Orphaned resources**: If you force-delete a stack with resources, those resources become orphaned (unmanaged by Pulumi).
@@ -568,14 +568,14 @@ Stack 'planton/planton/dev.TestResource.temp' has been removed!
 
 ```
 destroy:
-  - Tears down infra components (VMs, databases, etc.)
+  - Tears down provider resources (VMs, databases, etc.)
   - Leaves stack metadata intact
   - Updates state to reflect empty stack
   - Resources are gone, but Pulumi still tracks the stack
 
 delete (rm):
   - Removes stack metadata from backend
-  - Does NOT touch infra components
+  - Does NOT touch provider resources
   - Pulumi stops tracking this stack entirely
   - Used AFTER destroy to clean up metadata
 ```
@@ -586,7 +586,7 @@ delete (rm):
 # Step 1: Verify what resources exist
 planton pulumi preview --manifest my-stack.yaml
 
-# Step 2: Destroy the infra components
+# Step 2: Destroy the provider resources
 planton pulumi destroy --manifest my-stack.yaml
 
 # Step 3: Verify resources are gone (should show empty stack)
@@ -1075,7 +1075,7 @@ pulumi stack --show-urns --stack <stack-fqdn>
 # Option 1: Import existing resources (advanced)
 pulumi import <type> <name> <infra-component-id> --stack <stack-fqdn>
 
-# Option 2: Manually delete infra components
+# Option 2: Manually delete provider resources
 # (Use cloud provider console/CLI to delete conflicting resources)
 
 # Option 3: Use different resource names in manifest

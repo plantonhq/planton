@@ -23,8 +23,8 @@ No permission needed. Typical uses:
 - **Inspect what a deploy created**: `kubectl get pods -A`,
   `kubectl describe deployment …`, `kubectl get events --sort-by=…` — for
   clusters reachable from this machine's kubeconfig.
-- **Planton lookups**: charts, projects, pipelines, connections — see
-  `planton-cli.md`.
+- **Planton lookups**: charts, Infra Stacks, pipelines, connections — see
+  `craft.planton-cli.md`.
 
 ### The platform-tools arm: the same reads, through the platform
 
@@ -35,9 +35,9 @@ login needs to exist where you run:
 - **Cloud reads**: the VPC/subnet/security-group/cluster listing tools and
   the Kubernetes object reads (tools named `list_*`, `get_*`, `find_*`)
   cover the exploration above through the org's stored connections.
-- **Platform lookups**: charts, projects, pipelines, infra jobs, and
+- **Platform lookups**: charts, Infra Stacks, pipelines, Infra Jobs, and
   connections each have list/get tools mirroring the `planton` commands in
-  `planton-cli.md` — the same four-step failed-deploy diagnosis works
+  `craft.planton-cli.md` — the same four-step failed-deploy diagnosis works
   tool-for-command.
 - **Identity adapts**: instead of an AWS profile or kubectl context, say
   which ORGANIZATION and which connection you are reading through — the org
@@ -112,7 +112,7 @@ warn about the drift once, plainly, and proceed only on their confirmed yes.
 
 Deploying a composed chart is never part of composition — it is offered,
 and on the user's explicit ask you perform it under exactly this mutation
-protocol (`machine-deploy.md` has the command, the machine-login offer that
+protocol (`infra.machine-deploy.md` has the command, the machine-login offer that
 often precedes it, and the pipeline follow-through). Undeploying or purging
-whole charts/projects remains a workflow the user drives from the studio —
+whole charts and Infra Stacks remains a workflow the user drives from the studio —
 surface the need, let them drive it.

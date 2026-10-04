@@ -84,7 +84,7 @@ flowchart TD
 - **CMEK capability**: Users can now provision encryption keys and wire them to downstream resources via `StringValueOrRef`
 - **Compliance support**: HSM-protected keys for FIPS 140-2 Level 3 environments
 - **CI/CD signing**: Asymmetric signing keys for artifact verification
-- **Infra chart composability**: `key_id` output enables dependency-aware provisioning across BigQuery, Spanner, GKE, CloudSQL, and more
+- **Infra Chart composability**: `key_id` output enables dependency-aware provisioning across BigQuery, Spanner, GKE, CloudSQL, and more
 
 ## Impact
 

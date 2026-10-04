@@ -12,7 +12,7 @@ Built and published the first production-ready IaC Runner base image (`ghcr.io/p
 
 ### Background
 
-The IaC Runner service executes Pulumi and OpenTofu infra jobs. After optimizing the binary size from ~2GB to 91MB by switching from statically-linked Pulumi programs to git-cloned modules at runtime, we introduced a new problem: **cold start compilation times**.
+The IaC Runner service executes Pulumi and OpenTofu Infra Jobs. After optimizing the binary size from ~2GB to 91MB by switching from statically-linked Pulumi programs to git-cloned modules at runtime, we introduced a new problem: **cold start compilation times**.
 
 ### Pain Points
 
@@ -56,7 +56,7 @@ flowchart LR
     Docker --> Image
 ```
 
-### Key Kinds
+### Key Components
 
 1. **Self-Hosted Runner on Kubernetes**: GitHub Actions Runner Controller (ARC) deploys ephemeral runner pods
 2. **Persistent Volume Claim**: 50Gi SSD (`premium-rwo`) stores GOMODCACHE and GOCACHE across builds
@@ -201,7 +201,7 @@ COPY merged-cache/go-build ${GOCACHE}
 ghcr.io/plantonhq/planton/base-images/iac-runner:latest
 
 Size: 15.7GB
-Kinds:
+Components:
   - Debian Bullseye base
   - Go 1.25.0
   - Pulumi CLI v3.202.0

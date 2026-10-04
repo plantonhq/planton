@@ -5,7 +5,7 @@ Creates a namespaced Kubernetes Gateway API `ReferenceGrant` via the
 `gateway.networking.k8s.io/v1`, server-side apply). Unlike
 `kubernetes_manifest`, `kubectl_manifest` needs no cluster connection at plan
 time, so the grant can be planned before the Gateway API CRDs exist -- which is
-what lets an infra chart deploy the CRDs and its grants in a single run (and
+what lets an Infra Chart deploy the CRDs and its grants in a single run (and
 lets offline plan proofs work).
 
 Prerequisites at apply time: the Gateway API CRDs (`KubernetesGatewayApiCrds`)

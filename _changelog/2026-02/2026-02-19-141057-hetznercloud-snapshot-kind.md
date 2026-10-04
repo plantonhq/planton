@@ -81,7 +81,7 @@ flowchart TB
 
 - **Users**: Can declaratively capture server snapshots and reference them in server creation
 - **Future kinds**: Snapshot output can be used as a server `image` parameter
-- **Infra charts**: Supports golden image and backup patterns in server-environment chart
+- **Infra Charts**: Supports golden image and backup patterns in server-environment chart
 
 ## Files Changed
 

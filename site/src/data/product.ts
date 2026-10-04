@@ -228,13 +228,13 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
     forWhom: 'For the team that already has an account full of infrastructure and no intention of redeploying it.',
     steps: [
       { title: 'Adopt', text: 'Register the resource in Planton without deploying anything. Nothing in your cloud is touched, and the page says so: adopted, not yet deployed.' },
-      { title: 'Import', text: 'From the resource\u2019s page or the CLI, name the infra component that already exists. Import only writes state; the infra component itself is never modified.' },
+      { title: 'Import', text: 'From the resource\u2019s page or the CLI, name the provider resource that already exists. Import only writes state; the provider resource itself is never modified.' },
       { title: 'Verify', text: 'A wrong import fails before it lands. Import never writes a configuration it did not apply.' },
       { title: 'Continue', text: 'From then on the resource carries the same record as everything Planton created: every change one infra job, kept.' },
     ],
     points: [
       { label: 'Proven in a Live Round Trip', text: bring.proof[2] },
-      { label: 'Nothing Is Touched Until You Say', text: 'Adopting runs no job and changes nothing. The import itself only writes state; the infra component is never modified.' },
+      { label: 'Nothing Is Touched Until You Say', text: 'Adopting runs no job and changes nothing. The import itself only writes state; the provider resource is never modified.' },
       { label: 'From the Terminal Too', text: 'The CLI imports with the same verification, and a dry run prints the native command it would run without creating a job.' },
       { label: 'Tagged Like Everything Else', text: record.proof[3] },
     ],

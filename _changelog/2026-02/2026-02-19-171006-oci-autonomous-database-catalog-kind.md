@@ -115,7 +115,7 @@ Added `OciAutonomousDatabase = 3330` under new "OCI: Databases (3330-3339)" sect
 
 ## Benefits
 
-- First database resource in the OCI provider, unlocking the Autonomous Database Stack infra chart
+- First database resource in the OCI provider, unlocking the Autonomous Database Stack Infra Chart
 - Curated 35-field spec from 163 Terraform attributes -- opinionated enough to be useful, flexible enough for real workloads
 - Support for all 5 ADB workload types (ATP, ADW, AJD, APEX, Lakehouse) in a single kind
 - Dual authentication paths: inline password for dev, Vault secret for production
@@ -125,7 +125,7 @@ Added `OciAutonomousDatabase = 3330` under new "OCI: Databases (3330-3339)" sect
 ## Impact
 
 - **Platform users**: Can now provision OCI Autonomous Databases through Planton manifests
-- **Infra chart authors**: Foundation for the `oci/autonomous-db-stack` and `oci/data-platform` charts
+- **Infra Chart authors**: Foundation for the `oci/autonomous-db-stack` and `oci/data-platform` charts
 - **Downstream kinds**: 6 outputs enable composability via StringValueOrRef for future OCI database-dependent resources
 
 ## Related Work

@@ -13,9 +13,11 @@ Use user-facing terms consistently across all documentation. These terms come fr
 
 | Use This | Not This | Notes |
 |----------|----------|-------|
-| Planton | Planton, Planton | Branding changed; all docs use "Planton" |
-| Infra Component | Catalog Kind, catalogkind | "Catalog Kind" is internal UI naming only |
-| Catalog Kind (catalog item) | Catalog Kind | User browses a catalog of Catalog Kinds |
+| Infra Component | resource, component (alone) | One deployed instance of a catalog kind in one environment |
+| catalog kind | component (for a type), resource type | A type the Infra Catalog offers (AwsS3Bucket); users browse the catalog of kinds |
+| Infra Stack | project, deployment | One Infra Chart installed into one environment |
+| Infra Job | run, deploy job | The IaC work for one Infra Component |
+| provider resource | Infra Component (for what lives in the cloud account) | What a module creates in the cloud account; one Infra Component creates several |
 | connection | credential | Except when describing the credential object itself |
 | Secrets Manager | Config Manager | User-facing product name |
 | Infrastructure (section) | Infra Hub | Section names use user-oriented vocabulary |
@@ -39,7 +41,7 @@ Internal identifiers do not belong in user-facing documentation prose unless the
 - Values that appear in CLI output users read
 - YAML field names inside code blocks
 
-Translate internal identifiers into plain language: "deployment target" not `DeploymentTarget`, "infra component" not `InfraComponent`.
+Translate internal identifiers into plain language: "deployment target" not `DeploymentTarget`, "Infra Component" not `InfraComponent`.
 
 ## Where the Full Strategy Lives
 

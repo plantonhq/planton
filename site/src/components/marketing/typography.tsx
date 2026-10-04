@@ -1,7 +1,7 @@
 /**
  * The marketing type scale: a section title, its subtitle, a feature title,
  * and body copy. Four sizes do the work on every page; anything that needs a
- * fifth is a design question, not a new kind.
+ * fifth is a design question, not a new component.
  */
 import { Typography, type TypographyProps } from '@mui/material';
 import type { FC } from 'react';

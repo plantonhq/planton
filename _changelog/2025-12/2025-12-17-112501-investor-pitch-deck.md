@@ -21,7 +21,7 @@ Planton needed a professional, shareable investor pitch deck for seed-stage fund
 
 ## Solution / What's New
 
-Built a complete 10-slide interactive pitch deck using the same kind architecture as the existing demo at `planton.ai/demo`.
+Built a complete 10-slide interactive pitch deck using the same component architecture as the existing demo at `planton.ai/demo`.
 
 ### Slides Created
 
@@ -104,7 +104,7 @@ src/app/(tour-demo)/  →  src/app/(micro-apps)/
 └── invest/   → planton.ai/invest
 ```
 
-Also renamed kind folder:
+Also renamed component folder:
 ```
 src/components/investor-deck/  →  src/components/invest/
 ```
@@ -130,7 +130,7 @@ src/components/investor-deck/  →  src/components/invest/
 - Consistent visual design with the rest of planton.ai
 
 ### For Maintenance
-- Kind-based: each slide is independent
+- Component-based: each slide is independent
 - Easy to update content without touching structure
 - Same patterns as existing demo page
 
@@ -143,7 +143,7 @@ src/components/investor-deck/  →  src/components/invest/
 
 ### Code Organization
 - `(micro-apps)` route group clearly identifies standalone mini-applications
-- Consistent naming: `invest` everywhere (URL, kind folder, CSS)
+- Consistent naming: `invest` everywhere (URL, component folder, CSS)
 - Shared layout provides consistent branding across tour/demo/invest
 
 ### Content Updates Made

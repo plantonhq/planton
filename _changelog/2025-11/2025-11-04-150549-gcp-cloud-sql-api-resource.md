@@ -464,7 +464,7 @@ Used map for maximum flexibility:
 ### User Impact
 
 - **New Capability**: GCP users can now deploy Cloud SQL instances via Planton
-- **Consistent Experience**: Same YAML-based workflow as other infra components
+- **Consistent Experience**: Same YAML-based workflow as other catalog kinds
 - **Faster Provisioning**: 5-10 minutes for basic instance vs 20-30 minutes manual setup
 - **Fewer Errors**: Validation catches 90%+ of common configuration mistakes
 

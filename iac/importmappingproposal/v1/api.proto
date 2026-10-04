@@ -6,7 +6,7 @@ import "iac/importmappingproposal/v1/spec.proto";
 import "shared/metadata.proto";
 
 // ImportMappingProposal is a mapper's structured answer to "how do these
-// discovered infra components map into Planton kinds?" -- proposed
+// discovered provider resources map into Planton kinds?" -- proposed
 // manifests plus an accounting of which discovered resources each one
 // covers, and the honest remainder that maps to nothing. Follows the KRM
 // pattern (apiVersion + kind + metadata + spec).

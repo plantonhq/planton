@@ -183,7 +183,7 @@ Organization  Environment
 <!-- SCREENSHOT: Context selector in console header
   Page: /dashboard (header area)
   Action: Show the context selector with organization and environment displayed
-  Focus: The context selector kind in the top-left of the header
+  Focus: The context selector in the top-left of the header
   Alt: Console header showing the context selector with current organization and environment
 -->
 
@@ -220,7 +220,7 @@ graph TD
 
 ### Infrastructure Side
 
-- **Catalog Kinds** are templates; deploying one creates a **Infra Component**
+- **Catalog Kinds** are templates; deploying one creates an **Infra Component**
 - **Infra Charts** create **Infra Stacks** that orchestrate multiple **Infra Components**
 - **Infra Components** are provisioned by **Infra Jobs**
 - **Infra Jobs** use **Connections** for cloud provider credentials
@@ -244,7 +244,7 @@ graph TD
 | Concept | What It Is |
 |---------|------------|
 | Infra Component | A deployed infrastructure instance (VPC, database, cluster) |
-| Catalog Kind | A catalog template for provisioning a specific catalog kind |
+| Catalog Kind | A type the Infra Catalog offers, the template for provisioning it (AWS VPC, GCP GKE Cluster) |
 | Infra Chart | A composed collection of Catalog Kinds deployed together |
 | Infra Stack | A deployed instance of an Infra Chart with specific configuration |
 | Infra Job | The atomic IaC execution unit (Pulumi/Terraform/OpenTofu) |

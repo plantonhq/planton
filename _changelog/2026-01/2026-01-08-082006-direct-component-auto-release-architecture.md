@@ -1,4 +1,4 @@
-# Direct Kind Auto-Release Architecture
+# Direct Component Auto-Release Architecture
 
 **Date**: January 8, 2026
 **Type**: Refactoring
@@ -6,19 +6,19 @@
 
 ## Summary
 
-Eliminated the centralized `auto-release.yaml` orchestrator in favor of direct workflow dispatch from `auto-tag.yaml` to kind-specific release workflows. This architectural change provides better visibility in GitHub Actions UI, where each kind's release now appears as a distinct workflow run with a descriptive name.
+Eliminated the centralized `auto-release.yaml` orchestrator in favor of direct workflow dispatch from `auto-tag.yaml` to component-specific release workflows. This architectural change provides better visibility in GitHub Actions UI, where each component's release now appears as a distinct workflow run with a descriptive name.
 
 ## Problem Statement / Motivation
 
 The previous architecture used a two-tier approach:
 
 1. `auto-tag.yaml` created tags and triggered `auto-release.yaml`
-2. `auto-release.yaml` parsed the tag, determined the kind, and called the appropriate reusable workflow
+2. `auto-release.yaml` parsed the tag, determined the component type, and called the appropriate reusable workflow
 
 ### Pain Points
 
 - **Poor visibility**: All auto-releases appeared under a single "auto-release" workflow name in GitHub Actions
-- **Confusing workflow runs**: Couldn't tell at a glance what kind was being released
+- **Confusing workflow runs**: Couldn't tell at a glance what component was being released
 - **Extra layer of indirection**: The orchestrator added complexity without providing value
 - **Generic run names**: Workflow runs displayed as "auto-release" with no context about what was being built
 
@@ -39,7 +39,7 @@ All runs appeared as "auto-release" in the Actions UI, making it impossible to q
 
 ## Solution / What's New
 
-Removed the `auto-release.yaml` orchestrator entirely. Now `auto-tag.yaml` directly triggers each kind-specific workflow via `workflow_dispatch`.
+Removed the `auto-release.yaml` orchestrator entirely. Now `auto-tag.yaml` directly triggers each component-specific workflow via `workflow_dispatch`.
 
 ```mermaid
 flowchart TB
@@ -56,7 +56,7 @@ flowchart TB
 
 1. **Converted reusable workflows to standalone workflows**: Each `auto-release.*.yaml` now uses `workflow_dispatch` instead of `workflow_call`
 
-2. **Direct workflow triggering**: `auto-tag.yaml` calls each kind's workflow directly with all required inputs
+2. **Direct workflow triggering**: `auto-tag.yaml` calls each component's workflow directly with all required inputs
 
 3. **Descriptive run names**: Added `run-name` to all workflows for immediate visibility:
 
@@ -194,18 +194,18 @@ After:
 ### Simplified Architecture
 
 - **One less workflow file**: Removed `auto-release.yaml` (orchestrator)
-- **No tag parsing needed**: Kind info passed directly as inputs
+- **No tag parsing needed**: Component info passed directly as inputs
 - **Cleaner workflow definitions**: Each workflow is self-contained
 
 ### Easier Debugging
 
-- Failed releases clearly show which kind failed
-- Can re-run individual kind releases without affecting others
-- Workflow history provides clear audit trail per kind
+- Failed releases clearly show which component failed
+- Can re-run individual component releases without affecting others
+- Workflow history provides clear audit trail per component
 
 ### Manual Trigger Improvements
 
-Manual re-runs are now kind-specific:
+Manual re-runs are now component-specific:
 
 ```bash
 # Re-run CLI release
@@ -223,7 +223,7 @@ gh workflow run auto-release.pulumi-modules.yaml \
 
 ### GitHub Actions UI
 
-- Each kind release appears as a separate workflow run
+- Each component release appears as a separate workflow run
 - Run names immediately convey what's being released
 - Easier to filter and find specific releases
 

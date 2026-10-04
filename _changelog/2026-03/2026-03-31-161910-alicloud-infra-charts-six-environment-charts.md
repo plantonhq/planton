@@ -142,10 +142,9 @@ Template files are split by domain (network, compute, database, etc.) for readab
 # Build and preview the ACK environment chart
 planton chart build alicloud/ack-environment
 
-# Create an infra stack from the chart
-planton project create --from-chart alicloud/ack-environment \
-  --name prod-ack \
-  --values ./my-values.yaml
+# Install the chart as an Infra Stack
+planton chart install prod-ack alicloud/ack-environment \
+  -f ./my-values.yaml
 ```
 
 Example `values.yaml` for ack-environment:

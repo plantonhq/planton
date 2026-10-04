@@ -24,7 +24,7 @@ still applies. Hard denies are Azure deny assignments, a separate mechanism.
 
 ## Key Configuration Choices
 
-- **Assignable scopes by reference** -- in an infra chart, replace the
+- **Assignable scopes by reference** -- in an Infra Chart, replace the
   literals with `valueFrom: { name: project-rg }` blocks; each element
   resolves through the `AzureResourceGroup` default kind
 - **One management group max** -- Azure allows at most one management group

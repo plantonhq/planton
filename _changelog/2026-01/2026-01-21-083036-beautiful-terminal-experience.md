@@ -225,7 +225,7 @@ if err != nil {
 
 - **Consistent patterns**: All error display follows the same visual language
 - **Extensible framework**: Easy to add new error types with beautiful display
-- **Testable kinds**: Separated error detection from display logic
+- **Testable components**: Separated error detection from display logic
 
 ### Visual Comparison
 

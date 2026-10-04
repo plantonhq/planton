@@ -6,16 +6,16 @@
 
 ## Summary
 
-Enhanced the infra component web interface with improved UI components, theme switching capabilities, and implemented server-side pagination for better performance and scalability. The changes include a new table component with pagination support, theme switch kind, enhanced header and sidebar, and various reusable UI components.
+Enhanced the Infra Component web interface with improved UI components, theme switching capabilities, and implemented server-side pagination for better performance and scalability. The changes include a new table component with pagination support, theme switch component, enhanced header and sidebar, and various reusable UI components.
 
 ## Problem Statement
 
-The infra component web interface needed improvements in several areas:
+The Infra Component web interface needed improvements in several areas:
 
 ### Missing Capabilities
 
 - **No server-side pagination**: The frontend was using client-side pagination, loading all resources at once, which doesn't scale for large datasets
-- **Limited UI components**: Missing reusable kinds like alert dialogs, confirmation dialogs, custom tooltips, and icon kinds
+- **Limited UI components**: Missing reusable components like alert dialogs, confirmation dialogs, custom tooltips, and icon components
 - **No theme switching UI**: While theme system existed, there was no user-visible way to switch between dark and light modes
 - **Incomplete table component**: The existing data-table component lacked proper pagination support and was replaced with a more comprehensive table component
 - **Limited visual feedback**: Missing confirmation dialogs and alert dialogs for better user interaction
@@ -24,14 +24,14 @@ The infra component web interface needed improvements in several areas:
 
 Without these improvements, users faced:
 
-- Performance issues when managing large numbers of infra components (all loaded at once)
+- Performance issues when managing large numbers of Infra Components (all loaded at once)
 - Inability to switch themes directly from the UI
 - Limited visual feedback for critical actions like deletions
 - Inconsistent UI components across the application
 
 ## Solution
 
-Implemented comprehensive UI enhancements including a new table component with server-side pagination, theme switching kind, and various reusable UI components. Updated the backend API to properly support pagination with total page count calculation.
+Implemented comprehensive UI enhancements including a new table component with server-side pagination, theme switching component, and various reusable UI components. Updated the backend API to properly support pagination with total page count calculation.
 
 ### Architecture
 
@@ -40,7 +40,7 @@ The pagination implementation follows a server-side pattern:
 ```
 Frontend Table Component
     ↓ Page Change Event
-Infra Components List Kind
+Infra Components List Component
     ↓ API Call with PageInfo
 Backend Service (ListInfraComponents)
     ↓ Pagination Options
@@ -69,11 +69,11 @@ App Layout
 
 - Backend API calculates total pages based on total count and page size
 - Frontend sends page number and page size in API requests
-- Pagination kind displays page numbers and navigation controls
+- Pagination component displays page numbers and navigation controls
 - Default page size of 10 items per page
 - Page numbers are 0-indexed (page 0 is the first page)
 
-**2. Theme Switch Kind**
+**2. Theme Switch Component**
 
 - Visual toggle button in header (sun/moon icons)
 - Switches between dark and light themes
@@ -94,10 +94,10 @@ App Layout
 
 - **AlertDialog**: Modal dialog for confirmations and alerts
 - **ConfirmationDialog**: Specialized dialog for action confirmations
-- **CustomTooltip**: Enhanced tooltip kind
-- **Icon Kind**: Reusable icon kind with SVG support
-- **TextCopy**: Kind for copyable text with copy-to-clipboard functionality
-- **ResourceHeader**: Styled header kind for resource pages
+- **CustomTooltip**: Enhanced tooltip component
+- **Icon Component**: Reusable icon component with SVG support
+- **TextCopy**: Component for copyable text with copy-to-clipboard functionality
+- **ResourceHeader**: Styled header component for resource pages
 
 **5. Enhanced Layout Components**
 
@@ -282,7 +282,7 @@ Updated to use server-side pagination:
 
 **File**: `app/frontend/src/components/shared/table/pagination.tsx`
 
-Custom pagination kind with Material-UI integration:
+Custom pagination component with Material-UI integration:
 
 ```94:134:app/frontend/src/components/shared/table/pagination.tsx
 export const TablePagination = ({
@@ -292,7 +292,7 @@ export const TablePagination = ({
   mode,
   totalPages = 0,
   onPageChange,
-  kind,
+  component,
   border,
   borderColor,
   bgColor,
@@ -301,7 +301,7 @@ export const TablePagination = ({
   return (
     <StyledPaginationContainer $border={border} $borderColor={borderColor} $bgColor={bgColor}>
       <MuiTablePagination
-        kind={kind ?? 'td'}
+        component={component ?? 'td'}
         page={page}
         count={totalRecords}
         rowsPerPage={rowsPerPage}
@@ -310,7 +310,7 @@ export const TablePagination = ({
         rowsPerPageOptions={[]}
         labelRowsPerPage=""
         labelDisplayedRows={() => ''}
-        ActionsKind={(subProps) => (
+        ActionsComponent={(subProps) => (
           <PaginationActions
             {...subProps}
             mode={mode}
@@ -335,7 +335,7 @@ export const TablePagination = ({
 - Supports both client and server pagination modes
 - Customizable styling (border, background color)
 
-### 3. Theme Switch Kind
+### 3. Theme Switch Component
 
 **File**: `app/frontend/src/components/layout/theme-switch/theme-switch.tsx`
 
@@ -371,29 +371,29 @@ const ThemeSwitch = () => {
 - Shows sun icon for light mode, moon icon for dark mode
 - Tooltip indicates next theme mode
 - Persists preference to localStorage
-- Integrated into header kind
+- Integrated into header component
 
 ### 4. New UI Components
 
-**AlertDialog Kind** (`app/frontend/src/components/shared/alert-dialog/alert-dialog.tsx`):
+**AlertDialog Component** (`app/frontend/src/components/shared/alert-dialog/alert-dialog.tsx`):
 
 - Modal dialog for confirmations and alerts
 - Customizable title, subtitle, submit/cancel labels
 - Color-coded submit button (error, primary, etc.)
 
-**ConfirmationDialog Kind** (`app/frontend/src/components/shared/confirmation-dialog/confirmation-dialog.tsx`):
+**ConfirmationDialog Component** (`app/frontend/src/components/shared/confirmation-dialog/confirmation-dialog.tsx`):
 
 - Specialized dialog for action confirmations
 - Optional reason field for deletions
 - Customizable message and labels
 
-**Icon Kind** (`app/frontend/src/components/shared/icon/icon.tsx`):
+**Icon Component** (`app/frontend/src/components/shared/icon/icon.tsx`):
 
-- Reusable icon kind with SVG support
+- Reusable icon component with SVG support
 - Predefined icon names (SUN, MOON, DELETE, EDIT, etc.)
 - Customizable size and styling
 
-**TextCopy Kind** (`app/frontend/src/components/shared/text-copy/text-copy.tsx`):
+**TextCopy Component** (`app/frontend/src/components/shared/text-copy/text-copy.tsx`):
 
 - Copy-to-clipboard functionality
 - Visual feedback on copy action
@@ -445,9 +445,9 @@ const ThemeSwitch = () => {
 
 ### For Developers
 
-**Kind Reusability**:
+**Component Reusability**:
 
-- New reusable kinds (AlertDialog, ConfirmationDialog, Icon, TextCopy) can be used throughout the app
+- New reusable components (AlertDialog, ConfirmationDialog, Icon, TextCopy) can be used throughout the app
 - Table component supports both pagination modes for different use cases
 - Consistent patterns for future features
 
@@ -469,13 +469,13 @@ const ThemeSwitch = () => {
 
 **Performance Improvement**: Server-side pagination reduces initial load time and memory usage
 **User Experience**: Theme switching and better UI components improve usability
-**Scalability**: Can now handle large numbers of infra components efficiently
+**Scalability**: Can now handle large numbers of Infra Components efficiently
 
 ### Developer Experience
 
 **1 new table component** with comprehensive features
 **5 new reusable UI components** (AlertDialog, ConfirmationDialog, Icon, TextCopy, ResourceHeader)
-**1 theme switch kind** integrated into header
+**1 theme switch component** integrated into header
 **Server-side pagination** implementation in both frontend and backend
 **Enhanced layout components** with improved styling
 
@@ -528,7 +528,7 @@ const response = await query.listInfraComponents(request);
 
 Users can click the theme switch button in the header to toggle between dark and light modes. The preference is automatically saved and persists across page refreshes.
 
-### Using New Kinds
+### Using New Components
 
 **AlertDialog**:
 
@@ -544,7 +544,7 @@ Users can click the theme switch button in the header to toggle between dark and
 />
 ```
 
-**Icon Kind**:
+**Icon Component**:
 
 ```typescript
 <Icon name={ICON_NAMES.DELETE} onClick={handleDelete} />
@@ -565,7 +565,7 @@ Users can click the theme switch button in the header to toggle between dark and
 
 **Modified**:
 
-- `app/frontend/src/app/infra-components/page.tsx` - Updated to use new InfraComponentsList kind
+- `app/frontend/src/app/infra-components/page.tsx` - Updated to use new InfraComponentsList component
 - `app/frontend/src/app/infra-components/_services/query.ts` - Updated to handle pagination in API calls
 - `app/frontend/src/app/dashboard/page.tsx` - Updated styling and layout
 
@@ -574,17 +574,17 @@ Users can click the theme switch button in the header to toggle between dark and
 **Created**:
 
 - `app/frontend/src/components/shared/table/table.tsx` - New comprehensive table component
-- `app/frontend/src/components/shared/table/pagination.tsx` - Custom pagination kind
+- `app/frontend/src/components/shared/table/pagination.tsx` - Custom pagination component
 - `app/frontend/src/components/shared/table/styled.ts` - Table styling
-- `app/frontend/src/components/shared/alert-dialog/alert-dialog.tsx` - Alert dialog kind
-- `app/frontend/src/components/shared/confirmation-dialog/confirmation-dialog.tsx` - Confirmation dialog kind
-- `app/frontend/src/components/shared/custom-tooltip/custom-tooltip.tsx` - Custom tooltip kind
-- `app/frontend/src/components/shared/icon/icon.tsx` - Icon kind
-- `app/frontend/src/components/shared/text-copy/text-copy.tsx` - Text copy kind
+- `app/frontend/src/components/shared/alert-dialog/alert-dialog.tsx` - Alert dialog component
+- `app/frontend/src/components/shared/confirmation-dialog/confirmation-dialog.tsx` - Confirmation dialog component
+- `app/frontend/src/components/shared/custom-tooltip/custom-tooltip.tsx` - Custom tooltip component
+- `app/frontend/src/components/shared/icon/icon.tsx` - Icon component
+- `app/frontend/src/components/shared/text-copy/text-copy.tsx` - Text copy component
 - `app/frontend/src/components/shared/resource-header/styled.ts` - Resource header styling
-- `app/frontend/src/components/layout/theme-switch/theme-switch.tsx` - Theme switch kind
+- `app/frontend/src/components/layout/theme-switch/theme-switch.tsx` - Theme switch component
 - `app/frontend/src/components/layout/theme-switch/styled.ts` - Theme switch styling
-- `app/frontend/src/components/layout/header/header-icon.tsx` - Header icon kind
+- `app/frontend/src/components/layout/header/header-icon.tsx` - Header icon component
 
 **Modified**:
 
@@ -638,12 +638,12 @@ Users can click the theme switch button in the header to toggle between dark and
 
 - **1 new table component** with comprehensive features
 - **5 new reusable UI components** for consistent design
-- **1 theme switch kind** for user theme control
+- **1 theme switch component** for user theme control
 - **Server-side pagination** implemented in backend and frontend
 - **Default page size**: 10 items per page
 - **Backward compatible**: Pagination is optional in API
 - **~2000 lines** of new TypeScript/React code
-- **Full TypeScript coverage** for all new kinds
+- **Full TypeScript coverage** for all new components
 
 ## Related Work
 
@@ -746,7 +746,7 @@ These limitations are intentional for the initial implementation and can be addr
 
 **Breaking Changes**: None
 
-The old `data-table` kind has been replaced with the new `table` kind. Any code using `data-table` should be updated to use `table` with appropriate options.
+The old `data-table` component has been replaced with the new `table` component. Any code using `data-table` should be updated to use `table` with appropriate options.
 
 **Backward Compatibility**: The API maintains backward compatibility - pagination is optional. If `pageInfo` is not provided, the API returns all resources (with default pagination applied).
 
@@ -762,7 +762,7 @@ Existing users will automatically benefit from:
 **Status**: ✅ Complete and Production Ready
 **Component**: Web Frontend - Infra Component Management, UI Components
 **Pages Modified**: 1 page (infra-components)
-**Kinds Added**: 6 new reusable kinds
-**Kinds Modified**: 3 layout components
+**Components Added**: 6 new reusable components
+**Components Modified**: 3 layout components
 **Backend Changes**: Pagination support in service and repository
 **Location**: `app/frontend/src/components/` and `app/backend/internal/service/`

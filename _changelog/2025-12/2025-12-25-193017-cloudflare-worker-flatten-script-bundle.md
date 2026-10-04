@@ -213,7 +213,7 @@ spec:
     path: scripts/worker.js
 ```
 
-### Affected Kinds
+### Affected Components
 
 - **Protocol Buffers**: Message removed, field renamed
 - **Go Stubs**: Regenerated with `make protos`

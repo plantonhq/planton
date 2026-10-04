@@ -6,7 +6,7 @@ package dev.planton.qa.mappingevalsuite.v1;
 // mapping: the fixture manifests that are deployed as the known ground
 // truth, and the scan scope a blind proposer is given. Because the suite
 // deploys from known manifests, it holds the complete answer key -- which
-// infra components exist, which component instance owns each, what every
+// provider resources exist, which InfraComponent owns each, what every
 // spec field is, and where the value_from edges run -- so a proposer's
 // output can be machine-scored instead of eyeballed.
 //

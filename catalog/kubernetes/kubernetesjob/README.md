@@ -37,7 +37,7 @@ Identity is composed, never bundled:
 - **KubernetesServiceAccount** — reference it from `spec.pod.service_account` (literal name or resource reference); workload-identity annotations and pull-secret attachment live on the identity
 - **KubernetesRbac** — grants permissions to that identity; the Job itself never creates RBAC objects
 - **KubernetesSecret / KubernetesConfigMap** — consumed via `secret_ref` env entries, `env_from` imports, or volume mounts
-- **KubernetesNamespace** — `spec.namespace` accepts a reference, so an infra chart creates the namespace and the Job in one run
+- **KubernetesNamespace** — `spec.namespace` accepts a reference, so an Infra Chart creates the namespace and the Job in one run
 
 ## Outputs
 

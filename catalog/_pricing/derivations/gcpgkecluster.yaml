@@ -34,7 +34,7 @@ spec:
           op: equals
           value: "true"
       text: Autopilot pod charges -- running pods bill per second for the vCPU, memory, and ephemeral storage they request, entirely workload-dependent
-    - text: Cloud Logging ingestion for the enabled log kinds, network egress, and Cloud NAT for private nodes
+    - text: Cloud Logging ingestion for the enabled log components, network egress, and Cloud NAT for private nodes
   notes:
     - applies_when:
         - field_path: enable_autopilot

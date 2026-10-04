@@ -15,8 +15,8 @@ AWS API Gateway HTTP APIs are the front door for modern serverless and microserv
 ### Pain Points
 
 - No API Gateway kind forced users to manage HTTP APIs outside Planton
-- Lambda functions deployed via Planton couldn't be wired to HTTP endpoints in infra charts
-- The serverless-api infra chart pattern was blocked without this kind
+- Lambda functions deployed via Planton couldn't be wired to HTTP endpoints in Infra Charts
+- The serverless-api Infra Chart pattern was blocked without this kind
 
 ## Solution / What's New
 
@@ -103,14 +103,14 @@ Uses `for_each` on deduplicated integration maps, authorizer maps, and route map
 ## Benefits
 
 - **Serverless API pattern unlocked** -- Users can now build complete serverless APIs (API Gateway + Lambda + DynamoDB) entirely in Planton
-- **Infra chart composability** -- `execution_arn` and `api_endpoint` outputs enable downstream wiring in infra charts
+- **Infra Chart composability** -- `execution_arn` and `api_endpoint` outputs enable downstream wiring in Infra Charts
 - **Clean UX** -- Routes with inline integrations hide the API Gateway resource complexity (12 TF resources) behind a simple declarative spec
 - **Integration deduplication** -- Multiple routes to the same Lambda don't create redundant Integration resources
 
 ## Impact
 
 - **Users**: Can now deploy production-grade HTTP APIs with JWT authorization, CORS, access logging, and throttling
-- **Infra charts**: Enables the planned serverless-api and serverless-event-api infra chart patterns
+- **Infra Charts**: Enables the planned serverless-api and serverless-event-api Infra Chart patterns
 - **AWS coverage**: 5th new resource kind in the expansion (R05 of 32), completing the serverless tier (SQS, SNS, EventBridge Bus, EventBridge Rule, HTTP API Gateway)
 
 ## Related Work
@@ -118,7 +118,7 @@ Uses `for_each` on deduplicated integration maps, authorizer maps, and route map
 - R01 AwsSqsQueue, R02 AwsSnsTopic, R03 AwsEventBridgeBus, R04 AwsEventBridgeRule (same expansion project)
 - Future: AwsWebSocketApiGateway (separate kind for WebSocket APIs)
 - Future: AwsCognitoUserPool (R12, JWT issuer for API Gateway)
-- Future: serverless-api infra chart (T03, depends on this kind)
+- Future: serverless-api Infra Chart (T03, depends on this kind)
 
 ---
 

@@ -185,7 +185,7 @@ This means Planton does not store a flat list of "Alice can access Resource X." 
 The practical benefit is that you manage access at the right level of granularity and it propagates automatically:
 
 - Grant someone admin on the **organization** → they are admin on every environment and every resource within it
-- Grant someone viewer on an **environment** → they can view every infra component and service in that environment
+- Grant someone viewer on an **environment** → they can view every Infra Component and service in that environment
 - Grant a **team** admin on an environment → every member of that team (including members of nested sub-teams) inherits admin access
 
 You do not need to manually assign permissions to each individual resource. The authorization engine computes effective permissions by traversing the relationship graph.
@@ -211,10 +211,10 @@ Each level inherits permissions from its parent:
 
 | If you are... | Then you automatically have... |
 |---------------|-------------------------------|
-| Organization **admin** | Admin on all environments, all infra components, all services in the organization |
-| Organization **viewer** | Viewer on all environments, all infra components, all services |
-| Environment **admin** | Admin on all infra components and services in that environment |
-| Environment **viewer** | Viewer on all infra components and services in that environment |
+| Organization **admin** | Admin on all environments, all Infra Components, all services in the organization |
+| Organization **viewer** | Viewer on all environments, all Infra Components, all services |
+| Environment **admin** | Admin on all Infra Components and services in that environment |
+| Environment **viewer** | Viewer on all Infra Components and services in that environment |
 
 You can also grant permissions directly on individual resources when you need more granular control.
 

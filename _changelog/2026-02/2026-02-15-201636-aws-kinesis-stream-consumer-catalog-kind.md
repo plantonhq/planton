@@ -75,7 +75,7 @@ Each consumer gets a dedicated 2 MB/s per shard throughput channel, enabling ind
 ### Presets (2)
 
 - **01-basic-consumer**: Literal stream ARN for standalone usage
-- **02-stream-reference**: `valueFrom` pattern for infra chart composition
+- **02-stream-reference**: `valueFrom` pattern for Infra Chart composition
 
 ### Registration
 
@@ -85,7 +85,7 @@ Each consumer gets a dedicated 2 MB/s per shard throughput channel, enabling ind
 
 ## Benefits
 
-- **Infra chart composability**: Consumer ARN available via `valueFrom` for Lambda event source mapping configuration
+- **Infra Chart composability**: Consumer ARN available via `valueFrom` for Lambda event source mapping configuration
 - **Independent lifecycle management**: Add/remove consumers without touching the parent stream
 - **Clean DAG wiring**: Stream -> Consumer -> Lambda forms a natural dependency chain
 - **Simplest possible UX**: 1 field in the spec -- users only need to specify which stream to register with

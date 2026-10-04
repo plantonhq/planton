@@ -23,4 +23,4 @@ Authored carriers stay authored: injection only fills BLANK slots, so a carrier 
 
 ## What to hold the line on
 
-Never simulate any of this by editing the service record's hostname label into something it is not (the label is one DNS label, not an FQDN valve), and never suggest the platform "just add a field" — the domain authority stays on the environment, and custom edge stays composed, visible, and owned. When a custom arrangement's DNS or certificate is the gap, the `domain_serving` walking ladder in `serving-domains-targets.md` applies to authored carriers exactly as to injected ones.
+Never simulate any of this by editing the service record's hostname label into something it is not (the label is one DNS label, not an FQDN valve), and never suggest the platform "just add a field" — the domain authority stays on the environment, and custom edge stays composed, visible, and owned. When a custom arrangement's DNS or certificate is the gap, the `domain_serving` walking ladder in `service.serving-domains-targets.md` applies to authored carriers exactly as to injected ones.

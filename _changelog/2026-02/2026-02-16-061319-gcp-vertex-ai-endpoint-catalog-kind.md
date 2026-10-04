@@ -86,7 +86,7 @@ Notable: The Terraform module uses `random_integer` with keepers to auto-generat
 
 - ML teams can provision Vertex AI endpoints through the same Planton workflow as all other infrastructure
 - Three networking modes properly abstracted with proto-level validation preventing invalid combinations
-- `valueFrom` composition enables endpoint creation in infra charts alongside VPCs, KMS keys, and notebooks
+- `valueFrom` composition enables endpoint creation in Infra Charts alongside VPCs, KMS keys, and notebooks
 - Numeric endpoint name is auto-generated -- users never need to think about it unless importing existing endpoints
 
 ## Impact

@@ -19,7 +19,7 @@ metadata:
     pulumi.planton.dev/stack.fqdn: "myorg/project/stack"
 ```
 
-### Using Individual Kinds
+### Using Individual Components
 
 ```yaml
 metadata:

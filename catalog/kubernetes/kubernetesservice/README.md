@@ -20,7 +20,7 @@ Planton workload kinds (KubernetesDeployment, KubernetesStatefulSet) already cre
 **Key value over raw manifests:**
 
 - **API-server rules at validation time**: Eleven cross-field rules (headless vs. NodePort/LoadBalancer, ExternalName vs. selector/ports, LoadBalancer-only knobs on other types, affinity timeout without ClientIP affinity, dual-stack consistency, and more) each mirror a live kube-apiserver rejection — caught before anything reaches the cluster
-- **Namespace by value or reference**: `spec.namespace` accepts a literal name or a reference to a `KubernetesNamespace` resource, so an infra chart creates the namespace and the Service in one run
+- **Namespace by value or reference**: `spec.namespace` accepts a literal name or a reference to a `KubernetesNamespace` resource, so an Infra Chart creates the namespace and the Service in one run
 - **Dual IaC support**: Both Pulumi and Terraform implementations with feature parity (one documented exception: `traffic_distribution` deploys only through the Pulumi engine — the Terraform kubernetes provider does not expose the field, and the Terraform module fails the plan loudly rather than silently dropping it)
 - **Composable outputs**: The load-balancer address, in-cluster endpoint, and a ready-to-run port-forward command are exported for downstream automation
 
@@ -113,7 +113,7 @@ Use **KubernetesService** when you need:
 
 ## Best Practices
 
-1. **Default to `cluster_ip`**: Expose externally only when required, and prefer one Ingress over many LoadBalancers for HTTP workloads (each LoadBalancer service is a billed infra component)
+1. **Default to `cluster_ip`**: Expose externally only when required, and prefer one Ingress over many LoadBalancers for HTTP workloads (each LoadBalancer service is a billed provider resource)
 2. **Name every port on multi-port services**: Required by the API, and named ports (`http`, `grpc`) keep consumers readable
 3. **Use `external_traffic_policy: local` when the client IP matters**: And run enough replicas that every schedulable node is likely to hold one
 4. **Reserve `publish_not_ready_addresses` for bootstrap discovery**: On ordinary services it routes real traffic to pods that cannot handle it

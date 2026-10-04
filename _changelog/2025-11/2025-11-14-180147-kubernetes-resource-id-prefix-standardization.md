@@ -10,7 +10,7 @@ Standardized all Kubernetes workload and addon ID prefixes in `catalog_kind.prot
 
 ## Problem Statement / Motivation
 
-The Kubernetes infra components in Planton had inconsistent ID prefix patterns. Some resources used the format `{abbreviation}k8s` (e.g., `argk8s`, `cronk8s`, `msk8s`), which made it difficult to:
+The Kubernetes catalog kinds in Planton had inconsistent ID prefix patterns. Some resources used the format `{abbreviation}k8s` (e.g., `argk8s`, `cronk8s`, `msk8s`), which made it difficult to:
 
 1. **Quickly identify Kubernetes resources** - The "k8s" identifier appeared at the end rather than the beginning
 2. **Maintain consistency across the codebase** - Mixed patterns created confusion when working with resource IDs
@@ -172,10 +172,10 @@ KubernetesCronJob = 801 [(kind_meta) = {
 ### Scope
 
 - **Files changed**: 1 (catalog_kind.proto)
-- **Resources affected**: 31 Kubernetes infra components
+- **Resources affected**: 31 Kubernetes catalog kinds
 - **Lines changed**: 31 id_prefix definitions
 
-### Affected Kinds
+### Affected Components
 
 1. **API Definitions**: Protobuf schema updated with new ID prefixes
 2. **Code Generation**: All language-specific stubs will reflect new prefixes upon regeneration

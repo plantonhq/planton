@@ -6,24 +6,24 @@
 
 ## Summary
 
-Implemented a comprehensive design system inspired by Linear, Vercel, and Stripe, along with new shared UI components and an enhanced dashboard experience. This update establishes a modern, semantic design token system, introduces reusable kinds for loading states and empty states, and significantly improves the visual polish and user experience across the application.
+Implemented a comprehensive design system inspired by Linear, Vercel, and Stripe, along with new shared UI components and an enhanced dashboard experience. This update establishes a modern, semantic design token system, introduces reusable components for loading states and empty states, and significantly improves the visual polish and user experience across the application.
 
 ## Problem Statement / Motivation
 
-The frontend lacked a cohesive design language and reusable kind patterns. Key pain points included:
+The frontend lacked a cohesive design language and reusable component patterns. Key pain points included:
 
 ### Pain Points
 
-- **Inconsistent styling**: Theme values were hardcoded throughout kinds without a unified token system
+- **Inconsistent styling**: Theme values were hardcoded throughout components without a unified token system
 - **No loading patterns**: Missing skeleton loaders led to jarring content shifts during data fetching
 - **Repetitive empty states**: No standardized way to handle empty data scenarios
 - **Theme inconsistencies**: Dark and light themes used arbitrary color values without semantic meaning
 - **Dashboard limitations**: Basic dashboard with minimal visual engagement and no statistical overview
-- **Kind duplication**: Styling patterns repeated across files without shared design primitives
+- **Component duplication**: Styling patterns repeated across files without shared design primitives
 
 ## Solution / What's New
 
-Introduced a modern design system with semantic tokens, new shared kinds, and an enhanced dashboard that creates a polished, production-ready user experience.
+Introduced a modern design system with semantic tokens, new shared components, and an enhanced dashboard that creates a polished, production-ready user experience.
 
 ### Design Token System
 
@@ -52,10 +52,10 @@ graph TB
     Light --> LightSemantic[Semantic Colors]
 ```
 
-### New Shared Kinds
+### New Shared Components
 
-#### 1. EmptyState Kind
-A flexible, reusable kind for displaying empty data scenarios:
+#### 1. EmptyState Component
+A flexible, reusable component for displaying empty data scenarios:
 
 ```typescript
 <EmptyState
@@ -75,7 +75,7 @@ A flexible, reusable kind for displaying empty data scenarios:
 - Consistent styling with design tokens
 - Dashed border and subtle background for visual separation
 
-#### 2. ShimmerSkeleton Kind
+#### 2. ShimmerSkeleton Component
 Modern loading skeletons with animated shimmer effect:
 
 ```typescript
@@ -91,7 +91,7 @@ Modern loading skeletons with animated shimmer effect:
 
 **Animation**: Smooth 1.5s shimmer effect using CSS keyframes
 
-#### 3. StatCard Kind
+#### 3. StatCard Component
 Premium dashboard card component with hover effects and optional click actions:
 
 ```typescript
@@ -164,15 +164,15 @@ flowchart LR
     Tokens[tokens.ts] --> Dark[dark.tsx]
     Tokens --> Light[light.tsx]
 
-    Dark --> MuiKinds[MUI Kinds]
-    Light --> MuiKinds
+    Dark --> MuiComponents[MUI Components]
+    Light --> MuiComponents
 
-    MuiKinds --> Button[Buttons]
-    MuiKinds --> Input[Inputs]
-    MuiKinds --> Card[Cards]
-    MuiKinds --> Table[Tables]
-    MuiKinds --> Dialog[Dialogs]
-    MuiKinds --> 50+[50+ Catalog Kinds]
+    MuiComponents --> Button[Buttons]
+    MuiComponents --> Input[Inputs]
+    MuiComponents --> Card[Cards]
+    MuiComponents --> Table[Tables]
+    MuiComponents --> Dialog[Dialogs]
+    MuiComponents --> 50+[50+ UI Components]
 ```
 
 **Key improvements**:
@@ -211,14 +211,14 @@ flowchart TB
 ```
 
 **Features**:
-- Real-time infra component count with API integration
+- Real-time Infra Component count with API integration
 - Three stat cards: Infra Components (accent), Credentials, Stack Updates
 - Loading skeletons during data fetch
 - Clickable cards for navigation
 - Responsive grid layout (3 columns desktop, 2 tablet, 1 mobile)
 - Auto-refresh when resources change
 
-### Kind Updates
+### Component Updates
 
 #### Layout Sidebar
 Enhanced navigation with cleaner structure and hover states
@@ -258,22 +258,22 @@ declare module '@mui/material/styles' {
 - **Accessibility**: Focus rings and sufficient color contrast
 
 ### For Developers
-- **Faster development**: Reusable kinds (EmptyState, StatCard, Skeleton) reduce implementation time
+- **Faster development**: Reusable components (EmptyState, StatCard, Skeleton) reduce implementation time
 - **Consistency**: Design tokens ensure uniform styling across all pages
 - **Maintainability**: Centralized token system makes global design changes trivial
 - **Type safety**: TypeScript definitions for theme prevent errors
-- **Scalability**: Token system scales to new kinds without additional complexity
+- **Scalability**: Token system scales to new components without additional complexity
 
 ### Metrics
 - **Files changed**: 15 files
 - **Lines added**: 2,367 additions, 769 deletions
-- **New kinds**: 3 shared kinds (EmptyState, ShimmerSkeleton, StatCard)
+- **New components**: 3 shared components (EmptyState, ShimmerSkeleton, StatCard)
 - **Design tokens**: 412 lines of semantic design tokens
 - **Theme updates**: 877 lines of dark theme, 862 lines of light theme
 
 ## Usage Examples
 
-### Using Design Tokens in Custom Kinds
+### Using Design Tokens in Custom Components
 
 ```typescript
 import { alpha } from '@mui/material';
@@ -358,7 +358,7 @@ function Dashboard() {
 
 ### Dashboard
 **Before**:
-- Basic page with just an infra components list
+- Basic page with just an Infra Components list
 - No overview metrics
 - Jarring loading experience with blank page
 
@@ -378,17 +378,17 @@ function Dashboard() {
 **After**:
 - Centralized design token system
 - Semantic color naming (background.raised, text.secondary)
-- Consistent spacing scale across all kinds
+- Consistent spacing scale across all components
 - Easy theme switching with token support
 
-### Kind Patterns
+### Component Patterns
 **Before**:
 - Manual implementation of loading states
 - Inconsistent empty state designs
 - Repeated styling patterns
 
 **After**:
-- Drop-in skeleton kinds
+- Drop-in skeleton components
 - Standardized EmptyState with actions
 - Reusable StatCard for metrics
 - Shared design language
@@ -398,7 +398,7 @@ function Dashboard() {
 ### Why Design Tokens?
 - **Semantic naming**: `background.raised` is clearer than `grey.100`
 - **Theme independence**: Tokens abstract away mode-specific values
-- **Scalability**: Add new tokens without touching kinds
+- **Scalability**: Add new tokens without touching components
 - **Industry standard**: Follows patterns from Linear, Vercel, Stripe
 
 ### Why Shimmer Skeletons?
@@ -421,13 +421,13 @@ function Dashboard() {
 - **Navigation**: Clickable cards reduce friction
 
 ### Development Workflow
-- **Faster feature development**: Reusable kinds reduce implementation time
+- **Faster feature development**: Reusable components reduce implementation time
 - **Easier maintenance**: Centralized tokens simplify global design updates
 - **Reduced bugs**: Consistent patterns prevent styling inconsistencies
 - **Better collaboration**: Shared design language improves team communication
 
 ### Codebase Health
-- **Reduced duplication**: Shared kinds replace repeated patterns
+- **Reduced duplication**: Shared components replace repeated patterns
 - **Better organization**: Tokens centralize design decisions
 - **Type safety**: TypeScript definitions prevent theme errors
 - **Scalability**: Token system grows with the application
@@ -435,8 +435,8 @@ function Dashboard() {
 ## Related Work
 
 This enhancement lays the foundation for:
-- **Component library expansion**: More shared kinds using design tokens
-- **Storybook integration**: Document kinds with token system
+- **Component library expansion**: More shared components using design tokens
+- **Storybook integration**: Document components with token system
 - **Advanced dashboard**: Charts, graphs, and real-time updates
 - **Design system documentation**: Comprehensive guide for contributors
 
@@ -445,7 +445,7 @@ This enhancement lays the foundation for:
 **Manual Testing**:
 - ✅ Verify stat cards load and display data correctly
 - ✅ Confirm skeleton animations render smoothly
-- ✅ Test empty state kind with various configurations
+- ✅ Test empty state component with various configurations
 - ✅ Validate dark/light theme switching
 - ✅ Check responsive behavior on mobile, tablet, desktop
 - ✅ Verify hover effects and click actions
@@ -473,7 +473,7 @@ This enhancement lays the foundation for:
 - **Charts and graphs**: Visualize resource usage over time
 - **More stat cards**: Add credentials count, stack update history
 - **Customizable dashboard**: User-configurable card layout
-- **Component library**: Expand shared kinds (DatePicker, Modal, etc.)
+- **Component library**: Expand shared components (DatePicker, Modal, etc.)
 - **Animation library**: Standardized motion system for page transitions
 - **Design system docs**: Interactive documentation with examples
 

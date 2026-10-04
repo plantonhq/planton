@@ -109,7 +109,7 @@ Image URL composed in locals: `"${var.spec.image.registry_endpoint}/${var.spec.i
 - `image.registry_endpoint` creates DAG edge: ContainerRegistry -> ServerlessContainer
 - `private_network_id` creates DAG edge: PrivateNetwork -> ServerlessContainer
 - `domain_name` output enables downstream ScalewayDnsRecord CNAME records
-- Ready for the `scaleway/serverless-environment` infra chart (IC02)
+- Ready for the `scaleway/serverless-environment` Infra Chart (IC02)
 
 ### Developers
 - Structured image message is extensible (future: digest pinning, pull policy)
@@ -120,7 +120,7 @@ Image URL composed in locals: `"${var.spec.image.registry_endpoint}/${var.spec.i
 - **R17: ScalewayServerlessFunction** -- Sibling resource in the serverless tier (code-based vs image-based)
 - **R14: ScalewayContainerRegistry** -- Upstream dependency for the `image.registry_endpoint` StringValueOrRef
 - **R16: ScalewayDnsRecord** -- Downstream consumer of `domain_name` output
-- **IC02: scaleway/serverless-environment** -- Future infra chart that will compose R17 and R18
+- **IC02: scaleway/serverless-environment** -- Future Infra Chart that will compose R17 and R18
 
 ---
 

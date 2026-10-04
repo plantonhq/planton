@@ -75,7 +75,7 @@ spec:
       price_slug: monitor-standard-web-test-execution-eastus
       basis: every 900 seconds from each location is 2,628,000 / 900 = 2,920 executions per location per month, times the location count
   exclusions:
-    - text: test results and their traces are ingested into the bound Application Insights component and bill that kind's per-GB Log Analytics ingestion meters
+    - text: test results and their traces are ingested into the bound Application Insights component and bill that component's per-GB Log Analytics ingestion meters
     - applies_when:
         - field_path: retry_enabled
           op: equals

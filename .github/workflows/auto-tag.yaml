@@ -1,7 +1,7 @@
 # =============================================================================
 # Auto-Tag Creator
 # =============================================================================
-# Creates per-kind pre-release tags and triggers the matching
+# Creates per-component pre-release tags and triggers the matching
 # auto-release workflows via workflow_dispatch, one dispatch per tag.
 #
 # This workflow CREATES TAGS and TRIGGERS RELEASES - but does not build.
@@ -373,7 +373,7 @@ jobs:
 
           echo "### Tags Created" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Kind | Tag |" >> $GITHUB_STEP_SUMMARY
+          echo "| Component | Tag |" >> $GITHUB_STEP_SUMMARY
           echo "|-----------|-----|" >> $GITHUB_STEP_SUMMARY
 
           PULUMI_MODULES='${{ needs.create-tags.outputs.pulumi_modules }}'
@@ -396,6 +396,6 @@ jobs:
             echo "_No tags were created: no skill artifact changed, and no module force flag was set (module tags are dispatch-only)._" >> $GITHUB_STEP_SUMMARY
           else
             echo "" >> $GITHUB_STEP_SUMMARY
-            echo "**Note:** Kind-specific auto-release workflows have been triggered for each tag above." >> $GITHUB_STEP_SUMMARY
+            echo "**Note:** Component-specific auto-release workflows have been triggered for each tag above." >> $GITHUB_STEP_SUMMARY
           fi
 

@@ -182,7 +182,7 @@ service networking connection chain):
   copy, for every scenario.) Pulumi dependency stacks are keyed by run id, so every scenario in a run reuses the
   same stack name; if an earlier scenario's teardown half-completed, stale
   state would otherwise make a later `up` a silent no-op while the actual
-  infra component is gone.
+  provider resource is gone.
 
 The SCENARIO's own DESTROY phase (distinct from the fixture-chain teardown
 above) is single-attempt by default — a destroy failure is usually a real
@@ -221,7 +221,7 @@ uniqueness lives (a multi-instance install profile's `-a`/`-b`/`-c` instance
 suffix and the run id). The live-caught failure class this kills: three
 same-kind install-profile instances whose names truncated identically shared
 ONE dependency stack, so each successive `pulumi up` silently REPLACED the
-previous instance's infra component — the kind under test then failed
+previous instance's provider resource — the kind under test then failed
 with a stale resolved reference ("InvalidSubnet ... does not exist" moments
 after the fixture "deployed and verified"), and teardown destroyed one stack
 then burned its full retry budget on "no stack named" ghosts. That signature
@@ -841,7 +841,7 @@ program available during destroy so BeforeDelete/AfterDelete resource hooks
 fire). Older Pulumi CLIs do not know the flag, and the failure mode is nasty:
 every phase up to and including VERIFY-RES passes, then DESTROY fails
 instantly with `unknown flag: --run-program` -- so the lane fails AFTER
-creating real infra components, whose stack state lives in the run's temp
+creating real provider resources, whose stack state lives in the run's temp
 backend and is discarded when the process exits. The resources must then be
 swept by hand (`az group list` / the provider's own list commands) before a
 re-run. Verified live: v3.137.0 fails exactly this way; v3.256.0 works.
@@ -2696,7 +2696,7 @@ stranding orphans when the first dies teardown-less (live hit 2026-08-13:
 a Bedrock flow lane's first execution created the fixed-name MANAGED-KB
 prerequisite six minutes before the reported execution's own start, which
 then failed 409 against it; the stranded KB outlived both). The signature
-is an infra component whose `createdAt` PRECEDES the reported command's
+is an provider resource whose `createdAt` PRECEDES the reported command's
 possible start window. Defenses: pipe lane logs through `tee -a` with a
 per-launch header line (echo a timestamped RUN marker before `go test`) so
 a truncation-invisible predecessor cannot exist, and treat any
@@ -2726,7 +2726,7 @@ lanes honest meanwhile.
 the CLI's model before diagnosing a missing field.** The CLI parses
 responses against its bundled service model and discards members it does
 not know, so evidence gathered with `aws <svc> get-*` can show a
-just-modeled field as absent while the infra component carries it (live
+just-modeled field as absent while the provider resource carries it (live
 hit 2026-08-12: `get-distribution-config` from aws-cli 2.33.24 omitted
 CloudFront's `CacheTagConfig` — same-wave `ResponseCompletionTimeout` and
 `IpAddressType` appeared fine — while the Terraform destroy-refresh read
@@ -2770,7 +2770,7 @@ its header line with the process gone is this class — name loop
 variables defensively (`G_ID`), same family as the `:s`/`:l` modifier
 trap below. (1) **watch
 the name the MODULE derives, not metadata.name** — some kinds name their
-infra component from a spec field (ECR's `spec.repository_name`), and a
+provider resource from a spec field (ECR's `spec.repository_name`), and a
 watcher armed on metadata.name polls a resource that never exists,
 producing an all-NotFound log that looks like a timing miss (28 clean
 iterations, zero captures — beyond plausible bad luck is the signature;
@@ -3593,11 +3593,11 @@ on `~spec` for exactly this). The App and Function specs now carry their
 own `DigitalOceanAppRegion` enum; any future kind that composes
 `digitalocean_app` must use it, never `DigitalOceanRegion`.
 
-**App Platform names: one API rule for apps AND kinds, and apps are
+**App Platform names: one API rule for apps AND components, and apps are
 account-unique.** `POST /v2/apps/propose` is a validate-only endpoint
 (creates nothing, prices the spec, and reports `app_name_available`) — use
 it as the free first probe for any App Platform question. Measured: app
-names AND every kind name must match `^[a-z][a-z0-9-]{0,30}[a-z0-9]$`
+names AND every component name must match `^[a-z][a-z0-9-]{0,30}[a-z0-9]$`
 (2–32, letter-first; `9abc`, `Hello_World`, and `web.1` are all rejected
 with the field named), and a 43-character name is rejected at 32. Both
 kinds validate every name with that pattern, and every App Platform
@@ -3607,7 +3607,7 @@ resource carrying its own validated, account-unique name exposes that name
 on its spec — the Function kind used to derive it from `metadata.name`,
 which no e2e metadata name could satisfy.
 
-**A functions kind reads `project.yml` from `source_dir`, and the
+**A functions component reads `project.yml` from `source_dir`, and the
 sample's is at the repo root.** DigitalOcean's
 `sample-functions-nodejs-helloworld` keeps `project.yml` at the root with
 the code under `packages/`; its own deploy template uses `source_dir: /`.
@@ -3638,7 +3638,7 @@ encrypted; upstream #869), documented on both kinds.
 every guard on every pin bump.** The App module guarded six arms as Pulumi
 SDK gaps at v4.49.0; four of them (`maintenance`, `vpc` as a one-element
 `vpcs` list, ingress `authority`, alert `destinations` on app-level and all
-kind alerts) had closed at the v4.53.0 pin the tree carried for a
+component alerts) had closed at the v4.53.0 pin the tree carried for a
 month, so Pulumi customers got a hard error for settings Terraform
 customers had all along. At the next bump (v4.53.0 → v4.79.1) every one of
 the 21 guards then in the tree had closed -- ten on the DOKS cluster, three
@@ -4218,7 +4218,7 @@ owns two responsibilities beyond wiring verifiers:
   registers every export synchronously with a value DERIVED via `ApplyT`
   (`ctx.Export(key, out.ApplyT(...))` is safe — it is the export
   registration itself that must stay on the program goroutine). When a
-  fixture deploy dies this way mid-chain, the created infra component
+  fixture deploy dies this way mid-chain, the created provider resource
   usually IS recorded in the run-scoped stack state, so the next scenario's
   `up --refresh` adopts it — but the failed scenario's own teardown can
   strand it against the chain's parent (a VPC refusing deletion while the

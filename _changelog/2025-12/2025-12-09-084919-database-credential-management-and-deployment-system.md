@@ -6,7 +6,7 @@
 
 ## Summary
 
-Implemented a complete database-driven credential management system with unified API architecture and CLI commands, then resolved seven critical Docker deployment blockers to enable end-to-end infra component deployments. This work transforms credential management from a conceptual design into a fully operational system that automatically resolves and applies credentials during Pulumi stack deployments in the backend service. Additionally, the logo was updated to use a single variant that works across all themes.
+Implemented a complete database-driven credential management system with unified API architecture and CLI commands, then resolved seven critical Docker deployment blockers to enable end-to-end Infra Component deployments. This work transforms credential management from a conceptual design into a fully operational system that automatically resolves and applies credentials during Pulumi stack deployments in the backend service. Additionally, the logo was updated to use a single variant that works across all themes.
 
 ## Problem Statement
 
@@ -523,9 +523,9 @@ After completing the backend credential management and Docker deployment fixes, 
 
 **Details**:
 
-- Removed `PlantonLogoDarkIcon` import and dark mode logo registry entry from icon kind
+- Removed `PlantonLogoDarkIcon` import and dark mode logo registry entry from icon component
 - Updated Planton logo `viewBox` from `0 0 28 32` to `0 0 738 750` to match the actual SVG dimensions
-- Simplified icon kind by removing dark mode logo override logic
+- Simplified icon component by removing dark mode logo override logic
 - The single logo now works in both light and dark themes
 
 **Benefits**:
@@ -965,7 +965,7 @@ Each requires:
 - **Metrics collection**: Track deployment times, success rates, cache hit rates
 - **Alerts**: Disk space thresholds, failed deployment rates
 - **Dashboards**: Real-time deployment status, credential usage
-- **Cost tracking**: Track infra component costs per deployment
+- **Cost tracking**: Track Infra Component costs per deployment
 
 ### Reliability
 

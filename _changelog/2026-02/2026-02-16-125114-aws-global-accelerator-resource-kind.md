@@ -89,7 +89,7 @@ flowchart TB
 
 - **AWS resource kinds**: 283 enum registered, id_prefix "awsga"
 - **Files created**: ~50 files across proto, IaC, docs, presets, site catalog
-- **Infra chart enablement**: Global anycast networking for multi-region charts
+- **Infra Chart enablement**: Global anycast networking for multi-region charts
 - **Phase 3 progress**: 2 of 7 specialized kinds complete
 
 ## Related Work

@@ -22,7 +22,7 @@ that IaC modules derive into cloud-provider tags. A platform key placed under
 ## Problem Statement
 
 Planton IaC modules derive cloud-provider tags from `metadata.labels`. Platform
-keys riding in labels therefore became tags on the user's real infra components
+keys riding in labels therefore became tags on the user's real provider resources
 — polluting their cloud with internal orchestration detail and breaking
 providers with strict tag charsets (free-text values have failed AWS tag
 validation in production). The two metadata maps had overlapping, inconsistent

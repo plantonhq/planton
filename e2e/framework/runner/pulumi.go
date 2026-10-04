@@ -32,7 +32,7 @@ func PulumiDeploy(moduleDir, stackName, backendURL, iacInputFilePath string) (*P
 	// Dependency stacks are keyed by run id, so every scenario in a run reuses
 	// the same stack name; if an earlier scenario's teardown half-completed,
 	// the stale state would otherwise make this up a silent no-op while the
-	// actual infra component is gone.
+	// actual provider resource is gone.
 	args := []string{"up", "--stack", stackName, "--yes", "--skip-preview", "--non-interactive", "--refresh"}
 	return runPulumi(moduleDir, backendURL, iacInputFilePath, "", args)
 }

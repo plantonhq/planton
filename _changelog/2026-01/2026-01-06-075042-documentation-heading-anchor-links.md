@@ -33,7 +33,7 @@ Created a reusable `HeadingWithAnchor` kind that wraps all markdown headings wit
 
 ## Implementation Details
 
-### New Kind
+### New Component
 
 **File**: `src/components/docs/HeadingWithAnchor.tsx`
 

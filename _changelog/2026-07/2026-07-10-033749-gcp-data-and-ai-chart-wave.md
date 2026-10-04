@@ -6,7 +6,7 @@
 
 ## Summary
 
-Four new GCP infra charts complete the data and AI tier of the chart
+Four new GCP Infra Charts complete the data and AI tier of the chart
 catalog: `postgres-production` (HA Cloud SQL with passwordless IAM
 authentication), `analytics-lakehouse` (BigQuery + GCS + zero-code
 Pub/Sub streaming ingestion + optional autoscaling Dataproc),
@@ -67,7 +67,7 @@ explicit `depends_on` edge. The Dataproc arm (default off) adds
 chart-owned staging/temp buckets, a dedicated service account with
 `roles/dataproc.worker` (cluster ordered after the grant), a reusable
 autoscaling policy (on-demand base at weight 1, spot burst at weight 3),
-and a private-IP-only autoscaling cluster with Kind Gateway.
+and a private-IP-only autoscaling cluster with Component Gateway.
 
 ### `charts/gcp/spanner-application`
 

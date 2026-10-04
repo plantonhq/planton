@@ -17,7 +17,7 @@ The `copy-kind-docs.ts` build script hardcoded a list of 11 provider directories
 ### Navigation Issues
 
 1. **Catalog list links navigated to home page** — Kind links on provider index pages (e.g., `/docs/catalog/aws`) used plain `<a>` tags instead of Next.js `<Link>`. In a static-exported app served by `serve`, these caused full browser navigations that bypassed the client-side router.
-2. **"Read next article" navigated to home page** — Same root cause: the `NextArticle` kind used a plain `<a>` tag.
+2. **"Read next article" navigated to home page** — Same root cause: the `NextArticle` component used a plain `<a>` tag.
 3. **"Read next article" skipped section index pages** — The `getNextDocItem` function flattened only leaf files, so section transitions jumped past index pages.
 4. **"Read next article" showed sidebar labels** — Titles came from frontmatter (sidebar labels like "ALB") instead of the page's `#` heading (e.g., "AWS ALB").
 
@@ -36,7 +36,7 @@ Replaced the hardcoded `providerDirs` array with a dynamic scan of the output di
 
 ### Navigation Fix: Next.js Link for Internal Links
 
-Replaced plain `<a>` tags with Next.js `<Link>` for all internal links in the markdown renderer and the `NextArticle` kind. External links continue to use `<a>` with `target="_blank"`.
+Replaced plain `<a>` tags with Next.js `<Link>` for all internal links in the markdown renderer and the `NextArticle` component. External links continue to use `<a>` with `target="_blank"`.
 
 ### Section Transitions: Include Directory Index Pages
 
@@ -53,7 +53,7 @@ Added a `pageTitle` field to `DocItem`, populated during structure building by e
 | File | Change |
 |------|--------|
 | `site/scripts/copy-kind-docs.ts` | Replaced hardcoded 11-provider list with dynamic `fs.readdirSync` scan of catalog output directory |
-| `site/src/app/docs/components/MDXRenderer.tsx` | Added `Link` import; replaced `<a>` with `<Link>` for internal links in both the markdown `a` kind and `NextArticle` |
+| `site/src/app/docs/components/MDXRenderer.tsx` | Added `Link` import; replaced `<a>` with `<Link>` for internal links in both the markdown `a` component and `NextArticle` |
 | `site/src/app/docs/utils/fileSystem.ts` | Added `pageTitle` to `DocItem`; extract `#` heading during `buildStructure`; include `hasIndex` directories in `getNextDocItem` flattening |
 | `site/src/app/docs/[[...slug]]/page.tsx` | Updated `nextArticle` prop to prefer `pageTitle` over `title` |
 

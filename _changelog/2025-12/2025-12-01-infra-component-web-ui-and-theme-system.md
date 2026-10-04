@@ -6,18 +6,18 @@
 
 ## Summary
 
-Implemented a complete infra component management web interface with full CRUD operations (list, create, update, delete, view) and established a comprehensive theme system supporting dark and light modes. The implementation includes a reusable snackbar notification kind, enhanced header and sidebar styling, and full integration with the existing infra component backend APIs.
+Implemented a complete Infra Component management web interface with full CRUD operations (list, create, update, delete, view) and established a comprehensive theme system supporting dark and light modes. The implementation includes a reusable snackbar notification component, enhanced header and sidebar styling, and full integration with the existing Infra Component backend APIs.
 
 ## Problem Statement
 
-The infra component backend APIs were complete (from previous work), but users had no web interface to manage infra components. All operations required CLI commands, which limited accessibility and user experience. Additionally, the frontend lacked a consistent theme system and notification mechanism for user feedback.
+The Infra Component backend APIs were complete (from previous work), but users had no web interface to manage Infra Components. All operations required CLI commands, which limited accessibility and user experience. Additionally, the frontend lacked a consistent theme system and notification mechanism for user feedback.
 
 ### Missing Capabilities
 
-- **No web interface**: Users could only manage infra components via CLI commands
+- **No web interface**: Users could only manage Infra Components via CLI commands
 - **No visual feedback**: No way to see success/error messages in the web app
 - **Incomplete theme system**: No structured dark/light theme support with proper color palettes
-- **Limited UI components**: Missing reusable kinds like snackbar notifications
+- **Limited UI components**: Missing reusable components like snackbar notifications
 - **No resource management UI**: No way to list, view, create, edit, or delete resources through the browser
 
 ### User Impact
@@ -25,14 +25,14 @@ The infra component backend APIs were complete (from previous work), but users h
 Without a web interface, users faced:
 
 - CLI-only workflow limiting accessibility
-- No visual representation of infra components
+- No visual representation of Infra Components
 - Inability to quickly browse and manage multiple resources
 - No immediate feedback on operation success or failure
 - Inconsistent visual experience without proper theming
 
 ## Solution
 
-Built a complete web-based infra component management interface with a modern, theme-aware UI. The solution includes a full CRUD page, reusable notification system, and a comprehensive theme architecture supporting both dark and light modes.
+Built a complete web-based Infra Component management interface with a modern, theme-aware UI. The solution includes a full CRUD page, reusable notification system, and a comprehensive theme architecture supporting both dark and light modes.
 
 ### Architecture
 
@@ -66,7 +66,7 @@ Styled Components
 
 Complete CRUD interface with:
 
-- **List View**: Sortable, paginated table showing all infra components
+- **List View**: Sortable, paginated table showing all Infra Components
 - **Filtering**: Filter resources by kind (e.g., CivoVpc, AwsRdsInstance)
 - **Create**: Drawer-based form with YAML editor for creating new resources
 - **View**: Read-only drawer to inspect resource manifests
@@ -76,7 +76,7 @@ Complete CRUD interface with:
 
 **2. Snackbar Notification System**
 
-Reusable notification kind with:
+Reusable notification component with:
 
 - Success, error, warning, and info severity levels
 - Auto-dismiss after 5 seconds (configurable)
@@ -233,7 +233,7 @@ export const useInfraComponentQuery = () => {
 - Error handling with user-friendly messages
 - Promise-based API for async operations
 
-### 3. Snackbar Kind
+### 3. Snackbar Component
 
 **File**: `app/frontend/src/components/shared/snackbar/snackbar.tsx`
 
@@ -420,9 +420,9 @@ Updated repository to support the web interface requirements (if any changes wer
 
 ### For Developers
 
-**Kind Reusability**:
+**Component Reusability**:
 
-- Snackbar kind can be used throughout the app
+- Snackbar component can be used throughout the app
 - Service layer pattern (command/query) is reusable for other resources
 - Theme system provides consistent styling foundation
 
@@ -468,16 +468,16 @@ Updated repository to support the web interface requirements (if any changes wer
 
 ### Immediate
 
-**Web Interface Availability**: Users can now manage infra components entirely through the web interface
+**Web Interface Availability**: Users can now manage Infra Components entirely through the web interface
 **Visual Feedback**: All operations provide immediate success/error notifications
 **Theme Support**: Professional dark and light mode themes available
-**Component Library**: Reusable snackbar kind available for future features
+**Component Library**: Reusable snackbar component available for future features
 
 ### Developer Experience
 
 **1 new page** with complete CRUD functionality
 **2 service hooks** (command and query) following established patterns
-**1 notification kind** ready for app-wide use
+**1 notification component** ready for app-wide use
 **Comprehensive theme system** with 200+ color definitions
 **Type definitions** ensuring type safety across theme usage
 
@@ -486,7 +486,7 @@ Updated repository to support the web interface requirements (if any changes wer
 **Frontend-Backend Integration**: Complete connection between web UI and existing APIs
 **Theme Infrastructure**: Foundation for consistent theming across all pages
 **Notification Infrastructure**: Reusable system for user feedback
-**Kind Patterns**: Established patterns for future resource management pages
+**Component Patterns**: Established patterns for future resource management pages
 
 ## Usage Examples
 
@@ -566,8 +566,8 @@ Updated repository to support the web interface requirements (if any changes wer
 
 **Created**:
 
-- `app/frontend/src/app/infra-components/page.tsx` - Main infra component management page (374 lines)
-- `app/frontend/src/app/infra-components/styled.ts` - Styled components for infra component page (12 lines)
+- `app/frontend/src/app/infra-components/page.tsx` - Main Infra Component management page (374 lines)
+- `app/frontend/src/app/infra-components/styled.ts` - Styled components for Infra Component page (12 lines)
 
 ### Service Layer
 
@@ -581,8 +581,8 @@ Updated repository to support the web interface requirements (if any changes wer
 
 **Created**:
 
-- `app/frontend/src/components/shared/snackbar/snackbar.tsx` - Snackbar notification kind (46 lines)
-- `app/frontend/src/components/shared/snackbar/index.ts` - Kind exports
+- `app/frontend/src/components/shared/snackbar/snackbar.tsx` - Snackbar notification component (46 lines)
+- `app/frontend/src/components/shared/snackbar/index.ts` - Component exports
 
 **Modified**:
 
@@ -621,7 +621,7 @@ Updated repository to support the web interface requirements (if any changes wer
 
 - **1 new page** with complete CRUD interface
 - **2 service hooks** following command/query pattern
-- **1 reusable kind** (snackbar) for app-wide notifications
+- **1 reusable component** (snackbar) for app-wide notifications
 - **200+ color definitions** across dark and light themes
 - **9 color palettes** per theme mode (primary, secondary, grey, error, warning, success, info, exceptions, crimson)
 - **~600 lines** of new TypeScript/React code
@@ -636,16 +636,16 @@ This work builds on:
 
 - **Infra Component CRUD APIs** (November 28, 2025) - Backend APIs providing the foundation
 - **Connect-RPC Integration** - Existing RPC client infrastructure
-- **DataTable Kind** - Reusable table component for resource listing
-- **Drawer Kind** - Reusable drawer for create/edit/view operations
-- **YAML Editor Kind** - Existing YAML editing kind
+- **DataTable Component** - Reusable table component for resource listing
+- **Drawer Component** - Reusable drawer for create/edit/view operations
+- **YAML Editor Component** - Existing YAML editing component
 
 ### Complements
 
 This work complements:
 
 - **CLI Commands** - Web interface provides alternative to CLI for same operations
-- **Backend Services** - Full utilization of existing infra component APIs
+- **Backend Services** - Full utilization of existing Infra Component APIs
 - **Catalog Kinds** - Establishes patterns for future resource management pages
 
 ### Future Extensions
@@ -696,7 +696,7 @@ These limitations are intentional for the initial implementation and can be addr
 
 - Prevents notification loss when multiple operations complete simultaneously
 - Sequential display prevents UI clutter
-- Centralized management simplifies kind usage
+- Centralized management simplifies component usage
 - Auto-dismiss with manual override provides good UX
 
 **Alternative considered**: Simple state-based single notification
@@ -720,13 +720,13 @@ These limitations are intentional for the initial implementation and can be addr
 
 ### Drawer-Based Editing
 
-**Decision**: Use drawer kind for create/edit/view operations
+**Decision**: Use drawer component for create/edit/view operations
 
 **Rationale**:
 
 - Maintains page context (user can see list while editing)
 - Consistent with modern UI patterns
-- Reusable drawer kind reduces code duplication
+- Reusable drawer component reduces code duplication
 - Better mobile experience than modal dialogs
 
 **Alternative considered**: Separate pages for each operation
@@ -751,7 +751,7 @@ CLI commands remain fully functional and unchanged.
 **Status**: ✅ Complete and Production Ready
 **Component**: Web Frontend - Infra Component Management
 **Pages Added**: 1 page (infra-components)
-**Kinds Added**: 1 reusable kind (snackbar)
+**Components Added**: 1 reusable component (snackbar)
 **Services Added**: 2 service hooks (command, query)
 **Theme System**: Complete dark/light mode support
 **Location**: `app/frontend/src/app/infra-components/` and `app/frontend/src/themes/`

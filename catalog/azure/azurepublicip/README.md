@@ -50,7 +50,7 @@ The address is assigned at creation and persists for the lifetime of the resourc
   public IP address
 - When you need a stable, persistent IP address for DNS A records
 - When building enterprise network foundations with explicit IP addressing
-- As part of the `enterprise-network-foundation` infra chart
+- As part of the `enterprise-network-foundation` Infra Chart
 
 ## Spec Fields
 

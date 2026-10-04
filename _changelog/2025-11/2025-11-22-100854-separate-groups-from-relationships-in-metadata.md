@@ -6,7 +6,7 @@
 
 ## Summary
 
-Refactored infra component grouping by adding a dedicated `group` field to `CatalogObjectMetadata` and removing the `group` field from `InfraComponentRelationship`. This separates visual resource grouping (an intrinsic resource property) from relationships (connections between resources), fixing a fundamental design flaw where resources were declaring groups for other resources they referenced.
+Refactored Infra Component grouping by adding a dedicated `group` field to `CatalogObjectMetadata` and removing the `group` field from `InfraComponentRelationship`. This separates visual resource grouping (an intrinsic resource property) from relationships (connections between resources), fixing a fundamental design flaw where resources were declaring groups for other resources they referenced.
 
 ## Problem Statement
 

@@ -1,5 +1,5 @@
 ---
-description: Generate a GitHub issue title and detailed Markdown issue body as exactly two copyable code blocks (ask-only). Follows Planton issue conventions with kind-aware labeling.
+description: Generate a GitHub issue title and detailed Markdown issue body as exactly two copyable code blocks (ask-only). Follows Planton issue conventions with component-aware labeling.
 globs:
 alwaysApply: false
 ---
@@ -18,7 +18,7 @@ Usage: In Ask mode, invoke explicitly as `@generate-planton-issue-info`.
    - Single line only
    - Clear, descriptive, and specific
    - Start with an action verb or problem statement
-   - Include key kind/area if relevant
+   - Include key component/area if relevant
    - ≤ 100 characters
    - No trailing period
 
@@ -30,7 +30,7 @@ Usage: In Ask mode, invoke explicitly as `@generate-planton-issue-info`.
      - **Expected Behavior**: What should happen
      - **Actual Behavior**: What actually happens
      - **Root Cause Analysis**: Technical investigation findings (if known)
-     - **Affected Kinds**: List of impacted files/modules with GitHub links
+     - **Affected Components**: List of impacted files/modules with GitHub links
      - **Potential Solutions**: Proposed approaches to fix
      - **Acceptance Criteria**: Clear conditions for closure
      - **Priority/Severity**: P0-P3, Critical/High/Medium/Low
@@ -53,7 +53,7 @@ Forge system generates incorrect Pulumi import paths for nested packages
 ```
 
 ## Title guidelines
-- **For Bugs**: Start with the symptom or kind: "Postgres kind validation broken...", "CLI fails when..."
+- **For Bugs**: Start with the symptom or component: "Postgres kind validation broken...", "CLI fails when..."
 - **For Features**: Start with action verb: "Add manifest validation command...", "Enable users to..."
 - **For Improvements**: Start with area: "Improve Pulumi code generation...", "Enhance kind validation..."
 - **For Tasks**: Be specific: "Migrate to Pulumi 4.x", "Update protobuf dependencies"
@@ -218,8 +218,8 @@ Use this template:
 - [ ] Subtask 3
 
 ## 📂 Affected Areas
-- Kind/file 1
-- Kind/file 2
+- Component/file 1
+- Component/file 2
 
 ## 🎯 Completion Criteria
 - [ ] All subtasks completed
@@ -274,7 +274,7 @@ Infer appropriate labels based on affected files:
 - `good-first-issue` - Suitable for new contributors
 - `help-wanted` - Looking for volunteers
 
-### Kind-Specific Labels
+### Component-Specific Labels
 - Kubernetes providers → `kubernetes`
 - AWS providers → `aws`
 - GCP providers → `gcp`
@@ -305,7 +305,7 @@ If context is insufficient to infer details, choose the best effort labels and s
 
 ### Title Crafting
 - Be specific: "Postgres kind validation broken for port conflicts" not "Validation broken"
-- Include kind: "CLI manifest validate command missing" not "Command missing"
+- Include component: "CLI manifest validate command missing" not "Command missing"
 - State symptom clearly: "Forge generates incorrect import paths" not "Import issue"
 
 ### Description Quality

@@ -15,7 +15,7 @@ Resource groups are real infrastructure with their own lifecycle:
 - **Cost tracking** -- Azure Cost Management reports costs per resource group
 - **Deployment target** -- ARM template deployments target a resource group
 
-By modeling resource groups as a first-class Planton resource, infra charts can express
+By modeling resource groups as a first-class Planton resource, Infra Charts can express
 the full Azure dependency graph. Downstream resources reference the resource group via
 `StringValueOrRef`, enabling the platform to build accurate topology graphs and execute
 deployments in the correct topological order.
@@ -30,7 +30,7 @@ deployments in the correct topological order.
 
 ## When to Use
 
-- As the first resource in any Azure infra chart
+- As the first resource in any Azure Infra Chart
 - When you need explicit control over resource group naming, region, and tags
 - When building enterprise Azure architectures with multiple resource groups
   (e.g., separate resource groups for networking, databases, and application tiers)

@@ -11,12 +11,12 @@ reference may go" below, because the field, not the reference, decides
 whether a secret stays secret. This file is the grammar, when to use it, and
 how to ground references against what actually exists.
 
-This is a DIFFERENT instrument from `valueFrom` (`dependencies.md`):
+This is a DIFFERENT instrument from `valueFrom` (`infra.dependencies.md`):
 
 | Value comes from | Wire it with |
 |---|---|
-| Another resource's deployment output (an id, ARN, endpoint the platform creates) | `valueFrom` — see `dependencies.md` |
-| A credential another resource GENERATES (a client secret, an access key, an admin password: a `(sensitive)` output) | `valueFrom`, into a sensitive field only — the platform already keeps it in the secret store and resolves the reference; see "A secret output" in `dependencies.md` |
+| Another resource's deployment output (an id, ARN, endpoint the platform creates) | `valueFrom` — see `infra.dependencies.md` |
+| A credential another resource GENERATES (a client secret, an access key, an admin password: a `(sensitive)` output) | `valueFrom`, into a sensitive field only — the platform already keeps it in the secret store and resolves the reference; see "A secret output" in `infra.dependencies.md` |
 | An operator-managed config value (a region-independent setting, a team-owned constant) | `$var/...` |
 | A credential or any sensitive value (password, API key, token, private key; a workload's `env.secrets[].value`, every value in a `KubernetesSecret`, an Auth0 action's secret) | `$secret/...` — the ONLY thing a sensitive field accepts; a value written there is refused before anything is created, on every write path |
 | A registry login a Kubernetes workload pulls with (`spec.pod.imageRegistries[].password`, a `KubernetesSecret`'s docker-registry password, a GHCR connection's `pullToken.token`) | `$secret/...` — and for the service's own registry, usually nothing: the deploy fills it from the registry connection (`references/service.pulling-private-images.md`) |

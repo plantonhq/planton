@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added back-navigation and page actions (Copy as Markdown, View as Markdown, Open Raw) to the changelog detail page. As a prerequisite, relocated the `DocsPageActions` kind from a docs-scoped path to a shared location (`src/components/common/PageActions/`), fixing an existing architectural smell where `MDXRenderer.tsx` (a shared library) was importing from a page-specific location.
+Added back-navigation and page actions (Copy as Markdown, View as Markdown, Open Raw) to the changelog detail page. As a prerequisite, relocated the `DocsPageActions` component from a docs-scoped path to a shared location (`src/components/common/PageActions/`), fixing an existing architectural smell where `MDXRenderer.tsx` (a shared library) was importing from a page-specific location.
 
 ## Problem Statement / Motivation
 
@@ -16,7 +16,7 @@ The changelog detail page (`/changelog/[slug]`) serves as the shareable permalin
 
 - **No way back to the list**: Users landing on a detail page had no in-page navigation to return to the full changelog timeline at `/changelog`. They had to use the browser back button or the site header navigation.
 - **No copy/raw access**: The docs pages had "Copy as Markdown", "View as Markdown", and "Open Raw" actions, but the changelog detail page didn't -- despite changelog entries being equally useful as shareable markdown content.
-- **Architectural smell**: The page actions kind (`DocsPageActions`) was scoped inside `src/app/(root)/docs/components/` but was imported by `src/lib/MDXRenderer.tsx`, a shared renderer. Reusing it on the changelog page would compound this cross-cutting dependency.
+- **Architectural smell**: The page actions component (`DocsPageActions`) was scoped inside `src/app/(root)/docs/components/` but was imported by `src/lib/MDXRenderer.tsx`, a shared renderer. Reusing it on the changelog page would compound this cross-cutting dependency.
 
 ## Solution / What's New
 
@@ -28,9 +28,9 @@ A minimal `ArrowLeft` + "Changelog" link at the top of the detail page, above th
 
 The same "Copy page" dropdown from docs pages now appears next to the changelog entry title. Users can copy the raw markdown (with frontmatter), view it in a dialog, or open the raw `.md` file in a new tab.
 
-### PageActions Kind Relocation
+### PageActions Component Relocation
 
-Moved the 4-file `DocsPageActions` kind from `src/app/(root)/docs/components/DocsPageActions/` to `src/components/common/PageActions/` and renamed it to `PageActions`. This is now a properly shared kind alongside `MermaidDiagram` and `CodeBlock`.
+Moved the 4-file `DocsPageActions` component from `src/app/(root)/docs/components/DocsPageActions/` to `src/components/common/PageActions/` and renamed it to `PageActions`. This is now a properly shared component alongside `MermaidDiagram` and `CodeBlock`.
 
 ## Implementation Details
 
@@ -64,7 +64,7 @@ Moved the 4-file `DocsPageActions` kind from `src/app/(root)/docs/components/Doc
 
 - **User experience**: Users can navigate back to the changelog list from any detail page without relying on browser history
 - **Content reuse**: Changelog entries can be copied as markdown for Slack posts, documentation, or issue descriptions
-- **Architecture**: The `PageActions` kind is now properly shared -- any future content type (blog, tutorials) can use it without importing from a page-scoped path
+- **Architecture**: The `PageActions` component is now properly shared -- any future content type (blog, tutorials) can use it without importing from a page-scoped path
 - **Consistency**: The changelog detail page now matches the docs pages in functionality
 
 ## Impact
@@ -76,7 +76,7 @@ Moved the 4-file `DocsPageActions` kind from `src/app/(root)/docs/components/Doc
 ## Related Work
 
 - **T02+T03 (Changelog Pages)**: This enhances the detail page built in the previous session (commit `849e901`)
-- **DocsPageActions original implementation**: The kind was originally built for the docs system; this change makes it a platform-wide utility
+- **DocsPageActions original implementation**: The component was originally built for the docs system; this change makes it a platform-wide utility
 
 ---
 

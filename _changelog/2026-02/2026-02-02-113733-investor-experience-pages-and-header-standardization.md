@@ -81,7 +81,7 @@ Unified all micro-app pages to use a consistent header:
 - `src/app/(micro-apps)/legal/investor-updates/page.tsx` - Timeline listing
 - `src/app/(micro-apps)/legal/investor-updates/[slug]/page.tsx` - Individual update
 - `src/lib/investor-updates.ts` - Content utilities (adapted from fastlane.ts)
-- `src/components/investor-updates/InvestorUpdatesTimeline.tsx` - Timeline kind
+- `src/components/investor-updates/InvestorUpdatesTimeline.tsx` - Timeline component
 - `public/investor-updates/README.md` - Content documentation
 - `public/investor-updates/2026-02-01-placeholder-first-update.md` - Sample update
 
@@ -91,8 +91,8 @@ Unified all micro-app pages to use a consistent header:
 - `src/app/(micro-apps)/invest/layout.tsx` - Removed CSS hack hiding parent logo
 - `src/app/(micro-apps)/legal/layout.tsx` - Removed CSS hack hiding parent logo
 - `src/components/invest/explainer/layout/Footer.tsx` - Added cross-navigation links
-- `src/components/invest/explainer/pages/AndYouGetPage.tsx` - Removed Header kind
-- `src/components/invest/explainer/pages/IfYouArePage.tsx` - Removed Header kind
+- `src/components/invest/explainer/pages/AndYouGetPage.tsx` - Removed Header component
+- `src/components/invest/explainer/pages/IfYouArePage.tsx` - Removed Header component
 - `src/components/invest/v2/InvestorDeckV2.tsx` - Removed Home button, kept progress dots below header
 
 ### Key Technical Decisions

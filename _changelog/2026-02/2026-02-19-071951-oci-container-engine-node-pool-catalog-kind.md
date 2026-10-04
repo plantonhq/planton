@@ -10,7 +10,7 @@ Added the OciContainerEngineNodePool catalog kind (R09, enum 3312) to the OCI pr
 
 ## Problem Statement / Motivation
 
-With OciContainerEngineCluster (R08) providing the Kubernetes control plane, there is no way to provision worker nodes through Planton. Node pools are where the actual compute resources live -- without them, an OKE cluster has no capacity to run workloads. This kind is the second half of the OKE story and a prerequisite for the OKE Environment infra chart.
+With OciContainerEngineCluster (R08) providing the Kubernetes control plane, there is no way to provision worker nodes through Planton. Node pools are where the actual compute resources live -- without them, an OKE cluster has no capacity to run workloads. This kind is the second half of the OKE story and a prerequisite for the OKE Environment Infra Chart.
 
 ### Pain Points
 
@@ -133,7 +133,7 @@ Catalog kind wrapping `oci_containerengine_node_pool` with the standard Planton 
 ## Impact
 
 - Completes the OKE cluster + node pool pair (R08 + R09)
-- Enables the OKE Environment infra chart (the highest-priority OCI infra chart)
+- Enables the OKE Environment Infra Chart (the highest-priority OCI Infra Chart)
 - Last prerequisite before R10 OciContainerInstance (completes Phase 2: Compute and Containers)
 
 ## Related Work

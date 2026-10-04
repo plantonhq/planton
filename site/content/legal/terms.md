@@ -112,7 +112,7 @@ Planton may suspend or terminate access to the Service for any account with over
 
 ### 4.1 Planton's Rights
 
-Planton and its licensors retain all right, title, and interest in the Service, including all intellectual property rights. These Terms do not grant you any implied licenses. The Service's proprietary kinds — including the platform UI, orchestration engine, and the AI Assistant — are protected by copyright, trade secret, and other intellectual property laws.
+Planton and its licensors retain all right, title, and interest in the Service, including all intellectual property rights. These Terms do not grant you any implied licenses. The Service's proprietary components — including the platform UI, orchestration engine, and the AI Assistant — are protected by copyright, trade secret, and other intellectual property laws.
 
 ### 4.2 Your Content
 
@@ -120,7 +120,7 @@ You retain all right, title, and interest in your Inputs. To the extent Planton 
 
 ### 4.3 Open Source
 
-The Service incorporates open-source components, including Planton open source (Apache License 2.0), Tekton, and Cloud Native BuildPacks. Your use of these kinds is governed by their respective open-source licenses. Planton open source modules are available at [github.com/plantonhq/planton](https://github.com/plantonhq/planton).
+The Service incorporates open-source components, including Planton open source (Apache License 2.0), Tekton, and Cloud Native BuildPacks. Your use of these components is governed by their respective open-source licenses. Planton open source modules are available at [github.com/plantonhq/planton](https://github.com/plantonhq/planton).
 
 Nothing in these Terms restricts your rights under applicable open-source licenses or requires you to use the Service to utilize Planton open source.
 

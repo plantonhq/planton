@@ -10,7 +10,7 @@ Implemented ScalewayServerlessFunction (R17) -- the seventeenth Scaleway resourc
 
 ## Problem Statement / Motivation
 
-The Scaleway provider needed a FaaS (Function-as-a-Service) resource kind to complete the serverless tier (R17-R18). Serverless functions are a key kind of the planned `scaleway/serverless-environment` infra chart (IC02).
+The Scaleway provider needed a FaaS (Function-as-a-Service) resource kind to complete the serverless tier (R17-R18). Serverless functions are a key component of the planned `scaleway/serverless-environment` Infra Chart (IC02).
 
 ### Pain Points
 
@@ -89,7 +89,7 @@ The IaC modules convert repeated messages to `map[string]string` for the Scalewa
 
 - **Single-resource experience**: Users declare one ScalewayServerlessFunction to get a fully configured function with scheduled triggers
 - **VPC connectivity**: Private Network attachment for secure database/Redis access without public internet
-- **Infra chart composability**: `private_network_id` (StringValueOrRef) and `domain_name` output enable dependency-aware infra charts
+- **Infra Chart composability**: `private_network_id` (StringValueOrRef) and `domain_name` output enable dependency-aware Infra Charts
 - **New env var standard**: Kubernetes-style repeated messages set the pattern for R18 (ServerlessContainer) and R19 (SecretManager)
 
 ## Impact

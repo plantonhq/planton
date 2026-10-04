@@ -10,7 +10,7 @@ Added AzureLoadBalancer as a new catalog kind in Planton, providing Layer 4 (TCP
 
 ## Problem Statement / Motivation
 
-The Azure resource expansion project aims to grow Azure coverage from 10 to 33 catalog kinds. AzureLoadBalancer is a core networking resource required by the enterprise-network-foundation infra chart and serves as the Layer 4 traffic distribution mechanism for production Azure deployments.
+The Azure resource expansion project aims to grow Azure coverage from 10 to 33 catalog kinds. AzureLoadBalancer is a core networking resource required by the enterprise-network-foundation Infra Chart and serves as the Layer 4 traffic distribution mechanism for production Azure deployments.
 
 ### Pain Points
 
@@ -99,16 +99,16 @@ flowchart LR
 ## Benefits
 
 - **Enterprise-ready**: Standard SKU with zone redundancy, HA ports, floating IP
-- **Infra chart composable**: All cross-resource references use StringValueOrRef
+- **Infra Chart composable**: All cross-resource references use StringValueOrRef
 - **Dual IaC**: Pulumi and Terraform with full feature parity
 - **Well-tested**: 28 validation tests covering all constraint boundaries
-- **Production docs**: 7 YAML examples covering minimal, internal, multi-pool, SQL AlwaysOn, and infra chart patterns
+- **Production docs**: 7 YAML examples covering minimal, internal, multi-pool, SQL AlwaysOn, and Infra Chart patterns
 
 ## Impact
 
 - **New capability**: Layer 4 load balancing for Azure in Planton
 - **Enum registration**: `AzureLoadBalancer = 417` in catalog_kind.proto
-- **Infra chart enablement**: Unlocks enterprise-network-foundation chart component
+- **Infra Chart enablement**: Unlocks enterprise-network-foundation chart component
 - **Files created**: ~30 files across proto, Go, HCL, YAML, and Markdown
 
 ## Related Work
@@ -117,7 +117,7 @@ flowchart LR
 - **R05 AzureSubnet** -- Provides subnet for internal LBs
 - **R06 AzureNetworkSecurityGroup** -- Established bundled sub-resource pattern
 - **R10 AzureApplicationGateway** -- Next in queue (Layer 7 complement)
-- **Enterprise-network-foundation infra chart** -- T03, will compose LB + AppGW + NSG + PublicIP
+- **Enterprise-network-foundation Infra Chart** -- T03, will compose LB + AppGW + NSG + PublicIP
 
 ---
 

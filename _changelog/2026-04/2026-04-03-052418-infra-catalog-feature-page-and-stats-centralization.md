@@ -10,7 +10,7 @@ Added a dedicated Infra Catalog feature page at `/features/infra-catalog` with h
 
 ## Problem Statement / Motivation
 
-Infra Catalog — the browsable catalog of deployment modules and infra charts — had no presence on the marketing website. Users who discovered the catalog through the console had no feature page explaining what it is, why it exists, or how it fits into the Planton product suite.
+Infra Catalog — the browsable catalog of deployment modules and Infra Charts — had no presence on the marketing website. Users who discovered the catalog through the console had no feature page explaining what it is, why it exists, or how it fits into the Planton product suite.
 
 ### Pain Points
 
@@ -67,10 +67,10 @@ Updated `@planton/website-shell` navigation data:
 All updated from hardcoded `360+` / `500+` / `17` to `PLATFORM_STATS.*` constants:
 
 - 4 landing page components (InfraHub, HowItWorks, ComparisonTable, OpenSourceFoundation)
-- 5 product/feature kinds (infra-hub hero + capabilities, open-source capabilities, overview modules-grid, shared RelatedModules)
+- 5 product/feature components (infra-hub hero + capabilities, open-source capabilities, overview modules-grid, shared RelatedModules)
 - 3 solutions pages (startups, growing-teams, engineering-leaders)
 - 1 book-demo page
-- 1 demo kind (OpenMcfIntro)
+- 1 demo component (OpenMcfIntro)
 - 1 agents page (technology-section)
 - 1 route metadata (infra-hub page.tsx)
 

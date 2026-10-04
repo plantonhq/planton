@@ -150,10 +150,10 @@ The `status.outputs` section contains the values you need to connect your applic
 To list all deployment jobs for this resource:
 
 ```bash
-planton infra-job list <infra-component-id>
+planton infra job list <infra-component-id>
 ```
 
-The infra component ID is in the `metadata.id` field of the `planton get` output.
+The Infra Component ID is in the `metadata.id` field of the `planton get` output.
 
 ## Step 4: Connect to Redis from Your Application
 

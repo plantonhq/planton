@@ -16,7 +16,7 @@ Hetzner Cloud servers need network-level access control. Without firewalls, serv
 
 - No way to manage Hetzner Cloud firewalls through Planton
 - The upcoming HetznerCloudServer kind (R07) needs firewall references via StringValueOrRef
-- All three planned infra charts require firewalls for security boundaries
+- All three planned Infra Charts require firewalls for security boundaries
 
 ## Solution / What's New
 
@@ -108,7 +108,7 @@ flowchart TB
 - Enables network-level access control for Hetzner Cloud servers
 - Cross-field CEL validations catch misconfigurations before IaC apply
 - Establishes the nested-repeated-message pattern for future complex kinds (Network, LoadBalancer)
-- Foundation dependency for all three infra charts
+- Foundation dependency for all three Infra Charts
 
 ## Impact
 

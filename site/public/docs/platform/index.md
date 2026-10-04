@@ -96,7 +96,7 @@ Seat-based pricing — automation is never metered for billing, and on planton.a
   Page: /infra-hub/catalog-kinds
   Action: Show the kind catalog with search and filters
   Focus: Kind grid with provider filters
-  Alt: Infra Catalog showing infra components filterable by provider
+  Alt: Infra Catalog showing catalog kinds filterable by provider
 -->
 
 ### Day 3: First Application

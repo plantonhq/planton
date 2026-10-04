@@ -129,7 +129,7 @@ planton delete flow-control-policy <policy-id>
 To check which Flow Control policy applies to a given resource type and environment, use the Infra Job preflight check:
 
 ```bash
-planton infra-job preflight-checks --catalog-kind <kind>
+planton infra job preflight-checks --catalog-kind <kind>
 ```
 
 The preflight report includes the resolved policy and its settings.

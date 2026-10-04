@@ -3,8 +3,8 @@ syntax = "proto3";
 package dev.planton.shared.catalogkind;
 
 import "google/protobuf/descriptor.proto";
-import "shared/catalogkind/catalog_provider_service_group.proto";
 import "shared/catalogkind/catalog_provider.proto";
+import "shared/catalogkind/catalog_provider_service_group.proto";
 
 //enum value options for api-resource-kind
 extend google.protobuf.EnumValueOptions {
@@ -7165,7 +7165,7 @@ enum CatalogKind {
   }];
   // KubernetesTektonOperator is a prerequisite because this kind declares
   // the TektonConfig custom resource that only the operator's CRDs admit
-  // and only the operator reconciles into running kinds.
+  // and only the operator reconciles into running components.
   KubernetesTekton = 4153 [(kind_meta) = {
     provider: kubernetes
     version: "v1alpha1"

@@ -22,7 +22,7 @@ impossible for event-driven architectures.
 ### Pain Points
 
 - No way to declare subscriptions in Planton manifests
-- Event pipeline infra charts (topic -> subscription -> consumer) were incomplete
+- Event pipeline Infra Charts (topic -> subscription -> consumer) were incomplete
 - BigQuery and Cloud Storage delivery patterns required manual provisioning
 - Dead-letter and retry policies couldn't be expressed declaratively
 

@@ -7,7 +7,7 @@
 
 ## Summary
 
-Completely overhauled the GCP Cloud Run Environment InfraChart to support full-stack application deployments with optional infrastructure kinds. The chart now provisions 7 resources (frontend service, optional backend service, PostgreSQL database, Docker repository, storage bucket, service account, and DNS zone) with intelligent conditional rendering and synthetic relationships that ensure proper deployment ordering. All resources are enabled by default but can be toggled individually, and the chart uses semantic relationship types to create a dependency graph that orchestrates parallel deployment where possible while respecting required dependencies.
+Completely overhauled the GCP Cloud Run Environment InfraChart to support full-stack application deployments with optional infrastructure components. The chart now provisions 7 resources (frontend service, optional backend service, PostgreSQL database, Docker repository, storage bucket, service account, and DNS zone) with intelligent conditional rendering and synthetic relationships that ensure proper deployment ordering. All resources are enabled by default but can be toggled individually, and the chart uses semantic relationship types to create a dependency graph that orchestrates parallel deployment where possible while respecting required dependencies.
 
 ## Problem Statement
 
@@ -322,10 +322,9 @@ planton chart build gcp/cloud-run-environment
 # Publish chart to platform
 planton chart publish gcp/cloud-run-environment
 
-# Create project from chart
-planton project create --from-chart gcp/cloud-run-environment \
-  --name odwen-prod \
-  --values ./odwen-prod-values.yaml
+# Install the chart as an Infra Stack
+planton chart install odwen-prod gcp/cloud-run-environment \
+  -f ./odwen-prod-values.yaml
 ```
 
 ## Documentation Enhancements

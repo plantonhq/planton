@@ -68,9 +68,9 @@ badge: "Popular"
 - `rehype-highlight` - Syntax highlighting for code blocks
 - `gray-matter` - Frontmatter parsing
 
-### Kind Architecture
+### Component Architecture
 
-**Created Kinds**:
+**Created Components**:
 
 1. **DocsHeader** (`site/src/app/docs/components/DocsHeader.tsx`)
    - Dedicated header matching landing page styling
@@ -102,7 +102,7 @@ badge: "Popular"
    - Markdown rendering with react-markdown
    - Purple-themed styling for all elements
    - Syntax highlighting for code blocks
-   - Custom kinds for headings, lists, tables, blockquotes
+   - Custom components for headings, lists, tables, blockquotes
    - Anchor links generated from heading IDs
    - "Next Article" navigation
 
@@ -278,7 +278,7 @@ All routes pre-rendered at build time, no server required.
 - Type-safe `NavItem` interface with external link support
 
 **Header Consistency**:
-- Created dedicated `DocsHeader` kind
+- Created dedicated `DocsHeader` component
 - Uses same logo assets as landing page (`/icon.png`, `/logo-text.svg`)
 - Same header height (h-16)
 - Same backdrop blur and border styling
@@ -323,7 +323,7 @@ All routes pre-rendered at build time, no server required.
 ✅ **Consistency Across Repos**
 - Same patterns as planton.ai
 - Team doesn't need to learn different documentation systems
-- Kinds can be shared or synced if needed
+- Components can be shared or synced if needed
 
 ### For the Project
 
@@ -358,7 +358,7 @@ All routes pre-rendered at build time, no server required.
 **For the Team**:
 - Consistent documentation patterns with planton.ai
 - No context switching between repos
-- Can reuse learned patterns and kinds
+- Can reuse learned patterns and components
 
 ### Long-term Impact
 
@@ -450,7 +450,7 @@ Chose Material-UI despite existing Radix UI to maintain consistency with planton
 - Team already familiar with Material-UI from planton.ai
 - Reduces cognitive overhead for developers working across repos
 - Proven patterns can be reused
-- Drawer, IconButton, Typography kinds well-tested
+- Drawer, IconButton, Typography components well-tested
 
 **Trade-off**: Added ~26MB of dependencies, but consistency benefits outweigh bundle size concerns for a documentation site.
 
@@ -460,11 +460,11 @@ Selected `react-markdown` to match planton.ai:
 
 **Benefits**:
 - Simpler API for straightforward markdown rendering
-- Better control over kind customization
+- Better control over component customization
 - Consistent with planton.ai implementation
 - Sufficient for documentation needs (no complex MDX components needed)
 
-### Why Separate DocsHeader Kind?
+### Why Separate DocsHeader Component?
 
 Created dedicated header instead of reusing layout header:
 
@@ -614,7 +614,7 @@ For future deployment, add `.github/workflows/deploy-site.yml`:
 - Markdown rendering (4 packages)
 
 **Lines of Code**: ~1,200 lines
-- Kinds: ~500 lines
+- Components: ~500 lines
 - Utilities: ~400 lines
 - Documentation: ~300 lines
 
@@ -687,7 +687,7 @@ Features verified:
 ### Ecosystem Consistency
 
 This implementation aligns with:
-- **planton.ai docs** - Same architecture, kinds, and patterns
+- **planton.ai docs** - Same architecture, components, and patterns
 - **Git Repository Topology** - Supports three-repo strategy with git-as-CMS
 - **Planton Philosophy** - Transparency, consistency, developer experience
 
@@ -698,9 +698,9 @@ Related documentation and website work:
 - Website redesign and branding initiatives
 - Git-as-CMS pattern adoption
 
-### Kind Reusability
+### Component Reusability
 
-Kinds from this implementation could be:
+Components from this implementation could be:
 - Extracted to shared component library
 - Reused in planton.ai for consistency
 - Adapted for other Planton ecosystem projects

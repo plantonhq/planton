@@ -1,6 +1,6 @@
 # DigitalOcean DNS Record
 
-A single DNS record in a DigitalOcean-hosted zone, described once in a Planton manifest: every record type the DigitalOcean API accepts (A, AAAA, CNAME, MX, TXT, SRV, NS, CAA, SOA), the per-type fields each requires, and a zone reference so records compose with their zone in infra charts.
+A single DNS record in a DigitalOcean-hosted zone, described once in a Planton manifest: every record type the DigitalOcean API accepts (A, AAAA, CNAME, MX, TXT, SRV, NS, CAA, SOA), the per-type fields each requires, and a zone reference so records compose with their zone in Infra Charts.
 
 ## What this kind models
 

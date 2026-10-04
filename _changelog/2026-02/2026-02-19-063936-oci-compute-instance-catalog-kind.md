@@ -10,7 +10,7 @@ Added the OciComputeInstance catalog kind (R07, enum 3310) to the OCI provider i
 
 ## Problem Statement / Motivation
 
-Compute instances are the fundamental workload primitive on OCI. Without this kind, Planton users cannot provision virtual machines or bare metal hosts, blocking the entire Compute and Containers phase (R07-R10) and three of the five planned infra charts (OKE Environment, Compute Environment, Serverless Stack).
+Compute instances are the fundamental workload primitive on OCI. Without this kind, Planton users cannot provision virtual machines or bare metal hosts, blocking the entire Compute and Containers phase (R07-R10) and three of the five planned Infra Charts (OKE Environment, Compute Environment, Serverless Stack).
 
 ### Pain Points
 
@@ -113,7 +113,7 @@ Comprehensive catalog kind wrapping `oci_core_instance` with the standard Planto
 ## Impact
 
 - Unblocks Phase 2 of OCI provider expansion (R08-R10: OKE Cluster, Node Pool, Container Instance)
-- Required for 3 of 5 planned infra charts (OKE Environment, Compute Environment, Serverless Stack)
+- Required for 3 of 5 planned Infra Charts (OKE Environment, Compute Environment, Serverless Stack)
 - Most complex OCI kind to date -- establishes patterns for handling deeply nested provider APIs
 
 ## Related Work

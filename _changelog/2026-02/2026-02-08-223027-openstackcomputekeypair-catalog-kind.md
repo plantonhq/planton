@@ -160,7 +160,7 @@ Uses `terraform-provider-openstack/openstack ~> 3.0`.
 ### 7. Frontend Fix
 
 Fixed pre-existing TypeScript type errors in the OpenStack credential form that surfaced during the rename:
-- Removed unsupported `placeholder` props from `SimpleInput` kinds
+- Removed unsupported `placeholder` props from `SimpleInput` components
 - Changed loosely-typed `Record<string, unknown>` to `any` for the credentials oneof builder
 
 ## Files Changed

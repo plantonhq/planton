@@ -118,4 +118,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-ServiceEntry is part of the Istio networking family. It requires the Istio Base CRDs and a running Istio control plane, and it pairs naturally with a Destination Rule -- the ServiceEntry makes the host *reachable and addressable*, while a DestinationRule configures *how* the mesh talks to it (load balancing, outlier detection, TLS origination). To order the entry after the workloads it fronts within an infra chart, express the dependency through `metadata.relationships`.
+ServiceEntry is part of the Istio networking family. It requires the Istio Base CRDs and a running Istio control plane, and it pairs naturally with a Destination Rule -- the ServiceEntry makes the host *reachable and addressable*, while a DestinationRule configures *how* the mesh talks to it (load balancing, outlier detection, TLS origination). To order the entry after the workloads it fronts within an Infra Chart, express the dependency through `metadata.relationships`.

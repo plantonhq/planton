@@ -33,13 +33,13 @@ Every Cloud Ops operation supports two access modes, designed for two different 
 
 ### Developer Mode
 
-Developers think in terms of their deployments: "show me the pods for my API." They specify their infra component — the deployment they care about — and Cloud Ops resolves everything else.
+Developers think in terms of their deployments: "show me the pods for my API." They specify their Infra Component — the deployment they care about — and Cloud Ops resolves everything else.
 
-When a developer targets an infra component, the system:
+When a developer targets an Infra Component, the system:
 
-1. Looks up the infra component in Infra Hub to find its cluster, namespace, and connection
-2. Verifies the developer has access to that specific infra component
-3. Routes the operation to the correct runner, scoped to the infra component's namespace
+1. Looks up the Infra Component in Infra Hub to find its cluster, namespace, and connection
+2. Verifies the developer has access to that specific Infra Component
+3. Routes the operation to the correct runner, scoped to the Infra Component's namespace
 
 The developer never needs to know which cluster their deployment runs on, what namespace it lives in, or which credential connects to it. They also cannot access resources outside their deployment's scope — the namespace and connection are derived server-side and cannot be overridden.
 
@@ -49,7 +49,7 @@ The developer never needs to know which cluster their deployment runs on, what n
 planton kubectl get pods -r my-org/prod/KubernetesDeployment/payments-api
 ```
 
-**In the web console**, developer mode is the default. Navigate to any infra component and open the Kubernetes tab to see its live state.
+**In the web console**, developer mode is the default. Navigate to any Infra Component and open the Kubernetes tab to see its live state.
 
 ### Admin Mode
 
@@ -77,7 +77,7 @@ planton kubectl get pods --connection k8s-prod-cluster -n kube-system
 | **Mental model** | "Show me pods for my deployment" | "Show me pods in kube-system" |
 | **Scope** | Single deployment's resources | Any resources accessible via the connection |
 | **Namespace/region** | Derived server-side (cannot override) | Supplied by the caller |
-| **Authorization** | On the infra component | On the provider connection |
+| **Authorization** | On the Infra Component | On the provider connection |
 
 Both modes use the same operations, the same tunnel infrastructure, and the same security model. The access mode determines how Cloud Ops resolves the target — not what operations are available.
 
@@ -119,7 +119,7 @@ Every Cloud Ops operation follows the same path, regardless of provider or acces
 
 1. **Request arrives** — The web console or CLI sends the operation request to the Cloud Ops service
 2. **Context resolution** — Cloud Ops determines the access mode and resolves the provider connection and any provider-specific parameters (namespace, region, project)
-3. **Authorization** — Cloud Ops verifies the caller has access (to the infra component in developer mode, or to the provider connection in admin mode)
+3. **Authorization** — Cloud Ops verifies the caller has access (to the Infra Component in developer mode, or to the provider connection in admin mode)
 4. **Tunnel routing** — Cloud Ops routes the request through the secure tunnel to the [Planton Runner](/docs/runner) bound to the resolved connection
 5. **Runner execution** — The runner executes the operation against the cloud provider API using local credentials
 6. **Response** — Results flow back through the tunnel to the caller
@@ -140,6 +140,6 @@ This architecture means:
 ## Related Documentation
 
 - [Kubernetes Operations](/docs/operations/kubernetes-operations) — Pod management, log streaming, container exec, resource browsing
-- [Resource Browser](/docs/operations/resource-browser) — Multi-infra component listing for AWS, GCP, and Azure
+- [Resource Browser](/docs/operations/resource-browser) — Multi-cloud listing of provider resources in AWS, GCP, and Azure
 - [Runner](/docs/runner) — The secure execution agent that Cloud Ops routes operations through
 - [Connections](/docs/connections) — Credential and integration management, including default connection resolution

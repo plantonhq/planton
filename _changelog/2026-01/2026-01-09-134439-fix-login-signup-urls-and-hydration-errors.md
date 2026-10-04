@@ -17,7 +17,7 @@ Multiple issues were discovered affecting the user experience and technical heal
 - **Incorrect Login URL**: Login button in header directed users to `https://planton.ai/` instead of the login page at `/login`
 - **Incorrect Signup URL**: "Sign Up & Join Beta" button in the Join Beta modal directed to the home page instead of `/signup`
 - **Hydration Error in Investor Deck**: Server/client mismatch when initializing slide index from URL hash caused React to throw hydration warnings
-- **Invalid HTML Nesting**: Typography kinds (`<p>` tags) containing Box kinds (`<div>` tags) violated HTML nesting rules, causing additional hydration errors
+- **Invalid HTML Nesting**: Typography components (`<p>` tags) containing Box components (`<div>` tags) violated HTML nesting rules, causing additional hydration errors
 - **Console Errors**: Multiple hydration warnings cluttering browser console and potentially impacting performance
 
 ## Solution / What's New
@@ -39,7 +39,7 @@ href="https://planton.ai/login"
 ```
 
 **Join Beta Signup Button**
-- Updated GetStartedBtn kind to direct to signup page
+- Updated GetStartedBtn component to direct to signup page
 - File: `src/components/common/typography.tsx`
 - Affects all "Get Started" CTAs throughout the site
 
@@ -53,7 +53,7 @@ href="https://planton.ai/signup"
 
 ### Hydration Error Fixes
 
-**InvestorDeckV2 Kind**
+**InvestorDeckV2 Component**
 - File: `src/components/invest/v2/InvestorDeckV2.tsx`
 - **Problem**: `useState(getInitialSlideIndex)` returned different values on server (always 0) vs client (potentially different based on URL hash)
 - **Solution**: Always initialize with `0`, then update slide index in `useEffect` after hydration completes
@@ -86,12 +86,12 @@ useEffect(() => {
 }, []);
 ```
 
-**ServiceHub Kinds - Invalid HTML Nesting**
+**ServiceHub Components - Invalid HTML Nesting**
 - Files:
   - `src/components/landing-page/v3-2026-01-02-1000/ServiceHub.tsx`
   - `src/components/landing-page/v2-2025-12-31-0900/ServiceHub.tsx`
-- **Problem**: Typography kinds (render as `<p>`) contained Box kinds (render as `<div>`), violating HTML nesting rules
-- **Solution**: Added `kind="div"` prop to Typography, making it render as `<div>` instead of `<p>`
+- **Problem**: Typography components (render as `<p>`) contained Box components (render as `<div>`), violating HTML nesting rules
+- **Solution**: Added `component="div"` prop to Typography, making it render as `<div>` instead of `<p>`
 
 ```typescript
 // Before - invalid HTML: <p><div>...</div></p>
@@ -103,7 +103,7 @@ useEffect(() => {
 </Typography>
 
 // After - valid HTML: <div><div>...</div></div>
-<Typography kind="div" className="text-lg font-semibold text-white mb-6 flex items-center gap-3">
+<Typography component="div" className="text-lg font-semibold text-white mb-6 flex items-center gap-3">
   <Box className="w-8 h-8 rounded-lg bg-[#10b981]/20 flex items-center justify-center">
     <CheckIcon />
   </Box>
@@ -128,17 +128,17 @@ useEffect(() => {
    - Added `useEffect` to handle slide index from URL hash after hydration
 
 4. **src/components/landing-page/v3-2026-01-02-1000/ServiceHub.tsx**
-   - Line 43: Added `kind="div"` to Typography
+   - Line 43: Added `component="div"` to Typography
 
 5. **src/components/landing-page/v2-2025-12-31-0900/ServiceHub.tsx**
-   - Line 69: Added `kind="div"` to "No More" Typography
-   - Line 89: Added `kind="div"` to "You Get" Typography
+   - Line 69: Added `component="div"` to "No More" Typography
+   - Line 89: Added `component="div"` to "You Get" Typography
 
 ### Technical Approach
 
 **Hydration Fix Pattern**: The key insight is that server-rendered HTML must match the initial client render. Any differences (like reading `window.location.hash`) must happen in `useEffect` after hydration completes, not during initial render.
 
-**HTML Nesting Fix Pattern**: When Material-UI Typography needs to contain block-level elements (like Box), explicitly set `kind="div"` to avoid invalid `<p>` → `<div>` nesting.
+**HTML Nesting Fix Pattern**: When Material-UI Typography needs to contain block-level elements (like Box), explicitly set `component="div"` to avoid invalid `<p>` → `<div>` nesting.
 
 ## Benefits
 
@@ -159,7 +159,7 @@ useEffect(() => {
 ## Related Work
 
 - Authentication flow improvements would be complemented by session handling work
-- ServiceHub kind fixes align with broader landing page optimization efforts
+- ServiceHub component fixes align with broader landing page optimization efforts
 - Investor deck improvements support the `/invest` page experience
 
 ---

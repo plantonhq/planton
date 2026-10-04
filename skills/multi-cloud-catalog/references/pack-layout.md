@@ -133,7 +133,7 @@ is validated: the module source. Every kind ships the Terraform
 module (`catalog/<provider>/<kind>/iac/tf/`, run by OpenTofu or
 Terraform) and the Pulumi module
 (`catalog/<provider>/<kind>/iac/pulumi/module/`) that turn its manifest
-into infra components -- except a kind that declares fewer engines, which
+into provider resources -- except a kind that declares fewer engines, which
 ships only the modules those engines run (OpenFGA and Stripe kinds have no
 Pulumi module, and Pulumi is refused for them) -- and the runner applies
 the module published for a release. When a pack page and a live deployment disagree, or a page is

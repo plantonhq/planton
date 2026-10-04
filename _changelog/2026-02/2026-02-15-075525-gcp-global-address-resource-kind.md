@@ -17,7 +17,7 @@ Platform engineers provisioning GCP infrastructure through Planton could create 
 - No way to reserve static IPs for HTTP(S) load balancers through Planton
 - VPC peering for managed services (Cloud SQL, Redis, AlloyDB) required manual address range reservation outside Planton
 - Private Service Connect endpoints couldn't be provisioned as part of an Planton-managed environment
-- Infra charts composing load-balanced environments had no `GcpGlobalAddress` to reference via `StringValueOrRef`
+- Infra Charts composing load-balanced environments had no `GcpGlobalAddress` to reference via `StringValueOrRef`
 
 ## Solution / What's New
 
@@ -106,7 +106,7 @@ Registered as `GcpGlobalAddress = 621` with id_prefix `gcpgip` in `catalog_kind.
 
 - **GCP resource count**: 19 → 20 (second new resource in the expansion project)
 - **Downstream enablement**: Future resources like load balancers and CDN can reference global addresses via `StringValueOrRef`
-- **Infra charts**: `gcp-gke-environment` and `gcp-serverless-api-backend` charts can now include static IP provisioning
+- **Infra Charts**: `gcp-gke-environment` and `gcp-serverless-api-backend` charts can now include static IP provisioning
 
 ## Related Work
 

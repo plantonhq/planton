@@ -133,7 +133,7 @@ in Scenario 1:
 
 ## Never render a connection manifest inside a chart
 
-Charts render infra components only. A `KubernetesProviderConnection` document
+Charts render catalog objects only. A `KubernetesProviderConnection` document
 in templates fails the build ("UNSUPPORTED CATALOG KIND") — connections
 are org-scoped, authorization-bearing records the platform materializes or
 users create; they never belong in templates.

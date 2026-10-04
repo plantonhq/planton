@@ -13,7 +13,7 @@ Kubernetes routinely moves pods on purpose: an administrator drains a node for m
 **Key value over raw manifests:**
 
 - **Schema-level validation**: Exactly one availability bound enforced (the API rejects both, and a budget with neither protects nothing), int-or-percent format checks on the bounds, selector operator contracts (`In`/`NotIn` require values, `Exists`/`DoesNotExist` forbid them), and a required selector — all caught before anything reaches the cluster
-- **Namespace by value or reference**: `spec.namespace` accepts a literal name or a reference to a `KubernetesNamespace` resource, so an infra chart can create the namespace and its budgets in one run
+- **Namespace by value or reference**: `spec.namespace` accepts a literal name or a reference to a `KubernetesNamespace` resource, so an Infra Chart can create the namespace and its budgets in one run
 - **Deterministic unhealthy-pod policy**: The Pulumi module always submits `unhealthyPodEvictionPolicy` explicitly with the server default applied, so the deployed object never depends on server-side defaulting
 - **Dual IaC support**: Both Pulumi and Terraform implementations with feature parity (one documented exception below)
 - **Lifecycle management**: Integrated with Planton's deployment lifecycle for status tracking and outputs

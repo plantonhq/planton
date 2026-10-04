@@ -69,7 +69,7 @@ Each target specifies:
 - **Environment**: The deployment environment name (e.g., dev, staging, production)
 - **Cloud provider**: Which provider to deploy to (Kubernetes, AWS, GCP, Cloudflare)
 - **Resource type**: The specific resource type for this provider (e.g., Deployment, ECS Service, Cloud Run)
-- **Resource configuration**: The complete infra component specification as a structured object
+- **Resource configuration**: The complete Infra Component specification as a structured object
 - **Manual approval**: Whether the pipeline should pause for approval before deploying to this environment
 
 The resource configuration supports template variables that are substituted during pipeline execution:

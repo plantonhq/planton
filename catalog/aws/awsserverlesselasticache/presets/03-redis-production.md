@@ -21,6 +21,6 @@ production workloads with predictable traffic.
 - An AwsKmsKey for customer-managed encryption
 - A Redis ACL user group (created via AWS CLI or console)
 
-**Infra chart integration:** This preset is designed for composition in infra charts.
+**Infra Chart integration:** This preset is designed for composition in Infra Charts.
 All cross-resource fields use `valueFrom` references that the platform resolves
 into a dependency DAG.

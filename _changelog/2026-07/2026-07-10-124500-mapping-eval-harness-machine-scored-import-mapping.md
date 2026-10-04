@@ -5,7 +5,7 @@
 
 ## Summary
 
-Import **mapping** — grouping discovered infra components into kind
+Import **mapping** — grouping discovered provider resources into kind
 instances, reconstructing their specs, and wiring `value_from` references —
 now has an examination system: seed an account from known manifests (the
 answer key), scan it back blind through a read-only channel, have a

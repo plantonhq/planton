@@ -764,7 +764,7 @@ mid-session working tree.
 A new kind is only exercised once it is registered in the provider harness:
 
 - `aa_e2e/verify/verifier.go` — add a verifier keyed on the kind dir name.
-  SaaS providers use the `apiPathVerifier` pattern (`&apiPathVerifier{kind:
+  SaaS providers use the `apiPathVerifier` pattern (`&apiPathVerifier{component:
   "<kind>", pathFormat: "<api-path>/%s"}`); cloud-SDK providers (e.g. AWS)
   implement the three-method `Verifier` interface against the provider SDK,
   keyed on the API's own identifier for the resource and treating the provider's
@@ -1165,7 +1165,7 @@ prerequisites in reverse order after the kind's own lifecycle, and any
 destroy/stack-removal failure (e.g. the ephemeral backend state vanished
 before teardown) fails the run's DEPENDENCIES-DOWN phase — a green run
 therefore guarantees zero orphaned prerequisites. When that phase is red,
-real infra components may still exist: sweep the account for the scenario's
+real provider resources may still exist: sweep the account for the scenario's
 `planton-e2e`-tagged resources before re-running.
 
 **A service's FIRST-ever use in an account can fail on its service-linked

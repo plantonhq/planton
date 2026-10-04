@@ -10,7 +10,7 @@ Added the OciKmsVault catalog kind -- OCI's Key Management Service vault that pr
 
 ## Problem Statement / Motivation
 
-Planton's OCI provider had no key management kind. OCI KMS Vaults are the foundational resource for encryption key management -- every service that uses customer-managed encryption keys (Compute, Block Volume, Object Storage, Database, etc.) requires a vault. Without a declarative vault kind, users could not provision encryption infrastructure as part of their infra charts, and downstream kinds like OciKmsKey and OciVaultSecret cannot be implemented.
+Planton's OCI provider had no key management kind. OCI KMS Vaults are the foundational resource for encryption key management -- every service that uses customer-managed encryption keys (Compute, Block Volume, Object Storage, Database, etc.) requires a vault. Without a declarative vault kind, users could not provision encryption infrastructure as part of their Infra Charts, and downstream kinds like OciKmsKey and OciVaultSecret cannot be implemented.
 
 ## Solution / What's New
 

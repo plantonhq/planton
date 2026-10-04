@@ -55,7 +55,7 @@ Implemented a complete Terraform module that mirrors the functionality of the ex
 feature parity across both IaC backends. Fixed documentation errors to accurately describe the service account
 kind.
 
-### Implementation Kinds
+### Implementation Components
 
 #### 1. Terraform Variables (`variables.tf`)
 

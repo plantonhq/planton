@@ -3,7 +3,7 @@
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. The sole preset is genuinely zero-committed: both modules
-# create a digitalocean_app containing ONLY a function kind (no service,
+# create a digitalocean_app containing ONLY a function component (no service,
 # no worker, no instance size), so no App Platform instance charge exists and
 # the GiB-second meter starts with the first invocation, not with creation --
 # stated in exclusions, never padded into fabricated dollars. Schema:
@@ -22,4 +22,4 @@ spec:
         - "function compute GiB-seconds bill only when the function runs -- invocation volume x memory limit (set in the repo's project.yml, not the manifest) x execution duration, 100 ms minimum per invocation; the team's first 90,000 GiB-seconds each month are free, and overage bills $0.0000185 per GiB-second ($0.07 per GiB-hour)"
         - "outbound bandwidth from the function's public endpoint follows App Platform pricing on the app and depends entirely on response traffic"
         - "log forwarding, if log_destinations were configured, would bill on the receiving system (external subscription or an OpenSearch cluster's own kind) -- this preset configures none"
-      notes: "Zero committed cost -- the preset deploys one Node.js hello-world function kind from a public git source with a single plaintext env var; nothing in it provisions an instance, and a deployed function that receives no invocations bills nothing. Spend starts with traffic, and only after the team's monthly 90,000 GiB-second free allowance (shared across all functions on the team) is consumed."
+      notes: "Zero committed cost -- the preset deploys one Node.js hello-world function component from a public git source with a single plaintext env var; nothing in it provisions an instance, and a deployed function that receives no invocations bills nothing. Spend starts with traffic, and only after the team's monthly 90,000 GiB-second free allowance (shared across all functions on the team) is consumed."

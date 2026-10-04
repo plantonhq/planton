@@ -6,7 +6,7 @@
 
 ## Summary
 
-Seven UX issues in the Planton documentation site were fixed in a single session: broken sidebar labels, ugly URL slugs, white flash on page navigation, sidebar scroll position loss, broken icon fallbacks, missing code block copy button, and overly bright inline code styling. The build pipeline, sidebar kind, page layout, and markdown renderer were all updated.
+Seven UX issues in the Planton documentation site were fixed in a single session: broken sidebar labels, ugly URL slugs, white flash on page navigation, sidebar scroll position loss, broken icon fallbacks, missing code block copy button, and overly bright inline code styling. The build pipeline, sidebar component, page layout, and markdown renderer were all updated.
 
 ## Problem Statement / Motivation
 
@@ -18,7 +18,7 @@ After deploying 136 catalog pages and 40 hand-written docs pages, several usabil
 - URLs like `/docs/catalog/aws/awsroute53dnsrecord` were redundant (provider prefix repeated) and not human-readable
 - Every page navigation caused a visible white flash because `DocsLayout` re-mounted, re-fetching `docs-structure.json` each time
 - Clicking a sidebar item below the viewport scrolled the sidebar back to the top, losing the user's position
-- Missing kind icons showed browser-default broken image placeholders (green/teal squares)
+- Missing component icons showed browser-default broken image placeholders (green/teal squares)
 - Code blocks had no copy-to-clipboard functionality
 - Inline code used `text-purple-300` on `bg-purple-900/30` — described as "too glittery"
 
@@ -38,11 +38,11 @@ The `expandedPaths` state now merges new ancestors into the existing set rather 
 
 ### Icon Fallback with Letter Badge
 
-Missing icons now display a styled letter badge (first letter of the kind title, 20x20px, `bg-slate-700` rounded square) instead of hiding entirely — maintaining alignment with icons that do load.
+Missing icons now display a styled letter badge (first letter of the component title, 20x20px, `bg-slate-700` rounded square) instead of hiding entirely — maintaining alignment with icons that do load.
 
 ### Code Block Copy Button
 
-New `CodeBlock` kind wraps `<pre>` elements with a copy-to-clipboard button that appears on hover. Uses `navigator.clipboard.writeText()` with a 2-second checkmark confirmation.
+New `CodeBlock` component wraps `<pre>` elements with a copy-to-clipboard button that appears on hover. Uses `navigator.clipboard.writeText()` with a 2-second checkmark confirmation.
 
 ### Inline Code Restyling
 
@@ -71,7 +71,7 @@ Changed from `bg-purple-900/30 text-purple-300` to `bg-slate-800/60 text-sky-300
 - Refactored `page.tsx` — returns content + right sidebar as fragment (flex children of layout)
 - Created `loading.tsx` — dark-themed skeleton matching site colors
 
-### Sidebar Kind (`DocsSidebar.tsx`)
+### Sidebar Component (`DocsSidebar.tsx`)
 
 - Structure fetch moved to mount-only (ref guard prevents re-fetch)
 - `expandedPaths` useEffect changed from `new Set()` to `new Set(prev)`
@@ -81,7 +81,7 @@ Changed from `bg-purple-900/30 text-purple-300` to `bg-slate-800/60 text-sky-300
 
 ### MDX Renderer (`MDXRenderer.tsx`)
 
-- `pre` override replaced with `CodeBlock` kind
+- `pre` override replaced with `CodeBlock` component
 - Inline `code` styling changed to `bg-slate-800/60 text-sky-300`
 
 ## Benefits

@@ -16,7 +16,7 @@ High-availability server deployments on Hetzner Cloud require anti-affinity guar
 
 - No way to manage Hetzner Cloud placement groups through Planton
 - The upcoming HetznerCloudServer kind (R07) needs placement group references via StringValueOrRef
-- All three planned infra charts (ha-server-cluster in particular) depend on placement groups
+- All three planned Infra Charts (ha-server-cluster in particular) depend on placement groups
 
 ## Solution / What's New
 
@@ -102,13 +102,13 @@ flowchart TB
 - Enables server anti-affinity for HA deployments on Hetzner Cloud
 - Clean, minimal design with sensible defaults (users can deploy with `spec: {}`)
 - Establishes the optional-enum-with-default pattern for future kinds
-- Foundation dependency for the ha-server-cluster infra chart
+- Foundation dependency for the ha-server-cluster Infra Chart
 
 ## Impact
 
 - **Users**: Can create placement groups to ensure server fault tolerance
 - **Future kinds**: R07 (HetznerCloudServer) will reference placement groups via `placement_group_id`
-- **Infra charts**: Required by hetzner-ha-server-cluster
+- **Infra Charts**: Required by hetzner-ha-server-cluster
 
 ## Files Changed
 

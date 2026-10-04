@@ -6,7 +6,7 @@
 
 ## Summary
 
-Transformed the Planton Web App from a multi-step manual installation process into a **one-command installable solution** managed entirely through the CLI. Users can now install via Homebrew and run `planton webapp init` to get a fully functional web interface for managing infra components. The solution consolidates MongoDB, backend API, and frontend into a single Docker container orchestrated by supervisord, eliminating the need for separate service management.
+Transformed the Planton Web App from a multi-step manual installation process into a **one-command installable solution** managed entirely through the CLI. Users can now install via Homebrew and run `planton webapp init` to get a fully functional web interface for managing Infra Components. The solution consolidates MongoDB, backend API, and frontend into a single Docker container orchestrated by supervisord, eliminating the need for separate service management.
 
 ## Problem Statement / Motivation
 
@@ -36,7 +36,7 @@ These barriers were particularly problematic for:
 
 ## Solution / What's New
 
-Introduced a **unified installation architecture** with three key kinds:
+Introduced a **unified installation architecture** with three key components:
 
 1. **Single Docker Container** - All services (MongoDB, backend, frontend) in one image
 2. **CLI Web App Commands** - Complete lifecycle management via `planton webapp` command group
@@ -309,7 +309,7 @@ planton webapp logs -n 500
 
 Comprehensive health display:
 - Container status (running/stopped/paused/restarting)
-- Service status for each kind (MongoDB/Backend/Frontend)
+- Service status for each component (MongoDB/Backend/Frontend)
 - Port listening checks via netstat
 - Access URLs
 - Data volume names
@@ -644,7 +644,7 @@ This change removes the biggest barrier to web app adoption:
 This work builds on:
 - **T02-T08** (Dec 1-9, 2025): Core web app implementation
   - Infra component CRUD interface
-  - Infra job tracking
+  - Infra Job tracking
   - Credential management
   - Theme system
   - Server-side pagination

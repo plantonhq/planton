@@ -6,11 +6,11 @@
 
 ## Summary
 
-Simplified the web application navigation and dashboard by removing unnecessary menu items and cards, while adding a new infra component count API to provide real-time statistics. Enhanced UI components with improved theme-aware styling and better visual hierarchy.
+Simplified the web application navigation and dashboard by removing unnecessary menu items and cards, while adding a new Infra Component count API to provide real-time statistics. Enhanced UI components with improved theme-aware styling and better visual hierarchy.
 
 ## Problem Statement
 
-The web application had accumulated navigation items and dashboard cards that were not yet implemented or needed, creating visual clutter and confusion. Additionally, the dashboard lacked a way to quickly see the total number of infra components without loading the full list.
+The web application had accumulated navigation items and dashboard cards that were not yet implemented or needed, creating visual clutter and confusion. Additionally, the dashboard lacked a way to quickly see the total number of Infra Components without loading the full list.
 
 ### Pain Points
 
@@ -24,11 +24,11 @@ The web application had accumulated navigation items and dashboard cards that we
 
 - Multiple stat cards displayed without actual data or functionality
 - Dashboard showed placeholder content instead of meaningful metrics
-- No quick way to see infra component count without navigating to the full list page
+- No quick way to see Infra Component count without navigating to the full list page
 
 **Missing Statistics**:
 
-- No API endpoint to get infra component count efficiently
+- No API endpoint to get Infra Component count efficiently
 - Dashboard couldn't display real-time resource statistics
 - Required full list query just to get a count, wasting bandwidth
 
@@ -40,7 +40,7 @@ The web application had accumulated navigation items and dashboard cards that we
 
 ## Solution
 
-Streamlined the navigation to show only functional features (Dashboard and Infra Components), simplified the dashboard to display a single meaningful stat card with infra component count, and implemented a new count API endpoint for efficient statistics retrieval.
+Streamlined the navigation to show only functional features (Dashboard and Infra Components), simplified the dashboard to display a single meaningful stat card with Infra Component count, and implemented a new count API endpoint for efficient statistics retrieval.
 
 ### Architecture
 
@@ -55,7 +55,7 @@ After:  [Dashboard, Infra Components]
 
 ```
 Before: Multiple placeholder stat cards
-After:  Single Infra Components count card + Infra Components list kind
+After:  Single Infra Components count card + Infra Components list component
 ```
 
 **Count API Flow**:
@@ -86,8 +86,8 @@ This provides a clean, focused navigation experience showing only what's actuall
 
 Dashboard now displays:
 
-- **Infra Components Count Card**: Shows total number of infra components with real-time data
-- **Infra Components List**: Embedded list kind showing recent resources
+- **Infra Components Count Card**: Shows total number of Infra Components with real-time data
+- **Infra Components List**: Embedded list component showing recent resources
 
 The count card uses the new count API for efficient data retrieval without loading full resource lists.
 
@@ -95,7 +95,7 @@ The count card uses the new count API for efficient data retrieval without loadi
 
 New backend API endpoint that:
 
-- Returns total count of infra components
+- Returns total count of Infra Components
 - Supports optional filtering by resource kind
 - Uses MongoDB `CountDocuments()` for efficient counting
 - Provides real-time statistics without full data transfer
@@ -106,7 +106,7 @@ Improved styling for:
 
 - Dashboard stat cards with theme-aware colors and hover effects
 - Data table component with better visual hierarchy
-- Consistent spacing and typography across kinds
+- Consistent spacing and typography across components
 
 ## Implementation Details
 
@@ -150,7 +150,7 @@ const menuGroups: MenuGroup[] = [
 
 **File**: `app/frontend/src/app/dashboard/page.tsx`
 
-Simplified to show only infra component statistics:
+Simplified to show only Infra Component statistics:
 
 ```14:62:app/frontend/src/app/dashboard/page.tsx
 export default function DashboardPage() {
@@ -206,10 +206,10 @@ export default function DashboardPage() {
 
 **Features**:
 
-- Single stat card showing infra component count
+- Single stat card showing Infra Component count
 - Real-time count updates via new API
 - Loading state handling
-- Embedded infra components list kind
+- Embedded Infra Components list component
 - Automatic refresh on resource changes
 
 ### 3. Count API Implementation
@@ -383,7 +383,7 @@ export const StatCardValue = styled(Typography)(({ theme }) => ({
 
 **Better Dashboard**:
 
-- Real-time infra component count at a glance
+- Real-time Infra Component count at a glance
 - No placeholder content or empty cards
 - Meaningful statistics without navigation
 
@@ -409,7 +409,7 @@ export const StatCardValue = styled(Typography)(({ theme }) => ({
 
 **UI Consistency**:
 
-- Theme-aware kinds work in both light and dark modes
+- Theme-aware components work in both light and dark modes
 - Consistent styling patterns across dashboard
 - Better visual hierarchy improves readability
 
@@ -525,7 +525,7 @@ const vpcCount = await query.count('CivoVpc');
 - **6 menu items removed** from sidebar navigation
 - **Multiple placeholder cards removed** from dashboard
 - **3 service files deleted** (unused dashboard services)
-- **Theme-aware styling** added to all dashboard kinds
+- **Theme-aware styling** added to all dashboard components
 
 ## Related Work
 
@@ -533,7 +533,7 @@ const vpcCount = await query.count('CivoVpc');
 
 This work builds on:
 
-- **Infra Component Web UI** (December 1, 2025) - Existing infra component management interface
+- **Infra Component Web UI** (December 1, 2025) - Existing Infra Component management interface
 - **Theme System** (December 1, 2025) - Theme infrastructure for UI components
 - **Infra Component APIs** (November 28, 2025) - Backend API foundation
 
@@ -556,7 +556,7 @@ This work enables:
 
 ## Known Limitations
 
-- **Single Stat Card**: Dashboard currently shows only infra component count (intentional simplification)
+- **Single Stat Card**: Dashboard currently shows only Infra Component count (intentional simplification)
 - **No Kind Breakdown**: Count API supports kind filtering but dashboard doesn't use it yet
 - **Manual Refresh**: Count updates require manual refresh or resource change events
 
@@ -581,7 +581,7 @@ These limitations are intentional for the initial simplification and can be exte
 
 ### Single Dashboard Card
 
-**Decision**: Show only infra component count card, remove other placeholder cards
+**Decision**: Show only Infra Component count card, remove other placeholder cards
 
 **Rationale**:
 
@@ -631,7 +631,7 @@ These limitations are intentional for the initial simplification and can be exte
 Existing users will immediately benefit from:
 
 - Cleaner navigation with only functional features
-- Real-time infra component count on dashboard
+- Real-time Infra Component count on dashboard
 - Better UI styling with theme support
 - Improved performance with count API
 

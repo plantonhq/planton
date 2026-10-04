@@ -136,7 +136,7 @@ Orchestration flow:
 **File**: `module/harbor.go`
 
 Harbor Helm chart deployment with dynamic configuration:
-- **Container Resources**: Uses `containerresources.ConvertToPulumiMap()` helper for all kinds
+- **Container Resources**: Uses `containerresources.ConvertToPulumiMap()` helper for all components
 - **Database Toggle**: 
   - External: Sets `database.type: "external"` with connection details
   - Managed: Enables `postgresql.enabled: true` with persistence config
@@ -238,7 +238,7 @@ Comprehensive overview (232 lines) covering:
 - CNCF graduated project
 
 **Key Features**:
-- Detailed descriptions of all 4 Harbor kinds (Core, Portal, Registry, Jobservice)
+- Detailed descriptions of all 4 Harbor components (Core, Portal, Registry, Jobservice)
 - Database configuration (self-managed vs external PostgreSQL)
 - Cache configuration (self-managed vs external Redis with Sentinel)
 - Object storage backends (S3, GCS, Azure, OSS, Filesystem)
@@ -388,7 +388,7 @@ helmValues := pulumi.Map{
   "commonLabels":     pulumi.ToStringMap(locals.KubernetesLabels),
 }
 
-// Container configurations (4 kinds)
+// Container configurations (4 components)
 if locals.HarborKubernetes.Spec.CoreContainer != nil {
   coreValues := pulumi.Map{
     "replicas": pulumi.Int(int(locals.HarborKubernetes.Spec.CoreContainer.Replicas)),

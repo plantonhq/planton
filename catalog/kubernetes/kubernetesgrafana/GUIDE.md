@@ -46,7 +46,7 @@ install teaches:
 - **Pin datasource uids, and name them in every panel.** A dashboard
   that reads `{"uid": "prometheus"}` survives the datasource's URL moving
   to another Prometheus; one that reads a name does not.
-- **In an infra chart, keep the chart engine's delimiters out.** Every
+- **In an Infra Chart, keep the chart engine's delimiters out.** Every
   template is rendered, and the engine keeps a raw block's tags in its
   output, so a Prometheus legend format with double braces breaks the
   render. Write the JSON pretty-printed (closing braces then never sit
@@ -142,7 +142,7 @@ install teaches:
 - **A dashboard that belongs to no cluster has no cluster variable.**
   The outside view of every environment's front door is estate-wide; a
   `$cluster` filter there would only blank its panels.
-- **Removing a dashboard is a purge.** An infra chart re-install never
+- **Removing a dashboard is a purge.** An Infra Chart re-install never
   deletes a ConfigMap the chart stopped declaring; purge it by name, or
   the drift comparison above names it as shipped by a chart.
 

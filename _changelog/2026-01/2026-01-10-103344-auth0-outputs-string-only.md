@@ -10,7 +10,7 @@ Converted all non-string field types (int32, bool) to strings in Auth0 outputs.p
 
 ## Problem Statement / Motivation
 
-Auth0 catalog kind infra jobs were failing in the "update-outputs" step with the error:
+Auth0 catalog kind Infra Jobs were failing in the "update-outputs" step with the error:
 
 ```
 Failed to load outputs map to proto: For input string: "unknown"
@@ -20,7 +20,7 @@ Failed to load outputs map to proto: For input string: "unknown"
 
 - Pulumi outputs are serialized as strings, but the Java backend was attempting to parse them as integers
 - When Pulumi couldn't resolve a value (API timing, errors), it output "unknown" instead of a number
-- `Integer.parseInt("unknown")` throws `NumberFormatException`, causing infra job failures
+- `Integer.parseInt("unknown")` throws `NumberFormatException`, causing Infra Job failures
 - Boolean fields silently converted "unknown" to `false` via `Boolean.parseBoolean()`, which could be misleading
 - Outputs are primarily for display/reference - no computation is performed on them
 
@@ -122,7 +122,7 @@ Regenerated stubs for:
 - **Future-proof**: New Auth0 kinds should follow this pattern
 
 ### For Users
-- **Reliable infra jobs**: Auth0 deployments complete successfully
+- **Reliable Infra Jobs**: Auth0 deployments complete successfully
 - **Accurate output display**: Values shown as received, not silently converted
 
 ## Impact

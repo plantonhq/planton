@@ -17,7 +17,7 @@ as numbers, booleans as booleans).
 - **CRs apply through `kubectl_manifest` (alekc/kubectl)** — unlike
   the hashicorp provider's `kubernetes_manifest` it needs no cluster
   connection at plan time, so the cluster can be PLANNED before the
-  Strimzi operator's CRDs exist — an infra chart can deploy the
+  Strimzi operator's CRDs exist — an Infra Chart can deploy the
   operator and its Kafka clusters in one run.
 - **Node pools apply BEFORE the Kafka CR** — Strimzi tolerates either
   order, but a Kafka CR with no matching pools reports a transient

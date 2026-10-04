@@ -122,7 +122,7 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference the namespace so infra charts create it and this identity in dependency order.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference the namespace so Infra Charts create it and this identity in dependency order.
 - [**Kubernetes Secret**](/infra-catalog/kubernetes-secret) -- docker-registry Secrets attach via `imagePullSecrets`; the Secret kind's `serviceAccountToken` variant mints long-lived tokens FOR this identity.
 - [**Kubernetes RBAC**](/infra-catalog/kubernetes-rbac) -- grants bind Kubernetes permissions to this identity as a ServiceAccount subject.
 - [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) and the other workload kinds -- run as this identity via `serviceAccountName`.

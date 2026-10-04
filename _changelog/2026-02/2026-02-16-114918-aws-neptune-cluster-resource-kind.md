@@ -118,7 +118,7 @@ apis/dev/planton/provider/aws/awsneptunecluster/v1/
 
 - **New resource kind**: `AwsNeptuneCluster` (enum 341, id_prefix: `awsnep`)
 - **Phase 3 progress**: 1 of 7 specialized kinds complete (R26)
-- **Infra chart enablement**: Graph database patterns now available for future composition
+- **Infra Chart enablement**: Graph database patterns now available for future composition
 
 ## Related Work
 

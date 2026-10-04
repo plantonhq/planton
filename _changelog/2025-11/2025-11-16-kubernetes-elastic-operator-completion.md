@@ -39,7 +39,7 @@ All protobuf validation rules verified, including buf.validate constraints for r
 #### main.tf (3,497 bytes)
 Comprehensive Terraform implementation with extensive documentation:
 - Module overview and purpose
-- Infrastructure kinds listed
+- Infrastructure components listed
 - Kubernetes namespace creation with labels
 - Helm release deployment with ECK operator
 - Resource configuration with defaults
@@ -119,14 +119,14 @@ Practical usage examples with 5 scenarios:
 **iac/pulumi/README.md** (7,065 bytes)
 - Module structure overview
 - Prerequisites and quick start
-- Detailed kind explanations
+- Detailed component explanations
 - Helm values construction
 - Upgrade procedures
 - Debugging guide
 - Common issues and solutions
 
 **iac/pulumi/overview.md** (10,786 bytes)
-- Architecture and kind hierarchy
+- Architecture and component hierarchy
 - Design decisions with rationale
 - Module workflow (6 steps documented)
 - Error handling strategy

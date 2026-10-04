@@ -10,13 +10,13 @@ Added HetznerCloudDnsZone (R12) -- the 12th and final Hetzner Cloud resource kin
 
 ## Problem Statement / Motivation
 
-The Hetzner Cloud provider expansion required 12 resource kinds to enable 3 planned infra charts. DNS zone management was the final piece -- without it, the `hetzner-load-balanced-app` infra chart cannot create DNS records pointing to load balancer IPs, and users cannot manage Hetzner Cloud DNS from Planton manifests.
+The Hetzner Cloud provider expansion required 12 resource kinds to enable 3 planned Infra Charts. DNS zone management was the final piece -- without it, the `hetzner-load-balanced-app` Infra Chart cannot create DNS records pointing to load balancer IPs, and users cannot manage Hetzner Cloud DNS from Planton manifests.
 
 ### Pain Points
 
 - No DNS management capability in the Hetzner Cloud provider
 - Users must manage DNS outside of Planton even when all other infrastructure is declared as code
-- Infra chart composability requires DNS records that can reference other kind outputs (server IPs, LB addresses)
+- Infra Chart composability requires DNS records that can reference other kind outputs (server IPs, LB addresses)
 
 ## Solution / What's New
 
@@ -92,13 +92,13 @@ Comprehensive test suite covering valid specs (minimal primary, primary with rec
 ## Benefits
 
 - Completes the 12-resource Hetzner Cloud provider expansion
-- Enables the `hetzner-load-balanced-app` infra chart with DNS record management
+- Enables the `hetzner-load-balanced-app` Infra Chart with DNS record management
 - Supports both primary zones (direct record management) and secondary zones (zone transfer from external primaries)
 - Record values support cross-kind references via StringValueOrRef
 
 ## Impact
 
-- **Users**: Can now manage DNS zones and records as part of their Planton manifests, with full composability for infra charts.
+- **Users**: Can now manage DNS zones and records as part of their Planton manifests, with full composability for Infra Charts.
 - **Platform**: All 12 planned Hetzner Cloud resource kinds are now implemented (Start phase complete). Docs and presets remain for some kinds.
 - **Infra Charts**: DNS was the final dependency for the planned `hetzner-load-balanced-app` chart.
 

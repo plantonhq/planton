@@ -58,7 +58,7 @@ flowchart TB
 
 ### GCP KMS with StringValueOrRef
 
-The GCP KMS seal fields (`project`, `key_ring`, `crypto_key`, `workload_identity_service_account`) use `StringValueOrRef` with `default_kind` and `default_kind_field_path` annotations. This follows the infra-chart composability rule -- an infra chart can wire a `GcpKmsKey` output directly into the OpenBao seal config using `valueFrom` references.
+The GCP KMS seal fields (`project`, `key_ring`, `crypto_key`, `workload_identity_service_account`) use `StringValueOrRef` with `default_kind` and `default_kind_field_path` annotations. This follows the infra-chart composability rule -- an Infra Chart can wire a `GcpKmsKey` output directly into the OpenBao seal config using `valueFrom` references.
 
 ```yaml
 # Standalone use (literal values)
@@ -112,14 +112,14 @@ autoUnseal:
 
 - **Zero-downtime recovery**: Pod restarts auto-unseal via KMS -- no human intervention
 - **Multi-cloud support**: GCP, AWS, Azure, and Transit seal types from day one
-- **Infra-chart composable**: GCP KMS fields use `StringValueOrRef` for dependency-aware deployment in infra charts
+- **Infra-chart composable**: GCP KMS fields use `StringValueOrRef` for dependency-aware deployment in Infra Charts
 - **GKE-native auth**: Workload Identity annotation eliminates credential file management
 - **Backward compatible**: `auto_unseal` is optional -- existing deployments without it continue to work with manual unseal
 
 ## Impact
 
 - **Planton users**: Can configure auto-unseal declaratively in their `KubernetesOpenBao` YAML manifests
-- **Infra chart authors**: Can compose KMS resources with OpenBao using `valueFrom` references
+- **Infra Chart authors**: Can compose KMS resources with OpenBao using `valueFrom` references
 - **Planton platform**: Production OpenBAO can migrate from manual unseal to GCP KMS auto-unseal
 
 ## Related Work

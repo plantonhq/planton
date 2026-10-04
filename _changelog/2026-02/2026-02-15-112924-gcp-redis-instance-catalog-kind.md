@@ -71,14 +71,14 @@ A complete catalog kind with proto API, Pulumi module, Terraform module, validat
 ## Benefits
 
 - **Pre-deploy validation**: 2 cross-field CEL rules catch tier/replica misconfigurations before any cloud API call
-- **Composition-ready**: 3 StringValueOrRef fields enable wiring to GcpProject, GcpVpc, and GcpKmsKey in infra charts
+- **Composition-ready**: 3 StringValueOrRef fields enable wiring to GcpProject, GcpVpc, and GcpKmsKey in Infra Charts
 - **Standardized presets**: 3 presets cover 90% of use cases (dev, production HA, read-replica scaled)
 - **Feature parity**: Pulumi and Terraform modules cover identical field sets
 
 ## Impact
 
 - GCP resource count increases from 26 to 27
-- Enables caching layer in future infra charts (serverless-api-backend, microservices environments)
+- Enables caching layer in future Infra Charts (serverless-api-backend, microservices environments)
 - Completes the first database-category resource in the expansion queue
 
 ## Related Work

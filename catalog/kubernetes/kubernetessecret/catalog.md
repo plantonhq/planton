@@ -115,6 +115,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference the namespace so infra charts create it and this Secret in dependency order.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference the namespace so Infra Charts create it and this Secret in dependency order.
 - [**Kubernetes ServiceAccount**](/infra-catalog/kubernetes-service-account) -- the `serviceAccountToken` variant references the identity its token belongs to; docker-registry Secrets are attached to ServiceAccounts as `imagePullSecrets`.
 - [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) and the other workload kinds -- consume secrets as env vars, mounted files, or registry credentials.

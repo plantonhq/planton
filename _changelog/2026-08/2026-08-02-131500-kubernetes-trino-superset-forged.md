@@ -56,7 +56,7 @@
   configOverrides snippets reading environment. The bundled
   postgresql/redis subcharts (frozen `bitnamilegacy` image lines)
   never ship — the metadata database is external-required and the
-  cache external-or-absent, with the Celery kinds CEL-fenced on
+  cache external-or-absent, with the Celery components CEL-fenced on
   the cache's presence.
 
 - **The Terraform `variables.tf` files are generator-produced**

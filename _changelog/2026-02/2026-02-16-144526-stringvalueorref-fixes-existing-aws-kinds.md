@@ -10,7 +10,7 @@ Converted 10 plain `string` fields across 6 existing AWS kinds to `StringValueOr
 
 ## Problem Statement / Motivation
 
-When the AWS resource expansion project began, 7 existing AWS kinds were identified as having plain `string` fields for values that should support cross-resource references (KMS keys, IAM roles, VPC IDs, security groups, ACM certificates). Without `StringValueOrRef`, users deploying these kinds in infra charts or multi-resource compositions had to hard-code IDs and ARNs -- defeating the purpose of Planton's declarative dependency system.
+When the AWS resource expansion project began, 7 existing AWS kinds were identified as having plain `string` fields for values that should support cross-resource references (KMS keys, IAM roles, VPC IDs, security groups, ACM certificates). Without `StringValueOrRef`, users deploying these kinds in Infra Charts or multi-resource compositions had to hard-code IDs and ARNs -- defeating the purpose of Planton's declarative dependency system.
 
 ### Pain Points
 
@@ -86,7 +86,7 @@ KmsKeyId: &foreignkeyv1.StringValueOrRef{
 ## Benefits
 
 - **Cross-resource references**: Users can now wire dependencies between all AWS kinds using `valueFrom`
-- **Infra chart composability**: These kinds can participate in multi-resource compositions without hard-coded IDs
+- **Infra Chart composability**: These kinds can participate in multi-resource compositions without hard-coded IDs
 - **API consistency**: All AWS kinds now follow the same StringValueOrRef convention
 - **Zero breaking changes**: Field numbers preserved, literal values still work exactly as before
 

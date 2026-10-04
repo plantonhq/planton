@@ -13,7 +13,7 @@ Two related improvements to the AWS keyless web-identity path, plus a dead-doc c
    every AWS pulumi module now resolves credentials through one path and is keyless by
    construction.
 2. **Feature**: added a file-based token source (`web_identity_token_file`) to
-   `AwsWebIdentityProviderConfig` for long-running infra jobs whose runtime outlives a single
+   `AwsWebIdentityProviderConfig` for long-running Infra Jobs whose runtime outlives a single
    assumed-role session, wired into the pulumi-aws "classic" provider (the only engine that
    can refresh by re-reading the file).
 3. **Cleanup**: removed all 294 unused `overview.md` files from the API tree.
@@ -30,7 +30,7 @@ Two related improvements to the AWS keyless web-identity path, plus a dead-doc c
   coding agent the pre-keyless pattern (the exact divergence the shared builder exists to end).
   The inline path also carried a latent bug: it passed an empty-string session-token pointer.
 - **Inline tokens cannot refresh.** The keyless web identity is supplied inline
-  (`web_identity_token`) and exchanged once. An infra job that outlives its assumed-role
+  (`web_identity_token`) and exchanged once. An Infra Job that outlives its assumed-role
   session (role chaining caps cross-account-trust at 1h) has no way to refresh -- the minted
   JWT is in memory only.
 - **Dead docs.** 294 `overview.md` files sat in the API tree referenced by nothing in code,
@@ -103,7 +103,7 @@ consumes them; only the catalog-kind authoring rules mention generating/auditing
 
 - Every AWS pulumi module now builds its provider through one keyless-capable builder -- zero
   remaining inline `aws.NewProvider` in module code.
-- Long-running infra jobs gain a credential-refresh path without lengthening JWT TTLs (each
+- Long-running Infra Jobs gain a credential-refresh path without lengthening JWT TTLs (each
   minted token stays short-lived; the runner refreshes the file).
 - Latent empty-session-token-pointer bug removed.
 - 294 dead docs gone; the codebase no longer teaches the pre-D2 inline pattern.

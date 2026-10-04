@@ -27,7 +27,7 @@ The kind scored 78% on the audit checklist but only because the protobuf definit
 
 Complete implementation of both IaC backends (Pulumi and Terraform) with all spec fields properly mapped to Azure resources, plus comprehensive usage documentation and examples.
 
-### Key Kinds Implemented
+### Key Components Implemented
 
 **1. Pulumi Module (`iac/pulumi/module/main.go`)**
 

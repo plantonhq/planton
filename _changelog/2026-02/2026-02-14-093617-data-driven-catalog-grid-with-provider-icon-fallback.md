@@ -36,7 +36,7 @@ openfga      -> openfga.svg        (convention, fallback to letter badge)
 
 New providers with conventionally-named SVGs need zero code changes.
 
-### Shared ProviderIcon Kind
+### Shared ProviderIcon Component
 
 A single React component used by both the sidebar and catalog grid. Attempts to load the SVG; on error, renders a styled letter badge (first letter of the provider name) matching the existing kind-icon fallback style.
 
@@ -83,7 +83,7 @@ flowchart TD
 
 - **`site/src/app/docs/[[...slug]]/page.tsx`** — Added `extractCatalogProviders()` function that walks the docs structure tree to find catalog directory children and count their file entries. Detects the catalog index route (`path === 'catalog'`) and passes provider data to `MDXRenderer`.
 
-- **`site/src/app/docs/components/MDXRenderer.tsx`** — Added `catalogProviders` optional prop. Renders `CatalogProviderGrid` between the markdown content and the NextArticle navigation. Extracted the inline `img` arrow function into a proper `MarkdownImage` named kind with `onError` handling — detects provider icon images and shows letter-badge fallback on failure.
+- **`site/src/app/docs/components/MDXRenderer.tsx`** — Added `catalogProviders` optional prop. Renders `CatalogProviderGrid` between the markdown content and the NextArticle navigation. Extracted the inline `img` arrow function into a proper `MarkdownImage` named component with `onError` handling — detects provider icon images and shows letter-badge fallback on failure.
 
 - **`site/public/docs/catalog/index.md`** — Stripped the entire 100-line hardcoded HTML grid. File now contains only frontmatter and the markdown header text. The grid is rendered by React.
 
@@ -95,7 +95,7 @@ flowchart TD
 - **Zero stale data** — kind counts are derived from the docs structure at build time
 - **Single source of truth** — `providerIcons.ts` is the one place that maps provider names to icon paths
 - **Zero-code-change new providers** — add an SVG named `{provider}.svg`, add catalog pages, rebuild; grid and sidebar pick it up automatically
-- **Reduced code** — removed ~130 lines of hardcoded HTML and duplicated icon maps, added ~120 lines of clean, reusable kinds
+- **Reduced code** — removed ~130 lines of hardcoded HTML and duplicated icon maps, added ~120 lines of clean, reusable components
 - **Better error resilience** — markdown images throughout the site now have `onError` handling
 
 ## Impact

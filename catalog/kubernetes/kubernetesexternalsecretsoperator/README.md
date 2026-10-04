@@ -28,7 +28,7 @@ Kubernetes is a dual provider: the cluster runs IN one environment while the sec
 
 The cross-cloud combinations are first-class: a GKE cluster syncing from AWS Secrets Manager simply creates a store with static AWS credentials (or an assumable role) — nothing on this component changes. The ambient arm is the simplest posture when ONE cloud identity may read everything the cluster syncs; multi-team clusters should prefer per-store identities and leave `workload_identity` unset.
 
-The controller ServiceAccount name is fixed to `external-secrets` and exported (`status.outputs.controller_service_account`) so the cloud-side half of an ambient binding (IAM trust policy, Workload Identity binding, federated credential) can be composed in the same infra chart.
+The controller ServiceAccount name is fixed to `external-secrets` and exported (`status.outputs.controller_service_account`) so the cloud-side half of an ambient binding (IAM trust policy, Workload Identity binding, federated credential) can be composed in the same Infra Chart.
 
 ## Essential Configuration Fields
 

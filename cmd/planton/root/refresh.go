@@ -21,7 +21,7 @@ var Refresh = &cobra.Command{
 (Pulumi, Tofu, or Terraform) based on the manifest label 'planton.dev/provisioner'.
 
 This command queries your cloud provider for the current state of managed resources and
-updates the state file to reflect reality. It does NOT modify any infra components.
+updates the state file to reflect reality. It does NOT modify any provider resources.
 
 If the provisioner label is not present, you will be prompted to select one interactively.`,
 	Example: `

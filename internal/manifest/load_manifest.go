@@ -260,7 +260,7 @@ func formatUnsupportedResourceError(kindName string) error {
 
 	msg.WriteString(cyan("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"))
 
-	msg.WriteString(bold("💡 TIP: ") + "If you're developing a new infra component, ensure the proto files\n")
+	msg.WriteString(bold("💡 TIP: ") + "If you're developing a new catalog kind, ensure the proto files\n")
 	msg.WriteString("   are compiled and the CLI binary is rebuilt.\n\n")
 
 	return errors.New(msg.String())

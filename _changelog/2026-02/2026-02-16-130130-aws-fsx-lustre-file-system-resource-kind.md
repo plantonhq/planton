@@ -83,14 +83,14 @@ flowchart TB
 - Declarative provisioning of Lustre file systems through Planton CLI
 - Clean separation of FSx types prevents spec pollution and confusion
 - Rich cross-field validations catch misconfigurations before deployment
-- StringValueOrRef integration enables infra chart wiring (VPC, SG, KMS, CloudWatch)
+- StringValueOrRef integration enables Infra Chart wiring (VPC, SG, KMS, CloudWatch)
 - Three presets cover the most common Lustre deployment patterns
 
 ## Impact
 
 - **Users**: Can now deploy FSx Lustre via `planton pulumi up --manifest lustre.yaml`
 - **Platform**: FSx family expansion path is clear (5 more kinds planned)
-- **Infra Charts**: Enables ML notebook and HPC cluster infra charts with Lustre backing storage
+- **Infra Charts**: Enables ML notebook and HPC cluster Infra Charts with Lustre backing storage
 
 ## Related Work
 

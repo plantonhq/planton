@@ -115,5 +115,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference the namespace so infra charts create it and this budget in dependency order
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference the namespace so Infra Charts create it and this budget in dependency order
 - [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- its built-in disruption-budget block covers its own pods; this standalone kind covers operator-managed replicas and everything else, matched via their `app` label

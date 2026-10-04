@@ -10,7 +10,7 @@ Added AwsKinesisStream (R16) as the first Phase 2 resource in the AWS expansion 
 
 ## Problem Statement / Motivation
 
-Kinesis Data Streams is the backbone of real-time data architectures on AWS — click-streams, IoT telemetry, database CDC, financial transactions. Without it in Planton, users building analytics or event-sourcing infra charts had to manage Kinesis outside the declarative framework, breaking the dependency graph.
+Kinesis Data Streams is the backbone of real-time data architectures on AWS — click-streams, IoT telemetry, database CDC, financial transactions. Without it in Planton, users building analytics or event-sourcing Infra Charts had to manage Kinesis outside the declarative framework, breaking the dependency graph.
 
 ### Pain Points
 
@@ -68,7 +68,7 @@ flowchart TB
 
 ## Benefits
 
-- Enables real-time data streaming in Planton infra charts
+- Enables real-time data streaming in Planton Infra Charts
 - Unblocks Kinesis Firehose (R17) which requires stream ARN as source
 - `stream_arn` output enables `valueFrom` references from Lambda event source mappings and EventBridge targets
 - Clean two-mode design makes the PROVISIONED vs ON_DEMAND tradeoff explicit
@@ -78,7 +78,7 @@ flowchart TB
 - **New enum**: `AwsKinesisStream = 260` in `catalog_kind.proto` (Analytics / Streaming category)
 - **AWS kind count**: 44 (25 existing + 19 new from this project)
 - **Phase 2 kickoff**: First of 10 Phase 2 kinds (important services)
-- **Pipeline**: Critical upstream dependency for Kinesis Firehose, Lambda event sources, and future data-pipeline infra charts
+- **Pipeline**: Critical upstream dependency for Kinesis Firehose, Lambda event sources, and future data-pipeline Infra Charts
 
 ## Related Work
 

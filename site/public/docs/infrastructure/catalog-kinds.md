@@ -62,7 +62,7 @@ When you select a resource type, Planton takes you to the creation form where yo
 
 ```bash
 # List all available resource types
-planton infra-component registered-kinds
+planton infra component registered-kinds
 
 # Get details about a specific catalog entry
 planton get catalog-kind <catalog-kind-id>
@@ -77,7 +77,7 @@ The catalog is the starting point. The deployment flow is:
 
 1. **Browse** the catalog and select a resource type.
 2. **Configure** the resource for your target environment — provider credentials, region, resource-specific settings.
-3. **Deploy** — Planton creates a [Infra Component](/docs/infrastructure/infra-components) and runs a [Infra Job](/docs/infrastructure/infra-jobs) to provision the infrastructure.
+3. **Deploy** — Planton creates an [Infra Component](/docs/infrastructure/infra-components) and runs an [Infra Job](/docs/infrastructure/infra-jobs) to provision the infrastructure.
 
 You can also use resource types in [Infra Charts](/docs/infrastructure/infra-charts) to compose multiple resources into reusable templates, and deploy them together through [Infra Stacks](/docs/infrastructure/infra-stacks).
 

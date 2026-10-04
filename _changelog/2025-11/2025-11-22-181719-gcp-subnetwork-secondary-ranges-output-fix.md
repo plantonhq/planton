@@ -101,7 +101,7 @@ createdSubnetwork.SecondaryIpRanges.ApplyT(func(ranges []compute.SubnetworkSecon
 
 ### Why This Works
 
-The `ApplyT` method is Pulumi's way of handling computed values (values that aren't known until after infra components are created). When the subnetwork is created and GCP returns the actual secondary ranges, this function:
+The `ApplyT` method is Pulumi's way of handling computed values (values that aren't known until after provider resources are created). When the subnetwork is created and GCP returns the actual secondary ranges, this function:
 
 1. Iterates over each range
 2. Exports each field individually with a structured key path
@@ -180,7 +180,7 @@ for i, item := range items {
 ### ✅ DO: Use ApplyT for Computed Values
 
 ```go
-// When values come from infra components
+// When values come from provider resources
 resource.OutputField.ApplyT(func(values []Type) error {
     for i, v := range values {
         ctx.Export(fmt.Sprintf("output.%d.field", i), pulumi.String(v.Field))

@@ -62,12 +62,12 @@ Cloud providers are fundamentally different. AWS RDS has `instance_class` and `s
 
 ### The Three Pillars
 
-Planton is built on three foundational kinds that work together seamlessly:
+Planton is built on three foundational pillars that work together seamlessly:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                     Planton CLI                         │
-│              (Orchestration & Validation Layer)                 │
+│                           Planton CLI                           │
+│               (Orchestration & Validation Layer)                │
 └───────────────────────┬─────────────────────────────────────────┘
                         │
         ┌───────────────┼───────────────┐
@@ -79,8 +79,8 @@ Planton is built on three foundational kinds that work together seamlessly:
         │               │               │
         ▼               ▼               ▼
 ┌────────────────────────────────────────────────┐
-│        Kinds (700+)            │
-│  KubernetesPostgres | AwsRdsInstance | etc.   │
+│              Catalog Kinds (700+)              │
+│   KubernetesPostgres | AwsRdsInstance | etc.   │
 └────────────────────────────────────────────────┘
 ```
 
@@ -129,7 +129,7 @@ The `planton validate` command checks these rules **before** calling any cloud A
 **Technology:** Pulumi and Terraform/OpenTofu  
 **Approach:** Provider-specific, deliberately simple
 
-Every kind has **both** a Pulumi module and a Terraform module, and you choose which IaC engine to use -- unless its kind declares fewer engines (`kind_meta.provisioners`), because its provider publishes no Pulumi provider or its kinds are proven on OpenTofu alone. Such a kind ships only the modules its engines run, and the CLI and the platform refuse any other engine before anything runs.
+Every kind has **both** a Pulumi module and a Terraform module, and you choose which IaC engine to use -- unless the kind declares fewer engines (`kind_meta.provisioners`), because its provider publishes no Pulumi provider or its kinds are proven on OpenTofu alone. Such a kind ships only the modules its engines run, and the CLI and the platform refuse any other engine before anything runs.
 
 **Why Both Pulumi and Terraform?**
 
@@ -194,11 +194,11 @@ planton pulumi update \
 
 ### The Kind Concept
 
-A **kind** is a complete, production-ready package for deploying a specific type of infrastructure or application. Think of it as a "recipe" that includes everything needed to deploy that resource.
+A **kind** is a complete, production-ready package for deploying a specific type of infrastructure or application. Think of it as a "recipe" that includes everything needed to deploy it.
 
 #### What's in a Kind?
 
-The authoritative, gate-enforced kind anatomy — the versioned contract under the version directory, the living module set, docs, presets, e2e profile, and the verified fact-sheets (`cost.yaml`, `controls.yaml`, `iac/permissions.yaml`) — is defined once, in [kind.md](kind.md) (see "Folder Structure" and "Verified Fact-Sheets" in its Ideal State Checklist). This overview deliberately does not duplicate that tree: the anatomy is machine-enforced by CI, and `kind.md` is its single written home.
+The authoritative, gate-enforced kind anatomy — the versioned contract under the version directory, the living module set, docs, presets, e2e profile, and the verified fact-sheets (`cost.yaml`, `controls.yaml`, `iac/permissions.yaml`) — is defined once, in [catalog-kind.md](catalog-kind.md) (see "Folder Structure" and "Verified Fact-Sheets" in its Ideal State Checklist). This overview deliberately does not duplicate that tree: the anatomy is machine-enforced by CI, and `catalog-kind.md` is its single written home.
 
 In one sentence: a kind is the versioned Protobuf contract, both IaC engines, layered documentation, ready-to-deploy presets, an e2e profile, and machine-checked cost/controls/permissions data — everything a surface needs to deploy it and to answer what it costs, what it enforces, and what its runner needs.
 
@@ -243,7 +243,7 @@ planton/
 │   └── _docs/                   # Catalog-wide guides and conventions
 ├── shared/                      # Shared types and enums
 │   └── catalogkind/       # Registry of all kinds (catalog_kind.proto)
-├── charts/                      # Ready-made infra charts composed from kinds
+├── charts/                      # Ready-made Infra Charts composed from kinds
 ├── cmd/planton/                 # The open-source CLI and IaC engine (Go)
 ├── pkg/                         # Go libraries (generators, gates, engines)
 ├── operator/                    # The Planton Kubernetes operator (own Go module; self-hosted installs)
@@ -252,7 +252,7 @@ planton/
 ├── site/                        # planton.ai website, docs, and blog
 ├── architecture/                # Architecture documentation
 │   ├── README.md                # This file
-│   └── kind.md             # Kind ideal state (the anatomy's one home)
+│   └── catalog-kind.md          # Catalog kind ideal state (the anatomy's one home)
 ├── _rules/                      # AI workflow rules (kind forge/audit/update, docs, protos)
 ├── buf.yaml                     # Buf configuration
 ├── Makefile                     # Build automation
@@ -269,7 +269,7 @@ The kind catalog, organized by provider. Each kind's root carries its IaC module
 
 High-level architecture documentation:
 - **README.md** (this file): Complete architecture overview
-- **kind.md**: Ideal state definition for kinds
+- **catalog-kind.md**: Ideal state definition for catalog kinds
 
 #### `/_rules/catalog-kind`
 
@@ -736,7 +736,7 @@ iac/pulumi/
 **Key Files:**
 - **main.go**: Parses manifest from environment variable, calls resource creation
 - **locals.go**: Transforms manifest into Pulumi-friendly structures
-- **resources.go**: Creates infra components using Pulumi SDKs
+- **resources.go**: Creates the provider resources using Pulumi SDKs
 - **outputs.go**: Exports outputs (connection strings, IDs, etc.)
 
 #### Terraform Module (HCL)

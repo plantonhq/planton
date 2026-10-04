@@ -16,7 +16,7 @@ Planton's GCP provider lacked managed NFS file storage capability. Users needing
 
 - No managed NFS provisioning through Planton
 - GKE workloads needing ReadWriteMany persistent volumes had to use manual Filestore setup
-- No composability between Filestore and other GCP resources (VPC, KMS) via infra charts
+- No composability between Filestore and other GCP resources (VPC, KMS) via Infra Charts
 
 ## Solution / What's New
 
@@ -104,7 +104,7 @@ flowchart TB
 
 - **GCP provider**: 18th → 19th resource kind (continues the expansion from 19 to ~40)
 - **Platform coverage**: fills the managed NFS gap in GCP storage offerings
-- **Infra charts**: enables future GKE shared storage charts and data processing environments
+- **Infra Charts**: enables future GKE shared storage charts and data processing environments
 
 ## Related Work
 

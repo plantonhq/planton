@@ -125,7 +125,7 @@ Auto-generated files updated by `make protos` and Gazelle:
 ## Impact
 
 - **Resource kind authors**: ScalewayVpc is the reference implementation for all subsequent Scaleway kinds
-- **Infra chart designers**: The `kapsule-environment` and `serverless-environment` charts can now reference ScalewayVpc as their Layer 0 foundation
+- **Infra Chart designers**: The `kapsule-environment` and `serverless-environment` charts can now reference ScalewayVpc as their Layer 0 foundation
 - **Build system**: Codegen fix prevents recurrence of phantom import warnings for any future provider that registers enums before implementing resources
 
 ## Related Work

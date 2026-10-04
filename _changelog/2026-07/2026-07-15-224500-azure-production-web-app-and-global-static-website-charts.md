@@ -6,7 +6,7 @@
 
 ## Summary
 
-Two new Azure infra charts land in the catalog — `azure/production-web-app`
+Two new Azure Infra Charts land in the catalog — `azure/production-web-app`
 (a customer-facing web application from edge to database: VNet-integrated
 Linux App Service on PremiumV3, private VNet-injected PostgreSQL, RBAC-mode
 Key Vault, WAF-fronted Azure Front Door with origin lockdown, diagnostics +

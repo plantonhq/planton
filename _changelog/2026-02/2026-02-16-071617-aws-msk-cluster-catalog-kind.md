@@ -87,13 +87,13 @@ flowchart TB
 
 1. **Managed SG with multi-port ranges** instead of single port (Kafka uses 4 protocol-specific ports + 2 ZK ports)
 2. **Inline configuration via server.properties map** for user-friendly Kafka property management without requiring external MSK Configuration resource
-3. **15 outputs** including 7 bootstrap broker variants organized by auth/connectivity for maximum infra chart composability
+3. **15 outputs** including 7 bootstrap broker variants organized by auth/connectivity for maximum Infra Chart composability
 4. **ForceNew fields clearly documented** in proto comments -- security_groups, subnets, KMS key, in-cluster encryption are all immutable after creation
 
 ## Benefits
 
 - **25th new AWS resource kind** in the expansion project (R21 of ~32)
-- **Streaming infrastructure as code** -- event-driven architectures can now be composed in infra charts with MSK alongside Lambda, SQS, SNS, EventBridge, and Kinesis
+- **Streaming infrastructure as code** -- event-driven architectures can now be composed in Infra Charts with MSK alongside Lambda, SQS, SNS, EventBridge, and Kinesis
 - **Inline Kafka configuration** eliminates the need for separate configuration management
 - **7 bootstrap broker outputs** enable downstream consumers to connect using their preferred auth method
 - **3 presets** cover basic development, production encrypted, and multi-auth logging scenarios
@@ -101,7 +101,7 @@ flowchart TB
 ## Impact
 
 - Developers and DevOps engineers can deploy managed Kafka clusters through Planton's declarative API
-- Infra chart authors can compose MSK with VPC, security groups, KMS keys, log groups, Firehose streams, and S3 buckets using `valueFrom` references
+- Infra Chart authors can compose MSK with VPC, security groups, KMS keys, log groups, Firehose streams, and S3 buckets using `valueFrom` references
 - The AWS catalog grows to 50 resource kinds (25 original + 25 new from expansion)
 
 ## Related Work

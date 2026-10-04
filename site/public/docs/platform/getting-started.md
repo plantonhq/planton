@@ -11,7 +11,7 @@ tags:
 
 # Getting Started
 
-This guide walks through the first steps on Planton: creating an account, setting up an organization and environment, connecting a cloud provider, and deploying an infra component. By the end, you will have working infrastructure deployed to your own cloud account.
+This guide walks through the first steps on Planton: creating an account, setting up an organization and environment, connecting a cloud provider, and deploying an Infra Component. By the end, you will have working infrastructure deployed to your own cloud account.
 
 ## Prerequisites
 
@@ -144,7 +144,7 @@ An Infra Job is created automatically. Infra Jobs are the execution units that r
   Alt: Infra Job execution showing real-time progress through init, refresh, plan, and apply stages
 -->
 
-Once the Infra Job completes, your infra component is live. Navigate to **Infra Hub** in the sidebar and click **Infra Components** to see it listed with its current status.
+Once the Infra Job completes, your Infra Component is live. Navigate to **Infra Hub** in the sidebar and click **Infra Components** to see it listed with its current status.
 
 ## Step 6: Complete the Onboarding Checklist
 
@@ -155,7 +155,7 @@ The dashboard includes a getting-started checklist that tracks your progress thr
 - Create an environment
 
 **Infrastructure**
-- Deploy your first infra component
+- Deploy your first Infra Component
 - Deploy an Infra Chart stack
 
 **Applications**

@@ -11,7 +11,7 @@ tags:
 
 # Infra Hub
 
-Infra Hub is Planton's infrastructure half — Cursor for Cloud Infrastructure. Describe or configure what you need, verify cost and permissions, deploy into your own account, and publish it as an Infra Chart — a template your team reuses. It handles the full lifecycle of infra components — from browsing a catalog of Catalog Kinds, to deploying them as Infra Components, to orchestrating multi-resource deployments through Infra Charts and Infra Pipelines.
+Infra Hub is Planton's infrastructure half — Cursor for Cloud Infrastructure. Describe or configure what you need, verify cost and permissions, deploy into your own account, and publish it as an Infra Chart — a template your team reuses. It handles the full lifecycle of your infrastructure — from browsing a catalog of Catalog Kinds, to deploying them as Infra Components, to orchestrating multi-resource deployments through Infra Charts and Infra Pipelines.
 
 Infrastructure is provisioned using Pulumi, Terraform, or OpenTofu modules, executed through Infra Jobs, with credentials managed automatically via Connections.
 
@@ -44,13 +44,13 @@ Composed collections of Catalog Kinds that deploy together as a coordinated unit
 
 ### Infra Stacks
 
-Running instances of Infra Charts with your specific configuration. Infra Stacks track deployment progress via DAG visualization and maintain the history of all changes.
+An Infra Chart installed into one environment with your specific configuration. Infra Stacks track deployment progress via DAG visualization and maintain the history of all changes.
 
 [Learn about Infra Stacks](/docs/infrastructure/infra-stacks)
 
 ### Infra Pipelines
 
-DAG-based orchestration for deploying multiple Infra Components and Infra Stacks in dependency order. Infra Pipelines coordinate the execution of Infra Jobs across resources.
+DAG-based orchestration that deploys or undeploys an Infra Stack's Infra Components in dependency order. Infra Pipelines coordinate the execution of Infra Jobs across resources.
 
 [Learn about Infra Pipelines](/docs/infrastructure/infra-pipelines)
 

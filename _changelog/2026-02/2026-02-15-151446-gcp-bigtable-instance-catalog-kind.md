@@ -78,13 +78,13 @@ flowchart TB
 - Declarative Bigtable provisioning through Planton with both Pulumi and Terraform
 - Multi-cluster replication configured in a single manifest
 - Autoscaling and CMEK integrated as first-class spec fields
-- Foreign key references enable composition with GcpProject and GcpKmsKey in infra charts
+- Foreign key references enable composition with GcpProject and GcpKmsKey in Infra Charts
 - 51 validation tests catch configuration errors before deployment
 
 ## Impact
 
 - **Users**: Can now provision Bigtable instances declaratively through `planton apply`
-- **Infra chart authors**: Can compose Bigtable into data platform environments using `valueFrom` references
+- **Infra Chart authors**: Can compose Bigtable into data platform environments using `valueFrom` references
 - **Coverage**: GCP provider now has 20 resource kinds (was 19 + 12 from expansion = 32 total counting previous batches)
 
 ## Related Work

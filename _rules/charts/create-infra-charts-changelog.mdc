@@ -167,7 +167,7 @@ Every changelog should include:
 
 ### Resources Included
 
-[List of infra components in the chart with descriptions]
+[List of the chart's catalog objects (kind and name) with descriptions]
 
 ### Conditional Resources
 
@@ -256,7 +256,7 @@ Before finalizing a changelog:
 - [ ] Summary captures essence in 2-4 sentences
 - [ ] Problem statement explains why this chart was created/updated
 - [ ] Solution section describes the chart structure
-- [ ] Resources Included section lists all infra components
+- [ ] Resources Included section lists every catalog object in the chart
 - [ ] Implementation details show actual template code when relevant
 - [ ] Benefits are concrete and measurable (time saved, resources provisioned)
 - [ ] Usage example shows realistic values.yaml and commands
@@ -330,10 +330,8 @@ planton chart build gcp/cloud-run-service
 # Publish chart to platform
 planton chart publish gcp/cloud-run-service
 
-# Create project from chart
-planton project create --from-chart gcp/cloud-run-service \
-  --name my-project \
-  --values ./my-values.yaml
+# Install the chart as an Infra Stack
+planton chart install my-stack gcp/cloud-run-service -f ./my-values.yaml
 ```
 
 ### Template Examples

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Three new GCP infra charts ship the serverless tier of the catalog: a
+Three new GCP Infra Charts ship the serverless tier of the catalog: a
 production `cloud-run-service` (the flagship — 22 resources everything-on,
 with passwordless IAM database authentication and a global HTTPS front
 door), an `event-driven-pipeline` (schema-validated Pub/Sub with a real

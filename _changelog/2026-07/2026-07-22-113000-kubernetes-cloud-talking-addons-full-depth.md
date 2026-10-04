@@ -54,7 +54,7 @@ including a real end-to-end secret sync.
   annotation the chart forwards onto CRDs (the chart itself has no keep
   knob and would cascade-delete every ESO object on uninstall) — HA with
   enforced leader election, reconcile concurrency, controller-class
-  sharding, namespace scoping with scoped RBAC, per-kind tuning
+  sharding, namespace scoping with scoped RBAC, per-component tuning
   (webhook, cert-controller), ambient workload identity for the controller
   ServiceAccount, scheduling, PDB, ServiceMonitor, image override,
   `helm_values` escape hatch.
@@ -81,7 +81,7 @@ including a real end-to-end secret sync.
   (names, label selector, regexes) controlling which namespaces may sync
   from the store.
 - Terraform applies the CRs through `kubectl_manifest` (plannable before
-  the operator exists — single-run infra charts and offline proofs); the
+  the operator exists — single-run Infra Charts and offline proofs); the
   null-prune rendering idiom keeps numbers and booleans typed.
 
 ### KubernetesExternalSecret (forged — the sync declaration)

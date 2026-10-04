@@ -60,7 +60,7 @@ Six documentation pages written in the project's early sessions (Sessions 1-3) c
 
 ## Impact
 
-- 6 documentation pages improved, covering Infra Hub (charts, projects) and Service Hub (services, build methods, monorepo support, deployment targets)
+- 6 documentation pages improved, covering Infra Hub (charts, Infra Stacks) and Service Hub (services, build methods, monorepo support, deployment targets)
 - Approximately half of the Session 1-3 pages have now been audited (high-priority in Phase 4.5, medium-priority in this phase)
 - Lower-priority pages remain acceptable given their contexts (advanced topics, architectural focus)
 

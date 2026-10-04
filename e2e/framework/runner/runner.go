@@ -438,7 +438,7 @@ func RunKindTest(ctx context.Context, tc *provider.KindTestContext, harness prov
 
 	// Phase 7: teardown dependencies in reverse order. A teardown failure
 	// FAILS the run even when every lifecycle phase passed: it means
-	// prerequisite infra components may still exist, and a green result would
+	// prerequisite provider resources may still exist, and a green result would
 	// hide that leak until someone audits the account.
 	if len(dependencyStates) > 0 {
 		depStart := time.Now()

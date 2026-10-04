@@ -13,7 +13,7 @@ ConfigMaps are the standard Kubernetes mechanism for decoupling configuration fr
 **Key value over raw manifests:**
 
 - **Schema-level validation**: Key character rules, base64 validation for `binary_data` values, and a cross-field rule rejecting keys that appear in both `data` and `binary_data` — all caught before anything reaches the cluster
-- **Namespace by value or reference**: `spec.namespace` accepts a literal name or a reference to a `KubernetesNamespace` resource, so an infra chart can create the namespace and the ConfigMap in one run
+- **Namespace by value or reference**: `spec.namespace` accepts a literal name or a reference to a `KubernetesNamespace` resource, so an Infra Chart can create the namespace and the ConfigMap in one run
 - **Immutable ConfigMaps**: First-class support for the immutability flag (stable since Kubernetes 1.21)
 - **Dual IaC support**: Both Pulumi and Terraform implementations with feature parity
 - **Lifecycle management**: Integrated with Planton's deployment lifecycle for status tracking and outputs
@@ -91,7 +91,7 @@ Use **KubernetesConfigMap** when you need:
 - Property files, environment settings, or feature flags consumed by workloads
 - Binary configuration payloads (up to the 1MiB limit)
 - Immutable, versioned configuration for production rollouts
-- Namespace-and-config created together in one infra chart
+- Namespace-and-config created together in one Infra Chart
 
 **Do NOT use** when:
 

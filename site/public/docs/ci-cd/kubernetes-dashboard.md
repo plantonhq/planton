@@ -12,11 +12,11 @@ tags:
 
 # Kubernetes Dashboard
 
-After deploying a service to Kubernetes, the Kubernetes tab on your infra component shows the live state of your deployment — pods, their status, logs, and a shell for debugging. No kubectl installation required, no kubeconfig to manage, no cluster credentials to distribute.
+After deploying a service to Kubernetes, the Kubernetes tab on your Infra Component shows the live state of your deployment — pods, their status, logs, and a shell for debugging. No kubectl installation required, no kubeconfig to manage, no cluster credentials to distribute.
 
 ## What You See
 
-Open any Kubernetes infra component in the web console and click the Kubernetes tab. The dashboard is scoped to your deployment's namespace — you see only the resources that belong to your service, not the entire cluster.
+Open any Kubernetes Infra Component in the web console and click the Kubernetes tab. The dashboard is scoped to your deployment's namespace — you see only the resources that belong to your service, not the entire cluster.
 
 <!-- SCREENSHOT: Kubernetes dashboard overview
   Page: /resource/infra-hub/infra-component/kubernetes/{type}/{id}/kubernetes-resources

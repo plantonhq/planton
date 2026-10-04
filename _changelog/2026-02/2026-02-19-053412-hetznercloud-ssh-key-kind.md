@@ -102,7 +102,7 @@ Hetzner Cloud uses `map<string,string>` labels (like GCP), not flat string tags 
 
 - **Users**: Can now manage Hetzner Cloud SSH keys through Planton
 - **Future kinds**: R02-R12 can follow the patterns established here
-- **Infra charts**: SSH key is a foundation dependency for all 3 planned Hetzner infra charts
+- **Infra Charts**: SSH key is a foundation dependency for all 3 planned Hetzner Infra Charts
 
 ## Files Changed
 

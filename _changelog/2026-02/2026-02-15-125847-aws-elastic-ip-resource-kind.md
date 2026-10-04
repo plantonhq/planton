@@ -16,7 +16,7 @@ The AwsNetworkLoadBalancer (R09) was shipped with a gap: its `allocation_id` fie
 
 - NLB subnet mappings required hardcoded allocation IDs (no `valueFrom` support)
 - No way to declaratively manage static public IPs in Planton
-- Missing dependency in the infra chart DAG for IP allocation
+- Missing dependency in the Infra Chart DAG for IP allocation
 
 ## Solution / What's New
 
@@ -79,7 +79,7 @@ Updated the NLB's `allocation_id` field with:
 ## Benefits
 
 - **Closes the NLB gap**: `valueFrom` references from NLB to EIP now work seamlessly
-- **Infra chart ready**: EIP outputs (`allocation_id`) compose into the dependency DAG
+- **Infra Chart ready**: EIP outputs (`allocation_id`) compose into the dependency DAG
 - **Zero-config for 95% of users**: Empty spec allocates a standard VPC EIP
 - **BYOIP support**: 3 optional fields cover the BYOIP edge case without cluttering the UX
 

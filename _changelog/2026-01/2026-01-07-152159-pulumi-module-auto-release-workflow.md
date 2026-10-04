@@ -12,7 +12,7 @@ Implemented a comprehensive GitHub Actions workflow system for automatically bui
 
 ### Background
 
-The IaC Runner service executes Pulumi infra jobs for infrastructure deployments. Previous approaches all had significant trade-offs:
+The IaC Runner service executes Pulumi Infra Jobs for infrastructure deployments. Previous approaches all had significant trade-offs:
 
 | Approach            | Image Size | Cold Start | Build Complexity |
 | ------------------- | ---------- | ---------- | ---------------- |

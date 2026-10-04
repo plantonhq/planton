@@ -33,7 +33,7 @@ Moved `DocsPageActions` from the metadata row (date/author) into the title row. 
 
 ### 3. Inline Copy Feedback
 
-Replaced the MUI `CopySnackbar` kind with inline icon swapping. When content is copied, the `ContentCopy` icon becomes a green `Check` icon for 2 seconds, then reverts. This pattern matches `HeadingWithAnchor` and `CodeBlock` in the codebase.
+Replaced the MUI `CopySnackbar` component with inline icon swapping. When content is copied, the `ContentCopy` icon becomes a green `Check` icon for 2 seconds, then reverts. This pattern matches `HeadingWithAnchor` and `CodeBlock` in the codebase.
 
 The `MarkdownViewDialog` also received its own local copy feedback — clicking the copy icon in the dialog header shows the green checkmark in-place rather than leaking feedback to the hidden parent button.
 
@@ -62,7 +62,7 @@ Added a third option to the page actions dropdown: "Open Raw" with an `OpenInNew
 - **Cleaner mobile layout** — copy icon sits next to the title instead of occupying its own line
 - **Immediate feedback** — green checkmark appears right where the user clicked, not at the bottom of the page
 - **Direct raw access** — "Open Raw" is one click from the dropdown, no dialog required
-- **Less MUI overhead** — removed Snackbar + Alert kinds, replaced mobile IconButton with plain HTML button
+- **Less MUI overhead** — removed Snackbar + Alert components, replaced mobile IconButton with plain HTML button
 - **Defense-in-depth** — body overflow protection prevents future regressions from any element in the layout
 
 ## Impact
@@ -70,7 +70,7 @@ Added a third option to the page actions dropdown: "Open Raw" with an `OpenInNew
 - All 50 documentation pages benefit from the mobile fixes
 - Footer fix applies site-wide (all pages, not just docs)
 - Page actions dropdown now has three options: Copy as Markdown, View as Markdown, Open Raw
-- Deleted CopySnackbar.tsx reduces kind count
+- Deleted CopySnackbar.tsx reduces component count
 
 ## Related Work
 

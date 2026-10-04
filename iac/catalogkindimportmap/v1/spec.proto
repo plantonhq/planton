@@ -85,8 +85,8 @@ message ImportValue {
 // without asking the user.
 message ImportValueDerivation {
   oneof source {
-    // The value is the resource's metadata.name (modules that name their
-    // infra component after the Planton resource).
+    // The value is the catalog object's metadata.name (modules that name
+    // their provider resource after the catalog object).
     bool from_metadata_name = 1;
     // Dot path to a spec field (proto field names), e.g. "repository_name".
     string from_spec_field = 2;

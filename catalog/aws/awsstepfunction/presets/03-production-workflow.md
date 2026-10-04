@@ -17,7 +17,7 @@ Use this preset for production-grade workflows that require full observability, 
 ## What to Customize
 
 1. **`<workflow-name>`** — Production workflow name (e.g., `order-processor`)
-2. **`<iam-role-resource-name>`** — Name of the AwsIamRole resource in your infra chart
+2. **`<iam-role-resource-name>`** — Name of the AwsIamRole resource in your Infra Chart
 3. **`<lambda-function-arn>`** and **`<lambda-function-arn-2>`** — Lambda functions for each step
 4. **`<error-handler-lambda-arn>`** — Dedicated error handling function
 5. **`<log-group-resource-name>`** — Name of the AwsCloudwatchLogGroup resource

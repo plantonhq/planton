@@ -72,7 +72,7 @@ Uses dynamic blocks for `cache_usage_limits`, `data_storage`, and `ecpu_per_seco
 - **Zero node management**: Users specify engine + optional limits, AWS handles everything else
 - **Pay-per-use**: Ideal for variable workloads, dev/staging, and prototyping
 - **Clean spec**: 13 fields vs Redis's 29 and Memcached's 15 -- embraces serverless simplicity
-- **Infra chart ready**: StringValueOrRef on all cross-resource fields enables `valueFrom` composition
+- **Infra Chart ready**: StringValueOrRef on all cross-resource fields enables `valueFrom` composition
 
 ## Impact
 

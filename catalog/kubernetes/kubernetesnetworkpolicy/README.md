@@ -13,7 +13,7 @@ By default, every pod in a Kubernetes cluster can talk to every other pod. Netwo
 **Key value over raw manifests:**
 
 - **Schema-level validation**: Direction/rule consistency (rules in an ungoverned direction are rejected instead of silently ignored), CIDR format checks, port-range sanity, selector operator contracts, and empty-peer rejection — all caught before anything reaches the cluster
-- **Namespace by value or reference**: `spec.namespace` accepts a literal name or a reference to a `KubernetesNamespace` resource, so an infra chart can create the namespace and its policies in one run
+- **Namespace by value or reference**: `spec.namespace` accepts a literal name or a reference to a `KubernetesNamespace` resource, so an Infra Chart can create the namespace and its policies in one run
 - **Deterministic policy types**: Both IaC modules always submit the governed directions explicitly, applying the Kubernetes inference rule when the spec omits `policy_types`, so the deployed object never depends on which engine applied it
 - **Dual IaC support**: Both Pulumi and Terraform implementations with feature parity
 - **Lifecycle management**: Integrated with Planton's deployment lifecycle for status tracking and outputs

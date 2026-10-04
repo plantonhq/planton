@@ -74,7 +74,7 @@ The homepage hero now uses the features page's messaging with the homepage's vis
 
 ### Cross-Module Navigation
 
-New `RelatedModules` kind added to all 7 product page CTAs:
+New `RelatedModules` component added to all 7 product page CTAs:
 
 | Page | Related Modules |
 |------|----------------|
@@ -92,9 +92,9 @@ All homepage sections (except Hero and SocialProofBar) wrapped in `ScrollReveal`
 
 ## Implementation Details
 
-### New Kinds
+### New Components
 
-| Kind | Path | Purpose |
+| Component | Path | Purpose |
 |-----------|------|---------|
 | `SocialProof` | `src/components/landing-page/v3-2026-01-02-1000/SocialProof.tsx` | Merged customer stories + testimonials |
 | `Security` | `src/components/landing-page/v3-2026-01-02-1000/Security.tsx` | Merged security trust strip + compliance |
@@ -105,7 +105,7 @@ All homepage sections (except Hero and SocialProofBar) wrapped in `ScrollReveal`
 
 - **Terminal tabs labeled "Infra / Services / CLI"** instead of "InfraHub / ServiceHub / CLI" — shorter labels that communicate function, not product module names, to first-time visitors who don't know the internal naming
 - **Homepage doesn't include a product module grid** — that's the product overview's job. The homepage sells outcomes and proof; `/features` catalogs modules
-- **Legacy kind exports preserved** in the barrel file — old kinds (WallOfLove, CustomerStories, SecurityTrustBar, etc.) are still exported for the investor deck and other consumers that import them directly
+- **Legacy component exports preserved** in the barrel file — old components (WallOfLove, CustomerStories, SecurityTrustBar, etc.) are still exported for the investor deck and other consumers that import them directly
 
 ## Benefits
 
@@ -123,7 +123,7 @@ All homepage sections (except Hero and SocialProofBar) wrapped in `ScrollReveal`
 - **1 homepage** rewritten (18 sections → 10)
 - **1 product overview** transformed (full hero → compact header + journey)
 - **7 product page CTAs** updated with RelatedModules
-- **4 new kinds** created
+- **4 new components** created
 - **Build passes** cleanly with zero errors
 
 ### Files Changed

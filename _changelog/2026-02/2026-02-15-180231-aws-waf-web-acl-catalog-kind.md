@@ -75,7 +75,7 @@ Logging is included as an optional inline configuration because ~60% of producti
 
 - AWS resource coverage expands from 40 to 41 total resource kinds
 - Phase 1 nears completion: 16 of 17 resources done (R14 AwsCloudwatchLogGroup and R15 AwsCloudwatchAlarm remain)
-- Enables WAF-protected infra chart patterns for ALB, API Gateway, and CloudFront
+- Enables WAF-protected Infra Chart patterns for ALB, API Gateway, and CloudFront
 
 ## Related Work
 

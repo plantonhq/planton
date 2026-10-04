@@ -12,7 +12,7 @@ tags:
 
 Planton open source is the open-source foundation that Planton's Infrastructure is built on. It provides three things: Protocol Buffer API definitions for infrastructure kinds, Infrastructure-as-Code modules (Pulumi, Terraform, and OpenTofu) that provision those kinds, and a standalone CLI for deploying them. The project is developed in the open at [planton.dev](https://planton.dev).
 
-The relationship between Planton open source and the Planton platform is architectural: the open-source core defines **how** to deploy infra components — one at a time, or a whole set of manifests in dependency order with each resource's outputs resolving the next resources' references. Planton adds **workflow and governance** — parallelized orchestration with approval gates via Infra Charts and Pipelines, credential management via Connections, team collaboration via the web console, and deployment policies via Flow Control. You can use Planton open source without the platform; the platform uses it under the hood.
+The relationship between Planton open source and the Planton platform is architectural: the open-source core defines **how** to deploy infrastructure — one manifest at a time, or a whole set of manifests in dependency order with each resource's outputs resolving the next resources' references. Planton adds **workflow and governance** — parallelized orchestration with approval gates via Infra Charts and Pipelines, credential management via Connections, team collaboration via the web console, and deployment policies via Flow Control. You can use Planton open source without the platform; the platform uses it under the hood.
 
 ## Three Pillars
 

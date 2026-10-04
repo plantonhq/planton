@@ -8,7 +8,7 @@
 
 ## Summary
 
-Systematically renamed the `KubernetesMicroservice` infra component to `KubernetesDeployment` across the entire Planton codebase. This refactoring removes an unnecessary abstraction layer and accurately reflects that the resource creates a Kubernetes Deployment, not a generic "microservice." The rename applied 7 comprehensive naming pattern replacements across 45+ files, updated the catalog kind registry, fixed test references, and verified through the full build pipeline.
+Systematically renamed the `KubernetesMicroservice` catalog kind to `KubernetesDeployment` across the entire Planton codebase. This refactoring removes an unnecessary abstraction layer and accurately reflects that the resource creates a Kubernetes Deployment, not a generic "microservice." The rename applied 7 comprehensive naming pattern replacements across 45+ files, updated the catalog kind registry, fixed test references, and verified through the full build pipeline.
 
 ## Motivation
 

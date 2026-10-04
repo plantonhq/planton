@@ -10,13 +10,13 @@ Added AwsCloudwatchAlarm (R15) — the eighteenth new AWS resource kind and the 
 
 ## Problem Statement / Motivation
 
-CloudWatch metric alarms are the primary mechanism for automated monitoring and alerting on AWS. Without this kind, Planton users could not define metric-based alarms declaratively or compose them into infra charts alongside the resources they monitor (ECS services, SQS queues, ALBs, etc.).
+CloudWatch metric alarms are the primary mechanism for automated monitoring and alerting on AWS. Without this kind, Planton users could not define metric-based alarms declaratively or compose them into Infra Charts alongside the resources they monitor (ECS services, SQS queues, ALBs, etc.).
 
 ### Pain Points
 
 - No declarative alarm definition in Planton — users had to manage alarms outside the IaC workflow
 - Metric math alarms (error rates, latency percentiles) are common in production (~35% of alarms) but were not addressable
-- Alarm actions (SNS notifications) could not participate in the infra chart DAG via `valueFrom` references
+- Alarm actions (SNS notifications) could not participate in the Infra Chart DAG via `valueFrom` references
 - Phase 1 of the AWS expansion had one remaining kind blocking completion
 
 ## Solution / What's New
@@ -72,13 +72,13 @@ The kind supports two mutually exclusive modes, covering ~100% of CloudWatch ala
 
 - **Completes Phase 1** — all 15 core AWS resource kinds (+ 3 splits) are now forged
 - **Metric math support** — enables error rate, latency ratio, and computed metric alarms that ~35% of production users need
-- **Infra chart composability** — alarm actions use `StringValueOrRef` with `default_kind = AwsSnsTopic`, enabling DAG wiring in infra charts
+- **Infra Chart composability** — alarm actions use `StringValueOrRef` with `default_kind = AwsSnsTopic`, enabling DAG wiring in Infra Charts
 - **M-of-N evaluation** — reduces false positive alerts, a common operational pain point
 
 ## Impact
 
 - **Users**: Can define CloudWatch metric alarms declaratively alongside the resources they monitor
-- **Infra charts**: Monitoring alarms can be composed into environment charts (e.g., ECS + ALB + SQS + alarms)
+- **Infra Charts**: Monitoring alarms can be composed into environment charts (e.g., ECS + ALB + SQS + alarms)
 - **Project milestone**: Phase 1 of the AWS expansion is complete (18 new resource kinds forged)
 
 ## Related Work

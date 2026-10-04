@@ -82,7 +82,7 @@ AwsCodePipelineSpec
 - **Declarative pipeline management** — Define CI/CD pipelines as YAML alongside infrastructure
 - **Cross-resource composability** — StringValueOrRef enables pipelines to reference IAM roles, S3 buckets, and KMS keys from other Planton kinds
 - **V2-first design** — Modern defaults with triggers and variables out of the box
-- **Infra chart ready** — Pipelines can be composed into infra charts with dependency-aware deployment ordering
+- **Infra Chart ready** — Pipelines can be composed into Infra Charts with dependency-aware deployment ordering
 
 ## Impact
 

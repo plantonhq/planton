@@ -25,7 +25,7 @@ When you create an Infra Component, you are declaring a piece of infrastructure:
 
 1. Matching the resource type to the appropriate IaC module
 2. Resolving the provider credentials for your target environment
-3. Running a [Infra Job](/docs/infrastructure/infra-jobs) that executes the provisioning
+3. Running an [Infra Job](/docs/infrastructure/infra-jobs) that executes the provisioning
 4. Tracking the resource's state and outputs
 
 The resource definition follows a declarative model — you describe the desired state, and Planton handles the execution. Changes to the configuration trigger new Infra Jobs that reconcile the actual infrastructure with your updated definition.
@@ -47,7 +47,7 @@ Infra Components support five primary operations:
 - **Create** — Provision new infrastructure. Submitting an Infra Component definition triggers an Infra Job that creates the actual cloud infrastructure.
 - **Update** — Modify the configuration. Changing an Infra Component triggers a new Infra Job that reconciles the infrastructure with the updated definition.
 - **Destroy** — Tear down the cloud infrastructure. The Infra Job removes the actual resources from the cloud provider. The Infra Component record remains in Planton for audit purposes.
-- **Import** — Adopt an existing infra component into Planton's IaC state without recreating it. The actual infrastructure is not modified — only the state file is updated. Use import when an infra component was created outside of Planton (manually, by a provider, or through another tool) and you want Planton to manage it going forward. See [Importing Resources](/docs/infrastructure/importing-resources) for the full guide.
+- **Import** — Adopt an existing provider resource into an Infra Component's IaC state without recreating it. The actual infrastructure is not modified — only the state file is updated. Use import when a provider resource was created outside of Planton (manually, by a provider, or through another tool) and you want Planton to manage it going forward. See [Importing Resources](/docs/infrastructure/importing-resources) for the full guide.
 - **Purge** — Destroy the infrastructure and delete the Infra Component record from Planton in a single operation. Use this for full cleanup.
 
 The distinction between destroy and purge matters for compliance and auditing. Destroy leaves a record of what existed and when it was torn down. Purge removes all traces.
@@ -57,7 +57,7 @@ A destroy reads only what it destroys. A `$secret/` or `$var/` reference the res
 <!-- SCREENSHOT: Infra Component detail page
   Page: /[org]/infra-component/[env]/[resourceKind]/[resourceName]
   Action: Show a deployed Infra Component with status and spec visible
-  Focus: Full page showing resource metadata, spec summary, and infra job status
+  Focus: Full page showing resource metadata, spec summary, and Infra Job status
   Alt: Infra Component detail page showing a deployed AWS VPC with its configuration and latest Infra Job status
 -->
 
@@ -121,20 +121,20 @@ planton diff -f vpc.yaml
 planton list infra-component
 
 # Destroy the infrastructure (runs an Infra Job, keeps the record)
-planton infra-component destroy <infra-component-id>
+planton infra component destroy <infra-component-id>
 
 # Destroy infrastructure and delete the record
-planton infra-component purge <infra-component-id>
+planton infra component purge <infra-component-id>
 
 # List all available resource types
-planton infra-component registered-kinds
+planton infra component registered-kinds
 
 # View the resource's infrastructure inputs
-planton infra-component iac-input <infra-component-id>
+planton infra component iac-input <infra-component-id>
 
 # Manage resource locks
-planton infra-component list-locks <infra-component-id>
-planton infra-component remove-locks <infra-component-id>
+planton infra component list-locks <infra-component-id>
+planton infra component remove-locks <infra-component-id>
 
 # Import an existing resource into IaC state (Pulumi)
 planton pulumi import <infra-component> --type <type> --name <name> --id <provider-id>

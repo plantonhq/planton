@@ -5,7 +5,7 @@ Creates a cluster-scoped Kubernetes Gateway API `GatewayClass` via the
 `gateway.networking.k8s.io/v1`, server-side apply). Unlike
 `kubernetes_manifest`, `kubectl_manifest` needs no cluster connection at plan
 time, so the class can be planned before the Gateway API CRDs exist -- which is
-what lets an infra chart deploy the CRDs and the class in a single run (and lets
+what lets an Infra Chart deploy the CRDs and the class in a single run (and lets
 offline plan proofs work). At apply time the Gateway API CRDs must be installed
 (see the `KubernetesGatewayApiCrds` component).
 

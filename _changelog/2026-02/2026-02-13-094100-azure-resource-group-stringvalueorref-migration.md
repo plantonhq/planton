@@ -94,7 +94,7 @@ Removed `resolveStringValueOrRef` from 2 files across the codebase:
 ## Benefits
 
 - **Complete dependency graph**: Every Azure resource explicitly declares its resource group dependency, enabling full DAG visualization and impact analysis
-- **Infra-chart composability**: Resource groups can now be wired via `valueFrom` references in infra charts, establishing Layer 0 in every Azure chart
+- **Infra-chart composability**: Resource groups can now be wired via `valueFrom` references in Infra Charts, establishing Layer 0 in every Azure chart
 - **No more hidden resource groups**: VPC, AKS, and ACR no longer create surprise resource groups -- users control naming and placement
 - **Eliminated hardcoded regions**: VPC and NAT Gateway no longer hardcode `"eastus"`
 - **Cleaner IaC modules**: No `resolveStringValueOrRef` function or `foreignkeyv1` import in any Pulumi module -- just `.GetValue()`

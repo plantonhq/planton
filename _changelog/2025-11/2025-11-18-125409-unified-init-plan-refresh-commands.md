@@ -135,7 +135,7 @@ func refreshWithTofu(...) {
 ```
 
 **Key characteristics**:
-- Read-only operation (does not modify infra components)
+- Read-only operation (does not modify provider resources)
 - Always auto-approves (no confirmation needed)
 - Queries cloud provider for current resource state
 - Updates state file to match reality

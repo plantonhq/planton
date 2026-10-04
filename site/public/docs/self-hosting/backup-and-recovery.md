@@ -12,11 +12,11 @@ tags:
 
 # Backup and Recovery
 
-A self-hosted Planton is, at bottom, one PostgreSQL database -- and its bundled secrets manager stores inside that same database. Organizations, environments, cloud connections, projects, deployment history, members, the sign-in realm with its users, and every secret the platform holds are all rows in it. Declare a backup and every change streams to an object store you own, with a full copy taken on a schedule, so the platform can be restored to any moment inside the retention window -- on the same cluster or a new one, records and secrets together, to the same instant. Declare nothing and it runs exactly as before, with no archive.
+A self-hosted Planton is, at bottom, one PostgreSQL database -- and its bundled secrets manager stores inside that same database. Organizations, environments, cloud connections, Infra Stacks, deployment history, members, the sign-in realm with its users, and every secret the platform holds are all rows in it. Declare a backup and every change streams to an object store you own, with a full copy taken on a schedule, so the platform can be restored to any moment inside the retention window -- on the same cluster or a new one, records and secrets together, to the same instant. Declare nothing and it runs exactly as before, with no archive.
 
 ## What is in the backup, and what is not
 
-**In it:** everything the platform's database holds. After a restore, the organizations are there, the environments and their infra components are there, the deployment history is there, and people sign in with the passwords they had, because the identity realm is in the same database.
+**In it:** everything the platform's database holds. After a restore, the organizations are there, the environments and their Infra Components are there, the deployment history is there, and people sign in with the passwords they had, because the identity realm is in the same database.
 
 **Also in it:** the secrets manager. The bundled vault stores its data in that same database, so the credentials behind your cloud connections, your config secrets, and the platform's signing keys come back with the records. Keyless cloud connections keep working after a restore because the platform's signing key is the same key.
 

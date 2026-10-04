@@ -150,7 +150,7 @@ The fill yields to one thing only: an `imageRegistries` entry the workload alrea
 
 **Targets that pull only from their own cloud's registry.** Cloud Run and Cloud Run Jobs pull private images only from Artifact Registry (public Docker Hub and GHCR images excepted); App Runner only from ECR or ECR Public; Lambda container images only from ECR in the same Region. No field on the target changes that. Push to the provider's registry, or declare a pull-through repository that proxies the registry your image lives in: a `GcpArtifactRegistryRepo` in `REMOTE_REPOSITORY` mode, or `AwsEcrRegistrySettings.pullThroughCacheRules`. ECS pulls from ECR with the task execution role and from any other registry with the Secrets Manager credential the task definition declares.
 
-**When it cannot work, it says so.** A workload referencing a Secret that has no value yet is refused before an infra job is created, naming the field and the resource. A literal password is refused at apply, naming the `$secret/` grammar. A pod that still cannot pull shows the kubelet's own `ImagePullBackOff` line followed by the remedy: declare the login on the workload, or a pull secret beside it, or pull from a registry the cluster's own identity reaches.
+**When it cannot work, it says so.** A workload referencing a Secret that has no value yet is refused before an Infra Job is created, naming the field and the resource. A literal password is refused at apply, naming the `$secret/` grammar. A pod that still cannot pull shows the kubelet's own `ImagePullBackOff` line followed by the remedy: declare the login on the workload, or a pull secret beside it, or pull from a registry the cluster's own identity reaches.
 
 ---
 

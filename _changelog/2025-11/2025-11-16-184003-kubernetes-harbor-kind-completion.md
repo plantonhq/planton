@@ -32,7 +32,7 @@ The KubernetesHarbor kind had excellent implementation (complete Pulumi and Terr
 
 2. **Missing Module Documentation** (3.34% out of 6.67%)
    - No `iac/pulumi/overview.md` - architecture undocumented
-   - Missing kind relationships and data flow
+   - Missing component relationships and data flow
    - Design decisions not explained
 
 3. **Missing Optional Examples** (5% out of 10%)
@@ -178,15 +178,15 @@ PostgreSQL and Redis ports: `gt = 0, lte = 65535`
 #### Content Sections
 
 **Architecture Overview:**
-- Kind structure and file organization
-- ASCII architecture diagram showing all Harbor kinds
+- Component structure and file organization
+- ASCII architecture diagram showing all Harbor components
 - Data flow visualization (image push/pull, background jobs)
 
 **Deployment Modes:**
 
 1. **Self-Managed Mode** (Development/Testing)
 ```
-All kinds in-cluster:
+All components in-cluster:
 - PostgreSQL: StatefulSet with PVC
 - Redis: StatefulSet with PVC
 - Storage: Filesystem PVC
@@ -210,7 +210,7 @@ External services:
 | Alibaba OSS | Production on Alibaba | ✅ Multi-zone | Encryption, lifecycle |
 | Filesystem | Development only | ❌ Single node | PVC-based |
 
-**Kind Responsibilities:**
+**Component Responsibilities:**
 - Harbor Core: Auth/RBAC, projects, webhooks, API gateway
 - Harbor Portal: Web UI, dashboard, user management
 - Harbor Registry: OCI distribution, layer storage, manifests
@@ -278,12 +278,12 @@ The spec.proto was already comprehensive with:
 - 11 CEL validation rules
 - Support for 5 storage backends
 - External and managed database/cache options
-- Multiple Harbor kinds with configurable resources
+- Multiple Harbor components with configurable resources
 - Ingress configuration for Core/Portal and Notary
 
 All work focused on:
 1. **Testing existing validations** - Ensuring CEL rules work correctly
-2. **Documenting existing architecture** - Explaining how kinds interact
+2. **Documenting existing architecture** - Explaining how components interact
 3. **Providing usage examples** - Helping users leverage existing capabilities
 
 ## Benefits
@@ -298,7 +298,7 @@ All work focused on:
 
 1. **Architecture Context**: Future developers understand Harbor's complexity
 2. **Design Rationale**: Decisions explained (why 5 storage backends, why separate DB/cache)
-3. **Kind Relationships**: Data flow and interactions documented
+3. **Component Relationships**: Data flow and interactions documented
 
 ### For Adoption
 
@@ -353,7 +353,7 @@ The validation tests provide confidence that:
 ### Developer Experience
 
 Documentation improvements:
-- **Architecture**: Clear diagrams showing 10+ Harbor kinds
+- **Architecture**: Clear diagrams showing 10+ Harbor components
 - **Deployment Modes**: Self-managed vs hybrid clearly explained
 - **Storage Selection**: Guidance for choosing S3/GCS/Azure/OSS/Filesystem
 - **Examples**: 5 real-world scenarios with complete code

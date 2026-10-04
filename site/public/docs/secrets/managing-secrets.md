@@ -108,7 +108,7 @@ planton service env check   # per-reference resolution report
 
 ## The Read Story
 
-Every read of a secret's **value** — a console reveal, a CLI read, a deploy-time resolution — writes one immutable audit entry in the same breath as serving the value. Each entry records who (the person, the API key, or the exact platform work such as a specific infra job), through which surface, when, and **exactly which version was served**. A read whose record cannot be written is refused.
+Every read of a secret's **value** — a console reveal, a CLI read, a deploy-time resolution — writes one immutable audit entry in the same breath as serving the value. Each entry records who (the person, the API key, or the exact platform work such as a specific Infra Job), through which surface, when, and **exactly which version was served**. A read whose record cannot be written is refused.
 
 The feed rides the same permission as reading the value itself:
 

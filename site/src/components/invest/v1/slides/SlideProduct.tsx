@@ -8,7 +8,7 @@ const features = [
   {
     icon: Layers,
     title: 'Catalog Kinds',
-    description: 'Pre-built, validated infra component definitions',
+    description: 'Pre-built, validated catalog kind definitions',
   },
   {
     icon: Cloud,

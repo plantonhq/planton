@@ -9,7 +9,7 @@
 - **`kubectl_manifest` apply**: the CR applies through the alekc/kubectl
   provider, which needs no cluster connection at plan time — an
   ExternalSecret can be PLANNED before the External Secrets Operator's CRDs
-  exist, which is what lets an infra chart deploy the operator, its stores,
+  exist, which is what lets an Infra Chart deploy the operator, its stores,
   and its syncs in one run.
 - **Pinned Secret name**: the CR's `target.name` is always rendered from
   the resolved Secret name (`target.name` when set, else `metadata.name`),

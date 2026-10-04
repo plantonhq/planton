@@ -25,15 +25,15 @@ The header carried several design artifacts from an earlier era of the site that
 
 ### Header Auth Buttons
 
-Removed the `JoinBetaBtn` kind (which triggered a `BetaDialog` modal) and replaced it with two direct links:
+Removed the `JoinBetaBtn` component (which triggered a `BetaDialog` modal) and replaced it with two direct links:
 - **Sign in** → `planton.ai/login` (ghost button style)
 - **Sign up** → `planton.ai/signup` (filled white button)
 
-Both desktop and mobile drawer updated. The `JoinBetaBtn` was removed from the barrel export in `src/components/landing-page/index.ts` but left in the legacy v1 kinds file to avoid breaking unused-but-compiled v1 code.
+Both desktop and mobile drawer updated. The `JoinBetaBtn` was removed from the barrel export in `src/components/landing-page/index.ts` but left in the legacy v1 components file to avoid breaking unused-but-compiled v1 code.
 
 ### Discord Monochrome
 
-Changed `public/images/discord.svg` fill from `#6665D2` to `currentColor`. The icon now inherits the parent button's text color (`#999999` via `text-text-secondary`), fitting the monochrome theme without any kind code changes.
+Changed `public/images/discord.svg` fill from `#6665D2` to `currentColor`. The icon now inherits the parent button's text color (`#999999` via `text-text-secondary`), fitting the monochrome theme without any component code changes.
 
 ### Inter Font Migration
 
@@ -43,7 +43,7 @@ Swapped Work Sans for Inter across four configuration layers:
 - `src/theme/theme.ts` — MUI theme typography
 - `src/app/globals.css` — body font-family fallback
 
-Updated `font-work-sans` → `font-inter` Tailwind class in 5 page/kind files (DocsLayout, TutorialsPageClient, changelog pages, blog page).
+Updated `font-work-sans` → `font-inter` Tailwind class in 5 page/component files (DocsLayout, TutorialsPageClient, changelog pages, blog page).
 
 ### Inter Size Compensation
 
@@ -61,7 +61,7 @@ Inter has a ~7% taller x-height than Work Sans. At identical font-size declarati
 
 ### Docs Tracking
 
-Added `tracking-tight` to the docs content wrapper in `MDXRenderer.tsx`. The MUI theme's letter-spacing only affects MUI Typography kinds, not the plain HTML tags used by `react-markdown`. This makes docs text feel as crisp as the rest of the site without reducing the 16px body text size (which is the industry standard for documentation).
+Added `tracking-tight` to the docs content wrapper in `MDXRenderer.tsx`. The MUI theme's letter-spacing only affects MUI Typography components, not the plain HTML tags used by `react-markdown`. This makes docs text feel as crisp as the rest of the site without reducing the 16px body text size (which is the industry standard for documentation).
 
 ## Implementation Details
 
@@ -83,7 +83,7 @@ Added `tracking-tight` to the docs content wrapper in `MDXRenderer.tsx`. The MUI
 ### Design Decisions
 
 - **Body text stays at 16px**: Inter at 16px is the universal standard for documentation (Stripe, Vercel, Tailwind, MDN). The "looks bigger" perception comes from Inter's taller x-height vs Work Sans, not from an actual sizing problem. Tighter letter-spacing addresses the perceived looseness.
-- **Header-specific size overrides, not global Btn changes**: The `Btn` kind uses `md:text-base` globally. Changing it would cascade to CTAs, pricing, and feature pages. Header buttons get `!text-sm` overrides instead.
+- **Header-specific size overrides, not global Btn changes**: The `Btn` component uses `md:text-base` globally. Changing it would cascade to CTAs, pricing, and feature pages. Header buttons get `!text-sm` overrides instead.
 - **Solutions items don't get icons**: They're navigational categories under clear section headers. Icons would add visual noise without information. GitHub and Vercel both use text-only category menus.
 
 ## Benefits

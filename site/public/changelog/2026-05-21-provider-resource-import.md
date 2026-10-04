@@ -1,5 +1,5 @@
 ---
-title: "Import Existing Infra Components into Planton"
+title: "Import Existing Provider Resources into Planton"
 date: 2026-05-21
 category: feature
 tags:
@@ -12,7 +12,7 @@ author:
     title: Founder
 ---
 
-You can now import existing infra components into Planton without recreating them. If you have a DNS zone that was auto-created when you purchased a domain, a VPC that was provisioned manually before your team adopted Planton, or a database that already exists and just needs to be tracked — import brings it under management by writing to the IaC state file. Your actual cloud infrastructure is never modified. Nothing is created, changed, or destroyed.
+You can now import existing provider resources into Planton without recreating them. If you have a DNS zone that was auto-created when you purchased a domain, a VPC that was provisioned manually before your team adopted Planton, or a database that already exists and just needs to be tracked — import brings it under management by writing to its Infra Component's IaC state file. Your actual cloud infrastructure is never modified. Nothing is created, changed, or destroyed.
 
 ## Importing from the Console
 

@@ -108,7 +108,7 @@ apis/dev/planton/provider/azure/azurelinuxwebapp/v1/
 ## Impact
 
 - **Users**: Can now deploy Azure Linux Web Apps declaratively with the same consistency as all other Planton resources
-- **Infra charts**: The `web-app-environment` chart can now be built (T03 phase)
+- **Infra Charts**: The `web-app-environment` chart can now be built (T03 phase)
 - **Platform completeness**: App hosting category is now complete with 5 resources (ServicePlan, ContainerAppEnvironment, ContainerApp, FunctionApp, LinuxWebApp)
 
 ## Related Work
@@ -117,7 +117,7 @@ apis/dev/planton/provider/azure/azurelinuxwebapp/v1/
 - R16 AzureServicePlan -- required dependency (provides compute tier)
 - DD04 -- Linux-only decision (Windows variants excluded)
 - DD05 -- AzureResourceGroup as first-class resource
-- T03 -- Infra chart phase (web-app-environment chart, pending)
+- T03 -- Infra Chart phase (web-app-environment chart, pending)
 
 ---
 

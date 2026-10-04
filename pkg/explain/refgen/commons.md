@@ -31,7 +31,7 @@ leaves are what other manifests reference (each page's "Outputs" section).
 | `metadata.labels` | Key/value pairs the IaC modules derive into cloud-provider tags on the real resources |
 | `metadata.annotations` | Platform-behavior signals (see below) |
 | `metadata.tags` | Free-form strings |
-| `metadata.relationships` | Explicit relationships with other infra components |
+| `metadata.relationships` | Explicit relationships with other Infra Components |
 | `metadata.group` | The author's concern as a slash path (`infrastructure/networking`, `platform/certificates`), drawn as a tray inside the room its members live in; never affects deploy order, and a tray of one is not drawn |
 
 Platform-behavior signals live in `metadata.annotations`, never
@@ -44,7 +44,7 @@ resources as tags, so a platform key there would leak internal detail.
 |---|---|
 | `planton.dev/connection` | The provider connection (by slug) this resource deploys through, and so the cloud account it lands in and is drawn inside; when absent, the environment's and then the organization's default connection for the provider applies |
 | `planton.dev/provisioner` | Which IaC engine deploys this resource: `pulumi`, `tofu`, or `terraform` (case-insensitive) |
-| `pulumi.planton.dev/stack.fqdn` | Pulumi stack as `organization/project/stack`; takes precedence over the three kind annotations (`pulumi.planton.dev/organization`, `.../project`, `.../stack.name`) |
+| `pulumi.planton.dev/stack.fqdn` | Pulumi stack as `organization/project/stack`; takes precedence over the three component annotations (`pulumi.planton.dev/organization`, `.../project`, `.../stack.name`) |
 | `tofu.planton.dev/backend.type` | Terraform/OpenTofu state backend type: `s3`, `gcs`, `azurerm`, `remote` (TFE-protocol state storage), `local` (key prefix matches the provisioner: `terraform.planton.dev/...` for terraform) |
 | `tofu.planton.dev/backend.bucket`, `.../backend.key`, `.../backend.region`, `.../backend.endpoint` | State backend location details |
 

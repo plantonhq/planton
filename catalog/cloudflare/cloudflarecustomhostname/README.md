@@ -57,7 +57,7 @@ There is no `status` output: activation is asynchronous (`pending` → `pending_
 
 This kind requires the zone to have a fallback origin
 (`CloudflareCustomHostnameFallbackOrigin`) configured. Express that dependency with
-a `metadata.relationships` `depends_on` edge in an infra chart.
+a `metadata.relationships` `depends_on` edge in an Infra Chart.
 
 ## Related kinds
 

@@ -243,7 +243,7 @@ If you have a domain name and want production-grade TLS termination on the ALB, 
     value: true
 ```
 
-Re-run the install command with the same project name to update:
+Re-run the install command with the same stack name to update:
 
 ```bash
 planton chart install my-ecs-env \
@@ -266,13 +266,13 @@ The ALB is updated with the certificate and DNS configuration. Once the certific
 
 When you are done, tear down the environment to stop incurring AWS charges. The platform offers two options:
 
-**Uninstall** destroys all infra components but keeps the Infra Stack record in Planton. This is useful if you want to redeploy later with the same configuration:
+**Uninstall** destroys all Infra Components but keeps the Infra Stack record in Planton. This is useful if you want to redeploy later with the same configuration:
 
 ```bash
 planton chart uninstall my-ecs-env
 ```
 
-**Purge** destroys all infra components AND deletes the Infra Stack from the database:
+**Purge** destroys all Infra Components AND deletes the Infra Stack from the database:
 
 ```bash
 planton chart purge my-ecs-env

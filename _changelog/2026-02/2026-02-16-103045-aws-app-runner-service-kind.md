@@ -10,13 +10,13 @@ Added AwsAppRunnerService as the 27th new AWS resource kind in the Planton cloud
 
 ## Problem Statement / Motivation
 
-App Runner is AWS's simplest path from container image to production HTTPS endpoint -- an increasingly popular choice for web APIs, microservices, and internal tools. Without an Planton kind, teams deploying App Runner services had to fall back to raw Terraform or Pulumi, losing the declarative YAML workflow, cross-resource references via `StringValueOrRef`, and infra chart composability that Planton provides for other AWS services.
+App Runner is AWS's simplest path from container image to production HTTPS endpoint -- an increasingly popular choice for web APIs, microservices, and internal tools. Without an Planton kind, teams deploying App Runner services had to fall back to raw Terraform or Pulumi, losing the declarative YAML workflow, cross-resource references via `StringValueOrRef`, and Infra Chart composability that Planton provides for other AWS services.
 
 ### Pain Points
 
 - No declarative way to deploy App Runner services through Planton
 - VPC Connectors and Auto Scaling Configurations are separate TF/Pulumi resources that users must manage independently
-- No standard pattern for wiring App Runner services into infra charts alongside VPCs, security groups, and KMS keys
+- No standard pattern for wiring App Runner services into Infra Charts alongside VPCs, security groups, and KMS keys
 
 ## Solution / What's New
 
@@ -77,7 +77,7 @@ A complete AwsAppRunnerService catalog kind with 41 files covering proto API, Pu
 ## Benefits
 
 - **Zero to HTTPS in one YAML manifest**: Simplest possible deployment experience for containerized web apps
-- **Infra chart composable**: Rich `StringValueOrRef` outputs enable wiring into serverless-api and containerized-web-app charts
+- **Infra Chart composable**: Rich `StringValueOrRef` outputs enable wiring into serverless-api and containerized-web-app charts
 - **Two deployment models**: Teams can choose between pre-built container images (CI/CD pipeline) or build-from-source (GitHub direct)
 - **Bundled sub-resources**: VPC Connector and Auto Scaling Config managed inline -- users don't need to understand AWS resource topology
 
@@ -85,7 +85,7 @@ A complete AwsAppRunnerService catalog kind with 41 files covering proto API, Pu
 
 - AWS resource coverage: 27 of ~32 new kinds complete
 - Phase 2 progress: 9 of 10 kinds done (AwsMwaaEnvironment and AwsTransitGateway remaining)
-- Enables future "containerized web app" infra chart pattern combining App Runner + VPC + RDS/DynamoDB
+- Enables future "containerized web app" Infra Chart pattern combining App Runner + VPC + RDS/DynamoDB
 
 ## Related Work
 

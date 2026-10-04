@@ -122,5 +122,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference the namespace so infra charts create it and this quota in dependency order; prefer its built-in resource profiles for simple T-shirt sizing.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference the namespace so Infra Charts create it and this quota in dependency order; prefer its built-in resource profiles for simple T-shirt sizing.
 - [**Kubernetes PriorityClass**](/infra-catalog/kubernetes-priority-class) -- a priority-class-scoped quota budgets one tier's consumption.

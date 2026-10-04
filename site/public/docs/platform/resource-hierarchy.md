@@ -100,7 +100,7 @@ Organization  Environment
 Clicking the context selector opens a dropdown where you can switch between environments. The console updates to show resources scoped to your selection:
 
 - **Organization level** — manage connections, billing, settings, team members
-- **Environment level** — deploy and manage infra components and services
+- **Environment level** — deploy and manage Infra Components and Services
 
 <!-- SCREENSHOT: Context selector
   Page: /orgs/{org}/infra-components (header area)

@@ -218,7 +218,7 @@ spec:
     bundle: { ... }
 ```
 
-### Affected Kinds
+### Affected Components
 
 - **Protocol Buffers**: Field numbering changed in `CloudflareWorkerSpec` and `CloudflareWorkerScript`
 - **Go Stubs**: Regenerated with `make protos`

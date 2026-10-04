@@ -658,7 +658,7 @@ This same change pattern should be applied to these additional kinds that have t
 
 When this pattern is adopted, the Planton web console (`planton` repo) will need updates:
 
-### Form Kinds
+### Form Components
 
 1. **Create Form**: Add UI for selecting between `value` and `secretRef`
 2. **Edit Modal**: Support editing both value types

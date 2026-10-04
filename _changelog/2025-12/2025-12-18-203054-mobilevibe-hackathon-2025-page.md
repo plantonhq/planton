@@ -56,7 +56,7 @@ src/app/(root)/hackathon/mobile-vibe-2025/
 └── page.tsx                    # Main page component
 
 src/components/hackathon/
-├── index.ts                    # Kind exports
+├── index.ts                    # Component exports
 ├── hero-section.tsx           # Hero with event badge and mobile devices
 ├── event-details.tsx          # When, format, RSVP, prerequisites
 ├── goals-section.tsx          # Why this hackathon exists
@@ -69,9 +69,9 @@ workspace/
 └── hackathon-implementation-summary.md    # Implementation docs
 ```
 
-### Kind Architecture
+### Component Architecture
 
-All kinds follow the existing planton.ai patterns:
+All components follow the existing planton.ai patterns:
 - Use Material-UI components (`Box`, `Typography`, `Stack`)
 - Leverage shared layout components (`PageSection`, `SectionContainer`)
 - Client-side rendering with `'use client'` directive
@@ -113,7 +113,7 @@ export const metadata: Metadata = {
 };
 ```
 
-**Kind Pattern**:
+**Component Pattern**:
 ```typescript
 export const HeroSection = () => {
   return (
@@ -167,7 +167,7 @@ export const HeroSection = () => {
 ### For Future Events
 - **Reusable pattern**: Establishes a template for future hackathons or events
 - **Content structure**: Provides a proven information architecture
-- **Component library**: Hackathon kinds can be adapted for other events
+- **Component library**: Hackathon components can be adapted for other events
 
 ## Impact
 
@@ -201,7 +201,7 @@ export const HeroSection = () => {
 
 ## Technical Metrics
 
-- **Files Created**: 8 (6 kinds + 1 page + 1 workspace doc)
+- **Files Created**: 8 (6 components + 1 page + 1 workspace doc)
 - **Components**: 6 reusable hackathon-specific components
 - **Lines of Code**: ~850 lines of React/TypeScript
 - **Build Status**: ✅ Successful compilation and static generation
@@ -211,7 +211,7 @@ export const HeroSection = () => {
 ## Development Timeline
 
 - **Planning**: 15 minutes (gathering requirements, Q&A)
-- **Kind Development**: 45 minutes (building 6 kinds)
+- **Component Development**: 45 minutes (building 6 components)
 - **Content Writing**: 30 minutes (copy for all sections + FAQ)
 - **Slack Templates**: 15 minutes (2 announcement versions)
 - **Refinement**: 20 minutes (fixing build errors, content updates)
@@ -240,7 +240,7 @@ None. The page is fully functional and ready for deployment.
 - Showcase demo videos
 
 ### Reusability
-- Abstract common event page patterns into shared kinds
+- Abstract common event page patterns into shared components
 - Create a general "event page" template
 - Build an admin interface for creating future event pages
 - Consider adding registration/RSVP tracking

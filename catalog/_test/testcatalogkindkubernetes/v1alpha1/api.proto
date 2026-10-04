@@ -9,7 +9,7 @@ import "shared/metadata.proto";
 
 // TestCatalogKindKubernetes is permanent test infrastructure for
 // Kubernetes-specific proto processing tests. It mirrors the shape of real
-// Kubernetes infra components (namespace, resources, env)
+// Kubernetes catalog kinds (namespace, resources, env)
 // without coupling tests to any production resource kind.
 // For generic testing, use TestCatalogKindGeneric.
 message TestCatalogKindKubernetes {

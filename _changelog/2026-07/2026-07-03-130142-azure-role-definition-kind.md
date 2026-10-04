@@ -26,7 +26,7 @@ to be hand-crafted in the portal or by scripts outside the resource graph.
 - Real organizations routinely need permission sets Azure's built-in roles
   don't express ("operate VMs but never create or delete", "read everything
   plus blob data", "Contributor except RBAC writes")
-- Portal-crafted custom roles are invisible to infra charts: not reviewable,
+- Portal-crafted custom roles are invisible to Infra Charts: not reviewable,
   not referenceable, not reproducible
 - The assignment kind's custom-role path pointed at IDs with no first-class
   producer

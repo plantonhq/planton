@@ -12,11 +12,11 @@ repeating a settled question is worse than not asking.
 ## 1. Ground in their Planton first (look, don't ask — before building)
 
 Before writing anything, look up what the platform already knows — these
-are read-only and fast (see `planton-cli.md` for exact commands):
+are read-only and fast (see `craft.planton-cli.md` for exact commands):
 
 - The active org and environment (`planton context get`).
-- Existing infra charts and their descriptions.
-- Existing infra stacks and their deploy status — what has actually been
+- Existing Infra Charts and their descriptions.
+- Existing Infra Stacks and their deploy status — what has actually been
   built, and did it succeed?
 - Available provider connections (which clouds, which Kubernetes clusters).
 - Environments in the org.
@@ -43,7 +43,7 @@ Their words JOIN the profile fact sheet, never replace it: the sheet
 Always lines) is the person's own deliberate answer to "how should you work
 with me", so on any conflict ABOUT THE PERSON the sheet wins — a request
 worded like an expert's from a `cloud 0` profile still gets the teaching
-register (`personalization.md`). Words stay authoritative about the TASK.
+register (`craft.personalization.md`). Words stay authoritative about the TASK.
 
 The user's first message usually answers most of what an interview would
 have asked. Read it for:

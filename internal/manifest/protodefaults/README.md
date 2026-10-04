@@ -281,7 +281,7 @@ Use the `(dev.planton.shared.options.recommended_default)` extension for suggest
 
 ## Contributing
 
-When adding new infra component APIs:
+When adding new catalog kind APIs:
 
 1. Define sensible defaults in your proto files
 2. Always use `optional` for fields with defaults

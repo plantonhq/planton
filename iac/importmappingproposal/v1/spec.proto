@@ -5,7 +5,7 @@ package dev.planton.iac.importmappingproposal.v1;
 import "google/protobuf/struct.proto";
 
 // ImportMappingProposalSpec is the structured answer a mapper gives to the
-// question "how does this set of discovered infra components map into Planton
+// question "how does this set of discovered provider resources map into Planton
 // kinds?". It is the contract between any proposer -- a deterministic
 // mapper today, an AI mapping agent later -- and everything downstream that
 // consumes a mapping: the eval scorer that grades proposals against a known

@@ -6,7 +6,7 @@
 
 ## Summary
 
-Rewrote 2 existing Service Hub documentation pages and created 6 new pages, bringing the Service Hub section from 7 pages of marketing-toned content to 13 pages of source-verified, technically precise documentation. Every claim is traceable to protobuf API definitions, CLI source code, or web console kinds.
+Rewrote 2 existing Service Hub documentation pages and created 6 new pages, bringing the Service Hub section from 7 pages of marketing-toned content to 13 pages of source-verified, technically precise documentation. Every claim is traceable to protobuf API definitions, CLI source code, or web console components.
 
 ## Problem Statement / Motivation
 

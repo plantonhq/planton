@@ -107,7 +107,7 @@ Uses `google` provider `~> 6.0` (required for `desired_auto_created_endpoints` a
 
 - **GCP users**: Can now provision new-generation Memorystore instances (Valkey) through Planton
 - **Existing GcpRedisInstance users**: No changes — legacy kind remains fully supported
-- **Infra chart authors**: New building block for caching layers in composed environments
+- **Infra Chart authors**: New building block for caching layers in composed environments
 
 ## Related Work
 

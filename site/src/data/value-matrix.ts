@@ -180,7 +180,7 @@ export const VALUE_MATRIX: MatrixCategory[] = [
     rows: [
       { feature: 'Environments', cells: unlimitedEverywhere },
       { feature: 'Cloud Account Connections', cells: unlimitedEverywhere },
-      { feature: 'Infra Components & Components', cells: unlimitedEverywhere },
+      { feature: 'Infra Components', cells: unlimitedEverywhere },
       { feature: 'Services', cells: unlimitedEverywhere },
       {
         feature: 'Automation Minutes',
@@ -193,7 +193,7 @@ export const VALUE_MATRIX: MatrixCategory[] = [
     category: 'Deployments & Infrastructure',
     rows: [
       {
-        feature: 'multi-cloud catalog',
+        feature: 'Multi-Cloud Catalog',
         description: '700+ catalog kinds across AWS, GCP, Azure, Kubernetes, and more',
         cells: everywhere,
       },

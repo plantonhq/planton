@@ -26,7 +26,7 @@ Planton's Config Manager — a significant shipped feature with envelope encrypt
 
 **index.md** — Overview page establishing the Secrets Manager and configuration variable system. Covers the problem (scattered secrets), the solution (single secure home), the scoping model (GitHub Organization Secrets analogy), three security guarantees (always encrypted, decrypted only in customer infrastructure, customer can own the encryption key), backend options, and the platform integration roadmap.
 
-**secrets.md** — Full secrets lifecycle documentation. Covers creating secrets, immutable versioning (why each version gets its own encryption key), scoping, the just-in-time decryption flow (with Mermaid sequence diagram), referencing secrets from services, and future platform integrations (connection fields, infra component inputs, sensitive outputs).
+**secrets.md** — Full secrets lifecycle documentation. Covers creating secrets, immutable versioning (why each version gets its own encryption key), scoping, the just-in-time decryption flow (with Mermaid sequence diagram), referencing secrets from services, and future platform integrations (connection fields, Infra Component inputs, sensitive outputs).
 
 **variables.md** — Variables and Variable Groups documentation. Covers creating variables, scoping, dynamic references to infrastructure outputs (ValueFromRef), Variable Groups for configuration reuse, referencing from services, .env file generation, and future platform integrations.
 

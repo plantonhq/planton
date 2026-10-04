@@ -26,7 +26,7 @@ Documentation images follow the path pattern `docs/{section}/{page}/{filename}`:
 ```markdown
 ![Deployment environments](https://assets.planton.ai/site/images/docs/ci-cd/deployment-environments/service-showing-deployment-environments.png)
 
-![Infra job overview](https://assets.planton.ai/site/images/docs/infrastructure/infra-jobs/infra-job-running-state.png)
+![Infra Job overview](https://assets.planton.ai/site/images/docs/infrastructure/infra-jobs/infra-job-running-state.png)
 ```
 
 ### Other Content Areas

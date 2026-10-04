@@ -10,12 +10,12 @@ Added AwsCognitoUserPool (R12) as a new AWS catalog kind in Planton, providing m
 
 ## Problem Statement / Motivation
 
-AWS Cognito User Pools is the primary managed authentication service for web and mobile applications on AWS. Before this addition, Planton users needing user authentication had to manage Cognito infrastructure manually or outside the framework. This gap prevented infra charts from expressing auth-enabled deployment patterns -- a critical capability for serverless-api and web application charts where the user pool, API Gateway JWT authorizer, and Lambda functions must be wired together.
+AWS Cognito User Pools is the primary managed authentication service for web and mobile applications on AWS. Before this addition, Planton users needing user authentication had to manage Cognito infrastructure manually or outside the framework. This gap prevented Infra Charts from expressing auth-enabled deployment patterns -- a critical capability for serverless-api and web application charts where the user pool, API Gateway JWT authorizer, and Lambda functions must be wired together.
 
 ### Pain Points
 
 - No declarative way to provision a Cognito User Pool with app clients through Planton
-- Infra charts could not express JWT authorizer dependencies (issuer URL, client IDs)
+- Infra Charts could not express JWT authorizer dependencies (issuer URL, client IDs)
 - Manual Cognito setup is error-prone: identity model choices (username vs alias attributes) are permanent (ForceNew)
 - App clients require careful OAuth/OIDC configuration that benefits from validation guardrails
 
@@ -106,7 +106,7 @@ flowchart TB
 
 ## Benefits
 
-- **Infra chart composability**: `user_pool_endpoint` and `client_ids` enable JWT authorizer wiring in API Gateway charts
+- **Infra Chart composability**: `user_pool_endpoint` and `client_ids` enable JWT authorizer wiring in API Gateway charts
 - **Validation guardrails**: 15 CEL rules catch common misconfiguration (wrong identity model, MFA without token, DEVELOPER email without SES)
 - **ForceNew documentation**: Critical permanent choices (identity model, case sensitivity, client secrets) are documented prominently
 - **Multi-client support**: SPA + server-side client patterns supported with separate OAuth configs and output maps

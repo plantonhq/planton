@@ -3,7 +3,7 @@ syntax = "proto3";
 package dev.planton._test.testcatalogkindkubernetes.v1alpha1;
 
 // Outputs for TestCatalogKindKubernetes.
-// Mirrors the shape of real Kubernetes infra component outputs so that
+// Mirrors the shape of real Kubernetes catalog kind outputs so that
 // downstream consumers can test output loading, setting, getting, and
 // state-building machinery against stable test infrastructure.
 message TestCatalogKindKubernetesOutputs {

@@ -34,7 +34,7 @@ Both now navigate to `/book-demo` in the same tab, which is appropriate since th
 
 ### Dead Buttons Fix
 
-Wired the two inert MUI `Button` kinds in `BuildFasterDeploySmarter` using the same `LinkKind={Link}` + `href` pattern established by the sibling `ReadyToElevate` kind in the same directory:
+Wired the two inert MUI `Button` components in `BuildFasterDeploySmarter` using the same `LinkComponent={Link}` + `href` pattern established by the sibling `ReadyToElevate` component in the same directory:
 - "Start Building Today" now navigates to `/signup`
 - "Request a Demo" now navigates to `/book-demo`
 
@@ -44,7 +44,7 @@ Wired the two inert MUI `Button` kinds in `BuildFasterDeploySmarter` using the s
 |------|--------|
 | `src/components/layout/footer.tsx` | `url: '/demo'` → `url: '/book-demo'` |
 | `src/components/tour/TourPage.tsx` | Added `useRouter` import, replaced `window.open('https://calendly.com/your-demo-link', '_blank')` with `router.push('/book-demo')` |
-| `src/components/solutions/by-role/developers/build-faster-deploy-smarter.tsx` | Added `Link` to MUI imports, added `LinkKind={Link}` and `href` props to both buttons |
+| `src/components/solutions/by-role/developers/build-faster-deploy-smarter.tsx` | Added `Link` to MUI imports, added `LinkComponent={Link}` and `href` props to both buttons |
 
 ## Benefits
 

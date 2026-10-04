@@ -79,14 +79,14 @@ A complete catalog kind following the Terraform `google_workbench_instance` / Pu
 ## Benefits
 
 - Data scientists can provision managed notebooks through declarative YAML
-- Foreign key references enable composition with GcpVpc, GcpServiceAccount, GcpKmsKey in infra charts
+- Foreign key references enable composition with GcpVpc, GcpServiceAccount, GcpKmsKey in Infra Charts
 - Pre-built presets cover the three most common notebook deployment patterns
 - Dual IaC support (Pulumi + Terraform) with full feature parity
 
 ## Impact
 
 - Adds the first AI/ML resource kind to Planton's GCP provider
-- Enables the planned `gcp-ml-notebook-environment` infra chart (BigQuery + Notebook + GCS + SA + VPC)
+- Enables the planned `gcp-ml-notebook-environment` Infra Chart (BigQuery + Notebook + GCS + SA + VPC)
 - Total GCP resource kinds: 39 (20 new + 19 existing)
 
 ## Related Work

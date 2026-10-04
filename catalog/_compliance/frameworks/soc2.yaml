@@ -44,7 +44,7 @@ spec:
       control_ids: [monitoring-integration]
       notes: The kind's exported metrics and security-relevant runtime signals are what the entity's detection and monitoring procedures consume.
     - requirement_id: "CC7.2"
-      requirement_name: The entity monitors system components and the operation of those kinds for anomalies that are indicative of malicious acts, natural disasters, and errors affecting the entity's ability to meet its objectives; anomalies are analyzed to determine whether they represent security events.
+      requirement_name: The entity monitors system components and the operation of those components for anomalies that are indicative of malicious acts, natural disasters, and errors affecting the entity's ability to meet its objectives; anomalies are analyzed to determine whether they represent security events.
       control_ids: [monitoring-integration, audit-logging]
       notes: Anomaly monitoring consumes the kind's exported operational signals; audit logs capture the administrative and access events anomalies are analyzed against.
     - requirement_id: "CC7.3"

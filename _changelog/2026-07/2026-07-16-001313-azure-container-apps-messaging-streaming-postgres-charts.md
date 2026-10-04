@@ -6,7 +6,7 @@
 
 ## Summary
 
-Four production-shaped Azure infra charts joined the catalog — `azure/container-apps-environment`, `azure/service-bus-messaging`, `azure/event-streaming-platform`, and `azure/ha-postgres` — bringing the Azure catalog to nine charts. Building the Container Apps chart surfaced two kind seams that could not be wired by reference, so two retrofits shipped with it: the Dapr component's metadata values and the KEDA scale-rule identity became `StringValueOrRef` fields, which is what lets the chart compose fully keyless messaging (no connection string anywhere in the deployment).
+Four production-shaped Azure Infra Charts joined the catalog — `azure/container-apps-environment`, `azure/service-bus-messaging`, `azure/event-streaming-platform`, and `azure/ha-postgres` — bringing the Azure catalog to nine charts. Building the Container Apps chart surfaced two kind seams that could not be wired by reference, so two retrofits shipped with it: the Dapr component's metadata values and the KEDA scale-rule identity became `StringValueOrRef` fields, which is what lets the chart compose fully keyless messaging (no connection string anywhere in the deployment).
 
 ## Problem Statement / Motivation
 

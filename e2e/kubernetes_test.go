@@ -98,7 +98,7 @@ var kubernetesTier3Kinds = []string{
 	// same as the Kafka ecosystem kinds.
 	"kubernetessignoz",
 	// The TektonConfig declaration KubernetesTektonOperator (its
-	// registry prerequisite) reconciles into running kinds.
+	// registry prerequisite) reconciles into running components.
 	"kubernetestekton",
 	// A runner fleet KubernetesGhaRunnerScaleSetController (its
 	// registry prerequisite) reconciles into a listener and ephemeral

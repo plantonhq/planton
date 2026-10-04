@@ -87,7 +87,7 @@ requirement and enforced at the IaC/AWS API level.
 - **Security compliance**: SSE_S3/SSE_KMS/CSE_KMS encryption with KMS key references
 - **Team isolation**: Separate result locations and governance per workgroup
 - **Engine control**: Pin workgroup to specific Athena or Spark engine versions
-- **Cross-resource composition**: `StringValueOrRef` enables infra chart DAG wiring
+- **Cross-resource composition**: `StringValueOrRef` enables Infra Chart DAG wiring
 
 ## Impact
 
@@ -103,7 +103,7 @@ requirement and enforced at the IaC/AWS API level.
 - Part of the AWS resource expansion project (20260215.02.sp.aws-resource-expansion)
 - R17 AwsKinesisFirehose was the previous kind (2026-02-15)
 - R19 AwsGlueCatalogDatabase is next — foundation for Athena queries
-- Data analytics infra chart (T03) will compose Athena + Glue + S3
+- Data analytics Infra Chart (T03) will compose Athena + Glue + S3
 
 ---
 

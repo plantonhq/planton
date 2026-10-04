@@ -68,13 +68,13 @@ flowchart TD
 ### Documentation (2 files)
 
 - `README.md`: Overview, bundled resources table, features, quick start examples, dependency table, output table, configuration reference, permission levels, node types, production checklist, security best practices, Scaleway doc links.
-- `examples.md`: 7 examples covering dev minimal, production HA, MySQL, multi-user RBAC, ACL lockdown, infra chart valueFrom pattern, and bare instance.
+- `examples.md`: 7 examples covering dev minimal, production HA, MySQL, multi-user RBAC, ACL lockdown, Infra Chart valueFrom pattern, and bare instance.
 
 ## Benefits
 
 - **One manifest = working database**: Users get an instance + databases + users + access rules from a single resource
 - **Fine-grained RBAC**: Per-database permission grants enforce least-privilege for application accounts
-- **Infra-chart ready**: `StringValueOrRef` on `private_network_id` enables DAG composition in the database-stack infra chart
+- **Infra-chart ready**: `StringValueOrRef` on `private_network_id` enables DAG composition in the database-stack Infra Chart
 - **Production hardening built-in**: HA, encryption, ACL, and backup configuration are first-class spec fields, not afterthoughts
 - **Consistent patterns**: Follows the same composite bundling pattern as ScalewayLoadBalancer (5 Terraform resource types), with name-keyed maps for `for_each`
 
@@ -82,7 +82,7 @@ flowchart TD
 
 - **9 of 19 Scaleway resource kinds** now implemented (47% complete)
 - **Database tier unlocked**: R10 (ScalewayRedisCluster) and R11 (ScalewayMongodbInstance) can now proceed
-- **database-stack infra chart** can begin composition planning with RDB as the primary resource
+- **database-stack Infra Chart** can begin composition planning with RDB as the primary resource
 - This is the **most feature-rich Scaleway composite** after LoadBalancer, bundling 5 resource types with cross-resource dependency management
 
 ## Related Work
@@ -91,7 +91,7 @@ flowchart TD
 - **R05: ScalewayLoadBalancer** -- Established the name-keyed map pattern used here for databases, users, and privileges
 - **DigitalOceanDatabaseCluster** -- Reference implementation (simpler: cluster only, no bundled databases/users)
 - **DD01: Composite Resources** -- Design decision confirming the bundling of instance + database + user + ACL
-- **IC03: database-stack** -- Planned infra chart that composes VPC + PrivateNetwork + RdbInstance + optional Redis + MongoDB
+- **IC03: database-stack** -- Planned Infra Chart that composes VPC + PrivateNetwork + RdbInstance + optional Redis + MongoDB
 
 ---
 

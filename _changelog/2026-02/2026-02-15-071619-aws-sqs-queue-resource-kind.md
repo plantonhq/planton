@@ -10,12 +10,12 @@ Added the AwsSqsQueue resource kind (enum 225) as the first new AWS kind in the 
 
 ## Problem Statement / Motivation
 
-Planton's AWS coverage stood at 25 resource kinds, lacking foundational messaging services. SQS is the most fundamental building block for event-driven architectures, microservice decoupling, and serverless workflows on AWS. Without it, infra charts for serverless-api, event-driven, and microservices patterns couldn't express the message queuing layer.
+Planton's AWS coverage stood at 25 resource kinds, lacking foundational messaging services. SQS is the most fundamental building block for event-driven architectures, microservice decoupling, and serverless workflows on AWS. Without it, Infra Charts for serverless-api, event-driven, and microservices patterns couldn't express the message queuing layer.
 
 ### Pain Points
 
 - No SQS support meant users couldn't model message-driven architectures declaratively
-- Infra charts for event-driven patterns (Lambda -> SQS -> Lambda) were impossible
+- Infra Charts for event-driven patterns (Lambda -> SQS -> Lambda) were impossible
 - Dead letter queue patterns — critical for production resilience — had no representation
 
 ## Solution / What's New
@@ -75,7 +75,7 @@ apis/dev/planton/provider/aws/awssqsqueue/v1/
 ## Benefits
 
 - **First step in AWS expansion**: Opens the path for the remaining 31 new AWS resource kinds
-- **Messaging foundation**: Enables serverless-api, event-driven, and microservices infra charts
+- **Messaging foundation**: Enables serverless-api, event-driven, and microservices Infra Charts
 - **DLQ pattern**: Production-resilience pattern available from day one
 - **Dual encryption**: Compliance-ready with both SSE-SQS (zero cost) and SSE-KMS (audit trail)
 - **google.protobuf.Struct precedent**: Establishes the pattern for IAM policies across all future kinds

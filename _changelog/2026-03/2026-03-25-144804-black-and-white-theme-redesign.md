@@ -67,7 +67,7 @@ Converted from light (white background) to dark theme:
 - **Pricing**: Purple card gradients (`#8A3391`), gold "Most Popular" banner, blue CTA buttons all replaced with monochrome equivalents
 - **Features/Solutions**: Blue text gradients, `StyledAiBtn` blue border rings, blurred orbs all neutralized
 - **Agents**: All 7 section files updated -- blue/cyan/purple Tailwind classes replaced with white/neutral equivalents
-- **v1 Kinds**: `Pill` gradient borders, `SectionTitle` gradient text, `JoinBetaBtn` dialog all neutralized
+- **v1 Components**: `Pill` gradient borders, `SectionTitle` gradient text, `JoinBetaBtn` dialog all neutralized
 
 ## Implementation Details
 
@@ -88,7 +88,7 @@ All v3 landing sections rewritten: HeroSection, SecurityTrustBar, SocialProofBar
 
 ### Phase 4: Subpages (35 files)
 
-Batch color replacement across pricing, features, solutions, agents, CLI, IaC workflows, Kubernetes dashboard, self-service DevOps, and v1 shared kinds.
+Batch color replacement across pricing, features, solutions, agents, CLI, IaC workflows, Kubernetes dashboard, self-service DevOps, and v1 shared components.
 
 ### What Was Preserved
 

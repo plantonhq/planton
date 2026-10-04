@@ -212,7 +212,7 @@ spec:
 
 ## Architecture
 
-### Kind Interaction
+### Component Interaction
 
 ```
 ┌─────────────────────────────────────────┐

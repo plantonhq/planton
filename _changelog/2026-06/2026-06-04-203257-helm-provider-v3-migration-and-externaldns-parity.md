@@ -80,7 +80,7 @@ flowchart LR
   `values = [yamlencode(local.helm_values)]`, where `local.helm_values` mirrors the Pulumi
   values map; migrated the deprecated `kubernetes_namespace` / `kubernetes_service_account`
   / `kubernetes_secret` (+ existing-namespace data source) to their `_v1` forms (clearing
-  the infra job's "Deprecated Resource" warnings, matching the `externalsecrets` sibling).
+  the Infra Job's "Deprecated Resource" warnings, matching the `externalsecrets` sibling).
 - `variables.tf` — curated the untyped `spec = object({})` into the `optional()` form per
   `pkg/iac/MODULE_PARITY.md`.
 - `outputs.tf` — emits exactly `namespace`, `release_name`, `solver_sa` (renamed from

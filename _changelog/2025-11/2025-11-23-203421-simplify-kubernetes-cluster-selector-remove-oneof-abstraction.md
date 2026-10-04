@@ -197,7 +197,7 @@ This is a **breaking change** for the API schema. Any existing code using `Kuber
 +}
 ```
 
-### Affected Kinds
+### Affected Components
 
 **API Layer**:
 - All Kubernetes addon proto definitions

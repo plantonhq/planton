@@ -6,7 +6,7 @@ Deploys Argo CD — the declarative GitOps continuous-delivery engine for Kubern
 
 When you deploy this Infra Component, the IaC module provisions:
 
-- **Helm release** (official `argo-cd` chart, default pin `10.2.1`, named `metadata.name`) — the API/UI **server**, the **application controller** (the reconciliation engine), the **repo server** (clones repositories and renders manifests — the first kind to saturate as syncs grow), the **ApplicationSet controller**, and three toggleable components with different chart defaults: **notifications** (on), **dex** (on — inert until connectors are declared), and the **commit server** (off — only hydrated-manifest workflows need it)
+- **Helm release** (official `argo-cd` chart, default pin `10.2.1`, named `metadata.name`) — the API/UI **server**, the **application controller** (the reconciliation engine), the **repo server** (clones repositories and renders manifests — the first component to saturate as syncs grow), the **ApplicationSet controller**, and three toggleable components with different chart defaults: **notifications** (on), **dex** (on — inert until connectors are declared), and the **commit server** (off — only hydrated-manifest workflows need it)
 - **A Redis cache** matching the declared arm — the chart's single-pod bundled cache when nothing is declared, a 3-node Sentinel HA cluster behind HAProxy, or no Redis at all when an external endpoint is referenced. Whatever the arm: Redis here is a **disposable cache** — losing it costs a re-sync, never state; everything real lives in the CRs and Git history
 - **The Argo CD CRDs** (Application, AppProject, ApplicationSet) — installed and kept on uninstall by default; see the one-way door below
 - **Kubernetes Namespace** — created only when `createNamespace` is true; otherwise the namespace must already exist
@@ -92,7 +92,7 @@ These are the most important decisions when configuring an Argo CD control plane
 
 **`reconciliationTimeout`** controls how often Argo CD polls repositories (chart default `180s`; empty defers). Lower means faster syncs but more repo-server and Git load; webhook-driven setups can raise it instead.
 
-**`helmValues` merges last** — the escape hatch for chart surface beyond the typed fields (notification templates and triggers, per-kind env, ingress annotations the chart renders itself). Anything here silently overrides the typed fields on every deploy; never put secrets in it.
+**`helmValues` merges last** — the escape hatch for chart surface beyond the typed fields (notification templates and triggers, per-component env, ingress annotations the chart renders itself). Anything here silently overrides the typed fields on every deploy; never put secrets in it.
 
 **Air-gap path:** the `image` block re-points repository/tag/pull-secret for the Argo CD image that serves all core components; dex and the bundled Redis pull their own chart-default images — re-point those via `helmValues` when mirroring everything.
 
@@ -135,5 +135,5 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 - [**Kubernetes Ingress**](/infra-catalog/kubernetes-ingress) — exposes the UI/API over the exported `server_service` handle (set `server.insecure` and `domain` when composing); [**Kubernetes HTTPRoute**](/infra-catalog/kubernetes-http-route) is the Gateway API alternative.
 - [**Valkey**](/infra-catalog/kubernetes-valkey) — the external Redis arm references its exported service endpoint.
 - [**Kubernetes Secret**](/infra-catalog/kubernetes-secret) — composes the labeled OIDC client-secret Secret and credentialed-repository Secrets next to the install; [**External Secret**](/infra-catalog/kubernetes-external-secret) does the same from an external store.
-- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) — scrapes the per-kind ServiceMonitors when `serviceMonitorsEnabled` is set.
+- [**kube-prometheus-stack**](/infra-catalog/kubernetes-kube-prometheus-stack) — scrapes the per-component ServiceMonitors when `serviceMonitorsEnabled` is set.
 - [**Kubernetes Manifest**](/infra-catalog/kubernetes-manifest) — declares Applications/AppProjects/ApplicationSets once the control plane runs.

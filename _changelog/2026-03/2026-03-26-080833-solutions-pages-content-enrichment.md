@@ -6,7 +6,7 @@
 
 ## Summary
 
-Enriched all 10 solutions pages with source-verified content using visually distinct kinds (FlowSteps, AnimatedTerminal, CodeTabs, BentoGrid, MetricsStrip, numbered capability blocks, compliance mapping tables), breaking the cookie-cutter "Hero + 6 cards + CTA" pattern. Also corrected stale resource/provider counts across the entire website from the definitive proto source of truth (`catalog_kind.proto`: 361 kinds across 17 providers).
+Enriched all 10 solutions pages with source-verified content using visually distinct components (FlowSteps, AnimatedTerminal, CodeTabs, BentoGrid, MetricsStrip, numbered capability blocks, compliance mapping tables), breaking the cookie-cutter "Hero + 6 cards + CTA" pattern. Also corrected stale resource/provider counts across the entire website from the definitive proto source of truth (`catalog_kind.proto`: 361 kinds across 17 providers).
 
 ## Problem Statement / Motivation
 
@@ -36,7 +36,7 @@ Files: `infra-hub/capabilities.tsx`, `infra-hub/hero.tsx`, `open-source/capabili
 
 ### Per-Page Enrichment
 
-Each page received one or two new sections using a **different primary visual kind** so no two pages feel the same:
+Each page received one or two new sections using a **different primary visual component** so no two pages feel the same:
 
 | Page | Added sections | Visual technique |
 |---|---|---|
@@ -69,9 +69,9 @@ Every piece of new content maps to a verified source:
 - **Infra Job audit trail** — `what-is-a-infra-job.md`
 - **Custom module contract** — Thingularity demo notes
 
-### Kind Reuse
+### Component Reuse
 
-All new sections use existing shared kinds from `src/components/product/shared/` — no new kinds were created:
+All new sections use existing shared components from `src/components/product/shared/` — no new components were created:
 - `AnimatedTerminal`, `CodeTabs`, `FlowSteps`, `MetricsStrip`, `BentoGrid/BentoItem`, `ScrollReveal`, `StaggerContainer/StaggerItem`
 
 ## Benefits
@@ -79,7 +79,7 @@ All new sections use existing shared kinds from `src/components/product/shared/`
 - Each solution page now has a unique visual identity matching the persona it serves
 - Resource and provider counts are now accurate and consistent site-wide
 - Source-verified content adds credibility without speculation
-- Reusing existing kinds means zero new maintenance burden
+- Reusing existing components means zero new maintenance burden
 - Every FeatureCard now has an icon for visual consistency
 
 ## Impact

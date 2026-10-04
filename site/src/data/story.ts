@@ -146,7 +146,7 @@ export const CHAPTERS: readonly Chapter[] = [
       'The full configuration is embedded into the job when it is created, and the job is immutable: the resource may change later; the job never does.',
       'Every job is retained and queryable by resource, organization, environment, time, and outcome.',
       'One event stream drives the console, the CLI, and the audit log, so every surface tells the same story.',
-      'Every infra component Planton creates carries identity tags naming its organization, environment, kind, and id.',
+      'Every resource Planton creates in your cloud carries identity tags naming its organization, environment, kind, and id.',
     ],
     neverSay: ['audit-ready for SOC 2', 'any framework verdict about a deployment', 'drift detection (a future consideration)', 'compliance dashboard'],
   },
@@ -216,7 +216,7 @@ export const CHAPTERS: readonly Chapter[] = [
     claim:
       'Teams have run production on Planton since 2023. Here is what the people running it say, in their own words.',
     proof: [
-      'catalog kinds, providers, Infra Charts, controls, and crosswalks are counted from the open-source tree, and the date of the count is printed beside the numbers.',
+      'Catalog kinds, providers, Infra Charts, controls, and crosswalks are counted from the open-source tree, and the date of the count is printed beside the numbers.',
       'Every testimonial is verbatim and attributed to the person who said it.',
       'Planton runs on Planton: its own infrastructure and the pipelines that ship it go through the platform.',
     ],

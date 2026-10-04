@@ -16,7 +16,7 @@ The Scaleway cloud provider expansion in Planton needs object storage support. S
 
 - No Scaleway object storage resource kind existed in Planton
 - Teams managing Scaleway infrastructure couldn't declaratively provision buckets
-- Missing piece for infra chart compositions that need storage (serverless-environment, database-stack backup targets)
+- Missing piece for Infra Chart compositions that need storage (serverless-environment, database-stack backup targets)
 
 ## Solution / What's New
 

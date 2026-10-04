@@ -34,7 +34,7 @@ Azure's Flex Consumption tier (FC1 plans) is a separate resource type with its o
 - **Event processing**: Queue, blob, Service Bus, and Event Hub triggered workloads
 - **Scheduled jobs**: Timer-triggered functions (cron-style)
 - **Containerized functions**: Custom Docker images with the Functions runtime
-- **Infra charts**: Leaf resource in the `function-app-environment` infra chart (references ServicePlan, StorageAccount, AppInsights)
+- **Infra Charts**: Leaf resource in the `function-app-environment` Infra Chart (references ServicePlan, StorageAccount, AppInsights)
 
 ## Quick Example
 

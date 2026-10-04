@@ -6,7 +6,7 @@
 
 ## Summary
 
-Aligned all code blocks, tables, Mermaid diagrams, callouts, and search UI across the docs/blog/branding surfaces to the established monochrome palette. Replaced Tailwind `gray-*` defaults with explicit palette tokens, introduced a muted-desaturated syntax highlighting theme, and redesigned the callout (blockquote) kind for better visual hierarchy.
+Aligned all code blocks, tables, Mermaid diagrams, callouts, and search UI across the docs/blog/branding surfaces to the established monochrome palette. Replaced Tailwind `gray-*` defaults with explicit palette tokens, introduced a muted-desaturated syntax highlighting theme, and redesigned the callout (blockquote) component for better visual hierarchy.
 
 ## Problem Statement / Motivation
 
@@ -25,7 +25,7 @@ The monochrome design system established a precise palette (`#0a0a0a`, `#111`, `
 
 ### Centralized Token System
 
-Extended `src/theme/docs.ts` from 10 tokens to 23 tokens. Every docs kind now imports class strings from this single source of truth. New tokens cover:
+Extended `src/theme/docs.ts` from 10 tokens to 23 tokens. Every docs component now imports class strings from this single source of truth. New tokens cover:
 
 - `CODE_BLOCK_CLASSES`, `CODE_BLOCK_COPY_CLASSES`, `CODE_BLOCK_COPY_ACTIVE_CLASSES`
 - `TABLE_CLASSES`, `TABLE_HEAD_CLASSES`, `TABLE_ROW_CLASSES`, `TABLE_HEADER_CLASSES`, `TABLE_CELL_CLASSES`, `TABLE_WRAPPER_CLASSES`

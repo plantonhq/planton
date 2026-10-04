@@ -56,7 +56,7 @@ Each catalog page was written by reading source files in the established order:
 2. `spec.proto` — all configuration fields, types, validations, defaults, foreign keys
 3. `outputs.proto` — all output fields
 4. `iac/pulumi/module/main.go` — deployment flow and resource creation
-5. `iac/pulumi/module/*.go` — all infra components created, output constants
+5. `iac/pulumi/module/*.go` — all provider resources created, output constants
 
 The build pipeline at `site/scripts/copy-kind-docs.ts` already prefers `catalog-page.md` over `docs/README.md` with automatic fallback — no pipeline changes were needed.
 

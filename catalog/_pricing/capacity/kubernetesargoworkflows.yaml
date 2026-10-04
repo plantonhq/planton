@@ -9,7 +9,7 @@
 # Argo server (UI + REST API, on by chart default). The chart ships NO
 # default requests or limits for either (the spec contract states
 # "Empty = no requests/limits, the chart default"), so unsized
-# kinds contribute zero honestly. The workflow pods themselves are
+# components contribute zero honestly. The workflow pods themselves are
 # ephemeral per-run workloads this footprint can never see -- the first
 # loud exclusion. Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
@@ -33,7 +33,7 @@ spec:
   exclusions:
     - text: the workflow pods are the real capacity story -- every Workflow step runs as its own pod, sized by the workflow's declarations plus the argoexec executor, created at run time and gone at completion; no manifest-time statement can see them
     - text: the dollar value of this capacity is the target cluster's node and storage-class economics
-    - text: kinds with no declared resources carry the chart defaults, and this chart ships NO default requests or limits for the controller or server -- unsized pods schedule unbounded and reserve nothing, so a zero line is the literal truth, not a free kind
+    - text: components with no declared resources carry the chart defaults, and this chart ships NO default requests or limits for the controller or server -- unsized pods schedule unbounded and reserve nothing, so a zero line is the literal truth, not a free component
     - text: "helm_values merges LAST over the typed rendering and can override modeled values, including resources, replicas, and the executor's sizing -- this footprint describes the spec's declaration"
     - applies_when:
         - field_path: server.enabled

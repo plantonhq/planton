@@ -93,5 +93,5 @@ Always pair the number with the lever. The classics that fit chart params:
   named in its kind's cost.yaml, so the delta is readable, not
   guessable.
 
-Frame savings against the user's motive (see `discovery.md`): production
+Frame savings against the user's motive (see `craft.discovery.md`): production
 resilience is worth paying for; a learning sandbox is not.

@@ -7,7 +7,7 @@ import "catalog/kubernetes/provider.proto";
 
 // KubernetesOpenBaoIacInput represents the input to the IaC module for deploying OpenBao.
 message KubernetesOpenBaoIacInput {
-  // Target infra component to deploy.
+  // The OpenBao catalog object to deploy.
   KubernetesOpenBao target = 1;
 
   // Kubernetes provider configuration.

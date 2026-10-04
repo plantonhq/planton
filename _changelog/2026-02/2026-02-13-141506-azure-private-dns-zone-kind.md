@@ -10,7 +10,7 @@ Added AzurePrivateDnsZone (R07) as a new catalog kind in the Azure resource expa
 
 ## Problem Statement / Motivation
 
-Azure Private Endpoints require properly configured private DNS zones to function correctly. Without a privatelink zone linked to the VNet, service FQDNs resolve to public IPs instead of private endpoint IPs, completely bypassing the private connectivity. This kind is a critical dependency for the upcoming database-stack infra chart (R11-R15) and any Private Link-based architecture.
+Azure Private Endpoints require properly configured private DNS zones to function correctly. Without a privatelink zone linked to the VNet, service FQDNs resolve to public IPs instead of private endpoint IPs, completely bypassing the private connectivity. This kind is a critical dependency for the upcoming database-stack Infra Chart (R11-R15) and any Private Link-based architecture.
 
 ### Pain Points
 
@@ -27,7 +27,7 @@ A complete catalog kind following the Planton forge pattern:
 - **Pulumi module** using `privatedns.NewZone` and `privatedns.NewZoneVirtualNetworkLink`
 - **Terraform module** using `azurerm_private_dns_zone` and `azurerm_private_dns_zone_virtual_network_link`
 - **17 validation tests** covering all valid and invalid input combinations
-- **Production-quality documentation** with 7 YAML examples covering privatelink, custom DNS, and infra chart patterns
+- **Production-quality documentation** with 7 YAML examples covering privatelink, custom DNS, and Infra Chart patterns
 
 ### Spec Corrections from Provider Research
 
@@ -64,14 +64,14 @@ A private DNS zone without a VNet link is unreachable from any VNet. The VNet li
 
 - Enables Private Link connectivity for all upcoming database resources (R11-R15)
 - Supports both privatelink and custom internal DNS use cases
-- StringValueOrRef on resource_group and vnet_id enables infra chart composition
+- StringValueOrRef on resource_group and vnet_id enables Infra Chart composition
 - 17 comprehensive validation tests ensure correctness
 - Consistent with all other Azure resource patterns in the collection
 
 ## Impact
 
 - **Downstream consumers**: AzurePrivateEndpoint, AzurePostgresqlFlexibleServer, AzureMysqlFlexibleServer
-- **Infra charts**: database-stack (primary), enterprise-network-foundation (optional)
+- **Infra Charts**: database-stack (primary), enterprise-network-foundation (optional)
 - **Enum registration**: CatalogKind 415 (AzurePrivateDnsZone, id_prefix: azpdns)
 - **Resource count**: 8 of 24 Azure resources now completed
 
@@ -80,7 +80,7 @@ A private DNS zone without a VNet link is unreachable from any VNet. The VNet li
 - Part of 20260212.05.sp.azure-resource-expansion (23 new Azure resources)
 - Follows R06 AzureNetworkSecurityGroup (same session patterns)
 - Prerequisite for R08 AzurePrivateEndpoint (next in queue)
-- Foundation for T03 database-stack infra chart
+- Foundation for T03 database-stack Infra Chart
 
 ---
 

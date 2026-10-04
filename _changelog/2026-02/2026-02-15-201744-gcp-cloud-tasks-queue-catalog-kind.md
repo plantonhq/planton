@@ -16,7 +16,7 @@ Cloud Tasks is a core GCP service for asynchronous task dispatch, used extensive
 
 - No way to declare Cloud Tasks queues alongside other GCP infrastructure in Planton
 - Queue-level OIDC/OAuth authentication for Cloud Run dispatch required manual configuration
-- Rate limits and retry policies could not be versioned and composed in infra charts
+- Rate limits and retry policies could not be versioned and composed in Infra Charts
 - No cross-resource dependency wiring (e.g., queue -> service account -> Cloud Run service)
 
 ## Solution / What's New
@@ -79,7 +79,7 @@ This enables the common infra-chart pattern: dedicated service account -> Cloud 
 ## Benefits
 
 - **Declarative queue management** -- Cloud Tasks queues defined as code alongside other GCP infrastructure
-- **Composable authentication** -- Service account emails wired via StringValueOrRef for dependency-aware infra charts
+- **Composable authentication** -- Service account emails wired via StringValueOrRef for dependency-aware Infra Charts
 - **Modern HTTP pattern** -- Queue-level OIDC auth for Cloud Run is the recommended GCP architecture
 - **Production-ready defaults** -- GCP-managed defaults when rate_limits and retry_config are omitted
 - **Dual IaC** -- Both Pulumi and Terraform implementations with feature parity

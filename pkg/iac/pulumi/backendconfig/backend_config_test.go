@@ -109,7 +109,7 @@ func TestExtractFromManifest(t *testing.T) {
 			errorMsg:  "no annotations found in manifest",
 		},
 		{
-			name: "empty stack.fqdn kinds",
+			name: "empty stack.fqdn components",
 			manifest: &awsvpcv1alpha1.AwsVpc{
 				Metadata: &shared.CatalogObjectMetadata{
 					Annotations: map[string]string{
@@ -119,7 +119,7 @@ func TestExtractFromManifest(t *testing.T) {
 			},
 			want:      nil,
 			wantError: true,
-			errorMsg:  "stack FQDN kinds cannot be empty",
+			errorMsg:  "stack FQDN components cannot be empty",
 		},
 	}
 
@@ -175,7 +175,7 @@ func TestParseStackFqdn(t *testing.T) {
 			wantError: true,
 		},
 		{
-			name:      "empty kind",
+			name:      "empty component",
 			fqdn:      "my-org//my-stack",
 			wantError: true,
 		},

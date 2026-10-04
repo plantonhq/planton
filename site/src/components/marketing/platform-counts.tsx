@@ -13,7 +13,7 @@ import { Metric } from './metric';
 import { BodyText } from './typography';
 
 const COUNTS = [
-  { value: PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT, label: 'catalog kinds' },
+  { value: PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT, label: 'Catalog Kinds' },
   { value: PLATFORM_STATS.CLOUD_PROVIDER_COUNT, label: 'Providers' },
   { value: PLATFORM_STATS.CONTROL_COUNT, label: 'Controls with Evidence' },
   { value: `Since ${PLATFORM_STATS.IN_PRODUCTION_SINCE}`, label: 'In Production' },

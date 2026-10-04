@@ -118,7 +118,7 @@ follow-ups rather than blind-fixed:
 
 ## Related Work
 
-- The same failed infra job surfaced a separate, repo-external issue: a generic
+- The same failed Infra Job surfaced a separate, repo-external issue: a generic
   `protobuf error` masked the real cause in the operator-facing status. Those fixes live in
   the `planton` repo (runner engine-event consumer made schema-drift tolerant; the Temporal
   root-cause extractor fixed to stop at the application boundary) and are tracked there.

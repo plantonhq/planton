@@ -82,7 +82,7 @@ PDF → pdftotext (text extraction) → pandoc (markdown conversion) → .md fil
 4. **Handoff document creation** (new)
 
 **Implementation LLM** (Phases 5-6, separate session):
-5. Kind implementation (reads handoff.md)
+5. Component implementation (reads handoff.md)
 6. Verification and cleanup
 
 **Handoff Document**: `handoff.md` created automatically when draft is approved
@@ -91,7 +91,7 @@ PDF → pdftotext (text extraction) → pandoc (markdown conversion) → .md fil
 - Overview and objective
 - Complete context (why this change matters)
 - Full approved content from all draft sections
-- Kind mapping table (files to update)
+- Component mapping table (files to update)
 - Detailed implementation instructions
 - Design system reference
 - Verification checklist
@@ -176,7 +176,7 @@ def find_pdf_files(workspace_dir: Path) -> List[Path]:
 When user approves draft, automatically create handoff.md with:
 - Complete implementation context
 - Full approved content
-- Kind mapping
+- Component mapping
 - Detailed instructions
 - Verification checklist
 ```
@@ -396,7 +396,7 @@ Location: _stage-area/2025-12-31-hero-security/handoff.md
 
 This document contains:
 - Complete implementation context
-- Kind mapping (HeroSection.tsx)
+- Component mapping (HeroSection.tsx)
 - Detailed instructions
 - Verification checklist
 - Changelog template
@@ -543,7 +543,7 @@ Processing: meeting-transcript.pdf
 
 **Implementation Accuracy**:
 - Handoff document eliminates ambiguity
-- Kind mapping prevents wrong file updates
+- Component mapping prevents wrong file updates
 - Verification checklist ensures completeness
 - Pre-written changelog ensures documentation
 
@@ -759,7 +759,7 @@ python3 content/copywriting/_rules/pdf_converter/convert_pdf.py
 **Tested Scenarios**:
 - ✅ Handoff document template structure complete
 - ✅ All required sections present
-- ✅ Kind mapping tables accurate
+- ✅ Component mapping tables accurate
 - ✅ Documentation updated across all READMEs
 - ✅ Mermaid diagrams render correctly
 - ✅ No circular references or ambiguities

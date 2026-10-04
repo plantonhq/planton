@@ -15,7 +15,7 @@ OCI uses a declarative policy language for IAM access control. Policies are atta
 ### Pain Points
 
 - No way to manage OCI IAM policies through Planton
-- Infra charts like oke-environment and compute-environment need policy kinds for complete environment provisioning
+- Infra Charts like oke-environment and compute-environment need policy kinds for complete environment provisioning
 - The OCI identity resource family (R04 OciCompartment, R05 OciIdentityPolicy, R06 OciDynamicGroup) must all be available before OKE and compute phases can be fully realized
 
 ## Solution / What's New

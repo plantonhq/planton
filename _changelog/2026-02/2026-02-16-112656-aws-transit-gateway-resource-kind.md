@@ -78,7 +78,7 @@ A complete AwsTransitGateway catalog kind that bundles the Transit Gateway with 
 
 - **AWS resource coverage**: 29 resource kinds (28 previously completed + Transit Gateway)
 - **Phase 2 completion**: All 10 Phase 2 (Important Services) kinds are now done
-- **Infra charts**: Enables multi-VPC hub patterns in future infra chart compositions
+- **Infra Charts**: Enables multi-VPC hub patterns in future Infra Chart compositions
 
 ## Related Work
 

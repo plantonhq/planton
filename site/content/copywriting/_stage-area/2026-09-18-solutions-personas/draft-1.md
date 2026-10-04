@@ -18,14 +18,14 @@ Conventions: headlines and labels in Title Case; everything else sentence case. 
 
 **What decides it.**
 - Rules Written Once. Budgets, protected environments, and a curated catalog hold whether the request came from the console, the CLI, or an agent at two in the morning. (ch 4)
-- A Record, Not a Transcript. Every deploy is one infra job you can query by resource, environment, time, and outcome, with the exact configuration embedded. (ch 5)
+- A Record, Not a Transcript. Every deploy is one Infra Job you can query by resource, environment, time, and outcome, with the exact configuration embedded. (ch 5)
 - Your Terraform Stays Yours. Every module is open-source Terraform and Pulumi under Apache 2.0. What you already run is adopted, not rewritten, and if you leave you keep deploying your manifests with the open-source CLI. (ch 8, 11)
 
 **Beats.**
 1. the-wall, lead. Your developers' agents are already creating infrastructure. The question is not whether to allow it; it is whether what they create is verified, recorded, and yours to repeat. Proof [0]. Proven at /product/coding-agents.
 2. your-rules-hold, lead. You write the budget, the protected environments, and the allowed catalog once. Every door reads the same rules and refuses the same things, so an agent cannot do what a person could not. Proof [0, 1, 2, 3]. Proven at /trust/rules-and-approvals.
 3. verified-before-it-exists, lead. Before an agent's design exists, you see its monthly cost with its coverage stated, the least-privilege policy it needs, and the controls each component enforces. Proof [0, 2, 3]. Proven at /trust/verified-before-deploy.
-4. every-deployment-leaves-a-record, lead. The deploy nobody watched is an infra job with the configuration embedded, the verdicts stamped, and the approver named. You read it; you do not reconstruct it. Proof [0, 1, 3]. Proven at /trust/the-record.
+4. every-deployment-leaves-a-record, lead. The deploy nobody watched is an Infra Job with the configuration embedded, the verdicts stamped, and the approver named. You read it; you do not reconstruct it. Proof [0, 1, 3]. Proven at /trust/the-record.
 5. what-planton-is, supporting. Two halves: Infra Hub, where a design becomes a template your team redeploys, and Service Hub, where a push becomes a deployment inside your environments' gates. Proof [0, 1]. Proven at /product/infra-hub.
 6. runs-where-you-decide, supporting. Start on your laptop for free and move to hosted or your own cluster with the same manifests. Connections can be keyless, and every module is open source. Proof [0, 1, 3]. Proven at /distributions.
 7. services-ship-from-git, supporting. Once the infrastructure exists, developers connect a repository and every push obeys the promotion order and the gates you declared. Proof [1, 2]. Proven at /product/service-hub.
@@ -57,7 +57,7 @@ Conventions: headlines and labels in Title Case; everything else sentence case. 
 **What decides it.**
 - Cost Before Creation. Every deployment-changing job is born with a verified monthly cost, its coverage stated, and how much more or less it will cost than what runs today. (ch 3)
 - No New Team. Your platform engineer stays the user and writes the rules once; developers and their agents self-serve inside them. What reaches you is the proof. (ch 9)
-- A Record That Does Not Depend on Asking. Every change is one immutable infra job: configuration, cost, verdict, approver, outcome. Queryable whenever you want it, never reconstructed because you asked. (ch 5)
+- A Record That Does Not Depend on Asking. Every change is one immutable Infra Job: configuration, cost, verdict, approver, outcome. Queryable whenever you want it, never reconstructed because you asked. (ch 5)
 
 **Beats.**
 1. the-wall, lead. The agents made your team faster and made the estate harder to answer for. Nobody priced what they created, nobody checked the permissions, and nothing remembers what was made. Proof [0]. Proven at /product/coding-agents.
@@ -101,7 +101,7 @@ Conventions: headlines and labels in Title Case; everything else sentence case. 
 2. what-planton-is, lead. Describe the client's environment, verify it, deploy it, and publish it as an Infra Chart. The next client starts from the chart, not from a blank prompt. Proof [0, 1]. Proven at /product/infra-hub.
 3. runs-where-you-decide, lead. The client's account, the client's keys, the client's bill. Connections can be keyless, so you never hold a long-lived credential for an account you do not own. Proof [0, 1, 3]. Proven at /trust/your-cloud-your-keys.
 4. verified-before-it-exists, supporting. The monthly cost with its coverage stated, before the client's infrastructure exists. The estimate is the conversation with the client, not the invoice. Proof [0, 1]. Proven at /trust/verified-before-deploy.
-5. every-deployment-leaves-a-record, supporting. Every change in every client organization is an infra job you can hand over: what was deployed, what it cost, who approved it. Proof [0, 1]. Proven at /trust/the-record.
+5. every-deployment-leaves-a-record, supporting. Every change in every client organization is an Infra Job you can hand over: what was deployed, what it cost, who approved it. Proof [0, 1]. Proven at /trust/the-record.
 6. services-ship-from-git, supporting. Connect the client's repositories and every push is built and deployed through the environments you declared. Proof [0, 1]. Proven at /product/service-hub.
 
 **You will ask.**
@@ -166,13 +166,13 @@ Conventions: headlines and labels in Title Case; everything else sentence case. 
 **What decides it.**
 - Prevention at the Write Boundary. Budgets, protected environments, a curated catalog, and managed secrets hold before anything exists, whether the request came from a person, a script, or an agent. (ch 4)
 - Controls Stated, Never Asserted. Every covered kind states which of {CONTROL_COUNT} technical controls it enforces, with evidence for each claim, and never calls itself compliant. (ch 3)
-- A Record of Every Change. Every change is one immutable infra job, queryable by resource, environment, time, and outcome, with identity tags on every resource it created. (ch 5)
+- A Record of Every Change. Every change is one immutable Infra Job, queryable by resource, environment, time, and outcome, with identity tags on every resource it created. (ch 5)
 
 **Beats.**
 1. the-wall, lead. Agents create infrastructure faster than scanners find the problems in it. Detection after creation cannot keep pace with creation. Proof [0]. Proven at /product/coding-agents.
 2. your-rules-hold, lead. The rules are enforced at the one place infrastructure is created, so a coding agent cannot do what a person could not, and the refusal is identical at every door. Proof [0, 1, 2, 3]. Proven at /trust/rules-and-approvals.
 3. verified-before-it-exists, lead. Least-privilege permissions derived from exactly what is composed, and the technical controls each component enforces, stated with evidence before it exists. Proof [2, 3, 4]. Proven at /trust/security-posture.
-4. every-deployment-leaves-a-record, lead. The immutable infra job: configuration, verdicts, approver, outcome, and identity tags on every resource created. Evidence that exists whether or not anyone asked. Proof [0, 1, 3]. Proven at /trust/the-record.
+4. every-deployment-leaves-a-record, lead. The immutable Infra Job: configuration, verdicts, approver, outcome, and identity tags on every resource created. Evidence that exists whether or not anyone asked. Proof [0, 1, 3]. Proven at /trust/the-record.
 5. how-it-compares, supporting. Posture platforms observe after the fact; Planton prevents at creation. They complement each other, and neither replaces the other. Proof [0, 1]. Proven at /trust/security-posture.
 6. runs-where-you-decide, supporting. Keyless connections mean no long-lived cloud credential is stored anywhere. Self-hosted runs on your cluster with a license that verifies offline. Proof [0, 1, 2]. Proven at /trust/your-cloud-your-keys.
 7. what-planton-is, supporting. One platform in the customer's own account, with one door every request goes through. That door is where the rules live. Proof [0, 1]. Proven at /product.

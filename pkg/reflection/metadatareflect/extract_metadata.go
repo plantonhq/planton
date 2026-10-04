@@ -52,7 +52,7 @@ func ExtractLabels(msg proto.Message) map[string]string {
 // Annotations carry platform-behavior signals (planton.dev/provisioner, backend
 // location keys, kube context, ...). Unlike labels, they are never derived into
 // cloud-provider tags, so platform-internal detail cannot leak onto the user's
-// real infra components.
+// real provider resources.
 func ExtractAnnotations(msg proto.Message) map[string]string {
 	metadata := ExtractMetadata(msg)
 	if metadata == nil {

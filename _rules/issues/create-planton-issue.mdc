@@ -52,7 +52,7 @@ Create an issue file when:
 YYYY-MM-DD-HHMMSS.{area}.{type}.{slug}.md
 ```
 
-### Kinds
+### Components
 
 **Timestamp** (`YYYY-MM-DD-HHMMSS`):
 - Get actual current timestamp by running: `date +"%Y-%m-%d-%H%M%S"`
@@ -118,7 +118,7 @@ When file paths are mentioned in the conversation, map them to simple areas:
 
 Look for these keywords in the conversation:
 
-- "kind", "IaC", "Pulumi", "Terraform", "infra component" → `kind`
+- "kind", "IaC", "Pulumi", "Terraform", "catalog kind" → `kind`
 - "CLI", "command line", "terminal", "planton" (the binary) → `cli`
 - "package", "library", "pkg/", "helper", "utility" → `pkg`
 - "protobuf", "proto", "API definition", "stubs", "buf" → `apis`
@@ -295,7 +295,7 @@ Create new filenames following this pattern:
 
 **Format:** `{issue-filename-without-extension}.{image-slug}.{ext}`
 
-**Kinds:**
+**Components:**
 - `issue-filename-without-extension`: Full issue filename without `.md`
 - `image-slug`: 1-3 word description of what image shows (kebab-case)
 - `ext`: Original file extension (png, jpg, jpeg, gif, etc.)
@@ -642,7 +642,7 @@ import (
 The issue appears to be in the import path template used by the forge system.
 
 Affected files:
-- `_rules/catalog-kind/forge/_scripts/pulumi_entrypoint_write.py`
+- `_rules/catalog-kind/_scripts/pulumi_entrypoint_write.py`
 - `_rules/catalog-kind/forge/flow/010-pulumi-entrypoint.mdc`
 ```
 

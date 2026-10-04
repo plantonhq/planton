@@ -17,7 +17,7 @@ Hetzner Cloud servers need stable public IP addresses for production use cases l
 - No way to manage persistent public IPs through Planton independently of servers
 - HetznerCloudServer (R07) needs primary_ip_id references via StringValueOrRef to assign stable IPs
 - Mail servers and identity-verified services require reverse DNS, which is tightly coupled to the IP resource
-- The planned hetzner-load-balanced-app and hetzner-ha-server-cluster infra charts need pre-allocated IPs
+- The planned hetzner-load-balanced-app and hetzner-ha-server-cluster Infra Charts need pre-allocated IPs
 
 ## Solution / What's New
 
@@ -110,7 +110,7 @@ Follows the parent+child resource pattern from R04 (Network). The Primary IP is 
 
 - **Users**: Can allocate persistent public IPv4/IPv6 addresses with optional rDNS as a single unit
 - **Future kinds**: R07 (Server) references `primary_ip_id` via StringValueOrRef
-- **Infra charts**: hetzner-load-balanced-app and hetzner-ha-server-cluster use pre-allocated IPs
+- **Infra Charts**: hetzner-load-balanced-app and hetzner-ha-server-cluster use pre-allocated IPs
 
 ## Files Changed
 

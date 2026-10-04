@@ -20,7 +20,7 @@ Your cloud account is the foundation. Planton connects the work of setting it up
 
 
 - Connect your cloud: Connect the cloud accounts your team already uses. Choose the connection method that fits your deployment and verify that it can obtain the access it needs.
-- Create an environment: Compose infra components into reusable templates. Deploy the network, runtime, and supporting services in dependency order, with a configuration you can inspect.
+- Create an environment: Compose catalog kinds into reusable templates. Deploy the network, runtime, and supporting services in dependency order, with a configuration you can inspect.
 - Ship your application: Connect your repository, configure where the service runs, and follow its journey from build to deployment. See what is live in each environment.
 
 ## Design it once. Reuse it across environments.

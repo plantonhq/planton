@@ -9,7 +9,7 @@ Scrapes a metrics endpoint that requires a bearer token and serves HTTPS. The to
 
 ## How It Works
 
-`authorization` sends `Authorization: Bearer <token>` with every scrape, reading the token from the referenced Secret's `token` key. The Secret is a reference (`valueFrom`), so the infra chart creates it first and the diagram shows the dependency. With a typed name, a monitor applied before its Secret is skipped by the operator until the next reconcile. `scheme: https` with `tls_config.ca` verifies the target against the issuing CA; `server_name` is the name on the target's certificate, because Prometheus dials the pod IP, which no certificate carries.
+`authorization` sends `Authorization: Bearer <token>` with every scrape, reading the token from the referenced Secret's `token` key. The Secret is a reference (`valueFrom`), so the Infra Chart creates it first and the diagram shows the dependency. With a typed name, a monitor applied before its Secret is skipped by the operator until the next reconcile. `scheme: https` with `tls_config.ca` verifies the target against the issuing CA; `server_name` is the name on the target's certificate, because Prometheus dials the pod IP, which no certificate carries.
 
 ## Key Configuration Choices
 

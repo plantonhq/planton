@@ -63,7 +63,7 @@ func ExtractFromManifest(manifest proto.Message) (*PulumiBackendConfig, error) {
 	if stackFqdn, ok := annotations[pulumiannotationkeys.StackFqdnAnnotationKey]; ok && stackFqdn != "" {
 		config.StackFqdn = stackFqdn
 
-		// Parse the FQDN to extract kinds
+		// Parse the FQDN to extract components
 		org, project, stack, err := parseStackFqdn(stackFqdn)
 		if err != nil {
 			return nil, fmt.Errorf("invalid stack.fqdn format: %w", err)
@@ -76,7 +76,7 @@ func ExtractFromManifest(manifest proto.Message) (*PulumiBackendConfig, error) {
 		return config, nil
 	}
 
-	// Second priority: Check for individual kinds
+	// Second priority: Check for individual components
 	org, hasOrg := annotations[pulumiannotationkeys.OrganizationAnnotationKey]
 	project, hasProject := annotations[pulumiannotationkeys.ProjectAnnotationKey]
 	stack, hasStack := annotations[pulumiannotationkeys.StackNameAnnotationKey]
@@ -101,7 +101,7 @@ func ExtractFromManifest(manifest proto.Message) (*PulumiBackendConfig, error) {
 	return config, nil
 }
 
-// parseStackFqdn splits "org/project/stack" into kinds
+// parseStackFqdn splits "org/project/stack" into components
 func parseStackFqdn(fqdn string) (org, project, stack string, err error) {
 	parts := strings.Split(fqdn, "/")
 	if len(parts) != 3 {
@@ -113,7 +113,7 @@ func parseStackFqdn(fqdn string) (org, project, stack string, err error) {
 	stack = strings.TrimSpace(parts[2])
 
 	if org == "" || project == "" || stack == "" {
-		return "", "", "", fmt.Errorf("stack FQDN kinds cannot be empty")
+		return "", "", "", fmt.Errorf("stack FQDN components cannot be empty")
 	}
 
 	return org, project, stack, nil

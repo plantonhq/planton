@@ -16,7 +16,7 @@ Scaleway's Terraform provider exposes compute instances as 4+ separate resources
 
 - Users must create and wire 3-4 Terraform resources to get a usable instance
 - No declarative way to express "instance with public IP, security group, and private network" as a single unit
-- Infra charts need `StringValueOrRef` inputs and useful outputs for dependency wiring
+- Infra Charts need `StringValueOrRef` inputs and useful outputs for dependency wiring
 
 ## Solution / What's New
 
@@ -107,8 +107,8 @@ Additional volumes (`l_ssd`, `scratch`) are created as `scaleway_instance_volume
 
 - 6 of 19 Scaleway resource kinds complete (32%)
 - First Scaleway compute resource kind
-- Enables the `kapsule-environment` infra chart's worker node pattern
-- Enables bastion host and standalone server infra chart scenarios
+- Enables the `kapsule-environment` Infra Chart's worker node pattern
+- Enables bastion host and standalone server Infra Chart scenarios
 
 ## Related Work
 

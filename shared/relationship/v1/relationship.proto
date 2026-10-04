@@ -5,7 +5,7 @@ package dev.planton.shared.relationship.v1;
 import "buf/validate/validate.proto";
 import "shared/catalogkind/catalog_kind.proto";
 
-// InfraComponentRelationship defines a relationship between two infra components.
+// InfraComponentRelationship defines a relationship between two InfraComponents.
 message InfraComponentRelationship {
   // Type of relationship between the resources.
   enum RelationshipType {

@@ -23,7 +23,7 @@ const structFullName = "google.protobuf.Struct"
 type ScoreOptions struct {
 	// ExcludedSpecFields are spec field names (proto snake_case) excluded
 	// from the spec axis at any depth: values that exist only in IaC
-	// configuration, never on the infra component (the catalog's
+	// configuration, never on the provider resource (the catalog's
 	// config_only_attributes), so no scan-driven proposer could ever
 	// reconstruct them. Expecting them would penalize physics, not mapping
 	// quality. This leans on the deliberate convention that spec fields

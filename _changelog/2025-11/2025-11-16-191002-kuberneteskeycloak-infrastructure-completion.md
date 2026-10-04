@@ -76,7 +76,7 @@ func initializeLocals(ctx *pulumi.Context, iacInput *kuberneteskeycloakv1.Kubern
 # Main orchestration file for KubernetesKeycloak
 # deployment using Terraform.
 #
-# Infrastructure Kinds:
+# Infrastructure Components:
 #  1. Kubernetes Namespace (defined here)
 #  2. Keycloak Deployment (using Bitnami Helm chart)
 #     - StatefulSet (avoiding anti-pattern)
@@ -102,7 +102,7 @@ resource "kubernetes_namespace_v1" "keycloak_namespace" {
 
 **Key Documentation Sections**:
 - Module overview and architecture
-- Infrastructure kinds catalog
+- Infrastructure components catalog
 - Production features list
 - Design philosophy (Operator pattern vs anti-patterns)
 - Deployment approach explanation
@@ -337,7 +337,7 @@ The Terraform implementation uses separate files for different concerns:
 
 **Rationale**: 
 - Improves readability and maintainability
-- Allows selective understanding of kinds
+- Allows selective understanding of components
 - Follows Terraform best practices for large modules
 - Matches pattern used in KubernetesJenkins (100% complete reference)
 

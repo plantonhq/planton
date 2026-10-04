@@ -239,7 +239,7 @@ Resource Kind: PerconaServerMysqlOperators
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-💡 TIP: If you're developing a new infra component, ensure the proto files
+💡 TIP: If you're developing a new catalog kind, ensure the proto files
    are compiled and the CLI binary is rebuilt.
 ```
 

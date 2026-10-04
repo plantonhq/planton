@@ -71,7 +71,7 @@ What Planton adds to the agent you already use:
   [trace: `planton.domain.infra-hub.planton-cli.md` (explain is offline, schemas compiled in); `/docs/coding-agents` (validate offline, no account); count from `PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT`]
 - **Verified before created.** The monthly cost from the providers' own price documents, stating exactly what it covers. The least-privilege permission policy derived from what is being composed, downloadable per provider.
   [trace: cost odometer + Runner Policy panel — `planton.domain.infra-hub.infra-chart.md`]
-- **A record, not a transcript.** Every deploy is an infra job with a live log and a revision history. State lives under a path you can `ls`. The Infrastructure Map answers "where did this come from."
+- **A record, not a transcript.** Every deploy is an Infra Job with a live log and a revision history. State lives under a path you can `ls`. The Infrastructure Map answers "where did this come from."
   [trace: server-minted revisions — desktop GTM changelog 069; state under `iac/state/` — `wiki/product.desktop.feature-availability.md`; Infrastructure Map — `planton.architecture.estate.md`]
 - **Secrets the agent never reads.** Encrypted in the local database, key in your OS keychain, resolved on the runner at the moment of use. The agent references a secret by name; it never sees a value.
   [trace: `planton.architecture.security.just-in-time-secret-resolution.md`; local backend — `planton.architecture.local-runtime-plantond.md`]
@@ -123,7 +123,7 @@ Three proof points:
   [trace: `planton.domain.connect.local-cloud-credential-autodetect.md`]
 - **700+ resource kinds across 8 providers.** The full catalog, seeded into your local instance at first boot.
   [trace: `PLATFORM_STATS`; catalog seeding — desktop GTM changelogs 008/011]
-- **A map of everything you run.** Accounts, environments, projects, resources, and the services that span them — one living picture, drill-down to each project's diagram.
+- **A map of everything you run.** Accounts, environments, Infra Stacks, Infra Components, and the services that span them — one living picture, drill-down to each project's diagram.
   [trace: `_projects/.completed/20260819.04.infrastructure-map/README.md`]
 
 **Visual:** screenshot of Planton Studio's canvas with the cost odometer and the Runner Policy panel (session 2)

@@ -161,7 +161,7 @@ spec:
 
 ## Infra Chart Role
 
-Step Functions serves as the orchestration layer in event-driven and serverless API infra charts. It coordinates Lambda functions, SQS queues, SNS topics, and other AWS services into reliable, visual workflows with built-in error handling and retry logic.
+Step Functions serves as the orchestration layer in event-driven and serverless API Infra Charts. It coordinates Lambda functions, SQS queues, SNS topics, and other AWS services into reliable, visual workflows with built-in error handling and retry logic.
 
 ## Deliberately Omitted
 

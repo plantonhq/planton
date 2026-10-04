@@ -13,19 +13,19 @@ wants their infrastructure up.
 InfraChart (the template you compose)
   → deploy: InfraStack (the chart rendered with the user's values — a
     versioned record of exactly what was requested)
-  → InfraPipeline (executes the project's dependency graph in order)
+  → InfraPipeline (executes the stack's dependency graph in order)
   → each pipeline node = one InfraComponent (one manifest from the chart)
-  → each node's deploy = an infra job (one IaC engine run for that resource)
+  → each node's deploy = an Infra Job (one IaC engine run for that component)
   → real cloud infrastructure
 ```
 
 Practical implications worth sharing at the right moment:
 
-- Deploying a chart does not "run the chart" — it creates a project, whose
-  pipeline deploys resource by resource in dependency order. Independent
-  resources run in parallel; a failed node stops its dependents only.
+- Deploying a chart does not "run the chart" — it creates an Infra Stack, whose
+  pipeline deploys component by component in dependency order. Independent
+  components run in parallel; a failed node stops its dependents only.
 - A failed pipeline is diagnosed node by node: find the failed node, read its
-  infra job's error and logs (`planton-cli.md` has the exact commands).
+  Infra Job's error and logs (`craft.planton-cli.md` has the exact commands).
 - Redeploying after a chart fix creates a new pipeline run; already-green
   resources converge (no duplicate infrastructure).
 
@@ -49,7 +49,7 @@ the cloud — one level deeper than the schema. Use it when:
 
 - A spec field's cloud-side effect is ambiguous and the choice matters.
 - A deploy failed inside the engine and the error names cloud-provider
-  concepts the manifest never mentions — map the failing infra component back
+  concepts the manifest never mentions — map the failing provider resource back
   to the module code that creates it, then back to the spec field feeding it.
 - You need to know a default the schema does not state (what the module does
   when a field is empty).

@@ -25,7 +25,7 @@ Ported the search architecture from openmcf.org/docs (which was built and refine
 
 ### Architecture
 
-Three focused kinds replace the single stub:
+Three focused components replace the single stub:
 
 - **SearchBar.tsx** (~80 lines) — Orchestrator that owns the modal open/close state, the global keyboard shortcut (Cmd+K / Ctrl+K / `/`), and exposes an imperative `onOpenRef` for the mobile trigger
 - **SearchTrigger.tsx** (~55 lines) — A native `<button>` styled as a search input field with placeholder text and keyboard shortcut badge, rendered in the desktop docs header
@@ -64,7 +64,7 @@ OpenMCF uses MUI 7; planton.ai uses MUI 6. The Dialog API (`open`, `onClose`, `m
 
 ### Mobile Integration via Ref
 
-The `SearchBar` kind accepts an `onOpenRef` prop (a `MutableRefObject`) that DocsLayout uses to open the search modal from the mobile trigger button. This avoids lifting state management into the layout while keeping the keyboard shortcut ownership inside `SearchBar`.
+The `SearchBar` component accepts an `onOpenRef` prop (a `MutableRefObject`) that DocsLayout uses to open the search modal from the mobile trigger button. This avoids lifting state management into the layout while keeping the keyboard shortcut ownership inside `SearchBar`.
 
 ### Pagefind Scoping
 
@@ -89,7 +89,7 @@ Pagefind indexed 55 pages (2,217 words) in 0.244 seconds. Negligible impact on t
 ## Impact
 
 - **Users**: Can now find documentation content by keyword instead of manual browsing
-- **Developers**: Three focused kinds (~435 lines total) replace one non-functional stub (53 lines)
+- **Developers**: Three focused components (~435 lines total) replace one non-functional stub (53 lines)
 - **Build pipeline**: One additional step (`pagefind`) adds ~0.25 seconds to build time
 - **Bundle**: Pagefind's runtime JS (~50KB) is loaded only on first search interaction
 

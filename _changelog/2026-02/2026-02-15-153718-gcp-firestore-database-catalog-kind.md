@@ -96,7 +96,7 @@ flowchart TB
 ## Impact
 
 - **Users**: Can now provision Firestore databases through Planton with the same declarative workflow used for all other GCP resources
-- **Infra chart authors**: Can compose Firestore databases with GcpProject and GcpKmsKey resources via `valueFrom` references
+- **Infra Chart authors**: Can compose Firestore databases with GcpProject and GcpKmsKey resources via `valueFrom` references
 - **Platform**: GCP database coverage now includes CloudSQL, Spanner (instance+database), AlloyDB, Bigtable, Redis, Memorystore, and Firestore -- covering all major GCP database products
 
 ## Related Work

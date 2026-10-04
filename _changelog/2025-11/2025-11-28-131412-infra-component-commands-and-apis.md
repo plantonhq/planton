@@ -4,28 +4,28 @@
 
 ## Summary
 
-Added CLI commands and Connect-RPC APIs for infra component management in Planton, enabling developers to create and list infra components from the command line. This extends the CLI-backend integration pattern established with catalog kinds, providing a complete interface for managing cloud infrastructure resources through the Planton backend service.
+Added CLI commands and Connect-RPC APIs for Infra Component management in Planton, enabling developers to create and list Infra Components from the command line. This extends the CLI-backend integration pattern established with catalog kinds, providing a complete interface for managing cloud infrastructure resources through the Planton backend service.
 
 ## Problem Statement
 
-The Planton CLI and backend service lacked infra component management capabilities. While catalog kinds could be listed and queried, there was no way to:
+The Planton CLI and backend service lacked Infra Component management capabilities. While catalog kinds could be listed and queried, there was no way to:
 
-- Create infra components from YAML manifests via CLI
-- List existing infra components with filtering
-- Integrate infra component operations into CLI workflows
-- Manage infra components through the backend service
+- Create Infra Components from YAML manifests via CLI
+- List existing Infra Components with filtering
+- Integrate Infra Component operations into CLI workflows
+- Manage Infra Components through the backend service
 
-Without these capabilities, users had to manage infra components manually or through other interfaces, creating workflow friction and preventing CLI-based automation.
+Without these capabilities, users had to manage Infra Components manually or through other interfaces, creating workflow friction and preventing CLI-based automation.
 
 ## Solution
 
-Implemented comprehensive infra component management through two CLI commands and a complete backend service with Connect-RPC integration, following the same patterns established for catalog kind management.
+Implemented comprehensive Infra Component management through two CLI commands and a complete backend service with Connect-RPC integration, following the same patterns established for catalog kind management.
 
 ## CLI Commands Added
 
 ### 1. `infra-component:create` - Create Infra Component from YAML
 
-**Purpose**: Create a new infra component by providing a YAML manifest file containing the resource specification.
+**Purpose**: Create a new Infra Component by providing a YAML manifest file containing the resource specification.
 
 **Usage**:
 ```bash
@@ -48,10 +48,10 @@ planton infra-component:create --arg=path/to/manifest.yaml
 - Displays success message with resource details
 
 **Use cases**:
-- Creating infra components from local YAML files
-- Scripting infra component creation in CI/CD pipelines
+- Creating Infra Components from local YAML files
+- Scripting Infra Component creation in CI/CD pipelines
 - Bulk resource creation from manifest templates
-- Testing infra component creation workflows
+- Testing Infra Component creation workflows
 
 **Example**:
 ```bash
@@ -66,7 +66,7 @@ Created At: 2025-11-28 13:14:12
 
 ### 2. `infra-component:list` - List Infra Components
 
-**Purpose**: List all infra components stored in the backend, with optional filtering by resource kind.
+**Purpose**: List all Infra Components stored in the backend, with optional filtering by resource kind.
 
 **Usage**:
 ```bash
@@ -79,7 +79,7 @@ planton infra-component:list -k AwsRdsInstance
 ```
 
 **Features**:
-- Lists all infra components in tabular format
+- Lists all Infra Components in tabular format
 - Optional `--kind` / `-k` flag for filtering by resource kind
 - Displays ID, name, kind, and created timestamp
 - Shows total count with filter information
@@ -103,9 +103,9 @@ Total: 2 infra component(s)
 - Displays summary with total count
 
 **Use cases**:
-- Discovering existing infra components
+- Discovering existing Infra Components
 - Filtering resources by type for specific operations
-- Auditing infra component inventory
+- Auditing Infra Component inventory
 - Integration with automation scripts
 
 **Example with filtering**:
@@ -121,7 +121,7 @@ Total: 1 infra component(s) (filtered by kind: CivoVpc)
 
 ### InfraComponentService
 
-Service for managing infra components through Connect-RPC, providing create and list operations.
+Service for managing Infra Components through Connect-RPC, providing create and list operations.
 
 **Service Definition** (`app/backend/apis/proto/infra_component_service.proto`):
 
@@ -136,7 +136,7 @@ service InfraComponentService {
 
 #### 1. `CreateInfraComponent`
 
-**Purpose**: Create a new infra component from a YAML manifest.
+**Purpose**: Create a new Infra Component from a YAML manifest.
 
 **Request**:
 ```protobuf
@@ -173,7 +173,7 @@ message CreateInfraComponentResponse {
 
 #### 2. `ListInfraComponents`
 
-**Purpose**: Retrieve all infra components, optionally filtered by kind.
+**Purpose**: Retrieve all Infra Components, optionally filtered by kind.
 
 **Request**:
 ```protobuf
@@ -311,7 +311,7 @@ Error: Cannot connect to backend service at http://localhost:50051. Please check
 
 ### For CLI Users
 
-- **Unified Workflow**: Manage infra components directly from CLI without context switching
+- **Unified Workflow**: Manage Infra Components directly from CLI without context switching
 - **Automation-Friendly**: Scriptable commands enable CI/CD integration
 - **Resource Discovery**: List and filter resources to understand current infrastructure state
 - **Consistent Experience**: Same configuration system and error handling as catalog kind commands
@@ -389,7 +389,7 @@ planton infra-component:list
 
 ### Command Coverage
 
-- **2 CLI commands** for infra component management
+- **2 CLI commands** for Infra Component management
 - **2 RPC methods** for backend operations
 - **Complete CRUD foundation** (Create and Read operations)
 

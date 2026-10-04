@@ -12,7 +12,7 @@ Deprecated 6 monolithic catalog kinds and consolidated GCP GKE Cluster variants 
 
 ### The Evolution from Monolithic to Composable
 
-When Planton was initially designed, we created comprehensive "all-in-one" catalog kinds that bundled multiple infra components together. For example, `AwsStaticWebsite` bundled S3 bucket, CloudFront CDN, Route 53 DNS, and SSL certificates into a single kind. This seemed convenient initially but created significant problems:
+When Planton was initially designed, we created comprehensive "all-in-one" catalog kinds that bundled multiple provider resources together. For example, `AwsStaticWebsite` bundled S3 bucket, CloudFront CDN, Route 53 DNS, and SSL certificates into a single kind. This seemed convenient initially but created significant problems:
 
 **Architecture Issues**:
 - **Tight coupling**: Changes to one aspect required modifying the entire monolithic kind

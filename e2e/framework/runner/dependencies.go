@@ -776,7 +776,7 @@ var dependencyDestroyBackoff = 60 * time.Second
 // remaining teardowns (stopping early would leak everything deployed before
 // it) -- but every failure is collected and returned so the caller FAILS the
 // run. A destroy that cannot run (for example because the ephemeral backend
-// state disappeared before teardown) means real infra components may still
+// state disappeared before teardown) means real provider resources may still
 // exist; reporting success would leave them leaking silently, invisible
 // until someone audits the account.
 func TeardownDependencies(deployed []DependencyState) error {

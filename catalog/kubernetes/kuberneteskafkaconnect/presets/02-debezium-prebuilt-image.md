@@ -16,7 +16,7 @@ operator-built-image preset (the `image` and `build` arms are
 mutually exclusive, spec-enforced).
 
 The TLS and authentication blocks are the composition seams: in an
-infra chart the CA Secret comes from a KubernetesKafka reference and
+Infra Chart the CA Secret comes from a KubernetesKafka reference and
 the SCRAM credential Secret from a KubernetesKafkaUser reference.
 Declare the actual pipes as KubernetesKafkaConnector resources in
 this namespace — the debezium-postgres-cdc connector preset pairs

@@ -66,7 +66,7 @@ export const menuProduct: MenuItem[] = [
   },
   {
     label: 'Import',
-    subLabel: 'Adopt the infra components you already run, without redeploying them',
+    subLabel: 'Adopt the cloud infrastructure you already run, without redeploying it',
     href: '/product/import',
   },
   {

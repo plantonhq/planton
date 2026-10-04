@@ -91,7 +91,7 @@ AlloyDB is Google Cloud's enterprise-grade PostgreSQL-compatible database, desig
 ## Impact
 
 - **GCP users**: Can now provision AlloyDB clusters through Planton with a single manifest
-- **Infra charts**: GcpAlloydbCluster can be composed into `gcp-alloydb-environment` and `gcp-spanner-application` charts
+- **Infra Charts**: GcpAlloydbCluster can be composed into `gcp-alloydb-environment` and `gcp-spanner-application` charts
 - **GCP expansion**: 11 of 22 resources now complete (50% milestone)
 
 ## Related Work

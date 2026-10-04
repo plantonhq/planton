@@ -15,7 +15,7 @@ The Azure provider in Planton lacked messaging infrastructure capabilities. Ente
 ### Pain Points
 
 - No declarative messaging infrastructure in Planton for Azure
-- Teams managing Service Bus manually or via separate Terraform configs outside the infra chart DAG
+- Teams managing Service Bus manually or via separate Terraform configs outside the Infra Chart DAG
 - No ability to wire messaging connection strings into container apps or function apps via `valueFrom` references
 
 ## Solution / What's New
@@ -101,7 +101,7 @@ apis/dev/planton/provider/azure/azureservicebusnamespace/v1/
 
 - **Azure resource count**: 22 of 24 complete (R21 done, R22 + R23 remaining)
 - **Messaging category**: First of two messaging resources (R22 AzureEventHubNamespace pending)
-- **Infra chart enablement**: Connection strings can now be wired into app hosting charts
+- **Infra Chart enablement**: Connection strings can now be wired into app hosting charts
 
 ## Related Work
 

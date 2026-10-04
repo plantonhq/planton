@@ -74,9 +74,9 @@ The landing page after login. For new users, it shows the getting-started checkl
 
 ### Infra Hub
 
-The infrastructure management section. The Infra Hub route activates for infra components, infra stacks, and environments.
+The infrastructure management section. The Infra Hub route activates for Infra Components, Infra Stacks, and environments.
 
-**Infra Components tab** — lists all deployed infrastructure in the current environment. Each row shows the resource name, kind (e.g., AWS VPC, GCP GKE Cluster), status, and last deployment timestamp. Click a resource to see its full configuration, infra job history, and outputs.
+**Infra Components tab** — lists all deployed infrastructure in the current environment. Each row shows the resource name, kind (e.g., AWS VPC, GCP GKE Cluster), status, and last deployment timestamp. Click a resource to see its full configuration, Infra Job history, and outputs.
 
 **Infra Stacks tab** — lists Infra Chart deployments. Each Infra Stack groups multiple related Infra Components deployed as a coordinated unit. The detail view includes a DAG visualization showing resource dependencies and deployment progress.
 

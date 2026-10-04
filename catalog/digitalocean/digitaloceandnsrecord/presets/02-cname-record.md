@@ -1,6 +1,6 @@
 # WWW CNAME Record
 
-This preset aliases `www` to the zone's apex hostname — the standard "www.example.com follows example.com" record. The zone is referenced as a `DigitalOceanDnsZone` resource so the record composes in infra charts.
+This preset aliases `www` to the zone's apex hostname — the standard "www.example.com follows example.com" record. The zone is referenced as a `DigitalOceanDnsZone` resource so the record composes in Infra Charts.
 
 ## When to Use
 

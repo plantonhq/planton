@@ -1,4 +1,4 @@
-# GCP Credential File Upload, Secret Display Kinds, and Catalog Kind Cleanup
+# GCP Credential File Upload, Secret Display Components, and Catalog Kind Cleanup
 
 **Date**: December 16, 2025
 **Type**: Feature, Refactoring, Cleanup
@@ -6,13 +6,13 @@
 
 ## Summary
 
-Implemented reusable frontend kinds for GCP credential file upload with base64 encoding and secure secret property display with download functionality. Enhanced GCP credential handling in backend service with proper base64 validation and JSON decoding. Removed unused catalog kind code across backend, models, and CLI. Fixed CLI display label to accurately reflect decoded JSON content. All changes improve the credential management user experience and codebase maintainability.
+Implemented reusable frontend components for GCP credential file upload with base64 encoding and secure secret property display with download functionality. Enhanced GCP credential handling in backend service with proper base64 validation and JSON decoding. Removed unused catalog kind code across backend, models, and CLI. Fixed CLI display label to accurately reflect decoded JSON content. All changes improve the credential management user experience and codebase maintainability.
 
 ## Problem Statement / Motivation
 
 ### Frontend Credential Management Issues
 
-1. **No File Upload Kind**: GCP credentials required manual base64 encoding, making it difficult for users to upload service account key files
+1. **No File Upload Component**: GCP credentials required manual base64 encoding, making it difficult for users to upload service account key files
 2. **No Secret Display**: Credential values were displayed in plain text without proper masking or download options
 3. **Inconsistent UX**: Different credential forms handled file uploads differently, leading to inconsistent user experience
 
@@ -29,15 +29,15 @@ Implemented reusable frontend kinds for GCP credential file upload with base64 e
 
 ## Solution / What's New
 
-### Frontend Kinds
+### Frontend Components
 
-#### 1. Base64 File Upload Kind
+#### 1. Base64 File Upload Component
 
-Created reusable file upload kind with base64 encoding:
+Created reusable file upload component with base64 encoding:
 
 **Files Added:**
 
-- `app/frontend/src/components/shared/file-upload/base64-file-upload.tsx` - Main kind with hook
+- `app/frontend/src/components/shared/file-upload/base64-file-upload.tsx` - Main component with hook
 - `app/frontend/src/components/shared/file-upload/index.ts` - Export file
 
 **Features:**
@@ -53,17 +53,17 @@ Created reusable file upload kind with base64 encoding:
 **Key Capabilities:**
 
 - `useBase64FileUpload` hook for form integration
-- `FileUploadWithClear` kind for UI display
+- `FileUploadWithClear` component for UI display
 - Handles both create and edit modes
 - Downloads decoded JSON files (backend returns decoded JSON)
 
-#### 2. Secret Property Display Kind
+#### 2. Secret Property Display Component
 
-Created secure secret display kind with masking and download:
+Created secure secret display component with masking and download:
 
 **Files Added:**
 
-- `app/frontend/src/components/shared/secret-property/secret-property.tsx` - Main kind
+- `app/frontend/src/components/shared/secret-property/secret-property.tsx` - Main component
 - `app/frontend/src/components/shared/secret-property/secret-modal.tsx` - Modal for viewing secrets
 - `app/frontend/src/components/shared/secret-property/styled.ts` - Styled components
 - `app/frontend/src/components/shared/secret-property/index.ts` - Export file
@@ -81,7 +81,7 @@ Created secure secret display kind with masking and download:
 
 **Key Capabilities:**
 
-- `SecretProperty` kind for displaying sensitive data
+- `SecretProperty` component for displaying sensitive data
 - `SecretModal` for viewing full secret values
 - Supports both base64-encoded and decoded JSON
 - Download functionality with proper file naming
@@ -142,14 +142,14 @@ Created secure secret display kind with masking and download:
 
 **Files Modified:**
 
-- `app/frontend/src/app/credentials/_components/forms/gcp.tsx` - Integrated file upload kind
+- `app/frontend/src/app/credentials/_components/forms/gcp.tsx` - Integrated file upload component
 - `app/frontend/src/app/credentials/_components/forms/credential-drawer.tsx` - Updated credential drawer
-- `app/frontend/src/components/shared/credentials-list/credentials-list.tsx` - Integrated secret property kind
+- `app/frontend/src/components/shared/credentials-list/credentials-list.tsx` - Integrated secret property component
 - `app/frontend/src/lib/utils.ts` - Added `readFileAsBase64` utility function
 
 ## Implementation Details
 
-### File Upload Kind Architecture
+### File Upload Component Architecture
 
 ```typescript
 // Hook for form integration
@@ -162,7 +162,7 @@ const { selectedFile, clearFile, error, triggerFileClick, inputFileRef, handleFi
     onError,
   });
 
-// Kind for UI
+// Component for UI
 <FileUploadWithClear
   label="Service Account Key"
   setValue={setValue}
@@ -173,7 +173,7 @@ const { selectedFile, clearFile, error, triggerFileClick, inputFileRef, handleFi
 />;
 ```
 
-### Secret Property Kind Architecture
+### Secret Property Component Architecture
 
 ```typescript
 <SecretProperty
@@ -223,7 +223,7 @@ const { selectedFile, clearFile, error, triggerFileClick, inputFileRef, handleFi
 
 ### For Developers
 
-1. **Reusable Kinds:**
+1. **Reusable Components:**
 
    - `FileUploadWithClear` can be used for any file upload with base64 encoding
    - `SecretProperty` can be used for any sensitive data display
@@ -264,7 +264,7 @@ const { selectedFile, clearFile, error, triggerFileClick, inputFileRef, handleFi
 
 **Developers:**
 
-- Reusable kinds for file upload and secret display
+- Reusable components for file upload and secret display
 - Cleaner codebase without unused catalog kind code
 - Consistent patterns for handling sensitive data
 - Better error handling and validation
@@ -304,7 +304,7 @@ const { selectedFile, clearFile, error, triggerFileClick, inputFileRef, handleFi
 - `app/backend/internal/service/credential_service.go` - GCP credential handling improvements
 - `cmd/planton/root/credential_get.go` - Display label fix
 - `app/frontend/src/app/credentials/_components/forms/gcp.tsx` - File upload integration
-- `app/frontend/src/app/credentials/_components/forms/credential-drawer.tsx` - Kind updates
+- `app/frontend/src/app/credentials/_components/forms/credential-drawer.tsx` - Component updates
 - `app/frontend/src/components/shared/credentials-list/credentials-list.tsx` - Secret property integration
 - `app/frontend/src/lib/utils.ts` - Base64 file reading utility
 - `cmd/planton/root.go` - Removed catalog kind command

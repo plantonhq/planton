@@ -108,7 +108,7 @@ metadata:
   name: tekton-operator
 spec:
   operatorVersion: v0.78.0
-  kinds:
+  components:
     pipelines: true
     triggers: true
     dashboard: true

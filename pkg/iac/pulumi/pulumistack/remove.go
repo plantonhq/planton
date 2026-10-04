@@ -18,7 +18,7 @@ import (
 
 // Remove deletes a Pulumi stack and all its configuration/state from the backend.
 // This is a destructive operation that removes the stack metadata.
-// Note: This does NOT destroy infra components - run 'pulumi destroy' first if needed.
+// Note: This does NOT destroy provider resources - run 'pulumi destroy' first if needed.
 func Remove(moduleDir, stackFqdn, targetManifestPath string, valueOverrides map[string]string, force bool, moduleVersion string, noCleanup bool) error {
 	manifestObject, err := manifest.LoadWithOverrides(targetManifestPath, valueOverrides)
 	if err != nil {

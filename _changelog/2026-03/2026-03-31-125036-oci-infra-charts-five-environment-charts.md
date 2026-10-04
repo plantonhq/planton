@@ -113,10 +113,9 @@ Platform users can now provision OCI environments through InfraCharts with the s
 # Preview the OKE environment chart
 planton chart build oci/oke-environment
 
-# Create a project from the chart
-planton project create --from-chart oci/oke-environment \
-  --name my-oke-cluster \
-  --values ./my-values.yaml
+# Install the chart as an Infra Stack
+planton chart install my-oke-cluster oci/oke-environment \
+  -f ./my-values.yaml
 ```
 
 Example `values.yaml` override:

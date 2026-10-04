@@ -10,7 +10,7 @@ Converted all non-string field types (int32) to strings in the KubernetesGhaRunn
 
 ## Problem Statement / Motivation
 
-Catalog kind infra jobs were failing in the "update-outputs" step with the error:
+Catalog kind Infra Jobs were failing in the "update-outputs" step with the error:
 
 ```
 Failed to parse value as integer for field 'min_runners'. Value received: 'unknown'
@@ -20,7 +20,7 @@ Failed to parse value as integer for field 'min_runners'. Value received: 'unkno
 
 - Pulumi outputs are serialized as strings, but the Java backend was attempting to parse them as integers
 - When Pulumi couldn't resolve a value (API timing, errors), it output "unknown" instead of a number
-- `Integer.parseInt("unknown")` throws `NumberFormatException`, causing infra job failures
+- `Integer.parseInt("unknown")` throws `NumberFormatException`, causing Infra Job failures
 - Outputs are primarily for display/reference - no computation is performed on them
 
 ## Solution / What's New
@@ -82,7 +82,7 @@ Regenerated stubs for:
 - **Future-proof**: New kinds should follow this string-only pattern
 
 ### For Users
-- **Reliable infra jobs**: GHA Runner Scale Set deployments complete successfully
+- **Reliable Infra Jobs**: GHA Runner Scale Set deployments complete successfully
 - **Accurate output display**: Values shown as received, not silently converted
 
 ## Impact

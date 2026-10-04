@@ -131,10 +131,9 @@ patterns from developer sandbox to production HA cluster.
 # Preview a chart
 planton chart build hetznercloud/server-environment
 
-# Create a project from the chart
-planton project create --from-chart hetznercloud/load-balanced-app \
-  --name my-web-app \
-  --values ./my-values.yaml
+# Install the chart as an Infra Stack
+planton chart install my-web-app hetznercloud/load-balanced-app \
+  -f ./my-values.yaml
 ```
 
 Example `values.yaml` override for load-balanced-app:

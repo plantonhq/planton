@@ -11,17 +11,17 @@ tags:
 
 # Importing Resources
 
-Importing an Infra Component brings an existing piece of cloud infrastructure — a DNS zone, a database, a VPC — under Planton management without recreating it. The import operation reads the resource from the cloud provider and writes it into the IaC state file. The actual infrastructure is never modified. No resources are created, changed, or destroyed. After import, the resource is tracked through Planton's standard lifecycle — updates, drift detection, and teardown all work as if the resource had been created through the platform from the start.
+Importing brings an existing provider resource — a DNS zone, a database, a VPC — under Planton management without recreating it. The import operation reads the resource from the cloud provider and writes it into the Infra Component's IaC state file. The actual infrastructure is never modified. No resources are created, changed, or destroyed. After import, the resource is tracked through Planton's standard lifecycle — updates, drift detection, and teardown all work as if the resource had been created through the platform from the start.
 
 ## Why Import Exists
 
-Not all infrastructure starts inside Planton. Cloud providers auto-create resources as side effects of other operations — purchase a domain and the registrar provisions a DNS zone automatically. Teams adopt Planton after years of manually provisioned infrastructure that already runs in production. And sometimes an Infra Component is created in Planton, but the actual infra component already exists — the initial Infra Job fails because it tries to create something that is already there.
+Not all infrastructure starts inside Planton. Cloud providers auto-create resources as side effects of other operations — purchase a domain and the registrar provisions a DNS zone automatically. Teams adopt Planton after years of manually provisioned infrastructure that already runs in production. And sometimes an Infra Component is created in Planton, but the provider resource it describes already exists — the initial Infra Job fails because it tries to create something that is already there.
 
 In each case, the infrastructure exists on the provider but Planton's IaC state does not know about it. Without import, the only path forward is to destroy the existing resource and recreate it through the platform — a disruptive, risky operation for production infrastructure. Import eliminates that risk by adding the resource to state directly, leaving the actual infrastructure untouched.
 
 ## How Import Works
 
-Every import operation runs as a [Infra Job](/docs/infrastructure/infra-jobs) with three stages:
+Every import operation runs as an [Infra Job](/docs/infrastructure/infra-jobs) with three stages:
 
 1. **Initialize** — Set up the IaC module, download providers, and configure the state backend. This is the same initialization step that runs for every Infra Job.
 2. **Import** — Read the resource from the cloud provider using the identifiers you provide and write it into the IaC state file. Each resource is imported individually. If any import fails, the operation stops — no partial state corruption occurs.

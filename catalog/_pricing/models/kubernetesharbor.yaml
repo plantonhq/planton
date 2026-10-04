@@ -29,7 +29,7 @@ spec:
         cpu_limits: 7500m
         memory_limits: 7680Mi
         persistent_storage: 28Gi
-        basis: "5 stateless kinds (core, portal, registry, jobservice, nginx) x 1 replica x (100m CPU / 256Mi requests, 1 CPU / 1Gi limits) from the spec-declared defaults (the platform applies them when the manifest omits resources), plus Trivy 1 replica x (200m / 512Mi requests, 1 CPU / 1Gi limits -- the chart's own defaults), plus the internal PostgreSQL (100m / 256Mi requests, 1 CPU / 1Gi limits) and internal Redis (50m / 128Mi requests, 500m / 512Mi limits) from their spec-declared defaults; storage = 20Gi declared artifact volume + 1Gi job-log + 5Gi Trivy cache + 1Gi database + 1Gi Redis volumes at their spec-declared defaults"
+        basis: "5 stateless components (core, portal, registry, jobservice, nginx) x 1 replica x (100m CPU / 256Mi requests, 1 CPU / 1Gi limits) from the spec-declared defaults (the platform applies them when the manifest omits resources), plus Trivy 1 replica x (200m / 512Mi requests, 1 CPU / 1Gi limits -- the chart's own defaults), plus the internal PostgreSQL (100m / 256Mi requests, 1 CPU / 1Gi limits) and internal Redis (50m / 128Mi requests, 500m / 512Mi limits) from their spec-declared defaults; storage = 20Gi declared artifact volume + 1Gi job-log + 5Gi Trivy cache + 1Gi database + 1Gi Redis volumes at their spec-declared defaults"
       exclusions:
         - the dollar value of this capacity is the target cluster's node and storage-class economics
         - "the registryctl container in the registry pods and the harbor-exporter keep chart-default sizing the spec does not declare -- real consumption, no stated reservation"
@@ -42,7 +42,7 @@ spec:
         cpu_limits: "11"
         memory_limits: 11Gi
         persistent_storage: 6Gi
-        basis: "5 stateless kinds (core, portal, registry, jobservice, nginx) x 2 replicas x (100m CPU / 256Mi requests, 1 CPU / 1Gi limits) from the spec-declared defaults (the platform applies them when the manifest omits resources), plus Trivy (enabled by default) 1 replica x (200m / 512Mi requests, 1 CPU / 1Gi limits -- the chart's own defaults); storage = 1Gi job-log + 5Gi Trivy cache volumes at their spec-declared defaults -- artifact blobs live in S3, metadata in the external database"
+        basis: "5 stateless components (core, portal, registry, jobservice, nginx) x 2 replicas x (100m CPU / 256Mi requests, 1 CPU / 1Gi limits) from the spec-declared defaults (the platform applies them when the manifest omits resources), plus Trivy (enabled by default) 1 replica x (200m / 512Mi requests, 1 CPU / 1Gi limits -- the chart's own defaults); storage = 1Gi job-log + 5Gi Trivy cache volumes at their spec-declared defaults -- artifact blobs live in S3, metadata in the external database"
       exclusions:
         - the dollar value of this capacity is the target cluster's node and storage-class economics
         - "the composed state stores carry their own footprints: the KubernetesPostgres database, the KubernetesValkey cache, and the KubernetesSeaweedFs object store holding every artifact blob"

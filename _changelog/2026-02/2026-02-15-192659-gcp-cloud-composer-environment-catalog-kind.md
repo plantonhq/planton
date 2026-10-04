@@ -76,7 +76,7 @@ A complete catalog kind following the forge workflow (20 phases), targeting Comp
 
 - Planton users can now provision managed Airflow environments declaratively
 - Full Composer 2.x and 3 coverage without Composer 1.x legacy complexity
-- 5 StringValueOrRef fields enable composing Composer environments with VPCs, KMS keys, and service accounts in infra charts
+- 5 StringValueOrRef fields enable composing Composer environments with VPCs, KMS keys, and service accounts in Infra Charts
 - Production-ready configuration with private networking, CMEK, and disaster recovery out of the box
 
 ## Impact

@@ -74,7 +74,7 @@ The Pulumi module's `buildProviderDetails()` function converts each typed messag
 ## Impact
 
 - **Users**: Can now configure social login and enterprise SSO through Planton with type-safe manifests
-- **Infra charts**: Identity providers can be composed with User Pools using StringValueOrRef for the user_pool_id
+- **Infra Charts**: Identity providers can be composed with User Pools using StringValueOrRef for the user_pool_id
 - **Pattern**: First kind to use a proto enum for provider-specific values, establishing a precedent for future typed-config patterns
 
 ## Related Work

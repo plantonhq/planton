@@ -71,7 +71,7 @@ Two chart CI guards were aligned with the loaders they front:
   fails instead of passing silently.
 - The structure guard's non-empty-templates check now walks `templates/`
   recursively and accepts `.yml`, matching the offline validator and the
-  platform project loader — charts may organize templates in subdirectories.
+  platform's Infra Stack loader — charts may organize templates in subdirectories.
 
 ## Validation
 

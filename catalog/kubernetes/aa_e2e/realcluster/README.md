@@ -65,7 +65,7 @@ Runs against an EXISTING GKE cluster with Workload Identity (the batch never
 creates or deletes the cluster). Everything the lanes need beside the cluster
 is created FROM THE CATALOG through the CLI's set lane — one dependency-ordered
 `planton apply -f <dir>` over the rendered manifests, references resolved
-between them exactly as an infra chart would — so the batch is itself a proof
+between them exactly as an Infra Chart would — so the batch is itself a proof
 that the resource set the guides document composes.
 
 | Asset | Purpose |

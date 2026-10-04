@@ -63,7 +63,7 @@ var _ = ginkgo.Describe("StringValueOrRef — Cross-Cutting Consumer Validation"
 
 	// These tests validate that the message-level CEL rule propagates correctly
 	// through protovalidate's recursive validation when StringValueOrRef is used
-	// as a field inside a full infra component envelope.
+	// as a field inside a full catalog object envelope.
 
 	ginkgo.Describe("required_ref on TestCatalogKindGeneric", func() {
 

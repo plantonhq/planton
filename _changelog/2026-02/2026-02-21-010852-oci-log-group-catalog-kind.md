@@ -120,7 +120,7 @@ logs:
 
 - **Users**: Can now define log groups with service and custom logs through a single YAML manifest, enabling centralized log collection for VCN flow logs, Object Storage auditing, API Gateway access logs, and more
 - **Platform**: Phase 9 (Monitoring and Logging) now 100% complete -- both resources done (OciAlarm, OciLogGroup)
-- **Infra Charts**: All 5 planned OCI infra charts can now incorporate logging (e.g., serverless-stack chart references OciLogGroup)
+- **Infra Charts**: All 5 planned OCI Infra Charts can now incorporate logging (e.g., serverless-stack chart references OciLogGroup)
 
 ## Related Work
 

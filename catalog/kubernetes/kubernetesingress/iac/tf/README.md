@@ -27,7 +27,7 @@ iac/tf/
 
 ## Non-Blocking Creation (wait_for_load_balancer = false)
 
-The resource sets `wait_for_load_balancer = false`, so creation never blocks on an ingress controller claiming the object. An Ingress is valid without a controller — infra charts routinely deploy the workload and its exposure before the ingress controller wave — and blocking every deploy until a controller populates the load-balancer status would couple this module to cluster addon ordering. The Pulumi module's `skipAwait` annotation is the exact same choice.
+The resource sets `wait_for_load_balancer = false`, so creation never blocks on an ingress controller claiming the object. An Ingress is valid without a controller — Infra Charts routinely deploy the workload and its exposure before the ingress controller wave — and blocking every deploy until a controller populates the load-balancer status would couple this module to cluster addon ordering. The Pulumi module's `skipAwait` annotation is the exact same choice.
 
 Consequence: the `load_balancer_ip`/`load_balancer_hostname` outputs are `try()`-guarded reads of the object's status. They export empty on a cluster where no controller has reconciled the Ingress yet, and fill in once one has.
 

@@ -70,7 +70,7 @@ import typescript from "eslint-config-next/typescript";
 
 ### React 19 Hooks Compliance
 
-`eslint-config-next@16` introduces two new React hooks rules: `react-hooks/set-state-in-effect` and `react-hooks/refs`. These flagged 13 pre-existing code patterns across 10 kinds. Each was fixed with the appropriate React 19 pattern:
+`eslint-config-next@16` introduces two new React hooks rules: `react-hooks/set-state-in-effect` and `react-hooks/refs`. These flagged 13 pre-existing code patterns across 10 components. Each was fixed with the appropriate React 19 pattern:
 
 | Pattern | Fix Applied | Files |
 |---------|-------------|-------|
@@ -100,7 +100,7 @@ Key changes by file:
 - **`eslint.config.mjs`**: Native flat config imports, remove `FlatCompat` bridge
 - **`package.json`**: Bump next/eslint-config-next, pin `@next/third-parties`, remove `@eslint/eslintrc`, change lint script to `eslint .`
 - **`fileSystem.ts`**: Inline `DOCS_DIRECTORY` constant, add `turbopackIgnore` comments
-- **10 kind files**: React 19 hooks compliance fixes
+- **10 component files**: React 19 hooks compliance fixes
 - **`.nvmrc`**: Pin Node 24.14.0
 
 ## Benefits

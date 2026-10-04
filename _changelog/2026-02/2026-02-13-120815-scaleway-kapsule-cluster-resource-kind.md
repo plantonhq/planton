@@ -10,7 +10,7 @@ Implemented `ScalewayKapsuleCluster` -- the seventh Scaleway resource kind and t
 
 ## Problem Statement / Motivation
 
-Scaleway's Kapsule is a managed Kubernetes service, and it's the centerpiece of the planned `kapsule-environment` infra chart. Without this resource kind, users cannot provision Kubernetes clusters on Scaleway through Planton, and the most important infra chart cannot be built.
+Scaleway's Kapsule is a managed Kubernetes service, and it's the centerpiece of the planned `kapsule-environment` Infra Chart. Without this resource kind, users cannot provision Kubernetes clusters on Scaleway through Planton, and the most important Infra Chart cannot be built.
 
 ### Design Challenge
 
@@ -70,7 +70,7 @@ flowchart TB
 ## Benefits
 
 - Users can provision a working Kapsule cluster from a single YAML manifest
-- The cluster is immediately composable into the `kapsule-environment` infra chart
+- The cluster is immediately composable into the `kapsule-environment` Infra Chart
 - 6 outputs provide everything needed for downstream K8s addon deployment
 - Autoscaler config is cluster-wide (matching Scaleway's architecture) -- no need to duplicate settings per pool
 
@@ -78,7 +78,7 @@ flowchart TB
 
 - **7 of 19** Scaleway resource kinds now implemented
 - Unlocks R08 (ScalewayKapsulePool) which depends on `cluster_id` output
-- Foundational for IC01 (kapsule-environment infra chart)
+- Foundational for IC01 (kapsule-environment Infra Chart)
 - First composite Scaleway resource with a required `StringValueOrRef` input
 
 ## File Summary
@@ -94,7 +94,7 @@ flowchart TB
 
 - R01-R06: Foundation Scaleway kinds (VPC, PrivateNetwork, PublicGateway, SecurityGroup, LoadBalancer, Instance)
 - R08 (next): ScalewayKapsulePool -- additional node pools
-- IC01 (future): kapsule-environment infra chart
+- IC01 (future): kapsule-environment Infra Chart
 
 ---
 

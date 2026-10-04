@@ -41,7 +41,7 @@ var cliVersionRegex = regexp.MustCompile(`^v?(\d+)\.(\d+)\.(\d+)-cli\.(\d{8})\.(
 // semverRegex matches any semver-like version (v0.3.17, 0.3.17, v0.3.15-cli.20260113.0, etc.)
 var semverRegex = regexp.MustCompile(`^v?(\d+)\.(\d+)\.(\d+)`)
 
-// parseCliVersion parses a CLI version tag into its kinds
+// parseCliVersion parses a CLI version tag into its components
 func parseCliVersion(tag string) (*cliVersionInfo, error) {
 	matches := cliVersionRegex.FindStringSubmatch(tag)
 	if matches == nil {

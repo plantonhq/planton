@@ -60,8 +60,8 @@ All content verified against:
 - **Audit protobuf APIs** (`apis/ai/planton/audit/apiresourceversion/v1/`) — ApiResourceVersion, CatalogObjectVersion, query RPCs
 - **Audit service architecture** (`backend/services/audit/docs/architecture.md`) — event-driven via NATS, MongoDB storage, append-only
 - **11 CLI command files** — authentication (login, who, list, use), authorization (iampolicy add/get/remove, iamrole list), API keys (new, list)
-- **Web console audit pages** — version list, detail, diff kinds with side-by-side/line-by-line toggle
-- **Web console IAM kinds** — grant permission, edit permission, API key management
+- **Web console audit pages** — version list, detail, diff components with side-by-side/line-by-line toggle
+- **Web console IAM components** — grant permission, edit permission, API key management
 - **7 ADRs** — envelope encryption, CMEK providers, secret backend abstraction, provider connection auth modes, CLI authentication redesign, runner deployment, permission denied handling
 - **Runner IP preservation guidelines** applied throughout — no named technologies, no internal endpoints, security guarantees stated as outcomes
 
@@ -70,7 +70,7 @@ All content verified against:
 The Security index page describes Runner's security properties at a conceptual level:
 - No mention of Konnectivity, Temporal, or Go
 - No internal endpoints, ports, or channel IDs
-- No kind names (Tunnel Agent, gRPC Server)
+- No component names (Tunnel Agent, gRPC Server)
 - mTLS described as an outcome ("both sides verify identity"), not a mechanism
 
 ## Benefits

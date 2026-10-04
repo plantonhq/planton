@@ -10,12 +10,12 @@ Added the `GcpFirewallRule` catalog kind to Planton, enabling declarative provis
 
 ## Problem Statement / Motivation
 
-GCP VPC firewall rules are a foundational networking primitive required by virtually every infra chart that provisions GCP resources. Without a `GcpFirewallRule` kind, infra charts for GKE environments, Cloud Run backends, Spanner applications, and serverless API backends cannot express network security rules declaratively.
+GCP VPC firewall rules are a foundational networking primitive required by virtually every Infra Chart that provisions GCP resources. Without a `GcpFirewallRule` kind, Infra Charts for GKE environments, Cloud Run backends, Spanner applications, and serverless API backends cannot express network security rules declaratively.
 
 ### Pain Points
 
 - No way to provision GCP firewall rules through Planton
-- Infra charts needing network security had to rely on external processes
+- Infra Charts needing network security had to rely on external processes
 - Missing a Layer 1 networking building block that sits between VPC and higher-level services
 
 ## Solution / What's New
@@ -79,7 +79,7 @@ Uses `dynamic` blocks to conditionally create `allow` or `deny` blocks based on 
 ## Benefits
 
 - GCP users can now provision firewall rules declaratively through Planton
-- Infra charts can compose firewall rules with VPCs and other networking resources
+- Infra Charts can compose firewall rules with VPCs and other networking resources
 - Schema-level validation catches misconfigurations before deployment
 - Clean abstraction reduces cognitive load vs raw Terraform/Pulumi
 

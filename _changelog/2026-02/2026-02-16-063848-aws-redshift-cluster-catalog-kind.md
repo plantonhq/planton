@@ -92,7 +92,7 @@ flowchart TB
 ## Impact
 
 - Adds enum 265 (AwsRedshiftCluster) to catalog_kind.proto
-- Enables data warehouse provisioning in upcoming data-pipeline and analytics infra charts
+- Enables data warehouse provisioning in upcoming data-pipeline and analytics Infra Charts
 - Provides a reference implementation for other analytics service kinds (Athena, Glue, Redshift Serverless)
 
 ## Related Work

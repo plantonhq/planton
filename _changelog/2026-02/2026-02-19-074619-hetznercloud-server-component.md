@@ -10,7 +10,7 @@ Added the `HetznerCloudServer` catalog kind (R07, enum 3520, id_prefix: `hcsrv`)
 
 ## Problem Statement / Motivation
 
-Hetzner Cloud servers are the core compute primitive. Every infra chart in the Hetzner Cloud catalog (server-environment, load-balanced-app, ha-server-cluster) requires servers as the central resource. Until now, we had no way to declaratively provision servers wired to the foundation kinds (SSH keys, firewalls, networks, placement groups, primary IPs) already implemented in R01-R06.
+Hetzner Cloud servers are the core compute primitive. Every Infra Chart in the Hetzner Cloud catalog (server-environment, load-balanced-app, ha-server-cluster) requires servers as the central resource. Until now, we had no way to declaratively provision servers wired to the foundation kinds (SSH keys, firewalls, networks, placement groups, primary IPs) already implemented in R01-R06.
 
 ### Pain Points
 
@@ -107,7 +107,7 @@ flowchart TB
 
 - **Users**: Can declaratively provision servers with SSH keys, firewalls, networks, placement groups, and primary IPs
 - **Future kinds**: R08 (Volume) and R09 (Snapshot) can reference `server_id` output; R11 (LoadBalancer) can target servers
-- **Infra charts**: All three charts (server-environment, load-balanced-app, ha-server-cluster) depend on this kind
+- **Infra Charts**: All three charts (server-environment, load-balanced-app, ha-server-cluster) depend on this kind
 - **Pattern precedent**: `repeated StringValueOrRef` and nested `optional bool` defaults established for reuse
 
 ## Files Changed

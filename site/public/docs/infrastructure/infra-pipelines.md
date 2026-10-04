@@ -24,7 +24,7 @@ Infra Pipelines automate this. They read the dependency graph from the Infra Sta
 
 ## How It Works
 
-When an Infra Stack is created or updated, the system generates an Infra Pipeline from the project's dependency graph (DAG). Each node in the graph is an Infra Component; each edge is a dependency where one resource needs an output from another.
+When an Infra Stack is created or updated, the system generates an Infra Pipeline from the stack's dependency graph (DAG). Each node in the graph is an Infra Component; each edge is a dependency where one resource needs an output from another.
 
 The pipeline executes the graph:
 
@@ -68,7 +68,7 @@ Infra Pipelines support approval gates at two levels, giving you control over wh
 An environment within the pipeline can require manual approval before any of its resources start deploying. When a gate is active, the pipeline pauses and waits for a team member to approve or reject.
 
 ```bash
-planton infra-pipeline resolve-env-manual-gate <pipeline-id> <env-name> yes
+planton infra pipeline resolve-env-manual-gate <pipeline-id> <env-name> yes
 ```
 
 ### Node-Level Gates
@@ -76,7 +76,7 @@ planton infra-pipeline resolve-env-manual-gate <pipeline-id> <env-name> yes
 Individual resources within the dependency graph can have their own gates. A node gate pauses the pipeline after that specific resource completes, requiring approval before its downstream dependents proceed. This is useful for high-risk resources where you want to verify the deployment before allowing dependents to start.
 
 ```bash
-planton infra-pipeline resolve-node-manual-gate <pipeline-id> <env-name> <node-id> yes
+planton infra pipeline resolve-node-manual-gate <pipeline-id> <env-name> <node-id> yes
 ```
 
 <!-- SCREENSHOT: Pipeline with manual gate awaiting approval
@@ -97,7 +97,7 @@ The pipeline detail view shows the full graph along with timing information — 
 Running pipelines can be cancelled. The currently executing resource deployment completes its in-flight infrastructure operation (to avoid leaving resources in an inconsistent state), then remaining resources are cancelled.
 
 ```bash
-planton infra-pipeline cancel <pipeline-id>
+planton infra pipeline cancel <pipeline-id>
 ```
 
 The web console provides a cancel button with a confirmation dialog explaining that in-flight operations will complete before cancellation takes effect.
@@ -118,32 +118,32 @@ Use direct deployment for standalone resources. Use Infra Pipelines (via [Infra 
 
 ```bash
 # Cancel a running pipeline
-planton infra-pipeline cancel <pipeline-id>
+planton infra pipeline cancel <pipeline-id>
 
 # Approve an environment gate
-planton infra-pipeline resolve-env-manual-gate <pipeline-id> <env-name> yes
+planton infra pipeline resolve-env-manual-gate <pipeline-id> <env-name> yes
 
 # Approve a resource-level gate
-planton infra-pipeline resolve-node-manual-gate <pipeline-id> <env-name> <node-id> yes
+planton infra pipeline resolve-node-manual-gate <pipeline-id> <env-name> <node-id> yes
 ```
 
 Infra Pipelines are typically created automatically when you create or update an Infra Stack. To trigger a pipeline manually:
 
 ```bash
 # Deploy an Infra Stack (starts a deploy run and follows it)
-planton infra stack deploy <project-id>
+planton infra stack deploy <stack-id>
 
-# List pipelines for a project
-planton infra stack infra-pipelines <project-name-or-id>
+# List pipelines for a stack
+planton infra stack infra-pipelines <stack-name-or-id>
 
-# Get the last pipeline for a project
-planton infra stack last-pipeline <project-name-or-id>
+# Get the last pipeline for a stack
+planton infra stack last-pipeline <stack-name-or-id>
 ```
 
 ## Related Documentation
 
-- [Infra Stacks](/docs/infrastructure/infra-stacks) — The projects that pipelines execute
+- [Infra Stacks](/docs/infrastructure/infra-stacks) — The deployed stacks that pipelines deploy and undeploy
 - [Infra Components](/docs/infrastructure/infra-components) — The resources deployed by pipelines
 - [Infra Jobs](/docs/infrastructure/infra-jobs) — The atomic IaC execution units within pipelines
 - [Flow Control](/docs/infrastructure/flow-control) — Governance policies for approval gates
-- [Infra Charts](/docs/infrastructure/infra-charts) — Templates that define the resources a project deploys
+- [Infra Charts](/docs/infrastructure/infra-charts) — Templates that define the resources an Infra Stack deploys

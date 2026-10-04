@@ -91,7 +91,7 @@ message ResourceTypeImportId {
   // proves the ADOPTER'S contract for them: the plan over the re-imported
   // state proposes re-creating the resource, and the reconcile-apply
   // executes it -- so declare this only for types whose create path
-  // CONVERGES on an existing infra component (an upsert-style Put), which
+  // CONVERGES on an existing provider resource (an upsert-style Put), which
   // the round-trip lane verifies live. A type whose create would conflict
   // with its own survivor needs a different treatment, not this field.
   string not_importable_upstream_reason = 8;

@@ -300,7 +300,7 @@ spec:
       value: abc123
 ```
 
-### Kinds Affected
+### Components Affected
 
 - **Proto Schema**: `spec.proto` changed for AKS and Cloudflare configs
 - **Go Stubs**: Auto-generated from proto changes

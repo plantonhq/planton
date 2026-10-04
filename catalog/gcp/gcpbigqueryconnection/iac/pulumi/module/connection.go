@@ -70,7 +70,7 @@ func connection(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 	// Google's arm has no settings -- the spec's bool emits the empty
 	// marker block, and Google answers with the service account it created.
 	if spec.CloudResource {
-		args.CloudResource = &bigquery.ConnectionInfraComponentArgs{}
+		args.CloudResource = &bigquery.ConnectionCloudResourceArgs{}
 	}
 	// The flags are sent only when true, so Google's defaults stay in
 	// charge otherwise -- the Terraform module's rule.
@@ -175,7 +175,7 @@ func connection(ctx *pulumi.Context, locals *Locals, gcpProvider *gcp.Provider) 
 
 	// The Google-owned identities exist only for the declared arm; the
 	// others export empty strings, as the Terraform module's try() does.
-	ctx.Export(OpCloudResourceServiceAccountId, created.CloudResource.ApplyT(func(v *bigquery.ConnectionInfraComponent) string {
+	ctx.Export(OpCloudResourceServiceAccountId, created.CloudResource.ApplyT(func(v *bigquery.ConnectionCloudResource) string {
 		if v == nil || v.ServiceAccountId == nil {
 			return ""
 		}

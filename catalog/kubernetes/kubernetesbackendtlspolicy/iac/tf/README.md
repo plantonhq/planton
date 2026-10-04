@@ -5,7 +5,7 @@ Creates a namespaced Kubernetes Gateway API `BackendTLSPolicy` via the
 `gateway.networking.k8s.io/v1`, server-side apply). Unlike
 `kubernetes_manifest`, `kubectl_manifest` needs no cluster connection at
 plan time, so the policy can be planned before the Gateway API CRDs exist --
-which is what lets an infra chart deploy the CRDs, a Gateway, routes, and
+which is what lets an Infra Chart deploy the CRDs, a Gateway, routes, and
 backend policies in a single run (and lets offline plan proofs work).
 
 Prerequisites at apply time: the Gateway API standard-channel CRDs

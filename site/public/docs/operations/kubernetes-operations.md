@@ -21,7 +21,7 @@ Pod viewing is the starting point for most Kubernetes operations. You can find p
 
 ### In the Web Console
 
-Navigate to any Kubernetes infra component and open the Kubernetes tab. The pod list shows each pod with its status, ready state, restart count, and an actions menu. Click a pod name to view its full details.
+Navigate to any Kubernetes Infra Component and open the Kubernetes tab. The pod list shows each pod with its status, ready state, restart count, and an actions menu. Click a pod name to view its full details.
 
 <!-- SCREENSHOT: Pod list view
   Page: /resource/infra-hub/infra-component/kubernetes/{type}/{id}/kubernetes-resources/view-pods
@@ -38,7 +38,7 @@ From the actions menu on any pod, you can:
 
 ### Using the CLI
 
-Find pods for an infra component (developer mode):
+Find pods for an Infra Component (developer mode):
 
 ```bash
 planton kubectl get pods -r my-org/prod/KubernetesDeployment/payments-api
@@ -50,7 +50,7 @@ Find pods using a direct connection (admin mode):
 planton kubectl get pods --connection k8s-prod-cluster -n payments
 ```
 
-The `-r` flag accepts an infra component reference in the format `org/env/Kind/slug`. The `--connection` flag accepts a provider connection slug and requires `-n` to specify the namespace.
+The `-r` flag accepts an Infra Component reference in the format `org/env/Kind/slug`. The `--connection` flag accepts a provider connection slug and requires `-n` to specify the namespace.
 
 ## Streaming Logs
 
@@ -173,7 +173,7 @@ Beyond pods, Cloud Ops lets you browse, inspect, edit, and delete any Kubernetes
 
 ### Listing Resources
 
-In the web console, the Kubernetes tab on an infra component shows all resources organized by kind. The namespace graph view displays resources as a directed acyclic graph (DAG), visualizing relationships between Deployments, ReplicaSets, Pods, Services, ConfigMaps, and other resources.
+In the web console, the Kubernetes tab on an Infra Component shows all resources organized by kind. The namespace graph view displays resources as a directed acyclic graph (DAG), visualizing relationships between Deployments, ReplicaSets, Pods, Services, ConfigMaps, and other resources.
 
 <!-- SCREENSHOT: Namespace graph view
   Page: /resource/infra-hub/infra-component/kubernetes/{type}/{id}/kubernetes-resources
@@ -245,7 +245,7 @@ All `planton kubectl` subcommands share three persistent flags that control the 
 
 | Flag | Description |
 |------|-------------|
-| `-r, --resource` | Infra component reference for developer mode: `org/env/Kind/slug` |
+| `-r, --resource` | Infra Component reference for developer mode: `org/env/Kind/slug` |
 | `--connection` | Provider connection slug for admin mode (mutually exclusive with `-r`) |
 | `-n, --namespace` | Kubernetes namespace (required in admin mode, ignored in developer mode) |
 
@@ -264,7 +264,7 @@ All `planton kubectl` subcommands share three persistent flags that control the 
 
 ### Use the Web Console for Quick Debugging
 
-The browser-based terminal and log viewer are the fastest path to understanding what's happening in a running pod. No local tooling setup required — open the infra component, click a pod, and start debugging.
+The browser-based terminal and log viewer are the fastest path to understanding what's happening in a running pod. No local tooling setup required — open the Infra Component, click a pod, and start debugging.
 
 ### Use the CLI for Automation and Scripting
 
@@ -285,6 +285,6 @@ Changes made through Cloud Ops (editing a Deployment's replica count, modifying 
 ## Related Documentation
 
 - [Operations Overview](/docs/operations) — What Cloud Ops is, dual access modes, supported providers
-- [Resource Browser](/docs/operations/resource-browser) — Multi-infra component listing for AWS, GCP, and Azure
+- [Resource Browser](/docs/operations/resource-browser) — Multi-cloud listing of provider resources in AWS, GCP, and Azure
 - [Runner](/docs/runner) — The secure execution agent that processes Cloud Ops requests
 - [Connections > Kubernetes Clusters](/docs/connections/kubernetes-clusters) — How Kubernetes cluster credentials are managed

@@ -30,7 +30,7 @@ Not the right kind when:
 
 The chart's microservices ("Distributed") mode and its transitional
 migration modes are deliberately not modeled — a deployment that needs
-per-kind microservices deserves a dedicated operations posture.
+per-component microservices deserves a dedicated operations posture.
 
 ## Storage
 

@@ -67,7 +67,7 @@ src/app/(micro-apps)/meets/
 │       └── MeetsDeckClient.tsx (unchanged)
 ```
 
-### Kind Changes
+### Component Changes
 
 ```
 src/components/meets/
@@ -112,7 +112,7 @@ const guestRegistry: Record<string, GuestConfig> = {
 | Category | Count |
 |----------|-------|
 | Route files | 2 modified, 2 renamed |
-| Kind files | 2 modified |
+| Component files | 2 modified |
 | Slide files | 24 renamed (path only) |
 | **Total** | 28 files |
 

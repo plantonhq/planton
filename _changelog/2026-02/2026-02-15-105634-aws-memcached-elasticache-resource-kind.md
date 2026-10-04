@@ -95,7 +95,7 @@ flowchart TB
 ### Documentation
 
 - README.md with Memcached vs Redis comparison table, configuration reference, operational notes
-- examples.md with 7 examples including infra chart reference pattern
+- examples.md with 7 examples including Infra Chart reference pattern
 - docs/README.md with architecture deep-dive (topology, auto-discovery, scaling behavior, security model)
 - Catalog page at site/public/docs/catalog/aws/memcached-elasticache.md
 
@@ -110,7 +110,7 @@ flowchart TB
 - **Clean separation** — Memcached and Redis are distinct kinds with focused specs, not a bloated combination
 - **Simpler UX** — 15 fields vs Redis's 29; users see only what Memcached actually supports
 - **No false promises** — No encryption-at-rest, no auth, no persistence fields that would confuse users
-- **Infra chart ready** — StringValueOrRef on all cross-resource fields, rich outputs for downstream wiring
+- **Infra Chart ready** — StringValueOrRef on all cross-resource fields, rich outputs for downstream wiring
 
 ## Impact
 

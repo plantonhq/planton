@@ -17,7 +17,7 @@ After 15 documentation overhaul sessions producing 50 pages, the site had never 
 - `cli.md` was the only page never touched during the overhaul — it retained 4 "Planton" references, an author block, and marketing language
 - `openmcf.md` had an unresolved TODO comment and protobuf message type names in user-facing prose
 - Several pages used "simplest" or "enterprise-grade" — marketing language prohibited by project guidelines
-- Runner IP preservation violations: "proprietary reverse tunnel", "Runner Tunnel" kind name, protocol implementation details
+- Runner IP preservation violations: "proprietary reverse tunnel", "Runner Tunnel" component name, protocol implementation details
 - Duplicate links in Related Documentation sections of 3 pages
 - Protobuf field names and RPC method names in `ingress.md` and `self-managed-pipelines.md`
 

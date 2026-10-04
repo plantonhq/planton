@@ -51,9 +51,9 @@ Close an issue when:
 {original-timestamp}.{area}.{type}.{slug}.{closed-timestamp}.md
 ```
 
-The closing timestamp is appended before the `.md` extension, preserving all original naming kinds.
+The closing timestamp is appended before the `.md` extension, preserving all original naming components.
 
-### Kinds
+### Components
 
 **Original timestamp** (`YYYY-MM-DD-HHMMSS`):
 - Preserved from the original issue filename
@@ -62,7 +62,7 @@ The closing timestamp is appended before the `.md` extension, preserving all ori
 
 **Area, type, slug**:
 - Preserved exactly as in original filename
-- No modifications to these kinds
+- No modifications to these components
 
 **Closing timestamp** (`YYYY-MM-DD-HHMMSS`):
 - Get actual current timestamp by running: `date +"%Y-%m-%d-%H%M%S"`
@@ -358,7 +358,7 @@ ls _issues/*{keyword}*.md
 # Confirm with user if multiple matches
 ```
 
-### 3. Parse Filename Kinds
+### 3. Parse Filename Components
 
 Extract from the original filename:
 - Original timestamp (everything before first area identifier)
@@ -370,7 +370,7 @@ Extract from the original filename:
 ```
 Filename: 2025-12-26-143022.kind.bug.postgres-spec-validation.md
 
-Kinds:
+Components:
 - Original timestamp: 2025-12-26-143022
 - Area: kind
 - Type: bug
@@ -526,7 +526,7 @@ Before confirming completion, verify:
 
 - [ ] **Closing timestamp obtained** from actual `date` command (not made up)
 - [ ] **Issue file identified** correctly (exact match or user confirmed)
-- [ ] **Filename kinds parsed** accurately
+- [ ] **Filename components parsed** accurately
 - [ ] **Context detected** (Scenario A or B determined correctly)
 - [ ] **Resolution section added** (if Scenario A)
 - [ ] **Changelog link works** (relative path is correct)
@@ -734,7 +734,7 @@ This issue was fixed in this session.
 **When in doubt**:
 - Scenario B (simple close) is safer than adding incorrect context
 - Moving images is always safe (relative paths work)
-- Preserve all original filename kinds
+- Preserve all original filename components
 - Use actual timestamps from `date` command
 
 ---

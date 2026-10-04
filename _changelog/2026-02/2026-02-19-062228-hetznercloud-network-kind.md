@@ -16,7 +16,7 @@ Hetzner Cloud servers and load balancers require private network connectivity. W
 
 - No way to manage Hetzner Cloud private networks through Planton
 - HetznerCloudServer (R07) and HetznerCloudLoadBalancer (R11) need network_id references via StringValueOrRef
-- All three planned infra charts require private networking as their foundation
+- All three planned Infra Charts require private networking as their foundation
 - Networks without subnets are unusable -- they must be bundled as a single kind
 
 ## Solution / What's New

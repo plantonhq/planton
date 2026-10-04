@@ -15,7 +15,7 @@ Production workloads on Hetzner Cloud need IP addresses that survive server repl
 ### Pain Points
 
 - No way to manage reassignable failover IPs through Planton
-- HA server clusters (hetzner-ha-server-cluster infra chart) need Floating IPs that can move between servers
+- HA server clusters (hetzner-ha-server-cluster Infra Chart) need Floating IPs that can move between servers
 - Floating IPs require reverse DNS for mail servers and identity-verified services
 - Cross-kind wiring (Floating IP -> Server assignment) had no established pattern in Hetzner Cloud
 
@@ -110,13 +110,13 @@ flowchart TB
 - Enables reassignable failover IP management as a first-class Planton kind
 - Establishes `StringValueOrRef` pattern for Hetzner Cloud cross-kind wiring (R07-R11 will follow)
 - Simpler IaC than planned: one resource instead of two (dropped unnecessary assignment resource)
-- Clean composability: infra charts can wire Server -> FloatingIp assignment declaratively
+- Clean composability: Infra Charts can wire Server -> FloatingIp assignment declaratively
 
 ## Impact
 
 - **Users**: Can allocate reassignable public IPv4/IPv6 addresses with optional server assignment and rDNS
 - **Future kinds**: R07 (Server) can reference `floating_ip_id` output; FloatingIp can reference Server's `server_id` output via `StringValueOrRef`
-- **Infra charts**: hetzner-ha-server-cluster uses floating IPs for failover
+- **Infra Charts**: hetzner-ha-server-cluster uses floating IPs for failover
 - **Pattern precedent**: First Hetzner Cloud `StringValueOrRef` usage establishes the wiring pattern
 
 ## Files Changed

@@ -10,7 +10,7 @@ Added AwsKinesisFirehose (R17) -- a Kinesis Data Firehose delivery stream kind s
 
 ## Problem Statement / Motivation
 
-Kinesis Data Firehose is the standard AWS service for loading streaming data into storage and analytics destinations without writing custom consumer code. The Planton AWS provider lacked this kind, leaving a gap in data pipeline coverage. With AwsKinesisStream (R16) and AwsKinesisStreamConsumer (R16a) already implemented, Firehose completes the Kinesis service family and enables end-to-end streaming data pipelines via infra charts.
+Kinesis Data Firehose is the standard AWS service for loading streaming data into storage and analytics destinations without writing custom consumer code. The Planton AWS provider lacked this kind, leaving a gap in data pipeline coverage. With AwsKinesisStream (R16) and AwsKinesisStreamConsumer (R16a) already implemented, Firehose completes the Kinesis service family and enables end-to-end streaming data pipelines via Infra Charts.
 
 ### Pain Points
 
@@ -80,7 +80,7 @@ Extended S3 has additional sub-messages for dynamic partitioning, data format co
 ## Benefits
 
 - Complete Kinesis service family: Stream (R16) + Consumer (R16a) + Firehose (R17)
-- Enables data pipeline infra charts: Kinesis -> Firehose -> S3/OpenSearch/Redshift
+- Enables data pipeline Infra Charts: Kinesis -> Firehose -> S3/OpenSearch/Redshift
 - 15+ StringValueOrRef fields for infra-chart composability
 - Rich CEL validation catches config errors at validate-time, not deploy-time
 - Both Pulumi and Terraform modules with feature parity

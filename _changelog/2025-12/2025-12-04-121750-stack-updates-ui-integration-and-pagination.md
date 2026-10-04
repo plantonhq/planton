@@ -6,7 +6,7 @@
 
 ## Summary
 
-Integrated stack-updates functionality into the infra components web interface, enabling users to view and navigate stack-updates directly from the infra components list. Added a "Stack Updates" menu option that opens a drawer showing paginated stack-updates for a selected infra component, with clickable rows that navigate to detailed stack-update pages. Implemented server-side pagination in the backend ListStackUpdates API to support efficient handling of large numbers of stack-updates. Enhanced DeployInfraComponent API to accept user-provided provider credentials (AWS, GCP, Azure, Atlas, Cloudflare, Confluent, Snowflake, Kubernetes) via API request, with automatic fallback to environment variables. Fixed module directory path resolution for both Pulumi and OpenTofu modules.
+Integrated stack-updates functionality into the Infra Components web interface, enabling users to view and navigate stack-updates directly from the Infra Components list. Added a "Stack Updates" menu option that opens a drawer showing paginated stack-updates for a selected Infra Component, with clickable rows that navigate to detailed stack-update pages. Implemented server-side pagination in the backend ListStackUpdates API to support efficient handling of large numbers of stack-updates. Enhanced DeployInfraComponent API to accept user-provided provider credentials (AWS, GCP, Azure, Atlas, Cloudflare, Confluent, Snowflake, Kubernetes) via API request, with automatic fallback to environment variables. Fixed module directory path resolution for both Pulumi and OpenTofu modules.
 
 ## Problem Statement / Motivation
 
@@ -14,11 +14,11 @@ The stack-updates feature existed in the backend but lacked a user interface for
 
 ### Missing Capabilities
 
-- **No UI access to stack-updates**: Infra jobs could only be accessed via API, with no web interface
-- **No integration with infra components**: No way to view stack-updates associated with an infra component from the infra components list
+- **No UI access to stack-updates**: Infra Jobs could only be accessed via API, with no web interface
+- **No integration with Infra Components**: No way to view stack-updates associated with an Infra Component from the Infra Components list
 - **No detailed view**: No dedicated page to view complete stack-update details including output JSON
 - **No pagination support**: Backend API didn't support pagination, which would cause performance issues with large numbers of stack-updates
-- **No navigation flow**: No intuitive way to navigate from infra components to their associated stack-updates
+- **No navigation flow**: No intuitive way to navigate from Infra Components to their associated stack-updates
 - **No user-provided credentials**: DeployInfraComponent API only supported environment variables, requiring credentials to be pre-configured on the server
 - **Incorrect module paths**: Module directory resolution used incorrect API path structure (`apis/dev/planton/provider` instead of `apis/project/planton/provider`)
 
@@ -27,7 +27,7 @@ The stack-updates feature existed in the backend but lacked a user interface for
 Without these improvements, users faced:
 
 - Inability to view stack-updates through the web interface
-- No way to see deployment history for infra components
+- No way to see deployment history for Infra Components
 - Performance issues when loading large numbers of stack-updates
 - No detailed view of stack-update execution results
 - Requirement to pre-configure credentials on the server before deploying resources
@@ -35,9 +35,9 @@ Without these improvements, users faced:
 
 ## Solution / What's New
 
-Implemented a complete UI integration for stack-updates with four main kinds:
+Implemented a complete UI integration for stack-updates with four main components:
 
-1. **Stack Updates Menu in Infra Components List**: Added "Stack Updates" action menu item that opens a drawer showing all stack-updates for the selected infra component
+1. **Stack Updates Menu in Infra Components List**: Added "Stack Updates" action menu item that opens a drawer showing all stack-updates for the selected Infra Component
 2. **Stack Updates Detail Page**: Created a dedicated page (`/stack-updates/[id]`) to view complete stack-update details including status, timestamps, and full output JSON
 3. **Backend Pagination**: Added server-side pagination support to the ListStackUpdates API with total pages calculation
 4. **User-Provided Credentials Support**: Enhanced DeployInfraComponent API to accept provider credentials via API request, with automatic validation and fallback to environment variables
@@ -57,13 +57,13 @@ Infra Job Detail Page (/stack-updates/[id])
     ↓ Can navigate back to stack-updates list via breadcrumb
 ```
 
-**Kind Architecture**:
+**Component Architecture**:
 
 ```
-Infra Components List Kind
+Infra Components List Component
     ├── Action Menu (View, Edit, Stack Updates, Delete)
     └── Stack Updates Drawer
-        └── Stack Updates List Kind
+        └── Stack Updates List Component
             └── Table with Pagination
                 ↓ (on row click)
                 Infra Job Detail Page
@@ -89,12 +89,12 @@ Response (jobs + totalPages)
 
 **1. Stack Updates Menu Integration**
 
-- Added "Stack Updates" menu item to infra components action menu
-- Opens drawer when clicked, showing stack-updates for the selected infra component
-- Drawer uses the same drawer kind pattern as other features
-- Maintains state for selected infra component
+- Added "Stack Updates" menu item to Infra Components action menu
+- Opens drawer when clicked, showing stack-updates for the selected Infra Component
+- Drawer uses the same drawer component pattern as other features
+- Maintains state for selected Infra Component
 
-**2. Stack Updates List Kind**
+**2. Stack Updates List Component**
 
 - Displays stack-updates in a paginated table
 - Shows ID (truncated), Status, Created At, Updated At columns
@@ -107,13 +107,13 @@ Response (jobs + totalPages)
 
 - Dedicated route: `/stack-updates/[id]`
 - Breadcrumb navigation with clickable "Stack Updates" link
-- Infra job header showing:
+- Infra Job header showing:
   - Job ID with copy-to-clipboard functionality
   - Status chip
   - Last updated timestamp
 - Full JSON output displayed with syntax highlighting
 - Loading states with skeleton placeholders
-- Can open stack-updates drawer from breadcrumb to view all jobs for the same infra component
+- Can open stack-updates drawer from breadcrumb to view all jobs for the same Infra Component
 
 **4. Backend Pagination**
 
@@ -482,7 +482,7 @@ Fixed module path resolution:
 
 **File**: `app/frontend/src/components/shared/infra-components-list/infra-components-list.tsx`
 
-Added "Stack Updates" menu item to infra components action menu:
+Added "Stack Updates" menu item to Infra Components action menu:
 
 ```237:279:app/frontend/src/components/shared/infra-components-list/infra-components-list.tsx
   const handleOpenStackUpdates = useCallback((row: InfraComponent) => {
@@ -541,7 +541,7 @@ Added stack-updates drawer state and rendering:
 
 **File**: `app/frontend/src/components/shared/stackupdate/stack-updates-drawer.tsx`
 
-Created drawer kind for stack-updates list:
+Created drawer component for stack-updates list:
 
 ```1:18:app/frontend/src/components/shared/stackupdate/stack-updates-drawer.tsx
 'use client';
@@ -565,13 +565,13 @@ export function StackUpdatesDrawer({ open, infraComponentId, onClose }: StackUpd
 
 **Key features**:
 
-- Reuses existing Drawer kind
+- Reuses existing Drawer component
 - Width set to 900px for better table visibility
 - Passes infraComponentId to filter stack-updates
 
 **File**: `app/frontend/src/components/shared/stackupdate/stack-updates-list.tsx`
 
-Created list kind with pagination:
+Created list component with pagination:
 
 ```22:124:app/frontend/src/components/shared/stackupdate/stack-updates-list.tsx
 export function StackUpdatesList({ infraComponentId }: StackUpdatesListProps) {
@@ -785,11 +785,11 @@ export default function StackUpdateDetailPage() {
 - Opens stack-updates drawer when breadcrumb is clicked
 - Displays full JSON output with syntax highlighting
 - Loading states with skeleton placeholders
-- Infra job header kind for key information
+- Infra Job header component for key information
 
 **File**: `app/frontend/src/components/shared/stackupdate/stack-update-header.tsx`
 
-Created header kind:
+Created header component:
 
 ```14:56:app/frontend/src/components/shared/stackupdate/stack-update-header.tsx
 export function StackUpdateHeader({ stackUpdate, updatedTime }: StackUpdateHeaderProps) {
@@ -844,11 +844,11 @@ export function StackUpdateHeader({ stackUpdate, updatedTime }: StackUpdateHeade
 - Last updated timestamp
 - Loading states with skeletons
 
-### 6. Supporting Kinds
+### 6. Supporting Components
 
 **File**: `app/frontend/src/components/shared/breadcrumb/index.tsx`
 
-Created breadcrumb kind for navigation:
+Created breadcrumb component for navigation:
 
 ```38:63:app/frontend/src/components/shared/breadcrumb/index.tsx
 export const Breadcrumb: FC<IBreadcrumb> = ({ breadcrumbs, startBreadcrumb }) => {
@@ -884,11 +884,11 @@ export const Breadcrumb: FC<IBreadcrumb> = ({ breadcrumbs, startBreadcrumb }) =>
 - Supports start breadcrumb with icon and label
 - Clickable breadcrumb items
 - Loading states with skeletons
-- Reusable kind for navigation
+- Reusable component for navigation
 
 **File**: `app/frontend/src/components/shared/syntax-highlighter/json-code.tsx`
 
-Created JSON syntax highlighter kind for displaying stack-update output:
+Created JSON syntax highlighter component for displaying stack-update output:
 
 - Displays JSON with proper formatting and syntax highlighting
 - Used in stack-update detail page to show deployment output
@@ -899,7 +899,7 @@ Created JSON syntax highlighter kind for displaying stack-update output:
 
 **Accessibility**:
 
-- Infra jobs now accessible directly from infra components list
+- Infra Jobs now accessible directly from Infra Components list
 - Intuitive navigation flow from resources to jobs to details
 - Easy access to deployment history
 
@@ -925,16 +925,16 @@ Created JSON syntax highlighter kind for displaying stack-update output:
 
 ### For Developers
 
-**Kind Reusability**:
+**Component Reusability**:
 
-- Infra jobs kinds can be reused in other contexts
-- Breadcrumb kind is generic and reusable
+- Infra Jobs components can be reused in other contexts
+- Breadcrumb component is generic and reusable
 - Drawer pattern consistent with other features
 
 **Maintainability**:
 
 - Clear separation between list and detail views
-- Consistent pagination pattern with infra components
+- Consistent pagination pattern with Infra Components
 - Type-safe implementation with TypeScript
 
 **Scalability**:
@@ -955,7 +955,7 @@ Created JSON syntax highlighter kind for displaying stack-update output:
 
 **New Capabilities**:
 
-- View stack-updates from infra components list
+- View stack-updates from Infra Components list
 - Navigate to detailed stack-update pages
 - View complete deployment output with syntax highlighting
 - Paginated browsing of stack-updates
@@ -972,10 +972,10 @@ Created JSON syntax highlighter kind for displaying stack-update output:
 ### Developer Experience
 
 **1 new detail page** (`/stack-updates/[id]`)
-**2 new reusable kinds** (StackUpdatesDrawer, StackUpdatesList)
-**1 new header kind** (StackUpdateHeader)
-**1 new breadcrumb kind** for navigation
-**1 new syntax highlighter kind** for JSON display
+**2 new reusable components** (StackUpdatesDrawer, StackUpdatesList)
+**1 new header component** (StackUpdateHeader)
+**1 new breadcrumb component** for navigation
+**1 new syntax highlighter component** for JSON display
 **Backend pagination** support in service and repository layers
 **1 new credential handling module** (`user_provider.go`) replacing `env_provider.go`
 **Provider credential support** for all 8 supported cloud providers
@@ -983,7 +983,7 @@ Created JSON syntax highlighter kind for displaying stack-update output:
 
 ### System Capabilities
 
-**UI Integration**: Infra jobs fully integrated into web interface
+**UI Integration**: Infra Jobs fully integrated into web interface
 **Navigation**: Complete navigation flow from resources to jobs to details
 **Pagination**: Scalable pagination for large datasets
 **Performance**: Efficient loading with server-side pagination
@@ -995,7 +995,7 @@ Created JSON syntax highlighter kind for displaying stack-update output:
 ### Opening Stack Updates from Infra Components
 
 1. Navigate to Infra Components page
-2. Click action menu (three dots) on any infra component
+2. Click action menu (three dots) on any Infra Component
 3. Select "Stack Updates" from menu
 4. Drawer opens showing paginated list of stack-updates for that resource
 
@@ -1012,8 +1012,8 @@ Created JSON syntax highlighter kind for displaying stack-update output:
 ### Navigating Back
 
 1. From detail page, click "Stack Updates" in breadcrumb
-2. Opens drawer showing all stack-updates for the same infra component
-3. Can navigate between jobs or return to infra components list
+2. Opens drawer showing all stack-updates for the same Infra Component
+3. Can navigate between jobs or return to Infra Components list
 
 ### Backend API with Pagination
 
@@ -1091,25 +1091,25 @@ DeployInfraComponentRequest {
 
 **Created**:
 
-- `app/frontend/src/app/stack-updates/[id]/page.tsx` - Infra job detail page
-- `app/frontend/src/app/stack-updates/_services/index.ts` - Infra jobs service exports
-- `app/frontend/src/app/stack-updates/_services/query.ts` - Infra jobs query service
+- `app/frontend/src/app/stack-updates/[id]/page.tsx` - Infra Job detail page
+- `app/frontend/src/app/stack-updates/_services/index.ts` - Infra Jobs service exports
+- `app/frontend/src/app/stack-updates/_services/query.ts` - Infra Jobs query service
 - `app/frontend/src/app/stack-updates/styled.ts` - Styled components for stack-updates pages
 
 ### UI Components
 
 **Created**:
 
-- `app/frontend/src/components/shared/stackupdate/index.ts` - Infra job kind exports
-- `app/frontend/src/components/shared/stackupdate/stack-update-header.tsx` - Infra job header kind
-- `app/frontend/src/components/shared/stackupdate/stack-updates-drawer.tsx` - Infra jobs drawer kind
-- `app/frontend/src/components/shared/stackupdate/stack-updates-list.tsx` - Infra jobs list kind with pagination
-- `app/frontend/src/components/shared/breadcrumb/index.tsx` - Breadcrumb navigation kind
+- `app/frontend/src/components/shared/stackupdate/index.ts` - Infra Job component exports
+- `app/frontend/src/components/shared/stackupdate/stack-update-header.tsx` - Infra Job header component
+- `app/frontend/src/components/shared/stackupdate/stack-updates-drawer.tsx` - Infra Jobs drawer component
+- `app/frontend/src/components/shared/stackupdate/stack-updates-list.tsx` - Infra Jobs list component with pagination
+- `app/frontend/src/components/shared/breadcrumb/index.tsx` - Breadcrumb navigation component
 - `app/frontend/src/components/shared/breadcrumb/styled.ts` - Breadcrumb styling
 - `app/frontend/src/components/shared/status-chip/index.ts` - Status chip exports
-- `app/frontend/src/components/shared/status-chip/status-chip.tsx` - Status chip kind
+- `app/frontend/src/components/shared/status-chip/status-chip.tsx` - Status chip component
 - `app/frontend/src/components/shared/syntax-highlighter/index.ts` - Syntax highlighter exports
-- `app/frontend/src/components/shared/syntax-highlighter/json-code.tsx` - JSON syntax highlighter kind
+- `app/frontend/src/components/shared/syntax-highlighter/json-code.tsx` - JSON syntax highlighter component
 
 **Modified**:
 
@@ -1132,14 +1132,14 @@ DeployInfraComponentRequest {
 ## Technical Metrics
 
 - **1 new detail page** with dynamic routing
-- **4 new reusable kinds** for stack-updates UI
-- **1 new breadcrumb kind** for navigation
-- **1 new status chip kind** for status display
-- **1 new syntax highlighter kind** for JSON display
+- **4 new reusable components** for stack-updates UI
+- **1 new breadcrumb component** for navigation
+- **1 new status chip component** for status display
+- **1 new syntax highlighter component** for JSON display
 - **Server-side pagination** implemented in backend and frontend
 - **Default page size**: 10 items per page (frontend), 20 items per page (backend default)
 - **Backward compatible**: Pagination is optional in API
-- **Full TypeScript coverage** for all new kinds
+- **Full TypeScript coverage** for all new components
 
 ## Related Work
 
@@ -1189,7 +1189,7 @@ These limitations are intentional for the initial implementation and can be addr
 
 **Rationale**:
 
-- Consistent with infra components pagination pattern
+- Consistent with Infra Components pagination pattern
 - Scales to handle large numbers of stack-updates
 - Better performance than loading all jobs at once
 - Standard pattern for data-heavy applications
@@ -1200,11 +1200,11 @@ These limitations are intentional for the initial implementation and can be addr
 
 ### Drawer Pattern
 
-**Decision**: Use drawer kind for stack-updates list instead of separate page
+**Decision**: Use drawer component for stack-updates list instead of separate page
 
 **Rationale**:
 
-- Keeps user in context of infra components
+- Keeps user in context of Infra Components
 - Consistent with other drawer patterns (view/edit)
 - Quick access without full page navigation
 - Can still navigate to detail page from drawer
@@ -1237,7 +1237,7 @@ These limitations are intentional for the initial implementation and can be addr
 - 10 items provides good balance for drawer width
 - Backend default of 20 maintains backward compatibility
 - Frontend can request different page sizes if needed
-- Consistent with infra components pagination
+- Consistent with Infra Components pagination
 
 **Alternative considered**: Same page size for both
 
@@ -1304,8 +1304,8 @@ As part of code quality improvements, removed all logrus logging from the backen
 **Status**: ✅ Complete and Production Ready
 **Component**: Web Frontend - Stack Updates UI Integration, Backend API - Pagination and Credentials, Infrastructure - Module Path Fixes
 **Pages Added**: 1 detail page (`/stack-updates/[id]`)
-**Kinds Added**: 6 new reusable kinds
-**Kinds Modified**: 2 existing kinds
+**Components Added**: 6 new reusable components
+**Components Modified**: 2 existing components
 **Backend Changes**: Pagination support in service and repository; User-provided credentials support with validation
 **Infrastructure Changes**: Module path fixes for Pulumi and OpenTofu; Credential handling refactoring
 **Location**: `app/frontend/src/app/stack-updates/`, `app/frontend/src/components/shared/stackupdate/`, `app/backend/internal/service/`, `app/backend/internal/database/`, `pkg/iac/pulumi/pulumimodule/`, `pkg/iac/tofu/tofumodule/`, `pkg/iac/iacinput/iacinputproviderconfig/`

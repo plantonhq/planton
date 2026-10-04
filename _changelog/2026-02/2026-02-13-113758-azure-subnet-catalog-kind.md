@@ -6,11 +6,11 @@
 
 ## Summary
 
-Added `AzureSubnet` (enum 411, id_prefix `azsub`) as a standalone catalog kind for Azure Virtual Network subnets. This is the most widely referenced Azure resource in Planton -- 11 downstream resource types consume its `subnet_id` output, making it a critical building block for Azure infra charts including database-stack, enterprise-network-foundation, and container-apps-environment.
+Added `AzureSubnet` (enum 411, id_prefix `azsub`) as a standalone catalog kind for Azure Virtual Network subnets. This is the most widely referenced Azure resource in Planton -- 11 downstream resource types consume its `subnet_id` output, making it a critical building block for Azure Infra Charts including database-stack, enterprise-network-foundation, and container-apps-environment.
 
 ## Problem Statement / Motivation
 
-The existing `AzureVpc` resource creates a VNet with a single built-in `nodes_subnet` for AKS. Enterprise Azure architectures require multiple subnets with different configurations: delegated subnets for PostgreSQL and Container Apps, private endpoint subnets, Application Gateway subnets, and management subnets. Without a standalone subnet resource, multi-tier network architectures cannot be composed in infra charts.
+The existing `AzureVpc` resource creates a VNet with a single built-in `nodes_subnet` for AKS. Enterprise Azure architectures require multiple subnets with different configurations: delegated subnets for PostgreSQL and Container Apps, private endpoint subnets, Application Gateway subnets, and management subnets. Without a standalone subnet resource, multi-tier network architectures cannot be composed in Infra Charts.
 
 ### Pain Points
 
@@ -72,7 +72,7 @@ ARM ID: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/vir
 ## Benefits
 
 - **Unlocks 11 downstream resources**: Every resource that needs a subnet reference can now use `StringValueOrRef subnet_id`
-- **Enables 3 infra charts**: database-stack, enterprise-network-foundation, and container-apps-environment all require AzureSubnet
+- **Enables 3 Infra Charts**: database-stack, enterprise-network-foundation, and container-apps-environment all require AzureSubnet
 - **Service delegation support**: PostgreSQL Flexible Server, MySQL Flexible Server, Container App Environment, and App Service VNet integration
 - **Granular private endpoint policies**: 4 policy modes for zero-trust architectures
 - **Full composability**: `resource_group` and `vnet_id` as `StringValueOrRef` enables proper DAG wiring
@@ -80,7 +80,7 @@ ARM ID: /subscriptions/{sub}/resourceGroups/{rg}/providers/Microsoft.Network/vir
 ## Impact
 
 - **Azure provider**: 17 total Azure resource kinds (11 existing + 6 new including AzureSubnet)
-- **Infra charts**: Critical dependency for 3 of 6 planned Azure infra charts
+- **Infra Charts**: Critical dependency for 3 of 6 planned Azure Infra Charts
 - **Downstream resources**: AKS, Container Apps, PostgreSQL, MySQL, Redis, Private Endpoint, App Gateway, Load Balancer, VM, Function App, Web App
 
 ## Related Work

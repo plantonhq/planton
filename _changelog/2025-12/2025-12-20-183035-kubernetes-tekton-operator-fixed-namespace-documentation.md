@@ -37,7 +37,7 @@ Removed the `namespace` and `create_namespace` fields from the KubernetesTektonO
 
 The Tekton Operator uses these fixed namespaces that are automatically created and managed:
 
-| Kind | Namespace | Description |
+| Component | Namespace | Description |
 |-----------|-----------|-------------|
 | Tekton Operator | `tekton-operator` | The operator controller pod |
 | Tekton Pipelines | `tekton-pipelines` | Pipeline controller and webhooks |
@@ -70,7 +70,7 @@ message KubernetesTektonOperatorSpec {
   KubernetesTektonOperatorSpecContainer container = 2 [(buf.validate.field).required = true];
 
   // Configuration for which Tekton components to install.
-  KubernetesTektonOperatorKinds kinds = 3 [(buf.validate.field).required = true];
+  KubernetesTektonOperatorComponents components = 3 [(buf.validate.field).required = true];
 
   // The version of the Tekton Operator to deploy.
   string operator_version = 4 [(dev.planton.shared.options.default) = "v0.78.0"];
@@ -144,11 +144,11 @@ Removed namespace-related test fixtures and the "without namespace" test case:
 ginkgo.BeforeEach(func() {
 	// Note: Tekton Operator uses fixed namespaces managed by the operator:
 	// - 'tekton-operator' for the operator
-	// - 'tekton-pipelines' for kinds (Pipelines, Triggers, Dashboard)
+	// - 'tekton-pipelines' for components (Pipelines, Triggers, Dashboard)
 	// Therefore, no namespace field is included in the spec.
 	spec = &KubernetesTektonOperatorSpec{
 		Container: &KubernetesTektonOperatorSpecContainer{...},
-		Kinds: &KubernetesTektonOperatorKinds{Pipelines: true},
+		Components: &KubernetesTektonOperatorComponents{Pipelines: true},
 	}
 })
 ```
@@ -181,7 +181,7 @@ spec:
       limits:
         cpu: "500m"
         memory: "512Mi"
-  kinds:
+  components:
     pipelines: true
     triggers: true
     dashboard: true

@@ -1,7 +1,7 @@
 # mappingeval — the import-mapping examination system
 
 Import mapping is the judgment half of bringing existing cloud
-infrastructure under management: deciding which discovered infra components
+infrastructure under management: deciding which discovered provider resources
 group into which component instances, what each instance's spec says, and
 where `value_from` references run between them. Whatever performs that
 judgment — a deterministic mapper, an AI mapping agent — its quality must be

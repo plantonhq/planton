@@ -51,7 +51,7 @@ it cannot:
   (restricted label domains, requirement operator contracts, budget
   pairings, static-mode exclusions) so mistakes surface at validate time.
 - `node_class_ref.name` is a real foreign key to
-  KubernetesKarpenterEc2NodeClass — infra charts wire the fleet chain with
+  KubernetesKarpenterEc2NodeClass — Infra Charts wire the fleet chain with
   valueFrom and get true dependency edges.
 - Terraform module generated as the kubectl_manifest projection; Pulumi on
   the typed crd2pulumi SDK (new karpenter generation set in

@@ -10,11 +10,11 @@ Implemented ScalewayDnsRecord (R16), the sixteenth Scaleway resource kind, compl
 
 ## Problem Statement / Motivation
 
-The Scaleway DNS tier needed a standalone DNS record kind for DAG-friendly record management in infra charts. While ScalewayDnsZone's inline records are convenient for static records known at zone creation time, records whose values come from other infrastructure resources (A records pointing to Load Balancer IPs, CNAMEs to Kapsule cluster endpoints) need to be separate resources with explicit dependency edges.
+The Scaleway DNS tier needed a standalone DNS record kind for DAG-friendly record management in Infra Charts. While ScalewayDnsZone's inline records are convenient for static records known at zone creation time, records whose values come from other infrastructure resources (A records pointing to Load Balancer IPs, CNAMEs to Kapsule cluster endpoints) need to be separate resources with explicit dependency edges.
 
 ### Pain Points
 
-- No standalone record kind for Scaleway DNS -- infra charts couldn't express record-level dependencies
+- No standalone record kind for Scaleway DNS -- Infra Charts couldn't express record-level dependencies
 - ScalewayDnsZone used the shared `DnsRecordType` enum which lacked DNAME and TLSA support
 - The shared enum pattern created unnecessary coupling between providers and kinds
 - Documentation falsely stated "use standalone ScalewayDnsRecord for DNAME/TLSA" before that kind existed
@@ -27,7 +27,7 @@ Replaced the shared `DnsRecordType` import with a local `RecordType` enum nested
 
 ### Part B: ScalewayDnsRecord Resource Kind
 
-Implemented as a standalone (non-composite) resource wrapping a single `scaleway_domain_record` Terraform resource. Two `StringValueOrRef` inputs create infra chart dependency edges:
+Implemented as a standalone (non-composite) resource wrapping a single `scaleway_domain_record` Terraform resource. Two `StringValueOrRef` inputs create Infra Chart dependency edges:
 
 - `zone_name` -> ScalewayDnsZone's `status.outputs.zone_name`
 - `data` -> any resource's output (no `default_kind`, since record values can reference Load Balancers, Instances, Kapsule clusters, etc.)
@@ -61,7 +61,7 @@ The Scaleway Terraform provider docs list `keep_empty_zone` as an argument on `s
 
 ## Benefits
 
-- **DAG-friendly DNS management** -- Infra charts can now express record-level dependencies with explicit edges
+- **DAG-friendly DNS management** -- Infra Charts can now express record-level dependencies with explicit edges
 - **Complete Scaleway DNS type coverage** -- All 13 Scaleway record types (A, AAAA, ALIAS, CAA, CNAME, DNAME, MX, NS, PTR, SOA, SRV, TXT, TLSA) available in both zone and record kinds
 - **Design principle established** -- Record type enums are kind-local, enabling each kind to evolve its type surface independently
 - **Simpler spec surface** -- 7 fields vs DigitalOcean's 10, thanks to Scaleway's self-contained data format
@@ -70,7 +70,7 @@ The Scaleway Terraform provider docs list `keep_empty_zone` as an argument on `s
 
 - **Scaleway DNS tier complete** -- Both zone and record kinds implemented
 - **16 of 19 Scaleway resource kinds done** (84%)
-- **Infra chart readiness** -- The DNS record kind enables the `kapsule-environment` and `serverless-environment` infra charts to wire DNS records to dynamically provisioned infrastructure
+- **Infra Chart readiness** -- The DNS record kind enables the `kapsule-environment` and `serverless-environment` Infra Charts to wire DNS records to dynamically provisioned infrastructure
 - **Design precedent** -- The "no shared DNS enums" decision will guide future provider implementations
 
 ## Related Work

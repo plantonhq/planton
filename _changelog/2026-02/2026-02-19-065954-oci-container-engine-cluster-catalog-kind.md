@@ -10,7 +10,7 @@ Added the OciContainerEngineCluster catalog kind (R08, enum 3311) to the OCI pro
 
 ## Problem Statement / Motivation
 
-OKE is OCI's managed Kubernetes service and the highest-demand OCI service after networking. Without this kind, Planton users cannot provision Kubernetes clusters on OCI, blocking the OKE Environment infra chart and the entire container workload story.
+OKE is OCI's managed Kubernetes service and the highest-demand OCI service after networking. Without this kind, Planton users cannot provision Kubernetes clusters on OCI, blocking the OKE Environment Infra Chart and the entire container workload story.
 
 ### Pain Points
 
@@ -122,7 +122,7 @@ Catalog kind wrapping `oci_containerengine_cluster` with the standard Planton KR
 ## Impact
 
 - Unblocks R09 OciContainerEngineNodePool (depends on cluster OCID output)
-- Required for the OKE Environment infra chart (the highest-priority OCI infra chart)
+- Required for the OKE Environment Infra Chart (the highest-priority OCI Infra Chart)
 - Establishes the container engine pattern for R09 and R10
 
 ## Related Work

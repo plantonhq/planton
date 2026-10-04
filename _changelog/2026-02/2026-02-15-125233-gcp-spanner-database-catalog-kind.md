@@ -134,7 +134,7 @@ flowchart TB
 ## Impact
 
 - Advances GCP resource expansion from 10/22 to 11/22 completed resources
-- Enables the `gcp-spanner-application` infra chart pattern (instance + database + VPC + firewall + service account)
+- Enables the `gcp-spanner-application` Infra Chart pattern (instance + database + VPC + firewall + service account)
 - Unblocks downstream resources that reference Spanner databases
 
 ## Related Work

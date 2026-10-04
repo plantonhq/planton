@@ -186,13 +186,13 @@ export const DESKTOP_LANDING: DesktopLanding = {
         body: 'Planton reads the cloud logins already on your machine (AWS profiles, gcloud configurations, az subscriptions, kubeconfig contexts) and turns each into a ready connection. Cloudflare and DigitalOcean tokens are detected from your environment and verified against the provider before they are offered. You never paste a key into a form.',
       },
       {
-        title: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} catalog kinds Across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} Providers`,
+        title: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} Catalog Kinds Across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} Providers`,
         body: `The full catalog, seeded into your local instance at first boot. Counted from the open-source repository on ${PLATFORM_COUNTS.countedOn}.`,
         door: DOORS.catalogBrowser,
       },
       {
         title: 'A Map of Everything You Run',
-        body: 'Accounts, environments, projects, resources, and the services that span them: one living picture, with drill-down to each project\u2019s diagram.',
+        body: 'Accounts, environments, Infra Stacks, Infra Components, and the services that span them: one living picture, with drill-down to each stack\u2019s diagram.',
       },
     ],
   },

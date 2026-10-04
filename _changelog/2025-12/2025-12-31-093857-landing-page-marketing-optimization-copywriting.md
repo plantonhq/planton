@@ -22,7 +22,7 @@ Following the December 19 landing page redesign that established the DevOps-in-a
 ### Foundation: December 19 Landing Page Redesign
 
 The December 19 work established solid foundation:
-- 12-section landing page with new kind system (`landing-page-v2/`)
+- 12-section landing page with new component system (`landing-page-v2/`)
 - DevOps-in-a-Box positioning (pivoted from outdated Copilot messaging)
 - Design system in `shared.tsx`
 - Initial customer references (Tynybay, iorta TechNext)
@@ -1022,7 +1022,7 @@ Only platform combining:
 
 **During Implementation**:
 1. Create 6 new React components
-2. Update 8 existing kinds
+2. Update 8 existing components
 3. Implement 4 interactive elements (calculator, terminal, carousel, scroll animations)
 4. Build verification (`make build`)
 5. Local testing (`yarn dev`)
@@ -1198,7 +1198,7 @@ Based on competitive analysis feedback, future work may include:
 
 **LLM 2: Implementation** (Separate Session - Pending):
 - Read handoff.md for strategic context
-- Analyze existing kind architecture
+- Analyze existing component architecture
 - Create 6 new React components
 - Update 8 existing React components
 - Implement 4 interactive elements
@@ -1218,10 +1218,10 @@ Based on competitive analysis feedback, future work may include:
 - Content assets needed (logos, images, icons)
 
 **NOT Included** (per user's request):
-- Detailed kind code
+- Detailed component code
 - HTML/CSS specifications
 - Step-by-step implementation instructions
-- Prescriptive "how to build each kind"
+- Prescriptive "how to build each component"
 
 **Philosophy**:
 > "Implementation LLM is far more capable at analyzing existing code, understanding React patterns, and making implementation decisions autonomously. Provide strategic context and let them figure out HOW based on existing codebase analysis."

@@ -40,7 +40,7 @@ state-import round-trips proven:
   lifecycle with keep-on-uninstall implemented via the
   `helm.sh/resource-policy: keep` annotation (the chart has no keep knob and
   a plain uninstall cascade-deletes every ScaledObject in the cluster),
-  watch-namespace fencing, per-kind sizing (operator / metrics API
+  watch-namespace fencing, per-component sizing (operator / metrics API
   server / admission webhooks incl. failure policy), ambient pod identity
   for scalers (AWS IRSA, Azure Workload Identity, GCP Workload Identity —
   each with completeness CEL), internal-TLS certificates (operator

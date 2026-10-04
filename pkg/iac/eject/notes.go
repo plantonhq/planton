@@ -34,7 +34,7 @@ func tofuNotes(kindName, sourceVersion string) string {
 	return fmt.Sprintf(`# %[1]s — Customized OpenTofu/Terraform Module
 
 This directory is a customizable copy of the official OpenTofu/Terraform
-module for the %[1]s infra component, ejected from release %[2]s of the
+module for the %[1]s catalog kind, ejected from release %[2]s of the
 Planton catalog. Edit it freely — it is yours now. The one thing that must
 survive every customization is the contract below.
 
@@ -88,7 +88,7 @@ func pulumiNotes(kindName, sourceVersion, goModulePath string) string {
 	return fmt.Sprintf(`# %[1]s — Customized Pulumi Module
 
 This directory is a customizable copy of the official Pulumi module for the
-%[1]s infra component, ejected from release %[2]s of the Planton catalog.
+%[1]s catalog kind, ejected from release %[2]s of the Planton catalog.
 Edit it freely — it is yours now. The one thing that must survive every
 customization is the contract below.
 

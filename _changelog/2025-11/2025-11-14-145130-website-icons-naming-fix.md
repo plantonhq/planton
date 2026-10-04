@@ -14,7 +14,7 @@ After completing the comprehensive Kubernetes naming refactoring (addon operator
 
 ### Root Cause
 
-The `DocsSidebar.tsx` kind dynamically constructs icon paths based on kind names:
+The `DocsSidebar.tsx` component dynamically constructs icon paths based on kind names:
 
 ```typescript
 const kindIconPath = `/images/providers/${provider}/${kind}/logo.svg`;

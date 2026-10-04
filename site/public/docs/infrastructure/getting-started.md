@@ -71,10 +71,10 @@ See [Infra Components](/docs/infrastructure/infra-components) for the full lifec
 
 ## Step 5: Monitor the Infra Job
 
-When you submit the Infra Component, a [Infra Job](/docs/infrastructure/infra-jobs) is created automatically. The job initializes the IaC module, refreshes state, previews changes, and applies them. Watch progress in real time from the web console or CLI:
+When you submit the Infra Component, an [Infra Job](/docs/infrastructure/infra-jobs) is created automatically. The job initializes the IaC module, refreshes state, previews changes, and applies them. Watch progress in real time from the web console or CLI:
 
 ```bash
-planton infra-job stream-progress-events <infra-job-id>
+planton infra job stream-progress-events <infra-job-id>
 ```
 
 The Infra Job detail page shows each operation step with its status — initialize, refresh, preview, apply — along with resource-level logs showing exactly what is being created.

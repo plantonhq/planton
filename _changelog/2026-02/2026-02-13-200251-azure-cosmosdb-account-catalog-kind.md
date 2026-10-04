@@ -15,7 +15,7 @@ The Azure resource expansion project (20260212.05.sp) targets 24 new Azure resou
 ### Pain Points
 
 - No NoSQL database option in the Azure Planton provider
-- Enterprise Azure infra charts (database-stack) need Cosmos DB as an optional component
+- Enterprise Azure Infra Charts (database-stack) need Cosmos DB as an optional component
 - Teams using Cosmos DB had to fall back to raw Terraform/Pulumi, breaking the Planton abstraction
 
 ## Solution / What's New
@@ -39,7 +39,7 @@ Initial design considered splitting into AzureCosmosdbSqlAccount and AzureCosmos
 
 1. Azure users think of Cosmos DB as one service (portal, Terraform, Pulumi all model it as one resource)
 2. 90% of account-level configuration is identical between API modes
-3. Infra charts are cleaner with one resource (no conditional includes)
+3. Infra Charts are cleaner with one resource (no conditional includes)
 4. Maintenance burden is halved (one spec, one module, one test suite)
 
 ## Implementation Details
@@ -100,7 +100,7 @@ Comprehensive spec_test.go with 35 Ginkgo test cases:
 ## Impact
 
 - **Users**: Can deploy Cosmos DB (SQL or MongoDB API) with the same Planton workflow as all other Azure resources
-- **Infra charts**: database-stack chart can now include Cosmos DB as an optional NoSQL database
+- **Infra Charts**: database-stack chart can now include Cosmos DB as an optional NoSQL database
 - **Azure provider**: 15 of 24 resource kinds complete (62.5% of expansion target)
 
 ## Related Work

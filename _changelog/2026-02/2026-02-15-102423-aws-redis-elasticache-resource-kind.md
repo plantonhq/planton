@@ -88,7 +88,7 @@ During deep research into the Terraform/Pulumi providers, 10 capabilities were d
 ## Impact
 
 - **End users**: Can now deploy Redis/Valkey caches declaratively with `planton apply`
-- **Infra chart authors**: Can compose Redis into microservices, serverless-api, and data-pipeline charts
+- **Infra Chart authors**: Can compose Redis into microservices, serverless-api, and data-pipeline charts
 - **Platform**: 7 of ~32 new AWS resource kinds completed (Phase 1 progress: 47%)
 
 ## Related Work

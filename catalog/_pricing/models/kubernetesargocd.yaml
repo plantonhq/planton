@@ -31,6 +31,6 @@ spec:
         - the server and repo server scale on HPAs -- this footprint states their min_replicas floors (2 each); runtime scaling can reach 5 server and 6 repo-server replicas, each new replica adding its full declared resources
         - the redis.ha arm replaces the bundled Redis pod with the redis-ha subchart -- a Sentinel cluster of 3 Redis replicas plus HAProxy pods at chart-default sizing this spec does not model, with a REQUIRED anti-affinity needing 3+ schedulable worker nodes
         - the ApplicationSet controller, notifications controller and Dex run unsized at chart defaults -- the chart ships no default requests or limits, so those pods schedule unbounded and reserve nothing
-        - "helm_values merges LAST over the typed rendering and can override modeled values, including per-kind resources and replicas -- this footprint describes the spec's declaration"
+        - "helm_values merges LAST over the typed rendering and can override modeled values, including per-component resources and replicas -- this footprint describes the spec's declaration"
         - the dollar value of this capacity is the target cluster's node economics
       notes: controller replicas are SHARDS across target clusters, not load-balanced copies -- this preset runs one, sized for the whole reconciliation load.

@@ -165,7 +165,7 @@ spec:
 
 Optional DNS zone for domain management. Only created when `create_dns_zone: true`.
 
-### Kubernetes Add-ons (9 Toggleable Kinds)
+### Kubernetes Add-ons (9 Toggleable Components)
 
 Each add-on follows this pattern:
 
@@ -350,7 +350,7 @@ All add-ons default to `true` for complete environment provisioning:
 - **Single source of truth**: One values.yaml for entire environment
 - **Conditional resources**: Fine-grained control per environment (dev vs prod)
 - **Clear dependencies**: Automatic ordering via `valueFrom` references
-- **Modular add-ons**: Enable/disable kinds independently
+- **Modular add-ons**: Enable/disable components independently
 
 ### Multi-Cloud Consistency
 
@@ -374,7 +374,7 @@ Teams working across clouds now have the same provisioning experience:
 **Platform Teams**:
 
 - Standardized Civo deployment approach
-- Reusable chart across projects/environments
+- Reusable chart across Infra Stacks and environments
 - Easier onboarding for new team members
 
 **Development Teams**:
@@ -437,12 +437,11 @@ planton chart build civo/civo-kubernetes-environment
 # Publish chart to Planton
 planton chart publish civo/civo-kubernetes-environment
 
-# Create an InfraStack from the chart
-planton project create --from-chart civo-kubernetes-environment \
-  --name my-civo-project \
+# Install the chart as an Infra Stack
+planton chart install my-civo-stack civo-kubernetes-environment \
   --org my-org \
   --env production \
-  --values ./civo-values.yaml
+  -f ./civo-values.yaml
 ```
 
 ### Minimal Configuration (Development)
@@ -527,7 +526,7 @@ The default firewall rules are permissive for development convenience:
 **Core resources**: 4 (VPC, Firewall, Cluster, optional DNS)  
 **Kubernetes add-ons**: 9 (all optional)  
 **Total templates**: 13 files  
-**Maximum resources deployed**: 13 (all kinds enabled)  
+**Maximum resources deployed**: 13 (all components enabled)  
 **Minimum resources deployed**: 3 (VPC, Firewall, Cluster only)
 
 ## Code Metrics

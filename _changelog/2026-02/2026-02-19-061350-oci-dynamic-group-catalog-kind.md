@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added the OciDynamicGroup catalog kind (R06, enum 3305) to the OCI provider in Planton. This kind manages `oci_identity_dynamic_group` resources -- OCI's mechanism for grouping infra components (compute instances, functions, etc.) so they can be granted IAM permissions via policies. Both Pulumi (Go) and Terraform (HCL) modules are implemented with full feature parity.
+Added the OciDynamicGroup catalog kind (R06, enum 3305) to the OCI provider in Planton. This kind manages `oci_identity_dynamic_group` resources -- OCI's mechanism for grouping provider resources (compute instances, functions, etc.) so they can be granted IAM permissions via policies. Both Pulumi (Go) and Terraform (HCL) modules are implemented with full feature parity.
 
 ## Problem Statement / Motivation
 

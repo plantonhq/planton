@@ -16,7 +16,7 @@ The Azure provider expansion project requires 24 catalog kinds to cover enterpri
 
 - No Planton support for Azure event streaming workloads
 - Teams forced to manually provision Event Hubs namespaces, event hubs, and consumer groups
-- Cannot compose event streaming with other Azure resources in infra charts
+- Cannot compose event streaming with other Azure resources in Infra Charts
 
 ## Solution / What's New
 
@@ -80,7 +80,7 @@ consumer_groups = flatten([
 ## Benefits
 
 - **Event streaming on Azure** now fully supported in Planton
-- **Infra chart composable**: `primary_connection_string` output enables `valueFrom` wiring into container apps, function apps, and web apps
+- **Infra Chart composable**: `primary_connection_string` output enables `valueFrom` wiring into container apps, function apps, and web apps
 - **Sibling parity** with AzureServiceBusNamespace (same namespace-level fields, similar structure)
 - **44 validation tests** ensure all proto constraints are enforced correctly
 - **Dual IaC**: Both Pulumi and Terraform with feature parity (except ZoneRedundant Pulumi SDK gap)
@@ -89,13 +89,13 @@ consumer_groups = flatten([
 
 - Azure provider now has 23 of 24 planned resource kinds (R23 AzureFrontDoorProfile remaining)
 - Messaging category complete: Service Bus (R21) + Event Hubs (R22) cover both message queuing and event streaming patterns
-- Enterprise architectures can now include event-driven patterns in infra chart compositions
+- Enterprise architectures can now include event-driven patterns in Infra Chart compositions
 
 ## Related Work
 
 - **R21 AzureServiceBusNamespace**: Sibling messaging kind (message queues + topics)
 - **Parent project**: 20260212.05.sp.azure-resource-expansion (22 of 24 resources complete)
-- **Next**: R23 AzureFrontDoorProfile (CDN), then T03 infra charts
+- **Next**: R23 AzureFrontDoorProfile (CDN), then T03 Infra Charts
 
 ---
 

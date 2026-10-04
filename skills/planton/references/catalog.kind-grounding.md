@@ -109,7 +109,7 @@ What each section means:
   `-required-` means the build fails if you omit it. `values:` lists the only
   legal enum spellings — use them exactly as shown. Fields typed
   `string | valueFrom` accept either a `{value: <literal>}` or a
-  cross-resource reference block (see `dependencies.md`); a bare string does
+  cross-resource reference block (see `infra.dependencies.md`); a bare string does
   not parse. Fields marked `(assembled)` or `(computed)` are filled by
   tooling or the platform — never write them by hand.
 - **RULES** — cross-field constraints. Read these before combining fields in
@@ -158,7 +158,7 @@ no network? The explain report alone is sufficient for correct composition.
 6. **The module that applies it** — the last rung, and the only absolute
    truth: the Terraform module at `catalog/<provider>/<kind>/iac/tf/`
    and the Pulumi module at `…/iac/pulumi/module/` are the code that turns
-   the manifest into infra components. Read them when the question is what a
+   the manifest into provider resources. Read them when the question is what a
    field DOES rather than what it is named — which provider argument it
    feeds, what a blank value falls back to, which output is written from
    which resource attribute, whether two fields interact. The explain

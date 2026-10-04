@@ -16,7 +16,7 @@ Data engineers building analytics pipelines on AWS need a Data Catalog database 
 
 - No declarative way to provision Glue Data Catalog databases alongside other analytics resources
 - Missing link in the data lake infrastructure chain: S3 → **Glue Database** → Athena Workgroup
-- Inability to compose data analytics stacks in infra charts without the catalog database kind
+- Inability to compose data analytics stacks in Infra Charts without the catalog database kind
 
 ## Solution / What's New
 
@@ -54,7 +54,7 @@ Four proto files following established Planton patterns:
 ### Documentation and Presets
 
 - README.md with spec reference and omitted features table
-- examples.md with 6 progressive examples (minimal → multi-environment → infra chart)
+- examples.md with 6 progressive examples (minimal → multi-environment → Infra Chart)
 - docs/README.md with architecture (catalog hierarchy, cost model, security, patterns)
 - 2 presets: basic-data-catalog, s3-data-lake
 - Catalog page audited to zero Critical issues
@@ -73,7 +73,7 @@ Four features were discovered in the Terraform provider that were not mentioned 
 ## Benefits
 
 - Completes the Athena analytics chain: S3 → Glue Database → Athena Workgroup
-- Enables data lake infra charts that compose storage, catalog, and query resources
+- Enables data lake Infra Charts that compose storage, catalog, and query resources
 - Exports database_name, database_arn, and catalog_id for downstream resource wiring
 - Proportionally simple spec for a simple resource — no unnecessary complexity
 

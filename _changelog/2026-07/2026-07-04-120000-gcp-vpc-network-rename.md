@@ -10,7 +10,7 @@ Renamed `GcpVpc` (610) to `GcpVpcNetwork` with folder/E2E slug `gcpvpcnetwork`; 
 
 ## Problem Statement / Motivation
 
-The kind name `GcpVpc` was an internal abbreviation that diverged from GCP's native "VPC network" vocabulary and from the catalog grain used by sibling kinds. With ~20 sibling `default_kind` consumers, six infra charts, and every E2E PSA chain referencing the root network kind, deferring the rename widened fan-in cost every session.
+The kind name `GcpVpc` was an internal abbreviation that diverged from GCP's native "VPC network" vocabulary and from the catalog grain used by sibling kinds. With ~20 sibling `default_kind` consumers, six Infra Charts, and every E2E PSA chain referencing the root network kind, deferring the rename widened fan-in cost every session.
 
 ## Solution
 

@@ -6,11 +6,11 @@
 
 ## Summary
 
-Implemented a new `infra-component:apply` CLI command that performs declarative upsert operations on infra components. Following the familiar Kubernetes `kubectl apply` pattern, the command automatically creates resources that don't exist or updates existing ones based on `metadata.name` and `kind`, eliminating the need for users to know resource IDs or manually track resource state. This significantly improves the developer experience for infrastructure-as-code workflows and enables true idempotent resource management.
+Implemented a new `infra-component:apply` CLI command that performs declarative upsert operations on Infra Components. Following the familiar Kubernetes `kubectl apply` pattern, the command automatically creates resources that don't exist or updates existing ones based on `metadata.name` and `kind`, eliminating the need for users to know resource IDs or manually track resource state. This significantly improves the developer experience for infrastructure-as-code workflows and enables true idempotent resource management.
 
 ## Problem Statement
 
-The existing infra component management commands (`create`, `update`, `delete`) required users to explicitly choose between create and update operations, track resource IDs, and handle different error scenarios for resources that already exist or don't exist.
+The existing Infra Component management commands (`create`, `update`, `delete`) required users to explicitly choose between create and update operations, track resource IDs, and handle different error scenarios for resources that already exist or don't exist.
 
 ### Pain Points
 
@@ -431,7 +431,7 @@ planton infra-component:apply --arg=all-resources/*.yaml
 - Single RPC call regardless of operation type
 - Consistent behavior across all clients
 
-**2. Name + Kind uniqueness**: Proper multi-infra component modeling
+**2. Name + Kind uniqueness**: Proper multi-Infra Component modeling
 - Distinguishes between `CivoVpc:my-vpc` and `AwsVpc:my-vpc`
 - Enables having resources with same logical name across providers
 - Prevents accidental updates to wrong resource types
@@ -603,7 +603,7 @@ jobs:
 - Configuration drift correction
 
 **Name + Kind uniqueness** enables:
-- True multi-infra component modeling
+- True multi-Infra Component modeling
 - Logical separation between provider implementations
 - Cleaner resource organization
 

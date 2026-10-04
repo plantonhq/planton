@@ -6,7 +6,7 @@
 
 ## Summary
 
-Three new Azure infra charts — `azure/cosmos-db-api-backend`, `azure/data-lakehouse-storage`, and `azure/zonal-web-tier-vmss` — complete the Azure chart catalog at twelve. Building them surfaced three composition gaps, each fixed at the root: the ADLS filesystem's POSIX-ACL principal fields became references, the storage account gained per-service diagnostic-target outputs, and the offline reference validator learned to resolve map-typed outputs addressed by entry key (the load balancer's name-keyed pool ids), which the deploy-time resolver already supported.
+Three new Azure Infra Charts — `azure/cosmos-db-api-backend`, `azure/data-lakehouse-storage`, and `azure/zonal-web-tier-vmss` — complete the Azure chart catalog at twelve. Building them surfaced three composition gaps, each fixed at the root: the ADLS filesystem's POSIX-ACL principal fields became references, the storage account gained per-service diagnostic-target outputs, and the offline reference validator learned to resolve map-typed outputs addressed by entry key (the load balancer's name-keyed pool ids), which the deploy-time resolver already supported.
 
 ## The Three Charts
 

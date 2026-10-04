@@ -99,7 +99,7 @@ func HandleClipboardError(err error) bool {
 
 Every error/info display MUST include:
 
-| Kind | Purpose | Required |
+| Component | Purpose | Required |
 |-----------|---------|----------|
 | **Separator Banner** | Visual boundary, draws attention | Yes |
 | **Icon + Title** | Quick identification of message type | Yes |

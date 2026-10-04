@@ -20,7 +20,7 @@ Failed to load outputs map to proto: For input string: "unknown"
 
 - Pulumi outputs are serialized as strings, but the Java backend attempts to parse them as integers/booleans
 - When Pulumi can't resolve a value (API timing, errors), it outputs "unknown" instead of a number
-- `Integer.parseInt("unknown")` throws `NumberFormatException`, causing infra job failures
+- `Integer.parseInt("unknown")` throws `NumberFormatException`, causing Infra Job failures
 - Boolean fields silently convert "unknown" to `false` via `Boolean.parseBoolean()`, which is misleading
 - Outputs are for display/reference only - no computation is performed on them
 
@@ -155,7 +155,7 @@ Regenerated stubs for:
 - **Future-proof**: New kinds should follow this pattern
 
 ### For Users
-- **Reliable infra jobs**: Deployments complete successfully
+- **Reliable Infra Jobs**: Deployments complete successfully
 - **Accurate output display**: Values shown as received, not silently converted
 
 ## Impact

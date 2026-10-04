@@ -23,7 +23,7 @@ Two skills ship together:
 
 | Skill | What it carries |
 |-------|-----------------|
-| `planton` | The working craft: Infra Charts and manifest sets, the compile loop, deployed projects, service registration, push-to-deploy, CI/CD, and the boundaries (no mutation without consent, never outside your repository). |
+| `planton` | The working craft: Infra Charts and manifest sets, the compile loop, deployed Infra Stacks, service registration, push-to-deploy, CI/CD, and the boundaries (no mutation without consent, never outside your repository). |
 | `multi-cloud-catalog` | The kind reference pack, shipped inside the skill: one page per catalog kind across every supported provider, the catalog-wide reference graph, and verified fact sheets for cost, security posture, and runner permissions. |
 
 ## Install the skills

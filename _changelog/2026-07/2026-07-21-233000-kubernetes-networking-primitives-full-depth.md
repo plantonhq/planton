@@ -58,7 +58,7 @@ distinction.
 
 Both engines deliberately create the Ingress WITHOUT blocking on an ingress
 controller (Terraform `wait_for_load_balancer = false`, Pulumi `skipAwait`):
-an Ingress is a valid object with no controller installed, and infra charts
+an Ingress is a valid object with no controller installed, and Infra Charts
 routinely deploy workload + exposure before the controller wave. The
 load-balancer address handles (`load_balancer_ip`, `load_balancer_hostname`)
 surface through outputs as soon as a controller reconciles the object;

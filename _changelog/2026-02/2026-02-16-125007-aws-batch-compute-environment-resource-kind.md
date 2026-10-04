@@ -72,7 +72,7 @@ The kind bundles compute environments + job queues + scheduling policy because a
 ## Impact
 
 - Expands AWS coverage from 30 to 31 new resource kinds in the expansion project
-- Enables future infra charts for batch processing, data pipelines, and ML training workloads
+- Enables future Infra Charts for batch processing, data pipelines, and ML training workloads
 - Fills a key gap in the AWS compute story alongside ECS, EKS, Lambda, and App Runner
 
 ## Related Work

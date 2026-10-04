@@ -92,7 +92,7 @@ flowchart TB
 | Phase 4: IaC Input / Env Vars | ~30 | Env var loader + loader.go switch |
 | Phase 5: Provider Detection | ~25 | guidance.go (4 switches) + validate.go |
 | Phase 6: Backend CRUD | ~70 | Model, repo, service, resolver patterns |
-| Phase 7: Frontend UI | ~100 | Form kind, types, drawer, index, utils |
+| Phase 7: Frontend UI | ~100 | Form component, types, drawer, index, utils |
 | Phase 8: Catalog Documentation | ~40 | Provider page, icon, catalog index |
 | Phase 9: Build Validation | ~25 | Go build commands + common error fixes |
 | Phase 10: Changelog | ~60 | Changelog template with mermaid diagrams |

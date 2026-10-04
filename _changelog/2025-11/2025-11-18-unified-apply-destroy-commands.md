@@ -108,7 +108,7 @@ Simply press Enter to use the default (Pulumi), or type your choice.
   - Same detection and routing logic as apply
   - Supports all provisioner-specific flags
 
-### Modified Kinds
+### Modified Components
 
 - **`cmd/planton/root.go`** - Registered new commands
 - **`internal/cli/cliprint/print.go`** - Added Tofu/Terraform print helpers

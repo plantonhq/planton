@@ -120,6 +120,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference the namespace so infra charts create it and this claim in dependency order
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference the namespace so Infra Charts create it and this claim in dependency order
 - [**Kubernetes StorageClass**](/infra-catalog/kubernetes-storage-class) -- reference a class created on this platform to pin the performance tier declaratively
 - [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- mounts the claim by name via its volume mounts, from the same namespace only; per-replica StatefulSet storage uses the workload's own volume claim templates instead

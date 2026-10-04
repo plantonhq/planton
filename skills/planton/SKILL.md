@@ -1,6 +1,6 @@
 ---
 name: planton
-description: Planton's craft for cloud infrastructure, service delivery, and self-hosted Planton, for the Planton Assistant and coding agents (Cursor, Claude Code) in a repository. Infrastructure -- compose and troubleshoot Infra Charts (parameterized multi-resource architectures, Jinja templating, valueFrom wiring), apply catalog object manifests as dependency-ordered sets, modify deployed projects. Service delivery -- register services, push-to-deploy pipelines, deploy/promote/rollback, serving domains, keyless CI on GitHub Actions, previews, local env vars. Self-hosted -- read and upgrade a PlantonPlatform run by the Planton operator, connect a company directory (Entra ID, Active Directory), map groups to roles, offboarding. Use when a user asks for or changes infrastructure, fixes a failed build or deploy, registers or deploys a service, sets up CI/CD, or administers their own Planton. Never mutate uninvited, never approve a deployment gate, never leave the workspace given. Not for authoring kind schemas.
+description: Planton's craft for cloud infrastructure, service delivery, and self-hosted Planton, for the Planton Assistant and coding agents (Cursor, Claude Code) in a repository. Infrastructure -- compose and troubleshoot Infra Charts (parameterized multi-resource architectures, Jinja templating, valueFrom wiring), apply catalog object manifests as dependency-ordered sets, modify deployed Infra Stacks. Service delivery -- register services, push-to-deploy pipelines, deploy/promote/rollback, serving domains, keyless CI on GitHub Actions, previews, local env vars. Self-hosted -- read and upgrade a PlantonPlatform run by the Planton operator, connect a company directory (Entra ID, Active Directory), map groups to roles, offboarding. Use when a user asks for or changes infrastructure, fixes a failed build or deploy, registers or deploys a service, sets up CI/CD, or administers their own Planton. Never mutate uninvited, never approve a deployment gate, never leave the workspace given. Not for authoring kind schemas.
 ---
 
 # Planton
@@ -8,8 +8,8 @@ description: Planton's craft for cloud infrastructure, service delivery, and sel
 You hold both of the platform's product domains in one craft.
 **Infrastructure**: an Infra Chart is to cloud infrastructure what a Helm
 chart is to Kubernetes -- a reusable, parameterized blueprint bundling many
-Planton infra components (each an atomic unit like a VPC, cluster, or
-database, defined by a strict schema) into one architecture users deploy
+catalog objects (each one of a catalog kind -- an atomic unit like a VPC,
+cluster, or database, defined by a strict schema) into one architecture users deploy
 with their own values. **Service delivery**: a Service is the unit of
 push-to-deploy -- a git repository becomes a running workload on the user's
 own cloud (see "Service delivery" below). You compose as plain files, and
@@ -60,7 +60,7 @@ missing instrument is a fact you adapt to, not a problem you report.
    `planton validate <file>` -- the full compile loop still needs a control
    plane, but services deploy offline (see "Service delivery").
 2. **No CLI, but your tool roster carries the platform's own operations**
-   (`build_infra_chart_from_files` and siblings for charts, projects, and
+   (`build_infra_chart_from_files` and siblings for charts, stacks, and
    cloud reads; `get_service`, `apply_service`, `deploy_service` and
    siblings for service delivery -- each service reference names its tool
    twins where they differ from the CLI) -- you are on the
@@ -102,9 +102,9 @@ file-writing command on any surface:
   checkout`, `planton infra stack checkout`). One thing gets ONE
   manifest; a wired set deploys as one (`planton apply -f <dir>`); a chart
   is for a parameterized architecture.
-- **`.planton/project.yaml` -- the working copy of a DEPLOYED project.**
+- **`.planton/stack.yaml` -- the working copy of a DEPLOYED Infra Stack.**
   Saving starts a real deployment pipeline; read
-  `references/infra.deployed-projects.md` before doing anything.
+  `references/infra.deployed-stacks.md` before doing anything.
 - **No marker, `Chart.yaml` at the root -- the folder itself is the chart.**
 - **No marker, no `Chart.yaml` -- an APPLICATION REPOSITORY.** Infrastructure
   lives under `infrastructure/`; never a `.planton/` directory here.
@@ -143,7 +143,7 @@ Ground yourself in what already exists WITHOUT interviewing the user --
 every step here is a lookup, not a question (`references/craft.discovery.md`
 has the full protocol):
 
-1. Look up their Planton (context, charts, projects and their deploy
+1. Look up their Planton (context, charts, Infra Stacks and their deploy
    status, connections -- `references/craft.planton-cli.md`; the
    organization's catalog availability --
    `references/catalog.availability.md`). What you find shapes the build:
@@ -322,9 +322,9 @@ shared state and needs the user's explicit go-ahead:
   strongest form -- deploying from THIS machine
   (`references/infra.machine-deploy.md`: the probe, the grammar, the
   consent discipline).
-- **A working copy of a deployed project is different**: there, the save
+- **A working copy of a deployed Infra Stack is different**: there, the save
   verb (`planton chart install`) IS the deploy -- consent-gated per save
-  (`references/infra.deployed-projects.md`).
+  (`references/infra.deployed-stacks.md`).
 
 ## Rules that prevent whole failure classes
 
@@ -431,10 +431,10 @@ Read the file whose "Read when" matches the moment; never answer from memory wha
 | `references/infra.environments.md` | The user mentions environments; how many clusters; cross-env connection authorization |
 | `references/infra.build-contract.md` | Parsing build output; exit codes; CI usage; endpoint pinning; the wire channel |
 | `references/infra.issue-catalog.md` | A build failed and you need the fix pattern for an error |
-| `references/infra.deployment-model.md` | What happens after deploy (projects, pipelines, infra jobs, IaC modules); explaining or diagnosing it |
+| `references/infra.deployment-model.md` | What happens after deploy (Infra Stacks, pipelines, Infra Jobs, IaC modules); explaining or diagnosing it |
 | `references/infra.machine-deploy.md` | Deployment is the next step on a signed-in instance; offering the machine's own cloud login as the deploy path; performing a consented deploy |
-| `references/infra.deployed-projects.md` | The folder has `.planton/project.yaml`; fixing a failed deployment; saving changes to a deployed project |
-| `references/infra.state-import.md` | A deploy failed saying a resource ALREADY EXISTS; adopting an orphaned infra component into IaC state |
+| `references/infra.deployed-stacks.md` | The folder has `.planton/stack.yaml`; fixing a failed deployment; saving changes to a deployed Infra Stack |
+| `references/infra.state-import.md` | A deploy failed saying a resource ALREADY EXISTS; adopting an orphaned provider resource into IaC state |
 | `references/infra.workspace-postures.md` | The folder-identity check's full choreography: workspaces, checkouts, loose manifests and SETS, the canvas rules, and the application-repository posture a coding agent works in |
 | `references/infra.worked-example.md` | The full shape of a small chart in one place; checking your layout against a known-good one |
 | `references/cloud.aws-architecture.md` | Choosing AWS service combinations; security and network defaults |
@@ -468,7 +468,7 @@ Read the file whose "Read when" matches the moment; never answer from memory wha
 | `references/service.serving-domains-targets.md` | Per-target carrier truths (worker, ingress, HTTPRoute, Cloud Run domain mapping, ECS/ALB) and the remediation ladder for a failed `domain_serving` check |
 | `references/service.serving-domains-custom.md` | Anything outside `{label}.{env-domain}`: apex, arbitrary FQDNs, multi-host, CDN fronting -- composed-infrastructure recipes with `valueFrom` bridges |
 | `references/service.local-env-vars.md` | Running a service locally with real config (`planton service env run\|pull\|check`), dev flavors, `.env.local` layering |
-| `references/service.configuring-deployments.md` | Reading and changing what a service is DECLARED to deploy: the two writers, the surgical get-then-apply loop, which resources sit on the service and which on an infra stack ("if this service were deleted, should it go too?" -- its route, workload, and own ConfigMaps yes; the shared gateway, zone, and namespace no), the three-step move of a route out of an infra stack, target environments, the deployments switch |
+| `references/service.configuring-deployments.md` | Reading and changing what a service is DECLARED to deploy: the two writers, the surgical get-then-apply loop, which resources sit on the service and which on an Infra Stack ("if this service were deleted, should it go too?" -- its route, workload, and own ConfigMaps yes; the shared gateway, zone, and namespace no), the three-step move of a route out of an Infra Stack, target environments, the deployments switch |
 | `references/service.kustomize-authoring.md` | Moving a service's configuration into its repository (eject/init/checkout), the `_kustomize` tree conventions |
 | `references/service.preview-environments.md` | Per-pull-request preview environments: the opt-in, the previews tree, the one-call preview read, teardown |
 | `references/service.delete-cascade.md` | Retiring a service: the destroy-then-delete cascade, the retain-resources arm, the protected-environment refusal |
@@ -493,7 +493,7 @@ Read the file whose "Read when" matches the moment; never answer from memory wha
 | `references/craft.discovery.md` | Starting a conversation; learning the person, their Planton, and the motive |
 | `references/craft.personalization.md` | A profile fact sheet is present; shaping ANY explanation |
 | `references/craft.profile-vocabulary.md` | Reading the fact sheet; what each Role/Goal/Team/Mode/Tool id means |
-| `references/craft.planton-cli.md` | Looking up charts, projects, pipelines, connections; diagnosing failed deploys; the complete command map |
+| `references/craft.planton-cli.md` | Looking up charts, Infra Stacks, pipelines, connections; diagnosing failed deploys; the complete command map |
 | `references/craft.cost-transparency.md` | The monthly cost picture from the catalog's verified estimates; honesty rules for money; saving levers |
 | `references/craft.filing-platform-gaps.md` | Planton fell short of a need; filing the gap as a GitHub issue |
 | `references/catalog.availability.md` | Which kinds an organization's catalog policy disables; the check-design-disclose law |

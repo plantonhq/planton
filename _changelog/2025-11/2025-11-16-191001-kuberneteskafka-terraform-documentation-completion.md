@@ -56,7 +56,7 @@ resource "kubernetes_namespace_v1" "kafka_namespace" {
 # cluster on Kubernetes using the Strimzi Operator with
 # the following capabilities:
 #
-# Infrastructure Kinds:
+# Infrastructure Components:
 #  1. Kubernetes Namespace (defined here)
 #  2. Kafka Cluster (kafka_cluster.tf)
 #     - Kafka brokers with configurable replicas
@@ -171,7 +171,7 @@ This modular pattern:
 
 **main.tf Documentation Sections**:
 1. Module overview (what it deploys)
-2. Infrastructure kinds list
+2. Infrastructure components list
 3. Production features
 4. Module structure explanation
 5. Design philosophy (Strimzi Operator approach)
@@ -233,9 +233,9 @@ This modular pattern:
 - Pulumi: ✅ README + overview + examples
 - Terraform: ✅ README + main.tf docs + examples
 
-## Kind Architecture
+## Component Architecture
 
-### Kafka Catalog Kinds
+### Kafka Components
 
 The module deploys a complete Kafka ecosystem:
 

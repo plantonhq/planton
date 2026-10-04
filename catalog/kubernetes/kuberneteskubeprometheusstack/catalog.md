@@ -91,7 +91,7 @@ These are the most important decisions when configuring a kube-prometheus-stack 
 
 **Nothing is exposed by default** — Prometheus, Alertmanager, and Grafana stay ClusterIP. Expose them by composing first-class kinds (KubernetesIngress, the Gateway API kinds) over the exported service handles; the stack never opens its own doors.
 
-**`helmValues` merges last** — the escape hatch for chart surface beyond the typed fields (Thanos sidecar/ruler, windows monitoring, scrape classes, per-kind securityContexts). Anything here silently overrides the typed fields on every deploy; never put secrets in it, and leave `fullnameOverride` alone — the naming contract the outputs derive from depends on it.
+**`helmValues` merges last** — the escape hatch for chart surface beyond the typed fields (Thanos sidecar/ruler, windows monitoring, scrape classes, per-component securityContexts). Anything here silently overrides the typed fields on every deploy; never put secrets in it, and leave `fullnameOverride` alone — the naming contract the outputs derive from depends on it.
 
 ## Outputs and Dependencies
 

@@ -70,7 +70,7 @@ Implemented comprehensive Auth0 provider support across all system layers, follo
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                     Frontend Layer                               │
-│  auth0.tsx → Auth0CredentialForm kind                      │
+│  auth0.tsx → Auth0CredentialForm component                      │
 │  types.ts → auth0 in CredentialFormData                         │
 │  credential-drawer.tsx → Auth0 form integration                 │
 │  utils.ts → Auth0 provider config                               │
@@ -164,7 +164,7 @@ type Auth0Credential struct {
 
 ### 6. Frontend Integration
 
-**Auth0CredentialForm kind**:
+**Auth0CredentialForm component**:
 ```tsx
 export function Auth0CredentialForm({ register, disabled }: Auth0CredentialFormProps) {
   return (

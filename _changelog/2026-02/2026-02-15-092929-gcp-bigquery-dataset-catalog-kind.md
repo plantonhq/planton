@@ -10,11 +10,11 @@ Added GcpBigQueryDataset as the first Data & Analytics resource in the GCP provi
 
 ## Problem Statement / Motivation
 
-Planton's GCP coverage lacked any data analytics resources. BigQuery is Google Cloud's flagship analytics service, and the dataset is the foundational infrastructure boundary -- controlling data location, encryption, access, and lifecycle. Without it, Planton couldn't compose data analytics infra charts or serve teams building BigQuery-based data platforms.
+Planton's GCP coverage lacked any data analytics resources. BigQuery is Google Cloud's flagship analytics service, and the dataset is the foundational infrastructure boundary -- controlling data location, encryption, access, and lifecycle. Without it, Planton couldn't compose data analytics Infra Charts or serve teams building BigQuery-based data platforms.
 
 ### Pain Points
 
-- No BigQuery support in Planton prevented data analytics infra chart composition
+- No BigQuery support in Planton prevented data analytics Infra Chart composition
 - Teams couldn't provision BigQuery datasets with cross-resource CMEK wiring
 - No declarative access control management for BigQuery datasets
 - Missing storage billing model control (LOGICAL vs PHYSICAL) for cost optimization
@@ -70,7 +70,7 @@ Advanced features deliberately excluded: condition (CEL-based conditional access
 
 ## Benefits
 
-- **Data analytics infra charts unblocked** -- BigQuery Dataset is Layer 1 in data-analytics-environment, ml-notebook-environment, and event-pipeline compositions
+- **Data analytics Infra Charts unblocked** -- BigQuery Dataset is Layer 1 in data-analytics-environment, ml-notebook-environment, and event-pipeline compositions
 - **CMEK composability** -- seamless `valueFrom` wiring to GcpKmsKey for encryption
 - **Cost control** -- storage billing model selection (PHYSICAL can save 60-80%)
 - **Team collaboration** -- declarative, authoritative access control with single source of truth
@@ -79,7 +79,7 @@ Advanced features deliberately excluded: condition (CEL-based conditional access
 ## Impact
 
 - **Planton GCP coverage**: 20 resource kinds (from 19) -- 5 of 21 expansion resources complete
-- **Infra chart readiness**: BigQuery Dataset unlocks 3 planned infra charts (data-analytics-environment, ml-notebook-environment, event-pipeline)
+- **Infra Chart readiness**: BigQuery Dataset unlocks 3 planned Infra Charts (data-analytics-environment, ml-notebook-environment, event-pipeline)
 - **Users**: Any GCP user can now provision BigQuery datasets through Planton with full lifecycle management
 
 ## Related Work

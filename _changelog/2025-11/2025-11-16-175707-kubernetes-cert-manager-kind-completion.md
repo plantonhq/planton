@@ -582,7 +582,7 @@ This ensures:
 
 ### Documentation Coverage
 
-| Kind | Before | After | Improvement |
+| Component | Before | After | Improvement |
 |-----------|--------|-------|-------------|
 | Terraform Module | 0.89% | 4.44% | +3.55% |
 | User-Facing Docs | 6.67% | 13.33% | +6.66% |

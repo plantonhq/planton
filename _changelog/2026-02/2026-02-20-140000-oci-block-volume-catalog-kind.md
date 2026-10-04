@@ -107,7 +107,7 @@ graph TD
 
 - Adds 1 new CatalogKind to the OCI provider (R23 of 37)
 - **Completes Phase 5 (Storage)** -- all 3 storage resources done (OciObjectStorageBucket, OciFileSystem, OciBlockVolume)
-- Enables the OCI Compute Environment infra chart that needs attached block volumes
+- Enables the OCI Compute Environment Infra Chart that needs attached block volumes
 - Supports persistent volumes for OKE workloads
 
 ## Related Work

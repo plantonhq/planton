@@ -1,10 +1,10 @@
 # Auto-Tag and Auto-Release System
 
-Per-kind pre-release tags and the release pipelines they trigger: Pulumi modules, Terraform modules, and Stigmer skills.
+Per-component pre-release tags and the release pipelines they trigger: Pulumi modules, Terraform modules, and Stigmer skills.
 
 ## Why it exists
 
-A full release (`release.yaml` at a `vX.Y.Z` tag) ships everything at once. Between full releases, one kind sometimes needs to go out on its own: a skill definition its consumer reads the same day, or a module someone wants in users' hands before the next full cut. The auto-tag system mints a semver-compliant pre-release tag for exactly that kind and triggers its build, so a single kind can be released without cutting the world.
+A full release (`release.yaml` at a `vX.Y.Z` tag) ships everything at once. Between full releases, one component sometimes needs to go out on its own: a skill definition its consumer reads the same day, or a module someone wants in users' hands before the next full cut. The auto-tag system mints a semver-compliant pre-release tag for exactly that component and triggers its build, so a single component can be released without cutting the world.
 
 ## Two kinds of lane, two triggers
 
@@ -29,7 +29,7 @@ flowchart LR
     H --> M[auto-release.terraform-modules]
 ```
 
-The `auto-tag.yaml` workflow triggers kind-specific release workflows directly:
+The `auto-tag.yaml` workflow triggers component-specific release workflows directly:
 
 - **`auto-tag.yaml`** - Creates tags, triggers the matching releases
 - **`auto-release.pulumi-modules.yaml`** - Builds Pulumi binaries
@@ -44,7 +44,7 @@ Tags use semver pre-release format based on the _next_ patch version:
 v{next_patch}-{engine}.{kind}.{YYYYMMDD}.{sequence}
 ```
 
-| Kind     | Example Tag                                    | Sorted Position |
+| Component     | Example Tag                                    | Sorted Position |
 | ------------- | ---------------------------------------------- | --------------- |
 | Pulumi        | `v0.3.5-pulumi.postgres.20260108.0`            | Above `v0.3.4`  |
 | Terraform     | `v0.3.5-terraform.postgres.20260108.0`         | Above `v0.3.4`  |
@@ -125,7 +125,7 @@ flowchart TB
 - `contents: write` - Create and push tags
 - `actions: write` - Trigger auto-release workflow
 
-### Kind release workflows
+### Component release workflows
 
 Each engine has its own release workflow triggered directly by `auto-tag.yaml`:
 
@@ -173,9 +173,9 @@ gh workflow run auto-release.pulumi-modules.yaml \
   -f path=catalog/aws/awsecsservice/iac/pulumi
 ```
 
-## Release artifacts by kind
+## Release artifacts by component
 
-| Kind | Build Tool | Output                            |
+| Component | Build Tool | Output                            |
 | --------- | ---------- | --------------------------------- |
 | Pulumi    | Go build   | Pre-compiled binaries per module  |
 | Terraform | Archive    | Zip files uploaded per module     |

@@ -3,7 +3,7 @@
 # price choices. A Workbench instance bills through the Notebooks service:
 # Compute Engine-equivalent passthrough rates for cores, memory, GPUs, and
 # disks, each with a Workbench management fee layered per unit -- so every
-# kind here carries a usage line and a fee line. The machine type
+# component here carries a usage line and a fee line. The machine type
 # picks the family's per-vCPU and per-GiB rates (the documented shape of
 # each pinned type supplies the quantity constants); machine types, GPU
 # types, and disk types outside the pinned set refuse. desired_state

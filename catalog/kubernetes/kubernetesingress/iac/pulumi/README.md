@@ -34,7 +34,7 @@ iac/pulumi/
 
 The module adds the `pulumi.com/skipAwait: "true"` annotation to the created Ingress — Pulumi engine metadata, added on top of user annotations so the user-facing annotation set stays exactly what the spec declared. Without it, Pulumi's default behavior is to **wait** for the Ingress to receive a load-balancer address, which hangs forever on clusters where no ingress controller has claimed the object yet.
 
-An Ingress object is valid without a controller — infra charts routinely deploy the workload and its exposure before the ingress controller wave — so creation deliberately never blocks on one. The Terraform module's `wait_for_load_balancer = false` is the exact same choice. Consequence: `load_balancer_ip`/`load_balancer_hostname` export empty until a controller reconciles the object (the status reads in `outputs.go` are nil-tolerant), and fill in on a later refresh once one has.
+An Ingress object is valid without a controller — Infra Charts routinely deploy the workload and its exposure before the ingress controller wave — so creation deliberately never blocks on one. The Terraform module's `wait_for_load_balancer = false` is the exact same choice. Consequence: `load_balancer_ip`/`load_balancer_hostname` export empty until a controller reconciles the object (the status reads in `outputs.go` are nil-tolerant), and fill in on a later refresh once one has.
 
 ## Backend Handling
 

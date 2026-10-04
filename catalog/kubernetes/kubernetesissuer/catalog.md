@@ -119,4 +119,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 - [**Cert Manager**](/infra-catalog/kubernetes-cert-manager) -- must be installed first; provides the controller and CRDs.
 - [**Cert Manager Certificate**](/infra-catalog/kubernetes-certificate) -- requests certificates from this Issuer (same namespace); also produces the CA Secret a CA-backend Issuer consumes.
 - [**Cert Manager Cluster Issuer**](/infra-catalog/kubernetes-cluster-issuer) -- the cluster-scoped alternative for platform-wide public TLS.
-- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference it so infra charts create the namespace and this Issuer in dependency order.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference it so Infra Charts create the namespace and this Issuer in dependency order.

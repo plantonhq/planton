@@ -763,7 +763,7 @@ message KubernetesPlantonPlatformPostgresql {
    * one path.
    *
    * WHAT COMES BACK: every record the control plane keeps — organizations,
-   * environments, connections, projects, pipeline history, members, and
+   * environments, connections, Infra Stacks, pipeline history, members, and
    * the identity realm with its users, so existing passwords sign in —
    * AND the secrets manager's contents, because the vault stores in this
    * same database: every connection credential, every managed secret, the

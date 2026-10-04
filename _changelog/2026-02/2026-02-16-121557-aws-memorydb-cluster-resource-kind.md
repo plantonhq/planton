@@ -60,7 +60,7 @@ Feature parity with Pulumi: `provider.tf`, `variables.tf`, `locals.tf`, `main.tf
 ### Documentation
 
 - `README.md` — Full configuration reference with MemoryDB vs ElastiCache comparison
-- `examples.md` — 4 examples: minimal dev, production HA, high-throughput with data tiering, infra chart reference
+- `examples.md` — 4 examples: minimal dev, production HA, high-throughput with data tiering, Infra Chart reference
 - `catalog-page.md` — Source-verified catalog page following the ALB exemplar structure
 - 3 presets: dev-single-shard, production-ha, high-throughput
 
@@ -68,7 +68,7 @@ Feature parity with Pulumi: `provider.tf`, `variables.tf`, `locals.tf`, `main.tf
 
 - Teams can now manage durable Redis-compatible databases through Planton's declarative workflow
 - Subnet group and parameter group management is bundled, reducing boilerplate
-- Cross-resource references (`valueFrom`) enable wiring MemoryDB into larger infra charts
+- Cross-resource references (`valueFrom`) enable wiring MemoryDB into larger Infra Charts
 - 3 presets provide immediate starting points for common deployment patterns
 
 ## Impact

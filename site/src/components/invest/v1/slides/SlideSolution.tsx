@@ -37,7 +37,7 @@ export default function SlideSolution() {
               Replaces Terraform Enterprise / Pulumi Cloud
             </p>
             <p className="text-white/70 mb-4">
-              Deploy any infra component with a single API
+              Deploy any catalog kind with a single API
             </p>
             <ul className="space-y-2">
               <li className="flex items-center gap-2 text-white/60">

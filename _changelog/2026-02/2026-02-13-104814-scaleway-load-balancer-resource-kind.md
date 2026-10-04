@@ -10,7 +10,7 @@ Implemented ScalewayLoadBalancer (R05), the most complex Scaleway composite reso
 
 ## Problem Statement / Motivation
 
-Scaleway's Load Balancer service requires 5 separate Terraform resources to function: an IP, the LB itself, backends, frontends, and certificates. Deploying these individually is tedious, error-prone, and doesn't compose well in infra charts.
+Scaleway's Load Balancer service requires 5 separate Terraform resources to function: an IP, the LB itself, backends, frontends, and certificates. Deploying these individually is tedious, error-prone, and doesn't compose well in Infra Charts.
 
 ### Pain Points
 

@@ -1066,7 +1066,7 @@ The monorepo will need updates:
 1. **Update buf dependency**: Bump to latest planton version
 2. **Regenerate stubs**: Run proto generation to get new import paths
 3. **Update code**: Fix any references to addon/workload categories
-4. **Update UI**: Web console kinds that may display categories
+4. **Update UI**: Web console components that may display categories
 5. **Test Infra Jobs**: Verify infrastructure deployment works with new paths
 
 Estimated effort: 2-4 hours (mostly verification and testing)

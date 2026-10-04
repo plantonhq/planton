@@ -51,13 +51,13 @@ Replaced "Planton" → "Planton" across all rendered pages:
 
 - Solutions pages (by-role, by-size, by-use-case, all)
 - Features pages (all features, service-hub, auditable-intelligence, iac-workflows)
-- Landing page components (hero, v1 legacy kinds)
+- Landing page components (hero, v1 legacy components)
 - Demo pages and concepts
-- CLI kinds
+- CLI components
 - Hackathon pages (MobileVibe 2025)
 - Agents page and technology section
 - Pricing page
-- Kubernetes dashboard kinds
+- Kubernetes dashboard components
 - Invest/investor pages and slides
 - Legal micro-app layouts
 - Tour layout

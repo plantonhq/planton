@@ -93,8 +93,8 @@ All sub-resources use natural keys for stable identity:
 
 ## Impact
 
-- **Infra chart: hetzner-load-balanced-app** is now unblocked (all required kinds available)
-- **Infra chart: hetzner-ha-server-cluster** is now unblocked
+- **Infra Chart: hetzner-load-balanced-app** is now unblocked (all required kinds available)
+- **Infra Chart: hetzner-ha-server-cluster** is now unblocked
 - 11 of 12 Hetzner Cloud resource kinds completed (only R12 DnsZone remaining)
 
 ## Related Work

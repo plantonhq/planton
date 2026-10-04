@@ -19,7 +19,7 @@ Three duties, in that order, whenever you work in an organization's context:
    piece of it yet. A design silently missing its best kind because a
    policy disables it today is a worse lie than a refused deploy.
 3. **Disclose before any deploy.** Before the deploy offer or act, tell the
-   user which kinds of the design the policy disables and what that
+   user which parts of the design the policy disables and what that
    means — the rest can deploy now, and someone who manages the
    organization's catalog policy (an Infrastructure Admin, under Org
    Settings → Catalog) can enable the disabled kinds. Never frame it as a
@@ -49,7 +49,7 @@ and cost facts.
 
 Short, at the deploy moment, in the user's language:
 
-> Two kinds of this design — the DigitalOcean droplet and the OpenFGA
+> Two parts of this design — the DigitalOcean droplet and the OpenFGA
 > store — are disabled by your organization's catalog policy, so deploying
 > them would be refused. Everything else can deploy now. An Infrastructure
 > Admin can enable those two under Org Settings → Catalog if you need them.
@@ -64,9 +64,9 @@ destroys, and deletes of resources that already exist are never blocked by
 the policy — only NEW creations of disabled kinds are refused. Two
 consequences for your behavior:
 
-- A working copy of a deployed project saves and redeploys normally even
+- A working copy of a deployed Infra Stack saves and redeploys normally even
   when its kinds are now disabled — never warn about availability on a
-  working-copy save (`deployed-projects.md`).
+  working-copy save (`infra.deployed-stacks.md`).
 - References to existing resources of disabled kinds keep resolving; wiring
   a new resource TO one is a read the platform permits.
 

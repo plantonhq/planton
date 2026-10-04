@@ -1,6 +1,6 @@
 # Apex A Record
 
-This preset points a zone's apex (the bare domain, `@`) at an IPv4 address — the standard "make example.com resolve to my server" record. The zone is referenced as a `DigitalOceanDnsZone` resource so the record composes in infra charts; replace the reference with a literal (`value: example.com`) for a zone managed outside Planton.
+This preset points a zone's apex (the bare domain, `@`) at an IPv4 address — the standard "make example.com resolve to my server" record. The zone is referenced as a `DigitalOceanDnsZone` resource so the record composes in Infra Charts; replace the reference with a literal (`value: example.com`) for a zone managed outside Planton.
 
 ## When to Use
 

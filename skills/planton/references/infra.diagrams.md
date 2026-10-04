@@ -1,12 +1,12 @@
 ---
 title: How the Platform Draws What You Author
-description: The picture every Planton surface draws from a chart or a project -- the account rooms, the rooms and what nests in them, the lines, and the metadata.group trays -- which of it the platform decides on its own and the three authoring choices that genuinely change it (a reference or a literal, runs_on or another relationship, a dedicated kind or a buried flag), plus how to use metadata.group well. Read when writing or reviewing manifests and you want the architecture view to read like a reference diagram, when someone asks why a resource draws where it does, when choosing between valueFrom and a literal or between relationship types, or before adding metadata.group.
+description: The picture every Planton surface draws from a chart or an Infra Stack -- the account rooms, the rooms and what nests in them, the lines, and the metadata.group trays -- which of it the platform decides on its own and the three authoring choices that genuinely change it (a reference or a literal, runs_on or another relationship, a dedicated kind or a buried flag), plus how to use metadata.group well. Read when writing or reviewing manifests and you want the architecture view to read like a reference diagram, when someone asks why a resource draws where it does, when choosing between valueFrom and a literal or between relationship types, or before adding metadata.group.
 ---
 
 # How the Platform Draws What You Author
 
-Every chart, project, pipeline, and service is drawn as an architecture
-diagram: on the studio canvas while you write, on a project's page, on a
+Every chart, Infra Stack, pipeline, and service is drawn as an architecture
+diagram: on the studio canvas while you write, on an Infra Stack's page, on a
 pipeline run, and on the organization's Infrastructure Map. Almost all of
 that picture is decided by the platform from facts it already has. Author
 for correctness first; the picture follows. This file says what the
@@ -44,7 +44,7 @@ to use `metadata.group`.
 - **Kubernetes resources inside their cluster.** A resource deployed
   through a Kubernetes connection the platform published for a cluster
   draws inside that cluster, with no relationship authored (see
-  `kubernetes-on-cluster.md` for the wiring itself).
+  `infra.kubernetes-on-cluster.md` for the wiring itself).
 - **Lines.** Every `valueFrom` draws a line and orders the deploy. So does
   every `metadata.relationships` entry. A literal value in a reference field
   that names a resource of the field's kind in the same set also draws a
@@ -63,7 +63,7 @@ to use `metadata.group`.
 1. **A reference or a literal.** `valueFrom` carries the value, the deploy
    order, and the line. A hardcoded id or ARN carries none of that: the
    picture shows two unrelated cards, and the deploy may run them in the
-   wrong order. Wire it (`dependencies.md`).
+   wrong order. Wire it (`infra.dependencies.md`).
 2. **`runs_on` or another relationship.** Among relationships only
    `runs_on` can PLACE: a resource that `runs_on` a room (a cluster, say)
    draws inside it. `depends_on`, `uses`, and `managed_by` order the deploy
@@ -109,7 +109,7 @@ cannot infer. It never changes the deploy order.
 ## Checking the picture
 
 No CLI command prints a diagram's structure. On a Planton surface the studio
-draws the chart live from the folder as you write, and a project's or
+draws the chart live from the folder as you write, and an Infra Stack's or
 chart's page shows its architecture view after a build. Read it the way a
 reviewer would: each resource in the account and room it should be in,
 every line meaning a real reference, no card standing alone that should be

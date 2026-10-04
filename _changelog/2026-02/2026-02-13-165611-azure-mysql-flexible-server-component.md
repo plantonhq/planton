@@ -10,13 +10,13 @@ Forged AzureMysqlFlexibleServer (enum 434, id_prefix `azmysql`) as the second da
 
 ## Problem Statement / Motivation
 
-The Azure resource expansion project requires 24 resource kinds to cover enterprise Azure workloads. AzureMysqlFlexibleServer is critical for the database-stack infra chart, serving organizations that use MySQL as their primary relational database.
+The Azure resource expansion project requires 24 resource kinds to cover enterprise Azure workloads. AzureMysqlFlexibleServer is critical for the database-stack Infra Chart, serving organizations that use MySQL as their primary relational database.
 
 ### Pain Points
 
 - T02 spec design had 13 inaccuracies that would have produced broken or suboptimal IaC modules
 - MySQL Flexible Server has significant structural differences from PostgreSQL (storage, database/firewall API, auth) that required careful provider research
-- Without MySQL support, the database-stack infra chart cannot serve MySQL-based workloads
+- Without MySQL support, the database-stack Infra Chart cannot serve MySQL-based workloads
 
 ## Solution / What's New
 

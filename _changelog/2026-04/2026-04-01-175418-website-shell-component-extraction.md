@@ -1,4 +1,4 @@
-# Website Shell Kind Extraction — MUI-Only Header, Footer, and Layout
+# Website Shell Component Extraction — MUI-Only Header, Footer, and Layout
 
 **Date**: April 1, 2026
 **Type**: Feature
@@ -6,24 +6,24 @@
 
 ## Summary
 
-Extracted the planton.ai website shell (Header, Footer, Layout) from Tailwind-based local kinds into MUI-only kinds inside the `@plantonhq/website-shell` npm package. The website now consumes its own shell from the workspace package, establishing the foundation for the console app to render public-facing pages with the marketing website's visual identity.
+Extracted the planton.ai website shell (Header, Footer, Layout) from Tailwind-based local components into MUI-only components inside the `@plantonhq/website-shell` npm package. The website now consumes its own shell from the workspace package, establishing the foundation for the console app to render public-facing pages with the marketing website's visual identity.
 
 ## Problem Statement / Motivation
 
-The planton.ai console app needs to render public-facing pages (Deployment Store, future forum, platform catalog) with the marketing website's visual identity for unauthenticated users. The website's header, footer, and layout were built with a mix of Tailwind CSS classes and MUI kinds — unusable by the console app which has no Tailwind.
+The planton.ai console app needs to render public-facing pages (Deployment Store, future forum, platform catalog) with the marketing website's visual identity for unauthenticated users. The website's header, footer, and layout were built with a mix of Tailwind CSS classes and MUI components — unusable by the console app which has no Tailwind.
 
 ### Pain Points
 
-- Console app cannot import website shell kinds (Tailwind dependency)
+- Console app cannot import website shell components (Tailwind dependency)
 - No npm package exists for the website shell
-- Header/Footer kinds had circular import dependencies with marketing content kinds
+- Header/Footer components had circular import dependencies with marketing content components
 - Footer links had stale URLs diverging from header
 - Social media links were all placeholders pointing to `/`
 - Two breakpoint systems (Tailwind `md:` = 768px vs MUI default `md` = 900px) would cause layout shifts
 
 ## Solution / What's New
 
-### Shell Kinds (MUI-Only)
+### Shell Components (MUI-Only)
 
 17 new files in `packages/website-shell/src/` covering the complete website chrome:
 
@@ -61,12 +61,12 @@ The planton.ai console app needs to render public-facing pages (Deployment Store
 - `packages/website-shell/package.json` — added `next`, `@mui/icons-material` peer deps
 - `packages/website-shell/tsup.config.ts` — added `'use client'` banner
 - `packages/website-shell/src/theme/websiteTheme.ts` — Tailwind-aligned breakpoints
-- `packages/website-shell/src/index.ts` — exports all shell kinds
+- `packages/website-shell/src/index.ts` — exports all shell components
 - `src/app/(root)/layout.tsx` — switched to `WebsiteShell` from package
 
 ### Files Created
 
-- 17 kind/hook/data files in `packages/website-shell/src/`
+- 17 component/hook/data files in `packages/website-shell/src/`
 - `.github/workflows/publish-website-shell.yml` — publish workflow
 
 ## Benefits

@@ -26,7 +26,7 @@ Every Infra Job follows a defined sequence of operations. Which operations run d
 ### For Creating or Updating Infrastructure
 
 1. **Initialize** — Set up the IaC module, download providers, configure the state backend.
-2. **Refresh** — Synchronize the IaC state file with the actual state of infra components. This catches drift — changes made outside of Planton, such as manual edits in the cloud console.
+2. **Refresh** — Synchronize the IaC state file with the actual state of the provider resources. This catches drift — changes made outside of Planton, such as manual edits in the cloud console.
 3. **Preview** — Generate a plan showing what will change. Additions, modifications, and deletions are displayed before anything happens.
 4. **Apply** — Execute the changes. Create new resources, modify existing ones, update configurations.
 
@@ -101,7 +101,7 @@ The Infra Component detail page includes an Infra Jobs tab listing all jobs that
 Stream logs from a running Infra Job:
 
 ```bash
-planton infra-job stream-progress-events <infra-job-id>
+planton infra job stream-progress-events <infra-job-id>
 ```
 
 This command (aliased as `logs`) streams progress events in real time, including resource-level changes and operation transitions.
@@ -113,7 +113,7 @@ This command (aliased as `logs`) streams progress events in real time, including
 When a flow control policy requires manual approval — either before execution starts or between preview and apply — the Infra Job pauses and waits. Resume it from the web console or CLI:
 
 ```bash
-planton infra-job resume <infra-job-id>
+planton infra job resume <infra-job-id>
 ```
 
 ### Cancelling
@@ -121,7 +121,7 @@ planton infra-job resume <infra-job-id>
 Cancel a running Infra Job to stop execution. The currently in-flight IaC operation completes to avoid leaving resources in an inconsistent state, then remaining operations are skipped:
 
 ```bash
-planton infra-job cancel <infra-job-id>
+planton infra job cancel <infra-job-id>
 ```
 
 ### Re-running
@@ -129,7 +129,7 @@ planton infra-job cancel <infra-job-id>
 Re-run a completed or failed Infra Job to repeat the same operation. Useful after fixing external issues like quota limits or permission errors:
 
 ```bash
-planton infra-job rerun <infra-job-id>
+planton infra job rerun <infra-job-id>
 ```
 
 ## Preflight Checks
@@ -137,7 +137,7 @@ planton infra-job rerun <infra-job-id>
 Before committing to execution, verify that all four essentials are in place for a given resource type and environment:
 
 ```bash
-planton infra-job preflight-checks --catalog-kind <kind>
+planton infra job preflight-checks --catalog-kind <kind>
 ```
 
 The report shows whether the IaC module, provider credentials, state backend, and flow control policy can all be resolved. This is useful when setting up a new environment or debugging why an Infra Job failed to start.
@@ -146,28 +146,28 @@ The report shows whether the IaC module, provider credentials, state backend, an
 
 ```bash
 # Create an Infra Job for an Infra Component
-planton infra-job create-infra-job <infra-component-id> --operation update --tail
+planton infra job create <infra-component-id> --operation update --tail
 
 # List Infra Jobs for a resource
-planton infra-job list <infra-component-id>
+planton infra job list <infra-component-id>
 
 # Stream logs from a running job (alias: logs)
-planton infra-job stream-progress-events <infra-job-id>
+planton infra job stream-progress-events <infra-job-id>
 
 # Cancel a running job
-planton infra-job cancel <infra-job-id>
+planton infra job cancel <infra-job-id>
 
 # Resume a paused job
-planton infra-job resume <infra-job-id>
+planton infra job resume <infra-job-id>
 
 # Re-run a completed or failed job
-planton infra-job rerun <infra-job-id>
+planton infra job rerun <infra-job-id>
 
 # Run preflight checks
-planton infra-job preflight-checks --catalog-kind <kind>
+planton infra job preflight-checks --catalog-kind <kind>
 
 # View the IaC input for a completed job
-planton infra-job iac-input <infra-job-id>
+planton infra job iac-input <infra-job-id>
 ```
 
 The `--operation` flag on `create-infra-job` accepts: `refresh`, `preview`, `update`, `destroy`, `destroy_preview`. The default is `preview`. Any other value is refused as **Unknown Operation**, naming the valid ones, and no job is created.
@@ -184,7 +184,7 @@ Additional flags for `create-infra-job`, `resume`, and `rerun`:
 - `--show-outputs` — Display the outputs at completion (default: on). A secret the resource generates shows as its `$secret/` reference; the value itself is kept in your secret store (see [Where Secrets Live](/docs/secrets/where-secrets-live#secrets-a-resource-generates))
 - `--version-message` / `-m` — A description for the job, similar to a commit message
 
-The `infra-job` command can also be invoked as `sj` for brevity.
+`planton infra ij` is the short form of `planton infra job`.
 
 ## Related Documentation
 

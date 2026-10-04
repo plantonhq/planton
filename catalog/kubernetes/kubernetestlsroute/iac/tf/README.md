@@ -4,7 +4,7 @@ Creates a namespaced Kubernetes Gateway API `TLSRoute` via the `kubectl_manifest
 resource (alekc/kubectl provider, apiVersion `gateway.networking.k8s.io/v1`,
 server-side apply). Unlike `kubernetes_manifest`, `kubectl_manifest` needs no
 cluster connection at plan time, so the route can be planned before the Gateway
-API CRDs exist -- which is what lets an infra chart deploy the CRDs, a Gateway,
+API CRDs exist -- which is what lets an Infra Chart deploy the CRDs, a Gateway,
 and its routes in a single run (and lets offline plan proofs work).
 
 Prerequisites at apply time: the Gateway API CRDs (`KubernetesGatewayApiCrds`),

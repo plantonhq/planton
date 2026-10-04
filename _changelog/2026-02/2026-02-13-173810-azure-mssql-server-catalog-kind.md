@@ -15,7 +15,7 @@ The Azure resource expansion project (20260212.05.sp.azure-resource-expansion) r
 ### Pain Points
 
 - No Azure SQL Database resource kind existed in Planton
-- The database-stack infra chart needs MSSQL alongside PostgreSQL and MySQL
+- The database-stack Infra Chart needs MSSQL alongside PostgreSQL and MySQL
 - Enterprise customers with existing SQL Server licenses need Azure Hybrid Benefit support
 - The T02 planning spec had 14 inaccuracies discovered during deep Terraform provider research
 
@@ -90,12 +90,12 @@ Deep Terraform provider research revealed 14 corrections to the original plannin
 - **Performance tuning**: Connection policy (Redirect) for lower-latency Azure-to-Azure connections
 - **Flexible compute**: Each database independently sized (DTU or vCore tiers)
 - **Pattern consistency**: Same output structure (database_ids map) as PostgreSQL and MySQL
-- **Composability**: server_id output enables Private Endpoint wiring in database-stack infra chart
+- **Composability**: server_id output enables Private Endpoint wiring in database-stack Infra Chart
 
 ## Impact
 
 - **R13 completed**: 14 of 24 Azure resources now done
-- **Database trifecta**: PostgreSQL, MySQL, and MSSQL all available for database-stack infra chart
+- **Database trifecta**: PostgreSQL, MySQL, and MSSQL all available for database-stack Infra Chart
 - **Enum registered**: AzureMssqlServer = 433 in catalog_kind.proto
 - **36/36 tests green**: All validation tests pass
 - **~30 files created**: Proto, IaC (Pulumi + Terraform), docs, examples, tests, manifests

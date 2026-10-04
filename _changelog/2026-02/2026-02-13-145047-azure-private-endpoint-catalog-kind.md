@@ -6,13 +6,13 @@
 
 ## Summary
 
-Added AzurePrivateEndpoint (enum 414, id_prefix `azpe`) as a catalog kind in the Azure provider, enabling private connectivity to Azure PaaS services through Azure Private Link. This is the 9th resource in the Azure expansion queue (R08) and a critical building block for the database-stack infra chart.
+Added AzurePrivateEndpoint (enum 414, id_prefix `azpe`) as a catalog kind in the Azure provider, enabling private connectivity to Azure PaaS services through Azure Private Link. This is the 9th resource in the Azure expansion queue (R08) and a critical building block for the database-stack Infra Chart.
 
 ## Problem Statement / Motivation
 
 Enterprise Azure architectures require private connectivity to PaaS services like PostgreSQL, MySQL, Key Vault, and Storage. Without Private Endpoints, traffic to these services traverses the public internet, even when both the client and service are in Azure. This creates security gaps and compliance issues in regulated industries.
 
-The database-stack infra chart needs AzurePrivateEndpoint to complete its dependency chain:
+The database-stack Infra Chart needs AzurePrivateEndpoint to complete its dependency chain:
 
 ```
 VPC -> Subnet -> PrivateDnsZone -> Database Server -> PrivateEndpoint
@@ -76,7 +76,7 @@ dev.planton.shared.foreignkey.v1.StringValueOrRef private_connection_resource_id
 ];
 ```
 
-This enables the database-stack infra chart:
+This enables the database-stack Infra Chart:
 
 ```yaml
 spec:
@@ -112,7 +112,7 @@ privateIpAddress := endpoint.PrivateServiceConnection.ApplyT(
 
 ## Benefits
 
-- **Infra chart ready**: All cross-resource references use StringValueOrRef, enabling database-stack composition
+- **Infra Chart ready**: All cross-resource references use StringValueOrRef, enabling database-stack composition
 - **Correct from the start**: 6 spec corrections prevent technical debt that would require migration later
 - **Production quality**: 18 validation tests covering all field combinations and edge cases
 - **Feature parity**: Both Pulumi (Go) and Terraform (HCL) implementations with identical behavior

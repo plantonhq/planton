@@ -109,7 +109,7 @@ graph TD
 - Adds 1 new CatalogKind to the OCI provider (R22 of 37)
 - Continues Phase 5 (Storage) -- OciBlockVolume follows next
 - Enables Kubernetes persistent volumes backed by OCI File Storage
-- Supports the OCI Compute Environment and OKE Environment infra charts that need shared storage
+- Supports the OCI Compute Environment and OKE Environment Infra Charts that need shared storage
 
 ## Related Work
 

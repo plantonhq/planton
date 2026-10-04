@@ -2,7 +2,7 @@
 
 The whole Kafka family in one pane: a TLS + SCRAM cluster connection,
 schema browsing through the registry, Connect pipe monitoring, and a
-login gate on the console itself. This is the shape an infra chart
+login gate on the console itself. This is the shape an Infra Chart
 composes from siblings — the three addresses are foreign keys to
 KubernetesKafka (bootstrap endpoint), KubernetesKarapace (registry
 endpoint) and KubernetesKafkaConnect (REST endpoint), and the two

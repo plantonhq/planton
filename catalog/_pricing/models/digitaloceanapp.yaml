@@ -3,7 +3,7 @@
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. A hand model rather than a derivation: an app's cost
-# identity lives in REPEATED kind trees (services, workers, jobs,
+# identity lives in REPEATED component trees (services, workers, jobs,
 # databases), and the derivation grammar reads scalar spec paths -- it
 # cannot walk each service and multiply its own slug by its own count.
 # Each preset's quantities are computed here and defended in their bases.

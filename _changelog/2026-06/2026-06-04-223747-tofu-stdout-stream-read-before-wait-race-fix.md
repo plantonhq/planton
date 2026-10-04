@@ -6,7 +6,7 @@
 
 ## Summary
 
-Infra jobs driven through the Planton runner intermittently failed with
+Infra Jobs driven through the Planton runner intermittently failed with
 `error reading tofu output: read |0: file already closed` on different operations
 (refresh, plan, apply, destroy, init) — even when the underlying tofu/terraform run
 had actually succeeded. The cause was a classic `os/exec` ordering bug in the two

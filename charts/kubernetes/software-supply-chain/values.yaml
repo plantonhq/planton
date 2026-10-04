@@ -74,7 +74,7 @@ params:
       keyed-by-username Secret by reference).
       On Planton the value is a reference to one key of the install's
       credentials secret, resolved at deploy so the credential is never
-      stored with the project (the README's "Before you install" creates the
+      stored with the Infra Stack (the README's "Before you install" creates the
       secret with every key at once). A deploy without the platform takes
       the literal.
     value: $secret/software-supply-chain-credentials/valkey-password
@@ -114,7 +114,7 @@ params:
       digits-first, #, $, or braces.
       On Planton the value is a reference to one key of the install's
       credentials secret, resolved at deploy so the credential is never
-      stored with the project (the README's "Before you install" creates the
+      stored with the Infra Stack (the README's "Before you install" creates the
       secret with every key at once). A deploy without the platform takes
       the literal.
     value: $secret/software-supply-chain-credentials/s3-access-key
@@ -126,7 +126,7 @@ params:
       (40+ characters).
       On Planton the value is a reference to one key of the install's
       credentials secret, resolved at deploy so the credential is never
-      stored with the project (the README's "Before you install" creates the
+      stored with the Infra Stack (the README's "Before you install" creates the
       secret with every key at once). A deploy without the platform takes
       the literal.
     value: $secret/software-supply-chain-credentials/s3-secret-key
@@ -141,7 +141,7 @@ params:
       one generated pair).
       On Planton the value is a reference to one key of the install's
       credentials secret, resolved at deploy so the credential is never
-      stored with the project (the README's "Before you install" creates the
+      stored with the Infra Stack (the README's "Before you install" creates the
       secret with every key at once). A deploy without the platform takes
       the literal.
     value: $secret/software-supply-chain-credentials/s3-identities

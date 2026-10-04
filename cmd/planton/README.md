@@ -46,7 +46,7 @@ The Planton CLI is a Go-based command-line tool built with [Cobra](https://githu
 │  ├── Reads manifest from env/tfvars                     │
 │  ├── Executes deployment code                           │
 │  ├── Manages state                                       │
-│  └── Creates/updates infra components                    │
+│  └── Creates/updates provider resources                  │
 └─────────────────────────────────────────────────────────┘
 ```
 

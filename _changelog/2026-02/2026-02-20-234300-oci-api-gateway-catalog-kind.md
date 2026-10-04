@@ -10,7 +10,7 @@ Added the OciApiGateway catalog kind -- OCI's managed API endpoint bundled with 
 
 ## Problem Statement / Motivation
 
-Planton's OCI provider had 28 resources covering networking, compute, containers, databases, storage, security, and one serverless resource (OciFunctionsApplication), but no way to expose OCI Functions or HTTP backends through a managed API endpoint. OCI API Gateway provides managed REST API endpoints with built-in authentication, CORS, and rate limiting -- critical for production serverless architectures. Without this kind, platform teams cannot declaratively provision the API layer that sits in front of their functions, blocking the Serverless Stack infra chart.
+Planton's OCI provider had 28 resources covering networking, compute, containers, databases, storage, security, and one serverless resource (OciFunctionsApplication), but no way to expose OCI Functions or HTTP backends through a managed API endpoint. OCI API Gateway provides managed REST API endpoints with built-in authentication, CORS, and rate limiting -- critical for production serverless architectures. Without this kind, platform teams cannot declaratively provision the API layer that sits in front of their functions, blocking the Serverless Stack Infra Chart.
 
 ## Solution / What's New
 
@@ -95,7 +95,7 @@ A complete OciApiGateway catalog kind with both Pulumi (Go) and Terraform (HCL) 
 
 - Enables declarative provisioning of managed API endpoints with built-in security
 - Completes Phase 7 (Serverless and Functions): both OciFunctionsApplication and OciApiGateway done
-- Unblocks the Serverless Stack infra chart (Chart 4): all prerequisites now available
+- Unblocks the Serverless Stack Infra Chart (Chart 4): all prerequisites now available
 - Covers the primary serverless API pattern: API Gateway + JWT auth + Functions backends
 - Full IaC parity between Pulumi and Terraform modules
 
@@ -103,7 +103,7 @@ A complete OciApiGateway catalog kind with both Pulumi (Go) and Terraform (HCL) 
 
 - **Platform teams**: Can now declaratively create API gateways with JWT authentication, CORS, rate limiting, and routing to HTTP/Functions/static backends
 - **OCI provider coverage**: 29/37 resources complete (78.4%), Phase 7 complete
-- **Infra charts**: Serverless Stack chart prerequisites fully met (OciFunctionsApplication + OciApiGateway)
+- **Infra Charts**: Serverless Stack chart prerequisites fully met (OciFunctionsApplication + OciApiGateway)
 
 ## Validation Results
 

@@ -1,7 +1,7 @@
 # Infra Charts
 
 > **Deploy a whole environment from one template.** An Infra Chart bundles the
-> dozens of infra components behind a real environment — network, DNS, cluster,
+> dozens of Infra Components behind a real environment — network, DNS, cluster,
 > load balancer, certificates, registry — into a single, parameterized blueprint
 > you deploy with your own values.
 
@@ -44,14 +44,14 @@ The tree is provider-rooted, with one home rule:
 ## The mental model
 
 Planton's [components](../catalog) are catalog kinds:
-each one is a single infra component (a VPC, a database, a cluster) with its own
-schema and IaC module. **An Infra Chart is a LEGO kit** — a curated set of those
-blocks that fit together to build something complete.
+each one describes a single piece of infrastructure (a VPC, a database, a
+cluster) with its own schema and IaC module. **An Infra Chart is a LEGO kit**
+— a curated set of those blocks that fit together to build something complete.
 
 And the runtime relationship mirrors Kubernetes and Helm:
 
 > **An Infra Chart is to an Infra Stack what a Helm chart is to a Helm
-> release.** The chart is the reusable blueprint; the project is a deployed
+> release.** The chart is the reusable blueprint; the Infra Stack is a deployed
 > instance configured with your values.
 
 ## Using a chart
@@ -61,7 +61,7 @@ And the runtime relationship mirrors Kubernetes and Helm:
    tunable parameter and its default.
 3. Provide your values and deploy it through Planton.
 
-Each chart's templates render standard Planton infra components — the same
+Each chart's templates render standard Planton catalog objects — the same
 `apiVersion: <provider>.planton.dev/v1` manifests you would write by hand — so
 nothing about a chart is a black box: it is a transparent composition of the
 components in this repo.

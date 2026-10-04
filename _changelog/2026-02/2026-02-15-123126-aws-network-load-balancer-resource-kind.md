@@ -121,7 +121,7 @@ flowchart TB
 - Adds the 36th AWS resource kind to Planton (26th total, 11th new in the expansion project)
 - Completes Layer 4 load balancing coverage alongside existing ALB (Layer 7)
 - Enables NLB-in-front-of-ALB pattern via `alb` target type
-- Unblocks infra charts requiring static IPs or TCP load balancing
+- Unblocks Infra Charts requiring static IPs or TCP load balancing
 
 ## Related Work
 

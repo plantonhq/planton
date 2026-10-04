@@ -6,7 +6,7 @@
 
 ## Summary
 
-Enhanced the forge workflow with automated validation steps that ensure proto stubs are generated, code compiles, and tests pass at critical points during resource creation. Added four new rules (016-019) that automate previously manual steps (`make protos`, `make build`, `make test`) and ensure infra components are properly registered in the `catalog_kind.proto` enum.
+Enhanced the forge workflow with automated validation steps that ensure proto stubs are generated, code compiles, and tests pass at critical points during resource creation. Added four new rules (016-019) that automate previously manual steps (`make protos`, `make build`, `make test`) and ensure catalog kinds are properly registered in the `catalog_kind.proto` enum.
 
 ## Problem Statement / Motivation
 
@@ -20,7 +20,7 @@ The previous forge workflow had several manual steps and gaps that could lead to
 
 - **Test Failures Discovered Late**: Unit tests created by rule 003 were not automatically executed, so test failures might not be discovered until much later in development.
 
-- **Manual Enum Registration**: After forging a new infra component, developers had to manually add it to `catalog_kind.proto` enum, a step that was easy to forget and error-prone.
+- **Manual Enum Registration**: After forging a new catalog kind, developers had to manually add it to `catalog_kind.proto` enum, a step that was easy to forget and error-prone.
 
 - **Compound Errors**: Issues in proto files, code, or tests would compound, making it harder to identify the root cause when discovered late.
 
@@ -32,7 +32,7 @@ The forge workflow now includes four new validation rules that automate critical
 
 ### Rule 016: Catalog Kind Registration
 
-**Purpose**: Automatically register new infra components in the `catalog_kind.proto` enum.
+**Purpose**: Automatically register new catalog kinds in the `catalog_kind.proto` enum.
 
 **What It Does**:
 - Identifies the provider and kind name from the resource being forged

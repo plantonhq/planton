@@ -4,7 +4,7 @@
 // read-only scan of that account), it grades the proposal on the three axes
 // that define mapping quality:
 //
-//   - grouping: did each discovered infra component land in the right
+//   - grouping: did each discovered provider resource land in the right
 //     proposed component instance?
 //   - spec: did the proposed manifests reconstruct the settings the
 //     ground-truth manifests declare?

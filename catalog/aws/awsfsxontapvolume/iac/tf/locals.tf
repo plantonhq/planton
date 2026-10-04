@@ -1,7 +1,7 @@
 locals {
   # Volumes carry TWO names: the ONTAP-internal spec.name (the volume identity
   # in junction paths, SnapMirror, and the ONTAP CLI — underscore-only
-  # charset) and the infra component's metadata.name, which becomes the Name
+  # charset) and the Infra Component's metadata.name, which becomes the Name
   # tag so the AWS console shows the same identity both engines pin.
   resource_name = var.metadata.name
 

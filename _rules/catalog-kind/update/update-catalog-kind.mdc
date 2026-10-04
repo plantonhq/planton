@@ -719,7 +719,7 @@ Based on scenario:
   the hashicorp provider's `kubernetes_manifest`**: `kubernetes_manifest`
   requires a reachable cluster AND the CRD's OpenAPI schema at PLAN time,
   so a CR can never be planned before its operator/CRDs are installed —
-  which breaks single-run infra charts (operator + CR together) and makes
+  which breaks single-run Infra Charts (operator + CR together) and makes
   offline plan proofs impossible. `kubectl_manifest` renders from
   `yaml_body` with no plan-time cluster dependency, applies server-side,
   and supports import (`apiVersion//kind//name[//namespace]`). When a kind's
@@ -870,11 +870,11 @@ Based on scenario:
   needs manual surgery is not shippable.)
 - **Module-owned keep-on-uninstall on Pulumi needs the CLASSIC `yaml`
   package plus a transformation — `yaml/v2` cannot do it**: yaml/v2
-  kinds register remotely and their children are created
+  components register remotely and their children are created
   PROVIDER-side, beyond the reach of any SDK-side resource option or
   transformation; the classic package's `GetChildOptions` forwards only
   parent/version/pluginDownloadURL, so a plain `RetainOnDelete` on the
-  ConfigGroup silently retains only the kind wrapper. Deliver the
+  ConfigGroup silently retains only the component wrapper. Deliver the
   option through a resource TRANSFORMATION on a classic-yaml ConfigGroup
   (transformations propagate down the in-process parent chain) — the
   semantic twin of `kubectl_manifest`'s `apply_only = true` ("Delete is

@@ -80,7 +80,7 @@ Added logic to `MDXRenderer.tsx` to strip the leading `# Title` from markdown bo
 - `src/app/(root)/docs/components/DocsLayout.tsx` — Sticky header, mobile drawer header
 - `src/app/(root)/docs/components/DocsSidebar.tsx` — Removed redundant "Documentation" header
 
-**Shared kinds** (3 files):
+**Shared components** (3 files):
 - `src/components/common/content-sidebar.tsx` — Section title, inactive record titles
 - `src/components/blog/TableOfContents.tsx` — "On this page" heading
 - `src/components/blog/AuthorSection.tsx` — "Contributors" heading, author names
@@ -117,7 +117,7 @@ Added logic to `MDXRenderer.tsx` to strip the leading `# Title` from markdown bo
 ## Related Work
 
 - [Monochrome Canvas Unification](2026-04-01-190727-monochrome-canvas-unification.md) — established the neutral palette this change extends
-- [Website Shell Kind Extraction](2026-04-01-175418-website-shell-kind-extraction.md) — extracted shared header/footer into MUI-only package
+- [Website Shell Component Extraction](2026-04-01-175418-website-shell-component-extraction.md) — extracted shared header/footer into MUI-only package
 
 ---
 

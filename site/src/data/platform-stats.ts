@@ -16,7 +16,7 @@
  * record. A change to the catalog changes this file first.
  */
 export const PLATFORM_STATS = {
-  /** Printed. catalog kinds in the catalog, rounded down to the hundred. */
+  /** Printed. Catalog kinds in the catalog, rounded down to the hundred. */
   DEPLOYMENT_MODULE_COUNT: '700+',
   CLOUD_PROVIDER_COUNT: '8',
   /** Printed exactly; the number is small enough to be honest about. */

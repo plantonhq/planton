@@ -6,7 +6,7 @@
 
 ## Summary
 
-Added `AzureUserAssignedIdentity` as a new Azure catalog kind (R03 in the Azure resource expansion queue). This kind provisions User-Assigned Managed Identities with bundled RBAC role assignments, following the `AwsIamRole` / `GcpServiceAccount` pattern adapted for Azure's scope-based RBAC model. A key design innovation is using `StringValueOrRef` for role assignment scopes, enabling infra charts to dynamically wire identity permissions to other Azure resources in the same chart.
+Added `AzureUserAssignedIdentity` as a new Azure catalog kind (R03 in the Azure resource expansion queue). This kind provisions User-Assigned Managed Identities with bundled RBAC role assignments, following the `AwsIamRole` / `GcpServiceAccount` pattern adapted for Azure's scope-based RBAC model. A key design innovation is using `StringValueOrRef` for role assignment scopes, enabling Infra Charts to dynamically wire identity permissions to other Azure resources in the same chart.
 
 ## Problem Statement / Motivation
 
@@ -16,8 +16,8 @@ Azure enterprise workloads (AKS, Function Apps, Web Apps, Container Apps) need s
 
 - No way to declare an Azure managed identity in an Planton manifest
 - Role assignments had to be managed separately from identity creation
-- Infra charts couldn't wire identity permissions to dynamically created resources (e.g., "give this identity Key Vault Secrets User on the Key Vault created in this chart")
-- The aks-environment, function-app-environment, and web-app-environment infra charts couldn't define identity layers
+- Infra Charts couldn't wire identity permissions to dynamically created resources (e.g., "give this identity Key Vault Secrets User on the Key Vault created in this chart")
+- The aks-environment, function-app-environment, and web-app-environment Infra Charts couldn't define identity layers
 
 ## Solution / What's New
 
@@ -33,7 +33,7 @@ A complete catalog kind at `apis/dev/planton/provider/azure/azureuserassignedide
 
 ### StringValueOrRef Scope (Design Innovation)
 
-The role assignment `scope` field uses `StringValueOrRef` without `default_kind` annotation, making it the first polymorphic `StringValueOrRef` field in the codebase. This enables infra charts to wire role assignment scopes to any Azure resource's output:
+The role assignment `scope` field uses `StringValueOrRef` without `default_kind` annotation, making it the first polymorphic `StringValueOrRef` field in the codebase. This enables Infra Charts to wire role assignment scopes to any Azure resource's output:
 
 ```yaml
 role_assignments:
@@ -92,7 +92,7 @@ Registered as `AzureUserAssignedIdentity = 460` in `catalog_kind.proto` with `id
 ## Impact
 
 - **4th Azure resource** in the expansion queue (R03 of 24)
-- **Unblocks 3 infra charts**: aks-environment (enhanced), function-app-environment, web-app-environment
+- **Unblocks 3 Infra Charts**: aks-environment (enhanced), function-app-environment, web-app-environment
 - **New pattern**: First polymorphic StringValueOrRef (no default_kind) -- may be reused by other resources with multi-type references
 
 ## Related Work

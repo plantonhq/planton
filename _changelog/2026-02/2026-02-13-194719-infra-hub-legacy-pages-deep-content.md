@@ -26,7 +26,7 @@ Six Infra Hub pages remained untouched from the original documentation — the o
 
 **`infra-jobs.md`** — Merged two pages into one comprehensive reference. Covers: what an Infra Job is, execution sequence (init/refresh/preview/apply), the four essentials that get resolved before execution (IaC module, provider credentials, state backend, flow control), two deployment paths (direct vs orchestrated), monitoring, controlling execution (pause/cancel/rerun), preflight checks, and full CLI reference with verified flags.
 
-**`flow-control.md`** — Documented the five boolean controls using exact labels from the web console kind (`flow-control-display.tsx`): Manual Approval Required, Lifecycle Events Disabled, Skip Refresh, Preview Before Apply, Pause After Preview. Documented the four-level resolution hierarchy (resource > environment > organization > platform, first match wins, no merging). Added three practical patterns (development, production, shared infrastructure).
+**`flow-control.md`** — Documented the five boolean controls using exact labels from the web console component (`flow-control-display.tsx`): Manual Approval Required, Lifecycle Events Disabled, Skip Refresh, Preview Before Apply, Pause After Preview. Documented the four-level resolution hierarchy (resource > environment > organization > platform, first match wins, no merging). Added three practical patterns (development, production, shared infrastructure).
 
 **`getting-started.md`** — Replaced 463-line fabricated tutorial with a concise 5-step orientation page (68 lines). Each step links to the relevant deep-content page rather than duplicating content with invented examples.
 
@@ -51,7 +51,7 @@ Six Infra Hub pages remained untouched from the original documentation — the o
 - `apis/ai/planton/infrahub/infrajob/v1/` — `InfraJobOperationType` enum, `InfraJobSpec`, `InfraJobEssentials`, preflight checks
 - ADR `2026-01-18-085121-redesign-infrajob-essentials-resolution.md` — Essentials resolution simplification
 - CLI: 11 subcommands from Go source (`create-infra-job`, `cancel`, `resume`, `rerun`, `list`, `preflight-checks`, `stream-progress-events`, `stream-status`, `iac-input`, `iac-execute-input`, `execute`) with verified flags
-- Web console: Infra Job detail page, log streaming kind, flow control display
+- Web console: Infra Job detail page, log streaming component, flow control display
 - Backend README: `backend/services/infra-hub/_module/src/main/java/ai/planton/infrahub/domain/infrajob/README.md`
 
 **Flow Control page** verified against:
@@ -64,7 +64,7 @@ Six Infra Hub pages remained untouched from the original documentation — the o
 - **Merged two pages into one**: `what-is-a-infra-job.md` (introductory) and `infra-jobs.md` (deep dive) had significant overlap; IA explicitly called for merge
 - **Deleted rather than redirected**: Three redundant pages deleted entirely rather than converted to thin redirect pages — reduces maintenance burden
 - **Getting Started as navigation page**: Concise orientation rather than tutorial — each step links to deep-content pages, avoiding duplication and staleness
-- **Flow control labels from web console**: Used exact labels from `FlowControlDisplay` kind for user-facing consistency
+- **Flow control labels from web console**: Used exact labels from `FlowControlDisplay` component for user-facing consistency
 
 ## Benefits
 
@@ -80,7 +80,7 @@ Six Infra Hub pages remained untouched from the original documentation — the o
 - Infra Jobs documentation matches actual CLI commands and web console behavior
 - Flow Control documentation uses exact web console labels for consistency
 - Getting Started page links to deep-content pages rather than duplicating with fabricated examples
-- Readers no longer encounter two pages about the same concept (infra jobs) or three locations for credential documentation
+- Readers no longer encounter two pages about the same concept (Infra Jobs) or three locations for credential documentation
 
 ## Related Work
 

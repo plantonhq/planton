@@ -18,7 +18,7 @@ On Planton's hosted product you do not need one to start: until you add a runner
 
 ## Why Runner Exists
 
-Any platform that manages infrastructure on your behalf faces a fundamental tension: it needs to act in your cloud accounts, but you cannot simply hand over your AWS keys, GCP service accounts, or Azure credentials to a SaaS vendor. And even if you were willing to share credentials, the platform still needs network access to your private Kubernetes clusters, VPCs, and infra components — access that typically requires VPN tunnels, IP allowlisting, or inbound firewall rules.
+Any platform that manages infrastructure on your behalf faces a fundamental tension: it needs to act in your cloud accounts, but you cannot simply hand over your AWS keys, GCP service accounts, or Azure credentials to a SaaS vendor. And even if you were willing to share credentials, the platform still needs network access to your private Kubernetes clusters, VPCs, and other provider resources — access that typically requires VPN tunnels, IP allowlisting, or inbound firewall rules.
 
 Runner resolves both problems at once. Instead of pulling credentials up to Planton's control plane, Runner pushes execution down to your infrastructure. The runner holds your cloud credentials locally and connects outbound to Planton through a secure mutual TLS tunnel. Planton sends operation requests through this tunnel, and the runner executes them using the credentials it already has. Credentials never leave your environment. No inbound ports are opened. No VPN is needed.
 
@@ -38,7 +38,7 @@ When you view Kubernetes pods, stream logs, exec into containers, or browse AWS/
 
 ### Infrastructure Deployments
 
-When Planton runs a deployment — creating a VPC, provisioning a database, updating a Kubernetes cluster — the runner executes the underlying Pulumi, Terraform, or OpenTofu operations. It retrieves the infrastructure code, runs the deployment with your credentials, and reports progress back to the platform. This is the engine behind [Infrastructure](/docs/infrastructure) infra jobs.
+When Planton runs a deployment — creating a VPC, provisioning a database, updating a Kubernetes cluster — the runner executes the underlying Pulumi, Terraform, or OpenTofu operations. It retrieves the infrastructure code, runs the deployment with your credentials, and reports progress back to the platform. This is the engine behind [Infrastructure](/docs/infrastructure) Infra Jobs.
 
 ## How It Works
 

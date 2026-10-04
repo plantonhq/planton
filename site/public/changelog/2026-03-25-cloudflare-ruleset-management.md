@@ -10,7 +10,7 @@ author:
     title: Founder
 ---
 
-Cloudflare Rulesets are now a first-class infra component in Infra Hub. You can create, configure, and deploy rulesets that control how Cloudflare handles traffic for your domains — origin routing, caching, security, request transforms, and more — all managed through the same workflow you use for every other infra component on the platform.
+Cloudflare Rulesets are now a first-class catalog kind in Infra Hub. You can create, configure, and deploy rulesets that control how Cloudflare handles traffic for your domains — origin routing, caching, security, request transforms, and more — all managed through the same workflow you use for every other catalog kind on the platform.
 
 ## What You Can Do
 

@@ -27,7 +27,7 @@ The KubernetesIstio kind was at 68.86% completion with several critical gaps:
 
 ## Solution / What's New
 
-Completed all missing kinds following Planton standards, with emphasis on proper documentation and full IaC implementation for both tools.
+Completed all missing components following Planton standards, with emphasis on proper documentation and full IaC implementation for both tools.
 
 ### Key Changes
 
@@ -69,7 +69,7 @@ resource "kubernetes_namespace" "istio_ingress" {
 # Helm releases for base, istiod, gateway with proper dependencies
 ```
 
-**Kinds Deployed**:
+**Components Deployed**:
 - Istio Base (CRDs and foundational resources)
 - Istiod Control Plane (Pilot, Citadel, Galley unified)
 - Istio Ingress Gateway (external traffic handling)
@@ -173,7 +173,7 @@ output "ingress_endpoint" { value = local.ingress_endpoint }
 - Benefits (platform engineers, dev teams, organizations)
 - Quick start examples (3 scenarios)
 - Use cases (6 common patterns)
-- Kind architecture diagram
+- Component architecture diagram
 
 **examples.md** (8KB):
 - 5 comprehensive deployment scenarios:
@@ -197,7 +197,7 @@ output "ingress_endpoint" { value = local.ingress_endpoint }
 
 **Pulumi overview.md** (10KB):
 - Architecture diagrams (control plane, namespaces, data flow)
-- Kind flow explanation
+- Component flow explanation
 - Module design patterns
 - Dependency management
 - Resource sizing guidance (dev to enterprise)

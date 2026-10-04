@@ -10,7 +10,7 @@ Completely removed the self-hosted web application layer from Planton — the Go
 
 ## Problem Statement / Motivation
 
-Planton experimented with an optional self-hosted web application (backend + frontend + MongoDB, shipped as a unified Docker container) that provided a local UI for managing infra components, credentials, and stack updates. After evaluation, the decision was made to not pursue this direction:
+Planton experimented with an optional self-hosted web application (backend + frontend + MongoDB, shipped as a unified Docker container) that provided a local UI for managing Infra Components, credentials, and stack updates. After evaluation, the decision was made to not pursue this direction:
 
 ### Pain Points
 

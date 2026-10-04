@@ -15,7 +15,7 @@ Cloud Armor is a critical security layer for any production GCP deployment. With
 ### Pain Points
 
 - GCP users needed to configure Cloud Armor outside Planton, breaking the single-manifest deployment model
-- No way to compose security policies with other Planton-managed resources via infra charts
+- No way to compose security policies with other Planton-managed resources via Infra Charts
 - Cloud Armor's deeply nested rule structure (5 levels of nesting in TF) is error-prone to configure manually
 
 ## Solution / What's New
@@ -59,13 +59,13 @@ A complete catalog kind at `apis/dev/planton/provider/gcp/gcpcloudarmorpolicy/v1
 ## Benefits
 
 - Complete Cloud Armor coverage for Planton GCP users
-- Composable via `StringValueOrRef` -- `policySelfLink` output enables attachment to backend services in infra charts
+- Composable via `StringValueOrRef` -- `policySelfLink` output enables attachment to backend services in Infra Charts
 - 3 presets for immediate deployment: basic IP allowlist, OWASP WAF protection, API rate limiting
 
 ## Impact
 
 - **GCP users**: Can now define Cloud Armor policies declaratively alongside their load balancers and backend services
-- **Infra chart authors**: Can compose WAF policies into deployment environments
+- **Infra Chart authors**: Can compose WAF policies into deployment environments
 - **Project milestone**: Completes the GCP resource expansion (23 of 23 resources)
 
 ## Related Work

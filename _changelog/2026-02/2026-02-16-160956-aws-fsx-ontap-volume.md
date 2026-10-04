@@ -90,7 +90,7 @@ flowchart TB
 
 - Completes the FSx ONTAP kind family (R29a-R29f: 6 kinds)
 - Completes the entire AWS resource expansion (R01-R32: 35 new kinds + F1-F6 fixes)
-- Enables future infra charts combining ONTAP file systems, SVMs, and volumes
+- Enables future Infra Charts combining ONTAP file systems, SVMs, and volumes
 
 ## Related Work
 

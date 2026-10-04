@@ -100,7 +100,7 @@ These fields exclusively reference CloudWatch log groups. Two other fields (WAF 
 ## Impact
 
 - **Downstream references**: 3 completed kinds now have `default_kind` annotations enabling `valueFrom` auto-wiring
-- **Infra chart composability**: Log groups can now participate in DAG-based deployment ordering
+- **Infra Chart composability**: Log groups can now participate in DAG-based deployment ordering
 - **Resource count**: AWS coverage increases from 41 to 42 resource kinds (25 existing + 17 new)
 
 ## Surprise Findings

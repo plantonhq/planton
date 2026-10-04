@@ -101,7 +101,7 @@ Leaving all three unset means any (`*`).
 ## Infra Chart Usage
 
 AzureNetworkSecurityGroup is a key component in the **enterprise-network-foundation**
-infra chart, where per-tier NSGs enforce traffic segmentation:
+Infra Chart, where per-tier NSGs enforce traffic segmentation:
 
 ```
 AzureVirtualNetwork (VNet)
@@ -113,7 +113,7 @@ AzureVirtualNetwork (VNet)
         └── AzureNetworkSecurityGroup (data-nsg) ── association
 ```
 
-The NSG-to-subnet association is created by the infra chart, not by this component.
+The NSG-to-subnet association is created by the Infra Chart, not by this component.
 This keeps the NSG lifecycle independent of any particular subnet.
 
 ---

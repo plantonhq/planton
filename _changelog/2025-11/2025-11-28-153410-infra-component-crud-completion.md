@@ -6,11 +6,11 @@
 
 ## Summary
 
-Completed the infra component management functionality by implementing the remaining CRUD operations (Get, Update, Delete) across the entire stack - from proto definitions through backend services to CLI commands. The update operation includes robust validation to ensure data integrity by verifying that manifest name and kind match the existing resource before applying changes.
+Completed the Infra Component management functionality by implementing the remaining CRUD operations (Get, Update, Delete) across the entire stack - from proto definitions through backend services to CLI commands. The update operation includes robust validation to ensure data integrity by verifying that manifest name and kind match the existing resource before applying changes.
 
 ## Problem Statement
 
-The initial infra component implementation (from earlier today) provided only Create and List operations. This left critical gaps in infra component lifecycle management:
+The initial Infra Component implementation (from earlier today) provided only Create and List operations. This left critical gaps in Infra Component lifecycle management:
 
 ### Missing Capabilities
 
@@ -21,7 +21,7 @@ The initial infra component implementation (from earlier today) provided only Cr
 
 ### User Impact
 
-Without these operations, users managing infra components through the CLI faced:
+Without these operations, users managing Infra Components through the CLI faced:
 - Manual database operations for updates and deletions
 - No programmatic way to inspect individual resources
 - Inability to modify resource configurations without data loss
@@ -360,7 +360,7 @@ Created comprehensive test script: `test-catalog-kind-crud.sh`
 
 **Test coverage**:
 
-1. ✅ **Create** - Create infra component from YAML
+1. ✅ **Create** - Create Infra Component from YAML
 2. ✅ **List All** - Verify resource appears in list
 3. ✅ **List Filtered** - Filter by kind (CivoVpc)
 4. ✅ **Get by ID** - Retrieve resource details
@@ -406,7 +406,7 @@ MONGODB_URI="mongodb://localhost:27017" make dev
 ### For CLI Users
 
 **Complete Lifecycle Management**:
-- Full control over infra component lifecycle from CLI
+- Full control over Infra Component lifecycle from CLI
 - No need for manual database operations
 - Consistent command structure across all operations
 
@@ -463,20 +463,20 @@ MONGODB_URI="mongodb://localhost:27017" make dev
 
 ### Immediate
 
-**CLI Completeness**: CLI now supports complete infra component management without database access
+**CLI Completeness**: CLI now supports complete Infra Component management without database access
 **Feature Parity**: Infra component operations now match catalog kind capabilities
-**User Empowerment**: Users can manage entire infra component lifecycle from command line
+**User Empowerment**: Users can manage entire Infra Component lifecycle from command line
 
 ### Developer Experience
 
 **3 new CLI commands** enable complete resource management
-**Consistent UX** across all infra component operations
+**Consistent UX** across all Infra Component operations
 **Clear documentation** through help text and error messages
 **Test automation** via comprehensive test script
 
 ### System Capabilities
 
-**Backend API** now provides full CRUD interface for infra components
+**Backend API** now provides full CRUD interface for Infra Components
 **Web frontend** can leverage same APIs for UI (future work)
 **Update validation** ensures data integrity at service layer
 **MongoDB integration** complete with proper error handling
@@ -605,7 +605,7 @@ planton infra-component:update --id=507f... --arg=wrong-kind.yaml
 ### Foundation
 
 This work builds on:
-- **Infra Component Create/List** (earlier today) - Initial infra component implementation
+- **Infra Component Create/List** (earlier today) - Initial Infra Component implementation
 - **Catalog Kind Commands** - Established CLI patterns and Connect-RPC integration
 - **Backend Service Architecture** - Follows existing service/repository patterns
 
@@ -678,7 +678,7 @@ These limitations are intentional for the initial implementation and can be addr
 
 **No breaking changes**: This is purely additive functionality
 
-Existing users with infra components can immediately use:
+Existing users with Infra Components can immediately use:
 - `infra-component:get` to inspect resources
 - `infra-component:update` to modify resources (with validation)
 - `infra-component:delete` to clean up resources

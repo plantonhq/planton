@@ -65,7 +65,7 @@ apis/dev/planton/provider/oci/ocisubnet/v1/
 | `vcn_id` | StringValueOrRef | Required, default_kind: OciVcn |
 | `cidr_block` | string | Required |
 | `display_name` | string | Falls back to metadata.name |
-| `dns_label` | string | Subnet FQDN kind |
+| `dns_label` | string | Subnet FQDN component |
 | `availability_domain` | string | Omit for regional subnet |
 | `prohibit_public_ip_on_vnic` | bool | Private subnet control |
 | `prohibit_internet_ingress` | bool | Ingress traffic control |

@@ -6,7 +6,7 @@ dependency graph built from your references.
 
 This file covers values that RESOURCES produce (`valueFrom`). Values that
 OPERATORS manage — credentials and org/env config — are the other reference
-family, `$var`/`$secret` (`config-references.md`). One test tells them
+family, `$var`/`$secret` (`infra.config-references.md`). One test tells them
 apart: if deploying something creates the value, wire `valueFrom`; if a
 person or team owns the value, reference it from the config manager.
 
@@ -251,7 +251,7 @@ expression on both sides). Choosing between the two mechanisms:
   carries the data AND the edge.
 - **`relationships`** when the dependency is real but no spec field carries a
   value — the canonical case is Kubernetes workloads that must wait for their
-  cluster (see `kubernetes-on-cluster.md`), or an operator that must install
+  cluster (see `infra.kubernetes-on-cluster.md`), or an operator that must install
   before the instances it serves.
 
 A relationship never substitutes for `valueFrom` when a spec field needs the
@@ -263,10 +263,10 @@ actual value.
 `platform/certificates`). It draws as a tray inside the room its members live
 in and never affects deploy order. The platform already draws accounts,
 networks, and clusters, so a group never restates them; a tray of one is not
-drawn. When to use it and how it composes: `diagrams.md`.
+drawn. When to use it and how it composes: `infra.diagrams.md`.
 
 Relationship types change the picture too: only `runs_on` can place a resource
-inside its target; the others draw a line (`diagrams.md`).
+inside its target; the others draw a line (`infra.diagrams.md`).
 
 ## Common wiring mistakes
 

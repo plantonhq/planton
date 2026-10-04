@@ -451,7 +451,7 @@ Expected workflow:
 ---
 
 **Q: What debugging tools are essential?**
-- Kind inspector?
+- Component inspector?
 - Network request logging?
 - Performance profiling?
 - Console logging?
@@ -550,7 +550,7 @@ src/
 
 **Q: How will shared code be managed?**
 
-For kinds, utilities, types used across features:
+For components, utilities, types used across features:
 - [ ] Shared folder in same app
 - [ ] Separate shared package
 - [ ] Copy-paste (acceptable for small apps)
@@ -715,7 +715,7 @@ For **Flutter:**
 
 **Q: When to use local state vs global state?**
 
-**Local state** (kind-only):
+**Local state** (component-only):
 - Refill form input values (odometer, fuel quantity)
 - Modal open/closed
 - Dropdown expanded
@@ -1090,7 +1090,7 @@ Based on platform and backend decisions, choose libraries:
 - [ ] React Native Paper (Material Design)
 - [ ] NativeBase (customizable)
 - [ ] React Native Elements (community)
-- [ ] Custom kinds (full design control)
+- [ ] Custom components (full design control)
 
 **For Flutter:**
 - [ ] Material Widgets (built-in)
@@ -1276,7 +1276,7 @@ calculateMileage(currentOdometer, previousOdometer, fuelQuantity) {
 
 ---
 
-### Kind/Widget Tests
+### Component/Widget Tests
 
 **Q: What UI components need testing?**
 

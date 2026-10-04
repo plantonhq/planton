@@ -22,5 +22,5 @@ This preset writes an audit artifact under WORM (write-once-read-many) retention
 | `<aws-region>` | AWS region where the bucket lives | Must match the bucket's region |
 | `<object-lock-enabled-bucket-name>` | Bucket created with Object Lock enabled | AWS S3 console (Object Lock is a create-time setting) |
 | `<report-name>` | Artifact identifier used in the key and content | Your audit workflow |
-| `<kms-key-resource-name>` | Name of the `AwsKmsKey` resource whose ARN encrypts the object | Your infra stack's resource list |
+| `<kms-key-resource-name>` | Name of the `AwsKmsKey` resource whose ARN encrypts the object | Your Infra Stack's resource list |
 | `objectLockRetainUntilDate` (example value) | RFC 3339 timestamp until which the version is retained — replace `2033-01-01T00:00:00Z` with your retention deadline | Your retention policy |

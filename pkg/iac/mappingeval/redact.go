@@ -23,7 +23,7 @@ const (
 // presents to the proposer exactly as a stranger's account would: Name
 // tags and realistic user tags stay (real accounts have those, and they
 // are legitimate mapping signals); only the deploy machinery's identity
-// tags leave. The tags remain ON the infra components (fixture sweeps key
+// tags leave. The tags remain ON the provider resources (fixture sweeps key
 // off them by convention) -- this redacts the proposer's VIEW, nothing
 // else. It is deliberately NOT a general tag scrubber: the strip list is
 // exactly the fingerprints Planton's seeding writes, and must never grow

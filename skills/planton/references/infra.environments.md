@@ -30,7 +30,7 @@ environment, service, pull request number, expiry — and it is server-managed
 (create, update, and apply refuse it). Two laws to relay:
 
 - **Never try to delete one by hand** — `planton env delete` REFUSES a
-  preview, because a record-only delete would orphan its infra components. If
+  preview, because a record-only delete would orphan its Infra Components. If
   a user asks to remove a preview, close its pull request — that IS the
   delete button (or let the expiry pass).
 - **Previews never join promotion order** — they exist beside the durable
@@ -45,13 +45,13 @@ Deleting an environment removes Planton's records, secrets, variables, grants
 and the Planton-managed state of its resources -- it never touches the cloud.
 So `planton env delete <env>` is REFUSED while anything in the environment is
 still deployed; the refusal names each resource and the command that destroys
-it (`planton infra stack undeploy <project>` for a project's resources,
+it (`planton infra stack undeploy <stack>` for an Infra Stack's components,
 `planton purge <Kind> <slug>` for anything else). Relay the refusal; destroy
 first when the user wants the infrastructure gone. When they want it kept
 running outside Planton, `--retain-infra-components` deletes the environment
 and leaves the infrastructure alone -- refused while a running resource keeps
 its state in Planton-managed storage, until
-`planton state-backend move-off-planton` has moved that state to a backend
+`planton infra state-backend move-off-planton` has moved that state to a backend
 they own. Never pass the flag on your own judgment: it is the user's choice to
 stop Planton managing live infrastructure.
 
@@ -60,7 +60,7 @@ stop Planton managing live infrastructure.
 A developer asking for "dev and prod environments" on Kubernetes does NOT
 need two clusters. The default: **one cluster, with environments separated by
 namespace** (each environment chart creates its own namespace — see the
-two-chart pattern in `kubernetes-architecture.md`). The reasoning, worth
+two-chart pattern in `cloud.kubernetes-architecture.md`). The reasoning, worth
 saying out loud:
 
 - AWS manages the EKS control plane for high availability in exchange for its

@@ -13,7 +13,7 @@ Fixed replica counts are always wrong twice a day: too few at peak, too many at 
 **Key value over raw manifests:**
 
 - **Schema-level validation**: Every metric must carry exactly the source matching its declared type (a mismatch deploys a metric the controller silently ignores), every target exactly the value form matching its target type, floor ≤ ceiling, DaemonSet targets rejected, quantity and percentage format checks, and behavior contracts (a `disabled` direction cannot list policies) — all caught before anything reaches the cluster
-- **Namespace and target by value or reference**: `spec.namespace` accepts a literal or a `KubernetesNamespace` reference; `scale_target.name` accepts a literal or a reference to a `KubernetesDeployment`'s exported name, so an infra chart deploys the workload and its autoscaler in one run
+- **Namespace and target by value or reference**: `spec.namespace` accepts a literal or a `KubernetesNamespace` reference; `scale_target.name` accepts a literal or a reference to a `KubernetesDeployment`'s exported name, so an Infra Chart deploys the workload and its autoscaler in one run
 - **Deterministic defaults**: Both IaC modules apply the spec defaults (apps/v1 Deployment target, `min_replicas` 1) module-side and always send them explicitly, so the deployed object never depends on which engine applied it
 - **Dual IaC support**: Both Pulumi and Terraform implementations with feature parity
 - **Lifecycle management**: Integrated with Planton's deployment lifecycle for status tracking and outputs

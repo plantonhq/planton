@@ -6,7 +6,7 @@ An MSK cluster whose topics deploy WITH it: three contract topics (an event stre
 
 - Event-driven architectures where topics are part of the platform contract between services, not application-owned scratch space
 - Teams that disable `auto.create.topics.enable` (this preset does) so a typo'd topic name fails loudly instead of materializing an accidental single-replica topic
-- Infra charts wiring a cluster plus its consumers: the `topic_arns` output exposes each topic for IAM policy scoping
+- Infra Charts wiring a cluster plus its consumers: the `topic_arns` output exposes each topic for IAM policy scoping
 
 ## Configuration Highlights
 

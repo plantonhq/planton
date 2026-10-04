@@ -15,7 +15,7 @@ Cloud KMS key rings are the organizational prerequisite for all CMEK encryption 
 ### Pain Points
 
 - No way to declaratively create KMS key rings through Planton
-- Infra charts requiring CMEK cannot compose encryption resources
+- Infra Charts requiring CMEK cannot compose encryption resources
 - Manual key ring creation breaks IaC reproducibility and auditability
 
 ## Solution / What's New

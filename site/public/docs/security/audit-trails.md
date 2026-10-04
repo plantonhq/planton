@@ -58,7 +58,7 @@ Navigate to any resource's detail page in the web console and open the **Version
 
 <!-- SCREENSHOT: Resource versions list
   Page: /orgs/{org}/infra-component/{env}/{kind}/{name}/versions
-  Action: Show the versions tab for an infra component with at least 3 version entries
+  Action: Show the versions tab for an Infra Component with at least 3 version entries
   Focus: The versions list showing version names, users, event types, and status icons
   Alt: Resource versions list showing chronological change history with user avatars, event types, and deployment status indicators
 -->

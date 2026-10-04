@@ -17,7 +17,7 @@ Built the `/book-demo` page — a two-phase lead capture and scheduling experien
 - External forms break immersion — users leave the site
 - No structured lead data capture or immediate team notification
 - No scheduling integration — users must wait for follow-up
-- Google Form and Typeform URLs scattered across 50+ catalog kinds with no centralization
+- Google Form and Typeform URLs scattered across 50+ UI components with no centralization
 
 ## Solution / What's New
 
@@ -60,7 +60,7 @@ Replaced ALL external form URLs across the entire codebase:
 |------|---------|
 | `src/app/(focus)/layout.tsx` | Focus-mode layout: X button, Escape key, no chrome |
 | `src/app/(focus)/book-demo/page.tsx` | Route entry with SEO metadata |
-| `src/components/book-demo/BookDemoPage.tsx` | Main kind: phase state, two-column layout, confetti, Phase 1/2 left columns |
+| `src/components/book-demo/BookDemoPage.tsx` | Main component: phase state, two-column layout, confetti, Phase 1/2 left columns |
 | `src/components/book-demo/BookDemoForm.tsx` | Lead capture form: Tailwind-styled inputs, validation, submission, error states |
 | `src/components/book-demo/BookDemoScheduler.tsx` | Cal.com embed with `getCalApi` initialization, dynamic import |
 | `src/components/book-demo/types.ts` | Shared types, constants, dropdown options |
@@ -68,11 +68,11 @@ Replaced ALL external form URLs across the entire codebase:
 ### Modified Files
 
 - `package.json` + `yarn.lock` — added `@calcom/embed-react`
-- 50+ kind files — Google Form and Typeform URLs replaced with `/book-demo`
+- 50+ component files — Google Form and Typeform URLs replaced with `/book-demo`
 
 ### Key Design Decisions
 
-**Tailwind-styled native inputs over MUI TextField**: The site had zero existing form kinds. Native `<input>` and `<select>` elements styled with Tailwind give pixel-perfect control matching the monochrome design system (`bg-[#1a1a1a]`, `border-[#2a2a2a]`, `text-[#ededed]`).
+**Tailwind-styled native inputs over MUI TextField**: The site had zero existing form components. Native `<input>` and `<select>` elements styled with Tailwind give pixel-perfect control matching the monochrome design system (`bg-[#1a1a1a]`, `border-[#2a2a2a]`, `text-[#ededed]`).
 
 **Focus-mode layout**: Inspired by the console app's creation wizard. The `/book-demo` page is a conversion-critical flow — removing site chrome eliminates distraction and creates focus.
 

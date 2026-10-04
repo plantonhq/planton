@@ -814,7 +814,7 @@ spec:
   nothing or by its node is its own workload. Operators act on the
   workload, not on a pod hash.
 - **Provisioned dashboards are read-only**, even for an Admin, and the
-  rest of the rules (delimiters in an infra chart, `schemaVersion`,
+  rest of the rules (delimiters in an Infra Chart, `schemaVersion`,
   catching a hand-made copy) are in the `KubernetesGrafana` guide,
   "Dashboards as code".
 

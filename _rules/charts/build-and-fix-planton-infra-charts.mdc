@@ -339,7 +339,7 @@ Do not commit or create changelogs unless explicitly asked.
 
 ## Quality Standards
 
-This repository is a critical kind of a production platform serving real infrastructure deployments. Every template fix must meet these standards:
+This repository is a critical component of a production platform serving real infrastructure deployments. Every template fix must meet these standards:
 
 - **Traceable to proto**: Every change must be justified by a specific field, enum, or message in the proto definition. No guessing.
 - **Minimal diff**: Change only what the proto requires. Don't reformat, reorganize, or "improve" templates beyond what's needed to pass validation.

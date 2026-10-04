@@ -91,7 +91,7 @@ flowchart TB
 
 - **Users**: Can declaratively provision volumes and optionally attach them to servers
 - **Future kinds**: R09 (Snapshot) does not directly reference Volume, but Volume+Server together enable the complete compute stack
-- **Infra charts**: server-environment and ha-server-cluster charts use Volume for persistent data storage
+- **Infra Charts**: server-environment and ha-server-cluster charts use Volume for persistent data storage
 - **Pattern precedent**: Separate attachment resource pattern established (used inline by FloatingIp for comparison)
 
 ## Files Changed

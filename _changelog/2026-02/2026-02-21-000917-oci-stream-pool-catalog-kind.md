@@ -15,7 +15,7 @@ OCI Streaming provides a fully managed, Kafka-compatible event-streaming service
 ### Pain Points
 
 - No managed way to provision OCI Streaming infrastructure through Planton
-- Kafka-compatible streaming is a prerequisite for the planned OCI Data Platform infra chart
+- Kafka-compatible streaming is a prerequisite for the planned OCI Data Platform Infra Chart
 - Stream pools and streams are tightly coupled (streams inherit pool settings) but must be provisioned separately through the provider
 
 ## Solution / What's New

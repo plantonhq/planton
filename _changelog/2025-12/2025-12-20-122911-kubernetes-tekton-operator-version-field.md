@@ -170,7 +170,7 @@ spec:
   targetCluster:
     clusterName: "my-cluster"
   container: {}
-  kinds:
+  components:
     pipelines: true
     triggers: true
     dashboard: true
@@ -188,7 +188,7 @@ spec:
   targetCluster:
     clusterName: "my-cluster"
   container: {}
-  kinds:
+  components:
     pipelines: true
     triggers: true
     dashboard: false

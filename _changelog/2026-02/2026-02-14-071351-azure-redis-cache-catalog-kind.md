@@ -10,12 +10,12 @@ Added AzureRedisCache (enum 431, id_prefix: azred) as a complete Planton catalog
 
 ## Problem Statement / Motivation
 
-Azure Cache for Redis is a critical piece of enterprise Azure architectures, serving as the caching and session management layer for web applications, container apps, and microservices. Without it, the database-stack, container-apps-environment, and web-app-environment infra charts lack an optional cache tier.
+Azure Cache for Redis is a critical piece of enterprise Azure architectures, serving as the caching and session management layer for web applications, container apps, and microservices. Without it, the database-stack, container-apps-environment, and web-app-environment Infra Charts lack an optional cache tier.
 
 ### Pain Points
 
 - No Planton kind for Azure's managed Redis service
-- Infra charts couldn't include an optional caching layer
+- Infra Charts couldn't include an optional caching layer
 - Users deploying Azure workloads had to manage Redis separately
 
 ## Solution / What's New
@@ -75,13 +75,13 @@ A complete AzureRedisCache catalog kind covering all three SKU tiers (Basic, Sta
 ## Benefits
 
 - **Database category complete**: PostgreSQL + MySQL + MSSQL + CosmosDB + Redis covers all major Azure data services
-- **Infra chart ready**: Redis can now be an optional component in database-stack, container-apps-environment, and web-app-environment charts
+- **Infra Chart ready**: Redis can now be an optional component in database-stack, container-apps-environment, and web-app-environment charts
 - **Production-quality docs**: README with SKU comparison tables, eviction policy guidance, network access patterns; 7 YAML examples; comprehensive research docs
 
 ## Impact
 
 - **Users**: Can deploy Azure Cache for Redis through Planton with the same declarative YAML pattern as all other resources
-- **Infra charts**: Database-stack and app-environment charts can now include optional caching layers
+- **Infra Charts**: Database-stack and app-environment charts can now include optional caching layers
 - **Downstream**: AzurePrivateEndpoint can reference `redis_id` for private connectivity
 
 ## Related Work

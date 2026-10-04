@@ -17,7 +17,7 @@ OciDnsZone (R34) provides authoritative DNS zones, but without record management
 - DNS zones were deployable but records could not be managed declaratively
 - Phase 10 (DNS and Certificates) was incomplete at 1/2 resources
 - The full 37-resource OCI catalog could not be marked complete
-- Infra charts requiring DNS records (OKE Environment, Serverless Stack) lacked the building block
+- Infra Charts requiring DNS records (OKE Environment, Serverless Stack) lacked the building block
 
 ## Solution / What's New
 
@@ -91,14 +91,14 @@ A complete catalog kind (`OciDnsRecord`) wrapping `oci_dns_rrset` with proto API
 
 - **Users**: Can now declaratively manage DNS records for any record type within OCI DNS zones
 - **Platform**: Phase 10 (DNS and Certificates) now 100% complete; all 37 OCI resource kinds implemented
-- **Infra Charts**: All 5 planned infra charts now have their full building block set available
-- **Project**: The resource implementation queue (T02) is fully complete; project transitions to post-resource phases (infra charts)
+- **Infra Charts**: All 5 planned Infra Charts now have their full building block set available
+- **Project**: The resource implementation queue (T02) is fully complete; project transitions to post-resource phases (Infra Charts)
 
 ## Related Work
 
 - **OciDnsZone** (R34): Parent zone resource referenced via `zone_name_or_id`
 - **Infra Charts**: OKE Environment and Serverless Stack charts can now include DNS record provisioning
-- **Post-Resource Phase**: All 37 resources done; 5 infra charts and sub-project completion remain
+- **Post-Resource Phase**: All 37 resources done; 5 Infra Charts and sub-project completion remain
 
 ---
 

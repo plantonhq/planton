@@ -10,7 +10,7 @@ Deep-rebuilt `GcpGkeCluster` (enum 607) from a 14-field private-cluster wrapper 
 
 ## Problem Statement / Motivation
 
-The GKE cluster kind was the largest depth gap in the GCP catalog: the provider resource exposes ~92 top-level keys; the spec modeled 14. An advanced organization could not reach maintenance windows, master authorized networks, node auto-provisioning, CMEK, Binary Authorization, per-kind observability, or Autopilot at all.
+The GKE cluster kind was the largest depth gap in the GCP catalog: the provider resource exposes ~92 top-level keys; the spec modeled 14. An advanced organization could not reach maintenance windows, master authorized networks, node auto-provisioning, CMEK, Binary Authorization, per-component observability, or Autopilot at all.
 
 ### Pain Points
 
@@ -30,7 +30,7 @@ The GKE cluster kind was the largest depth gap in the GCP catalog: the provider 
 - **Upgrades**: release channels (incl. EXTENDED), min master version, daily XOR recurring maintenance windows, up to 20 scoped exclusions.
 - **Autoscaling**: node auto-provisioning with mandatory resource limits (an unbounded NAP is an unbounded bill), profiles, full auto-provisioning defaults (SA/KMS refs, disks, shielding, auto-repair/upgrade); VPA; HPA profile.
 - **Security**: Workload Identity (default on), shielded nodes, CMEK etcd encryption (`GcpKmsKey` ref), Binary Authorization, Security Posture, authenticator groups, confidential nodes, anonymous-auth hardening, identity service, mesh certificates, Secret Manager CSI.
-- **Observability**: per-kind logging/monitoring, managed Prometheus + auto-monitoring, Pub/Sub lifecycle notifications (`GcpPubSubTopic` ref), cost allocation, BigQuery usage export (`GcpBigQueryDataset` ref).
+- **Observability**: per-component logging/monitoring, managed Prometheus + auto-monitoring, Pub/Sub lifecycle notifications (`GcpPubSubTopic` ref), cost allocation, BigQuery usage export (`GcpBigQueryDataset` ref).
 - **Addons**: HTTP LB, HPA, PD/Filestore/GCS-Fuse CSI, Backup for GKE, NodeLocal DNSCache, Config Connector, Stateful HA, Ray operator.
 - **Autopilot as a mode, not a kind**: same provider resource, one immutable flag; the API's conflict set (NAP, max-pods, intranode visibility, Calico, shielded-nodes flag, dns-cache/stateful-ha addons, `allow_net_admin` on Standard) is enforced by seven message-level CEL rules before any cloud call.
 

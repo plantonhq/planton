@@ -45,7 +45,7 @@ Deploy out/ to GitHub Pages (includes index)
 ```
 User Types in Search Box
     ↓
-Kind Dynamically Imports /_pagefind/pagefind.js
+Component Dynamically Imports /_pagefind/pagefind.js
     ↓
 Pagefind Loads Index (lazy-loaded, cached)
     ↓
@@ -77,9 +77,9 @@ Added `postbuild` script to automatically generate search index after Next.js bu
 - Generates index in `out/_pagefind/` for deployment
 - Automatic execution after every Next.js build
 
-**2. Functional Search Kind**
+**2. Functional Search Component**
 
-Replaced placeholder SearchBar.tsx with full-featured Pagefind-based search kind:
+Replaced placeholder SearchBar.tsx with full-featured Pagefind-based search component:
 
 **File**: `site/src/app/docs/components/SearchBar.tsx`
 
@@ -267,7 +267,7 @@ Total:
 Finished in 0.966 seconds
 ```
 
-### Search Kind Implementation
+### Search Component Implementation
 
 **Key Implementation Details**:
 
@@ -374,7 +374,7 @@ const DEV_SEARCH_NOTICE = (
 
 ✅ **Maintainable Solution**
 - Clear TypeScript types
-- Well-structured kind code
+- Well-structured component code
 - Purple theme defined in centralized styles
 
 ### For Operations
@@ -488,17 +488,17 @@ if (!el || INPUTS.has(el.tagName) || (el as HTMLElement).isContentEditable) {
 
 ### Why Material-UI for Results?
 
-**Chosen**: Material-UI Popper and Paper kinds
+**Chosen**: Material-UI Popper and Paper components
 **Considered**: Custom CSS dropdown, Headless UI Combobox (Nextra approach)
 
 **Rationale**:
-✅ **Consistency**: Matches existing site kinds (DocsHeader, DocsSidebar)
+✅ **Consistency**: Matches existing site components (DocsHeader, DocsSidebar)
 ✅ **Purple Theme**: Easy to apply site branding with MUI `sx` prop
 ✅ **Accessibility**: Built-in ARIA attributes and keyboard navigation
-✅ **Mobile Support**: Responsive Paper kind adapts to screen sizes
+✅ **Mobile Support**: Responsive Paper component adapts to screen sizes
 ✅ **Familiar API**: Team already uses MUI throughout site
 
-**Trade-off**: Adds ~300 lines to kind but provides robust dropdown behavior.
+**Trade-off**: Adds ~300 lines to component but provides robust dropdown behavior.
 
 ### Why Exclude Code Blocks?
 
@@ -517,7 +517,7 @@ if (!el || INPUTS.has(el.tagName) || (el as HTMLElement).isContentEditable) {
 
 **Rationale**:
 ✅ **Type Safety**: Autocomplete and type checking for Pagefind API
-✅ **Self-Contained**: Types live with kind implementation
+✅ **Self-Contained**: Types live with component implementation
 ✅ **Build Success**: Suppresses TypeScript errors for dynamic import
 
 **Trade-off**: Requires `// @ts-ignore` comment for dynamic import of generated file.

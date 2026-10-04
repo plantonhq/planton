@@ -10,7 +10,7 @@ Added the `AzurePublicIp` catalog kind (enum 413, id_prefix `azpip`) to Planton,
 
 ## Problem Statement / Motivation
 
-The Azure resource expansion project requires 20 more networking, database, serverless, messaging, and CDN resources. Public IP addresses are a foundational networking primitive -- they are referenced by load balancers, application gateways, and NAT gateways. Without a standalone AzurePublicIp resource, downstream networking resources cannot compose properly in infra charts.
+The Azure resource expansion project requires 20 more networking, database, serverless, messaging, and CDN resources. Public IP addresses are a foundational networking primitive -- they are referenced by load balancers, application gateways, and NAT gateways. Without a standalone AzurePublicIp resource, downstream networking resources cannot compose properly in Infra Charts.
 
 ### Pain Points
 
@@ -72,7 +72,7 @@ Azure retired the Basic SKU on September 30, 2025. Standard SKU requires static 
 ## Impact
 
 - **Downstream resources**: AzureLoadBalancer (R09) and AzureApplicationGateway (R10) will reference `public_ip_id` via StringValueOrRef
-- **Infra charts**: Enables the `enterprise-network-foundation` chart (Public IP as Layer 1 resource)
+- **Infra Charts**: Enables the `enterprise-network-foundation` chart (Public IP as Layer 1 resource)
 - **Existing resources**: AzureNatGateway could be refactored to reference an external AzurePublicIp instead of creating inline IPs
 
 ## Related Work

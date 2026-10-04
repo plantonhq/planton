@@ -10,7 +10,7 @@ Forged `AzureContainerApp` (R18) -- the most complex Azure kind in Planton with 
 
 ## Problem Statement / Motivation
 
-The Azure resource expansion project (20260212.05.sp.azure-resource-expansion) requires 24 new Azure resource kinds for enterprise workloads. R18 AzureContainerApp is the container workload resource that deploys into the AzureContainerAppEnvironment (R17, already forged). It is the primary workload type for the container-apps-environment infra chart.
+The Azure resource expansion project (20260212.05.sp.azure-resource-expansion) requires 24 new Azure resource kinds for enterprise workloads. R18 AzureContainerApp is the container workload resource that deploys into the AzureContainerAppEnvironment (R17, already forged). It is the primary workload type for the container-apps-environment Infra Chart.
 
 ### Pain Points
 
@@ -112,13 +112,13 @@ flowchart TB
 - **21 message types**: Most complex Azure kind, matching the resource's true complexity
 - **53 validation tests**: Comprehensive test coverage for all fields and constraints
 - **Dual IaC**: Full feature parity between Pulumi and Terraform implementations
-- **Infra chart ready**: All cross-resource references use StringValueOrRef for composability
+- **Infra Chart ready**: All cross-resource references use StringValueOrRef for composability
 - **3 presets**: Ready-to-deploy templates for common patterns
 
 ## Impact
 
 - **Users**: Can deploy Azure Container Apps with full feature coverage through Planton
-- **Infra charts**: container-apps-environment chart can now include workload definitions
+- **Infra Charts**: container-apps-environment chart can now include workload definitions
 - **Project**: R18 of 24 Azure resources complete (75% of queue done)
 
 ## Code Metrics
@@ -133,7 +133,7 @@ flowchart TB
 ## Related Work
 
 - **Depends on**: AzureContainerAppEnvironment (R17, enum 440)
-- **Enables**: container-apps-environment infra chart (T03)
+- **Enables**: container-apps-environment Infra Chart (T03)
 - **Part of**: 20260212.05.sp.azure-resource-expansion (R18 of 24)
 - **Next**: R19 AzureFunctionApp (enum 443, id_prefix azfn)
 

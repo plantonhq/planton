@@ -14,7 +14,7 @@ Without quotas, a namespace can consume the entire cluster — one runaway team,
 
 - **The pair is managed together**: A compute quota without container defaults makes the API reject pods that omit requests/limits — the classic quota footgun. Setting `limit_defaults` alongside `hard` keeps the namespace livable, and both objects share one name and one lifecycle
 - **Schema-level validation**: Conflicting scope pairs, the best_effort-caps-only-pods rule, the scope-selector operator contract, and defaults-on-container-only — all caught before anything reaches the cluster (these mirror the API server's own admission rejections)
-- **Namespace by value or reference**: `spec.namespace` accepts a literal name or a reference to a `KubernetesNamespace` resource, so an infra chart can create the namespace and its governance in one run
+- **Namespace by value or reference**: `spec.namespace` accepts a literal name or a reference to a `KubernetesNamespace` resource, so an Infra Chart can create the namespace and its governance in one run
 - **Dual IaC support**: Both Pulumi and Terraform implementations with feature parity
 - **Lifecycle management**: Integrated with Planton's deployment lifecycle for status tracking and outputs
 

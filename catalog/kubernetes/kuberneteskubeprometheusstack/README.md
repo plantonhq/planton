@@ -86,7 +86,7 @@ pre-loaded with the matching dashboards.
 - **`helm_values` is the escape hatch** — additional chart values
   merged LAST over everything the typed fields render (Helm `-f`
   semantics, identical on both engines): Thanos sidecar/ruler,
-  windows monitoring, scrape classes, per-kind securityContexts.
+  windows monitoring, scrape classes, per-component securityContexts.
   Never for secrets.
 
 ## Essential Configuration Fields

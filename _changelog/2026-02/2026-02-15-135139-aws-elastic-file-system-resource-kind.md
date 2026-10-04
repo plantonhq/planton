@@ -87,7 +87,7 @@ A complete AwsElasticFileSystem catalog kind that bundles 5 AWS resources into a
 - **New resource kind**: AwsElasticFileSystem (enum 290)
 - **Files**: ~35 source files (proto, Go, Terraform, docs, presets)
 - **Tests**: 22 validation tests
-- **Downstream enablement**: Unlocks EFS-backed storage for EKS, ECS, and Lambda infra charts
+- **Downstream enablement**: Unlocks EFS-backed storage for EKS, ECS, and Lambda Infra Charts
 
 ## Related Work
 

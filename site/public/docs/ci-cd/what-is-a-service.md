@@ -95,7 +95,7 @@ graph LR
 3. **Deploy**: The pipeline deploys the artifact to each configured environment in order, respecting manual approval gates where configured.
 4. **Iterate**: Update the Service configuration as requirements change — add environments, switch build methods, adjust trigger paths. Changes take effect on the next pipeline run.
 
-Deleting a Service removes the configuration and disconnects the webhook. It does **not** delete deployed infra components — those must be removed separately.
+Deleting a Service removes the configuration and disconnects the webhook. It does **not** delete deployed Infra Components — those must be removed separately.
 
 ## Related Resources
 

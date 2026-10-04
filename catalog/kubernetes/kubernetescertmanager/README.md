@@ -27,7 +27,7 @@ cert-manager talks ACROSS clouds: it runs IN one environment and its DNS-01 solv
 | Any (token-based DNS) | none needed | — | Cloudflare/DigitalOcean/RFC2136 tokens ride the issuer, not the controller |
 | kind / datacenter / self-managed | none | — | Use token-based DNS providers or HTTP-01 |
 
-The controller ServiceAccount name is exported (`status.outputs.service_account_name`) precisely so the cloud-side half can be composed in the same infra chart.
+The controller ServiceAccount name is exported (`status.outputs.service_account_name`) precisely so the cloud-side half can be composed in the same Infra Chart.
 
 ## Essential Configuration Fields
 

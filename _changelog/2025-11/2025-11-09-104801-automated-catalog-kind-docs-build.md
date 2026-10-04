@@ -517,7 +517,7 @@ This preserves `index.md` and any other manual documentation while cleaning gene
 - ✅ Consistent branding - same icons used throughout site
 - ✅ Better UX - reduces cognitive load compared to text-only
 
-**Implementation**: Dynamic detection of provider folders under `catalog/` with icon mapping in the sidebar kind.
+**Implementation**: Dynamic detection of provider folders under `catalog/` with icon mapping in the sidebar component.
 
 ### Why GitHub Star Badge vs Simple Icon?
 
@@ -640,7 +640,7 @@ Related documentation infrastructure work:
 - Next.js site setup with docs routing
 - Purple-themed UI components
 
-### Kind Reusability
+### Component Reusability
 
 The build script pattern can be extended to:
 - Generate API reference from proto files

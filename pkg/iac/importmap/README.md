@@ -105,7 +105,7 @@ carry an import handler, the scheduled action does not. The round-trip
 skips these addresses at import and proves the ADOPTER'S contract for them
 instead — the post-import plan proposes re-creating exactly those
 resources, and the reconcile-apply executes it. That is honest only when
-the type's create path CONVERGES on an existing infra component (an
+the type's create path CONVERGES on an existing provider resource (an
 upsert-style Put, as PutScheduledAction is); a type whose create would
 conflict with its own survivor needs different treatment, and the live
 lane is what verifies the convergence.

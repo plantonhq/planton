@@ -122,6 +122,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference the namespace so infra charts create it and this policy in dependency order
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference the namespace so Infra Charts create it and this policy in dependency order
 - [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- its `app` label is the selection contract; its `selector_labels` output carries the full set
 - [**Cilium**](/infra-catalog/kubernetes-cilium) -- a CNI that enforces these policies (and extends them with its own richer policy language)

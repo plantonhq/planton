@@ -7,7 +7,7 @@
 ## Summary
 
 Every kind README (all 560 under `apis/dev/planton/**/<kind>/v1/`)
-and every infra chart README (all 64 under `charts/`) now ends with the
+and every Infra Chart README (all 64 under `charts/`) now ends with the
 canonical license footer, and a new guard in the `lint.*` CI family makes it
 impossible for a future kind to ship without one. The footer's LICENSE
 link is now an absolute URL, so the attribution survives copying a kind

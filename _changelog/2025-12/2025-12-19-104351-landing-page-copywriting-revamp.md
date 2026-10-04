@@ -120,7 +120,7 @@ The existing landing page at `src/app/(root)/page.tsx` was organized around thes
 - **Metrics Bar**: <1 hour deployment, 100% retention, 5x faster, $20/dev starting price
 
 #### Section 9: Pricing (Simplified)
-- **Two Kinds**: $20/dev/month + $0.006/min automation minutes
+- **Two Components**: $20/dev/month + $0.006/min automation minutes
 - **Real Customer Example**: iorta TechNext ($450/month vs $12,500/month for DevOps hire)
 - **Link to Dedicated Page**: planton.ai/pricing for full tier details
 - **Removed**: Detailed Free/Plus/Pro tier breakdown (exists on dedicated pricing page)
@@ -571,20 +571,20 @@ Softened all competitor comparisons to neutral statements:
 3. Implement section-by-section in React components
 4. Priority sections: Hero, Problem/Solution, Service Hub (currently missing)
 5. Replace: `conversational.tsx` → Hero, `experience-the-future.tsx` → Final CTA
-6. Create new: Service Hub, Open Standards, Customer Stories kinds
+6. Create new: Service Hub, Open Standards, Customer Stories components
 
-**Kind Mapping**:
+**Component Mapping**:
 - Section 1 (Hero) → Replace `src/components/landing-page/conversational.tsx`
-- Section 2 (Problem/Solution) → New kind (three-column layout)
+- Section 2 (Problem/Solution) → New component (three-column layout)
 - Section 3 (Infra Hub) → Evolve `src/components/landing-page/home-features.tsx`
-- Section 4 (Service Hub) → New kind (critical addition)
-- Section 5 (Open Standards) → New kind
-- Section 6 (Open Source) → New kind
-- Section 7 (Agent Fleet) → New kind (secondary positioning)
-- Section 8 (Customer Stories) → New kind
-- Section 9 (Pricing) → Simplified kind with link to pricing page
-- Section 10 (Built by DevOps) → New kind (simplified from draft-1)
-- Section 11 (Security) → New kind
+- Section 4 (Service Hub) → New component (critical addition)
+- Section 5 (Open Standards) → New component
+- Section 6 (Open Source) → New component
+- Section 7 (Agent Fleet) → New component (secondary positioning)
+- Section 8 (Customer Stories) → New component
+- Section 9 (Pricing) → Simplified component with link to pricing page
+- Section 10 (Built by DevOps) → New component (simplified from draft-1)
+- Section 11 (Security) → New component
 - Section 12 (Final CTA) → Replace `src/components/landing-page/experience-the-future.tsx`
 
 **Visual Assets Needed**:
@@ -631,7 +631,7 @@ Softened all competitor comparisons to neutral statements:
 - Create React components for new sections (Service Hub, Open Standards, Customer Stories)
 - Design and create visual diagrams (Tekton flow, deployment topologies, open standards integration)
 - Request customer logos and testimonial permissions
-- Update existing kinds (Hero, Infra Hub, Final CTA)
+- Update existing components (Hero, Infra Hub, Final CTA)
 - Test responsive layout for all new sections
 - SEO optimization for new messaging
 - Analytics tracking for new CTAs

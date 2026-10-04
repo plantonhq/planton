@@ -149,7 +149,7 @@ The `connectionName` is the most important output. It is the identifier you use 
 To list all deployment jobs for this resource:
 
 ```bash
-planton infra-job list <infra-component-id>
+planton infra job list <infra-component-id>
 ```
 
 ## Development Configuration

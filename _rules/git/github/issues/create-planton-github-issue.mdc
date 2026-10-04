@@ -64,7 +64,7 @@ Based on the conversation context and affected files, automatically infer labels
 - Design needed → `needs-design`
 - Team input needed → `needs-discussion`
 
-### Kind Labels (from providers)
+### Component Labels (from providers)
 - Kubernetes deployments → `kubernetes`
 - AWS deployments → `aws`
 - GCP deployments → `gcp`

@@ -61,7 +61,7 @@ Considered using `restore_from_s3_path` (declarative), rejected because:
 - Doesn't map well to Percona (uses restore jobs, not standby)
 - Implicit promotion (remove field) vs explicit (set `enabled: false`)
 
-**2. Kind Independence**
+**2. Component Independence**
 
 Each database can specify its own R2 credentials via `restore.r2_config`, enabling:
 - True cross-cluster independence
@@ -403,7 +403,7 @@ kubectl exec -n postgres-app-prod-api-resources $POD -- psql -U postgres -c "CRE
 **Independent Deployments**:
 - Each database carries its own R2 credentials
 - No cross-references between deployments
-- True kind independence
+- True component independence
 
 ### For Developers
 
@@ -442,7 +442,7 @@ kubectl exec -n postgres-app-prod-api-resources $POD -- psql -U postgres -c "CRE
 - **Source**: `db-pgk8s-planton-app-prod-main` (447 days old, PostgreSQL 14)
 - **Backup**: Latest from R2 (2025-11-07)
 
-**Verified Kinds**:
+**Verified Components**:
 - ✅ Pulumi deployment successful
 - ✅ Zalando manifest has correct `spec:standby` block
 - ✅ All `STANDBY_*` environment variables configured

@@ -103,7 +103,7 @@ A complete catalog kind (`OciAlarm`) with proto API definitions, Pulumi module (
 
 - **Users**: Can now define metric-based alarms with threshold evaluation, multi-level severity, and notification routing through a single YAML manifest
 - **Platform**: Phase 9 (Monitoring and Logging) started -- 1/2 resources done
-- **Infra Charts**: All 5 planned OCI infra charts can now incorporate monitoring alarms for their provisioned resources
+- **Infra Charts**: All 5 planned OCI Infra Charts can now incorporate monitoring alarms for their provisioned resources
 
 ## Related Work
 

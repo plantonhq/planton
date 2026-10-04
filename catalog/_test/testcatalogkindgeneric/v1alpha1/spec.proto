@@ -9,7 +9,7 @@ import "shared/options/options.proto";
 // TestCatalogKindGenericSpec is permanent test infrastructure for both Planton
 // and downstream consumers (Planton). It provides every GENERIC field type needed
 // to test proto processing machinery (defaults, validation, serialization,
-// reflection) without depending on volatile production infra component shapes or
+// reflection) without depending on volatile production catalog kind shapes or
 // Kubernetes-specific types.
 //
 // For Kubernetes-specific test fields (ContainerResources, ContainerEnv, etc.),

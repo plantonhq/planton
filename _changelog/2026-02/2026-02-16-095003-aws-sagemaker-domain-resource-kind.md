@@ -77,7 +77,7 @@ Canvas app settings, RStudio Server Pro, Code Editor, R Session, TensorBoard, Ju
 ## Impact
 
 - **Users**: ML platform teams, data scientists, ML engineers deploying SageMaker Studio
-- **Infra charts**: Enables future ml-notebook-environment infra chart composition
+- **Infra Charts**: Enables future ml-notebook-environment Infra Chart composition
 - **Resource count**: AWS coverage grows from 50 to 51 resource kinds
 
 ## Related Work

@@ -51,7 +51,7 @@ This provides parity with the existing Pulumi examples documentation (7.6 KB) an
 Transformed the minimal main.tf into a comprehensive documentation and orchestration file:
 
 **Module Documentation Header:**
-- Infrastructure kinds overview (7 major kinds)
+- Infrastructure components overview (7 major components)
 - Production features summary
 - Module structure explanation
 - Design philosophy and best practices
@@ -163,7 +163,7 @@ apis/dev/planton/provider/kubernetes/kubernetesdeployment/v1/iac/tf/
 │
 ├── main.tf (ENHANCED - 6.3 KB, was 121 bytes)
 │   ├── Module architecture documentation
-│   ├── Infrastructure kinds overview
+│   ├── Infrastructure components overview
 │   ├── Production features summary
 │   ├── Design philosophy
 │   ├── Zero-downtime deployment strategy
@@ -200,7 +200,7 @@ _changelog/2025-11/
 
 **Risk Level:** None (Documentation-only changes)
 
-**Affected Kinds:**
+**Affected Components:**
 - Terraform examples documentation (new file)
 - Terraform main.tf comments (enhanced documentation)
 

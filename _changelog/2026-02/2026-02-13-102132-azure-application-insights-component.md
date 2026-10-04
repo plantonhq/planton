@@ -10,12 +10,12 @@ Added `AzureApplicationInsights` (enum 451, id_prefix `azai`) as a new Planton c
 
 ## Problem Statement / Motivation
 
-Azure Application Insights is the standard APM layer in Azure, consumed by Function Apps, Web Apps, and Container Apps. The upcoming infra charts (function-app-environment, web-app-environment, container-apps-environment) require an Application Insights resource for telemetry wiring. Without this kind, infra charts cannot provision end-to-end observability stacks.
+Azure Application Insights is the standard APM layer in Azure, consumed by Function Apps, Web Apps, and Container Apps. The upcoming Infra Charts (function-app-environment, web-app-environment, container-apps-environment) require an Application Insights resource for telemetry wiring. Without this kind, Infra Charts cannot provision end-to-end observability stacks.
 
 ### Pain Points
 
 - No Planton kind existed for Azure APM telemetry
-- Infra chart observability layers were blocked on this resource
+- Infra Chart observability layers were blocked on this resource
 - Downstream resources (AzureFunctionApp, AzureLinuxWebApp, AzureContainerApp) need `connection_string` for APM integration
 
 ## Solution / What's New
@@ -45,7 +45,7 @@ flowchart TB
 
 - **application_type as string, not enum**: Uses exact Azure API values (`"web"`, `"java"`, `"Node.JS"`, `"other"`) as plain strings with `buf.validate.field.string.in` validation. Avoids proto identifier restrictions (dots in `"Node.JS"`) and enables zero-conversion passthrough to Azure providers.
 
-- **workspace_id required**: Enforces workspace-based Application Insights. Classic mode is deprecated by Microsoft. This is a forward-looking design choice that ensures all infra charts wire through Log Analytics Workspace.
+- **workspace_id required**: Enforces workspace-based Application Insights. Classic mode is deprecated by Microsoft. This is a forward-looking design choice that ensures all Infra Charts wire through Log Analytics Workspace.
 
 - **sampling_percentage added**: Not in the original plan but identified during Terraform provider research as a critical 80/20 field. Controls telemetry volume and cost. Enterprise teams routinely set this to 25-50%.
 
@@ -79,7 +79,7 @@ flowchart TB
 
 **Documentation (5 files)**:
 - `README.md` -- Kind overview, field table, outputs, quick example
-- `examples.md` -- 8 examples (minimal, dev, prod, java, node, infra chart wiring, compliance)
+- `examples.md` -- 8 examples (minimal, dev, prod, java, node, Infra Chart wiring, compliance)
 - `docs/README.md` -- Research document (sampling strategy, retention model, 80/20 analysis)
 - `iac/pulumi/README.md` + `overview.md` -- Pulumi module docs
 - `iac/tf/README.md` -- Terraform module docs
@@ -94,7 +94,7 @@ Added enum `AzureApplicationInsights = 451` to `catalog_kind.proto`.
 
 ## Benefits
 
-- **Infra chart unblocked**: function-app-environment, web-app-environment, container-apps-environment can now wire APM telemetry
+- **Infra Chart unblocked**: function-app-environment, web-app-environment, container-apps-environment can now wire APM telemetry
 - **Cost control**: `sampling_percentage` and `daily_data_cap_in_gb` provide enterprise-grade cost management
 - **Zero-conversion design**: String-based `application_type` passes directly to Azure -- no enum mapping code in IaC modules
 - **Full IaC parity**: Pulumi and Terraform modules are feature-equivalent
@@ -103,7 +103,7 @@ Added enum `AzureApplicationInsights = 451` to `catalog_kind.proto`.
 
 - **Azure resource coverage**: 3 of 24 new resources complete (R00, R01, R02)
 - **Downstream resources**: AzureFunctionApp (R19), AzureLinuxWebApp (R20), AzureContainerApp (R18) can now reference `connection_string`
-- **Infra charts**: 3 of 6 planned charts can now include APM telemetry
+- **Infra Charts**: 3 of 6 planned charts can now include APM telemetry
 
 ## Related Work
 

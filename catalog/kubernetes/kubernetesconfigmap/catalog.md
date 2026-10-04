@@ -113,6 +113,6 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 ## Works With
 
-- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference the namespace so infra charts create it and this ConfigMap in dependency order.
+- [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- reference the namespace so Infra Charts create it and this ConfigMap in dependency order.
 - [**Kubernetes Deployment**](/infra-catalog/kubernetes-deployment) -- workloads consume entries as env vars (`envFrom`, `configMapKeyRef`) or mounted files (`configMap` volume source), from the same namespace only.
 - [**Kubernetes Secret**](/infra-catalog/kubernetes-secret) -- the confidential mirror of this kind; put credentials and keys there, not here.

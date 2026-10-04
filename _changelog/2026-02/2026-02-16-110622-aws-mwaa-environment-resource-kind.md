@@ -82,13 +82,13 @@ flowchart TB
 
 - **Declarative MWAA**: Data engineers can version-control their Airflow infrastructure alongside DAG code
 - **Correct Security by Default**: Managed SG pattern eliminates the #1 MWAA networking misconfiguration
-- **Infra Chart Composability**: Rich StringValueOrRef outputs enable MWAA to be composed with VPC, IAM, S3, and KMS kinds in infra charts
+- **Infra Chart Composability**: Rich StringValueOrRef outputs enable MWAA to be composed with VPC, IAM, S3, and KMS kinds in Infra Charts
 - **Production-Ready Presets**: 3 presets covering development, production, and extensible configurations
 
 ## Impact
 
 - **Users**: Can now deploy MWAA environments through Planton CLI with 41 validated spec fields
-- **Infra Charts**: Enables new data pipeline infra charts combining MWAA with S3, Glue, Athena, and Redshift kinds
+- **Infra Charts**: Enables new data pipeline Infra Charts combining MWAA with S3, Glue, Athena, and Redshift kinds
 - **AWS Coverage**: Brings AWS to 28 new resource kinds (of ~32 target), completing Phase 2 item R24
 
 ## Related Work
