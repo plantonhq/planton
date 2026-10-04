@@ -145,7 +145,7 @@ type AwsMwaaEnvironmentSpec struct {
 	// endpoint_management controls who manages the VPC endpoints for the environment.
 	// "SERVICE" (default): AWS creates and manages VPC endpoints automatically.
 	// "CUSTOMER": you create and manage VPC endpoints yourself against the
-	// database_vpc_endpoint_service and webserver_vpc_endpoint_service stack
+	// database_vpc_endpoint_service and webserver_vpc_endpoint_service
 	// outputs (advanced, <5% adoption).
 	// ForceNew: changing this forces environment replacement.
 	EndpointManagement string `protobuf:"bytes,23,opt,name=endpoint_management,json=endpointManagement,proto3" json:"endpoint_management,omitempty"`

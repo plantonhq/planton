@@ -8,7 +8,7 @@
 #   iac-source.zip        -- IaC source (.go, .tf, .md, .yaml under iac/) plus
 #                            the provider import catalogs (aa_import/catalog.yaml
 #                            -- read together with each kind's iac/import-map.yaml)
-#   catalog-pages.zip     -- Per-kind-root catalog.md files
+#   catalog-pages.zip     -- each catalog kind root's catalog.md
 #   proto-source.zip      -- Raw proto source (spec, api, input, outputs)
 #   reference-pack.zip    -- The kind reference pack: generated reference
 #                            pages, catalog indexes, the cross-reference graph,

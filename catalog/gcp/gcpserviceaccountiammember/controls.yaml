@@ -35,7 +35,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: This kind IS role-based access control on the account's resource side -- one role to one member -- and managing the grant itself authorizes against iam.serviceAccounts.getIamPolicy and setIamPolicy on the target account, grantable down to the single service account; no unauthenticated management path exists.
+        reference: This component IS role-based access control on the account's resource side -- one role to one member -- and managing the grant itself authorizes against iam.serviceAccounts.getIamPolicy and setIamPolicy on the target account, grantable down to the single service account; no unauthenticated management path exists.
       notes: Account-scoped grants are the least-privilege form of service-account usage control -- the project-level equivalent of roles/iam.serviceAccountUser allows acting as EVERY account in the project, while this grant names exactly one. Compose with GcpIamCustomRole (its name output feeds role) when a predefined usage role is still too broad.
     - control_id: workload-identity
       status: not_applicable

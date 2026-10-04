@@ -17,9 +17,9 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - every GB of telemetry bills the linked Log Analytics workspace's analytics ingestion meter ("2.30" USD/GB at East US pay-as-you-go rates, first 5 GB per workspace per month free) on the AzureLogAnalyticsWorkspace kind -- full-fidelity sampling (100%) means every collected event ships
+        - every GB of telemetry bills the linked Log Analytics workspace's analytics ingestion meter ("2.30" USD/GB at East US pay-as-you-go rates, first 5 GB per workspace per month free) on the AzureLogAnalyticsWorkspace component -- full-fidelity sampling (100%) means every collected event ships
         - the 90-day retention rides inside Application Insights tables' free interactive-retention window, so this preset adds no retention charge; the workspace's own settings govern effective retention
-        - availability web tests and alert rules on this telemetry are separate billed kinds (standard web test executions bill "0.0005" USD each on Azure Monitor)
+        - availability web tests and alert rules on this telemetry are separate billed components (standard web test executions bill "0.0005" USD each on Azure Monitor)
       notes: Zero committed cost -- an uninstrumented resource ingests nothing and bills nothing; the meter starts when applications start sending, and it lands on the workspace's invoice line.
     - preset: 02-production-sampled
       region_assumption: eastus
@@ -30,5 +30,5 @@ spec:
         - ingestion bills the linked workspace per GB ("2.30" USD/GB East US pay-as-you-go) -- 50% sampling halves shipped volume, and the 10 GB/day cap bounds the worst day at 10 GB times the workspace rate (23.00 USD/day) BY DROPPING telemetry above it, with the notification email flagging every cap hit
         - the 365-day retention keeps telemetry 275 days past the free 90-day window, billing "0.10" USD per GB per month on the workspace for the retained tail -- a per-GB charge that follows actual ingested volume, not a fixed fee
         - keyless ingestion (local_authentication_enabled false) changes who may send, not what sending costs
-        - availability web tests and alert rules on this telemetry are separate billed kinds
+        - availability web tests and alert rules on this telemetry are separate billed components
       notes: Zero committed cost -- every dial in this preset (sampling, cap, retention) shapes a usage-driven per-GB bill on the workspace; none of them creates a standing charge.

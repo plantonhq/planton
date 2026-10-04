@@ -1,7 +1,7 @@
 # AzureStorageContainer - Pulumi Module
 
-Pulumi implementation for the AzureStorageContainer deployment
-component.
+Pulumi implementation for the AzureStorageContainer
+kind.
 
 ## Architecture
 

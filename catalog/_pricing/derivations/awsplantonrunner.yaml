@@ -62,7 +62,7 @@ spec:
         - field_path: assign_public_ip
           op: not_equals
           value: "true"
-      text: in the recommended private-subnet posture the runner's outbound path rides a NAT gateway, whose hours and per-GB processing bill on that kind, not here
+      text: in the recommended private-subnet posture the runner's outbound path rides a NAT gateway, whose hours and per-GB processing bill on that component, not here
   notes:
     - text: The modules fix the task count at one -- scaling execution capacity means more runners (more registrations), never more copies of this one -- so the estimate never multiplies by a replica count.
     - text: The task's 20 GB of Fargate ephemeral storage is included at no charge (the modules request no more), and the ECS cluster, task definition, security group, and IAM roles are free resources.

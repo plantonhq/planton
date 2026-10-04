@@ -4,7 +4,7 @@ metadata:
   name: awsbackupsettings
 spec:
   # Settings singletons import by their identity: the global arm by
-  # the ACCOUNT ID, the region arm by the REGION - both are stack
+  # the ACCOUNT ID, the region arm by the REGION - both are
   # outputs (no name involved; metadata.name never reaches AWS).
   values:
     - name: account_id

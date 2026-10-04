@@ -39,9 +39,9 @@ spec:
           list_cost: "180.0000"
       total_list_cost: "360.0000"
       exclusions:
-        - DNS forwarding rulesets bill their own flat monthly fee on the AzurePrivateDnsResolverForwardingRuleset kind that binds the outbound endpoints
+        - DNS forwarding rulesets bill their own flat monthly fee on the AzurePrivateDnsResolverForwardingRuleset component that binds the outbound endpoints
         - the resolver adds no per-query meter -- queries answered from private zones bill those zones' per-million meter zone-side, and queries forwarded on-premises bill nothing in Azure
-        - the anchor virtual network and the dedicated endpoint subnets are first-class kinds billing on their own lines
+        - the anchor virtual network and the dedicated endpoint subnets are first-class components billing on their own lines
     - preset: 02-inbound-only
       region_assumption: eastus
       currency: USD
@@ -58,6 +58,6 @@ spec:
           list_cost: "180.0000"
       total_list_cost: "180.0000"
       exclusions:
-        - DNS forwarding rulesets bill their own flat monthly fee on the AzurePrivateDnsResolverForwardingRuleset kind that binds the outbound endpoints
+        - DNS forwarding rulesets bill their own flat monthly fee on the AzurePrivateDnsResolverForwardingRuleset component that binds the outbound endpoints
         - the resolver adds no per-query meter -- queries answered from private zones bill those zones' per-million meter zone-side, and queries forwarded on-premises bill nothing in Azure
-        - the anchor virtual network and the dedicated endpoint subnets are first-class kinds billing on their own lines
+        - the anchor virtual network and the dedicated endpoint subnets are first-class components billing on their own lines

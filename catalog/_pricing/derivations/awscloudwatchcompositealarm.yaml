@@ -23,11 +23,11 @@ spec:
       price_slug: cloudwatch-composite-alarm-us-east-1
       basis: one composite alarm bills one flat monthly fee from creation, regardless of how many alarms the rule references or how often it fires; priced at the us-east-1 list rate, the assumed region when the manifest leaves region unset
   exclusions:
-    - text: every alarm named in alarm_rule is a separately billed AwsCloudwatchAlarm, costed on its own kind
+    - text: every alarm named in alarm_rule is a separately billed AwsCloudwatchAlarm, costed on its own component
     - applies_when:
         - field_path: actions_suppressor
           op: is_set
-      text: the suppressor alarm is one more referenced AwsCloudwatchAlarm, billed on its own kind
+      text: the suppressor alarm is one more referenced AwsCloudwatchAlarm, billed on its own component
     - text: alarm, OK, and insufficient-data actions bill on their targets -- SNS topics referenced by the action fields carry their own AwsSnsTopic cost
   notes:
     - text: The flat fee is the composite's entire bill and it is committed at creation -- rule complexity, evaluation frequency, and state changes never move it.

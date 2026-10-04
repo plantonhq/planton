@@ -45,7 +45,7 @@ spec:
     - applies_when:
         - field_path: artifact_repository
           op: is_set
-      text: artifact and archived-log bytes grow with pipeline activity on the declared object store -- on a composed KubernetesSeaweedFs that capacity rides the SeaweedFS kind's own footprint; on a cloud bucket it is that provider's storage bill
+      text: artifact and archived-log bytes grow with pipeline activity on the declared object store -- on a composed KubernetesSeaweedFs that capacity rides the SeaweedFS component's own footprint; on a cloud bucket it is that provider's storage bill
     - applies_when:
         - field_path: archive
           op: is_set

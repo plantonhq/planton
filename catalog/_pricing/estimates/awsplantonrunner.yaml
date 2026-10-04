@@ -50,7 +50,7 @@ spec:
       exclusions:
         - CloudWatch Logs ingestion and storage bill per GB and follow how many operations the runner executes; log_retention_days caps how long stored bytes keep billing
         - data transfer -- image pulls and control-plane traffic follow standard AWS data transfer rates
-        - in the recommended private-subnet posture the runner's outbound path rides a NAT gateway, whose hours and per-GB processing bill on that kind, not here
+        - in the recommended private-subnet posture the runner's outbound path rides a NAT gateway, whose hours and per-GB processing bill on that component, not here
       notes: The modules fix the task count at one -- scaling execution capacity means more runners (more registrations), never more copies of this one -- so the estimate never multiplies by a replica count. The task's 20 GB of Fargate ephemeral storage is included at no charge (the modules request no more), and the ECS cluster, task definition, security group, and IAM roles are free resources. The token secret is created with a zero-day recovery window, so destroying the runner stops the secret's meter immediately.
     - preset: 02-public-subnet
       region_assumption: us-east-1
@@ -134,5 +134,5 @@ spec:
       exclusions:
         - CloudWatch Logs ingestion and storage bill per GB and follow how many operations the runner executes; log_retention_days caps how long stored bytes keep billing
         - data transfer -- image pulls and control-plane traffic follow standard AWS data transfer rates
-        - in the recommended private-subnet posture the runner's outbound path rides a NAT gateway, whose hours and per-GB processing bill on that kind, not here
+        - in the recommended private-subnet posture the runner's outbound path rides a NAT gateway, whose hours and per-GB processing bill on that component, not here
       notes: The modules fix the task count at one -- scaling execution capacity means more runners (more registrations), never more copies of this one -- so the estimate never multiplies by a replica count. The task's 20 GB of Fargate ephemeral storage is included at no charge (the modules request no more), and the ECS cluster, task definition, security group, and IAM roles are free resources. The token secret is created with a zero-day recovery window, so destroying the runner stops the secret's meter immediately.

@@ -28,8 +28,8 @@ spec:
       total_list_cost: "18.2500"
       exclusions:
         - data processed bills per GB through the rules and follows traffic entirely
-        - the referenced Standard public IP bills hourly on its own AzurePublicIp kind
-        - backend pool members bill their own compute on their own kinds
+        - the referenced Standard public IP bills hourly on its own AzurePublicIp component
+        - backend pool members bill their own compute on their own components
       notes: Rules past the combined fifth (load-balancing plus outbound) would each add a per-rule hourly overage meter -- this preset sits at 2 and has headroom for 3 more before the bill changes shape.
     - preset: 02-internal
       region_assumption: eastus
@@ -48,8 +48,8 @@ spec:
       total_list_cost: "18.2500"
       exclusions:
         - data processed bills per GB through the rule and follows east-west traffic entirely
-        - the referenced subnet and its virtual network are their own kinds; the frontend's private address is free
-        - backend pool members bill their own compute on their own kinds
+        - the referenced subnet and its virtual network are their own components; the frontend's private address is free
+        - backend pool members bill their own compute on their own components
       notes: The zone-redundant frontend posture (zones ["1","2","3"]) is free -- Azure prices Standard Load Balancer identically with or without zone redundancy.
     - preset: 03-outbound-and-nat
       region_assumption: eastus
@@ -68,6 +68,6 @@ spec:
       total_list_cost: "18.2500"
       exclusions:
         - data processed bills per GB through the load-balancing rule and follows traffic; traffic forwarded by the inbound NAT rules is not metered
-        - the referenced Standard public IP bills hourly on its own AzurePublicIp kind
-        - backend pool members bill their own compute on their own kinds
+        - the referenced Standard public IP bills hourly on its own AzurePublicIp component
+        - backend pool members bill their own compute on their own components
       notes: Explicit SNAT (the outbound rule) re-uses the rule meters -- it moves a rule-count slot, not a new meter; the SNAT port budget (allocated_outbound_ports) is a behavior lever with no price of its own.

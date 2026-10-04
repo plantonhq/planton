@@ -19,7 +19,7 @@ spec:
       exclusions:
         - the standard-operations meter (Workers Paid 1,000,000 operations/month included, then $0.40/million; Workers Free 10,000/day) bills about 3 operations per delivered message (write, read, delete, per 64 KB chunk) -- message volume comes from producers this manifest cannot know
         - retries (capped here at 3 per message) each incur a read operation, and messages exhausting retries incur a write operation into the orders-dlq dead-letter queue, billed as that queue's operations
-        - the consuming Worker's compute bills as Workers requests and CPU time on the referenced CloudflareWorker kind
+        - the consuming Worker's compute bills as Workers requests and CPU time on the referenced CloudflareWorker component
         - the $5/mo Workers Paid subscription is account-level plan spend -- no field in this spec pins it
       notes: Zero committed cost -- batching (25 messages, 1s max wait) and concurrency (10) shape delivery timing, not the rate card; every operation waits for the first produced message.
     - preset: 02-http-pull

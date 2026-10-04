@@ -1,7 +1,7 @@
 # AzureMonitorActivityLogAlert - Terraform Module
 
-Terraform implementation for the AzureMonitorActivityLogAlert deployment
-component.
+Terraform implementation for the AzureMonitorActivityLogAlert
+kind.
 
 ## Resources Created
 

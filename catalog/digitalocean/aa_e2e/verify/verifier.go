@@ -1,4 +1,4 @@
-// Package verify implements per-component resource verification for the
+// Package verify implements per-kind resource verification for the
 // DigitalOcean E2E harness. Each verifier answers two questions through the
 // DigitalOcean REST API (godo): does the resource exist after deploy, and is
 // it gone after destroy. A 404 from the API is the ONLY absence signal; every
@@ -47,7 +47,7 @@ type OutputsVerifier interface {
 	VerifyAbsentFromOutputs(ctx context.Context, client *godo.Client, outputs map[string]interface{}) error
 }
 
-// verifiers maps component slugs (the catalog directory names) to their
+// verifiers maps kind slugs (the catalog directory names) to their
 // verifiers. Every kind that appears in another kind's registry prerequisites
 // MUST have an entry here, or composed scenarios fail at DEPENDENCIES-UP.
 var verifiers = map[string]Verifier{
@@ -94,8 +94,8 @@ var verifiers = map[string]Verifier{
 // 404 seconds after that) -- while a genuine API error must fail the phase
 // immediately rather than be retried into a timeout.
 type StillExistsError struct {
-	// Component is the catalog slug of the kind whose resource lingers.
-	Component string
+	// Kind is the catalog slug of the kind whose resource lingers.
+	Kind string
 	// ID is the identifier the probe used (a UUID, a name, or a composite).
 	ID string
 	// Detail optionally replaces the default "still exists after destroy"
@@ -106,9 +106,9 @@ type StillExistsError struct {
 
 func (e *StillExistsError) Error() string {
 	if e.Detail != "" {
-		return fmt.Sprintf("%s %q %s", e.Component, e.ID, e.Detail)
+		return fmt.Sprintf("%s %q %s", e.Kind, e.ID, e.Detail)
 	}
-	return fmt.Sprintf("%s %q still exists after destroy", e.Component, e.ID)
+	return fmt.Sprintf("%s %q still exists after destroy", e.Kind, e.ID)
 }
 
 // IsStillExists reports whether err (anywhere in its chain) is a
@@ -118,7 +118,7 @@ func IsStillExists(err error) bool {
 	return errors.As(err, &target)
 }
 
-// GetVerifier returns the verifier for a component, or an error if none is registered.
+// GetVerifier returns the verifier for a kind, or an error if none is registered.
 func GetVerifier(kind string) (Verifier, error) {
 	v, ok := verifiers[kind]
 	if !ok {

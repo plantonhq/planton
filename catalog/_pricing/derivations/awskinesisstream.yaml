@@ -97,8 +97,8 @@ spec:
     - applies_when:
         - field_path: kms_key_id
           op: is_set
-      text: KMS request charges follow record volume, and a customer-managed key bills its monthly fee on its own AwsKmsKey kind
-    - text: enhanced fan-out consumers bill consumer-shard hours and retrieved GB on their own AwsKinesisStreamConsumer kinds
+      text: KMS request charges follow record volume, and a customer-managed key bills its monthly fee on its own AwsKmsKey component
+    - text: enhanced fan-out consumers bill consumer-shard hours and retrieved GB on their own AwsKinesisStreamConsumer components
   notes:
     - applies_when:
         - field_path: stream_mode

@@ -6,7 +6,7 @@ import (
 	"github.com/pulumi/pulumi/sdk/v3/go/pulumi"
 )
 
-// nodePool provisions the Kubernetes node pool and exports the stack
+// nodePool provisions the Kubernetes node pool and exports the
 // outputs declared in outputs.proto.
 func nodePool(
 	ctx *pulumi.Context,

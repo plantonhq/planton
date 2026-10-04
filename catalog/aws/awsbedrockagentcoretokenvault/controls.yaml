@@ -28,10 +28,10 @@ spec:
         reference: The vault's configuration APIs (SetTokenVaultCMK, GetTokenVault) and every credential read/write AgentCore Identity performs against the vault ride HTTPS-only SigV4 endpoints; no plaintext path exists.
     - control_id: no-public-access
       status: not_applicable
-      notes: A key setting exposes no access surface. The credentials the vault stores are reachable only through AgentCore Identity's IAM-authorized APIs -- that access posture is the AwsBedrockAgentCoreIdentity kind's territory, decided there.
+      notes: A key setting exposes no access surface. The credentials the vault stores are reachable only through AgentCore Identity's IAM-authorized APIs -- that access posture is the AwsBedrockAgentCoreIdentity component's territory, decided there.
     - control_id: restricted-ingress
       status: not_applicable
-      notes: Nothing listens anywhere -- the vault is AWS-internal storage and this kind is one configuration write against it; there is no network surface to restrict.
+      notes: Nothing listens anywhere -- the vault is AWS-internal storage and this component is one configuration write against it; there is no network surface to restrict.
     - control_id: edge-protection
       status: not_applicable
       notes: No request-serving surface exists for a WAF to front; edge filtering has no meaning for an encryption setting.
@@ -59,7 +59,7 @@ spec:
       notes: A key setting emits no telemetry and has no monitoring hook of its own. Key-usage visibility comes from the referenced AwsKmsKey's CloudTrail events; credential-usage visibility belongs to AgentCore Identity.
     - control_id: backup-recovery
       status: not_applicable
-      notes: The setting holds no data to back up -- it is trivially re-applied from this manifest. The credentials inside the vault are AWS-operated storage recoverable by re-vaulting from the upstream providers via the AwsBedrockAgentCoreIdentity kind; note that losing an actively-used CMK (not the setting) is the unrecoverable event.
+      notes: The setting holds no data to back up -- it is trivially re-applied from this manifest. The credentials inside the vault are AWS-operated storage recoverable by re-vaulting from the upstream providers via the AwsBedrockAgentCoreIdentity component; note that losing an actively-used CMK (not the setting) is the unrecoverable event.
     - control_id: backup-retention-policy
       status: not_applicable
       notes: Nothing here retains data on a schedule -- there is no retention surface on a key setting; stored credentials persist under AgentCore Identity's lifecycle.

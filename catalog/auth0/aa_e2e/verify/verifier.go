@@ -15,7 +15,7 @@ type ResourceChecker interface {
 	ReadResource(path string) (map[string]interface{}, bool, error)
 }
 
-// Verifier checks Auth0 resources for a single component type.
+// Verifier checks Auth0 resources for a single kind.
 type Verifier interface {
 	VerifyExists(checker ResourceChecker, id string) error
 	VerifyAbsent(checker ResourceChecker, id string) error
@@ -86,7 +86,7 @@ func (v *apiPathVerifier) formatPath(id string) string {
 	return fmt.Sprintf(v.pathFormat, url.PathEscape(id))
 }
 
-// verifiers maps component name to the Management API path used for verification.
+// verifiers maps kind name to the Management API path used for verification.
 var verifiers = map[string]Verifier{
 	"auth0client":         &apiPathVerifier{kind: "auth0client", pathFormat: "clients/%s"},
 	"auth0connection":     &apiPathVerifier{kind: "auth0connection", pathFormat: "connections/%s"},
@@ -115,7 +115,7 @@ var verifiers = map[string]Verifier{
 	"auth0emailtemplate":            &emailTemplateVerifier{},
 }
 
-// GetVerifier returns the verifier for a component, or an error if unknown.
+// GetVerifier returns the verifier for a kind, or an error if unknown.
 func GetVerifier(kind string) (Verifier, error) {
 	v, ok := verifiers[kind]
 	if !ok {

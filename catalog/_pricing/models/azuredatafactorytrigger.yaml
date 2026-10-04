@@ -46,6 +46,6 @@ spec:
       hours_per_month: 730
       exclusions:
         - deployed stopped (activated false) -- once started, every event on the referenced Event Grid custom topic matching the subject and event-type filters fires a billed trigger execution and pipeline run
-        - the custom topic's own Event Grid per-operation meters ("0.60" USD per million standard event operations at East US after the free grant) bill on that topic's kind, driven by the publisher's volume
+        - the custom topic's own Event Grid per-operation meters ("0.60" USD per million standard event operations at East US after the free grant) bill on that topic's component, driven by the publisher's volume
         - Data Factory operations bill read/write per 50,000 entity operations on the factory
       notes: "Zero committed cost -- stopped is free; started, the upstream publisher's event volume is the only meter that matters, and it is invisible to this manifest."

@@ -1,7 +1,7 @@
 # AzureDiskEncryptionSet - Pulumi Module
 
-Pulumi implementation for the AzureDiskEncryptionSet deployment
-component.
+Pulumi implementation for the AzureDiskEncryptionSet
+kind.
 
 ## Architecture
 
@@ -29,5 +29,5 @@ compute.DiskEncryptionSet (one CMK encryption anchor)
 ## Provider
 
 Built via the shared `pulumiazureprovider.Get` builder -- static client
-secret, keyless web identity, or ambient chain, resolved from the stack
+secret, keyless web identity, or ambient chain, resolved from the IaC
 input. Never construct the provider inline.

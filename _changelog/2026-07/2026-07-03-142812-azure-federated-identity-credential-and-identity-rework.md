@@ -86,7 +86,7 @@ principal and invalidate everything.
 - **Presets**: the bundled-grants preset replaced with composition-teaching presets
   (standard, CI-deployer, governance-tagged).
 - **Zero blast radius verified**: the only chart consuming the identity does not use
-  `role_assignments`; the E2E fixture profile never carried grants; the identity's stack
+  `role_assignments`; the E2E fixture profile never carried grants; the identity's
   outputs are unchanged.
 
 ### Shared dependency bump

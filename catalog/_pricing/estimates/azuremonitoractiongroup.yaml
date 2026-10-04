@@ -19,7 +19,7 @@ spec:
       exclusions:
         - each alert firing emails the on-call address ("0.00002" USD per email after the first 1,000 free per month), texts the US number (SMS country code 1 -- "0.00645" USD per message after the first 100 free), and pushes to the Azure app ("0.00002" USD per push after the first 1,000 free)
         - firing volume belongs to the alert RULES that reference this group -- an alert storm multiplies all three channels at once, with SMS the first meter to matter
-        - the alert rules themselves bill their own Azure Monitor meters on their own kinds
+        - the alert rules themselves bill their own Azure Monitor meters on their own components
       notes: Zero committed cost -- an action group nothing fires into sends nothing and bills nothing; at healthy paging volume all three channels sit inside their free grants.
     - preset: 02-automation-hooks
       region_assumption: eastus
@@ -28,9 +28,9 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - the Entra-authenticated webhook bills the SECURE web hook meter -- "6.00" USD per million notifications after only 1,000 free per month (a 10x rate and 100x smaller grant than plain webhooks, the price of the keyless posture)
-        - the Azure Function receiver's delivery is free-grant webhook territory, but the FUNCTION'S executions bill on the AzureFunctionApp kind per invocation
+        - the Azure Function receiver's delivery is free-grant webhook territory, but the FUNCTION'S executions bill on the AzureFunctionApp component per invocation
         - firing volume belongs to the referencing alert rules; downstream automation (incident platform calls, remediation actions) bills wherever it runs
-      notes: Zero committed cost -- machine channels are the cheapest per notification; the money in an automation group is always in what the automation DOES, on those kinds.
+      notes: Zero committed cost -- machine channels are the cheapest per notification; the money in an automation group is always in what the automation DOES, on those components.
     - preset: 03-role-fanout
       region_assumption: eastus
       currency: USD

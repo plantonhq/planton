@@ -50,7 +50,7 @@ spec:
     - applies_when:
         - field_path: key_id
           op: is_set
-      text: the customer-managed KMS key bills its monthly fee and per-request encrypt/decrypt charges on the referenced AwsKmsKey kind -- the AWS-managed aws/ssm default carries no monthly fee
+      text: the customer-managed KMS key bills its monthly fee and per-request encrypt/decrypt charges on the referenced AwsKmsKey component -- the AWS-managed aws/ssm default carries no monthly fee
   notes:
     - applies_when:
         - field_path: tier

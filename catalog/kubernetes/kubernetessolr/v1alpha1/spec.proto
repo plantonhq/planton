@@ -32,7 +32,7 @@ import "shared/options/options.proto";
  * basic-auth with operator-generated credentials in a Secret (see
  * outputs); no credential ever appears in this spec.
  *
- * EXPOSURE: in-cluster access rides the common Service (see stack
+ * EXPOSURE: in-cluster access rides the common Service (see
  * outputs). The `external` block models the operator's own
  * Ingress/ExternalDNS exposure; composing a KubernetesIngress or
  * Gateway API route over the common service handle is equally valid

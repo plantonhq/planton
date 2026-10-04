@@ -30,4 +30,4 @@ spec:
         - the cross-account destination object and its access policy are free at any volume -- no CloudWatch Logs meter exists for the endpoint itself
         - forwarded log events bill on the referenced AwsKinesisStream's own meters (shard hours or on-demand throughput, per that kind's profile) at a volume controlled by the two allowed SENDER accounts' subscription filters, invisible to this manifest
         - the delivery role is an AwsIamRole, which never bills
-      notes: Zero committed cost -- and the zero here is structural as well as commitment-shaped; the endpoint carries no meter, so this kind's line stays $0 while the real spend rides the Kinesis stream behind it.
+      notes: Zero committed cost -- and the zero here is structural as well as commitment-shaped; the endpoint carries no meter, so this component's line stays $0 while the real spend rides the Kinesis stream behind it.

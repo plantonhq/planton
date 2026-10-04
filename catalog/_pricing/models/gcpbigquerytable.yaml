@@ -32,6 +32,6 @@ spec:
       currency: USD
       hours_per_month: 730
       exclusions:
-        - the parquet files bill on their Cloud Storage bucket (a separate kind), not as BigQuery storage -- and the long-term storage discount never applies to external data
+        - the parquet files bill on their Cloud Storage bucket (a separate component), not as BigQuery storage -- and the long-term storage discount never applies to external data
         - queries bill the querying project per byte scanned of the external files; hive-partition pruning on the GCS path layout is the scan-cost lever
       notes: Zero committed -- the external table is a query surface over data whose storage meter already runs elsewhere; upgrading it to BigLake (connectionId) changes security and caching, not this zero.

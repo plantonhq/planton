@@ -31,8 +31,8 @@ spec:
       total_list_cost: "1.5000"
       exclusions:
         - dimension splits (at-scale log monitoring) bill each evaluated dimension combination beyond the included first series at the same frequency rate -- a count that follows the live data's values, which is why a "*" split's bill cannot be committed here
-        - notifications the fired alert sends (email, SMS, voice, webhooks beyond the free monthly allowances) bill on the referenced AzureMonitorActionGroup kinds
-        - the queried workspace's ingestion and retention bill on the AzureLogAnalyticsWorkspace kind
+        - notifications the fired alert sends (email, SMS, voice, webhooks beyond the free monthly allowances) bill on the referenced AzureMonitorActionGroup components
+        - the queried workspace's ingestion and retention bill on the AzureLogAnalyticsWorkspace component
       notes: The fee accrues from rule creation until deletion whether the alert ever fires or not; enabled=false suspends both evaluation and billing, which is why pausing beats deleting during maintenance windows.
     - preset: 02-latency-threshold
       region_assumption: eastus
@@ -51,8 +51,8 @@ spec:
       total_list_cost: "1.5000"
       exclusions:
         - dimension splits (at-scale log monitoring) bill each evaluated dimension combination beyond the included first series at the same frequency rate -- a count that follows the live data's values, which is why a "*" split's bill cannot be committed here
-        - notifications the fired alert sends (email, SMS, voice, webhooks beyond the free monthly allowances) bill on the referenced AzureMonitorActionGroup kinds
-        - the queried workspace's ingestion and retention bill on the AzureLogAnalyticsWorkspace kind
+        - notifications the fired alert sends (email, SMS, voice, webhooks beyond the free monthly allowances) bill on the referenced AzureMonitorActionGroup components
+        - the queried workspace's ingestion and retention bill on the AzureLogAnalyticsWorkspace component
       notes: The fee accrues from rule creation until deletion whether the alert ever fires or not; enabled=false suspends both evaluation and billing, which is why pausing beats deleting during maintenance windows.
     - preset: 03-missing-heartbeat
       region_assumption: eastus
@@ -71,6 +71,6 @@ spec:
       total_list_cost: "1.5000"
       exclusions:
         - dimension splits (at-scale log monitoring) bill each evaluated dimension combination beyond the included first series at the same frequency rate -- a count that follows the live data's values, which is why a "*" split's bill cannot be committed here
-        - notifications the fired alert sends (email, SMS, voice, webhooks beyond the free monthly allowances) bill on the referenced AzureMonitorActionGroup kinds
-        - the queried workspace's ingestion and retention bill on the AzureLogAnalyticsWorkspace kind
+        - notifications the fired alert sends (email, SMS, voice, webhooks beyond the free monthly allowances) bill on the referenced AzureMonitorActionGroup components
+        - the queried workspace's ingestion and retention bill on the AzureLogAnalyticsWorkspace component
       notes: The fee accrues from rule creation until deletion whether the alert ever fires or not; enabled=false suspends both evaluation and billing, which is why pausing beats deleting during maintenance windows.

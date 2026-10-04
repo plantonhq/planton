@@ -18,7 +18,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - each ingestion sync embeds the changed manuals at amazon.titan-embed-text-v2:0's per-1M-input-token rate, and every retrieval query embeds the question at the same rate -- corpus- and traffic-driven, with no free allotment
-        - the S3 Vectors index (addressed by ARN, outside this manifest) bills per-GB vector storage and per-query on Amazon S3 Vectors' own pricing -- the lowest-idle store, but not this kind's meter
+        - the S3 Vectors index (addressed by ARN, outside this manifest) bills per-GB vector storage and per-query on Amazon S3 Vectors' own pricing -- the lowest-idle store, but not this component's meter
         - sync-time S3 GET requests against the referenced product-manuals bucket bill on that AwsS3Bucket
         - RetrieveAndGenerate answers add generation-model tokens at whatever model the caller selects
         - the default parser is free; upgrading this data source to Bedrock Data Automation or foundation-model parsing would start per-page or per-token parsing meters on every re-ingestion

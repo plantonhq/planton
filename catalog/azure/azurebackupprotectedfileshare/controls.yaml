@@ -59,7 +59,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: This kind IS the control -- registering the share under a policy is what makes its backups automated and restorable (full-share or item-level, in place or to another location).
+        reference: This component IS the control -- registering the share under a policy is what makes its backups automated and restorable (full-share or item-level, in place or to another location).
       notes: The component's purpose-control. Creation only registers -- the first recovery point lands on the policy's next scheduled run. Snapshot-managed recovery points live in the SOURCE account, so they protect against deletion and modification of data, not against losing the account itself -- the vaulted flavor of Azure Files backup is the answer to that threat model, outside this component.
     - control_id: backup-retention-policy
       status: not_applicable

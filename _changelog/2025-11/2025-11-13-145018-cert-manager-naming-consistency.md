@@ -16,7 +16,7 @@ The cert-manager addon was structured with "Kubernetes" appearing redundantly in
 
 - **Proto Message Names**: `CertManagerKubernetes`, `CertManagerKubernetesSpec`, `CertManagerKubernetesStatus`, `CertManagerKubernetesIacInput`, `CertManagerKubernetesOutputs` - all included redundant suffix
 - **API Kind**: `kind: CertManagerKubernetes` - verbose in user manifests
-- **Infra Component Enum**: `CertManagerKubernetes = 821` - inconsistent with other addons
+- **Catalog kind enum**: `CertManagerKubernetes = 821` - inconsistent with other addons
 - **Code References**: Every Go import and type reference included the redundant suffix
 - **Path Context Ignored**: The kind lives under `provider/kubernetes/addon/certmanager/v1/` - the "kubernetes" suffix in the type name added no information
 - **Inconsistency**: Other recent addons (AltinityOperator, ElasticOperator) already followed the simpler naming pattern

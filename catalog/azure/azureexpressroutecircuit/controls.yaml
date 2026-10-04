@@ -25,7 +25,7 @@ spec:
         reference: The circuit's entire purpose is keeping traffic OFF the public internet -- a dedicated private path between the peering facility and Microsoft's network, unreachable from the internet by construction. Routing starts only when peerings are explicitly configured on it.
     - control_id: restricted-ingress
       status: not_applicable
-      notes: The circuit carries whatever its configured peerings advertise -- there is no packet-filtering surface on the circuit itself. Route-level control lives on the AzureExpressRouteCircuitPeering kind's filters, and packet-level control on the network appliances at either end.
+      notes: The circuit carries whatever its configured peerings advertise -- there is no packet-filtering surface on the circuit itself. Route-level control lives on the AzureExpressRouteCircuitPeering component's filters, and packet-level control on the network appliances at either end.
     - control_id: edge-protection
       status: not_applicable
       notes: A private WAN link offers no request surface for a WAF; edge filtering belongs to the HTTP-aware tiers composed in front of workloads.

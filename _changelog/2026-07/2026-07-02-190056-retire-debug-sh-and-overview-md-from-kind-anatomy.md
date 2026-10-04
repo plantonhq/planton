@@ -17,7 +17,7 @@ tooling and rules are now aligned with what the catalog actually ships:
 ## Problem Statement / Motivation
 
 The catalog-kind doctrine (`architecture/catalog-kind.md`) listed
-`debug.sh` and `overview.md` in the canonical component tree and in two scoring
+`debug.sh` and `overview.md` in the canonical kind tree and in two scoring
 checklists; the audit rule scored `iac/pulumi/debug.sh exists` under Helper Files;
 and forge flow rule 012 instructed agents to generate `debug.sh` modeled on
 canonical reference files (`.../awsvpc/v1/iac/pulumi/debug.sh`).
@@ -36,7 +36,7 @@ canonical reference files (`.../awsvpc/v1/iac/pulumi/debug.sh`).
 Aligned all durable surfaces with the catalog's real anatomy:
 
 - `architecture/catalog-kind.md` — removed `debug.sh` and `overview.md`
-  from the component tree and from both Pulumi supporting-file checklists;
+  from the kind tree and from both Pulumi supporting-file checklists;
   `README.md` remains the Pulumi supporting doc.
 - `_rules/catalog-kind/audit/audit-catalog-kind.mdc` (+ its README) —
   Helper Files now checks only `iac/hack/manifest.yaml`.

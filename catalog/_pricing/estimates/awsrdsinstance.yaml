@@ -156,5 +156,5 @@ spec:
       exclusions:
         - storage autoscaling can grow the volume toward max_allocated_storage_gb, multiplying the storage line
         - backup storage beyond the free allowance grows with churn across the retention window
-        - the one-time S3 restore transfer and the source backup bucket's storage bill outside this kind
+        - the one-time S3 restore transfer and the source backup bucket's storage bill outside this component
       notes: Estimated at the allocated floor. The migration itself is a create-time event, not a recurring charge.

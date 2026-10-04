@@ -32,7 +32,7 @@ spec:
       basis: one tracking server x 730 hours at its size's hourly rate (Small assumed when the manifest omits size -- the AWS default) -- the meter runs from Created onward with no stop control
   exclusions:
     - text: experiment metadata stored ON the tracking server (runs, params, metrics) bills $0.10 per GB-month as tracking activity accumulates -- workload-driven, near zero at creation, invisible to this manifest
-    - text: MLflow artifacts (model files, run outputs) bill S3 storage and requests at the artifact_store_uri location, on the bucket's own kind
+    - text: MLflow artifacts (model files, run outputs) bill S3 storage and requests at the artifact_store_uri location, on the bucket's own component
     - applies_when:
         - field_path: automatic_model_registration
           op: equals

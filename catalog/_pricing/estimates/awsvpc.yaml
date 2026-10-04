@@ -21,7 +21,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - the VPC, its Amazon-provided IPv6 block, and its DNS attributes bill nothing at any scale
-        - the network's real spend lives in separate kinds deployed into it -- NAT gateways, VPC endpoints, public IPv4 addresses, load balancers
+        - the network's real spend lives in separate components deployed into it -- NAT gateways, VPC endpoints, public IPv4 addresses, load balancers
       notes: A VPC is free AWS infrastructure -- the estimate is zero by the provider's pricing, not by omission.
     - preset: 02-development
       region_assumption: us-east-1
@@ -30,7 +30,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - the VPC and its DNS attributes bill nothing at any scale
-        - the network's real spend lives in separate kinds deployed into it -- NAT gateways, VPC endpoints, public IPv4 addresses, load balancers
+        - the network's real spend lives in separate components deployed into it -- NAT gateways, VPC endpoints, public IPv4 addresses, load balancers
       notes: A VPC is free AWS infrastructure -- the estimate is zero by the provider's pricing, not by omission.
     - preset: 03-ipam-grown-network
       region_assumption: us-east-1
@@ -40,5 +40,5 @@ spec:
       exclusions:
         - the VPC and its DNS attributes bill nothing at any scale
         - VPC Encryption Control in enforce mode is free
-        - the network's real spend lives in separate kinds deployed into it -- NAT gateways, VPC endpoints, public IPv4 addresses, load balancers
+        - the network's real spend lives in separate components deployed into it -- NAT gateways, VPC endpoints, public IPv4 addresses, load balancers
       notes: A VPC is free AWS infrastructure -- the estimate is zero by the provider's pricing, not by omission.

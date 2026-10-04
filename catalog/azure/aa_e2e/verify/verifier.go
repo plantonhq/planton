@@ -1,5 +1,5 @@
 // Package verify checks that Azure resources created by an E2E scenario exist
-// after DEPLOY and are gone after DESTROY. Each component family has its own
+// after DEPLOY and are gone after DESTROY. Each kind family has its own
 // verifier because Azure verification is service-specific (CheckExistence for a
 // resource group, a GET for a VNet, ...). All verifiers run against the same
 // ambient credential chain the deploy used, so a verification failure reflects
@@ -34,7 +34,7 @@ type RuntimeCauseVerifier interface {
 	VerifyRuntimeFailureCause(ctx context.Context, cred azcore.TokenCredential, subscriptionID, id, cause string) error
 }
 
-// verifiers maps a component name to its verifier. New Azure components register
+// verifiers maps a kind name to its verifier. New Azure kinds register
 // here as they are forged.
 var verifiers = map[string]Verifier{
 	"azureaifoundry":                                 &aiFoundryVerifier{},
@@ -223,7 +223,7 @@ var verifiers = map[string]Verifier{
 	"azurewebapplicationfirewallpolicy":              &webApplicationFirewallPolicyVerifier{},
 }
 
-// GetVerifier returns the verifier for a component, or an error if none is registered.
+// GetVerifier returns the verifier for a kind, or an error if none is registered.
 func GetVerifier(kind string) (Verifier, error) {
 	v, ok := verifiers[kind]
 	if !ok {

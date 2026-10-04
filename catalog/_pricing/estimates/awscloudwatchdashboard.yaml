@@ -33,7 +33,7 @@ spec:
         - log widgets execute a Logs Insights query on every dashboard load, billing per GB of log data scanned -- view frequency is human-driven and invisible to this manifest
         - sharing the dashboard bills the GetMetricData API calls used to render the shared copy; rendering the original in the owner's console stays free
         - custom widgets and external metric data sources invoke a Lambda function per render, billed on that function
-        - the metrics, logs, and alarms the widgets chart bill on their own source kinds -- the dashboard only visualizes them
+        - the metrics, logs, and alarms the widgets chart bill on their own source components -- the dashboard only visualizes them
       notes: The account's first 3 custom dashboards (up to 50 metrics referenced each) are free as a permanent allowance; whether THIS dashboard falls inside it depends on account-wide dashboard count, which no single manifest can see, so the estimate states the full committed rate. A dashboard referencing more than 50 metrics bills even inside the allowance. Nothing in the widget layout moves the committed fee; PutDashboard is a pure upsert, so body edits never restart or duplicate the meter.
     - preset: 02-alarm-overview
       region_assumption: us-east-1
@@ -54,5 +54,5 @@ spec:
         - log widgets execute a Logs Insights query on every dashboard load, billing per GB of log data scanned -- view frequency is human-driven and invisible to this manifest
         - sharing the dashboard bills the GetMetricData API calls used to render the shared copy; rendering the original in the owner's console stays free
         - custom widgets and external metric data sources invoke a Lambda function per render, billed on that function
-        - the metrics, logs, and alarms the widgets chart bill on their own source kinds -- the dashboard only visualizes them
+        - the metrics, logs, and alarms the widgets chart bill on their own source components -- the dashboard only visualizes them
       notes: The account's first 3 custom dashboards (up to 50 metrics referenced each) are free as a permanent allowance; whether THIS dashboard falls inside it depends on account-wide dashboard count, which no single manifest can see, so the estimate states the full committed rate. A dashboard referencing more than 50 metrics bills even inside the allowance. Nothing in the widget layout moves the committed fee; PutDashboard is a pure upsert, so body edits never restart or duplicate the meter.

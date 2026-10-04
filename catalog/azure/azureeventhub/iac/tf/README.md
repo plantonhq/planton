@@ -1,7 +1,7 @@
 # AzureEventHub - Terraform Module
 
-OpenTofu/Terraform implementation for the AzureEventHub deployment
-component, at 100% behavioral parity with the Pulumi module.
+OpenTofu/Terraform implementation for the AzureEventHub
+kind, at 100% behavioral parity with the Pulumi module.
 
 ## Resources Created
 

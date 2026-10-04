@@ -26,9 +26,9 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - apps bill per instance-hour at the chosen type's rate while running (idle shutdown at 120 minutes caps the bleed); the home EFS bills per GB-month stored
-        - VpcOnly mode needs VPC interface endpoints to reach SageMaker, S3, and STS -- committed hourly charges on their own kinds
-        - the customer-managed KMS key bills on its own AwsKmsKey kind
-      notes: "Zero committed on this kind: spaceStorageSettings here only sets the DEFAULT (20 GB) and ceiling (200 GB) for volumes future spaces provision -- no space exists in the manifest, so nothing is provisioned. home_efs_retention_policy stays Retain (the default), so the EFS and its bill survive domain deletion."
+        - VpcOnly mode needs VPC interface endpoints to reach SageMaker, S3, and STS -- committed hourly charges on their own components
+        - the customer-managed KMS key bills on its own AwsKmsKey component
+      notes: "Zero committed on this component: spaceStorageSettings here only sets the DEFAULT (20 GB) and ceiling (200 GB) for volumes future spaces provision -- no space exists in the manifest, so nothing is provisioned. home_efs_retention_policy stays Retain (the default), so the EFS and its bill survive domain deletion."
     - preset: 03-ml-team-with-custom-images
       region_assumption: us-east-1
       currency: USD
@@ -36,8 +36,8 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - JupyterLab apps on ml.m5.large and KernelGateway apps on ml.g4dn.xlarge (a GPU rate) bill per instance-hour while running -- the 180-minute idle shutdown is the control
-        - custom images live in ECR, billing storage on that kind; notebook outputs land in the pinned S3 path
-        - VPC endpoints for VpcOnly mode and the customer-managed KMS key bill on their own kinds
+        - custom images live in ECR, billing storage on that component; notebook outputs land in the pinned S3 path
+        - VPC endpoints for VpcOnly mode and the customer-managed KMS key bill on their own components
       notes: "Zero committed: no spaces exist -- defaultEbsVolumeSizeInGb 50 is a template for future volumes, not a provisioned one. The GPU KernelGateway default is the cost story to watch, but it is usage, not commitment."
     - preset: 04-governed-canvas-workspace
       region_assumption: us-east-1

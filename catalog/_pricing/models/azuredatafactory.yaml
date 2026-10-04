@@ -32,6 +32,6 @@ spec:
           quantity_basis: "the managedPrivateEndpoints list pins exactly one endpoint (datalake-blob); a private endpoint bills every hour it exists, so one endpoint is 730 endpoint-hours a month -- accruing from creation whether or not the target has approved the connection"
       exclusions:
         - "per-GB data processed through the endpoint (0.01 USD/GB inbound and outbound) follows ETL volume"
-        - "pipeline execution bills the managed-VNET meter class (1.00 USD per 1,000 activity runs, 0.25 USD per DIU-hour of movement, 1.00 USD/hour of pipeline activity) on the pipeline kinds and their runs"
-        - "the target storage account, and everything else the private endpoint reaches, bills on its own kind"
+        - "pipeline execution bills the managed-VNET meter class (1.00 USD per 1,000 activity runs, 0.25 USD per DIU-hour of movement, 1.00 USD/hour of pipeline activity) on the pipeline components and their runs"
+        - "the target storage account, and everything else the private endpoint reaches, bills on its own component"
       notes: "The committed floor is Private Link custody: 730 hours x 0.01 USD ~ 7.30 USD/month for the one pinned endpoint. publicNetworkEnabled false closes the public path but carries no meter of its own -- the endpoints ARE the private path's cost."

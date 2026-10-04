@@ -1,7 +1,7 @@
 # AzureManagedRedis - Terraform Module
 
-Terraform implementation for the AzureManagedRedis deployment
-component.
+Terraform implementation for the AzureManagedRedis
+kind.
 
 ## Resources Created
 

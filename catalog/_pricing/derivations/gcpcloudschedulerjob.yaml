@@ -28,7 +28,7 @@ spec:
       price_slug: cloudscheduler-job-day
       basis: "one job existing every day of the month -- 31 job-days, the SKU's own displayed monthly quantity (31 x the per-job-day rate is Google's published $0.10 per job per month) -- billed regardless of how many times the schedule fires"
   exclusions:
-    - text: "dispatch volume is free -- the meter counts job-days, not executions -- but whatever each dispatch invokes bills on its own kind: Cloud Run or Cloud Functions compute behind an HTTP target, Pub/Sub message charges behind a topic target"
+    - text: "dispatch volume is free -- the meter counts job-days, not executions -- but whatever each dispatch invokes bills on its own component: Cloud Run or Cloud Functions compute behind an HTTP target, Pub/Sub message charges behind a topic target"
     - text: network egress of dispatch requests follows target placement
   notes:
     - text: "The first 93 job-days per billing account per month are free -- exactly three always-on jobs (3 jobs x 31 days) -- so an account's first three jobs pay nothing and this may be one of them. List total shown without the free allotment, which is account-wide and not visible from any single manifest."

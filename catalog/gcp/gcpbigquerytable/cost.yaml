@@ -38,7 +38,7 @@ spec:
       impact: The data stays in Cloud Storage and bills on that bucket, not here -- but queries still bill per byte scanned of the external files, and Google's long-term storage discount never applies to external data.
     - field_path: kms_key_name
       sku_meter: Cloud KMS key usage
-      impact: CMEK itself adds no BigQuery charge; the key's version storage and per-operation charges bill on the GcpKmsKey kind protecting the table.
+      impact: CMEK itself adds no BigQuery charge; the key's version storage and per-operation charges bill on the GcpKmsKey component protecting the table.
   estimate_exclusions:
     - an empty native table stores nothing -- storage bills per GiB-month as rows load, at the containing dataset's billing model and location rates (first 10 GiB each month free)
     - queries bill to the project running them (on-demand at $6.25/TiB scanned after the free monthly 1 TiB, or editions slot capacity) -- BigQuery charges the querier, not the data owner

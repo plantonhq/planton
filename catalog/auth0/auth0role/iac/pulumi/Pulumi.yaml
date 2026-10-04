@@ -3,4 +3,4 @@
 name: auth0-role
 runtime:
   name: go
-description: Pulumi module for Auth0Role component
+description: Pulumi module for Auth0Role kind

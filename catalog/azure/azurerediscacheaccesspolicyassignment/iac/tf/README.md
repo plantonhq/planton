@@ -1,7 +1,7 @@
 # AzureRedisCacheAccessPolicyAssignment - Terraform Module
 
 Terraform implementation for the AzureRedisCacheAccessPolicyAssignment
-component.
+kind.
 
 ## Resources Created
 

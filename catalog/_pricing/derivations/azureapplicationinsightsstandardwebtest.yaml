@@ -81,6 +81,6 @@ spec:
           op: equals
           value: "true"
       text: retries of failed runs add executions that follow the endpoint's actual failure behavior -- the estimate prices the healthy-endpoint schedule
-    - text: the alert rule that pages on this test's failures is its own AzureMonitorMetricAlert kind with its own monthly fee
+    - text: the alert rule that pages on this test's failures is its own AzureMonitorMetricAlert component with its own monthly fee
   notes:
     - text: The schedule never stops on its own -- executions accrue whether anyone reads the results or not; enabled=false keeps the definition and stops the schedule (and the spend).

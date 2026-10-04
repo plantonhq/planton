@@ -21,7 +21,7 @@ spec:
         - the AWS-managed admin-password secret rides Secrets Manager, whose secret and API meters bill on that service -- the Redshift pricing page carries no meter for it
         - manual snapshots bill at the region's snapshot rate on total unique data blocks; automatic recovery points inside the 24-hour window are free
         - the first-time-user free offer is a $300 TRIAL credit expiring after 90 days, drawing down against compute and storage -- not a recurring tier
-        - all compute bills RPU-hours on the attaching AwsRedshiftServerlessWorkgroup kinds, never here
+        - all compute bills RPU-hours on the attaching AwsRedshiftServerlessWorkgroup components, never here
       notes: Zero committed cost -- commitment-absence, not a free service. The preset pins only identity (db name, admin user) and the managed-password posture; storage meters start with the data, not the manifest.
     - preset: 02-customer-kms-and-roles
       region_assumption: us-west-2
@@ -30,9 +30,9 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - Redshift Managed Storage bills on actual stored bytes, accrued hourly -- AWS's published rate is $0.024 per GB-month (US East N. Virginia); nothing accrues until data loads
-        - the customer-managed data key (my-data-key) bills its monthly rental and requests on the referenced AwsKmsKey kind
+        - the customer-managed data key (my-data-key) bills its monthly rental and requests on the referenced AwsKmsKey component
         - all three enabled log_exports (connectionlog, useractivitylog, userlog) stream to CloudWatch Logs, which bills per-GB ingestion and storage on the CloudWatch side -- useractivitylog records every executed query and scales with warehouse activity
         - the AWS-managed admin-password secret rides Secrets Manager's own meters on that service
         - manual snapshots bill on unique data blocks at the region's snapshot rate and keep billing after the namespace is deleted until they are
         - the referenced engine IAM roles are free IAM primitives; the compute assuming them bills RPU-hours on the attaching workgroups
-      notes: Zero committed cost -- commitment-absence, not a free service. The hardened pins (CMK, full audit exports) change WHERE spend appears -- the KMS key on its own kind, log volume on CloudWatch -- but nothing on this manifest commits a dollar on existence.
+      notes: Zero committed cost -- commitment-absence, not a free service. The hardened pins (CMK, full audit exports) change WHERE spend appears -- the KMS key on its own component, log volume on CloudWatch -- but nothing on this manifest commits a dollar on existence.

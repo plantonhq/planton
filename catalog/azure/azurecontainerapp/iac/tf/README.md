@@ -1,6 +1,6 @@
 # AzureContainerApp Terraform Module
 
-The Terraform/OpenTofu implementation of the `AzureContainerApp` component.
+The Terraform/OpenTofu implementation of the `AzureContainerApp` kind.
 
 ## Structure
 

@@ -33,6 +33,6 @@ spec:
       hours_per_month: 730
       exclusions:
         - ENTERPRISE bills by data-sized units -- read units per 4 KiB, write units per 1 KiB -- and stores data at the higher enterprise rate per GiB-month at nam5, with PITR adding its own storage meter
-        - the CMEK key's version storage and per-operation charges bill on the referenced GcpKmsKey kind
+        - the CMEK key's version storage and per-operation charges bill on the referenced GcpKmsKey component
         - real-time updates and change-stream events bill their own per-million-unit meters if the application enables those ENTERPRISE surfaces
       notes: Zero committed at creation -- the enterprise meter family is pricier per byte processed, but every meter still starts at the first document.

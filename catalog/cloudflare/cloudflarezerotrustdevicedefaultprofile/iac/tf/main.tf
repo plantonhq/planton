@@ -71,7 +71,7 @@ resource "cloudflare_zero_trust_device_default_profile" "main" {
   # with no UseStateForUnknown modifier at v5.23.0: every refresh-inclusive
   # plan re-marks it "(known after apply)" and proposes a no-op update
   # forever (measured live 2026-08-27; the value never actually changes).
-  # Ignoring it is safe -- the attribute is never sent, and the stack
+  # Ignoring it is safe -- the attribute is never sent, and the
   # output still reads the real value from state after apply.
   lifecycle {
     ignore_changes = [policy_id]

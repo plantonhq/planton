@@ -21,7 +21,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - outbound data transfer bills per GB by the peering location's zone (0.025 Zone 1, 0.05 Zone 2, 0.14 Zone 3, 0.1 Zone 4 at list, verified 2026-08-18) -- inbound is always free
-        - the ExpressRoute gateway that terminates private peering in a VNet bills hourly on its own kind, and Global Reach circuit linking adds its own add-on fee and per-GB rates
+        - the ExpressRoute gateway that terminates private peering in a VNet bills hourly on its own component, and Global Reach circuit linking adds its own add-on fee and per-GB rates
       notes: Fees key to the peering facility's pricing zone (Zone 1 through Zone 4) -- facilities outside Zone 1 bill different list rates on the SAME meters, and no committed mapping from peering_location to zone exists in the manifest, which is why the zone rides as a stated assumption rather than a lookup.
     - preset: 02-local-metro-circuit
       region_assumption: zone-1
@@ -29,7 +29,7 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - the ExpressRoute gateway that terminates private peering in a VNet bills hourly on its own kind, and Global Reach circuit linking adds its own add-on fee and per-GB rates
+        - the ExpressRoute gateway that terminates private peering in a VNet bills hourly on its own component, and Global Reach circuit linking adds its own add-on fee and per-GB rates
       notes: Fees key to the peering facility's pricing zone (Zone 1 through Zone 4) -- facilities outside Zone 1 bill different list rates on the SAME meters, and no committed mapping from peering_location to zone exists in the manifest, which is why the zone rides as a stated assumption rather than a lookup.
     - preset: 03-direct-port-circuit
       region_assumption: zone-1
@@ -38,5 +38,5 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - outbound data transfer bills per GB by the peering location's zone (0.025 Zone 1, 0.05 Zone 2, 0.14 Zone 3, 0.1 Zone 4 at list, verified 2026-08-18) -- inbound is always free
-        - the ExpressRoute gateway that terminates private peering in a VNet bills hourly on its own kind, and Global Reach circuit linking adds its own add-on fee and per-GB rates
-      notes: Fees key to the peering facility's pricing zone (Zone 1 through Zone 4) -- facilities outside Zone 1 bill different list rates on the SAME meters, and no committed mapping from peering_location to zone exists in the manifest, which is why the zone rides as a stated assumption rather than a lookup. Local and Standard circuits carved from an ExpressRoute Direct port are included in the port's monthly fee, billed on the AzureExpressRoutePort kind -- this circuit's zero-committed estimate is real, not an absence; metered egress still bills per GB on Standard circuits.
+        - the ExpressRoute gateway that terminates private peering in a VNet bills hourly on its own component, and Global Reach circuit linking adds its own add-on fee and per-GB rates
+      notes: Fees key to the peering facility's pricing zone (Zone 1 through Zone 4) -- facilities outside Zone 1 bill different list rates on the SAME meters, and no committed mapping from peering_location to zone exists in the manifest, which is why the zone rides as a stated assumption rather than a lookup. Local and Standard circuits carved from an ExpressRoute Direct port are included in the port's monthly fee, billed on the AzureExpressRoutePort component -- this circuit's zero-committed estimate is real, not an absence; metered egress still bills per GB on Standard circuits.

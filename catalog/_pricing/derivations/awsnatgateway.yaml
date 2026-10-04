@@ -43,7 +43,7 @@ spec:
         - field_path: availability_mode
           op: not_equals
           value: regional
-      text: the attached Elastic IP bills as a public IPv4 address on its own AwsElasticIp kind
+      text: the attached Elastic IP bills as a public IPv4 address on its own AwsElasticIp component
     - applies_when:
         - field_path: availability_mode
           op: not_equals

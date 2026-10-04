@@ -11,7 +11,7 @@ spec:
     - field_path: cloudwatch
       sku_meter: CloudWatch Logs ingestion
       pricing_unit: GB
-      impact: Every model invocation in the region writes a log event -- metadata plus request/response bodies up to 100 KB -- into the referenced log group, which meters ingestion and storage per GB on the AwsCloudwatchLogGroup kind. Bedrock adds no delivery fee of its own; the log group's meters ARE this arm's cost, in direct proportion to model traffic.
+      impact: Every model invocation in the region writes a log event -- metadata plus request/response bodies up to 100 KB -- into the referenced log group, which meters ingestion and storage per GB on the AwsCloudwatchLogGroup component. Bedrock adds no delivery fee of its own; the log group's meters ARE this arm's cost, in direct proportion to model traffic.
     - field_path: s3
       sku_meter: S3 storage
       pricing_unit: GB-months

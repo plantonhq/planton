@@ -43,7 +43,7 @@ green — surfacing and fixing four real defects along the way.
 - **Referential CEL:** every behavior's `target_origin_id` must name a
   declared origin OR origin group — broken wiring is unrepresentable.
 - **New harness verifiers:** `awss3objectset` (per-key HeadObject via a new
-  `OutputsVerifier` interface — the kind also gained a `bucket_id` stack
+  `OutputsVerifier` interface — the kind also gained a `bucket_id`
   output) and `awssqsqueue` (GetQueueAttributes). These closed the gap that
   made the Lambda/ESM prerequisite chains unverifiable.
 - **E2E scenario honesty (ACM):** a requested DNS-validated certificate on an

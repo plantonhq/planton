@@ -1,7 +1,7 @@
 # AzureContainerAppCustomDomain - Pulumi Module
 
-Pulumi implementation for the AzureContainerAppCustomDomain deployment
-component.
+Pulumi implementation for the AzureContainerAppCustomDomain
+kind.
 
 ## Architecture
 
@@ -29,5 +29,5 @@ containerapp.CustomDomain (one binding; managed vs BYO decided by spec)
 ## Provider
 
 Built via the shared `pulumiazureprovider.Get` builder -- static client
-secret, keyless web identity, or ambient chain, resolved from the stack
+secret, keyless web identity, or ambient chain, resolved from the IaC
 input. Never construct the provider inline.

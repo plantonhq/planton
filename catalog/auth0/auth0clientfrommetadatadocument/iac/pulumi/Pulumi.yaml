@@ -3,4 +3,4 @@
 name: auth0-client-from-metadata-document
 runtime:
   name: go
-description: Pulumi module for Auth0ClientFromMetadataDocument component
+description: Pulumi module for Auth0ClientFromMetadataDocument kind

@@ -91,7 +91,7 @@ spec:
           op: is_set
       text: a RUNNING pool_state would bill the pooled instances at full price for instant scale-out
     - text: data transfer between AZs and out of the region follows pod traffic
-    - text: the cluster management fee bills on the AwsEksCluster kind
+    - text: the cluster management fee bills on the AwsEksCluster component
   notes:
     - applies_when:
         - field_path: capacity_type

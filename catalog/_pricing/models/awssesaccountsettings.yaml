@@ -3,7 +3,7 @@
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. Both presets are zero-committed: the SES account object
-# exists per account+region whether or not this kind manages it, the
+# exists per account+region whether or not this component manages it, the
 # suppression arm has no meter at all, and the VDM arm's per-email fee has
 # no fixed monthly component -- every meter a preset can start bills on the
 # account's send volume as it happens, stated in exclusions, never padded

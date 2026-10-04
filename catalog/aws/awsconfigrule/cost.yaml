@@ -27,7 +27,7 @@ spec:
     - field_path: custom_lambda
       sku_meter: Lambda function invocations
       pricing_unit: requests
-      impact: A custom-lambda rule invokes (and bills) the referenced function once per evaluation trigger on top of the per-evaluation meter -- requests plus GB-seconds on the AwsLambda kind. The custom_policy Guard engine does the same custom logic with NO compute bill.
+      impact: A custom-lambda rule invokes (and bills) the referenced function once per evaluation trigger on top of the per-evaluation meter -- requests plus GB-seconds on the AwsLambda component. The custom_policy Guard engine does the same custom logic with NO compute bill.
     - field_path: remediation.automatic
       sku_meter: Config rule evaluations
       pricing_unit: evaluations

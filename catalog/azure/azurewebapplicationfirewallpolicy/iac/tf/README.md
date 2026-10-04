@@ -1,7 +1,7 @@
 # AzureWebApplicationFirewallPolicy - Terraform Module
 
 Terraform implementation for the AzureWebApplicationFirewallPolicy
-component.
+kind.
 
 ## Resources Created
 

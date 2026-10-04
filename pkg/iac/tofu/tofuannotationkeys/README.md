@@ -6,7 +6,7 @@ backend state configuration in Planton resource manifests.
 ## Why annotations, not labels
 
 `metadata.labels` are derived into cloud-provider tags by planton IaC modules, so a
-platform key there would leak internal configuration onto the user's real cloud
+platform key there would leak internal configuration onto the user's real provider
 resources. Platform-behavior signals — including backend configuration — therefore
 live in `metadata.annotations`, which never touch the cloud.
 

@@ -11,7 +11,7 @@ spec:
   controls:
     - control_id: enc-at-rest
       status: not_applicable
-      notes: The token is a credential Cloudflare stores; this kind does not encrypt customer data at rest.
+      notes: The token is a credential Cloudflare stores; this component does not encrypt customer data at rest.
     - control_id: enc-at-rest-cmk
       status: not_applicable
       notes: No customer-managed key surface (see enc-at-rest).

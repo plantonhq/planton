@@ -37,7 +37,7 @@ func Resources(ctx *pulumi.Context, iacInput *azuremssqlserverv1alpha1.AzureMssq
 		Tags:              pulumi.ToStringMap(locals.AzureTags),
 	}
 
-	// Version is presence-guarded to the spec default ("12.0") -- stack
+	// Version is presence-guarded to the spec default ("12.0") -- IaC
 	// inputs built from a manifest do NOT materialize proto defaults, and
 	// azurerm requires the version.
 	if spec.Version != nil {

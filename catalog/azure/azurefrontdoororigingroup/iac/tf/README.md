@@ -1,7 +1,7 @@
 # AzureFrontDoorOriginGroup - Terraform Module
 
-Terraform implementation for the AzureFrontDoorOriginGroup deployment
-component.
+Terraform implementation for the AzureFrontDoorOriginGroup
+kind.
 
 ## Resources Created
 

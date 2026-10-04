@@ -20,7 +20,7 @@ spec:
       notes: A network ACL filters packets at layers 3 and 4 -- it neither terminates nor inspects TLS, and cannot require the traffic it admits to be encrypted. Transport encryption belongs to the workloads on each side.
     - control_id: no-public-access
       status: not_applicable
-      notes: The ACL has no endpoint of its own to expose. Whether workloads in its subnets are internet-reachable is exactly what its rules (with the route table and security groups) decide -- that surface is assessed under restricted-ingress, where this kind is an enforcement layer.
+      notes: The ACL has no endpoint of its own to expose. Whether workloads in its subnets are internet-reachable is exactly what its rules (with the route table and security groups) decide -- that surface is assessed under restricted-ingress, where this component is an enforcement layer.
     - control_id: restricted-ingress
       status: configurable
       field_path: ingress

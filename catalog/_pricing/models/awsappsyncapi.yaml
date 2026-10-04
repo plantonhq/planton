@@ -23,7 +23,7 @@ spec:
         - the schema declares queries and mutations only (no subscriptions), so the real-time update and connection-minute meters stay dormant unless the schema grows a subscription type
         - no cache is pinned -- the preset's prose merely suggests a SMALL cache and itself warns it bills per hour ($0.044/hour on existence); adding graphql.cache would flip this manifest to committed hourly spend
         - data transfer out bills at EC2 data transfer rates on top of the operations meter
-        - the DynamoDB backend bills on the referenced AwsDynamodb kind, and the data source's IAM role is free on the referenced AwsIamRole
+        - the DynamoDB backend bills on the referenced AwsDynamodb component, and the data source's IAM role is free on the referenced AwsIamRole
       notes: Zero committed cost -- commitment-absence, not a free service. The API, its resolvers, and its data source bill nothing at rest; the operations meter starts with the first authenticated query.
     - preset: 02-events-realtime-channels
       region_assumption: us-west-2

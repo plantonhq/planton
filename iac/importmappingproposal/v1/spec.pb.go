@@ -116,7 +116,7 @@ type ProposedResource struct {
 	// would fail resolution at the first infra-job build.
 	Manifest *structpb.Struct `protobuf:"bytes,1,opt,name=manifest,proto3" json:"manifest,omitempty"`
 	// The discovered account resources this instance accounts for. A claim
-	// says "creating this manifest and importing its state covers that cloud
+	// says "creating this manifest and importing its state covers that provider
 	// resource". Claims are how grouping quality is measured: the scorer
 	// compares an instance's claims against the resources its ground-truth
 	// counterpart actually owns. Instances are matched by kind plus claim

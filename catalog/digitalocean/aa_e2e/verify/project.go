@@ -72,7 +72,7 @@ func (v *projectVerifier) VerifyAbsentFromOutputs(ctx context.Context, client *g
 	}
 	_, _, err := client.Projects.Get(ctx, id)
 	if err == nil {
-		return &StillExistsError{Component: "digitaloceanproject", ID: id}
+		return &StillExistsError{Kind: "digitaloceanproject", ID: id}
 	}
 	if !isNotFound(err) {
 		return pkgerrors.Wrap(err, "digitaloceanproject verify-absent failed")

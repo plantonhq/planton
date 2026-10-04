@@ -28,7 +28,7 @@ spec:
       total_list_cost: "0.5000"
       exclusions:
         - DNS queries bill per million answered and follow traffic
-        - records, health checks, and routing policies are separate kinds
+        - records, health checks, and routing policies are separate components
     - preset: 02-private-vpc-zone
       region_assumption: global
       currency: USD
@@ -45,7 +45,7 @@ spec:
           list_cost: "0.5000"
       total_list_cost: "0.5000"
       exclusions:
-        - records and resolver-side monitoring are separate kinds
+        - records and resolver-side monitoring are separate components
       notes: In-VPC queries against a private zone are free, so the zone fee is this preset's whole bill.
     - preset: 03-dnssec-signed-zone
       region_assumption: global
@@ -64,5 +64,5 @@ spec:
       total_list_cost: "0.5000"
       exclusions:
         - DNS queries bill per million answered and follow traffic
-        - the DNSSEC signing key bills on its referenced AwsKmsKey kind (monthly key fee plus per-request signing)
-        - records, health checks, and routing policies are separate kinds
+        - the DNSSEC signing key bills on its referenced AwsKmsKey component (monthly key fee plus per-request signing)
+        - records, health checks, and routing policies are separate components

@@ -108,7 +108,7 @@ spec:
     - applies_when:
         - field_path: scram_secret_arns
           op: is_set
-      text: the associated Secrets Manager secrets and their customer-managed KMS key bill on their own resources, outside this kind
+      text: the associated Secrets Manager secrets and their customer-managed KMS key bill on their own resources, outside this component
   notes:
     - text: Estimated at the declared broker fleet -- AWS supports increasing broker count and volume size in place, never decreasing them.
     - applies_when:

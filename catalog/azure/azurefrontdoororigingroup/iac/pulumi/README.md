@@ -1,7 +1,7 @@
 # AzureFrontDoorOriginGroup - Pulumi Module
 
-Pulumi implementation for the AzureFrontDoorOriginGroup deployment
-component.
+Pulumi implementation for the AzureFrontDoorOriginGroup
+kind.
 
 ## Architecture
 

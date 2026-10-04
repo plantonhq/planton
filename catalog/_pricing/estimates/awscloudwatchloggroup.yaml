@@ -28,7 +28,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - ingestion bills per GB at the Standard rate as events arrive; compressed storage bills per GB-month for the 90-day retention window
-        - CMK encryption adds no CloudWatch Logs rate -- the customer-managed key's own charges bill on the referenced AwsKmsKey kind
+        - CMK encryption adds no CloudWatch Logs rate -- the customer-managed key's own charges bill on the referenced AwsKmsKey component
         - Logs Insights queries bill per GB scanned, following who queries rather than what this manifest configures
       notes: Zero committed cost -- encryption is posture, not a rate; spend still follows ingested volume alone, tripled in retention window versus the 30-day preset.
     - preset: 03-infrequent-access-long-retention
@@ -39,7 +39,7 @@ spec:
       exclusions:
         - the INFREQUENT_ACCESS class ingests at half the Standard rate -- the trade is giving up metric filters, subscription filters, and transformers, which this archive posture does not use
         - compressed storage bills per GB-month (the same rate as Standard) across the full 365-day retention -- long retention on the cheap-ingest class is the archive economics working as intended
-        - the customer-managed KMS key bills on its own kind
+        - the customer-managed KMS key bills on its own component
       notes: Zero committed cost -- the half-rate class only discounts data that actually arrives; nothing is billed for choosing it on an idle group.
     - preset: 04-error-metric-filter
       region_assumption: us-east-1
@@ -50,7 +50,7 @@ spec:
         - ingestion bills per GB and compressed storage per GB-month over the 30-day window as events flow
         - the ERROR filter publishes one custom metric, billed at CloudWatch's custom-metric monthly rate prorated by the hours it is actually written -- a meter this preset starts, but only once log events arrive for the filter to evaluate
         - the single dimensionless metric avoids the cardinality multiplier -- each unique dimension-value combination would bill as its own metric
-        - alarms built on the filter's metric bill on their own alarm kinds
+        - alarms built on the filter's metric bill on their own alarm components
       notes: Zero committed cost -- the filter watches, it does not bill; the custom-metric meter runs only in hours the group ingests events for it to count.
     - preset: 05-transformed-ingest-pipeline
       region_assumption: us-east-1

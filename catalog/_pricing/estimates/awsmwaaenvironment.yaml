@@ -33,7 +33,7 @@ spec:
         - autoscaled workers between the min_workers floor and the max_workers ceiling bill per hour only while task queue depth demands them
         - autoscaled web servers between the min_webservers floor and the max_webservers ceiling bill per hour only while UI and REST-API load demands them
         - metadata database storage bills per GB-month as workflow history accumulates
-        - the DAG source bucket, execution role, and KMS key bill on their own kinds
+        - the DAG source bucket, execution role, and KMS key bill on their own components
       notes: Estimated at the scaling floors -- the committed always-on spend; the environment fee already includes one worker, two schedulers, and two web servers.
     - preset: 02-production-encrypted-logging
       region_assumption: us-east-1
@@ -73,7 +73,7 @@ spec:
         - autoscaled web servers between the min_webservers floor and the max_webservers ceiling bill per hour only while UI and REST-API load demands them
         - metadata database storage bills per GB-month as workflow history accumulates
         - CloudWatch Logs ingestion and storage for the enabled log modules depend on log level and DAG volume
-        - the DAG source bucket, execution role, and KMS key bill on their own kinds
+        - the DAG source bucket, execution role, and KMS key bill on their own components
       notes: Estimated at the scaling floors -- the committed always-on spend; the environment fee already includes one worker, two schedulers, and two web servers.
     - preset: 03-public-access-with-plugins
       region_assumption: us-east-1
@@ -104,5 +104,5 @@ spec:
         - autoscaled web servers between the min_webservers floor and the max_webservers ceiling bill per hour only while UI and REST-API load demands them
         - metadata database storage bills per GB-month as workflow history accumulates
         - CloudWatch Logs ingestion and storage for the enabled log modules depend on log level and DAG volume
-        - the DAG source bucket, execution role, and KMS key bill on their own kinds
+        - the DAG source bucket, execution role, and KMS key bill on their own components
       notes: Estimated at the scaling floors -- the committed always-on spend; the environment fee already includes one worker, two schedulers, and two web servers.

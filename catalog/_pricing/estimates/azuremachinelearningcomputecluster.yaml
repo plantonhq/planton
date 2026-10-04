@@ -18,7 +18,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - dedicated node VM hours follow the job schedule -- up to 4 Standard_DS3_v2 nodes bill the size's plain Linux rate only while scaled up, plus the 30-minute idle tail after each job before nodes release
-        - the workspace's companion resources (storage account, container registry, Key Vault, Application Insights) bill on their own kinds, and training jobs read and write them
+        - the workspace's companion resources (storage account, container registry, Key Vault, Application Insights) bill on their own components, and training jobs read and write them
         - network egress follows what jobs move, and a cluster whose region differs from its workspace or data adds inter-region data-transfer rates
       notes: Zero committed cost -- min_node_count 0 means the idle cluster runs no nodes; Azure Machine Learning adds no surcharge, so the whole bill is node-hours while jobs run.
     - preset: 02-gpu-training-cluster
@@ -28,7 +28,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - dedicated node VM hours follow the job schedule -- up to 2 Standard_NC6s_v3 (V100) nodes bill the GPU size's rate only while scaled up, plus the deliberately short 10-minute idle tail
-        - the workspace's companion resources (storage account, container registry, Key Vault, Application Insights) bill on their own kinds
+        - the workspace's companion resources (storage account, container registry, Key Vault, Application Insights) bill on their own components
         - network egress and inter-region data movement follow the jobs, not the manifest -- GPU clusters often run where quota lives, away from the workspace's region
       notes: Zero committed cost -- min_node_count 0 keeps the expensive GPU meter entirely off while idle; every billed hour is a scaled-up V100 node-hour.
     - preset: 03-low-priority-batch-cluster
@@ -38,6 +38,6 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - low-priority node VM hours follow the job schedule -- up to 8 evictable Standard_DS3_v2 nodes bill the size's Low Priority meter (roughly 80 percent off the dedicated rate) only while scaled up, plus the 5-minute idle tail
-        - the workspace's companion resources (storage account, container registry, Key Vault, Application Insights) bill on their own kinds
+        - the workspace's companion resources (storage account, container registry, Key Vault, Application Insights) bill on their own components
         - network egress follows what jobs move
       notes: Zero committed cost -- min_node_count 0 plus the low-priority arm is the cheapest posture this kind offers; the discount's price is eviction risk, which takes running work with it.

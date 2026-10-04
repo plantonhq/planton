@@ -36,7 +36,7 @@ type Harness struct {
 	// mu guards deployedOutputs, written by VerifyDeployed and read by
 	// VerifyDestroyed.
 	mu sync.Mutex
-	// deployedOutputs stores each kind's full string-ified stack
+	// deployedOutputs stores each kind's full string-ified
 	// outputs rather than a single ID: Cloudflare identities are compound
 	// (zone_id + the resource's own id), and VerifyDestroyed receives no
 	// outputs of its own.

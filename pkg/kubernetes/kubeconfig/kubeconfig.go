@@ -183,7 +183,7 @@ func renderExecKubeconfig(endpoint, caData, credentialCommand string, env []exec
 	return string(rendered), nil
 }
 
-// normalizeServerURL tolerates both endpoint shapes seen across providers: EKS stack
+// normalizeServerURL tolerates both endpoint shapes seen across providers: EKS
 // outputs export a full https:// URL while GKE exports a bare endpoint IP.
 func normalizeServerURL(endpoint string) string {
 	if strings.HasPrefix(endpoint, "https://") {

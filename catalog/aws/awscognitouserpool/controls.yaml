@@ -51,7 +51,7 @@ spec:
       evidence:
         type: spec_default
         reference: OFF (AWS's default) leaves single-factor password sign-in as a complete authentication path; OPTIONAL lets users enroll a second factor and ON requires one for every user. allowed_first_auth_factors can additionally replace passwords entirely with EMAIL_OTP, SMS_OTP, or WEB_AUTHN passkeys on the ESSENTIALS tier and above.
-      notes: Which token flows an application may use (SRP versus plain-password ADMIN flows) is app-client configuration, governed on the AwsCognitoUserPoolClient kinds.
+      notes: Which token flows an application may use (SRP versus plain-password ADMIN flows) is app-client configuration, governed on the AwsCognitoUserPoolClient components.
     - control_id: strong-user-auth
       status: configurable
       field_path: password_policy

@@ -66,7 +66,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: "This kind IS the backup estate's storage: the encrypted container recovery points live in. Restores are initiated from the vault's recovery points; durability of the points is AWS Backup's managed responsibility."
+        reference: "This component IS the backup estate's storage: the encrypted container recovery points live in. Restores are initiated from the vault's recovery points; durability of the points is AWS Backup's managed responsibility."
     - control_id: backup-retention-policy
       status: configurable
       field_path: standard.lock.min_retention_days

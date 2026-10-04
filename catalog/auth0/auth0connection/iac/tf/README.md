@@ -1,6 +1,6 @@
 # Auth0Connection Terraform Module
 
-This directory contains the Terraform implementation for the Auth0Connection component.
+This directory contains the Terraform implementation for the Auth0Connection kind.
 
 ## Overview
 

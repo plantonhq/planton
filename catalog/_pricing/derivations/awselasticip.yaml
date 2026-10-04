@@ -56,7 +56,7 @@ spec:
       basis: one address with no association target in this manifest, metered idle every hour of the month; the idle rate equals the in-use rate, so a consumer attaching the address elsewhere (an NLB subnet mapping, a NAT gateway) changes the meter name, not the number
   exclusions:
     - text: Elastic IP remaps beyond AWS's free monthly allowance bill per remap -- a usage charge driven by how often automation re-associates the address, invisible to this manifest.
-    - text: The associated resource (instance, network interface, NAT gateway, load balancer) and all data transfer through the address bill on their own meters, outside this kind.
+    - text: The associated resource (instance, network interface, NAT gateway, load balancer) and all data transfer through the address bill on their own meters, outside this component.
   notes:
     - text: The address-hours are the committed bill, and releasing the address is the only way to stop the meter.
     - applies_when:

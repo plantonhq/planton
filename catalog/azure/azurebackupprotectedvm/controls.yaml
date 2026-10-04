@@ -24,7 +24,7 @@ spec:
         reference: Backup traffic from the VM's snapshots into vault storage moves over Azure's internal fabric under HTTPS -- Microsoft's transport, with no customer-configurable alternative.
     - control_id: no-public-access
       status: not_applicable
-      notes: The protected item is a registration, not an endpoint -- nothing listens. Network exposure of the backup path is vault territory (private endpoints on the AzureRecoveryServicesVault kind).
+      notes: The protected item is a registration, not an endpoint -- nothing listens. Network exposure of the backup path is vault territory (private endpoints on the AzureRecoveryServicesVault component).
     - control_id: restricted-ingress
       status: not_applicable
       notes: No inbound surface exists to restrict (see no-public-access).
@@ -59,14 +59,14 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: This kind IS the control -- registering the VM under a policy is what makes its backups automated and restorable. Recovery points accrue on the policy's schedule and restore through Azure Backup's standard flows (full VM, disks, or file-level).
+        reference: This component IS the control -- registering the VM under a policy is what makes its backups automated and restorable. Recovery points accrue on the policy's schedule and restore through Azure Backup's standard flows (full VM, disks, or file-level).
       notes: The component's purpose-control. Creation only registers -- the first recovery point lands on the policy's next scheduled run, so a just-registered VM is not yet restorable.
     - control_id: backup-retention-policy
       status: not_applicable
       notes: Retention length is the referenced AzureBackupPolicyVm's whole job -- schedule and retention live there and re-pointing backup_policy_id updates protection in place. This manifest holds the binding, never the retention numbers.
     - control_id: multi-zone-ha
       status: not_applicable
-      notes: Resilience of the backup DATA is the vault's redundancy choice (LRS/ZRS/GRS), configured on the AzureRecoveryServicesVault kind; the registration itself has no zone posture of its own.
+      notes: Resilience of the backup DATA is the vault's redundancy choice (LRS/ZRS/GRS), configured on the AzureRecoveryServicesVault component; the registration itself has no zone posture of its own.
     - control_id: deletion-protection
       status: enforced_by_default
       evidence:

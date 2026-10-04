@@ -1,7 +1,7 @@
 # AzureMonitorScheduledQueryAlert - Pulumi Module
 
 Pulumi (Go) implementation for the AzureMonitorScheduledQueryAlert
-component, at 100% behavioral parity with the Terraform module.
+kind, at 100% behavioral parity with the Terraform module.
 
 ## Resources Created
 

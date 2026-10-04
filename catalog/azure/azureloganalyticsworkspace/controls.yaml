@@ -64,7 +64,7 @@ spec:
       notes: "Control-plane changes land in the Azure Activity Log as subscription-level posture. The workspace's own query-audit trail (who ran what KQL) exists as an Azure Monitor diagnostic-settings category on the workspace -- a separate resource wired outside this spec."
     - control_id: monitoring-integration
       status: not_applicable
-      notes: "This kind IS the monitoring system -- the destination Container Insights, Application Insights, diagnostic settings, and Sentinel export into. Its own operational telemetry (ingestion volume, latency, cap hits) surfaces as platform metrics and the _LogOperation table automatically, with no field here to wire."
+      notes: "This component IS the monitoring system -- the destination Container Insights, Application Insights, diagnostic settings, and Sentinel export into. Its own operational telemetry (ingestion volume, latency, cap hits) surfaces as platform metrics and the _LogOperation table automatically, with no field here to wire."
     - control_id: backup-recovery
       status: not_applicable
       notes: "Ingested log data has no backup/restore facility -- retention IS the durability model, and Microsoft stores the data redundantly service-side. The blast radius worth knowing: workspace_name is ForceNew, so a rename destroys the workspace and every byte it holds; immediate_data_purge_on_30_days_enabled additionally removes Azure's post-retention grace store for regulated estates."

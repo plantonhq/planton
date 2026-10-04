@@ -20,7 +20,7 @@ spec:
       exclusions:
         - domain verification and Easy DKIM (2048-bit, AWS-generated and rotated) carry no meter -- SES prices sending, not identities
         - outbound sending from the verified domain bills $0.10 per 1,000 emails a la carte plus $0.12 per GB of attachment data, starting with the first message -- workload activity this manifest cannot see
-        - the three DKIM CNAME records bill as records and queries on the AwsRoute53DnsRecord kinds that publish them
+        - the three DKIM CNAME records bill as records and queries on the AwsRoute53DnsRecord components that publish them
       notes: Zero committed cost -- a verified domain identity is free to hold forever; the zero is commitment-absence, and the per-1,000 sending meter belongs to the traffic the identity unlocks.
     - preset: 02-domain-with-config-set
       region_assumption: us-east-1
@@ -29,5 +29,5 @@ spec:
       exclusions:
         - outbound sending from the verified domain bills $0.10 per 1,000 emails a la carte plus $0.12 per GB of attachment data, starting with the first message
         - the referenced configuration set decides each email's inherited cost posture -- any VDM per-email fee or dedicated IP pool spend bills per that set's own profile, not here
-        - the three DKIM CNAME records bill as records and queries on the AwsRoute53DnsRecord kinds that publish them
+        - the three DKIM CNAME records bill as records and queries on the AwsRoute53DnsRecord components that publish them
       notes: Zero committed cost is commitment-absence, not "free" -- attaching a default configuration set costs nothing by itself, but it is the lever that decides what every future email from this domain costs.

@@ -1,7 +1,7 @@
 # AzureManagedRedisGeoReplication - Pulumi Module
 
 Pulumi implementation for the AzureManagedRedisGeoReplication
-component.
+kind.
 
 ## Architecture
 
@@ -28,5 +28,5 @@ managedredis.GeoReplication (single resource)
 ## Provider
 
 Built via the shared `pulumiazureprovider.Get` builder -- static client
-secret, keyless web identity, or ambient chain, resolved from the stack
+secret, keyless web identity, or ambient chain, resolved from the IaC
 input. Never construct the provider inline.

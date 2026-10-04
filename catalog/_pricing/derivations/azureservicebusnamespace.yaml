@@ -67,11 +67,11 @@ spec:
         - field_path: sku
           op: equals
           value: PREMIUM
-      text: Geo-Replication, when configured, bills per GB replicated by geography zone, and the replica is a second Premium namespace billing its own messaging units on its own kind
+      text: Geo-Replication, when configured, bills per GB replicated by geography zone, and the replica is a second Premium namespace billing its own messaging units on its own component
     - applies_when:
         - field_path: customer_managed_key
           op: is_set
-      text: customer-managed-key encryption drives Key Vault key operations billed on the referenced vault's own kinds
+      text: customer-managed-key encryption drives Key Vault key operations billed on the referenced vault's own components
     - text: network egress follows consumer placement
   notes:
     - applies_when:

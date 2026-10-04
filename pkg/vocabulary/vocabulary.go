@@ -276,7 +276,7 @@ func (s *Scanner) Excluded(path string) bool {
 // ScanText returns the findings in one file's content. path is
 // repository-relative and slash-separated; it scopes path allowances.
 func (s *Scanner) ScanText(path string, content []byte) []Finding {
-	if !s.mayMatch(bytes.ToLower(content)) {
+	if !s.mayMatch(bytes.ToLower(wrapJoined.ReplaceAll(content, []byte(" ")))) {
 		return nil
 	}
 	var allow []*regexp.Regexp
@@ -286,24 +286,58 @@ func (s *Scanner) ScanText(path string, content []byte) []Finding {
 		}
 	}
 	var findings []Finding
-	for i, line := range strings.Split(string(content), "\n") {
-		if !s.mayMatch(bytes.ToLower([]byte(line))) {
-			continue
+	lines := strings.Split(string(content), "\n")
+	for i, line := range lines {
+		// Each line is read in the window of its neighbours, the way a reader
+		// reads wrapped prose: a two-word name broken across a line break
+		// ("deployment" ending one comment line, "component" opening the
+		// next) is found on the line it starts on, and a vendor's phrase
+		// wrapped the same way still excuses its words on both lines.
+		prev, cur, next := "", line, ""
+		if i > 0 && !keyLine.MatchString(line) {
+			prev = lines[i-1] + " "
+			cur = commentMarker.ReplaceAllString(line, "")
 		}
-		var excused [][]int
-		for _, re := range allow {
-			excused = append(excused, re.FindAllStringIndex(line, -1)...)
+		if i+1 < len(lines) && !keyLine.MatchString(lines[i+1]) {
+			next = " " + commentMarker.ReplaceAllString(lines[i+1], "")
 		}
-		seen := map[[2]int]bool{}
-		for _, r := range s.rules {
-			for _, m := range r.re.FindAllStringIndex(line, -1) {
-				span := [2]int{m[0], m[1]}
-				if seen[span] || within(m, excused) {
-					continue
-				}
-				seen[span] = true
-				findings = append(findings, Finding{Path: path, Line: i + 1, Match: line[m[0]:m[1]], Use: r.use})
+		findings = append(findings, s.scanWindow(path, i+1, prev+cur+next, len(prev), len(prev)+len(cur), allow)...)
+	}
+	return findings
+}
+
+// commentMarker is the indentation and comment leader a wrapped line opens with.
+var commentMarker = regexp.MustCompile(`^\s*(//+|#+|\*|--|;+)?\s*`)
+
+// keyLine is a line that opens with a key (YAML, a struct literal): it
+// starts a new statement, so it never continues the line above.
+var keyLine = regexp.MustCompile(`^\s*(- )?["']?[A-Za-z_][\w.-]*["']?\s*:(\s|$)`)
+
+// wrapJoined is a line break with the next line's comment leader: the file
+// pre-check reads it as one space, so a wrapped name still reaches the scan.
+var wrapJoined = regexp.MustCompile(`\s*\n\s*(//+|#+|\*|--|;+)?\s*`)
+
+// scanWindow reports the retired spellings that START inside [lo, hi) of
+// view -- the current line within its neighbours -- and are not excused by
+// an allowance anywhere in the window.
+func (s *Scanner) scanWindow(path string, line int, view string, lo, hi int, allow []*regexp.Regexp) []Finding {
+	if !s.mayMatch(bytes.ToLower([]byte(view))) {
+		return nil
+	}
+	var excused [][]int
+	for _, re := range allow {
+		excused = append(excused, re.FindAllStringIndex(view, -1)...)
+	}
+	var findings []Finding
+	seen := map[[2]int]bool{}
+	for _, r := range s.rules {
+		for _, m := range r.re.FindAllStringIndex(view, -1) {
+			span := [2]int{m[0], m[1]}
+			if m[0] < lo || m[0] >= hi || seen[span] || within(m, excused) {
+				continue
 			}
+			seen[span] = true
+			findings = append(findings, Finding{Path: path, Line: line, Match: view[m[0]:m[1]], Use: r.use})
 		}
 	}
 	return findings

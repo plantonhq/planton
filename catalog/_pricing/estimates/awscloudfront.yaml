@@ -20,7 +20,7 @@ spec:
         - egress and requests bill per GB and per million by edge geography; price_class is unset, so PriceClass_All applies and every (including the most expensive) tier can serve
         - the always-free tier absorbs the first 1 TB of egress and 10 million requests each month
         - compression (compress true) and the caching-optimized policy reduce billed egress and origin fetches
-        - the S3 origin's storage and requests bill on the referenced AwsS3Bucket kind
+        - the S3 origin's storage and requests bill on the referenced AwsS3Bucket component
       notes: Zero committed cost -- a distribution serving no traffic bills nothing; SNI TLS with the default certificate is free.
     - preset: 02-custom-domain-cdn
       region_assumption: us-east-1
@@ -30,7 +30,7 @@ spec:
       exclusions:
         - traffic bills exactly as the 01 preset -- the custom domain changes nothing about rates
         - the ACM certificate for the aliases is free but must live in us-east-1; only choosing ssl_support_method vip (dedicated IPs, about $600 per month) would add committed cost, and this preset uses free SNI
-        - the S3 origin bills on its own kind
+        - the S3 origin bills on its own component
       notes: Zero committed cost -- custom domains ride free SNI TLS.
     - preset: 03-blue-green-continuous-deployment
       region_assumption: us-east-1
@@ -38,7 +38,7 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - the continuous-deployment policy itself is free; the staging distribution it routes 10% of traffic to is a SECOND AwsCloudFront kind billing its own traffic while deployed
+        - the continuous-deployment policy itself is free; the staging distribution it routes 10% of traffic to is a SECOND AwsCloudFront component billing its own traffic while deployed
         - canary traffic splits the same total volume -- the split changes which distribution bills, not how much
-        - the S3 origin bills on its own kind
-      notes: Zero committed cost on this distribution -- blue/green testing costs what the staging sibling serves, visible on that kind's own estimate.
+        - the S3 origin bills on its own component
+      notes: Zero committed cost on this distribution -- blue/green testing costs what the staging sibling serves, visible on that component's own estimate.

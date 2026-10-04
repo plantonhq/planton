@@ -37,7 +37,7 @@ spec:
       field_path: deployment_configs
       evidence:
         type: spec_default
-        reference: The per-environment binding families (kv_namespaces, d1_databases, r2_buckets, queue_producers, services, and the rest) let Pages Functions reach Cloudflare services through platform-issued bindings -- no static credential is ever held by the Function for a bound resource. Foreign-key references resolve bound resources from other catalog kinds.
+        reference: The per-environment binding families (kv_namespaces, d1_databases, r2_buckets, queue_producers, services, and the rest) let Pages Functions reach Cloudflare services through platform-issued bindings -- no static credential is ever held by the Function for a bound resource. Foreign-key references resolve bound resources from other components.
       notes: Preset 02-direct-upload-site binds a KV namespace keylessly; preset 01-git-connected-site declares no bindings. Secrets exist for external APIs the binding model cannot reach and are managed-secret references resolved at deploy.
     - control_id: no-legacy-auth
       status: not_applicable

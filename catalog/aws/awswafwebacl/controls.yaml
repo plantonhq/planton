@@ -34,7 +34,7 @@ spec:
       evidence:
         type: spec_default
         reference: With no rules, only the default_action applies -- the ACL filters nothing. Each rule adds inspection at the edge, and the full WAFv2 statement language (managed rule groups, rate limiting, geo/IP/byte/SQLi/XSS matching, AND/OR/NOT composition) is modeled in the spec.
-      notes: This kind IS the edge-protection layer other profiles point at. All four presets attach AWS managed rule groups (Common, KnownBadInputs, SQLi, IP reputation, Anonymous IP) and two add rate limiting; protection only lands once a resource associates the ACL from its own spec.
+      notes: This component IS the edge-protection layer other profiles point at. All four presets attach AWS managed rule groups (Common, KnownBadInputs, SQLi, IP reputation, Anonymous IP) and two add rate limiting; protection only lands once a resource associates the ACL from its own spec.
     - control_id: rbac
       status: not_applicable
       notes: Management access is AWS-account IAM posture, not a component choice; the ACL exposes no authentication plane of its own.

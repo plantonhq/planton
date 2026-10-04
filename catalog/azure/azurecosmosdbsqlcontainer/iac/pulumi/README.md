@@ -1,7 +1,7 @@
 # AzureCosmosdbSqlContainer - Pulumi Module
 
-Pulumi implementation for the AzureCosmosdbSqlContainer deployment
-component.
+Pulumi implementation for the AzureCosmosdbSqlContainer
+kind.
 
 ## Architecture
 

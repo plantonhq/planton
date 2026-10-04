@@ -113,5 +113,5 @@ spec:
       total_list_cost: "3562.87648"
       exclusions:
         - network egress and Cloud Logging/Monitoring ingestion follow what the jobs do
-        - internal-only nodes need Cloud NAT for internet egress -- a separate kind with its own hourly and per-GB charges
+        - internal-only nodes need Cloud NAT for internet egress -- a separate component with its own hourly and per-GB charges
         - the auto-created staging and temp buckets bill Cloud Storage rates by actual usage

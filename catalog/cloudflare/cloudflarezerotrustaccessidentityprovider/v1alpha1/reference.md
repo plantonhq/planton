@@ -362,7 +362,7 @@ Required when config.enable_encryption is true.
 SCIM provisioning: let the identity provider push user create/update/
 deprovision events to Cloudflare so Zero Trust identities stay in sync
 without waiting for re-authentication. Not available for onetimepin.
-Enabling SCIM mints a bearer secret exposed once in the scim_secret stack
+Enabling SCIM mints a bearer secret exposed once in the scim_secret
 output.
 
 - rule: seat_deprovision requires user_deprovision

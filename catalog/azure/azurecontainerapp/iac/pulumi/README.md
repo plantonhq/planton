@@ -1,6 +1,6 @@
 # AzureContainerApp Pulumi Module
 
-The Pulumi (Go) implementation of the `AzureContainerApp` component.
+The Pulumi (Go) implementation of the `AzureContainerApp` kind.
 
 ## Structure
 

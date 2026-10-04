@@ -3,7 +3,7 @@
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. All four presets are genuinely zero-committed on this
-# kind: the set manages content, not infrastructure with meters of its
+# component: the set manages content, not infrastructure with meters of its
 # own -- applying it bills a handful of PUT/COPY requests, and every
 # recurring charge (storage, reads, transfer) lands on the referenced
 # bucket's meters. Stated in exclusions, never padded into fabricated
@@ -37,10 +37,10 @@ spec:
       currency: USD
       hours_per_month: 730
       exclusions:
-        - the audit report's PUT routes through KMS (aws:kms override) at per-request rates, with bucket_key_enabled batching data-key calls to collapse the KMS charge; the key's monthly fee bills on the referenced AwsKmsKey kind
+        - the audit report's PUT routes through KMS (aws:kms override) at per-request rates, with bucket_key_enabled batching data-key calls to collapse the KMS charge; the key's monthly fee bills on the referenced AwsKmsKey component
         - the COMPLIANCE object lock is a storage-cost floor on the bucket -- the locked version cannot be deleted until the retain-until date passes, absolutely, so its GB-months accrue on the bucket through that date no matter what this manifest later does
         - storage and reads bill on the referenced object-lock-enabled bucket
-      notes: Zero committed cost on this kind -- but the lock converts the uploaded bytes into storage the bucket MUST bill until retention expires; the commitment is real, small (one JSON report), and lives on the bucket's meter.
+      notes: Zero committed cost on this component -- but the lock converts the uploaded bytes into storage the bucket MUST bill until retention expires; the commitment is real, small (one JSON report), and lives on the bucket's meter.
     - preset: 04-promote-golden-artifacts
       region_assumption: us-east-1
       currency: USD

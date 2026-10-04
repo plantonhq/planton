@@ -14,7 +14,7 @@ spec:
       notes: "The policy stores no data of its own -- it is a rule set materialized on both accounts. The blobs it copies are encrypted at rest on BOTH sides by Azure Storage's always-on service-side encryption, under each account's own key posture (the destination copy encrypts under the DESTINATION account's keys, not the source's)."
     - control_id: enc-at-rest-cmk
       status: not_applicable
-      notes: "Key custody for the replicated data is each account's posture -- customer-managed keys on source and destination compose on the AzureStorageAccount kinds; the policy carries no key lever."
+      notes: "Key custody for the replicated data is each account's posture -- customer-managed keys on source and destination compose on the AzureStorageAccount components; the policy carries no key lever."
     - control_id: enc-in-transit
       status: not_applicable
       notes: "The policy opens no client transport path; the replication channel is Microsoft-operated storage-to-storage infrastructure with no customer-configurable transport surface. Client access to either account rides that account's HTTPS/TLS posture."
@@ -50,7 +50,7 @@ spec:
       notes: "The policy IS a data-protection mechanism (an asynchronous replica, not a backup): it protects against regional loss of the source, but a bad write or delete replicates to the destination too -- point-in-time protection is the accounts' versioning (a policy prerequisite, usefully) and soft-delete posture. The policy itself is declarative configuration recreated from the manifest."
     - control_id: backup-retention-policy
       status: not_applicable
-      notes: "No backups exist on this spec to retain; version retention on either account is lifecycle-management posture on the AzureStorageAccount kinds."
+      notes: "No backups exist on this spec to retain; version retention on either account is lifecycle-management posture on the AzureStorageAccount components."
     - control_id: multi-zone-ha
       status: not_applicable
       notes: "The policy has no runtime footprint with a zonal failure mode. The RESILIENCE it builds is cross-account and typically cross-region -- the Cross-Region DR preset replicates to a paired-region account -- which is a composition fact, not a zonal replication lever on this spec."

@@ -11,7 +11,7 @@ spec:
     - service_name: Azure Cosmos DB
       sku_meter: provisioned throughput RU/s
       pricing_unit: 100-RU/s-hours
-      description: "A container with dedicated fixed throughput bills every provisioned 100 RU/s by the hour from the moment it exists, traffic or none -- 400 RU/s is the floor Azure sells. A container that sets neither throughput field carries no meter of its own: it draws on the database's shared budget (billed on the AzureCosmosdbSqlDatabase kind) or, on serverless accounts, the account bills per request unit consumed."
+      description: "A container with dedicated fixed throughput bills every provisioned 100 RU/s by the hour from the moment it exists, traffic or none -- 400 RU/s is the floor Azure sells. A container that sets neither throughput field carries no meter of its own: it draws on the database's shared budget (billed on the AzureCosmosdbSqlDatabase component) or, on serverless accounts, the account bills per request unit consumed."
     - service_name: Azure Cosmos DB
       sku_meter: autoscale throughput RU/s
       pricing_unit: 100-RU/s-hours

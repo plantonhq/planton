@@ -48,7 +48,7 @@ spec:
       notes: "An event stream delivers event payloads and signs nobody in -- there is no end-user credential surface here. Credential strength for the tenant's end users (password policy, brute-force protection, MFA) lives on the tenant's connections: the auth0connection kind carries that stance."
     - control_id: audit-logging
       status: not_applicable
-      notes: "The spec exposes no audit toggle. Changes to the stream are Management API operations captured in Auth0's tenant logs, whose retention and streaming are tenant-plan posture -- and this kind is itself the export vehicle: subscribing to management.* event types streams those administrative events out."
+      notes: "The spec exposes no audit toggle. Changes to the stream are Management API operations captured in Auth0's tenant logs, whose retention and streaming are tenant-plan posture -- and this component is itself the export vehicle: subscribing to management.* event types streams those administrative events out."
     - control_id: monitoring-integration
       status: not_applicable
       notes: Neither the spec nor the modules expose a metrics surface for the stream; delivery health is observed inside Auth0's dashboard as provider-managed SaaS telemetry, and the events themselves land in whatever monitoring pipeline the destination feeds.

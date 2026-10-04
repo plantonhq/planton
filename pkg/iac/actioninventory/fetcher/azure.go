@@ -83,9 +83,9 @@ func referencedAzureNamespaces(repoRoot string) ([]string, error) {
 		return nil, err
 	}
 	set := map[string]bool{}
-	for provider, components := range discovered {
-		for _, component := range components {
-			manifest, err := permissions.Load(repoRoot, provider, component)
+	for provider, kinds := range discovered {
+		for _, kind := range kinds {
+			manifest, err := permissions.Load(repoRoot, provider, kind)
 			if err != nil {
 				return nil, err
 			}
@@ -93,7 +93,7 @@ func referencedAzureNamespaces(repoRoot string) ([]string, error) {
 				for _, action := range append(append([]string(nil), group.GetActions()...), group.GetDataActions()...) {
 					namespace, _, found := strings.Cut(action, "/")
 					if !found {
-						return nil, fmt.Errorf("%s/%s: azure action %q has no namespace segment", provider, component, action)
+						return nil, fmt.Errorf("%s/%s: azure action %q has no namespace segment", provider, kind, action)
 					}
 					set[namespace] = true
 				}

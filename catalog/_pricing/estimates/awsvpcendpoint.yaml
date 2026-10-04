@@ -20,7 +20,7 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - the S3 or DynamoDB traffic riding this endpoint bills requests and storage on those services' own kinds, and the zero here is the endpoint's absent meter, not the workload's spend
+        - the S3 or DynamoDB traffic riding this endpoint bills requests and storage on those services' own components, and the zero here is the endpoint's absent meter, not the workload's spend
       notes: A Gateway endpoint is a route-table entry with no meter of any kind -- the committed monthly cost is honestly zero, and it is often a net saver because S3/DynamoDB traffic riding it stops paying NAT gateway data-processing rates.
     - preset: 02-interface-endpoint
       region_assumption: us-east-1

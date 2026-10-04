@@ -33,7 +33,7 @@ spec:
         - ingress events bill per million on the Standard Ingress Events meter and follow producer volume; capture, when a hub enables it, bills the hourly Standard Capture meter per TU
         - TUs auto-inflate grows above capacity bill at the same TU rate, up to maximum_throughput_units -- the estimate prices the provisioned floor
         - network egress follows consumer placement
-      notes: A namespace placed on a dedicated cluster (dedicated_cluster_id) bills through the cluster's capacity units on its own AzureEventHubCluster kind -- these rules refuse such a manifest rather than pricing tier meters the placement supersedes; the committed presets all deploy self-serve tiers.
+      notes: A namespace placed on a dedicated cluster (dedicated_cluster_id) bills through the cluster's capacity units on its own AzureEventHubCluster component -- these rules refuse such a manifest rather than pricing tier meters the placement supersedes; the committed presets all deploy self-serve tiers.
     - preset: 02-locked-down-keyless
       region_assumption: eastus
       currency: USD
@@ -52,7 +52,7 @@ spec:
       exclusions:
         - ingress events bill per million on the Standard Ingress Events meter and follow producer volume; capture, when a hub enables it, bills the hourly Standard Capture meter per TU
         - network egress follows consumer placement
-      notes: A namespace placed on a dedicated cluster (dedicated_cluster_id) bills through the cluster's capacity units on its own AzureEventHubCluster kind -- these rules refuse such a manifest rather than pricing tier meters the placement supersedes; the committed presets all deploy self-serve tiers.
+      notes: A namespace placed on a dedicated cluster (dedicated_cluster_id) bills through the cluster's capacity units on its own AzureEventHubCluster component -- these rules refuse such a manifest rather than pricing tier meters the placement supersedes; the committed presets all deploy self-serve tiers.
     - preset: 03-premium-isolated
       region_assumption: eastus
       currency: USD
@@ -71,4 +71,4 @@ spec:
       exclusions:
         - event data retained beyond the included window bills per GB-month on the Premium Extended Retention meter
         - network egress follows consumer placement
-      notes: The price list publishes no Premium ingress or capture meters -- both are included in the PU rate. A namespace placed on a dedicated cluster (dedicated_cluster_id) bills through the cluster's capacity units on its own AzureEventHubCluster kind -- these rules refuse such a manifest rather than pricing tier meters the placement supersedes; the committed presets all deploy self-serve tiers.
+      notes: The price list publishes no Premium ingress or capture meters -- both are included in the PU rate. A namespace placed on a dedicated cluster (dedicated_cluster_id) bills through the cluster's capacity units on its own AzureEventHubCluster component -- these rules refuse such a manifest rather than pricing tier meters the placement supersedes; the committed presets all deploy self-serve tiers.

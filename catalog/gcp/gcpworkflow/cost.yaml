@@ -21,7 +21,7 @@ spec:
       impact: EXECUTION_HISTORY_DETAILED keeps step inputs and outputs for console debugging -- Google's Workflows pricing page publishes no separate meter for history detail (the price of the extra detail is not yet published), so the dial is operational, not a priced lever.
     - field_path: crypto_key
       sku_meter: Cloud KMS key operations
-      impact: CMEK routes every encrypt/decrypt of workflow definitions and execution data through the named key -- key-version storage and per-operation charges bill on the GcpKmsKey kind's project.
+      impact: CMEK routes every encrypt/decrypt of workflow definitions and execution data through the named key -- key-version storage and per-operation charges bill on the GcpKmsKey component's project.
   estimate_exclusions:
     - a deployed workflow bills nothing at rest -- steps accrue only when executions run, and Google meters executed steps only (internal and external tallied separately, each in 1,000-step increments past its monthly free allotment)
     - whatever the steps invoke -- Cloud Run services, BigQuery jobs, Pub/Sub topics -- bills on those components

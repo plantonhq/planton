@@ -32,7 +32,7 @@ func Resources(ctx *pulumi.Context, iacInput *azurefrontdoorfirewallpolicyv1alph
 	}
 
 	// enabled / request_body_check_enabled default true on the provider;
-	// send them only when the spec carries an explicit choice (stack
+	// send them only when the spec carries an explicit choice (IaC
 	// inputs never materialize proto defaults, so absence means "take
 	// Azure's default").
 	if spec.Enabled != nil {

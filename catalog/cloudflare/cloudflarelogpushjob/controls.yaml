@@ -53,7 +53,7 @@ spec:
       field_path: dataset
       evidence:
         type: spec_default
-        reference: This kind IS the monitoring-integration surface -- it ships Cloudflare's log datasets to the operator's own SIEM or analytics stack.
+        reference: This component IS the monitoring-integration surface -- it ships Cloudflare's log datasets to the operator's own SIEM or analytics stack.
     - control_id: backup-recovery
       status: not_applicable
       notes: Configuration-only surface, reproducible from the manifest; shipped log objects are the destination's to retain.

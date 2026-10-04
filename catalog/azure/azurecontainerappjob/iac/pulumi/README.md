@@ -1,6 +1,6 @@
 # AzureContainerAppJob - Pulumi Module
 
-Pulumi implementation for the AzureContainerAppJob component.
+Pulumi implementation for the AzureContainerAppJob kind.
 
 ## Architecture
 
@@ -28,5 +28,5 @@ containerapp.Job (one finite-run workload: template + trigger + identity)
 ## Provider
 
 Built via the shared `pulumiazureprovider.Get` builder -- static client
-secret, keyless web identity, or ambient chain, resolved from the stack
+secret, keyless web identity, or ambient chain, resolved from the IaC
 input. Never construct the provider inline.

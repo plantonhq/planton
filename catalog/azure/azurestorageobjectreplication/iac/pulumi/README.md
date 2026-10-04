@@ -1,7 +1,7 @@
 # AzureStorageObjectReplication - Pulumi Module
 
-Pulumi implementation for the AzureStorageObjectReplication deployment
-component.
+Pulumi implementation for the AzureStorageObjectReplication
+kind.
 
 ## Architecture
 

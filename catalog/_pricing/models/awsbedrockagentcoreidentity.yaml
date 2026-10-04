@@ -30,5 +30,5 @@ spec:
       exclusions:
         - policy authorization bills $0.000025 per request each time a gateway evaluates a tool call against this engine -- gateway traffic invisible to this manifest, with the first 100 temporal policies per engine incurring no additional authorization charges
         - natural-language policy authoring bills $0.13 per 1,000 input tokens, a console workflow this preset never performs -- its two policies arrive as ready Cedar statements
-        - a customer-managed encryption key, if later referenced, would bill per-request on its own AwsKmsKey kind; this preset uses the service-managed key at no charge
+        - a customer-managed encryption key, if later referenced, would bill per-request on its own AwsKmsKey component; this preset uses the service-managed key at no charge
       notes: Zero committed cost -- the engine and its two Cedar policies are free at rest; the authorization meter starts with the first policy-enforced tool call on a gateway, not with this manifest.

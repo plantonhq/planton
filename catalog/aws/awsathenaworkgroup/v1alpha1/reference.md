@@ -35,7 +35,7 @@ Notes:
 - The workgroup name (from metadata.name) cannot be changed after creation
   (ForceNew). Naming constraints: 1-128 characters, alphanumeric, periods,
   underscores, and hyphens only.
-- Credentials, region, and deployment workflow live outside this spec in stack
+- Credentials, region, and deployment workflow live outside this spec in IaC
   inputs.
 
 ## Example

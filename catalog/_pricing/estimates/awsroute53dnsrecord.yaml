@@ -19,7 +19,7 @@ spec:
       exclusions:
         - alias A queries to an ELB target answer FREE at any volume -- the alias arm is Route 53's zero-cost path for AWS integrations, the reason apex records for load balancers should never be paid-per-query CNAMEs
         - evaluate_target_health rides the health checking AWS provisions for ELB aliases automatically at no charge -- failover awareness without a billed standalone health check
-        - the hosted zone's own monthly charge bills on the referenced AwsRoute53Zone kind; the load balancer bills on its own kind
+        - the hosted zone's own monthly charge bills on the referenced AwsRoute53Zone component; the load balancer bills on its own component
       notes: Zero committed cost -- and uniquely, near-zero usage cost too, because this preset's queries are the free alias kind; the record shapes traffic without ever starting a query meter.
     - preset: 02-a-record
       region_assumption: us-east-1
@@ -29,5 +29,5 @@ spec:
       exclusions:
         - queries against this record bill on the hosted zone at the standard per-million rate as resolver traffic arrives; the 300-second TTL is the cache dial deciding how often resolvers come back
         - queries that MISS also bill -- an AAAA lookup against this A-only name, or a lookup for a nonexistent name, meters at the standard rate
-        - the hosted zone's monthly charge bills on its AwsRoute53Zone kind; queries against private hosted zones are free at any volume
+        - the hosted zone's monthly charge bills on its AwsRoute53Zone component; queries against private hosted zones are free at any volume
       notes: Zero committed cost -- the record itself is free within the zone's included 10,000, and the query meter it feeds lives on the zone, running only when the internet actually looks the name up.

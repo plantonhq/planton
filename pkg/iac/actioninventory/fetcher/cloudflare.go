@@ -113,15 +113,15 @@ func referencedCloudflareGroups(repoRoot string) (map[string]bool, error) {
 		return nil, err
 	}
 	set := map[string]bool{}
-	for provider, components := range discovered {
-		for _, component := range components {
-			manifest, err := permissions.Load(repoRoot, provider, component)
+	for provider, kinds := range discovered {
+		for _, kind := range kinds {
+			manifest, err := permissions.Load(repoRoot, provider, kind)
 			if err != nil {
 				return nil, err
 			}
 			for _, group := range manifest.GetSpec().GetCloudflare().GetGroups() {
 				if group.GetName() == "" {
-					return nil, fmt.Errorf("%s/%s: cloudflare group with empty name", provider, component)
+					return nil, fmt.Errorf("%s/%s: cloudflare group with empty name", provider, kind)
 				}
 				set[group.GetName()] = true
 			}

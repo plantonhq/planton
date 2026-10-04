@@ -10,7 +10,7 @@ Audit a specific kind against the ideal state defined in `architecture/catalog-k
 
 A first-class goal of this audit is **cross-engine IaC parity**: the kind's Pulumi
 (`iac/pulumi/module/`) and OpenTofu/Terraform (`iac/tf/`) modules must produce the SAME
-catalog objects, names, labels, selectors, environment, dependency ordering, and stack
+catalog objects, names, labels, selectors, environment, dependency ordering, and
 outputs for an identical `iac-input`. This audit is designed to be run **one kind
 per session** so that, run across every registered kind, the whole catalog can be
 driven to 100% parity (see "Driving All Kinds to Parity" near the end).

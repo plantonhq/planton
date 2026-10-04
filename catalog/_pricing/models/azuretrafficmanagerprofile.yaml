@@ -6,7 +6,7 @@
 # object carries no hourly or monthly meter of its own -- DNS queries bill
 # only as clients look the name up, and every monitoring fee (including the
 # add-ons this profile's probe settings switch) bills per endpoint on the
-# separate AzureTrafficManagerEndpoint kinds, of which a bare profile
+# separate AzureTrafficManagerEndpoint components, of which a bare profile
 # has none. Stated in exclusions, never padded into fabricated dollars.
 # Schema: finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
@@ -21,10 +21,10 @@ spec:
       hours_per_month: 730
       exclusions:
         - "DNS queries answered bill $0.54 per million for the first billion each month, $0.375 per million beyond (Global meter) -- volume follows client traffic shaped by the 60-second TTL's resolver caching, which no manifest predicts"
-        - each endpoint later attached bills its flat monthly health-check fee on its own kind -- $0.36 per Azure endpoint-month, $0.54 external, $10.00 nested (Global meters)
-        - "this preset probes HTTPS, so every monitored endpoint will additionally bill the HTTPS health-check add-on -- $1.00 per Azure endpoint-month, $2.00 per external endpoint-month -- on the endpoint kinds"
+        - each endpoint later attached bills its flat monthly health-check fee on its own component -- $0.36 per Azure endpoint-month, $0.54 external, $10.00 nested (Global meters)
+        - "this preset probes HTTPS, so every monitored endpoint will additionally bill the HTTPS health-check add-on -- $1.00 per Azure endpoint-month, $2.00 per external endpoint-month -- on the endpoint components"
         - Traffic View stays off (its $2.00 per million data-points meter never fires); Real User Measurements is a separate opt-in outside this spec, currently listed at $0.00 per million
-        - the destinations the profile steers toward bill on their own kinds; Traffic Manager never carries their traffic
+        - the destinations the profile steers toward bill on their own components; Traffic Manager never carries their traffic
       notes: "Zero committed cost -- a profile nobody queries and no endpoint references bills nothing; Traffic Manager has no per-profile existence fee, so the meter starts with the first uncached lookup."
     - preset: 02-priority-failover
       region_assumption: eastus
@@ -32,8 +32,8 @@ spec:
       hours_per_month: 730
       exclusions:
         - "DNS queries answered bill $0.54 per million (first billion monthly, then $0.375 per million, Global meter) -- and this preset's aggressive 30-second TTL trades roughly double the billable query volume of the 60-second default for failover that clients see within half a minute"
-        - each endpoint later attached bills its flat monthly health-check fee on its own kind -- $0.36 per Azure endpoint-month, $0.54 external, $10.00 nested (Global meters)
-        - "this preset pins the 10-second fast probe interval AND HTTPS probes, so every monitored endpoint will additionally bill BOTH add-ons -- fast interval $1.00 Azure / $2.00 external and HTTPS $1.00 Azure / $2.00 external, per endpoint-month -- on the endpoint kinds"
+        - each endpoint later attached bills its flat monthly health-check fee on its own component -- $0.36 per Azure endpoint-month, $0.54 external, $10.00 nested (Global meters)
+        - "this preset pins the 10-second fast probe interval AND HTTPS probes, so every monitored endpoint will additionally bill BOTH add-ons -- fast interval $1.00 Azure / $2.00 external and HTTPS $1.00 Azure / $2.00 external, per endpoint-month -- on the endpoint components"
         - Traffic View stays off (its $2.00 per million data-points meter never fires); Real User Measurements is a separate opt-in outside this spec, currently listed at $0.00 per million
-        - the destinations the profile steers toward bill on their own kinds; Traffic Manager never carries their traffic
+        - the destinations the profile steers toward bill on their own components; Traffic Manager never carries their traffic
       notes: "Zero committed cost -- the fast-failover posture (10s probes, 30s TTL, 1 tolerated failure) commits nothing by itself because every fee it shapes bills per query or per monitored endpoint; the profile object stays off the invoice until traffic and endpoints arrive."

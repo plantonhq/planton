@@ -22,7 +22,7 @@ spec:
       impact: Longer retention holds more samples on the TSDB volume (default 10d); retention_size caps the on-disk size -- size it BELOW disk_size or Prometheus crash-loops when the volume fills.
     - field_path: prometheus.remote_write
       sku_meter: managed metrics backend ingestion
-      impact: Every declared destination receives the sample stream as scraped -- Amazon Managed Prometheus, Grafana Cloud, Azure Monitor bill ingestion and storage on THEIR accounts, typically the largest bill this kind can generate.
+      impact: Every declared destination receives the sample stream as scraped -- Amazon Managed Prometheus, Grafana Cloud, Azure Monitor bill ingestion and storage on THEIR accounts, typically the largest bill this component can generate.
     - field_path: alertmanager.replicas
       sku_meter: cluster CPU, memory, and storage reservations
       impact: Alertmanager replicas gossip into one notification cluster (3 is the quorum-safe count); each carries alertmanager.resources and its own state volume (alertmanager.disk_size, default 2Gi).

@@ -1,6 +1,6 @@
 # AzureLinuxWebApp Pulumi Module
 
-This directory contains the Pulumi IaC implementation for the `AzureLinuxWebApp` component.
+This directory contains the Pulumi IaC implementation for the `AzureLinuxWebApp` kind.
 
 ## Structure
 

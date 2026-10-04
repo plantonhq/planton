@@ -21,7 +21,7 @@ spec:
       hours_per_month: 730
       exclusions:
         - "every operation on the key bills 0.03 USD per 10,000 transactions in eastus (RSA 2048, software-protected) -- wrap/unwrap calls follow the consumers' startup and rotation behavior, unknowable from the manifest"
-        - "the parent Premium-or-Standard vault this key lives in has no at-rest charge of its own; its posture is the AzureKeyVault kind's"
+        - "the parent Premium-or-Standard vault this key lives in has no at-rest charge of its own; its posture is the AzureKeyVault component's"
       notes: "Zero-committed: a software-protected RSA 2048 key has no per-key fee -- Microsoft's Key Vault pricing page bills software keys per 10,000 transactions only. The key object sitting unused costs exactly nothing."
     - preset: 02-hsm-auto-rotating
       region_assumption: eastus
@@ -39,7 +39,7 @@ spec:
       exclusions:
         - "operations on the key bill 0.03 USD per 10,000 transactions (the RSA 2048 rate applies to HSM keys too; only the monthly fee differs) -- volume follows the consumers"
         - "after each rotation, any consumer still touching the PREVIOUS version makes that version bill its own 1.00 USD monthly fee that cycle (each used version counts as a separate HSM key per Microsoft's FAQ); the floor models steady-state single-active-version usage"
-        - "the Event Grid near-expiry notifications (notifyBeforeExpiry P30D) bill on the Event Grid kinds that subscribe, not here"
+        - "the Event Grid near-expiry notifications (notifyBeforeExpiry P30D) bill on the Event Grid components that subscribe, not here"
       notes: "The committed floor is the HSM custody fee plus the amortized rotation cadence. The fee is never prorated -- a key used once on day 29 bills the full month -- and requires the vault's PREMIUM SKU (an AzureKeyVault choice)."
     - preset: 03-ec-signing
       region_assumption: eastus

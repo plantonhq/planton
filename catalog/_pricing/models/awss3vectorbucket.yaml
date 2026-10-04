@@ -30,6 +30,6 @@ spec:
       hours_per_month: 730
       exclusions:
         - the same storage, upload, and query meter family across BOTH indexes, each empty at creation -- and per-vector cost diverges by design, with docs-titan carrying 4 KB of vector data per embedding (1024 dimensions) against code-small's 1 KB (256 dimensions), a 4x slope difference on storage and query-processed bytes alike
-        - the aws:kms encryption choice routes KMS request and key charges to the referenced key, billed on its own AwsKmsKey kind
+        - the aws:kms encryption choice routes KMS request and key charges to the referenced key, billed on its own AwsKmsKey component
         - read and list request meters are not yet published on the pricing page -- excluded as absence, not as $0
-      notes: Zero committed cost -- KMS encryption is posture, not a meter, on this kind; an idle encrypted store meters nothing here, and the first query or upload starts the same usage meters as the unencrypted preset.
+      notes: Zero committed cost -- KMS encryption is posture, not a meter, on this component; an idle encrypted store meters nothing here, and the first query or upload starts the same usage meters as the unencrypted preset.

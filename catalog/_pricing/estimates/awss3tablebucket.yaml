@@ -30,6 +30,6 @@ spec:
       exclusions:
         - the same storage, request, monitoring, and compaction meters as the single-region preset, all zero on the empty events table this manifest creates
         - replication starts its meter family with the first write -- $0.010 per 1,000 table updates, destination PUT requests per replicated file, inter-Region Data Transfer OUT per GB to the us-west-2 replica, and the replica bucket's own storage and monitoring meters
-        - the aws:kms encryption choice routes KMS request charges (including the maintenance service's GenerateDataKey/Decrypt calls during compaction) to the referenced key, billed on its own AwsKmsKey kind
-        - the replication IAM role is free and billed nowhere; it is authored as its own AwsIamRole kind
-      notes: Zero committed cost -- KMS encryption and cross-region replication are POSTURE on this manifest, and both bill only per unit of data moved or key operation made; an idle replicated lake meters nothing on this kind.
+        - the aws:kms encryption choice routes KMS request charges (including the maintenance service's GenerateDataKey/Decrypt calls during compaction) to the referenced key, billed on its own AwsKmsKey component
+        - the replication IAM role is free and billed nowhere; it is authored as its own AwsIamRole component
+      notes: Zero committed cost -- KMS encryption and cross-region replication are POSTURE on this manifest, and both bill only per unit of data moved or key operation made; an idle replicated lake meters nothing on this component.

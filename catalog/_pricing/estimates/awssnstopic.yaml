@@ -18,7 +18,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - publishes bill per million requests after the always-free first million
-        - per-protocol delivery cost (HTTP, email, SMS, mobile push) bills on the AwsSnsSubscription kinds that attach endpoints
+        - per-protocol delivery cost (HTTP, email, SMS, mobile push) bills on the AwsSnsSubscription components that attach endpoints
         - data transfer out of the region bills per GB
       notes: Zero committed cost -- an idle standard topic bills nothing.
     - preset: 02-fifo-with-deduplication
@@ -28,7 +28,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - FIFO publishes and deliveries bill per message and per payload GB -- a different pricing shape from standard topics, entirely traffic-driven
-        - subscriber-side delivery cost bills on the subscription kinds
+        - subscriber-side delivery cost bills on the subscription components
       notes: Zero committed cost -- FIFO ordering changes the usage rates, never the (zero) baseline.
     - preset: 03-fifo-with-archive
       region_assumption: us-east-1

@@ -1,6 +1,6 @@
 # AzureFunctionApp Pulumi Module
 
-This directory contains the Pulumi IaC implementation for the `AzureFunctionApp` component.
+This directory contains the Pulumi IaC implementation for the `AzureFunctionApp` kind.
 
 ## Structure
 

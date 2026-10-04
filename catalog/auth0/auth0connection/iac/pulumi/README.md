@@ -1,6 +1,6 @@
 # Auth0Connection Pulumi Module
 
-This directory contains the Pulumi implementation for the Auth0Connection component.
+This directory contains the Pulumi implementation for the Auth0Connection kind.
 
 ## Overview
 

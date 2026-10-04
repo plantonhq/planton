@@ -57,7 +57,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: This kind IS monitoring -- every run emits SuccessPercent, Duration, and failure metrics to CloudWatch automatically, stores run artifacts for forensics, and groups aggregate fleet health in the console. Nothing must be enabled for the signal to exist.
+        reference: This component IS monitoring -- every run emits SuccessPercent, Duration, and failure metrics to CloudWatch automatically, stores run artifacts for forensics, and groups aggregate fleet health in the console. Nothing must be enabled for the signal to exist.
       notes: Alarms on the canary's metrics are the owner's to add on their own AwsCloudwatchAlarm components -- the classic pairing for a heartbeat canary.
     - control_id: backup-recovery
       status: not_applicable

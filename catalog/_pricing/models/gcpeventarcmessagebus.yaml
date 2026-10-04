@@ -17,7 +17,7 @@ spec:
       exclusions:
         - an idle bus bills nothing -- every event published into it bills $1.00 per million (chunked at 16 KiB), and the route-everything enrollment (celMatch "true") sends 100% of them through the pipeline at $0.50 per million more
         - the pipeline applies no transformation or format conversion, so the $0.40-per-million transformation meter never starts
-        - messages landing on the destination Pub/Sub topic bill Pub/Sub's own meters on that kind, and INFO-severity platform logs bill Cloud Logging by volume as traffic flows
+        - messages landing on the destination Pub/Sub topic bill Pub/Sub's own meters on that component, and INFO-severity platform logs bill Cloud Logging by volume as traffic flows
       notes: Zero committed at creation -- the smallest useful hub costs $1.50 per million events end to end (publish + deliver) once traffic exists, and nothing before that.
     - preset: 02-audit-fan-out
       region_assumption: us-central1
@@ -26,5 +26,5 @@ spec:
       exclusions:
         - the Google API source turns Google-service event streams (including audit logs) into bus publishers at $1.00 per million events, chunked at 16 KiB -- volume follows project activity, not configuration
         - the two enrollments split the stream without overlap (storage events vs everything else), so each published event bills exactly one $0.50-per-million pipeline delivery; neither pipeline transforms, so the $0.40-per-million meter stays idle
-        - workflow-destination deliveries trigger Cloud Workflows executions billed as steps on that kind, topic deliveries bill Pub/Sub meters, and INFO platform logs bill Cloud Logging by volume
+        - workflow-destination deliveries trigger Cloud Workflows executions billed as steps on that component, topic deliveries bill Pub/Sub meters, and INFO platform logs bill Cloud Logging by volume
       notes: Zero committed at creation -- the fan-out's cost tracks how chatty the project's Google-service event stream is, a volume the manifest cannot pin down in advance.

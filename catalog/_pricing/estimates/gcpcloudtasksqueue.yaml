@@ -18,7 +18,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - an empty queue bills nothing -- billable operations (every enqueue API call and every push delivery attempt, chunked at 32 KB) accrue only as producers add tasks, at $0.40 per million past the first 1 million free each month
-        - whatever compute serves the dispatched requests bills on its own kind, and network costs apply to HTTP target dispatches
+        - whatever compute serves the dispatched requests bills on its own component, and network costs apply to HTTP target dispatches
       notes: Creation is free and existence is free -- Cloud Tasks meters operations, not queues, so the estimate is zero until traffic arrives.
     - preset: 02-rate-limited-processing
       region_assumption: us-central1

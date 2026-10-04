@@ -1,7 +1,7 @@
 # AzureServiceBusTopic - Pulumi Module
 
-Pulumi (Go) implementation for the AzureServiceBusTopic deployment
-component, at 100% behavioral parity with the Terraform module.
+Pulumi (Go) implementation for the AzureServiceBusTopic
+kind, at 100% behavioral parity with the Terraform module.
 
 ## Resources Created
 

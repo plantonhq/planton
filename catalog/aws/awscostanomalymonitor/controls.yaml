@@ -50,7 +50,7 @@ spec:
       field_path: subscriptions
       evidence:
         type: spec_default
-        reference: This kind IS a monitoring integration -- but detection alone is silent outside the console. The subscriptions list is what wires anomalies to humans and systems (IMMEDIATE via SNS, DAILY/WEEKLY via email digests, per-subscription impact thresholds); an empty list means anomalies accumulate on the dashboard unwatched. Both presets ship a subscription, and the spec validates the AWS channel-frequency pairing at manifest time.
+        reference: This component IS a monitoring integration -- but detection alone is silent outside the console. The subscriptions list is what wires anomalies to humans and systems (IMMEDIATE via SNS, DAILY/WEEKLY via email digests, per-subscription impact thresholds); an empty list means anomalies accumulate on the dashboard unwatched. Both presets ship a subscription, and the spec validates the AWS channel-frequency pairing at manifest time.
       notes: Detected anomalies also publish to Amazon EventBridge independent of subscriptions, so event-driven pipelines can consume them without email or SNS.
     - control_id: backup-recovery
       status: not_applicable

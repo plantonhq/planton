@@ -88,11 +88,11 @@ spec:
         - field_path: endpoint_type
           op: equals
           value: Gateway
-      text: the S3 or DynamoDB traffic riding this endpoint bills requests and storage on those services' own kinds, and the zero here is the endpoint's absent meter, not the workload's spend
+      text: the S3 or DynamoDB traffic riding this endpoint bills requests and storage on those services' own components, and the zero here is the endpoint's absent meter, not the workload's spend
     - applies_when:
         - field_path: endpoint_type
           op: is_unset
-      text: the S3 or DynamoDB traffic riding this endpoint bills requests and storage on those services' own kinds, and the zero here is the endpoint's absent meter, not the workload's spend
+      text: the S3 or DynamoDB traffic riding this endpoint bills requests and storage on those services' own components, and the zero here is the endpoint's absent meter, not the workload's spend
   notes:
     - applies_when:
         - field_path: endpoint_type

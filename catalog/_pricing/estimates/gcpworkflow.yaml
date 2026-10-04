@@ -28,6 +28,6 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - steps accrue per delivered event -- the decode/assign step is internal ($0.01 per 1,000 past 5,000 free monthly) and the handler call to a custom domain is external ($0.025 per 1,000 past 2,000 free)
-        - the Eventarc trigger delivering events and the handler service consuming them bill on their own kinds
+        - the Eventarc trigger delivering events and the handler service consuming them bill on their own components
         - EXECUTION_HISTORY_DETAILED keeps step inputs/outputs for debugging; Google publishes no separate price for history detail on the Workflows pricing page
       notes: Zero committed at creation -- an event-driven workflow's spend tracks event volume exactly, with the monthly free step allotments absorbing low-traffic months entirely.

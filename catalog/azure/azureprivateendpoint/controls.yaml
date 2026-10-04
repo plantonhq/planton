@@ -30,7 +30,7 @@ spec:
       evidence:
         type: spec_default
         reference: Empty joins no application security group; entries join the endpoint's network interface to each referenced group so NSG rules can govern traffic to the endpoint by workload group instead of by IP.
-      notes: NSG rules apply to private-endpoint traffic only when the referenced subnet has private-endpoint network policies enabled -- a switch on the AzureSubnet kind, historically off by default. The rules themselves live on AzureNetworkSecurityGroup components, deliberately outside this manifest.
+      notes: NSG rules apply to private-endpoint traffic only when the referenced subnet has private-endpoint network policies enabled -- a switch on the AzureSubnet component, historically off by default. The rules themselves live on AzureNetworkSecurityGroup components, deliberately outside this manifest.
     - control_id: edge-protection
       status: not_applicable
       notes: A private tunnel entrance offers no request-filtering attachment point -- WAF is composed on HTTP-aware tiers (Application Gateway, Front Door), and private-endpoint traffic already bypasses the public edge entirely.

@@ -15,7 +15,7 @@ spec:
       currency: USD
       hours_per_month: 730
       exclusions:
-        - the backend service has no hourly charge -- forwarding-rule hours and per-GiB data processing bill on the load balancer frontend kinds, and the web pool's VMs bill on their own instance-group kind
+        - the backend service has no hourly charge -- forwarding-rule hours and per-GiB data processing bill on the load balancer frontend components, and the web pool's VMs bill on their own instance-group component
         - the 10% request-log sample bills as Cloud Logging ingestion in proportion to traffic
         - health-check probes belong to the GcpHealthCheck kind
       notes: Zero committed at creation -- the routing hub is free at rest; the web tier's spend lives in the VMs serving it and the frontend processing its bytes.
@@ -26,7 +26,7 @@ spec:
       exclusions:
         - cache data transfer out bills per GiB served from the edge, tiered by destination (North America and Europe $0.08/GiB for the first 10 TiB per month, cheaper above)
         - cache fill bills per GiB fetched from the backends ($0.01 within North America or Europe, $0.02 within other continents, $0.04 inter-region); USE_ORIGIN_HEADERS means only routes the API marks cacheable ever cache, so hit rate follows the origin's headers
-        - cache lookups bill $0.0075 per 10,000 GET/HEAD requests; cache hits bypass the load balancer, cutting its data-processing bill on the frontend kinds
+        - cache lookups bill $0.0075 per 10,000 GET/HEAD requests; cache hits bypass the load balancer, cutting its data-processing bill on the frontend components
       notes: An idle CDN-cached API costs exactly zero -- every meter starts with the first request, so the zero is commitment-absence, not freeness.
     - preset: 03-iap-protected-internal-tool
       region_assumption: global
@@ -35,5 +35,5 @@ spec:
       exclusions:
         - Identity-Aware Proxy is free for protecting Google Cloud-hosted resources (Google's IAP pricing page states it; paid capabilities belong to Chrome Enterprise Premium)
         - full request logging (sample_rate 1.0) bills as Cloud Logging ingestion on every request -- the deliberate audit-over-cost trade for an internal tool
-        - the tool's VMs, the frontend's forwarding-rule hours, and data processing bill on their own kinds
+        - the tool's VMs, the frontend's forwarding-rule hours, and data processing bill on their own components
       notes: Zero committed at creation -- the zero-trust gate itself adds no meter; the audit-grade logging is the one spend decision this preset makes, and it scales with usage.

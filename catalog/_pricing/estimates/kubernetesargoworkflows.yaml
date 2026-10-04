@@ -23,6 +23,6 @@ spec:
         - the dollar value of this capacity is the target cluster's node and storage-class economics
         - components with no declared resources carry the chart defaults, and this chart ships NO default requests or limits for the controller or server -- unsized pods schedule unbounded and reserve nothing, so a zero line is the literal truth, not a free component
         - helm_values merges LAST over the typed rendering and can override modeled values, including resources, replicas, and the executor's sizing -- this footprint describes the spec's declaration
-        - artifact and archived-log bytes grow with pipeline activity on the declared object store -- on a composed KubernetesSeaweedFs that capacity rides the SeaweedFS kind's own footprint; on a cloud bucket it is that provider's storage bill
+        - artifact and archived-log bytes grow with pipeline activity on the declared object store -- on a composed KubernetesSeaweedFs that capacity rides the SeaweedFS component's own footprint; on a cloud bucket it is that provider's storage bill
         - the workflow archive writes history to the declared relational database -- its capacity rides the composed KubernetesPostgres/KubernetesMysql resource (or the external database), never this footprint
       notes: controller replicas beyond 1 are hot standbys behind leader election -- they take over on failure, they do not share the reconcile workload, and each reserves the full controller resources

@@ -19,5 +19,5 @@ spec:
   estimate_exclusions:
     - matched pods bill Fargate vCPU and memory rates by their own resource requests (rounded up to Fargate's size combinations) -- workload-driven and invisible in this manifest
     - the profile requires private subnets, so matched pods' internet egress rides a NAT gateway billed on its AwsNatGateway component
-    - the cluster management fee bills on the AwsEksCluster kind
+    - the cluster management fee bills on the AwsEksCluster component
   notes: "The profile itself is free -- it is a routing rule, not capacity. What it routes is the money: preset 01's bare-namespace selector is a deliberate blank cheque (everything in the namespace moves to Fargate rates), while preset 02's label selector prices only what opts in. The cost story here is scope control, and the manifest is where the scope lives."

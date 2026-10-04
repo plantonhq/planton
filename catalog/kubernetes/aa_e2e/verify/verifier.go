@@ -32,7 +32,7 @@ type DeployFailureVerifier interface {
 }
 
 // operatorKinds lists manifest kind values (lowercased) for operator/controller
-// components. Operators install CRD controllers that watch resources but typically
+// kinds. Operators install CRD controllers that watch resources but typically
 // do not expose a Kubernetes Service. Verification checks namespace + running
 // pods only (no service requirement).
 var operatorKinds = map[string]bool{
@@ -40,7 +40,7 @@ var operatorKinds = map[string]bool{
 }
 
 // helmTier2Kinds lists manifest kind values (lowercased) for Helm-based
-// Kubernetes components that deploy applications with Services.
+// Kubernetes kinds that deploy applications with Services.
 // These must match the CatalogKind enum names from catalog_kind.proto
 // (case-insensitive via lowercasing).
 var helmTier2Kinds = map[string]bool{
@@ -63,7 +63,7 @@ var helmTier2Kinds = map[string]bool{
 }
 
 // crdInstallKinds maps manifest kind values (lowercased) to their expected CRD
-// names for components that only install cluster-scoped CRDs without deploying
+// names for kinds that only install cluster-scoped CRDs without deploying
 // any pods or services.
 var crdInstallKinds = map[string][]string{
 	// The standard channel serves all of these from the v1.6 release onward
@@ -82,7 +82,7 @@ var crdInstallKinds = map[string][]string{
 		"backendtlspolicies.gateway.networking.k8s.io",
 	},
 	// KubernetesIstioBaseCrds installs the istio/base CRD bundle (no istiod). Verify the
-	// CRDs backing the seven typed Istio components are present.
+	// CRDs backing the seven typed Istio kinds are present.
 	"kubernetesistiobasecrds": {
 		"destinationrules.networking.istio.io",
 		"serviceentries.networking.istio.io",
@@ -95,10 +95,10 @@ var crdInstallKinds = map[string][]string{
 }
 
 // gatewayApiCustomResource describes how to verify a Gateway API custom resource
-// created by one of the Gateway API components. These components do
+// created by one of the Gateway API kinds. These kinds do
 // not run pods; verification confirms the CR itself exists after apply and is
 // gone after destroy. The CRDs are installed by the KubernetesGatewayApiCrds
-// registry prerequisite before the component applies.
+// registry prerequisite before the kind applies.
 type gatewayApiCustomResource struct {
 	// resource is the fully-qualified kubectl resource (plural.group), which is
 	// stable across the served apiVersion.
@@ -124,11 +124,11 @@ var gatewayApiKinds = map[string]gatewayApiCustomResource{
 }
 
 // istioApiKinds maps manifest kind values (lowercased) to the fully-qualified
-// kubectl resource (plural.group) for the typed Istio API components
-// (853-859). Like the Gateway API kinds, these components do not run pods;
+// kubectl resource (plural.group) for the typed Istio API kinds
+// (853-859). Like the Gateway API kinds, these kinds do not run pods;
 // verification confirms the CR itself exists after apply and is gone after
 // destroy. The Istio CRDs are installed by the KubernetesIstioBaseCrds registry
-// prerequisite before the component applies. All seven Istio kinds are
+// prerequisite before the kind applies. All seven Istio kinds are
 // namespaced, so no clusterScoped flag is needed.
 var istioApiKinds = map[string]string{
 	"kubernetespeerauthentication":    "peerauthentications.security.istio.io",
@@ -1740,6 +1740,6 @@ func GetVerifierFromManifest(manifestPath string) (ResourceVerifier, error) {
 				ComponentName: info.Name,
 			}, nil
 		}
-		return &GenericVerifier{Component: kind}, nil
+		return &GenericVerifier{Kind: kind}, nil
 	}
 }

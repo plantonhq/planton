@@ -19,7 +19,7 @@ spec:
           pricing_quantity: "730"
           quantity_basis: one cluster, billed every hour of the month at the flat per-cluster rate
       exclusions:
-        - node compute -- worker capacity lives on separate AwsEksNodeGroup kinds with their own estimates
+        - node compute -- worker capacity lives on separate AwsEksNodeGroup components with their own estimates
         - CloudWatch ingestion for the enabled audit and authenticator control-plane logs depends on cluster chatter
       notes: upgrade_support_type STANDARD caps the fee -- this preset can never incur the extended-support surcharge.
     - preset: 02-private-endpoint
@@ -32,7 +32,7 @@ spec:
           pricing_quantity: "730"
           quantity_basis: one cluster, billed every hour of the month at the flat per-cluster rate
       exclusions:
-        - node compute -- separate AwsEksNodeGroup kinds
+        - node compute -- separate AwsEksNodeGroup components
         - CloudWatch ingestion for the enabled audit and authenticator logs
         - upgrade_support_type is left at the AWS EXTENDED default -- once the pinned Kubernetes version leaves standard support, the extended-support surcharge raises the hourly fee to six times this estimate
       notes: The private endpoint, KMS secrets encryption, and deletion protection add no charge of their own.

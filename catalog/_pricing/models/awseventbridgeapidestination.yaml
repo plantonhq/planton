@@ -23,7 +23,7 @@ spec:
         - invocations bill $0.20 per million events delivered, counted in 64 KB chunks, from the FIRST event -- API destinations have no free allotment, and this partner-webhook manifest commits zero volume of its own
         - the 50-per-second rate limit is a ceiling protecting the partner API, not a spend commitment -- it queues bursts, and every event eventually delivered still bills once
         - data transfer out to the public HTTPS endpoint bills at standard AWS internet data-transfer rates on top of the invocation meter
-        - the invoking side meters separately on its own kind -- custom events ingested by the event bus that fires this destination bill $1.00 per million there
+        - the invoking side meters separately on its own component -- custom events ingested by the event bus that fires this destination bill $1.00 per million there
         - the partner API's own ingestion pricing lives entirely outside AWS
       notes: Zero committed cost -- the api-key connection and the webhook destination carry no existence fee; the invocation meter starts only when something fires events at the destination, a volume the manifest cannot see.
     - preset: 02-oauth-saas
@@ -35,5 +35,5 @@ spec:
         - the OAuth token fetches EventBridge performs against the authorization endpoint before invoking are not metered -- OAuth costs nothing extra over api-key auth
         - the 25-per-second rate limit queues bursts without discounting them -- delivered events bill regardless of how long they waited
         - data transfer out to the public HTTPS endpoint bills at standard AWS internet data-transfer rates on top of the invocation meter
-        - the invoking side meters separately on its own kind, and the CRM SaaS prices its own API entirely outside AWS
+        - the invoking side meters separately on its own component, and the CRM SaaS prices its own API entirely outside AWS
       notes: Zero committed cost -- the OAuth connection and destination bill nothing at rest; every dollar waits on upstream rules, pipes, or schedules actually firing events, which the manifest cannot see.

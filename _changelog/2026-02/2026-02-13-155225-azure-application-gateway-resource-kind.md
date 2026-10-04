@@ -60,7 +60,7 @@ flowchart TB
 Deep research into the `azurerm_application_gateway` Terraform provider schema (17+ nested block types) revealed 10 corrections to the original T02 spec design:
 
 1. **Added `resource_group` and `region`** -- missing from T02, required per DD05 pattern
-2. **Added `backend_http_settings`** -- CRITICAL missing kind; App GW cannot route without it
+2. **Added `backend_http_settings`** -- CRITICAL missing block; App GW cannot route without it
 3. **Added health probes** -- important for production; Azure's default probes are unreliable
 4. **Added SSL certificates** -- Key Vault reference for HTTPS (primary L7 use case)
 5. **Restructured frontend ports** -- auto-derived from listener port values

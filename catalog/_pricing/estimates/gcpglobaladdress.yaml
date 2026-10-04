@@ -38,7 +38,7 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - whatever fills the private range bills elsewhere -- managed-service instances in a VPC_PEERING range and the services behind a PRIVATE_SERVICE_CONNECT endpoint are their own kinds
+        - whatever fills the private range bills elsewhere -- managed-service instances in a VPC_PEERING range and the services behind a PRIVATE_SERVICE_CONNECT endpoint are their own components
       notes: An INTERNAL global reservation (VPC peering range, PSC endpoint address) never bills, however wide the prefix -- this estimate is genuinely zero. Priced at the reserved-idle rate ($0.01/hr) because that is the only state the manifest itself commits to. A global address exists to front a global load balancer, and in that attached state Google charges nothing for it -- the estimate is the cost of NOT finishing the wiring.
     - preset: 03-private-service-connect
       region_assumption: us-central1
@@ -46,5 +46,5 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - whatever fills the private range bills elsewhere -- managed-service instances in a VPC_PEERING range and the services behind a PRIVATE_SERVICE_CONNECT endpoint are their own kinds
+        - whatever fills the private range bills elsewhere -- managed-service instances in a VPC_PEERING range and the services behind a PRIVATE_SERVICE_CONNECT endpoint are their own components
       notes: An INTERNAL global reservation (VPC peering range, PSC endpoint address) never bills, however wide the prefix -- this estimate is genuinely zero. Priced at the reserved-idle rate ($0.01/hr) because that is the only state the manifest itself commits to. A global address exists to front a global load balancer, and in that attached state Google charges nothing for it -- the estimate is the cost of NOT finishing the wiring.

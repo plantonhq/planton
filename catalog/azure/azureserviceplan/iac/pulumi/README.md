@@ -1,6 +1,6 @@
 # AzureServicePlan Pulumi Module
 
-This directory contains the Pulumi IaC implementation for the `AzureServicePlan` component.
+This directory contains the Pulumi IaC implementation for the `AzureServicePlan` kind.
 
 ## Structure
 

@@ -32,7 +32,7 @@ spec:
       exclusions:
         - connection units bill per concurrently connected remote user per hour -- attendance the manifest cannot know; the address pools bound it without fixing it
         - data leaving Azure through client tunnels bills at standard data-transfer rates and follows traffic
-        - the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub kind
+        - the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub component
     - preset: 02-forced-tunnel-clients
       region_assumption: eastus
       currency: USD
@@ -51,4 +51,4 @@ spec:
       exclusions:
         - connection units bill per concurrently connected remote user per hour -- attendance the manifest cannot know; the address pools bound it without fixing it
         - data leaving Azure through client tunnels bills at standard data-transfer rates and follows traffic
-        - the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub kind
+        - the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub component

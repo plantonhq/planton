@@ -30,7 +30,7 @@ const (
 // redeploy.
 //
 // A web ACL references the set through a regex_pattern_set_reference
-// statement using the set's ARN (exported as the regex_pattern_set_arn stack
+// statement using the set's ARN (exported as the regex_pattern_set_arn
 // output); the statement matches when ANY regex in the set matches the
 // inspected component. For a one-off regex that no other rule shares, the
 // web ACL's inline regex_match statement is the simpler choice — reach for a

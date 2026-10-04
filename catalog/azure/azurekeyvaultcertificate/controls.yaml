@@ -25,7 +25,7 @@ spec:
       notes: "key_properties.exportable false keeps the private key inside the vault -- vault-integrated TLS consumers fetch through Key Vault references and the key material never crosses the wire; the 03-ca-pending-csr preset runs that posture."
     - control_id: no-public-access
       status: not_applicable
-      notes: "A certificate has no network surface of its own -- reachability is the parent vault's posture (public_network_access_enabled, network_acls, private endpoints), set on the AzureKeyVault kind this spec references."
+      notes: "A certificate has no network surface of its own -- reachability is the parent vault's posture (public_network_access_enabled, network_acls, private endpoints), set on the AzureKeyVault component this spec references."
     - control_id: restricted-ingress
       status: not_applicable
       notes: "Inbound filtering is the vault's network_acls territory (see no-public-access) -- there is no per-certificate network rule to declare."
@@ -69,7 +69,7 @@ spec:
         reference: "The certificate inherits Key Vault's automatic redundancy -- zone-redundant service in availability-zone regions, with contents replicated within the region (and to the paired region where one exists), no configuration surface, no opt-out."
     - control_id: deletion-protection
       status: not_applicable
-      notes: "No per-certificate protection flag exists. The vault's purge_protection_enabled is the relevant guard: with it on, even a deleted certificate cannot be purged before the retention window lapses -- set on the AzureKeyVault kind."
+      notes: "No per-certificate protection flag exists. The vault's purge_protection_enabled is the relevant guard: with it on, even a deleted certificate cannot be purged before the retention window lapses -- set on the AzureKeyVault component."
     - control_id: managed-patching
       status: configurable
       field_path: certificate_policy.lifetime_actions

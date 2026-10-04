@@ -1,7 +1,7 @@
 # AzureStorageEncryptionScope - Terraform Module
 
-Terraform implementation for the AzureStorageEncryptionScope deployment
-component.
+Terraform implementation for the AzureStorageEncryptionScope
+kind.
 
 ## Resources Created
 

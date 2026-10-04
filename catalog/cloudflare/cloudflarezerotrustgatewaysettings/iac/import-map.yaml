@@ -13,7 +13,7 @@ spec:
         id field). The settings and logging singletons import as the bare
         account id; PAC files import as
         "<account_id>/<pacfile_id>".
-    # The file id is server-assigned at creation, but a prior deploy's stack
+    # The file id is server-assigned at creation, but a prior deploy's
     # outputs carry every id in the pacfile_ids map keyed by the file's name
     # (the same key the modules' per-row resources use), so each instance's
     # id derives blind.

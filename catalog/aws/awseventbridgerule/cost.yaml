@@ -31,7 +31,7 @@ spec:
     - field_path: targets.dead_letter_config.arn
       sku_meter: SQS requests and storage
       pricing_unit: requests
-      impact: Events that exhaust the retry policy land in the referenced queue, billing its per-request and storage meters on the AwsSqsQueue kind -- a healthy target sends it nothing.
+      impact: Events that exhaust the retry policy land in the referenced queue, billing its per-request and storage meters on the AwsSqsQueue component -- a healthy target sends it nothing.
     - field_path: targets.retry_policy
       sku_meter: target invocations
       pricing_unit: invocations
@@ -44,4 +44,4 @@ spec:
     - delivering to another event bus or another account bills the bus-side per-million delivery meter
     - API destination invocations add data transfer at standard or PrivateLink rates depending on the endpoint's network path
     - DLQ traffic bills on the referenced SQS queue
-  notes: "A rule is free to exist, free to match, and free to deliver to AWS-service targets -- the meters live on either side of it: ingestion on the bus, compute on the targets. Two exceptions deserve attention. API destination targets bill per invocation on EventBridge's own API destinations meter. And scheduled rules make the rule itself the traffic SOURCE: every firing is a target invocation whose cost compounds with the fan-out (a 1-minute schedule with 5 targets is 219,000 invocations a month). The EventBridge Scheduler free tier (14 million invocations a month) belongs to the separate Scheduler service, not to scheduled rules -- do not count it against this kind's targets."
+  notes: "A rule is free to exist, free to match, and free to deliver to AWS-service targets -- the meters live on either side of it: ingestion on the bus, compute on the targets. Two exceptions deserve attention. API destination targets bill per invocation on EventBridge's own API destinations meter. And scheduled rules make the rule itself the traffic SOURCE: every firing is a target invocation whose cost compounds with the fan-out (a 1-minute schedule with 5 targets is 219,000 invocations a month). The EventBridge Scheduler free tier (14 million invocations a month) belongs to the separate Scheduler service, not to scheduled rules -- do not count it against this component's targets."

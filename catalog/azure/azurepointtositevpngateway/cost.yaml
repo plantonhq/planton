@@ -24,5 +24,5 @@ spec:
   estimate_exclusions:
     - connection units follow how many users are actually connected each hour -- a fleet's dial-in behavior, which no manifest can know
     - data leaving Azure through client tunnels bills at standard data-transfer rates and follows traffic
-    - the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub kind
+    - the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub component
   notes: "Point-to-site spend has two halves: an always-on scale-unit meter (capacity) and a per-connected-user connection-unit meter (attendance) -- Microsoft's own definition is that a P2S connection unit 'implies remote users'. The second half is why this profile is hybrid rather than always_on: at fleet scale the attendance meter reaches the same order as the capacity meter. Authentication choices live on the referenced AzureVpnServerConfiguration and cost nothing here."

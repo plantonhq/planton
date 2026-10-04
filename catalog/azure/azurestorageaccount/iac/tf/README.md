@@ -1,7 +1,7 @@
 # AzureStorageAccount - Terraform Module
 
-Terraform implementation for the AzureStorageAccount deployment
-component.
+Terraform implementation for the AzureStorageAccount
+kind.
 
 ## Resources Created
 

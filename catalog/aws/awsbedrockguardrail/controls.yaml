@@ -36,7 +36,7 @@ spec:
       notes: Nothing listens on a guardrail -- it is policy configuration evaluated inline by the Bedrock service on model traffic; there is no inbound network surface to restrict.
     - control_id: edge-protection
       status: not_applicable
-      notes: The guardrail exposes no request-serving surface a WAF could front. It IS a content-level protection layer (prompt-attack detection, harmful-content filtering) applied inside model invocations -- a different layer than edge filtering, and one this kind provides rather than consumes.
+      notes: The guardrail exposes no request-serving surface a WAF could front. It IS a content-level protection layer (prompt-attack detection, harmful-content filtering) applied inside model invocations -- a different layer than edge filtering, and one this component provides rather than consumes.
     - control_id: rbac
       status: enforced_by_default
       evidence:

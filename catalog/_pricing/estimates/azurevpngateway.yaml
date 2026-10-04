@@ -30,8 +30,8 @@ spec:
           list_cost: "263.5300"
       total_list_cost: "263.5300"
       exclusions:
-        - each connected branch bills a VPN S2S connection unit per hour on its own AzureVpnGatewayConnection kind
-        - the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub kind
+        - each connected branch bills a VPN S2S connection unit per hour on its own AzureVpnGatewayConnection component
+        - the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub component
         - data leaving Azure through the tunnels bills at standard data-transfer rates and follows traffic
     - preset: 02-nat-overlapping-branches
       region_assumption: eastus
@@ -49,7 +49,7 @@ spec:
           list_cost: "527.0600"
       total_list_cost: "527.0600"
       exclusions:
-        - each connected branch bills a VPN S2S connection unit per hour on its own AzureVpnGatewayConnection kind
-        - the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub kind
+        - each connected branch bills a VPN S2S connection unit per hour on its own AzureVpnGatewayConnection component
+        - the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub component
         - data leaving Azure through the tunnels bills at standard data-transfer rates and follows traffic
       notes: NAT rules are free configuration -- the Virtual WAN price list carries no NAT meter, so the composed rules add nothing to the bill.

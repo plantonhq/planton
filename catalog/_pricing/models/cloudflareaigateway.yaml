@@ -2,7 +2,7 @@
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
-# ../estimates/. Both presets are zero-COMMITTED: the kind's two
+# ../estimates/. Both presets are zero-COMMITTED: the component's two
 # Cloudflare-side meters (guardrails, logpush) are usage-proportional with
 # no flat fee -- Cloudflare's own pricing states zero traffic means zero
 # evaluations -- so even 01-guarded-gateway, whose guardrails.prompt block

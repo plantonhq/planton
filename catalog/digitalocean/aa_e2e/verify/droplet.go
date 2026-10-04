@@ -40,7 +40,7 @@ func (*dropletVerifier) VerifyAbsent(ctx context.Context, client *godo.Client, i
 		}
 		return pkgerrors.Wrapf(err, "digitaloceandroplet verify-absent failed for %q", id)
 	}
-	return &StillExistsError{Component: "digitaloceandroplet", ID: id}
+	return &StillExistsError{Kind: "digitaloceandroplet", ID: id}
 }
 
 func (v *dropletVerifier) VerifyExistsFromOutputs(ctx context.Context, client *godo.Client, outputs map[string]interface{}) error {

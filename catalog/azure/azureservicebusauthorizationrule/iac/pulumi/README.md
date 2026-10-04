@@ -1,7 +1,7 @@
 # AzureServiceBusAuthorizationRule - Pulumi Module
 
 Pulumi (Go) implementation for the AzureServiceBusAuthorizationRule
-component, at 100% behavioral parity with the Terraform
+kind, at 100% behavioral parity with the Terraform
 module.
 
 ## Resources Created

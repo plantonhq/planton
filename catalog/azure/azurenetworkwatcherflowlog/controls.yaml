@@ -41,7 +41,7 @@ spec:
       notes: The component itself enforces no end-user sign-in -- it packages no human sign-in surface; any credentials it carries are workload or administrative access, whose posture rbac and workload-identity carry.
     - control_id: audit-logging
       status: not_applicable
-      notes: "This kind IS an audit recorder -- for the NETWORK layer: who talked to whom, on which ports, allowed or denied. Its own configuration changes land in the Azure Activity Log automatically. Neither is a toggle here; the one honesty worth stating is that flow logging observes traffic, it never controls it."
+      notes: "This component IS an audit recorder -- for the NETWORK layer: who talked to whom, on which ports, allowed or denied. Its own configuration changes land in the Azure Activity Log automatically. Neither is a toggle here; the one honesty worth stating is that flow logging observes traffic, it never controls it."
     - control_id: monitoring-integration
       status: configurable
       field_path: traffic_analytics

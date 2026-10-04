@@ -93,7 +93,7 @@ spec:
     - applies_when:
         - field_path: kms_key
           op: is_set
-      text: CMEK adds no per-disk charge -- the Cloud KMS key bills its own key-version and operation charges on the GcpKmsKey kind
+      text: CMEK adds no per-disk charge -- the Cloud KMS key bills its own key-version and operation charges on the GcpKmsKey component
   notes:
     - applies_when:
         - field_path: type

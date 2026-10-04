@@ -29,7 +29,7 @@ spec:
       exclusions:
         - seconds the warm instance actually executes functions bill the always-ready EXECUTION rate (0.000016 USD/GB-second in eastus, 4x baseline) instead of baseline, and its executions bill 0.40 USD per million from the first one -- no free grant on always-ready meters
         - traffic beyond one instance's http_concurrency fans out to on-demand instances up to maximumInstanceCount 100, billing 0.000026 USD/GB-second and 0.40 USD per million executions in eastus past the subscription's monthly on-demand free grant (100,000 GB-seconds, 250,000 executions)
-        - the deployment storage account and the FC1 plan's other apps bill on their own kinds
+        - the deployment storage account and the FC1 plan's other apps bill on their own components
       notes: The floor prices the warm instance's idle seconds at baseline; Microsoft's Functions pricing page bills always-ready instances 'for a baseline while each Always Ready instance is idle' and at the execution rate while running. The on-demand free grant is not netted out; estimates price list rates.
     - preset: 02-identity-secured-worker
       region_assumption: eastus
@@ -38,7 +38,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - "every execution bills on-demand meters: 0.000026 USD/GB-second (each instance is 4096 MB = 4 GB, so one instance-second is 4 GB-seconds) and 0.40 USD per million executions in eastus, past the subscription's monthly free grant (100,000 GB-seconds, 250,000 executions)"
-        - fan-out follows the event source up to maximumInstanceCount 50; the storage account the worker deploys from and any queues or topics it drains bill on their own kinds
+        - fan-out follows the event source up to maximumInstanceCount 50; the storage account the worker deploys from and any queues or topics it drains bill on their own components
       notes: "Genuinely zero-committed: no always_ready pool exists, so the app scales to zero between events and Microsoft bills nothing while no instance is executing -- the pricing page's on-demand mode is 'billed only when instances are executing functions'. The cold start the http presets pay to eliminate is accepted here."
     - preset: 03-entra-protected-api
       region_assumption: eastus
@@ -57,5 +57,5 @@ spec:
       total_list_cost: "21.0240"
       exclusions:
         - execution seconds and executions on the warm instance bill the always-ready execution meters (0.000016 USD/GB-second, 0.40 USD per million) with no free grant; on-demand fan-out to maximumInstanceCount 100 bills the on-demand meters past the subscription grant
-        - the Application Insights resource wired by connection string bills its own ingestion on the AzureApplicationInsights kind; the Key Vault holding the Entra client secret bills on AzureKeyVault
+        - the Application Insights resource wired by connection string bills its own ingestion on the AzureApplicationInsights component; the Key Vault holding the Entra client secret bills on AzureKeyVault
       notes: Easy Auth v2 (platform-layer Entra validation) is a free App Service feature -- rejected 401s still count as executions only if they reach function code, which RETURN_401 requests do not. The floor is the same 2-GB warm instance as preset 01.

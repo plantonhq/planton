@@ -29,5 +29,5 @@ spec:
       exclusions:
         - audit-log events are Google-source events at $0 per million on Eventarc's meter (first 50,000 chargeable events monthly free) -- and per Google's pricing note, events using Cloud Audit Logs incur Cloud Logging charges on the audited project
         - the Eventarc-created transport topic bills standard Pub/Sub rates as bucket-creation events flow; audit events are typically ~2 KiB, well under the 64 KiB chunking threshold
-        - each delivered event triggers a Cloud Workflows execution billed as steps on the bucket-onboarding workflow's kind
+        - each delivered event triggers a Cloud Workflows execution billed as steps on the bucket-onboarding workflow's component
       notes: Zero committed at creation -- volume follows how often the watched API call (storage.buckets.create) actually happens, a rate no manifest can pin down; the trigger itself never becomes the bill.

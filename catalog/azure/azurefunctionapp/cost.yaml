@@ -4,7 +4,7 @@
 # estimate model: compute rides the REFERENCED App Service plan
 # (service_plan_id), and the plan's SKU -- invisible in this manifest --
 # decides both the rate and the billing mode. On Dedicated and Elastic
-# Premium plans the money bills on the AzureServicePlan kind; on a
+# Premium plans the money bills on the AzureServicePlan component; on a
 # Consumption (Y1) plan the plan provisions nothing and this app's
 # executions and GB-seconds are the meters, quantities no manifest can
 # predict. Either way a dollar figure here would be a guess wearing a

@@ -41,7 +41,7 @@ first install (stable across upgrades), while `existing_secret`
 points the chart at a Secret you own (it must exist BEFORE the
 install; the chart reads it at template time). Either way the key
 material lives in the chart-owned `<name>-apikey` Secret (keys
-`api-key` / `read-only-api-key`), whose name lands in the stack
+`api-key` / `read-only-api-key`), whose name lands in the
 outputs. A read-only key REQUIRES a read-write key — the spec
 enforces it (an unauthenticated cluster with a read-only key protects
 nothing).

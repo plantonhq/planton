@@ -41,8 +41,8 @@ spec:
       exclusions:
         - capacity units consumed above the reserved floor bill on the same meter as traffic demands and cannot be known from the manifest
         - outbound data transfer bills per GB at Azure's bandwidth rates
-        - the referenced Standard public IPs bill hourly on their own kinds
-        - Key Vault-sourced certificates bill on the referenced vault's kind
+        - the referenced Standard public IPs bill hourly on their own components
+        - Key Vault-sourced certificates bill on the referenced vault's component
       notes: A virtual network protected by DDoS Network Protection moves a WAF_V2 gateway onto Microsoft's discounted meters at Standard_V2-equal rates -- a rate change invisible in this manifest.
     - preset: 02-waf-path-routing
       region_assumption: eastus
@@ -71,8 +71,8 @@ spec:
       exclusions:
         - capacity units consumed above the reserved floor bill on the same meter as traffic demands and cannot be known from the manifest
         - outbound data transfer bills per GB at Azure's bandwidth rates
-        - the referenced Standard public IPs bill hourly on their own kinds
-        - Key Vault-sourced certificates bill on the referenced vault's kind
+        - the referenced Standard public IPs bill hourly on their own components
+        - Key Vault-sourced certificates bill on the referenced vault's component
       notes: WAF enforcement is priced into the gateway's own meters -- the WAF_V2 fixed and capacity-unit rates are the premium; the referenced WAF policy document adds no meter of its own. A virtual network protected by DDoS Network Protection moves a WAF_V2 gateway onto Microsoft's discounted meters at Standard_V2-equal rates -- a rate change invisible in this manifest.
     - preset: 03-internal-gateway
       region_assumption: eastus
@@ -101,6 +101,6 @@ spec:
       exclusions:
         - traffic pushing an instance past its 10 reserved capacity units bills additional units on the same meter
         - outbound data transfer bills per GB at Azure's bandwidth rates
-        - the referenced Standard public IPs bill hourly on their own kinds
-        - Key Vault-sourced certificates bill on the referenced vault's kind
+        - the referenced Standard public IPs bill hourly on their own components
+        - Key Vault-sourced certificates bill on the referenced vault's component
       notes: A virtual network protected by DDoS Network Protection moves a WAF_V2 gateway onto Microsoft's discounted meters at Standard_V2-equal rates -- a rate change invisible in this manifest.

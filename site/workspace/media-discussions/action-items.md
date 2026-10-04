@@ -124,7 +124,7 @@ Below is a consolidated, high-level set of action items drawn from all the discu
    - Maintain a consistent structure across pages (e.g., hero at top, problem statement/video, bullet features, CTA).
 
 2. **Add Placeholders for Videos**  
-   - Where Swarup plans to embed “problem statement” videos or “demo” videos, create a placeholder or a consistent “video thumbnail + text” kind in Figma.  
+   - Where Swarup plans to embed “problem statement” videos or “demo” videos, create a placeholder or a consistent “video thumbnail + text” component in Figma.  
    - Ensure the page design gracefully handles text + video combos, possibly with short “See Demo” buttons or embedded playing fields.
 
 3. **Screenshots & GIF Placement**  

@@ -5,7 +5,7 @@ metadata:
 spec:
   # Certificates import by NAME, not UUID: a lets_encrypt certificate's UUID
   # rotates on every auto-renewal, so the provider uses the stable name as the
-  # resource id. The module exports that id as the certificate_id stack
+  # resource id. The module exports that id as the certificate_id
   # output -- zero user input when state is present. The PEM material
   # (private_key/leaf_certificate/certificate_chain) is never returned by the
   # API, so an imported custom certificate carries all three empty (recorded

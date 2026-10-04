@@ -59,7 +59,7 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - with neither throughput field set the container draws on the database's shared budget (committed spend lives on the AzureCosmosdbSqlDatabase kind) or, on a serverless account, the account bills consumed request units per million -- this container then adds only storage
+        - with neither throughput field set the container draws on the database's shared budget (committed spend lives on the AzureCosmosdbSqlDatabase component) or, on a serverless account, the account bills consumed request units per million -- this container then adds only storage
         - consumed storage bills per GB-month (0.25 USD in eastus at list) on documents plus indexes and follows what the application writes
         - backup storage beyond the account's free allowance bills per the account's backup posture
       notes: "Single-region assumption: RU/s and storage bill again in every region the ACCOUNT replicates to (and at the multi-region-write rate when enabled) -- the region topology lives on the AzureCosmosdbAccount manifest, invisible here, so these rules price one region at eastus list rates. A free-tier account additionally discounts its first 1,000 RU/s and 25 GB account-wide; estimates price list rates without that discount."

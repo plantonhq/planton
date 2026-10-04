@@ -54,7 +54,7 @@ spec:
       evidence:
         type: spec_validation
         reference: retention_daily is REQUIRED (the provider's own contract, 1-200 days) as the base layer both Daily and Hourly schedules retain into; optional weekly (1-200), monthly (1-120), and yearly (1-10) layers extend keeps, and snapshot_retention_in_days must stay below retention_daily.count on the vault-standard tier (spec CEL mirrors the provider's CustomizeDiff).
-      notes: This kind IS the retention policy for Azure Files backup. Both presets carry ladders -- 01-daily-snapshot-policy keeps 30 dailies / 12 weeklies / 12 monthlies / 5 yearlies on the snapshot tier; 02-hourly-vault-standard-policy keeps 30 dailies / 12 monthlies vaulted with 5 local snapshot days alongside. backup_tier vault-standard makes retained copies survive storage-account deletion and compromise.
+      notes: This component IS the retention policy for Azure Files backup. Both presets carry ladders -- 01-daily-snapshot-policy keeps 30 dailies / 12 weeklies / 12 monthlies / 5 yearlies on the snapshot tier; 02-hourly-vault-standard-policy keeps 30 dailies / 12 monthlies vaulted with 5 local snapshot days alongside. backup_tier vault-standard makes retained copies survive storage-account deletion and compromise.
     - control_id: multi-zone-ha
       status: not_applicable
       notes: A configuration object with no data plane of its own; snapshot durability follows the storage account's SKU and vaulted-copy redundancy follows the vault's storage_mode_type -- both separate catalog kinds.

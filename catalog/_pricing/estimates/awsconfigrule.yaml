@@ -19,7 +19,7 @@ spec:
       exclusions:
         - each S3 bucket the change-triggered managed rule examines bills one evaluation on the tiered per-evaluation schedule from the first -- AWS Config publishes no free tier, and the bucket-type scope is the volume trim
         - remediation is configured but not automatic -- each operator-triggered fix runs the SSM automation document (any Systems Manager charges follow that service's pricing) and the fix itself records a configuration item and re-evaluates the rule
-        - the configuration items that feed evaluations bill on the region's AwsConfigRecorder kind; a rule in a recorder-less region evaluates nothing -- no bill, and no compliance signal either
+        - the configuration items that feed evaluations bill on the region's AwsConfigRecorder component; a rule in a recorder-less region evaluates nothing -- no bill, and no compliance signal either
       notes: Zero committed cost -- the rule waits for bucket changes to judge; keeping remediation manual also keeps the fix-drift-fix evaluation loop from running unattended.
     - preset: 02-guard-policy-rule
       region_assumption: us-east-1
@@ -28,5 +28,5 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - each in-scope S3 bucket evaluation bills on the same tiered per-evaluation schedule -- but the custom-policy Guard engine carries no compute charge at all, the zero-infrastructure alternative to a custom-lambda rule whose function invocations would bill per evaluation
-        - the configuration items feeding evaluations bill on the region's AwsConfigRecorder kind
+        - the configuration items feeding evaluations bill on the region's AwsConfigRecorder component
       notes: Zero committed cost -- custom logic without a custom bill; the Guard policy evaluates for the per-evaluation fee alone, and only when buckets change.

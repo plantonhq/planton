@@ -58,7 +58,7 @@ spec:
       field_path: host
       evidence:
         type: spec_default
-        reference: This kind IS a monitoring surface -- privacy-first real-user monitoring for the declared host or zone.
+        reference: This component IS a monitoring surface -- privacy-first real-user monitoring for the declared host or zone.
     - control_id: backup-recovery
       status: not_applicable
       notes: Configuration-only surface, reproducible from the manifest; collected analytics are Cloudflare-retained.

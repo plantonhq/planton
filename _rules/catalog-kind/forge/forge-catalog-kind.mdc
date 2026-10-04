@@ -264,7 +264,7 @@ password so the cheapest scenario proves generation, and the presets ship no pla
 password. Reference shapes: `KubernetesValkey` (per-user), `KubernetesNeo4j`
 (single admin, declared-or-generated), `KubernetesNats`, `KubernetesSuperset`.
 The same law holds where there is no Secret to land in -- a SaaS identity provider
-whose user the module creates: the minted credential is reported as a sensitive stack
+whose user the module creates: the minted credential is reported as a sensitive
 output (`sensitive = true` in Terraform, `pulumi.ToSecret` in Pulumi), set ONLY when
 the module generated it, so a declared credential is never echoed back and the output
 is the credential's first home for the store that owns it. Reference shape: `Auth0User`.
@@ -1631,7 +1631,7 @@ and a behavioral lane's proof lines (the verifier's own `[verify]`
 behavioral output) — not its PASS alone — are what a session may cite as
 evidence.
 
-**Soft-delete-reserved identifiers need the `${E2E_RUN_ID}` token.** Some cloud
+**Soft-delete-reserved identifiers need the `${E2E_RUN_ID}` token.** Some provider
 resources reserve their user-chosen identifier long after deletion (e.g. GCP
 workload identity pools/providers and KMS key rings hold their IDs through a
 soft-delete retention window, with no undelete-on-create). A scenario or

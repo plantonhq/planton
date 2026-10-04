@@ -1,7 +1,7 @@
 # AzureCosmosdbSqlDatabase - Pulumi Module
 
-Pulumi implementation for the AzureCosmosdbSqlDatabase deployment
-component.
+Pulumi implementation for the AzureCosmosdbSqlDatabase
+kind.
 
 ## Architecture
 

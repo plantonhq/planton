@@ -37,7 +37,7 @@ spec:
       impact: HTTP functions bill $0.40 per million requests beyond the free 2 million; EVENT_TRIGGER functions additionally ride Eventarc and Pub/Sub, whose delivery and message charges bill on those services.
     - field_path: service_config.vpc_connector
       sku_meter: Serverless VPC Access connector
-      impact: The connector's own instances bill on the GcpServerlessVpcConnector kind around the clock whether or not the function runs; direct VPC egress (direct_vpc_network_interface) avoids that standing cost and bills only the VPC data transfer the function actually moves.
+      impact: The connector's own instances bill on the GcpServerlessVpcConnector component around the clock whether or not the function runs; direct VPC egress (direct_vpc_network_interface) avoids that standing cost and bills only the VPC data transfer the function actually moves.
     - field_path: region
       sku_meter: active vCPU
       impact: Picks the price tier -- Tier 1 regions (us-central1, europe-west1, ...) bill the base rates; Tier 2 regions bill higher ones.

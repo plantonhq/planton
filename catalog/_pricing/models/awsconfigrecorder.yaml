@@ -21,7 +21,7 @@ spec:
         - every configuration change to an in-scope S3 bucket, security group, or IAM role records one billed item at the continuous per-item rate -- AWS Config publishes no free allotment, and the three-type inclusion list is the volume trim
         - history and daily snapshot files delivered to the referenced bucket bill S3 storage and requests there
         - the 365-day retention of recorded items carries no Config meter of its own
-        - rule and conformance-pack evaluations fed by these items bill on their own kinds
+        - rule and conformance-pack evaluations fed by these items bill on their own components
       notes: Zero committed cost -- a recorder over resources that never change records nothing; the inclusion list keeps the meter tied to three deliberate types instead of the whole fleet.
     - preset: 02-full-recording-posture
       region_assumption: us-east-1

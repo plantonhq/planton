@@ -134,7 +134,7 @@ an AwsIamPolicy's policy_arn output or pass a literal policy ARN.
 `bool`
 
 If true, no access key is created for this user. By default one active
-access key is created and its id/secret are exported as (sensitive) stack
+access key is created and its id/secret are exported as (sensitive)
 outputs -- the usual reason a user exists. Disable for console-only or
 externally-keyed users.
 

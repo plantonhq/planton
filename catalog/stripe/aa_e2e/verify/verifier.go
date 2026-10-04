@@ -284,7 +284,7 @@ func sortedKeys(m map[string]string) []string {
 	return keys
 }
 
-// verifiers maps each Stripe component directory to its verifier.
+// verifiers maps each Stripe kind directory to its verifier.
 var verifiers = map[string]Verifier{
 	"stripewebhookendpoint":            &deletedVerifier{kind: "stripewebhookendpoint", path: "v1/webhook_endpoints", secretOutput: "secret", secretRequired: true},
 	"stripeeventdestination":           &deletedVerifier{kind: "stripeeventdestination", path: "v2/core/event_destinations", secretOutput: "signing_secret"},
@@ -324,7 +324,7 @@ var verifiers = map[string]Verifier{
 	},
 }
 
-// GetVerifier returns the verifier for a component, or an error naming the unknown component.
+// GetVerifier returns the verifier for a kind, or an error naming the unknown kind.
 func GetVerifier(kind string) (Verifier, error) {
 	v, ok := verifiers[kind]
 	if !ok {

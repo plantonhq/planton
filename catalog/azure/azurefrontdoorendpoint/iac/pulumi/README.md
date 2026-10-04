@@ -1,7 +1,7 @@
 # AzureFrontDoorEndpoint - Pulumi Module
 
-Pulumi implementation for the AzureFrontDoorEndpoint deployment
-component.
+Pulumi implementation for the AzureFrontDoorEndpoint
+kind.
 
 ## Architecture
 

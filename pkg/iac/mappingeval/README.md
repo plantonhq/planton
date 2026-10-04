@@ -26,7 +26,7 @@ MappingEvalSuite    deploy →   read-only scan (inventory)    Score(gt, proposa
   same module the kind's own E2E lane proves, and the suite's live
   lane proves the composition. Suites never invent parallel deployment
   paths. Deploying one yields the **ground truth**: per instance, the
-  manifest as authored (references unresolved) and the scan-visible cloud
+  manifest as authored (references unresolved) and the scan-visible provider
   resources it owns (read from its IaC state, translated to scan
   coordinates through the provider import catalog's
   `cloud_control_type_name`).

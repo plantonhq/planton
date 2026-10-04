@@ -36,7 +36,7 @@ spec:
       sku_meter: findings export delivery
       pricing_unit: requests
       impact: GuardDuty adds no meter for findings export, but every exported finding is an encrypted S3 write -- PUT requests and storage bill on the referenced AwsS3Bucket, and the mandatory encryption bills KMS requests on the referenced AwsKmsKey.
-  free_tier: A 30-day free trial -- a trial, not a permanent allotment -- covers each new account per region, and each not-yet-enabled protection plan earns its own fresh 30-day trial. The exceptions AWS names are Malware Protection's -- on-demand malware scanning and Malware Protection for AWS Backup have no trial, and S3 malware protection instead carries a permanent monthly free tier (1,000 objects and 1 GB scanned) that lives on the AwsGuardDutyMalwareProtectionPlan kind, not this detector.
+  free_tier: A 30-day free trial -- a trial, not a permanent allotment -- covers each new account per region, and each not-yet-enabled protection plan earns its own fresh 30-day trial. The exceptions AWS names are Malware Protection's -- on-demand malware scanning and Malware Protection for AWS Backup have no trial, and S3 malware protection instead carries a permanent monthly free tier (1,000 objects and 1 GB scanned) that lives on the AwsGuardDutyMalwareProtectionPlan component, not this detector.
   estimate_exclusions:
     - every meter is volume-driven (log GB, event millions, monitored vCPUs) -- the same manifest bills near zero in a quiet account and real money in a busy one
     - member accounts' analysis bills in their own accounts, rolled up only by consolidated billing

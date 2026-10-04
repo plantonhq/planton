@@ -1,7 +1,7 @@
 # AzureContainerAppEnvironmentStorage - Terraform Module
 
 Terraform implementation for the AzureContainerAppEnvironmentStorage
-component.
+kind.
 
 ## Resources Created
 

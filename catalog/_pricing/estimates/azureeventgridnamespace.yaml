@@ -51,6 +51,6 @@ spec:
       exclusions:
         - event operations (publishes to namespace topics, delivery attempts, data-field filters, dead-letters) bill per million above a 1M/month free grant, counted per 64 KB of data, and follow traffic
         - MQTT operations (CONNECT, SUBSCRIBE/UNSUBSCRIBE, and every PUBLISH in or out) bill per million above a 1M/month free grant, counted per 64 KB -- the broker adds no always-on meter of its own
-        - routed and enriched MQTT messages bill on the event-operations meter at Microsoft's published 4-per-billable-operation accounting, and the route topic's own per-operation charges bill on the referenced AzureEventgridTopic kind
+        - routed and enriched MQTT messages bill on the event-operations meter at Microsoft's published 4-per-billable-operation accounting, and the route topic's own per-operation charges bill on the referenced AzureEventgridTopic component
         - network egress follows subscriber placement
       notes: The TU count is also the MQTT connection ceiling (10,000 concurrent clients per TU), so device-fleet growth raises this committed line even when message volume is modest. Namespace topics are free objects inside the namespace -- event retention on a namespace topic is free for 7 days -- so the capacity line is the namespace's whole committed bill.

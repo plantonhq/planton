@@ -64,7 +64,7 @@ func (v *sshKeyVerifier) VerifyAbsentFromOutputs(ctx context.Context, client *go
 		}
 		return pkgerrors.Wrap(err, "digitaloceansshkey verify-absent failed")
 	}
-	return &StillExistsError{Component: "digitaloceansshkey", ID: id}
+	return &StillExistsError{Kind: "digitaloceansshkey", ID: id}
 }
 
 // numericKeyID guards the identity the output claims: a fingerprint

@@ -21,7 +21,7 @@ spec:
       exclusions:
         - the "Workers requests and CPU time" meter (Workers Paid 10 million requests and 30 million CPU-ms included, then $0.30/million requests and $0.02/million CPU-ms) bills only Functions invocations -- this preset ships build config and env vars, and whether the connected repo contains Functions and how much dynamic traffic arrives is unknowable from the manifest
         - static asset requests never bill -- free and unlimited on every plan
-        - no binding meters exist on this preset (it declares no KV, D1, R2, or Queue bindings), so no downstream kind metering starts
+        - no binding meters exist on this preset (it declares no KV, D1, R2, or Queue bindings), so no downstream component metering starts
         - git-connected builds consume the plan's build quota (500/month on Free), a limit rather than a dollar meter
         - the $5/mo Workers Paid subscription is account-level plan spend -- no field in this spec pins it
       notes: "Zero committed cost -- the project is configuration; Cloudflare builds on push against plan quotas, serves static assets free, and bills only if Functions exist and receive traffic."
@@ -32,6 +32,6 @@ spec:
       exclusions:
         - the "Workers requests and CPU time" meter (Workers Paid 10 million requests and 30 million CPU-ms included, then $0.30/million requests and $0.02/million CPU-ms) bills only Functions invocations -- deployment content arrives out-of-band via wrangler pages deploy, and dynamic traffic is unknowable from the manifest
         - static asset requests never bill -- free and unlimited on every plan
-        - the "Workers KV operations and storage" meter routed through the CONFIG binding bills on the bound CloudflareKvNamespace kind (reads at $0.50/million past the Paid plan's 10 million included), driven by what the site's Functions actually read
+        - the "Workers KV operations and storage" meter routed through the CONFIG binding bills on the bound CloudflareKvNamespace component (reads at $0.50/million past the Paid plan's 10 million included), driven by what the site's Functions actually read
         - the $5/mo Workers Paid subscription is account-level plan spend -- no field in this spec pins it
       notes: "Zero committed cost -- the KV binding is a capability grant, not a meter; it starts billing (on the bound namespace) only when deployed Functions use it."

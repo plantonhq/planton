@@ -29,4 +29,4 @@ spec:
       basis: one private endpoint x 730 hours at the Standard rate -- the meter bills in Azure's Global region at one worldwide rate, runs from provisioning to deletion, idle or busy, and is identical whichever service or sub-resource the connection targets
   exclusions:
     - text: data processed through the endpoint bills per GB in EACH direction -- ingress and egress are metered separately, tiered from the first-petabyte rate down -- and follows traffic entirely
-    - text: the referenced subnet, private DNS zones, application security groups, and the target service are first-class kinds billing on their own lines; the DNS zone group itself adds no meter
+    - text: the referenced subnet, private DNS zones, application security groups, and the target service are first-class components billing on their own lines; the DNS zone group itself adds no meter

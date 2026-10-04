@@ -28,7 +28,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - stored bytes bill per GiB-month at the us-central1 PHYSICAL (compressed) rate as regulated data loads -- often cheaper than logical for compressible data, but time-travel and fail-safe copies bill too under PHYSICAL
-        - the CMEK key's version storage and per-operation charges bill on the referenced GcpKmsKey kind
+        - the CMEK key's version storage and per-operation charges bill on the referenced GcpKmsKey component
         - queries bill to the querying project, per TiB scanned or via editions capacity
       notes: Zero committed at creation -- PHYSICAL billing changes the storage rate card the first loaded byte meets, not the empty dataset's price.
     - preset: 03-team-shared

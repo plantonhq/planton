@@ -23,5 +23,5 @@ spec:
         - the dollar value of this capacity is the target cluster's node and storage-class economics
         - the worker HPA owns the worker count at runtime up to its declared max -- the replicas field is ignored while the arm is set, so the footprint states the declared (or default) replicas
         - the Prometheus JMX exporter sidecar rides EVERY Trino pod at chart-default sizing -- the spec models no resources for it
-        - fault-tolerant exchange spooling writes to external storage (object stores or local paths) and the catalog data sources are separate kinds -- neither rides this footprint
+        - fault-tolerant exchange spooling writes to external storage (object stores or local paths) and the catalog data sources are separate components -- neither rides this footprint
       notes: Trino is diskless by design -- it provisions no volumes and queries data where it lives, so the footprint is purely compute reservations workers.replicas 0 with coordinator.include_in_scheduling gives the single-node shape -- the worker binding then contributes nothing and the coordinator carries all execution

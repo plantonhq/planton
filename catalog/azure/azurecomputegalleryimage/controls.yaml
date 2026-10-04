@@ -26,7 +26,7 @@ spec:
       notes: "The image has no client data plane; cross-region replication is Microsoft-operated transfer inside Azure's storage infrastructure, with no customer transport surface. VMs consume versions through ARM-mediated platform reads."
     - control_id: no-public-access
       status: not_applicable
-      notes: "Definitions and versions have no network endpoint. WHO can deploy from them is the parent gallery's sharing posture (private RBAC, direct-share, or Community) -- a deliberate choice on the AzureComputeGallery kind, not here."
+      notes: "Definitions and versions have no network endpoint. WHO can deploy from them is the parent gallery's sharing posture (private RBAC, direct-share, or Community) -- a deliberate choice on the AzureComputeGallery component, not here."
     - control_id: restricted-ingress
       status: not_applicable
       notes: "No inbound network path exists to restrict."

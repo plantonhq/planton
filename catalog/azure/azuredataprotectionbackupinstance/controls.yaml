@@ -38,7 +38,7 @@ spec:
         reference: "Every operation on the protection -- create, re-bind the policy, restore, delete data -- is authorized by Azure RBAC on the vault's scope unconditionally (Backup Contributor / Backup Operator / Backup Reader are the purpose-built roles). Azure additionally validates at create time that the VAULT's managed identity holds the datasource roles (Disk Backup Reader, Storage Account Backup Contributor, the AKS trusted-access binding, the flexible servers' backup roles) -- a second, mandatory authorization gate on the data side."
     - control_id: workload-identity
       status: not_applicable
-      notes: "The instance holds no credentials -- Azure Backup acts as the VAULT's system-assigned managed identity, a keyless platform-issued identity by construction. Its datasource role assignments are composed on the AzureDataProtectionBackupVault kind's system_assigned_identity_principal_id output, never here."
+      notes: "The instance holds no credentials -- Azure Backup acts as the VAULT's system-assigned managed identity, a keyless platform-issued identity by construction. Its datasource role assignments are composed on the AzureDataProtectionBackupVault component's system_assigned_identity_principal_id output, never here."
     - control_id: no-legacy-auth
       status: not_applicable
       notes: "No authentication paths of its own to strengthen or disable; the vault's security settings (soft delete, immutability, resource-guard MUA) are the hardening surface, vault-side."
@@ -59,14 +59,14 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: "This kind IS the control -- the instance is what makes a datasource's backups automated and restorable. Recovery points accrue on the referenced policy's schedule and restore through Azure Backup's standard flows, per variant (disk from incremental snapshots, AKS workloads with optional volume data, blob from operational versions or vaulted copies, the flexible servers from vault-tier fulls)."
+        reference: "This component IS the control -- the instance is what makes a datasource's backups automated and restorable. Recovery points accrue on the referenced policy's schedule and restore through Azure Backup's standard flows, per variant (disk from incremental snapshots, AKS workloads with optional volume data, blob from operational versions or vaulted copies, the flexible servers from vault-tier fulls)."
       notes: "The purpose-control, with two facts worth hearing plainly: creation only registers -- the first recovery point lands on the policy's next scheduled run (operational blob protection is the exception, continuous from enablement) -- and the vault's managed identity must hold the datasource roles BEFORE create or the deploy fails with an authorization-class error."
     - control_id: backup-retention-policy
       status: not_applicable
       notes: "Retention length is the referenced AzureDataProtectionBackupPolicy's whole job -- schedule and retention live there, and re-pointing backup_policy_id updates protection in place on every variant EXCEPT kubernetes_cluster, where the provider ships no update path and even the policy binding replaces the instance. This manifest holds the binding, never the retention numbers."
     - control_id: multi-zone-ha
       status: not_applicable
-      notes: "Resilience of the backup DATA is the vault's redundancy choice (LocallyRedundant / ZoneRedundant / GeoRedundant), configured on the AzureDataProtectionBackupVault kind; operational-tier snapshots default to ZRS in regions that support it (Microsoft's pricing documentation). The binding itself has no zone posture."
+      notes: "Resilience of the backup DATA is the vault's redundancy choice (LocallyRedundant / ZoneRedundant / GeoRedundant), configured on the AzureDataProtectionBackupVault component; operational-tier snapshots default to ZRS in regions that support it (Microsoft's pricing documentation). The binding itself has no zone posture."
     - control_id: deletion-protection
       status: enforced_by_default
       evidence:

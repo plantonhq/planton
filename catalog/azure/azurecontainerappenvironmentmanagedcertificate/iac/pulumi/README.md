@@ -27,5 +27,5 @@ containerapp.EnvironmentManagedCertificate (one Azure-managed certificate)
 ## Provider
 
 Built via the shared `pulumiazureprovider.Get` builder -- static client
-secret, keyless web identity, or ambient chain, resolved from the stack
+secret, keyless web identity, or ambient chain, resolved from the IaC
 input. Never construct the provider inline.

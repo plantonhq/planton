@@ -10,7 +10,7 @@ message CloudflareCertificatePackOutputs {
 
   // Field 2 (status) was removed: pack issuance is asynchronous (a fresh
   // order transitions initializing -> pending_validation -> active as DCV
-  // completes), so a point-in-time phase can never be a stable stack
+  // completes), so a point-in-time phase can never be a stable
   // output -- it flips on the first refresh after the transition and
   // re-plans forever (the same class measured live on the Authenticated
   // Origin Pulls certificate, 2026-08-28). Read issuance status from the

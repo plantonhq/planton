@@ -17,15 +17,15 @@ Error: ... a resource with the ID "..." already exists                     # gen
 ```
 
 **The repair is import, not delete-and-retry.** The platform has first-class
-state-import commands: they run an Infra Job that adopts the existing cloud
+state-import commands: they run an Infra Job that adopts the existing provider
 resource into the InfraComponent's IaC state — **the cloud is never touched,
 only the state file is updated** — and then a fresh apply reconciles the
 desired configuration against what was adopted.
 
 ## The commands
 
-The provisioner family matters (check `.planton/stack.yaml` or the stack
-job record; OpenTofu and Terraform are interchangeable here):
+The provisioner family matters (check `.planton/stack.yaml` or the Infra
+Job record; OpenTofu and Terraform are interchangeable here):
 
 ```
 # OpenTofu / Terraform — the state entry is a resource ADDRESS (type.name):

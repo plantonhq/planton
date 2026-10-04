@@ -27,7 +27,7 @@ spec:
       evidence:
         type: spec_validation
         reference: Every rule states its direction, its action, and a match with at least one layer4_configs entry (repeated.min_items = 1), so what an INGRESS rule admits or denies -- by CIDR, country, threat-intelligence list, address group, secure tag, or source network -- is always an explicit, reviewable choice; an organization-level deny cannot be undone by any project beneath it.
-      notes: "This kind IS the organization's restricted-ingress control: rules enforced above every project, before network policies and legacy VPC rules. How restrictive is the rule set's choice -- preset 01 denies SSH from 0.0.0.0/0 and logs it; preset 02 allows only intra-VPC traffic and Google's health-check ranges before delegating; preset 03 denies known-malicious sources, Tor exit nodes, and listed countries. Two caveats a reviewer should hear: disabled=true leaves a rule in place but unenforced, and a rule whose target secure tags are all INEFFECTIVE is silently ignored."
+      notes: "This component IS the organization's restricted-ingress control: rules enforced above every project, before network policies and legacy VPC rules. How restrictive is the rule set's choice -- preset 01 denies SSH from 0.0.0.0/0 and logs it; preset 02 allows only intra-VPC traffic and Google's health-check ranges before delegating; preset 03 denies known-malicious sources, Tor exit nodes, and listed countries. Two caveats a reviewer should hear: disabled=true leaves a rule in place but unenforced, and a rule whose target secure tags are all INEFFECTIVE is silently ignored."
     - control_id: edge-protection
       status: configurable
       field_path: rules.security_profile_group

@@ -23,7 +23,7 @@ spec:
       evidence:
         type: spec_validation
         reference: A public grant is unrepresentable -- the modules construct the member string from validated parts (serviceAccount:<pool-project>.svc.id.goog[<ksa_namespace>/<ksa_name>], with both KSA fields held to RFC 1123 patterns), so allUsers, allAuthenticatedUsers, or any hand-typed principal cannot appear in this grant.
-      notes: This is the structural advantage over a generic IAM-member resource -- the only identity this kind can ever empower is one named Kubernetes ServiceAccount in one named namespace of the pool project's cluster fleet.
+      notes: This is the structural advantage over a generic IAM-member resource -- the only identity this component can ever empower is one named Kubernetes ServiceAccount in one named namespace of the pool project's cluster fleet.
     - control_id: restricted-ingress
       status: not_applicable
       notes: No network path exists to restrict -- the grant admits no traffic; it authorizes identity impersonation evaluated inside IAM.
@@ -34,13 +34,13 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: Managing the binding authorizes against iam.serviceAccounts.setIamPolicy and getIamPolicy on the target service account -- Service Account IAM, with no unauthenticated path. The grant it writes is itself maximally scoped RBAC -- the role is hardcoded to roles/iam.workloadIdentityUser in both modules, so this kind cannot hand out anything broader.
+        reference: Managing the binding authorizes against iam.serviceAccounts.setIamPolicy and getIamPolicy on the target service account -- Service Account IAM, with no unauthenticated path. The grant it writes is itself maximally scoped RBAC -- the role is hardcoded to roles/iam.workloadIdentityUser in both modules, so this component cannot hand out anything broader.
       notes: What the workload may DO in GCP is the GSA's own role set, assessed on the components granting those roles -- this binding only connects the KSA to the GSA.
     - control_id: workload-identity
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: This kind IS the keyless-identity control for GKE workloads -- the grant is the GCP half of Workload Identity, letting the named KSA mint short-lived tokens as the GSA through the GKE metadata server. Both modules hardcode roles/iam.workloadIdentityUser and construct the federated principal; no service-account key is created, exported, or ever exists in this path.
+        reference: This component IS the keyless-identity control for GKE workloads -- the grant is the GCP half of Workload Identity, letting the named KSA mint short-lived tokens as the GSA through the GKE metadata server. Both modules hardcode roles/iam.workloadIdentityUser and construct the federated principal; no service-account key is created, exported, or ever exists in this path.
       notes: "Two prerequisites live outside this resource: the KSA must carry the iam.gke.io/gcp-service-account=<gsa-email> annotation (the Kubernetes half, owned by the workload's deployment -- the service_account_email output is exactly that value), and node pools must run workloadMetadataConfig.mode = GKE_METADATA. An optional condition can time-box the impersonation with a CEL expression."
     - control_id: no-legacy-auth
       status: not_applicable

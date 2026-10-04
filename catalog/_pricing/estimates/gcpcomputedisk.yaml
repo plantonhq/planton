@@ -49,7 +49,7 @@ spec:
       total_list_cost: "85.0000"
       exclusions:
         - the create_snapshot_before_destroy final snapshot bills snapshot storage per GiB actually stored, from destroy day until someone deletes it -- unknowable from the manifest
-        - CMEK adds no per-disk charge -- the Cloud KMS key bills its own key-version and operation charges on the GcpKmsKey kind
+        - CMEK adds no per-disk charge -- the Cloud KMS key bills its own key-version and operation charges on the GcpKmsKey component
       notes: Encryption posture (CMEK vs Google-managed) does not change the disk's capacity rate -- the premium here is pd-ssd itself, chosen for database IOPS-per-GB.
     - preset: 03-hyperdisk-high-iops
       region_assumption: us-central1

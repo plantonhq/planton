@@ -32,7 +32,7 @@ func (*dnsZoneVerifier) VerifyAbsent(ctx context.Context, client *godo.Client, i
 		return pkgerrors.Wrapf(err, "digitaloceandnszone verify-absent failed for %q", id)
 	}
 	if exists {
-		return &StillExistsError{Component: "digitaloceandnszone", ID: id}
+		return &StillExistsError{Kind: "digitaloceandnszone", ID: id}
 	}
 	return nil
 }
@@ -83,7 +83,7 @@ func (v *dnsRecordVerifier) VerifyAbsentFromOutputs(ctx context.Context, client 
 		return pkgerrors.Wrap(err, "digitaloceandnsrecord verify-absent failed")
 	}
 	if exists {
-		return &StillExistsError{Component: "digitaloceandnsrecord", ID: StringOutput(outputs, "record_id")}
+		return &StillExistsError{Kind: "digitaloceandnsrecord", ID: StringOutput(outputs, "record_id")}
 	}
 	return nil
 }

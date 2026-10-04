@@ -65,7 +65,7 @@ spec:
       evidence:
         type: spec_validation
         reference: cron is required -- every schedule declares an explicit cadence (every 12 hours, daily, weekly, or monthly, evaluated in UTC) on which Spanner creates restorable backups of the referenced database.
-      notes: This kind IS the automated-backup control for Spanner databases. A database commonly carries two schedules side by side (daily incremental plus weekly full); backups survive deletion of both the schedule and the database, living until their retention expires.
+      notes: This component IS the automated-backup control for Spanner databases. A database commonly carries two schedules side by side (daily incremental plus weekly full); backups survive deletion of both the schedule and the database, living until their retention expires.
     - control_id: backup-retention-policy
       status: configurable
       field_path: retention_duration

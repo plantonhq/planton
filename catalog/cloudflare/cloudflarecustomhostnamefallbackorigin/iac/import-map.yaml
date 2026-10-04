@@ -5,7 +5,7 @@ metadata:
 spec:
   # The fallback origin is a zone singleton -- its import identity IS the
   # zone id. There is no resource id of its own. zone_id is a
-  # StringValueOrRef on the spec, so it comes from the deploy's stack
+  # StringValueOrRef on the spec, so it comes from the deploy's
   # outputs (the same output the verifier keys on).
   values:
     - name: zone_id

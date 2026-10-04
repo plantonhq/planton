@@ -1,7 +1,7 @@
 # AzureApplicationInsightsStandardWebTest - Pulumi Module
 
 Pulumi implementation for the AzureApplicationInsightsStandardWebTest
-component.
+kind.
 
 ## Architecture
 
@@ -27,5 +27,5 @@ appinsights.StandardWebTest (one synthetic availability test)
 ## Provider
 
 Built via the shared `pulumiazureprovider.Get` builder -- static client
-secret, keyless web identity, or ambient chain, resolved from the stack
+secret, keyless web identity, or ambient chain, resolved from the IaC
 input. Never construct the provider inline.

@@ -71,7 +71,7 @@ spec:
       notes: With nothing backed up there is no retention to configure.
     - control_id: multi-zone-ha
       status: not_applicable
-      notes: The hub itself is regional AWS-operated infrastructure with no zone placement to configure -- no field of this manifest picks or spreads zones. Per-AZ reachability is decided by each attachment's subnet set (the gateway routes only to and from zones an attachment has an ENI in), which lives on the AwsTransitGatewayVpcAttachment kinds.
+      notes: The hub itself is regional AWS-operated infrastructure with no zone placement to configure -- no field of this manifest picks or spreads zones. Per-AZ reachability is decided by each attachment's subnet set (the gateway routes only to and from zones an attachment has an ENI in), which lives on the AwsTransitGatewayVpcAttachment components.
     - control_id: deletion-protection
       status: not_applicable
       notes: Neither AWS nor this spec offers a deletion-protection flag for a transit gateway. AWS does refuse to delete a gateway that still has attachments -- every spoke must detach first -- so a hub in active use cannot vanish in one step, but that is dependency ordering, not a configurable guard.

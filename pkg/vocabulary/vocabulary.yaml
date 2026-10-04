@@ -190,5 +190,5 @@ exclude:
   - 'helm/**/crds/**'
   - 'pkg/kubernetes/helmcrds/testdata/**'
   - 'pkg/kubernetes/kubernetestypes/**'
-  - 'pkg/iac/actioninventory/**'
+  - 'pkg/iac/actioninventory/*.yaml'
   - 'pkg/providerparity/schemas/**'

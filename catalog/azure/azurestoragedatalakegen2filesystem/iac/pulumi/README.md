@@ -1,7 +1,7 @@
 # AzureStorageDataLakeGen2Filesystem - Pulumi Module
 
 Pulumi implementation for the AzureStorageDataLakeGen2Filesystem
-component.
+kind.
 
 ## Architecture
 

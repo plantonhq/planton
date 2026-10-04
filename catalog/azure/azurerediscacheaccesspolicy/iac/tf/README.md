@@ -1,7 +1,7 @@
 # AzureRedisCacheAccessPolicy - Terraform Module
 
-Terraform implementation for the AzureRedisCacheAccessPolicy deployment
-component.
+Terraform implementation for the AzureRedisCacheAccessPolicy
+kind.
 
 ## Resources Created
 

@@ -21,7 +21,7 @@ spec:
         - "published events bill 0.60 USD per million operations past the monthly 100,000-operation free grant, counted in 64 KB units (a 256 KB event is four operations) -- the CloudEvents input schema changes the envelope, never the meter"
         - "delivery attempts by the event subscriptions attached to this topic bill the same meter, one operation per attempt including retries"
         - "advanced filtering (data-payload conditions) and subject-ends-with filtering on attached subscriptions bill one operation per evaluation; event-type matching and subject-begins-with are free"
-        - "dead-lettered events bill as delivery operations, with blob storage charges on the destination storage account's own kind"
+        - "dead-lettered events bill as delivery operations, with blob storage charges on the destination storage account's own component"
       notes: "Zero committed cost -- the topic has no meter for existing, and a workload publishing under 100,000 operations a month (publishes plus deliveries plus billable filters) rides entirely inside the free grant."
     - preset: 02-locked-down-topic
       region_assumption: eastus
@@ -31,5 +31,5 @@ spec:
         - "published events bill 0.60 USD per million operations past the monthly 100,000-operation free grant, counted in 64 KB units -- Entra-only auth, the IP allowlist, and the system-assigned identity are free posture that moves no meter"
         - "delivery attempts by the event subscriptions attached to this topic bill the same meter, one operation per attempt including retries"
         - "advanced filtering (data-payload conditions) and subject-ends-with filtering on attached subscriptions bill one operation per evaluation; event-type matching and subject-begins-with are free"
-        - "dead-lettered events bill as delivery operations, with blob storage charges on the destination storage account's own kind"
+        - "dead-lettered events bill as delivery operations, with blob storage charges on the destination storage account's own component"
       notes: "Zero committed cost -- locking the topic down costs exactly as much as leaving it open: security here decides WHO can make operations happen, and the bill stays pure traffic arithmetic."

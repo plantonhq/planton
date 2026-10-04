@@ -23,6 +23,6 @@ spec:
         - the rows-read meter (Workers Paid first 25 billion/month included, then $0.001/million rows; Workers Free 5 million/day hard quota) follows query volume and shape -- a full table scan reads every row it scans, and no manifest can know the queries
         - the rows-written meter (Workers Paid first 50 million/month included, then $1.00/million rows; Workers Free 100,000/day hard quota) follows INSERT/UPDATE/DELETE traffic, plus one extra written row per index touched
         - the storage meter (Workers Paid first 5 GB included, then $0.75/GB-mo on the account-wide sum of all D1 databases; Workers Free 5 GB total hard cap) grows with data, tables, and indexes
-        - the Worker compute that queries this database bills as Workers requests and CPU time on the querying CloudflareWorker kind
+        - the Worker compute that queries this database bills as Workers requests and CPU time on the querying CloudflareWorker component
         - the $5/mo Workers Paid subscription is account-level plan spend -- no field in this spec pins it
       notes: "Zero committed cost -- the preset sets only the account, name, and a wnam region hint (placement, not price; D1's pricing table has no region dimension). The database scales to zero and every meter waits for the first query."

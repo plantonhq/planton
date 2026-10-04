@@ -1,7 +1,7 @@
 # AzureFrontDoorRoute - Terraform Module
 
-Terraform implementation for the AzureFrontDoorRoute deployment
-component.
+Terraform implementation for the AzureFrontDoorRoute
+kind.
 
 ## Resources Created
 

@@ -112,9 +112,9 @@ func referencedAuth0Resources(repoRoot string) ([]string, error) {
 		return nil, err
 	}
 	set := map[string]bool{}
-	for provider, components := range discovered {
-		for _, component := range components {
-			manifest, err := permissions.Load(repoRoot, provider, component)
+	for provider, kinds := range discovered {
+		for _, kind := range kinds {
+			manifest, err := permissions.Load(repoRoot, provider, kind)
 			if err != nil {
 				return nil, err
 			}
@@ -122,7 +122,7 @@ func referencedAuth0Resources(repoRoot string) ([]string, error) {
 				for _, scope := range group.GetScopes() {
 					_, resource, found := strings.Cut(scope, ":")
 					if !found {
-						return nil, fmt.Errorf("%s/%s: auth0 scope %q has no resource segment", provider, component, scope)
+						return nil, fmt.Errorf("%s/%s: auth0 scope %q has no resource segment", provider, kind, scope)
 					}
 					set[resource] = true
 				}

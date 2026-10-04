@@ -1,7 +1,7 @@
 # AzureCosmosdbSqlDatabase - Terraform Module
 
-Terraform implementation for the AzureCosmosdbSqlDatabase deployment
-component.
+Terraform implementation for the AzureCosmosdbSqlDatabase
+kind.
 
 ## Resources Created
 

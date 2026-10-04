@@ -1,7 +1,7 @@
 # AzureApplicationGateway - Pulumi Module
 
-Pulumi implementation for the AzureApplicationGateway deployment
-component.
+Pulumi implementation for the AzureApplicationGateway
+kind.
 
 ## Architecture
 

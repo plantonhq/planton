@@ -7,7 +7,7 @@ secured (basic auth is on by default with a module-generated admin
 password in the `mlflow-admin-auth` Secret; MLflow's own default is an
 OPEN server, which never ships from here).
 
-Point your training code at the tracking endpoint from the stack
+Point your training code at the tracking endpoint from the
 outputs:
 
     MLFLOW_TRACKING_URI=http://mlflow.mlflow.svc.cluster.local:5000

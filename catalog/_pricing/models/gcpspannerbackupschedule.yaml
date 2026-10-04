@@ -16,7 +16,7 @@ spec:
       hours_per_month: 730
       exclusions:
         - daily FULL backups kept 31 days settle at roughly 31 database-sized copies billing per GiB-month at the instance configuration's backup rate -- but each copy is only as large as the database, so an empty database backs up to almost nothing
-        - the database's storage and the instance's compute bill on their own kinds
+        - the database's storage and the instance's compute bill on their own components
       notes: Zero committed at creation -- the schedule is a free control-plane object; the meter follows the size of the database it copies.
     - preset: 02-incremental-enterprise
       region_assumption: us-central1
@@ -32,6 +32,6 @@ spec:
       hours_per_month: 730
       exclusions:
         - weekly FULL backups kept 366 days (the maximum) settle at roughly 52 database-sized copies billing per GiB-month -- the largest standing multiple any cadence/retention pair in these presets produces
-        - the CMEK key's version storage and per-operation charges bill on the referenced GcpKmsKey kind
-        - the database's storage and the instance's compute bill on their own kinds
+        - the CMEK key's version storage and per-operation charges bill on the referenced GcpKmsKey component
+        - the database's storage and the instance's compute bill on their own components
       notes: Zero committed at creation -- the year of retention is a multiplier armed by the manifest, not a charge; it starts costing when the database holds data worth archiving.

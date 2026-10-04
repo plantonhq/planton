@@ -31,7 +31,7 @@ spec:
       total_list_cost: "3.6500"
       exclusions:
         - Elastic IP remaps beyond AWS's free monthly allowance bill per remap -- a usage charge driven by how often automation re-associates the address, invisible to this manifest.
-        - The associated resource (instance, network interface, NAT gateway, load balancer) and all data transfer through the address bill on their own meters, outside this kind.
+        - The associated resource (instance, network interface, NAT gateway, load balancer) and all data transfer through the address bill on their own meters, outside this component.
       notes: The address-hours are the committed bill, and releasing the address is the only way to stop the meter.
     - preset: 02-byoip-pool
       region_assumption: us-east-1
@@ -40,7 +40,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - Elastic IP remaps beyond AWS's free monthly allowance bill per remap -- a usage charge driven by how often automation re-associates the address, invisible to this manifest.
-        - The associated resource (instance, network interface, NAT gateway, load balancer) and all data transfer through the address bill on their own meters, outside this kind.
+        - The associated resource (instance, network interface, NAT gateway, load balancer) and all data transfer through the address bill on their own meters, outside this component.
       notes: The address-hours are the committed bill, and releasing the address is the only way to stop the meter. A BYOIP address is not charged the public IPv4 rate -- AWS bills only addresses from its own space -- so this manifest's committed monthly cost is honestly zero.
     - preset: 03-instance-attached
       region_assumption: us-east-1
@@ -59,5 +59,5 @@ spec:
       total_list_cost: "3.6500"
       exclusions:
         - Elastic IP remaps beyond AWS's free monthly allowance bill per remap -- a usage charge driven by how often automation re-associates the address, invisible to this manifest.
-        - The associated resource (instance, network interface, NAT gateway, load balancer) and all data transfer through the address bill on their own meters, outside this kind.
+        - The associated resource (instance, network interface, NAT gateway, load balancer) and all data transfer through the address bill on their own meters, outside this component.
       notes: The address-hours are the committed bill, and releasing the address is the only way to stop the meter.

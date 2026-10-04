@@ -44,7 +44,7 @@ spec:
       notes: Changes to the connector are Kubernetes API operations, captured by the target cluster's audit policy; the operator additionally reflects state transitions in the resource's status and events.
     - control_id: monitoring-integration
       status: not_applicable
-      notes: The connector's runtime metrics (task states, throughput, lag) are exported by the Connect cluster's workers, owned by the KubernetesKafkaConnect kind; this resource only surfaces reconcile status.
+      notes: The connector's runtime metrics (task states, throughput, lag) are exported by the Connect cluster's workers, owned by the KubernetesKafkaConnect component; this resource only surfaces reconcile status.
     - control_id: backup-recovery
       status: not_applicable
       notes: The resource is declarative and re-applyable; the pipe's progress (offsets) lives in Kafka itself. The list_offsets and alter_offsets arms exist for offset INSPECTION and OVERRIDE (replay, skip-poison-record, migration cutover) -- operational verbs, not backup.

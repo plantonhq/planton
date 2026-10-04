@@ -39,7 +39,7 @@ spec:
       field_path: web_acl_arn
       evidence:
         type: spec_default
-        reference: Unset means no request filtering; referencing a WAF web ACL inspects every viewer request against its rules before CloudFront serves or forwards it -- this kind IS the edge, so the WAF attachment point is native.
+        reference: Unset means no request filtering; referencing a WAF web ACL inspects every viewer request against its rules before CloudFront serves or forwards it -- this component IS the edge, so the WAF attachment point is native.
     - control_id: rbac
       status: enforced_by_default
       evidence:

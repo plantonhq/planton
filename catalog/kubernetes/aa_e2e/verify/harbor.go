@@ -65,9 +65,9 @@ func (v *HarborVerifier) VerifyExists(ctx context.Context, kubeconfig string) er
 	// Stateless components self-ready; core's first-boot schema migration
 	// is the long pole (startup probe budgets 60 minutes upstream — the
 	// Helm wait already absorbed the normal case).
-	for _, kind := range []string{"core", "portal", "registry", "jobservice", "nginx"} {
-		if err := kubectlRolloutStatus(ctx, kubeconfig, "deployment/"+v.Name+"-"+kind, v.Namespace, 15*time.Minute); err != nil {
-			return errors.Wrapf(err, "the %s deployment never rolled out", kind)
+	for _, component := range []string{"core", "portal", "registry", "jobservice", "nginx"} {
+		if err := kubectlRolloutStatus(ctx, kubeconfig, "deployment/"+v.Name+"-"+component, v.Namespace, 15*time.Minute); err != nil {
+			return errors.Wrapf(err, "the %s deployment never rolled out", component)
 		}
 	}
 	if err := KubectlResourceExists(ctx, kubeconfig, "service", v.Name, v.Namespace); err != nil {

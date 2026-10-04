@@ -55,7 +55,7 @@ spec:
       evidence:
         type: provider_default
         reference: Prompt lifecycle operations -- creation, template edits, version snapshots, deletion -- are control-plane calls CloudTrail records unconditionally as management events, so who changed the production prompt text and when is always answerable.
-      notes: Runtime capture of executions (which inputs hit which model) is model-invocation-logging territory on the AwsBedrockInvocationLogging kind.
+      notes: Runtime capture of executions (which inputs hit which model) is model-invocation-logging territory on the AwsBedrockInvocationLogging component.
     - control_id: monitoring-integration
       status: not_applicable
       notes: Bedrock's monitoring documentation enumerates metric namespaces for model invocations (AWS/Bedrock) and agents (AWS/Bedrock/Agents) -- none covers Prompt Management, and the spec carries no metrics surface. Execution metrics appear under the invoked model's or agent's namespaces, attributed to the caller rather than to the template.

@@ -35,4 +35,4 @@ spec:
     - per-certificate issuance fees are one-time charges at issue/renewal time, tiered on account-level monthly volume -- not monthly committed spend
     - OCSP response generation and query fees follow relying-party validation traffic
     - the CRL S3 bucket's storage and request charges bill on the referenced AwsS3Bucket component
-  notes: "This kind is the textbook committed-spend trap: the moment the CA exists the monthly fee runs -- $400 or $50 decided by usage_mode, prorated hourly -- and only deletion stops it (deleting parks it restorable for permanent_deletion_time_in_days at no charge). Disabling issuance (enabled: false) does NOT stop billing. The fee fork is a plain field condition, so the derivation grammar reaches it."
+  notes: "This component is the textbook committed-spend trap: the moment the CA exists the monthly fee runs -- $400 or $50 decided by usage_mode, prorated hourly -- and only deletion stops it (deleting parks it restorable for permanent_deletion_time_in_days at no charge). Disabling issuance (enabled: false) does NOT stop billing. The fee fork is a plain field condition, so the derivation grammar reaches it."

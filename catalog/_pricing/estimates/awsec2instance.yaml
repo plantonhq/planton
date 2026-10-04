@@ -41,7 +41,7 @@ spec:
       exclusions:
         - a subnet that maps public IPs on launch adds the hourly public-IPv4 charge without this manifest saying so
         - data transfer between AZs and out of the region follows the workload's traffic
-        - EBS snapshots taken of the volumes bill per GB-month outside this kind
+        - EBS snapshots taken of the volumes bill per GB-month outside this component
       notes: Priced at the shared-tenancy Linux/UNIX On-Demand rate -- a Windows or commercial-Linux AMI bills license-included rates above this estimate. The estimate assumes the instance runs all 730 hours; stopping it stops the instance-hours meter but keeps every EBS volume billing.
     - preset: 02-launch-template
       region_assumption: us-east-1
@@ -62,7 +62,7 @@ spec:
         - the root volume's size comes from the AMI or launch template's block-device mapping, invisible in this manifest -- its GB-month charge is excluded
         - a subnet that maps public IPs on launch adds the hourly public-IPv4 charge without this manifest saying so
         - data transfer between AZs and out of the region follows the workload's traffic
-        - EBS snapshots taken of the volumes bill per GB-month outside this kind
+        - EBS snapshots taken of the volumes bill per GB-month outside this component
       notes: Priced at the shared-tenancy Linux/UNIX On-Demand rate -- a Windows or commercial-Linux AMI bills license-included rates above this estimate. The estimate assumes the instance runs all 730 hours; stopping it stops the instance-hours meter but keeps every EBS volume billing.
     - preset: 03-spot-worker
       region_assumption: us-east-1
@@ -84,7 +84,7 @@ spec:
         - Spot capacity can be reclaimed with two minutes' notice -- the discount's price
         - a subnet that maps public IPs on launch adds the hourly public-IPv4 charge without this manifest saying so
         - data transfer between AZs and out of the region follows the workload's traffic
-        - EBS snapshots taken of the volumes bill per GB-month outside this kind
+        - EBS snapshots taken of the volumes bill per GB-month outside this component
       notes: Spot has no committed list price -- the market sets the hourly rate under the published On-Demand ceiling, which is why this estimate carries no instance-hours line. The estimate assumes the instance runs all 730 hours; stopping it stops the instance-hours meter but keeps every EBS volume billing.
     - preset: 04-static-eni-identity
       region_assumption: us-east-1
@@ -113,7 +113,7 @@ spec:
       exclusions:
         - a subnet that maps public IPs on launch adds the hourly public-IPv4 charge without this manifest saying so
         - data transfer between AZs and out of the region follows the workload's traffic
-        - EBS snapshots taken of the volumes bill per GB-month outside this kind
+        - EBS snapshots taken of the volumes bill per GB-month outside this component
       notes: Priced at the shared-tenancy Linux/UNIX On-Demand rate -- a Windows or commercial-Linux AMI bills license-included rates above this estimate. The estimate assumes the instance runs all 730 hours; stopping it stops the instance-hours meter but keeps every EBS volume billing.
     - preset: 05-capacity-block-ml
       region_assumption: us-east-1
@@ -143,5 +143,5 @@ spec:
         - the ML Capacity Block was purchased up front at its own committed price and bills whether or not this instance runs -- the instance adds no hourly compute charge here
         - a subnet that maps public IPs on launch adds the hourly public-IPv4 charge without this manifest saying so
         - data transfer between AZs and out of the region follows the workload's traffic
-        - EBS snapshots taken of the volumes bill per GB-month outside this kind
+        - EBS snapshots taken of the volumes bill per GB-month outside this component
       notes: Only the EBS volumes bill through this manifest -- the reserved GPU capacity was bought as the Capacity Block itself. The estimate assumes the instance runs all 730 hours; stopping it stops the instance-hours meter but keeps every EBS volume billing.

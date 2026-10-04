@@ -32,14 +32,14 @@ spec:
         - "anonymous BLOB access carries no meter of its own, but every anonymous GET bills the account's read operations per 10,000 plus internet egress per GB -- a public origin lets the whole internet generate metered traffic"
         - "blob data stored bills per GB-month on the account; write, list-and-create-container, and all-other operations bill per 10,000"
         - "blob index tags, soft-delete retention capacity, versioning, change feed, inventory, and lifecycle transitions bill on the account when enabled"
-        - "a CDN or Front Door fronting this origin bills on its own kind"
+        - "a CDN or Front Door fronting this origin bills on its own component"
       notes: "Zero committed cost -- the BLOB access posture is a free spec choice; it changes who can create spend (anyone, anonymously), never the rates or the container's own nonexistent meter."
     - preset: 03-tenant-scoped-encryption
       region_assumption: eastus
       currency: USD
       hours_per_month: 730
       exclusions:
-        - "the referenced AzureStorageEncryptionScope bills a flat monthly per-scope fee (with a 30-day minimum per enablement) on ITS kind from the moment it is enabled -- binding it here adds nothing to the container's bill"
+        - "the referenced AzureStorageEncryptionScope bills a flat monthly per-scope fee (with a 30-day minimum per enablement) on ITS component from the moment it is enabled -- binding it here adds nothing to the container's bill"
         - "a Key Vault-keyed scope adds per-transaction wrap/unwrap operations on the key's vault, billed to the vault"
         - "blob data stored per GB-month and the per-10,000 operation meters bill on the account exactly as in the private preset; blob index tags, soft-delete capacity, and account-level feature meters apply when used"
-      notes: "Zero committed cost FOR THIS COMPONENT -- the tenant-isolation pattern's committed spend (the scope's monthly fee) rides the referenced encryption-scope kind, and the container remains a free namespace binding it."
+      notes: "Zero committed cost FOR THIS COMPONENT -- the tenant-isolation pattern's committed spend (the scope's monthly fee) rides the referenced encryption-scope component, and the container remains a free namespace binding it."

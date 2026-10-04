@@ -60,9 +60,9 @@ spec:
       quantity:
         - constant: "1"
       price_slug: monitor-metric-alert-time-series-eastus
-      basis: a web-test availability rule monitors the referenced test's availability signal as one time series; the test's own scheduled executions bill on the web-test kind, and Microsoft's pricing page states alert-rule charges are separate from test charges
+      basis: a web-test availability rule monitors the referenced test's availability signal as one time series; the test's own scheduled executions bill on the web-test component, and Microsoft's pricing page states alert-rule charges are separate from test charges
   exclusions:
-    - text: notifications the fired alert sends (email, SMS, voice, webhooks beyond the free monthly allowances) bill on the referenced AzureMonitorActionGroup kind
+    - text: notifications the fired alert sends (email, SMS, voice, webhooks beyond the free monthly allowances) bill on the referenced AzureMonitorActionGroup component
     - text: dimension filters that split the evaluation (INCLUDE with several values, or "*") bill each matching dimension value as its own time series -- these rules price the undimensioned series count, and the split multiplier follows the live metric's dimension values
     - text: the first 10 monitored metric time-series per subscription per month are free -- a subscription-wide allowance shared across every rule, so the estimate prices the list rate without netting it out
   notes:

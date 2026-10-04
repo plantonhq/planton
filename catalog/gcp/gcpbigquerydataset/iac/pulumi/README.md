@@ -1,6 +1,6 @@
 # GcpBigQueryDataset -- Pulumi Module
 
-This directory contains the Pulumi Go implementation for the GcpBigQueryDataset component.
+This directory contains the Pulumi Go implementation for the GcpBigQueryDataset kind.
 
 ## Module Structure
 

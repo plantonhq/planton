@@ -8,4 +8,4 @@ metadata:
 spec:
   billing_model: free
   free_tier: A Kubernetes Secret is an API object in the target cluster's etcd -- key-value credential material (Opaque entries, TLS certificate and key, registry credentials, basic-auth, SSH keys, or a ServiceAccount token) with no compute, no volumes, and no cloud SKU behind it. Creating one bills nothing on any provider meter.
-  notes: "No field of this spec buys anything: the secret_data variants select the Kubernetes secret type, and immutable only freezes the data against updates (it also reduces API-server watch load -- a performance courtesy, not a charge). The only real spend anywhere near a Secret is the cluster that stores it, and that bills through the cluster's own catalog kind, not here."
+  notes: "No field of this spec buys anything: the secret_data variants select the Kubernetes secret type, and immutable only freezes the data against updates (it also reduces API-server watch load -- a performance courtesy, not a charge). The only real spend anywhere near a Secret is the cluster that stores it, and that bills through the cluster's own component, not here."

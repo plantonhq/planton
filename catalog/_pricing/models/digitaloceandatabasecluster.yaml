@@ -29,7 +29,7 @@ spec:
           quantity_basis: "nodeCount 3 -- one primary and two standbys, each a full db-s-2vcpu-4gb PostgreSQL node billed the same monthly rate from creation"
       exclusions:
         - "storage_autoscale is enabled at an 80 percent threshold: each triggered growth step adds additional storage at 0.215 USD/GiB/mo permanently, following actual disk usage no manifest can predict"
-        - "read-only replicas, users, logical databases, connection pools, and firewall rules are separate kinds with their own lifecycles"
+        - "read-only replicas, users, logical databases, connection pools, and firewall rules are separate components with their own lifecycles"
       notes: "Daily backups with 7-day point-in-time recovery and the weekly maintenance window are included in the node price. The base storage included with db-s-2vcpu-4gb carries no separate charge until autoscale grows past it."
     - preset: 02-postgresql-dev
       region_assumption: nyc3
@@ -66,7 +66,7 @@ spec:
           quantity_basis: "nodeCount 3 -- the API's own Kafka minimum; DigitalOcean prices Kafka in brokers, publishing 148.80 USD/mo for the 3-broker 2 vCPU / 2 GiB plan, so the per-broker rate is 148.80 / 3 = 49.60 USD/mo and 3 brokers reproduce the page's plan price exactly"
       exclusions:
         - "growing storage past the plan's included base bills 0.215 USD/GiB/mo in 30 GiB increments"
-        - "topics and schema registry subjects are separate free kinds; the brokers carry the whole bill"
+        - "topics and schema registry subjects are separate free components; the brokers carry the whole bill"
       notes: "The pricing page publishes the 3-broker plan total, not a per-broker rate -- the division by three is stated arithmetic on the page's verbatim 148.80 USD figure."
     - preset: 05-opensearch
       region_assumption: nyc3

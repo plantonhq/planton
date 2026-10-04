@@ -1,7 +1,7 @@
 # AzureServiceBusNamespace - Pulumi Module
 
-Pulumi (Go) implementation for the AzureServiceBusNamespace deployment
-component, at 100% behavioral parity with the Terraform module.
+Pulumi (Go) implementation for the AzureServiceBusNamespace
+kind, at 100% behavioral parity with the Terraform module.
 
 ## Resources Created
 

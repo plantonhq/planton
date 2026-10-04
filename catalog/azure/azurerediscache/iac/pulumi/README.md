@@ -1,6 +1,6 @@
 # AzureRedisCache - Pulumi Module
 
-Pulumi implementation for the AzureRedisCache component.
+Pulumi implementation for the AzureRedisCache kind.
 
 ## Architecture
 

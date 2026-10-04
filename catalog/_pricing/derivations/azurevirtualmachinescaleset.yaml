@@ -61,7 +61,7 @@ spec:
           op: is_unset
       text: each instance's managed OS disk bills at the tier matching the configured storage SKU and size (image-inherited when unset), a per-instance managed-disk meter not yet priced here
     - text: fleet-wide data disks (data_disks) bill one managed disk per instance at each definition's tier
-    - text: instance-level public IPs configured inline bill per address; referenced subnets, load balancer pools, and application gateway pools bill on their own kinds
+    - text: instance-level public IPs configured inline bill per address; referenced subnets, load balancer pools, and application gateway pools bill on their own components
     - text: network egress follows traffic and client placement
   notes:
     - applies_when:

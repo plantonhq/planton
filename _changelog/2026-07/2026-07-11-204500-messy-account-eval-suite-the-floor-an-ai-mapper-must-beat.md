@@ -54,7 +54,7 @@ blind is part of the bar.
   fingerprints between scan and proposer (`planton.ai/*`, `e2e-catalog-kind`,
   and `managed-by` only when it carries the e2e marker value); Name tags
   and realistic user tags stay. The redaction is a property of the
-  pipeline, never a general tag scrubber, and the tags remain on the cloud
+  pipeline, never a general tag scrubber, and the tags remain on the provider
   resources for fixture sweeps.
 - **Refs-axis completeness**: an unproposed instance's `value_from` edges
   now stay in the denominator as missing edges (mirroring the spec axis) —

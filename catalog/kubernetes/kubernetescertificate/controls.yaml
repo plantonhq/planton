@@ -47,7 +47,7 @@ spec:
       notes: Changes to the Certificate are Kubernetes API operations captured by the target cluster's audit policy. revision_history_limit retains recent CertificateRequest resources (upstream default 1) as an issuance trail, but that is object retention, not a provider audit log.
     - control_id: monitoring-integration
       status: not_applicable
-      notes: The Certificate emits no metrics of its own; expiry and issuance metrics come from the cert-manager controller's Prometheus endpoint, owned by the KubernetesCertManager kind.
+      notes: The Certificate emits no metrics of its own; expiry and issuance metrics come from the cert-manager controller's Prometheus endpoint, owned by the KubernetesCertManager component.
     - control_id: backup-recovery
       status: not_applicable
       notes: The certificate is re-issuable machinery, not primary data -- deleting the Secret triggers reissuance from the manifest and issuer. There is nothing that needs backup to be recoverable.
@@ -62,4 +62,4 @@ spec:
       notes: Neither Kubernetes nor cert-manager offers a deletion-protection flag on Certificate; protection is operational (namespace RBAC, change review). A deleted Certificate stops renewals -- consumers keep working until the last issued Secret expires.
     - control_id: managed-patching
       status: not_applicable
-      notes: There is no software here to patch -- the resource is data, and its automatic renewal (see enc-in-transit) is credential rotation, not patching. cert-manager itself is patched through the KubernetesCertManager kind.
+      notes: There is no software here to patch -- the resource is data, and its automatic renewal (see enc-in-transit) is credential rotation, not patching. cert-manager itself is patched through the KubernetesCertManager component.

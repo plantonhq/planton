@@ -56,8 +56,8 @@ spec:
       price_slug: vwan-er-connection-unit-eastus
       basis: each composed connection joins one circuit peering to the hub and bills one ExpressRoute connection unit per hour -- Microsoft counts circuit connections, uniformly per connection, so the repeated field's element count is the quantity; a connectionless gateway emits nothing here
   exclusions:
-    - text: the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub kind
-    - text: the circuit's port and peering charges, and outbound data on metered circuit SKUs, bill on the circuit's own kinds
+    - text: the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub component
+    - text: the circuit's port and peering charges, and outbound data on metered circuit SKUs, bill on the circuit's own components
     - text: data leaving Azure over the circuits bills at ExpressRoute data-transfer rates and follows traffic
   notes:
     - applies_when:

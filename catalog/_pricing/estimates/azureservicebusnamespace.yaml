@@ -49,8 +49,8 @@ spec:
           list_cost: "677.0750"
       total_list_cost: "677.0750"
       exclusions:
-        - Geo-Replication, when configured, bills per GB replicated by geography zone, and the replica is a second Premium namespace billing its own messaging units on its own kind
-        - customer-managed-key encryption drives Key Vault key operations billed on the referenced vault's own kinds
+        - Geo-Replication, when configured, bills per GB replicated by geography zone, and the replica is a second Premium namespace billing its own messaging units on its own component
+        - customer-managed-key encryption drives Key Vault key operations billed on the referenced vault's own components
         - network egress follows consumer placement
       notes: Azure bills Premium as a flat daily rate at each day's MAXIMUM messaging-unit count, so scaling down mid-day does not trim that day's bill; the monthly figure here assumes a steady MU count. Queues, topics, subscriptions, and SAS rules are free objects inside the namespace -- their kinds add no meters of their own.
     - preset: 03-keyless-entra

@@ -45,7 +45,7 @@ spec:
       evidence:
         type: spec_default
         reference: Unset means the region has no API Gateway logging role, and stage-level execution and access logging on every REST API in the region silently delivers nothing. Setting the role is the one-time regional prerequisite that lets REST API stages deliver execution and access logs to CloudWatch Logs.
-      notes: This kind IS the region's API Gateway logging enabler -- the classic silent failure it prevents is stages with logging enabled producing no logs. Per-stage log levels and access-log formats remain each API's own settings. Administrative changes to the account object itself land in CloudTrail as account-level posture.
+      notes: This component IS the region's API Gateway logging enabler -- the classic silent failure it prevents is stages with logging enabled producing no logs. Per-stage log levels and access-log formats remain each API's own settings. Administrative changes to the account object itself land in CloudTrail as account-level posture.
     - control_id: monitoring-integration
       status: not_applicable
       notes: API Gateway publishes its CloudWatch metrics per API and stage automatically; the account object contributes no metric dimension. Its throttle_burst_limit and api_key_version are read-only outputs, not monitoring levers.

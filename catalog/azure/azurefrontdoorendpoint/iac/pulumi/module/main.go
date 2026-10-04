@@ -30,7 +30,7 @@ func Resources(ctx *pulumi.Context, iacInput *azurefrontdoorendpointv1alpha1.Azu
 	}
 
 	// Sent only when explicitly disabled: Azure's default is enabled, and
-	// the platform materializes the documented default centrally (stack
+	// the platform materializes the documented default centrally (IaC
 	// inputs never carry proto defaults, so an absent field means true).
 	if spec.Enabled != nil {
 		endpointArgs.Enabled = pulumi.Bool(spec.GetEnabled())

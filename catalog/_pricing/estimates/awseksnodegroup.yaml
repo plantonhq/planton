@@ -41,7 +41,7 @@ spec:
       exclusions:
         - autoscaled nodes above the floor are workload-dependent (max_size sets the instance ceiling)
         - data transfer between AZs and out of the region follows pod traffic
-        - the cluster management fee bills on the AwsEksCluster kind
+        - the cluster management fee bills on the AwsEksCluster component
       notes: Estimated at the autoscaling floor -- the committed always-on spend.
     - preset: 02-spot-cost-optimized
       region_assumption: us-east-1
@@ -53,7 +53,7 @@ spec:
         - running nodes bill the fluctuating Spot market rate, typically 60-90% below On-Demand and never above it
         - Spot interruptions can reclaim nodes with two minutes' notice -- the discount's price
         - data transfer between AZs and out of the region follows pod traffic
-        - the cluster management fee bills on the AwsEksCluster kind
+        - the cluster management fee bills on the AwsEksCluster component
       notes: Spot has no committed list price -- the market sets the hourly rate under the published On-Demand ceiling, which is why this estimate carries no priced lines.
     - preset: 04-warm-pool
       region_assumption: us-east-1
@@ -83,5 +83,5 @@ spec:
         - autoscaled nodes above the floor are workload-dependent (max_size sets the instance ceiling)
         - a RUNNING pool_state would bill the pooled instances at full price for instant scale-out
         - data transfer between AZs and out of the region follows pod traffic
-        - the cluster management fee bills on the AwsEksCluster kind
+        - the cluster management fee bills on the AwsEksCluster component
       notes: Estimated at the autoscaling floor -- the committed always-on spend. The warm pool's stopped instances add storage cost only, buying pre-initialized scale-out.

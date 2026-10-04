@@ -734,7 +734,7 @@ Based on scenario:
   `"{api_version}//{kind}//{name}[//{namespace}]"`. A typed-CR module renders
   exactly one GVK, so the kind map declares `api_version` and `kind`
   with the `literal` derivation; `name` derives from metadata.name (plus the
-  kind's name output); `namespace` derives from the namespace stack
+  kind's name output); `namespace` derives from the namespace
   output / spec field for namespaced kinds and is left derivation-less for
   cluster-scoped kinds — the bracketed `[//{namespace}]` segment group then
   drops wholesale, which matters because the kubectl importer REJECTS a

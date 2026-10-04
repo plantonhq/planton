@@ -161,4 +161,4 @@ spec:
           op: equals
           value: "true"
       text: Business Critical zone redundancy places the pool's existing replicas across availability zones at no extra cost per Microsoft's high-availability documentation -- no additional meter applies.
-    - text: Member databases (sku_name ElasticPool on the database kind) bill nothing themselves -- this pool's lines are the whole bill for every database it holds.
+    - text: Member databases (sku_name ElasticPool on the database component) bill nothing themselves -- this pool's lines are the whole bill for every database it holds.

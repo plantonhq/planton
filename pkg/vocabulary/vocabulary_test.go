@@ -83,6 +83,28 @@ func TestRetiredSpellingsAreFound(t *testing.T) {
 	}
 }
 
+func TestWrappedNamesAreFound(t *testing.T) {
+	s := scanner(t)
+	for _, text := range []string{
+		"Pulumi implementation for the AwsVpc deployment\ncomponent.",
+		"// the value a\n// cloud resource carries",
+		"# then a\n# catalog\n# component",
+	} {
+		if len(s.ScanText("README.md", []byte(text))) == 0 {
+			t.Errorf("no finding in wrapped %q", text)
+		}
+	}
+	if got := s.ScanText("README.md", []byte("the Google\nCloud resource hierarchy")); len(got) != 0 {
+		t.Errorf("a vendor phrase wrapped across lines was flagged: %v", got)
+	}
+	if got := s.ScanText("catalog/x/e2e/manifest.yaml", []byte("    release: kube-prometheus-stack\n  job_label: cnpg.io/cluster")); len(got) != 0 {
+		t.Errorf("a YAML key line was joined to the value above it: %v", got)
+	}
+	if got := s.ScanText("README.md", []byte("one deployment\nper environment")); len(got) != 0 {
+		t.Errorf("ordinary wrapped prose was flagged: %v", got)
+	}
+}
+
 func TestOtherPeoplesWordsAreAllowed(t *testing.T) {
 	s := scanner(t)
 	for _, c := range []struct{ path, line string }{

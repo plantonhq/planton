@@ -50,10 +50,10 @@ spec:
       price_slug: traffic-manager-external-endpoint-health-check
       basis: one monitored external endpoint x the flat monthly basic health-check fee for non-Azure destinations -- half again the Azure-endpoint rate for the same probing, on the same global meter convention
   exclusions:
-    - text: DNS queries bill per million against the referenced profile and follow client traffic (recursive-resolver caching, tuned by the profile's TTL, absorbs most of it) -- the profile kind's spend, not this endpoint's
+    - text: DNS queries bill per million against the referenced profile and follow client traffic (recursive-resolver caching, tuned by the profile's TTL, absorbs most of it) -- the profile component's spend, not this endpoint's
     - text: the fast-interval health-check add-on bills per monitored endpoint but is switched by the referenced profile's probing interval, which this manifest cannot see
     - text: the HTTPS health-check add-on bills per monitored endpoint but is switched by the referenced profile's monitor protocol, which this manifest cannot see
-    - text: the destination itself -- the Azure resource, external service, or child profile -- bills on its own kinds
+    - text: the destination itself -- the Azure resource, external service, or child profile -- bills on its own components
   notes:
     - applies_when:
         - field_path: enabled

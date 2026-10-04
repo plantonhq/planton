@@ -124,9 +124,9 @@ func referencedGcpServices(repoRoot string) ([]string, error) {
 		return nil, err
 	}
 	set := map[string]bool{}
-	for provider, components := range discovered {
-		for _, component := range components {
-			manifest, err := permissions.Load(repoRoot, provider, component)
+	for provider, kinds := range discovered {
+		for _, kind := range kinds {
+			manifest, err := permissions.Load(repoRoot, provider, kind)
 			if err != nil {
 				return nil, err
 			}
@@ -134,7 +134,7 @@ func referencedGcpServices(repoRoot string) ([]string, error) {
 				for _, permission := range group.GetPermissions() {
 					service, _, found := strings.Cut(permission, ".")
 					if !found {
-						return nil, fmt.Errorf("%s/%s: gcp permission %q has no service segment", provider, component, permission)
+						return nil, fmt.Errorf("%s/%s: gcp permission %q has no service segment", provider, kind, permission)
 					}
 					set[service] = true
 				}

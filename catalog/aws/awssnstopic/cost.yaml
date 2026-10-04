@@ -39,7 +39,7 @@ spec:
   free_tier: The first 1 million standard publish requests each month are free; HTTP and Lambda deliveries carry their own monthly free allowances.
   estimate_exclusions:
     - publish and delivery volume is entirely workload-driven -- an idle topic bills nothing
-    - per-protocol delivery rates (HTTP, email, SMS, mobile push) bill on the AwsSnsSubscription kinds that attach endpoints to this topic
+    - per-protocol delivery rates (HTTP, email, SMS, mobile push) bill on the AwsSnsSubscription components that attach endpoints to this topic
     - archive storage grows with published traffic and the retention window -- unknowable from the manifest
     - data transfer out of the region bills per GB
   notes: "A topic's existence is free -- the bill starts with the first publish. Delivery-side cost belongs to subscriptions; this manifest's own opt-ins (archive, data protection, delivery-status logging) are the levers that add topic-side meters."

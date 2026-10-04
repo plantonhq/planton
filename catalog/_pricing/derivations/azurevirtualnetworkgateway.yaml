@@ -47,13 +47,13 @@ spec:
           op: is_set
       text: point-to-site connections beyond the included 128 bill per connection-hour and follow client behavior
     - text: egress data transfer bills at standard rates and follows traffic (same-region VNet-to-VNet traffic through the gateway is free in both directions)
-    - text: the referenced public IPs and the GatewaySubnet's virtual network are first-class kinds billing on their own lines
+    - text: the referenced public IPs and the GatewaySubnet's virtual network are first-class components billing on their own lines
   notes:
     - applies_when:
         - field_path: active_active
           op: equals
           value: "true"
-      text: Active-active adds no gateway spend -- Microsoft bills one SKU rate however many instances are live; only the second public IP adds a line, on its own kind.
+      text: Active-active adds no gateway spend -- Microsoft bills one SKU rate however many instances are live; only the second public IP adds a line, on its own component.
     - applies_when:
         - field_path: nat_rules
           op: is_set

@@ -50,7 +50,7 @@ spec:
         - field_path: egress_public_network_access_enabled
           op: equals
           value: "false"
-      text: secure egress rides the workspace's managed network, whose private endpoints carry Private Link charges outside this kind
+      text: secure egress rides the workspace's managed network, whose private endpoints carry Private Link charges outside this component
     - text: network egress follows client placement
   notes:
     - text: The endpoint address this deployment serves is free routing -- managed online endpoints carry no meter of their own, so the deployment's instances are where the spend lives. A blue/green pair bills both deployments' fleets for as long as both exist.

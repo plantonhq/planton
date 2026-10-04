@@ -1,6 +1,6 @@
 # GcpBigQueryTable -- Pulumi Module
 
-This directory contains the Pulumi Go implementation for the GcpBigQueryTable component.
+This directory contains the Pulumi Go implementation for the GcpBigQueryTable kind.
 
 ## Module Structure
 

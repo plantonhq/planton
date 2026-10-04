@@ -1,7 +1,7 @@
 # AzureContainerAppCustomDomain - Terraform Module
 
 Terraform implementation for the AzureContainerAppCustomDomain
-component.
+kind.
 
 ## Resources Created
 

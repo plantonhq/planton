@@ -59,7 +59,7 @@ spec:
       evidence:
         type: spec_validation
         reference: The exactly_one_recurrence rule forces every schedule to declare its cadence -- daily true or a weekly day -- on which Firestore takes managed, restorable backups of the referenced database.
-      notes: This kind IS the automated-backup control for Firestore databases, extending protection beyond PITR's 7-day window to 14 weeks. A database supports one daily plus one weekly schedule -- the two presets compose on the same database. Backups survive deletion of both the schedule and the database.
+      notes: This component IS the automated-backup control for Firestore databases, extending protection beyond PITR's 7-day window to 14 weeks. A database supports one daily plus one weekly schedule -- the two presets compose on the same database. Backups survive deletion of both the schedule and the database.
     - control_id: backup-retention-policy
       status: configurable
       field_path: retention

@@ -124,7 +124,7 @@ How Velero reaches the object store, per backend arm:
 
 Leaving both postures unset means ambient node credentials. The
 cloud-side half of each keyless contract is written against the chart's
-fixed `velero-server` service account — which is why it is a stack
+fixed `velero-server` service account — which is why it is a
 output.
 
 ## Outputs

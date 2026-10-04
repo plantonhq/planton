@@ -31,7 +31,7 @@ spec:
       total_list_cost: "70.0800"
       exclusions:
         - the OS disk bills at the managed-disk tier matching the image's inherited size, which the manifest does not carry
-        - referenced data disks, network interfaces, and public IPs are first-class kinds billing on their own lines
+        - referenced data disks, network interfaces, and public IPs are first-class components billing on their own lines
         - network egress follows traffic and client placement
     - preset: 02-windows-server
       region_assumption: eastus
@@ -58,6 +58,6 @@ spec:
           list_cost: "19.7100"
       total_list_cost: "89.7900"
       exclusions:
-        - referenced data disks, network interfaces, and public IPs are first-class kinds billing on their own lines
+        - referenced data disks, network interfaces, and public IPs are first-class components billing on their own lines
         - network egress follows traffic and client placement
       notes: Azure Hybrid Benefit prices the machine at the base compute rate; the Windows Server license obligation is carried by the customer's own licensing, not this bill.

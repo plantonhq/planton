@@ -32,7 +32,7 @@ spec:
       exclusions:
         - point-in-time-restore backup storage beyond the free allowance follows the member databases' churn and retention settings
         - network egress follows client placement
-      notes: The eDTU rate includes the capacity's storage allowance (a 100-eDTU Standard pool includes 100 GB of pool storage per Microsoft's elastic-pool pricing page); no separate storage line applies while the cap rides the included amount. Member databases (sku_name ElasticPool on the database kind) bill nothing themselves -- this pool's lines are the whole bill for every database it holds.
+      notes: The eDTU rate includes the capacity's storage allowance (a 100-eDTU Standard pool includes 100 GB of pool storage per Microsoft's elastic-pool pricing page); no separate storage line applies while the cap rides the included amount. Member databases (sku_name ElasticPool on the database component) bill nothing themselves -- this pool's lines are the whole bill for every database it holds.
     - preset: 02-general-purpose-vcore
       region_assumption: eastus
       currency: USD
@@ -60,7 +60,7 @@ spec:
       exclusions:
         - point-in-time-restore backup storage beyond the free allowance follows the member databases' churn and retention settings
         - network egress follows client placement
-      notes: Member databases (sku_name ElasticPool on the database kind) bill nothing themselves -- this pool's lines are the whole bill for every database it holds.
+      notes: Member databases (sku_name ElasticPool on the database component) bill nothing themselves -- this pool's lines are the whole bill for every database it holds.
     - preset: 03-business-critical-zr
       region_assumption: eastus
       currency: USD
@@ -97,4 +97,4 @@ spec:
       exclusions:
         - point-in-time-restore backup storage beyond the free allowance follows the member databases' churn and retention settings
         - network egress follows client placement
-      notes: Business Critical zone redundancy places the pool's existing replicas across availability zones at no extra cost per Microsoft's high-availability documentation -- no additional meter applies. Member databases (sku_name ElasticPool on the database kind) bill nothing themselves -- this pool's lines are the whole bill for every database it holds.
+      notes: Business Critical zone redundancy places the pool's existing replicas across availability zones at no extra cost per Microsoft's high-availability documentation -- no additional meter applies. Member databases (sku_name ElasticPool on the database component) bill nothing themselves -- this pool's lines are the whole bill for every database it holds.

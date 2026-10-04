@@ -29,7 +29,7 @@ spec:
       hours_per_month: 730
       exclusions:
         - short-term memory bills $0.25 per 1,000 new events; the EPISODIC built-in strategy stores episodes and reflections at $0.75 per 1,000 records per month (billed hourly assuming a 31-day month); retrievals bill $0.50 per 1,000
-        - "the Kinesis analytics stream is a REFERENCED kind -- its shard or on-demand capacity meters bill on that AwsKinesisStream whether or not records flow; this memory adds no delivery meter of its own (none is published), and METADATA_ONLY keeps delivered payloads small"
+        - "the Kinesis analytics stream is a REFERENCED component -- its shard or on-demand capacity meters bill on that AwsKinesisStream whether or not records flow; this memory adds no delivery meter of its own (none is published), and METADATA_ONLY keeps delivered payloads small"
         - the 90-day event window carries no published meter -- event retention length does not bill
         - "no permanent free allotment exists for memory meters -- the up-to-$200 AWS Free Tier credit for new customers is a one-time trial, not a tier"
-      notes: Zero committed cost ON THIS COMPONENT -- the memory, strategy, indexed key, and delivery wiring bill nothing at rest. The referenced Kinesis stream carries its own always-on capacity meter, but that spend lives (and is estimated) on the AwsKinesisStream kind, not here.
+      notes: Zero committed cost ON THIS COMPONENT -- the memory, strategy, indexed key, and delivery wiring bill nothing at rest. The referenced Kinesis stream carries its own always-on capacity meter, but that spend lives (and is estimated) on the AwsKinesisStream component, not here.

@@ -20,7 +20,7 @@ The kind name `GcpVpc` was an internal abbreviation that diverged from GCP's nat
 - id_prefix `gcpvpc` unchanged (kept deliberately — short, unique, matches the registry's abbreviation convention)
 - Prerequisites on `GcpSubnetwork`, `GcpRouterNat`, `GcpServiceNetworkingConnection`, `GcpAddress` updated
 
-### Component tree
+### Kind tree
 
 - Folder `gcpvpc/` → `gcpvpcnetwork/`; nested types (`GcpVpcNetworkSpec`, routing enums, etc.)
 - Both IaC modules unchanged in behavior; TF `planton-ai_kind` label uses slug `gcpvpcnetwork`

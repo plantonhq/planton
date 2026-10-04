@@ -1,7 +1,7 @@
 # AzureLogAnalyticsWorkspace - Terraform Module
 
-Terraform implementation for the AzureLogAnalyticsWorkspace deployment
-component.
+Terraform implementation for the AzureLogAnalyticsWorkspace
+kind.
 
 ## Resources Created
 

@@ -54,7 +54,7 @@ spec:
       field_path: rules.schedule
       evidence:
         type: spec_default
-        reference: This kind IS the backup automation -- each rule's cron schedule creates recovery points of everything the selections cover, on cadence, into the rule's target vault. A rule with no schedule fires only on demand, so the schedule field is what turns the plan from a capability into a running practice.
+        reference: This component IS the backup automation -- each rule's cron schedule creates recovery points of everything the selections cover, on cadence, into the rule's target vault. A rule with no schedule fires only on demand, so the schedule field is what turns the plan from a capability into a running practice.
       notes: Restores are on-demand Backup operations against the recovery points, outside this manifest. enable_continuous_backup upgrades supported resource types to point-in-time recovery.
     - control_id: backup-retention-policy
       status: configurable

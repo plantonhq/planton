@@ -57,7 +57,7 @@ const (
 //     for ONTAP CLI operations scoped to this SVM.
 //   - Endpoints are computed outputs: iSCSI, management, NFS, and SMB (SMB only
 //     when AD is configured).
-//   - Credentials, region, and deployment workflow live outside this spec in stack
+//   - Credentials, region, and deployment workflow live outside this spec in IaC
 //     inputs.
 type AwsFsxOntapStorageVirtualMachineSpec struct {
 	state protoimpl.MessageState `protogen:"open.v1"`

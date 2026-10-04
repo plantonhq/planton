@@ -28,7 +28,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: spec_validation
-        reference: This kind IS a protection layer -- a DNS-layer firewall. A rules-free group is representable but inert; every catalog preset ships filtering rules (a sinkhole blocklist, Advanced threat detection), and the first matching rule's action applies in priority order to every query from associated VPCs.
+        reference: This component IS a protection layer -- a DNS-layer firewall. A rules-free group is representable but inert; every catalog preset ships filtering rules (a sinkhole blocklist, Advanced threat detection), and the first matching rule's action applies in priority order to every query from associated VPCs.
       notes: Web-request WAF protection is a different layer (AwsWafWebAcl on the serving side); this control is satisfied at the DNS layer for egress.
     - control_id: rbac
       status: enforced_by_default

@@ -23,7 +23,7 @@ spec:
           quantity_basis: one STANDARD gateway billed the flat globally priced rate every hour of the month from creation, idle or busy
       exclusions:
         - data processing bills every GB translated, in both directions
-        - the one attached public IP bills hourly on its own referenced kind
+        - the one attached public IP bills hourly on its own referenced component
       notes: The gateway-hour line is the whole committed spend; traffic and the referenced address are the variables that live elsewhere.
     - preset: 02-prefix-snat-range
       region_assumption: eastus
@@ -36,5 +36,5 @@ spec:
           quantity_basis: one STANDARD gateway billed the flat globally priced rate every hour of the month
       exclusions:
         - data processing bills every GB translated, in both directions
-        - the attached public IP prefix bills every address it contains, hourly, on its own referenced kind -- the prefix size lives on that kind, not this manifest
-      notes: The prefix buys a contiguous, allowlistable SNAT range; its cost follows the prefix kind.
+        - the attached public IP prefix bills every address it contains, hourly, on its own referenced component -- the prefix size lives on that component, not this manifest
+      notes: The prefix buys a contiguous, allowlistable SNAT range; its cost follows the prefix component.

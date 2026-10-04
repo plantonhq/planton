@@ -1,7 +1,7 @@
 # AzureApplicationInsights - Pulumi Module
 
-Pulumi (Go) implementation for the AzureApplicationInsights deployment
-component, at 100% behavioral parity with the Terraform module (one
+Pulumi (Go) implementation for the AzureApplicationInsights
+kind, at 100% behavioral parity with the Terraform module (one
 documented bridge-lag PARITY-EXCEPTION, below).
 
 ## Resources Created

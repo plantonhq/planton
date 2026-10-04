@@ -7,7 +7,7 @@ package dev.planton.cloudflare.cloudflarecustomhostnamefallbackorigin.v1alpha1;
 message CloudflareCustomHostnameFallbackOriginOutputs {
   // Field 1 (status) was removed: fallback-origin deployment is
   // asynchronous (a fresh origin transitions pending_deployment -> active
-  // seconds later), so a point-in-time phase can never be a stable stack
+  // seconds later), so a point-in-time phase can never be a stable
   // output -- it flips on the first refresh after the transition and
   // re-plans forever (the same class measured live on the Authenticated
   // Origin Pulls certificate, 2026-08-28). Read deployment status from the

@@ -34,10 +34,10 @@ spec:
       basis: one scraper is one agentless collector, billed per hour around the clock from provisioning to deletion -- there is no stop switch
   exclusions:
     - text: metric samples collected bill $0.03 per 10M (us-east-1) on top of collector hours -- volume follows scrape_interval and target count in the scrape configuration and the size of the scraped fleet
-    - text: ingestion, storage, and query charges for the delivered metrics bill on the destination AMP workspace, not on this kind (the workspace's first 40M ingested samples per month are free, then tiered from $0.90 per 10M)
+    - text: ingestion, storage, and query charges for the delivered metrics bill on the destination AMP workspace, not on this component (the workspace's first 40M ingested samples per month are free, then tiered from $0.90 per 10M)
     - applies_when:
         - field_path: logging
           op: is_set
-      text: scraper kind logs bill ingestion and storage on the referenced CloudWatch log group kind
+      text: scraper component logs bill ingestion and storage on the referenced CloudWatch log group component
   notes:
     - text: Creates run long (up to 30 minutes of collector provisioning) and deletes drain (up to 20) -- the meter follows the collector's existence, so the first and last partial hours are billed like any others.

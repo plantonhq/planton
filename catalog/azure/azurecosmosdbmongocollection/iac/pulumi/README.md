@@ -1,7 +1,7 @@
 # AzureCosmosdbMongoCollection - Pulumi Module
 
-Pulumi implementation for the AzureCosmosdbMongoCollection deployment
-component.
+Pulumi implementation for the AzureCosmosdbMongoCollection
+kind.
 
 ## Resources Created
 

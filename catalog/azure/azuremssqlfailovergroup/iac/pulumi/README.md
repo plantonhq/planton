@@ -1,7 +1,7 @@
 # AzureMssqlFailoverGroup - Pulumi Module
 
-Pulumi implementation for the AzureMssqlFailoverGroup deployment
-component.
+Pulumi implementation for the AzureMssqlFailoverGroup
+kind.
 
 ## Architecture
 
@@ -29,5 +29,5 @@ mssql.FailoverGroup (one cross-region failover group + listener outputs)
 ## Provider
 
 Built via the shared `pulumiazureprovider.Get` builder -- static client
-secret, keyless web identity, or ambient chain, resolved from the stack
+secret, keyless web identity, or ambient chain, resolved from the IaC
 input. Never construct the provider inline.

@@ -24,7 +24,7 @@ spec:
       notes: Both presets are IPSEC connections; the 02 preset pins AES256/SHA256 with DH group 14 and PFS 2048. Encrypting ExpressRoute transit is composed elsewhere -- an IPsec tunnel over the circuit or MACsec on Direct ports.
     - control_id: no-public-access
       status: not_applicable
-      notes: The connection is not an endpoint -- it is the binding between a gateway and its far side. The internet-facing termination points are the gateway's public IPs, governed on the AzureVirtualNetworkGateway kind; local_azure_ip_address_enabled can even keep a tunnel entirely on the gateway's private IP.
+      notes: The connection is not an endpoint -- it is the binding between a gateway and its far side. The internet-facing termination points are the gateway's public IPs, governed on the AzureVirtualNetworkGateway component; local_azure_ip_address_enabled can even keep a tunnel entirely on the gateway's private IP.
     - control_id: restricted-ingress
       status: enforced_by_default
       evidence:
@@ -48,7 +48,7 @@ spec:
       evidence:
         type: spec_default
         reference: Unspecified lets Azure apply its default, IKEv2; IKE_V1 exists only for legacy on-premises devices, and choosing it reopens the weaker legacy negotiation on this tunnel. Fixed at creation.
-      notes: Both presets ride the IKEv2 default. The other legacy arm lives gateway-side -- a POLICY_BASED gateway forces IKEv1 for everything it carries, examined on the AzureVirtualNetworkGateway kind.
+      notes: Both presets ride the IKEv2 default. The other legacy arm lives gateway-side -- a POLICY_BASED gateway forces IKEv1 for everything it carries, examined on the AzureVirtualNetworkGateway component.
     - control_id: strong-user-auth
       status: not_applicable
       notes: The component itself enforces no end-user sign-in -- it packages no human sign-in surface; any credentials it carries are workload or administrative access, whose posture rbac and workload-identity carry.
@@ -77,4 +77,4 @@ spec:
       notes: Neither the connections API nor this spec offers a deletion-protection flag; Azure resource locks are subscription-side governance outside the manifest. Replacement is cheap by design -- seconds, no gateway rebuild, and the tunnel renegotiates.
     - control_id: managed-patching
       status: not_applicable
-      notes: A connection is configuration on the managed gateway -- it has no software surface of its own to patch; the gateway appliance's patching is Microsoft-managed and examined on the AzureVirtualNetworkGateway kind.
+      notes: A connection is configuration on the managed gateway -- it has no software surface of its own to patch; the gateway appliance's patching is Microsoft-managed and examined on the AzureVirtualNetworkGateway component.

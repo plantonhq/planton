@@ -33,7 +33,7 @@ const (
 // An uptime check on its own only MEASURES. To be paged when the target
 // goes down, pair it with a GcpMonitoringAlertPolicy whose threshold
 // condition filters on the uptime_check_passed metric and the check's
-// uptime_check_id — the composition edge the `uptime_check_id` stack
+// uptime_check_id — the composition edge the `uptime_check_id`
 // output exists for.
 //
 // Exactly one TARGET (monitored_resource | resource_group |

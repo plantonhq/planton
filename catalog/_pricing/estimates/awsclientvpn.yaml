@@ -31,7 +31,7 @@ spec:
       total_list_cost: "73.0000"
       exclusions:
         - client connection hours bill per concurrently connected client every hour a session stays up -- entirely workforce-dependent (session_timeout_hours and disconnect_on_session_timeout are the levers on lingering sessions)
-        - data transfer out of the VPC (internet, cross-AZ, on-premises) bills at the network kinds that carry it
+        - data transfer out of the VPC (internet, cross-AZ, on-premises) bills at the network components that carry it
         - connection-log ingestion and storage bill to the destination CloudWatch log group, not the endpoint
       notes: The association hours are the committed floor; every other dollar follows connected clients, and no manifest can know how many people connect.
     - preset: 02-certificate-full-tunnel
@@ -51,8 +51,8 @@ spec:
       total_list_cost: "73.0000"
       exclusions:
         - client connection hours bill per concurrently connected client every hour a session stays up -- entirely workforce-dependent (session_timeout_hours and disconnect_on_session_timeout are the levers on lingering sessions)
-        - data transfer out of the VPC (internet, cross-AZ, on-premises) bills at the network kinds that carry it
-        - full tunnel routes ALL client internet traffic into the VPC, so egress rides the NAT gateway's data-processing and data-transfer meters on the NAT-ed subnet's own kinds
+        - data transfer out of the VPC (internet, cross-AZ, on-premises) bills at the network components that carry it
+        - full tunnel routes ALL client internet traffic into the VPC, so egress rides the NAT gateway's data-processing and data-transfer meters on the NAT-ed subnet's own components
         - connection-log ingestion and storage bill to the destination CloudWatch log group, not the endpoint
       notes: The association hours are the committed floor; every other dollar follows connected clients, and no manifest can know how many people connect.
     - preset: 03-saml-sso
@@ -72,6 +72,6 @@ spec:
       total_list_cost: "146.0000"
       exclusions:
         - client connection hours bill per concurrently connected client every hour a session stays up -- entirely workforce-dependent (session_timeout_hours and disconnect_on_session_timeout are the levers on lingering sessions)
-        - data transfer out of the VPC (internet, cross-AZ, on-premises) bills at the network kinds that carry it
+        - data transfer out of the VPC (internet, cross-AZ, on-premises) bills at the network components that carry it
         - connection-log ingestion and storage bill to the destination CloudWatch log group, not the endpoint
       notes: The association hours are the committed floor; every other dollar follows connected clients, and no manifest can know how many people connect.

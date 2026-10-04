@@ -65,7 +65,7 @@ spec:
       notes: The detector stores only findings, service-side and non-restorable -- there is no backup facility, and destroy is a REAL delete that removes all findings. The manifest recreates the detector's configuration; history is preserved only by exporting it (publishing_destination) while it exists.
     - control_id: backup-retention-policy
       status: not_applicable
-      notes: GuardDuty's findings window (90 days, per the spec contract) is fixed by AWS with no retention field; longer retention is composed by exporting findings to the referenced bucket, where lifecycle policy is the AwsS3Bucket kind's territory.
+      notes: GuardDuty's findings window (90 days, per the spec contract) is fixed by AWS with no retention field; longer retention is composed by exporting findings to the referenced bucket, where lifecycle policy is the AwsS3Bucket component's territory.
     - control_id: multi-zone-ha
       status: enforced_by_default
       evidence:

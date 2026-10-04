@@ -6946,7 +6946,7 @@ func TestOutputsConformance(t *testing.T) {
 			// timestamps and the zone this singleton belongs to (the fallback
 			// origin has no resource id; its API identity IS the zone).
 			// Deployment status and the server-appended errors list are async
-			// values that move without a config change, so they are not stack
+			// values that move without a config change, so they are not
 			// outputs.
 			name: "CloudflareCustomHostnameFallbackOrigin",
 			kind: catalogkind.CatalogKind_CloudflareCustomHostnameFallbackOrigin,

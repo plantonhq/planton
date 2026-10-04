@@ -1,6 +1,6 @@
 # AzureFunctionAppFlexConsumption Pulumi Module
 
-This directory contains the Pulumi IaC implementation for the `AzureFunctionAppFlexConsumption` component.
+This directory contains the Pulumi IaC implementation for the `AzureFunctionAppFlexConsumption` kind.
 
 ## Structure
 

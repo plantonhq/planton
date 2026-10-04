@@ -32,7 +32,7 @@ A destroy that errors stops the cascade LOUDLY: the narrated timeline shows exac
 
 ## Keeping the infrastructure: the hand-over arm
 
-`planton service delete <service> --retain-infra-components` removes the service from the platform — history and record — while deliberately leaving every deployed infra component running. From that moment the resources are unmanaged: no record, no rollback, no verification. This is the hand-over case (another team, another tool, another platform takes ownership), and the narration says so plainly. It also passes the protection refusal, because nothing is destroyed.
+`planton service delete <service> --retain-infra-components` removes the service from the platform — history and record — while deliberately leaving every deployed Infra Component running. From that moment the resources are unmanaged: no record, no rollback, no verification. This is the hand-over case (another team, another tool, another platform takes ownership), and the narration says so plainly. It also passes the protection refusal, because nothing is destroyed.
 
 ## Watching a deletion
 

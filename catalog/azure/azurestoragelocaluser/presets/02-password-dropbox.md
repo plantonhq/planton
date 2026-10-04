@@ -14,7 +14,7 @@ less-technical counterparties.
 
 ## Key Configuration Choices
 
-- **Azure generates the password** -- it lands in the `password` stack
+- **Azure generates the password** -- it lands in the `password`
   output EXACTLY ONCE; there is no way to choose or retrieve it later
   (regenerate by flipping `sshPasswordEnabled` off and on)
 - **write + create WITHOUT read/list/delete** is the drop-box grant --

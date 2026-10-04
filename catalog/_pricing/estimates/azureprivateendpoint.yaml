@@ -31,7 +31,7 @@ spec:
       total_list_cost: "7.3000"
       exclusions:
         - data processed through the endpoint bills per GB in EACH direction -- ingress and egress are metered separately, tiered from the first-petabyte rate down -- and follows traffic entirely
-        - the referenced subnet, private DNS zones, application security groups, and the target service are first-class kinds billing on their own lines; the DNS zone group itself adds no meter
+        - the referenced subnet, private DNS zones, application security groups, and the target service are first-class components billing on their own lines; the DNS zone group itself adds no meter
     - preset: 02-storage-account
       region_assumption: eastus
       currency: USD
@@ -49,7 +49,7 @@ spec:
       total_list_cost: "7.3000"
       exclusions:
         - data processed through the endpoint bills per GB in EACH direction -- ingress and egress are metered separately, tiered from the first-petabyte rate down -- and follows traffic entirely
-        - the referenced subnet, private DNS zones, application security groups, and the target service are first-class kinds billing on their own lines; the DNS zone group itself adds no meter
+        - the referenced subnet, private DNS zones, application security groups, and the target service are first-class components billing on their own lines; the DNS zone group itself adds no meter
     - preset: 03-key-vault
       region_assumption: eastus
       currency: USD
@@ -67,4 +67,4 @@ spec:
       total_list_cost: "7.3000"
       exclusions:
         - data processed through the endpoint bills per GB in EACH direction -- ingress and egress are metered separately, tiered from the first-petabyte rate down -- and follows traffic entirely
-        - the referenced subnet, private DNS zones, application security groups, and the target service are first-class kinds billing on their own lines; the DNS zone group itself adds no meter
+        - the referenced subnet, private DNS zones, application security groups, and the target service are first-class components billing on their own lines; the DNS zone group itself adds no meter

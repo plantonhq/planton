@@ -32,7 +32,7 @@ spec:
       exclusions:
         - test results and their traces are ingested into the bound Application Insights component and bill that component's per-GB Log Analytics ingestion meters
         - retries of failed runs add executions that follow the endpoint's actual failure behavior -- the estimate prices the healthy-endpoint schedule
-        - the alert rule that pages on this test's failures is its own AzureMonitorMetricAlert kind with its own monthly fee
+        - the alert rule that pages on this test's failures is its own AzureMonitorMetricAlert component with its own monthly fee
       notes: The schedule never stops on its own -- executions accrue whether anyone reads the results or not; enabled=false keeps the definition and stops the schedule (and the spend).
     - preset: 02-content-check
       region_assumption: eastus
@@ -51,5 +51,5 @@ spec:
       total_list_cost: "4.3800"
       exclusions:
         - test results and their traces are ingested into the bound Application Insights component and bill that component's per-GB Log Analytics ingestion meters
-        - the alert rule that pages on this test's failures is its own AzureMonitorMetricAlert kind with its own monthly fee
+        - the alert rule that pages on this test's failures is its own AzureMonitorMetricAlert component with its own monthly fee
       notes: The schedule never stops on its own -- executions accrue whether anyone reads the results or not; enabled=false keeps the definition and stops the schedule (and the spend).

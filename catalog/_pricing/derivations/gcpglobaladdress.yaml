@@ -46,7 +46,7 @@ spec:
         - field_path: address_type
           op: equals
           value: INTERNAL
-      text: whatever fills the private range bills elsewhere -- managed-service instances in a VPC_PEERING range and the services behind a PRIVATE_SERVICE_CONNECT endpoint are their own kinds
+      text: whatever fills the private range bills elsewhere -- managed-service instances in a VPC_PEERING range and the services behind a PRIVATE_SERVICE_CONNECT endpoint are their own components
   notes:
     - applies_when:
         - field_path: address_type

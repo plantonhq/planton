@@ -31,7 +31,7 @@ spec:
       total_list_cost: "32.8500"
       exclusions:
         - data processing bills per GB in both directions -- the dominant real-world cost, entirely traffic-dependent
-        - the attached Elastic IP bills as a public IPv4 address on its own AwsElasticIp kind
+        - the attached Elastic IP bills as a public IPv4 address on its own AwsElasticIp component
         - cross-AZ transfer applies for traffic reaching the gateway from other zones
       notes: The hourly charge is the committed floor; a chatty private subnet can multiply it through data processing.
     - preset: 02-private-nat-gateway

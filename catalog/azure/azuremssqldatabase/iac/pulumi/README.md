@@ -1,6 +1,6 @@
 # AzureMssqlDatabase - Pulumi Module
 
-Pulumi implementation for the AzureMssqlDatabase component.
+Pulumi implementation for the AzureMssqlDatabase kind.
 
 ## Architecture
 

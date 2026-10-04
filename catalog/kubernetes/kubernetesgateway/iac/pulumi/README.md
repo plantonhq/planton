@@ -68,7 +68,7 @@ pulumi/
 
 The Gateway's `StringValueOrRef` foreign keys (`namespace`,
 `gateway_class_name`, listener `certificateRefs[].name`, frontend
-`caCertificateRefs[].name`) arrive resolved to literal strings in the stack
+`caCertificateRefs[].name`) arrive resolved to literal strings in the IaC
 input; the module reads their final values directly. No await/wait logic is
 attached: Accepted/Programmed conditions belong to the Gateway controller's
 reconciliation, not to applying the resource.

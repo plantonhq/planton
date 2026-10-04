@@ -64,7 +64,7 @@ spec:
           list_cost: "6.4970"
       total_list_cost: "36.0620"
       exclusions:
-        - the delegated subnet and the user-assigned identity are their own kinds; the group's private IP is free
+        - the delegated subnet and the user-assigned identity are their own components; the group's private IP is free
         - image pull seconds and registry-side egress precede every start
         - network egress follows traffic and client placement
       notes: Private networking changes posture, not price -- the vCPU and memory meters read the same inside a subnet.

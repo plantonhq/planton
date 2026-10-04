@@ -39,7 +39,7 @@ spec:
       currency: USD
       hours_per_month: 730
       exclusions:
-        - "the referenced AzureStorageEncryptionScope bills a flat monthly per-scope fee (with a 30-day minimum per enablement) on ITS kind from the moment it is enabled -- binding it here adds nothing to the filesystem's bill"
+        - "the referenced AzureStorageEncryptionScope bills a flat monthly per-scope fee (with a 30-day minimum per enablement) on ITS component from the moment it is enabled -- binding it here adds nothing to the filesystem's bill"
         - "a Key Vault-keyed scope adds per-transaction wrap/unwrap operations on the key's vault, billed to the vault"
         - "data lake capacity per GB-month (plus metadata), size-scaled read/write operations, iterative operations, retrieval, geo-replication transfer, and egress bill on the account exactly as in the other presets"
-      notes: "Zero committed cost FOR THIS COMPONENT -- the regulated zone's committed spend (the scope's monthly fee) rides the referenced encryption-scope kind; the filesystem remains a free boundary binding key custody to one zone."
+      notes: "Zero committed cost FOR THIS COMPONENT -- the regulated zone's committed spend (the scope's monthly fee) rides the referenced encryption-scope component; the filesystem remains a free boundary binding key custody to one zone."

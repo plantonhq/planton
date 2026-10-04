@@ -3,4 +3,4 @@
 name: auth0-email-provider
 runtime:
   name: go
-description: Pulumi module for Auth0EmailProvider component
+description: Pulumi module for Auth0EmailProvider kind

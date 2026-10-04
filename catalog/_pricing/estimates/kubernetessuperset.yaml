@@ -22,5 +22,5 @@ spec:
       exclusions:
         - the dollar value of this capacity is the target cluster's node and storage-class economics
         - the beat, flower, websocket, and MCP pods (when enabled) and the per-upgrade init Job carry only chart-default sizing -- the spec models no resources for them
-        - the metadata database and the composed Valkey cache are separate kinds whose capacity rides their own footprints
-      notes: Superset provisions no volumes -- all durable state lives in the metadata database and cache kinds, so the footprint is purely compute reservations the worker binding contributes only when spec.cache enables the async fleet and worker resources are declared -- a web-only manifest states just the web tier
+        - the metadata database and the composed Valkey cache are separate components whose capacity rides their own footprints
+      notes: Superset provisions no volumes -- all durable state lives in the metadata database and cache components, so the footprint is purely compute reservations the worker binding contributes only when spec.cache enables the async fleet and worker resources are declared -- a web-only manifest states just the web tier

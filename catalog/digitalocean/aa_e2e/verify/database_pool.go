@@ -61,7 +61,7 @@ func (v *databaseConnectionPoolVerifier) VerifyAbsentFromOutputs(ctx context.Con
 		return pkgerrors.Wrap(err, "digitaloceandatabaseconnectionpool verify-absent failed")
 	}
 	if pool != nil {
-		return &StillExistsError{Component: "digitaloceandatabaseconnectionpool", ID: pool.Name}
+		return &StillExistsError{Kind: "digitaloceandatabaseconnectionpool", ID: pool.Name}
 	}
 	return nil
 }

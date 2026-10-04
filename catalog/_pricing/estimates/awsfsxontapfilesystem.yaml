@@ -41,7 +41,7 @@ spec:
       exclusions:
         - capacity pool storage bills per GB-month actually consumed as volumes tier cold data (a tiering_policy decision on AwsFsxOntapVolume), plus per-operation request charges whenever tiered data is accessed
         - data transfer when clients access the file system from an Availability Zone other than the preferred one is traffic-dependent
-        - S3 Access Point requests and bandwidth against the file system bill on S3's own meters, outside this kind
+        - S3 Access Point requests and bandwidth against the file system bill on S3's own meters, outside this component
       notes: AUTOMATIC SSD IOPS (3 per GiB of storage) are included in the storage rate at no separate charge. ONTAP's compression and deduplication typically shrink what a given SSD provision has to hold (2-5x per the spec's own guidance) -- the lever for this bill is provisioning less capacity, not a discount on the rate.
     - preset: 02-single-az-production
       region_assumption: us-east-1
@@ -71,7 +71,7 @@ spec:
         - backup storage bills per GB-month of incremental backup data actually retained across the file system's volumes -- churn across the retention window drives it
         - capacity pool storage bills per GB-month actually consumed as volumes tier cold data (a tiering_policy decision on AwsFsxOntapVolume), plus per-operation request charges whenever tiered data is accessed
         - data transfer when clients access the file system from an Availability Zone other than the preferred one is traffic-dependent
-        - S3 Access Point requests and bandwidth against the file system bill on S3's own meters, outside this kind
+        - S3 Access Point requests and bandwidth against the file system bill on S3's own meters, outside this component
       notes: AUTOMATIC SSD IOPS (3 per GiB of storage) are included in the storage rate at no separate charge. ONTAP's compression and deduplication typically shrink what a given SSD provision has to hold (2-5x per the spec's own guidance) -- the lever for this bill is provisioning less capacity, not a discount on the rate.
     - preset: 03-multi-az-high-availability
       region_assumption: us-east-1
@@ -101,7 +101,7 @@ spec:
         - backup storage bills per GB-month of incremental backup data actually retained across the file system's volumes -- churn across the retention window drives it
         - capacity pool storage bills per GB-month actually consumed as volumes tier cold data (a tiering_policy decision on AwsFsxOntapVolume), plus per-operation request charges whenever tiered data is accessed
         - data transfer when clients access the file system from an Availability Zone other than the preferred one is traffic-dependent
-        - S3 Access Point requests and bandwidth against the file system bill on S3's own meters, outside this kind
+        - S3 Access Point requests and bandwidth against the file system bill on S3's own meters, outside this component
       notes: Multi-AZ replication traffic between the active and standby file servers is included in the throughput rate -- it never appears as a data-transfer charge. AUTOMATIC SSD IOPS (3 per GiB of storage) are included in the storage rate at no separate charge. ONTAP's compression and deduplication typically shrink what a given SSD provision has to hold (2-5x per the spec's own guidance) -- the lever for this bill is provisioning less capacity, not a discount on the rate.
     - preset: 04-single-az-scale-out
       region_assumption: us-east-1
@@ -132,5 +132,5 @@ spec:
         - backup storage bills per GB-month of incremental backup data actually retained across the file system's volumes -- churn across the retention window drives it
         - capacity pool storage bills per GB-month actually consumed as volumes tier cold data (a tiering_policy decision on AwsFsxOntapVolume), plus per-operation request charges whenever tiered data is accessed
         - data transfer when clients access the file system from an Availability Zone other than the preferred one is traffic-dependent
-        - S3 Access Point requests and bandwidth against the file system bill on S3's own meters, outside this kind
+        - S3 Access Point requests and bandwidth against the file system bill on S3's own meters, outside this component
       notes: ONTAP's compression and deduplication typically shrink what a given SSD provision has to hold (2-5x per the spec's own guidance) -- the lever for this bill is provisioning less capacity, not a discount on the rate.

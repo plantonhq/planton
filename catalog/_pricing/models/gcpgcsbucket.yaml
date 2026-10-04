@@ -26,7 +26,7 @@ spec:
         - stored site assets bill at the US multi-region STANDARD rate per GB-month as they are uploaded
         - egress to site visitors is the real cost of a busy static site, billed per GB served
         - operations follow request volume
-      notes: The estimate is zero at creation; a website bucket's spend follows its traffic, and serving through a load balancer with CDN (separate kinds) changes the egress economics.
+      notes: The estimate is zero at creation; a website bucket's spend follows its traffic, and serving through a load balancer with CDN (separate components) changes the egress economics.
     - preset: 03-data-lake-autoclass
       region_assumption: global
       currency: USD

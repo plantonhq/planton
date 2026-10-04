@@ -35,7 +35,7 @@ launch templates -- and its `asg_name`/`remote_access_sg_id`/
   Terraform enabled private endpoint access when public was disabled
   (Pulumi did not -- deploying an unreachable control plane).
 - The node group's cluster reference pointed at `metadata.name`, a field
-  path the reference-resolution machinery cannot resolve (it reads stack
+  path the reference-resolution machinery cannot resolve (it reads
   outputs), so a composed node-group-on-cluster scenario could never work.
 - Both kinds carried the legacy hand-written `variables.tf` (object-shaped
   labels, un-substituted placeholder descriptions) that the tfvars pipeline

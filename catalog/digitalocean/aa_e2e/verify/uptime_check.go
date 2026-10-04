@@ -89,7 +89,7 @@ func (v *uptimeCheckVerifier) VerifyAbsentFromOutputs(ctx context.Context, clien
 	}
 	_, _, err := client.UptimeChecks.Get(ctx, checkID)
 	if err == nil {
-		return &StillExistsError{Component: "digitaloceanuptimecheck", ID: checkID}
+		return &StillExistsError{Kind: "digitaloceanuptimecheck", ID: checkID}
 	}
 	if !isUptimeGone(err) {
 		return pkgerrors.Wrap(err, "digitaloceanuptimecheck verify-absent failed")
@@ -97,7 +97,7 @@ func (v *uptimeCheckVerifier) VerifyAbsentFromOutputs(ctx context.Context, clien
 	for key, alertID := range StringMapOutput(outputs, "alert_ids") {
 		_, _, err := client.UptimeChecks.GetAlert(ctx, checkID, alertID)
 		if err == nil {
-			return &StillExistsError{Component: "digitaloceanuptimecheck", ID: alertID, Detail: "alert row " + key + " outlived its check"}
+			return &StillExistsError{Kind: "digitaloceanuptimecheck", ID: alertID, Detail: "alert row " + key + " outlived its check"}
 		}
 		if !isUptimeGone(err) {
 			return pkgerrors.Wrapf(err, "digitaloceanuptimecheck alert row %q verify-absent failed", key)

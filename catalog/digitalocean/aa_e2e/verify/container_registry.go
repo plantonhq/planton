@@ -31,7 +31,7 @@ func (*containerRegistryVerifier) VerifyAbsent(ctx context.Context, client *godo
 		return pkgerrors.Wrapf(err, "digitaloceancontainerregistry verify-absent failed for %q", id)
 	}
 	if exists {
-		return &StillExistsError{Component: "digitaloceancontainerregistry", ID: id}
+		return &StillExistsError{Kind: "digitaloceancontainerregistry", ID: id}
 	}
 	return nil
 }

@@ -1,7 +1,7 @@
 # AzureCosmosdbAccount - Pulumi Module
 
-Pulumi implementation for the AzureCosmosdbAccount deployment
-component.
+Pulumi implementation for the AzureCosmosdbAccount
+kind.
 
 ## Architecture
 

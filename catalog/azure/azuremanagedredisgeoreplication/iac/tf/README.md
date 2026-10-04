@@ -1,7 +1,7 @@
 # AzureManagedRedisGeoReplication - Terraform Module
 
 Terraform implementation for the AzureManagedRedisGeoReplication
-component.
+kind.
 
 ## Resources Created
 

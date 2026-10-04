@@ -65,7 +65,7 @@ spec:
       evidence:
         type: spec_default
         reference: Unset means destroy deletes the data with the volume; final_snapshot=true snapshots the volume before destroy -- the teardown safety net. Restore is first-class on the create arm via snapshot_id, so manifest plus snapshot recreates the volume's data in any zone.
-      notes: This flag covers teardown only. Ongoing scheduled backups are snapshot-lifecycle territory (the AwsEbsSnapshot kind or Data Lifecycle Manager), not a field of this manifest.
+      notes: This flag covers teardown only. Ongoing scheduled backups are snapshot-lifecycle territory (the AwsEbsSnapshot component or Data Lifecycle Manager), not a field of this manifest.
     - control_id: backup-retention-policy
       status: not_applicable
       notes: The volume carries no retention field -- snapshots it spawns (including the final_snapshot one, which this resource does not track) persist until someone deletes them, and retention policy lives with the snapshot tooling that owns them.

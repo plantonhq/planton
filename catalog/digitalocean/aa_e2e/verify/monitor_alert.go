@@ -37,5 +37,5 @@ func (*monitorAlertVerifier) VerifyAbsent(ctx context.Context, client *godo.Clie
 		}
 		return pkgerrors.Wrap(err, "digitaloceanmonitoralert verify-absent failed")
 	}
-	return &StillExistsError{Component: "digitaloceanmonitoralert", ID: id}
+	return &StillExistsError{Kind: "digitaloceanmonitoralert", ID: id}
 }

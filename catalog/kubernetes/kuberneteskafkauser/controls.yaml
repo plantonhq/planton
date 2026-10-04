@@ -17,7 +17,7 @@ spec:
       notes: Customer-managed keys for the cluster's Secret storage are configured on the control plane (see enc-at-rest); this spec has no seam for them.
     - control_id: enc-in-transit
       status: not_applicable
-      notes: Transport encryption is the Kafka cluster's listener posture, owned by the KubernetesKafka kind. The user's authentication type must MATCH a listener -- a tls user pairs with a tls-auth (mTLS) listener and a scram-sha-512 user with a SCRAM listener -- but the user resource cannot itself turn TLS on or off.
+      notes: Transport encryption is the Kafka cluster's listener posture, owned by the KubernetesKafka component. The user's authentication type must MATCH a listener -- a tls user pairs with a tls-auth (mTLS) listener and a scram-sha-512 user with a SCRAM listener -- but the user resource cannot itself turn TLS on or off.
     - control_id: no-public-access
       status: not_applicable
       notes: A user is not network-addressable; reachability of the Kafka endpoints its credentials work against is the cluster's listener exposure.
@@ -55,7 +55,7 @@ spec:
       notes: Changes to the user resource are Kubernetes API operations, captured by the target cluster's audit policy; authentication and authorization decisions for the principal are broker-side events owned by the Kafka cluster's logging.
     - control_id: monitoring-integration
       status: not_applicable
-      notes: Per-client metrics (quota throttling, connection counts) are exported by the Kafka brokers, owned by the KubernetesKafka kind; this resource only surfaces reconcile status.
+      notes: Per-client metrics (quota throttling, connection counts) are exported by the Kafka brokers, owned by the KubernetesKafka component; this resource only surfaces reconcile status.
     - control_id: backup-recovery
       status: not_applicable
       notes: The resource is fully declarative and its credentials are regenerable -- re-applying it makes the user operator recreate the principal, its Secret, and its ACLs. There is no data to back up.

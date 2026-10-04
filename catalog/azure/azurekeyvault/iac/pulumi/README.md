@@ -38,7 +38,7 @@ The module receives an `AzureKeyVaultIacInput` containing:
 - `provider_config` -- Azure credentials (static client secret, keyless web identity, or ambient chain)
 
 Optional fields with true/non-zero defaults are presence-guarded: an unset
-field explicitly falls back to the proto default so a manifest-built stack
+field explicitly falls back to the proto default so a manifest-built IaC
 input (which does not materialize defaults) deploys identically to the
 Terraform module.
 

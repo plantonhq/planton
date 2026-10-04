@@ -4,7 +4,7 @@
 # the operator, the external-metrics API server, and the admission
 # webhooks (enabled by default) -- each with its own replica count and
 # resources block. The workloads KEDA scales carry their own capacity on
-# their own kinds; scaling declarations (ScaledObject, ScaledJob,
+# their own components; scaling declarations (ScaledObject, ScaledJob,
 # TriggerAuthentication) are separate resources.
 # Schema: finops/catalogkindcapacityderivation/v1.
 apiVersion: finops.planton.dev/v1
@@ -33,7 +33,7 @@ spec:
           default_when_unset: "1"
   exclusions:
     - text: the dollar value of this capacity is the target cluster's node economics
-    - text: "KEDA's purpose is changing OTHER workloads' replica counts (including to zero) -- its dominant cost effect lands on those workloads' own kinds, never in this footprint"
+    - text: "KEDA's purpose is changing OTHER workloads' replica counts (including to zero) -- its dominant cost effect lands on those workloads' own components, never in this footprint"
     - applies_when:
         - field_path: helm_values
           op: is_set

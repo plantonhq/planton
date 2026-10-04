@@ -244,7 +244,7 @@ func (v *apiPathVerifier) buildPath(api API, outputs map[string]string) (string,
 	return fmt.Sprintf(pathFormat, values...), nil
 }
 
-// verifiers maps a component directory name to its verifier. A kind
+// verifiers maps a kind directory name to its verifier. A kind
 // registers here in the wave that enrolls it for E2E (its profile +
 // scenarios), and every kind that appears in another kind's registry
 // prerequisites needs its entry before that consumer's lane can run --
@@ -802,7 +802,7 @@ var verifiers = map[string]Verifier{
 	},
 }
 
-// GetVerifier returns the verifier for a component, or an error if none is
+// GetVerifier returns the verifier for a kind, or an error if none is
 // registered.
 func GetVerifier(kind string) (Verifier, error) {
 	v, ok := verifiers[kind]

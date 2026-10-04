@@ -35,7 +35,7 @@ leaves are what other manifests reference (each page's "Outputs" section).
 | `metadata.group` | The author's concern as a slash path (`infrastructure/networking`, `platform/certificates`), drawn as a tray inside the room its members live in; never affects deploy order, and a tray of one is not drawn |
 
 Platform-behavior signals live in `metadata.annotations`, never
-`metadata.labels`: labels are propagated onto the user's real cloud
+`metadata.labels`: labels are propagated onto the user's real provider
 resources as tags, so a platform key there would leak internal detail.
 
 ## Deployment-flow annotations

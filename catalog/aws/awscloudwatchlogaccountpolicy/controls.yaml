@@ -14,7 +14,7 @@ spec:
       notes: An account policy stores no customer data -- its document is CloudWatch Logs control-plane metadata held inside AWS's own service infrastructure. The log data it governs rests (encrypted) in the log groups, which carry their own posture on AwsCloudwatchLogGroup.
     - control_id: enc-at-rest-cmk
       status: not_applicable
-      notes: There is no data at rest to key (see enc-at-rest); the account-policy API exposes no KMS surface. Log-group CMK encryption is the AwsCloudwatchLogGroup kind's kms_key_id.
+      notes: There is no data at rest to key (see enc-at-rest); the account-policy API exposes no KMS surface. Log-group CMK encryption is the AwsCloudwatchLogGroup component's kms_key_id.
     - control_id: enc-in-transit
       status: not_applicable
       notes: A policy terminates no connections. The only wire traffic involving it -- PutAccountPolicy, DescribeAccountPolicies, DeleteAccountPolicy management calls -- rides AWS API endpoints, which serve exclusively over TLS as provider-wide behavior, not per-policy configuration.

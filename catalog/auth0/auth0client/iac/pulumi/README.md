@@ -1,6 +1,6 @@
 # Auth0Client Pulumi Module
 
-This directory contains the Pulumi implementation for the Auth0Client component.
+This directory contains the Pulumi implementation for the Auth0Client kind.
 
 ## Overview
 

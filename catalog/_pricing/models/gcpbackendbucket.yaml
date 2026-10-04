@@ -24,9 +24,9 @@ spec:
       currency: USD
       hours_per_month: 730
       exclusions:
-        - CDN is off, so no Cloud CDN meter can start -- every request proxies to the origin and bills as load-balancer data processing and Cloud Storage egress on those kinds
-        - the origin bucket's storage and operations bill on the GcpGcsBucket kind
-      notes: With enable_cdn false the backend bucket is pure routing configuration; the zero is real for this resource, and the download traffic's cost lives entirely on the load balancer and bucket kinds.
+        - CDN is off, so no Cloud CDN meter can start -- every request proxies to the origin and bills as load-balancer data processing and Cloud Storage egress on those components
+        - the origin bucket's storage and operations bill on the GcpGcsBucket component
+      notes: With enable_cdn false the backend bucket is pure routing configuration; the zero is real for this resource, and the download traffic's cost lives entirely on the load balancer and bucket components.
     - preset: 03-signed-url-private-cdn
       region_assumption: global
       currency: USD

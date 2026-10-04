@@ -27,7 +27,7 @@ spec:
       evidence:
         type: provider_default
         reference: Publishes and management calls are HTTPS-only SigV4 requests; SNS exposes no plaintext publish path.
-      notes: Delivery-leg security to subscriber endpoints (an https:// vs http:// subscription URL) is governed on the AwsSnsSubscription kind.
+      notes: Delivery-leg security to subscriber endpoints (an https:// vs http:// subscription URL) is governed on the AwsSnsSubscription component.
     - control_id: no-public-access
       status: enforced_by_default
       evidence:

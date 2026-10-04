@@ -348,8 +348,8 @@ func (v *PlantonPlatformVerifier) VerifyExists(ctx context.Context, kubeconfig s
 	// readiness by availability alone would report Ready mid-rollout while
 	// the previous release still served.
 	if v.Version != "" {
-		for _, kind := range versionedDeployments {
-			if err := waitForDeploymentRolledOut(ctx, kubeconfig, v.Namespace, v.Name+"-"+kind, v.Version, 15*time.Minute); err != nil {
+		for _, component := range versionedDeployments {
+			if err := waitForDeploymentRolledOut(ctx, kubeconfig, v.Namespace, v.Name+"-"+component, v.Version, 15*time.Minute); err != nil {
 				return err
 			}
 		}

@@ -60,7 +60,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: spec_default
-        reference: This kind IS the backup automation -- every policy mode must carry a create cadence and a retention rule (create_rule and retain_rule are required on every schedule; the default mode pins daily-ish creation with 2-14-day retention), so a deployed policy cannot exist without an automated, restorable snapshot regimen for whatever its tags match.
+        reference: This component IS the backup automation -- every policy mode must carry a create cadence and a retention rule (create_rule and retain_rule are required on every schedule; the default mode pins daily-ish creation with 2-14-day retention), so a deployed policy cannot exist without an automated, restorable snapshot regimen for whatever its tags match.
       notes: Restore is the standard EBS path -- create a volume from any retained snapshot; fast_restore_rule pre-warms that path per availability zone where seconds matter.
     - control_id: backup-retention-policy
       status: configurable

@@ -17,7 +17,7 @@ spec:
       notes: "The key posture (Microsoft-managed vs customer-managed) is the ACCOUNT's configuration -- the share inherits whatever the referenced account enforces."
     - control_id: enc-at-rest-cmk
       status: not_applicable
-      notes: "Customer-managed keys are configured on the storage account (its encryption block and key vault wiring), never per share -- the lever lives on the AzureStorageAccount kind."
+      notes: "Customer-managed keys are configured on the storage account (its encryption block and key vault wiring), never per share -- the lever lives on the AzureStorageAccount component."
     - control_id: enc-in-transit
       status: not_applicable
       notes: "Transport posture is the account's: 'secure transfer required' forces HTTPS/SMB 3.x-with-encryption account-wide, and the share adds no knob. Worth knowing when choosing enabled_protocol: NFS 4.1 traffic is NOT encrypted in transit -- that is exactly why Azure restricts NFS shares to private network reachability."
@@ -54,7 +54,7 @@ spec:
       notes: "Capacity and transaction metrics are emitted at the account's file-service scope in Azure Monitor -- per-share breakdowns are metric dimensions there, not a share-side configuration."
     - control_id: backup-recovery
       status: not_applicable
-      notes: "Two real levers, both outside this spec: share soft delete is the account's file-service property (on by default for new accounts, 7-day window), and scheduled snapshot backup with retention is the AzureBackupProtectedFileshare kind registering this share's account to a Recovery Services vault."
+      notes: "Two real levers, both outside this spec: share soft delete is the account's file-service property (on by default for new accounts, 7-day window), and scheduled snapshot backup with retention is the AzureBackupProtectedFileshare component registering this share's account to a Recovery Services vault."
     - control_id: backup-retention-policy
       status: not_applicable
       notes: "Retention rides the backup policy on the AzureBackupProtectedFileshare side and the account's soft-delete window -- no retention knob exists on the share."

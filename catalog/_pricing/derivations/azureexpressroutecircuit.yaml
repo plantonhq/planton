@@ -4,7 +4,7 @@
 # monthly fee chosen by tier, billing family, and bandwidth step; a
 # circuit on an ExpressRoute Direct port commits nothing at Local and
 # Standard tiers (the port's own fee, billed on the AzureExpressRoutePort
-# kind, includes them) and emits no line here. Fees key to the
+# component, includes them) and emits no line here. Fees key to the
 # peering FACILITY's pricing zone, not the ARM region -- the book pins
 # Zone 1, a stated assumption each basis carries. Tiers, families, and
 # bandwidth steps no committed preset consumes are refusals rather than
@@ -110,13 +110,13 @@ spec:
         - field_path: service_provider_name
           op: is_set
       text: the connectivity provider's own charges for enabling the cross-connect are contracted with the provider, outside Azure entirely
-    - text: the ExpressRoute gateway that terminates private peering in a VNet bills hourly on its own kind, and Global Reach circuit linking adds its own add-on fee and per-GB rates
+    - text: the ExpressRoute gateway that terminates private peering in a VNet bills hourly on its own component, and Global Reach circuit linking adds its own add-on fee and per-GB rates
   notes:
     - text: Fees key to the peering facility's pricing zone (Zone 1 through Zone 4) -- facilities outside Zone 1 bill different list rates on the SAME meters, and no committed mapping from peering_location to zone exists in the manifest, which is why the zone rides as a stated assumption rather than a lookup.
     - applies_when:
         - field_path: express_route_port_id
           op: is_set
-      text: Local and Standard circuits carved from an ExpressRoute Direct port are included in the port's monthly fee, billed on the AzureExpressRoutePort kind -- this circuit's zero-committed estimate is real, not an absence; metered egress still bills per GB on Standard circuits.
+      text: Local and Standard circuits carved from an ExpressRoute Direct port are included in the port's monthly fee, billed on the AzureExpressRoutePort component -- this circuit's zero-committed estimate is real, not an absence; metered egress still bills per GB on Standard circuits.
     - applies_when:
         - field_path: service_provider_name
           op: is_set

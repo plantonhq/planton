@@ -35,7 +35,7 @@ spec:
     - field_path: cloudwatch_logs
       sku_meter: CloudWatch Logs event delivery
       pricing_unit: GB
-      impact: The mirror bills twice -- CloudTrail meters each GB delivered to the log group, and the group then meters its own ingestion on the AwsCloudwatchLogGroup kind. Full event volume flows through both.
+      impact: The mirror bills twice -- CloudTrail meters each GB delivered to the log group, and the group then meters its own ingestion on the AwsCloudwatchLogGroup component. Full event volume flows through both.
     - field_path: enable_logging
       sku_meter: management events delivered
       pricing_unit: events

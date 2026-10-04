@@ -46,7 +46,7 @@ spec:
           op: is_set
         - field_path: backend_store.sqlite_pvc
           op: is_unset
-      text: the external backend store is a separate kind whose capacity rides its own footprint
+      text: the external backend store is a separate component whose capacity rides its own footprint
     - applies_when:
         - field_path: gc
           op: is_set

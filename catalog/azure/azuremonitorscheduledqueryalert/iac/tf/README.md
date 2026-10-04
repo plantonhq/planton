@@ -1,7 +1,7 @@
 # AzureMonitorScheduledQueryAlert - Terraform Module
 
-Terraform implementation for the AzureMonitorScheduledQueryAlert deployment
-component.
+Terraform implementation for the AzureMonitorScheduledQueryAlert
+kind.
 
 ## Resources Created
 

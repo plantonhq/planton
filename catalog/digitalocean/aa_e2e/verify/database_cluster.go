@@ -35,7 +35,7 @@ func (*databaseClusterVerifier) VerifyAbsent(ctx context.Context, client *godo.C
 		}
 		return pkgerrors.Wrapf(err, "digitaloceandatabasecluster verify-absent failed for %q", id)
 	}
-	return &StillExistsError{Component: "digitaloceandatabasecluster", ID: id}
+	return &StillExistsError{Kind: "digitaloceandatabasecluster", ID: id}
 }
 
 func (v *databaseClusterVerifier) VerifyExistsFromOutputs(ctx context.Context, client *godo.Client, outputs map[string]interface{}) error {

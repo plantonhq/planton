@@ -30,7 +30,7 @@ spec:
           list_cost: "0.5000"
       total_list_cost: "0.5000"
       exclusions:
-        - every alarm named in alarm_rule is a separately billed AwsCloudwatchAlarm, costed on its own kind
+        - every alarm named in alarm_rule is a separately billed AwsCloudwatchAlarm, costed on its own component
         - alarm, OK, and insufficient-data actions bill on their targets -- SNS topics referenced by the action fields carry their own AwsSnsTopic cost
       notes: The flat fee is the composite's entire bill and it is committed at creation -- rule complexity, evaluation frequency, and state changes never move it.
     - preset: 02-maintenance-suppressed
@@ -49,7 +49,7 @@ spec:
           list_cost: "0.5000"
       total_list_cost: "0.5000"
       exclusions:
-        - every alarm named in alarm_rule is a separately billed AwsCloudwatchAlarm, costed on its own kind
-        - the suppressor alarm is one more referenced AwsCloudwatchAlarm, billed on its own kind
+        - every alarm named in alarm_rule is a separately billed AwsCloudwatchAlarm, costed on its own component
+        - the suppressor alarm is one more referenced AwsCloudwatchAlarm, billed on its own component
         - alarm, OK, and insufficient-data actions bill on their targets -- SNS topics referenced by the action fields carry their own AwsSnsTopic cost
       notes: The flat fee is the composite's entire bill and it is committed at creation -- rule complexity, evaluation frequency, and state changes never move it.

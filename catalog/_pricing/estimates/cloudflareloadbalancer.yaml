@@ -29,7 +29,7 @@ spec:
       exclusions:
         - this preset ships one pool with 2 origins -- Cloudflare invoices pools, origins, health check intervals, and health check regions as Load Balancing sub-line items ($0.00 within the subscription's included allocation), and publishes neither the allocations nor the overage rates on a fetchable Cloudflare-own page
         - DNS queries to the load-balanced hostname meter past the included 500,000 per month; the overage rate is not published on a fetchable Cloudflare-own page
-      notes: Static failover (steering off) is the add-on's baseline behavior; the health monitor probing the pool is a separate free kind whose probe frequency drives the unpublished health-check sub-line items.
+      notes: Static failover (steering off) is the add-on's baseline behavior; the health monitor probing the pool is a separate free component whose probe frequency drives the unpublished health-check sub-line items.
     - preset: 02-geographic-routing
       region_assumption: global
       currency: USD

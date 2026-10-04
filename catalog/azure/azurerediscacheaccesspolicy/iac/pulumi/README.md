@@ -1,7 +1,7 @@
 # AzureRedisCacheAccessPolicy - Pulumi Module
 
-Pulumi implementation for the AzureRedisCacheAccessPolicy deployment
-component.
+Pulumi implementation for the AzureRedisCacheAccessPolicy
+kind.
 
 ## Architecture
 

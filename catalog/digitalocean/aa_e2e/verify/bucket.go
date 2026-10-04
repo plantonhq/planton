@@ -103,7 +103,7 @@ func (v *bucketVerifier) VerifyAbsentFromOutputs(ctx context.Context, client *go
 		return pkgerrors.Wrap(err, "digitaloceanbucket verify-absent failed")
 	}
 	if exists {
-		return &StillExistsError{Component: "digitaloceanbucket", ID: name}
+		return &StillExistsError{Kind: "digitaloceanbucket", ID: name}
 	}
 	return nil
 }

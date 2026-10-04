@@ -72,6 +72,6 @@ spec:
       exclusions:
         - hub data processing bills per GB for VNet-to-VNet traffic transiting the router, and the router autoscales -- and bills -- routing infrastructure units above the included 2 when traffic demands it
         - gateways created on the hub (site-to-site VPN, point-to-site VPN, ExpressRoute) are their own kinds billing scale units and connection units
-        - the Azure Firewall the routing intent steers traffic through bills its secured-hub deployment and data-processing meters on its own kind
+        - the Azure Firewall the routing intent steers traffic through bills its secured-hub deployment and data-processing meters on its own component
         - hub-to-hub and inter-region flows bill standard inter-region data-transfer rates
       notes: Custom route tables, static routes, and BGP peerings with NVAs carry no meters of their own -- the price list publishes none.

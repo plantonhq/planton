@@ -43,7 +43,7 @@ spec:
     - field_path: dead_letter_config.arn
       sku_meter: SQS requests and storage
       pricing_unit: requests
-      impact: Events that fail delivery to every target land in the referenced queue, billing its per-request and storage meters on the AwsSqsQueue kind -- a healthy bus sends it nothing.
+      impact: Events that fail delivery to every target land in the referenced queue, billing its per-request and storage meters on the AwsSqsQueue component -- a healthy bus sends it nothing.
   free_tier: AWS management events (the control-plane events over 250 AWS services emit automatically) are ingested by event buses for free, permanently. Custom and partner events carry no free allotment -- they bill from the first event.
   estimate_exclusions:
     - event volume is entirely traffic-driven -- an idle bus with no archives bills nothing

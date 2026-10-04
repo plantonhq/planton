@@ -50,6 +50,6 @@ spec:
       exclusions:
         - captured scoring inputs and outputs land in the workspace's blob storage -- spend follows scoring traffic and each collection's sampling_rate, billed on the storage account
         - Application Insights ingestion for scoring-traffic telemetry follows request volume, billed on the workspace's Application Insights component
-        - secure egress rides the workspace's managed network, whose private endpoints carry Private Link charges outside this kind
+        - secure egress rides the workspace's managed network, whose private endpoints carry Private Link charges outside this component
         - network egress follows client placement
       notes: The endpoint address this deployment serves is free routing -- managed online endpoints carry no meter of their own, so the deployment's instances are where the spend lives. A blue/green pair bills both deployments' fleets for as long as both exist.

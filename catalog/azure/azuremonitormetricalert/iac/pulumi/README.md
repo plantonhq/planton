@@ -1,7 +1,7 @@
 # AzureMonitorMetricAlert - Pulumi Module
 
-Pulumi (Go) implementation for the AzureMonitorMetricAlert deployment
-component, at 100% behavioral parity with the Terraform module.
+Pulumi (Go) implementation for the AzureMonitorMetricAlert
+kind, at 100% behavioral parity with the Terraform module.
 
 ## Resources Created
 

@@ -1,7 +1,7 @@
 # AzureCosmosdbMongoCollection - Terraform Module
 
-Terraform implementation for the AzureCosmosdbMongoCollection deployment
-component.
+Terraform implementation for the AzureCosmosdbMongoCollection
+kind.
 
 ## Resources Created
 

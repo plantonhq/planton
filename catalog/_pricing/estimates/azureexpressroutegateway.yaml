@@ -30,8 +30,8 @@ spec:
           list_cost: "306.6000"
       total_list_cost: "306.6000"
       exclusions:
-        - the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub kind
-        - the circuit's port and peering charges, and outbound data on metered circuit SKUs, bill on the circuit's own kinds
+        - the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub component
+        - the circuit's port and peering charges, and outbound data on metered circuit SKUs, bill on the circuit's own components
         - data leaving Azure over the circuits bills at ExpressRoute data-transfer rates and follows traffic
     - preset: 02-circuit-connection
       region_assumption: eastus
@@ -58,7 +58,7 @@ spec:
           list_cost: "36.5000"
       total_list_cost: "343.1000"
       exclusions:
-        - the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub kind
-        - the circuit's port and peering charges, and outbound data on metered circuit SKUs, bill on the circuit's own kinds
+        - the hub's deployment hours and per-GB data processing bill on the AzureVirtualHub component
+        - the circuit's port and peering charges, and outbound data on metered circuit SKUs, bill on the circuit's own components
         - data leaving Azure over the circuits bills at ExpressRoute data-transfer rates and follows traffic
       notes: The per-connection FastPath and internet-security toggles are free configuration -- the complete Virtual WAN price list carries no meter for either.

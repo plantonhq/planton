@@ -32,4 +32,4 @@ spec:
         basis: 2 replicas x (250m CPU / 512Mi memory requests, 2 CPU / 2Gi limits)
       exclusions:
         - the dollar value of this capacity is the target cluster's node economics
-        - state lives in the external database, whose capacity and storage ride its own kind (a KubernetesPostgres composes naturally) -- nothing persistent is reserved here
+        - state lives in the external database, whose capacity and storage ride its own component (a KubernetesPostgres composes naturally) -- nothing persistent is reserved here

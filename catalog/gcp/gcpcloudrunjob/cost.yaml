@@ -31,7 +31,7 @@ spec:
       impact: One GPU per task for the task's entire lifetime -- NVIDIA L4 without zonal redundancy bills $0.0001867 per second in us-central1, roughly 10x the CPU meter for a 4-vCPU task; the dominant meter whenever it is set.
     - field_path: template.vpc_access.connector
       sku_meter: Serverless VPC Access connector
-      impact: The connector's own instances bill on the GcpServerlessVpcConnector kind whether or not executions run; direct VPC egress (network_interfaces) avoids that standing cost and bills only VPC data transfer for the traffic tasks actually move.
+      impact: The connector's own instances bill on the GcpServerlessVpcConnector component whether or not executions run; direct VPC egress (network_interfaces) avoids that standing cost and bills only VPC data transfer for the traffic tasks actually move.
     - field_path: template.containers.env.secret_value
       sku_meter: Secret Manager active secret versions
       pricing_unit: versions per location per month

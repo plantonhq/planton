@@ -23,5 +23,5 @@ spec:
       exclusions:
         - the dollar value of this capacity is the target cluster's node and storage-class economics
         - the admin-tools pod (on by default) and the schema-setup and namespace-creation Jobs carry only chart-default sizing -- the spec models no resources for them, and the Jobs are ephemeral (install/upgrade time)
-        - the database is a separate kind (nothing is bundled) -- workflow-state storage growth and connection pressure ride its own footprint -- and archival writes to external object storage
+        - the database is a separate component (nothing is bundled) -- workflow-state storage growth and connection pressure ride its own footprint -- and archival writes to external object storage
       notes: Temporal provisions no volumes -- every workflow's state lives in the database you declare, so the footprint is purely compute reservations across the four server services and the Web UI num_history_shards is DATA partitioning baked into the schema at first install -- shard ownership distributes across the history replicas; it is never a pod count and is deliberately not bound

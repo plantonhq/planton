@@ -34,7 +34,7 @@ spec:
       basis: two AWS-allocated static anycast IPv4 addresses, each billed as an in-use public IPv4 address every hour of the month; the standard rate is uniform across regions and priced here from the us-east-1 entry
   exclusions:
     - text: Data Transfer-Premium bills per GB in the dominant traffic direction, at a rate varying by source region and destination edge -- entirely traffic-dependent
-    - text: standard data transfer out at the endpoint resources (ALB, NLB, EC2) bills on those kinds, in addition to DT-Premium
+    - text: standard data transfer out at the endpoint resources (ALB, NLB, EC2) bills on those components, in addition to DT-Premium
     - applies_when:
         - field_path: flow_logs.enabled
           op: equals

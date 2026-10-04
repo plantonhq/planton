@@ -63,6 +63,6 @@ spec:
           list_cost: "47.4500"
       total_list_cost: "47.4500"
       exclusions:
-        - every other member of the geo-replication group is its own kind billing its own SKU-hour
+        - every other member of the geo-replication group is its own component billing its own SKU-hour
         - cross-region replication traffic follows the group's write volume
-      notes: Active geo-replication is priced as the sum of the members -- each instance carries its own line, so the group's total lives across the composed kinds.
+      notes: Active geo-replication is priced as the sum of the members -- each instance carries its own line, so the group's total lives across the composed components.

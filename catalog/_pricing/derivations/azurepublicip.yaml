@@ -6,7 +6,7 @@
 # committed preset, the other has no published meter); IPv6 and
 # prefix-drawn addresses are honestly zero HERE -- IPv6 because Microsoft
 # charges nothing for it, prefix-drawn because the referenced prefix
-# kind already bills every address in its block. The estimate
+# component already bills every address in its block. The estimate
 # generator replays the catalog presets through these rules to emit
 # ../estimates/azurepublicip.yaml; a server-side estimator evaluates the
 # same rules against live manifests.
@@ -48,7 +48,7 @@ spec:
     - applies_when:
         - field_path: public_ip_prefix_id
           op: is_set
-      text: the address is drawn from a reserved prefix that already bills every address in its block per IP-hour from the moment the prefix exists -- that spend lives on the referenced AzurePublicIpPrefix kind, and Microsoft publishes no separate meter for the act of drawing an address from it
+      text: the address is drawn from a reserved prefix that already bills every address in its block per IP-hour from the moment the prefix exists -- that spend lives on the referenced AzurePublicIpPrefix component, and Microsoft publishes no separate meter for the act of drawing an address from it
     - applies_when:
         - field_path: ddos_protection_mode
           op: equals

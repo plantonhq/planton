@@ -17,9 +17,9 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - the rate(1 hour) schedule makes this rule the traffic source -- about 730 firings a month, each invoking the target function, whose requests and duration bill on its AwsLambda kind
+        - the rate(1 hour) schedule makes this rule the traffic source -- about 730 firings a month, each invoking the target function, whose requests and duration bill on its AwsLambda component
         - the EventBridge Scheduler free tier (14 million invocations/month) belongs to the separate Scheduler service, not to scheduled rules
-      notes: Zero committed cost on this kind -- the rule itself carries no meter; the schedule's entire spend lands on the invoked function, and DISABLED stops it cold.
+      notes: Zero committed cost on this component -- the rule itself carries no meter; the schedule's entire spend lands on the invoked function, and DISABLED stops it cold.
     - preset: 02-event-pattern-sqs
       region_assumption: us-east-1
       currency: USD
@@ -27,9 +27,9 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - matched EC2 state-change events are AWS-service events, ingested by the default bus for free; delivery to the SQS target is free on the rule's side
-        - each delivered event bills the queue's per-request meter on its AwsSqsQueue kind
+        - each delivered event bills the queue's per-request meter on its AwsSqsQueue component
         - events that exhaust retries land in the dead-letter queue, billing its own SQS meters -- a healthy target sends it nothing
-      notes: Zero committed cost -- a rule matching nothing costs nothing, and even when it matches, both the ingestion and delivery spend live on other kinds.
+      notes: Zero committed cost -- a rule matching nothing costs nothing, and even when it matches, both the ingestion and delivery spend live on other components.
     - preset: 03-multi-target-fanout
       region_assumption: us-east-1
       currency: USD
@@ -37,7 +37,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - custom OrderCreated events bill ingestion per million on the custom bus (AwsEventBridgeBus), never on the rule
-        - each matched event invokes BOTH targets -- the processor's invocations bill on its AwsLambda kind and the analytics deliveries on the AwsSqsQueue kind; input transformation adds no charge
+        - each matched event invokes BOTH targets -- the processor's invocations bill on its AwsLambda component and the analytics deliveries on the AwsSqsQueue component; input transformation adds no charge
         - the tightened retry policy (1-hour window, 10 attempts) caps how much compute a failing target can run up before events dead-letter to the DLQ's SQS meters
       notes: Zero committed cost -- fan-out is a multiplier on downstream spend, not a meter on the rule; two targets double the deliveries per event, and all of it follows order traffic.
     - preset: 04-data-warehouse-events
@@ -47,6 +47,6 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - matched S3 Object Created events are AWS-service events, ingested free on the default bus
-        - each firing runs the ingestion statement on the Redshift cluster -- query compute bills on the warehouse kind, in proportion to how often objects land in the bucket
+        - each firing runs the ingestion statement on the Redshift cluster -- query compute bills on the warehouse component, in proportion to how often objects land in the bucket
         - failed statements retry within the 1-hour window before dead-lettering to the DLQ's SQS meters
       notes: Zero committed cost -- the rule is free glue between the bucket and the warehouse; the spend it orchestrates is Redshift query time, driven entirely by data-landing frequency.

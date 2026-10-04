@@ -47,7 +47,7 @@ spec:
       field_path: trace_configuration
       evidence:
         type: spec_default
-        reference: This kind IS a monitoring-integration surface -- setting trace_configuration makes every referencing App Runner service export distributed request traces to AWS X-Ray (the only vendor App Runner supports), with each instance running an OpenTelemetry collector sidecar that forwards spans emitted by ADOT-instrumented application code. Omitted means the configuration is registered without tracing -- valid but inert, exporting nothing.
+        reference: This component IS a monitoring-integration surface -- setting trace_configuration makes every referencing App Runner service export distributed request traces to AWS X-Ray (the only vendor App Runner supports), with each instance running an OpenTelemetry collector sidecar that forwards spans emitted by ADOT-instrumented application code. Omitted means the configuration is registered without tracing -- valid but inert, exporting nothing.
       notes: The provider's update path is tags-only and silently changes nothing at AWS when the trace block changes on an existing configuration (both modules document this upstream gap) -- changing tracing posture honestly means registering a NEW configuration and repointing services. Application code must be instrumented with the ADOT SDK for the collector to have spans to forward.
     - control_id: backup-recovery
       status: not_applicable

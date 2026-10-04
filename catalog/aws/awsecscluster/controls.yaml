@@ -26,7 +26,7 @@ spec:
       evidence:
         type: provider_default
         reference: All ECS control-plane and agent communication rides TLS; the cluster exposes no plaintext channel.
-      notes: Application traffic between tasks is governed on the AwsEcsService kinds (Service Connect TLS).
+      notes: Application traffic between tasks is governed on the AwsEcsService components (Service Connect TLS).
     - control_id: no-public-access
       status: not_applicable
       notes: A cluster is a logical grouping with no network endpoint of its own -- task exposure is declared on each service's network block and load balancers.

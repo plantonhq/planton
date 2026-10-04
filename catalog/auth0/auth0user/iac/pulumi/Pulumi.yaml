@@ -3,4 +3,4 @@
 name: auth0-user
 runtime:
   name: go
-description: Pulumi module for Auth0User component
+description: Pulumi module for Auth0User kind

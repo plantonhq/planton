@@ -4652,7 +4652,7 @@ type CatalogKindMeta struct {
 	// own provider.
 	ServiceGroup CatalogProviderServiceGroup `protobuf:"varint,10,opt,name=service_group,json=serviceGroup,proto3,enum=dev.planton.shared.catalogkind.CatalogProviderServiceGroup" json:"service_group,omitempty"`
 	// set ONLY for cluster kinds whose deploy publishes a Kubernetes provider
-	// connection (the platform materializes one from the cluster's stack
+	// connection (the platform materializes one from the cluster's
 	// outputs, named by the manifest's planton.dev/connection-name annotation
 	// or the default <env>-<name>). the fact drives dependency ORDERING, not
 	// drawing: a Kubernetes workload whose planton.dev/connection names the

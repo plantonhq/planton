@@ -28,12 +28,12 @@ spec:
       basis: one hourly endpoint association per associated subnet x 730 hours, billed whether or not anyone is connected
   exclusions:
     - text: client connection hours bill per concurrently connected client every hour a session stays up -- entirely workforce-dependent (session_timeout_hours and disconnect_on_session_timeout are the levers on lingering sessions)
-    - text: data transfer out of the VPC (internet, cross-AZ, on-premises) bills at the network kinds that carry it
+    - text: data transfer out of the VPC (internet, cross-AZ, on-premises) bills at the network components that carry it
     - applies_when:
         - field_path: split_tunnel
           op: equals
           value: "false"
-      text: full tunnel routes ALL client internet traffic into the VPC, so egress rides the NAT gateway's data-processing and data-transfer meters on the NAT-ed subnet's own kinds
+      text: full tunnel routes ALL client internet traffic into the VPC, so egress rides the NAT gateway's data-processing and data-transfer meters on the NAT-ed subnet's own components
     - applies_when:
         - field_path: connection_log
           op: is_set

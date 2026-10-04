@@ -38,5 +38,5 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - each execution runs 8 GPU tasks (4 vCPU / 16Gi / one NVIDIA L4 each, up to 7200 seconds) -- the L4 without zonal redundancy bills $0.0001867 per second per task on top of the vCPU-second and GiB-second meters, the dominant cost whenever an execution runs
-        - model artifacts and inference inputs/outputs bill on the storage kinds the tasks read and write
+        - model artifacts and inference inputs/outputs bill on the storage components the tasks read and write
       notes: Zero committed at creation -- unlike a GPU service kept warm, a GPU job holds no capacity between executions; a full 2-hour, 8-task run is a per-run cost decision, not a monthly commitment.

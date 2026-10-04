@@ -20,7 +20,7 @@ spec:
       hours_per_month: 730
       exclusions:
         - requests bill $0.40 per million AFTER the order-type filter, in 64 KB chunks -- pipes have no free allotment, and this manifest commits zero volume; the filter and the 10-event batch are the two levers that shrink whatever volume arrives
-        - both SQS queues meter their own requests on their AwsSqsQueue kinds -- the intake queue's receives and the processing queue's sends are where an active pipeline's spend concentrates
+        - both SQS queues meter their own requests on their AwsSqsQueue components -- the intake queue's receives and the processing queue's sends are where an active pipeline's spend concentrates
         - an idle pipe on an empty queue bills nothing at rest -- RUNNING state alone starts no meter
       notes: Zero committed cost -- the pipe exists free; every dollar waits on order traffic actually flowing through the intake queue, a volume the manifest cannot see.
     - preset: 02-dynamodb-stream-to-lambda
@@ -31,5 +31,5 @@ spec:
         - requests bill $0.40 per million table-change batches delivered (unfiltered, batches of 100, 64 KB chunks) -- no free allotment; volume tracks the orders table's write rate, which the manifest cannot see
         - the audit function's invocations and duration bill on the referenced AwsLambda -- REQUEST_RESPONSE waits for results and retries failures (up to 3 attempts with AUTOMATIC_BISECT), so a failing function multiplies ITS OWN invocation count, not the pipe's request count
         - exhausted batches land in the dead-letter queue, billing SQS requests on the referenced AwsSqsQueue
-        - the DynamoDB table's own streams, storage, and throughput bill on the referenced AwsDynamodb kind
+        - the DynamoDB table's own streams, storage, and throughput bill on the referenced AwsDynamodb component
       notes: Zero committed cost -- the pipe carries no existence fee; the request meter starts with the first table change the stream emits, in proportion to write traffic the manifest cannot see.

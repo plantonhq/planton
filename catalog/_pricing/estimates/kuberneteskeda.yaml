@@ -22,4 +22,4 @@ spec:
         basis: 2 operator replicas x (100m CPU / 128Mi memory requests, 1 CPU / 512Mi limits); 2 metrics API server replicas x (100m CPU / 128Mi memory requests, 1 CPU / 512Mi limits); 2 admission webhook replicas x (50m CPU / 64Mi memory requests, 500m CPU / 256Mi limits)
       exclusions:
         - the dollar value of this capacity is the target cluster's node economics
-        - KEDA's purpose is changing OTHER workloads' replica counts (including to zero) -- its dominant cost effect lands on those workloads' own kinds, never in this footprint
+        - KEDA's purpose is changing OTHER workloads' replica counts (including to zero) -- its dominant cost effect lands on those workloads' own components, never in this footprint

@@ -1,6 +1,6 @@
 # AzureStorageAccount - Pulumi Module
 
-Pulumi implementation for the AzureStorageAccount component.
+Pulumi implementation for the AzureStorageAccount kind.
 
 ## Architecture
 

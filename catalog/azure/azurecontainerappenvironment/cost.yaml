@@ -28,7 +28,7 @@ spec:
     - field_path: log_analytics_workspace_id
       sku_meter: log data ingestion
       pricing_unit: GB
-      impact: "Wiring a workspace makes every app's console and system logs billable ingestion on the AzureLogAnalyticsWorkspace kind (per-GB at the workspace's tier) -- the environment adds no meter of its own for it, but this field decides whether log volume becomes spend at all (unset without a destination is streaming-only, never stored)."
+      impact: "Wiring a workspace makes every app's console and system logs billable ingestion on the AzureLogAnalyticsWorkspace component (per-GB at the workspace's tier) -- the environment adds no meter of its own for it, but this field decides whether log volume becomes spend at all (unset without a destination is streaming-only, never stored)."
     - field_path: zone_redundancy_enabled
       sku_meter: dedicated vCPU hours
       pricing_unit: vCPU-hours

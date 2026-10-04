@@ -94,6 +94,6 @@ spec:
       total_list_cost: "274.6000"
       exclusions:
         - backup storage beyond the free allowance follows churn at 35-day retention
-        - Key Vault operations for the customer-managed key bill on the referenced vault, a separate kind
+        - Key Vault operations for the customer-managed key bill on the referenced vault, a separate component
         - network egress follows client placement
       notes: The hardening choices (CMK, Entra-only authentication) change the security posture, not the bill -- compute and storage price identically to an unhardened server of the same shape.

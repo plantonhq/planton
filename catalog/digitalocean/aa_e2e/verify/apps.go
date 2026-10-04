@@ -44,7 +44,7 @@ func (v *appVerifier) VerifyAbsent(ctx context.Context, client *godo.Client, id 
 		}
 		return pkgerrors.Wrapf(err, "%s verify-absent failed for %q", v.kind, id)
 	}
-	return &StillExistsError{Component: v.kind, ID: id}
+	return &StillExistsError{Kind: v.kind, ID: id}
 }
 
 func (v *appVerifier) VerifyExistsFromOutputs(ctx context.Context, client *godo.Client, outputs map[string]interface{}) error {

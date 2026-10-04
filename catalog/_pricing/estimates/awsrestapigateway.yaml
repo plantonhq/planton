@@ -28,7 +28,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - requests bill per million at the tiered REST API rate; api_key_required rejects unkeyed calls but rejected requests still traverse the gateway
-        - the proxied function's invocations and duration bill on its AwsLambda kind
+        - the proxied function's invocations and duration bill on its AwsLambda component
         - no cache cluster, detailed metrics, execution logging, or X-Ray tracing is enabled -- none of those meters exists on this preset
         - data transfer out bills per GB
       notes: Zero committed cost -- one keyed route to one function, and the stage cache (the spec's only always-on meter) stays off; nothing bills until orders arrive.

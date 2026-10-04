@@ -67,7 +67,7 @@ type CloudflareZeroTrustAccessIdentityProviderSpec struct {
 	// SCIM provisioning: let the identity provider push user create/update/
 	// deprovision events to Cloudflare so Zero Trust identities stay in sync
 	// without waiting for re-authentication. Not available for onetimepin.
-	// Enabling SCIM mints a bearer secret exposed once in the scim_secret stack
+	// Enabling SCIM mints a bearer secret exposed once in the scim_secret
 	// output.
 	ScimConfig *CloudflareZeroTrustAccessIdentityProviderScimConfig `protobuf:"bytes,7,opt,name=scim_config,json=scimConfig,proto3" json:"scim_config,omitempty"`
 	// Declares the provider immutable: Cloudflare refuses API updates and deletes

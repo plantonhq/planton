@@ -1,7 +1,7 @@
 # AzureStorageLocalUser - Pulumi Module
 
-Pulumi implementation for the AzureStorageLocalUser deployment
-component.
+Pulumi implementation for the AzureStorageLocalUser
+kind.
 
 ## Architecture
 

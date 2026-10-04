@@ -100,7 +100,7 @@ type ResourceTypeImportId struct {
 	// (e.g. a trailing ",{expected_bucket_owner}"), gotchas, or where the
 	// provider documents the ID shape.
 	Notes string `protobuf:"bytes,4,opt,name=notes,proto3" json:"notes,omitempty"`
-	// Attributes that exist ONLY in IaC configuration, never on the cloud
+	// Attributes that exist ONLY in IaC configuration, never on the provider
 	// resource (e.g. aws_s3_bucket.force_destroy). Import cannot read them
 	// from the provider, so a plan after ANY import legitimately shows them
 	// as in-place updates when the config sets a non-default value. The

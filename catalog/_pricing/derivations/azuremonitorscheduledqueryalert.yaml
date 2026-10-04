@@ -50,7 +50,7 @@ spec:
       basis: an unset evaluation frequency deploys PT5M (the spec and Azure default), so the rule bills the 5-minute rate per criterion
   exclusions:
     - text: dimension splits (at-scale log monitoring) bill each evaluated dimension combination beyond the included first series at the same frequency rate -- a count that follows the live data's values, which is why a "*" split's bill cannot be committed here
-    - text: notifications the fired alert sends (email, SMS, voice, webhooks beyond the free monthly allowances) bill on the referenced AzureMonitorActionGroup kinds
-    - text: the queried workspace's ingestion and retention bill on the AzureLogAnalyticsWorkspace kind
+    - text: notifications the fired alert sends (email, SMS, voice, webhooks beyond the free monthly allowances) bill on the referenced AzureMonitorActionGroup components
+    - text: the queried workspace's ingestion and retention bill on the AzureLogAnalyticsWorkspace component
   notes:
     - text: The fee accrues from rule creation until deletion whether the alert ever fires or not; enabled=false suspends both evaluation and billing, which is why pausing beats deleting during maintenance windows.

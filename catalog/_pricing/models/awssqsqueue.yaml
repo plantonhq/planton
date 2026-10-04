@@ -27,6 +27,6 @@ spec:
       hours_per_month: 730
       exclusions:
         - FIFO requests bill about 25% above standard-queue requests; high-throughput mode (perMessageGroupId) raises the ceiling, not the rate
-        - the dead-letter queue referenced by dead_letter_config is its own kind billing its own requests
+        - the dead-letter queue referenced by dead_letter_config is its own component billing its own requests
         - data transfer out of the region bills per GB
       notes: Zero committed cost -- FIFO ordering and deduplication change the per-request rate, never the (zero) baseline.

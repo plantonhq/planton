@@ -39,5 +39,5 @@ spec:
           quantity_basis: both rules match by dns_threat_protection (DGA and DNS_TUNNELING), making this a DNS Firewall Advanced group -- its single app-vpc association bills every hour of the month; a second associated VPC would add another 730 hours
       exclusions:
         - the group owns no domain lists and its threat rules carry no per-query inspection meter in the offer -- but adding any list-based rule later would start the per-domain storage and per-query inspection charges
-        - ALERT matches surface through Resolver Query Logging, a separate resource whose log destinations bill their own kinds
+        - ALERT matches surface through Resolver Query Logging, a separate resource whose log destinations bill their own components
       notes: "The Advanced fee follows the ASSOCIATION, not the rule count: one threat rule or ten, each associated VPC bills the same $0.16/hour (~$116.80 a month). Both rules alert at HIGH confidence -- tightening to LOW/MEDIUM changes detection sensitivity, never the price."

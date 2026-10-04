@@ -1,7 +1,7 @@
 # AzureWebApplicationFirewallPolicy - Pulumi Module
 
-Pulumi implementation for the AzureWebApplicationFirewallPolicy deployment
-component.
+Pulumi implementation for the AzureWebApplicationFirewallPolicy
+kind.
 
 ## Architecture
 

@@ -4,7 +4,7 @@
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. Presets 01 and 02 run in default (on-demand) polling mode,
 # which carries no charge of its own -- genuinely zero-committed. Preset 03
-# opts into provisioned mode, the one committed charge this kind can
+# opts into provisioned mode, the one committed charge this component can
 # carry, priced from AWS's published Event-Poller-Unit rate. Schema:
 # finops/catalogkindcostestimatemodel/v1.
 apiVersion: finops.planton.dev/v1
@@ -19,8 +19,8 @@ spec:
       hours_per_month: 730
       exclusions:
         - default-mode polling is free -- the mapping itself carries no charge
-        - the wired function's invocations and duration bill on its AwsLambda kind
-        - queue receive requests driven by the polling bill on the AwsSqsQueue kind
+        - the wired function's invocations and duration bill on its AwsLambda component
+        - queue receive requests driven by the polling bill on the AwsSqsQueue component
       notes: Zero committed cost -- free glue between the queue and the function.
     - preset: 02-kinesis-consumer
       region_assumption: us-west-2
@@ -29,7 +29,7 @@ spec:
       exclusions:
         - default-mode polling is free; parallelization_factor 2 raises concurrent invocations, billed on the function
         - TRIM_HORIZON replays the stream's retained backlog on first enable -- a one-time invocation surge billed on the function
-        - stream shard capacity bills on the Kinesis stream kind
+        - stream shard capacity bills on the Kinesis stream component
       notes: Zero committed cost -- the mapping spends nothing; it decides how fast the function and stream spend.
     - preset: 03-msk-shared-pollers
       region_assumption: us-east-1
@@ -44,5 +44,5 @@ spec:
         - autoscaling above the floor (maximum_pollers 50, shared across the analytics-pollers group) bills additional EPU-hours only while scaled up
         - under heavy per-poller throughput, enhanced EPU utilization packs fewer pollers per EPU and allocates more EPUs -- workload-dependent
         - the three enabled CloudWatch metrics (EventCount, ErrorCount, KafkaMetrics) each bill as a custom metric per month
-        - function invocations bill on the AwsLambda kind; MSK cluster capacity bills on its own kind
+        - function invocations bill on the AwsLambda component; MSK cluster capacity bills on its own component
       notes: Estimated at the provisioned floor -- the committed spend of holding warm pollers against the MSK topic. The poller group shares EPU capacity across up to 100 mappings, so the floor is also the group's floor, not per-mapping overhead.

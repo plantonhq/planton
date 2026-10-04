@@ -31,7 +31,7 @@ spec:
       total_list_cost: "0.5000"
       exclusions:
         - query volume bills per million queries answered, aggregated across the subscription, and follows traffic entirely
-        - record sets beyond the first 25,000 in the zone bill a small monthly fee each -- the records ride their own record kinds, and virtual network links carry no meter at all
+        - record sets beyond the first 25,000 in the zone bill a small monthly fee each -- the records ride their own record components, and virtual network links carry no meter at all
     - preset: 02-internal-zone
       region_assumption: global
       currency: USD
@@ -49,5 +49,5 @@ spec:
       total_list_cost: "0.5000"
       exclusions:
         - query volume bills per million queries answered, aggregated across the subscription, and follows traffic entirely
-        - record sets beyond the first 25,000 in the zone bill a small monthly fee each -- the records ride their own record kinds, and virtual network links carry no meter at all
+        - record sets beyond the first 25,000 in the zone bill a small monthly fee each -- the records ride their own record components, and virtual network links carry no meter at all
       notes: SOA tuning changes resolver caching behavior, never the fee -- the customized zone bills identically to the bare one.

@@ -17,7 +17,7 @@ spec:
       notes: With custom_key_store_id the material lives in your CloudHSM cluster or external key manager instead -- still never plaintext-exportable through KMS.
     - control_id: enc-at-rest-cmk
       status: not_applicable
-      notes: This kind IS the customer-managed key -- it is what other components reference to satisfy their own enc-at-rest-cmk control. There is no layer beneath it to re-key.
+      notes: This component IS the customer-managed key -- it is what other components reference to satisfy their own enc-at-rest-cmk control. There is no layer beneath it to re-key.
     - control_id: enc-in-transit
       status: enforced_by_default
       evidence:

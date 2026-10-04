@@ -28,7 +28,7 @@ spec:
     - field_path: web_test_availability_criteria
       sku_meter: metric alert time series
       pricing_unit: time-series-months
-      impact: A web-test availability rule monitors the referenced test's availability signal as one billed time series; the test's own scheduled executions bill on the AzureApplicationInsightsStandardWebTest kind, and Microsoft's pricing page states alert-rule charges are separate from test charges.
+      impact: A web-test availability rule monitors the referenced test's availability signal as one billed time series; the test's own scheduled executions bill on the AzureApplicationInsightsStandardWebTest component, and Microsoft's pricing page states alert-rule charges are separate from test charges.
     - field_path: scopes
       sku_meter: metric alert time series
       pricing_unit: time-series-months
@@ -46,4 +46,4 @@ spec:
     - notifications the fired alert sends (email, SMS, voice, webhooks beyond the free monthly allowances) bill on the referenced AzureMonitorActionGroup component
     - dimension filters that split the evaluation multiply the billed time-series count by the live dimension values matched -- a count only the emitting resource knows
     - resource-group and subscription scopes bill per matching resource, a count that follows the live subscription's contents
-  notes: "An alert rule is a small always-on subscription: the meter is time series monitored per month, and it runs whether the alert ever fires or not. The arithmetic is criteria x scoped resources x dimension splits, at 0.10 per resulting time series (eastus list), doubled for dynamic thresholds by the add-on meter. Classic-generation alerts and activity-log alert rules are free by Microsoft's pricing page -- this kind is the new-generation metric alert, which is the paid kind. Prices verified from Microsoft's Retail Prices API and the Azure Monitor pricing page on 2026-08-18."
+  notes: "An alert rule is a small always-on subscription: the meter is time series monitored per month, and it runs whether the alert ever fires or not. The arithmetic is criteria x scoped resources x dimension splits, at 0.10 per resulting time series (eastus list), doubled for dynamic thresholds by the add-on meter. Classic-generation alerts and activity-log alert rules are free by Microsoft's pricing page -- this component is the new-generation metric alert, which is the paid kind. Prices verified from Microsoft's Retail Prices API and the Azure Monitor pricing page on 2026-08-18."

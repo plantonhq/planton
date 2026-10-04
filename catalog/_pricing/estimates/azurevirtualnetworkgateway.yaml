@@ -32,7 +32,7 @@ spec:
       exclusions:
         - site-to-site tunnels beyond the included 10 bill per tunnel-hour, counted across ALL the gateway's connections -- an aggregate invisible in this manifest
         - egress data transfer bills at standard rates and follows traffic (same-region VNet-to-VNet traffic through the gateway is free in both directions)
-        - the referenced public IPs and the GatewaySubnet's virtual network are first-class kinds billing on their own lines
+        - the referenced public IPs and the GatewaySubnet's virtual network are first-class components billing on their own lines
     - preset: 02-active-active-zone-redundant
       region_assumption: eastus
       currency: USD
@@ -51,8 +51,8 @@ spec:
       exclusions:
         - site-to-site tunnels beyond the included 10 bill per tunnel-hour, counted across ALL the gateway's connections -- an aggregate invisible in this manifest
         - egress data transfer bills at standard rates and follows traffic (same-region VNet-to-VNet traffic through the gateway is free in both directions)
-        - the referenced public IPs and the GatewaySubnet's virtual network are first-class kinds billing on their own lines
-      notes: Active-active adds no gateway spend -- Microsoft bills one SKU rate however many instances are live; only the second public IP adds a line, on its own kind.
+        - the referenced public IPs and the GatewaySubnet's virtual network are first-class components billing on their own lines
+      notes: Active-active adds no gateway spend -- Microsoft bills one SKU rate however many instances are live; only the second public IP adds a line, on its own component.
     - preset: 03-point-to-site-entra-id
       region_assumption: eastus
       currency: USD
@@ -72,4 +72,4 @@ spec:
         - site-to-site tunnels beyond the included 10 bill per tunnel-hour, counted across ALL the gateway's connections -- an aggregate invisible in this manifest
         - point-to-site connections beyond the included 128 bill per connection-hour and follow client behavior
         - egress data transfer bills at standard rates and follows traffic (same-region VNet-to-VNet traffic through the gateway is free in both directions)
-        - the referenced public IPs and the GatewaySubnet's virtual network are first-class kinds billing on their own lines
+        - the referenced public IPs and the GatewaySubnet's virtual network are first-class components billing on their own lines

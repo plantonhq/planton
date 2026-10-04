@@ -61,7 +61,7 @@ spec:
       notes: "Snapshots publish no platform metrics -- they are inert held bytes; operational visibility is the Activity Log and whatever pipeline created them."
     - control_id: backup-recovery
       status: not_applicable
-      notes: "This kind IS the backup artifact -- a point-in-time copy of a disk used for restore, cloning, and gallery image sourcing. Nothing backs up a snapshot automatically: protecting it against regional loss means copying it to another region (a second snapshot resource), and protecting a CHAIN means retention discipline in the pipeline that creates them."
+      notes: "This component IS the backup artifact -- a point-in-time copy of a disk used for restore, cloning, and gallery image sourcing. Nothing backs up a snapshot automatically: protecting it against regional loss means copying it to another region (a second snapshot resource), and protecting a CHAIN means retention discipline in the pipeline that creates them."
     - control_id: backup-retention-policy
       status: not_applicable
       notes: "A snapshot lives until deleted -- retention is however long the manifest (or the pipeline pruning old ones) keeps the resource. Policy-driven scheduling and retention belong to Azure Backup, a different service with its own resources."

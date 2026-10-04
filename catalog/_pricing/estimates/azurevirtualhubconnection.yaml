@@ -18,7 +18,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - the attachment is a Microsoft-managed peering between the hub and this VNet, so the spoke's traffic bills standard VNet peering data rates per GB in each direction -- the peering meters, not a connection meter, are where the money moves
-        - VNet-to-VNet traffic through the hub additionally bills the hub router's per-GB data processing, carried on the hub's own kind (which also bills hourly for existing, independent of this attachment)
+        - VNet-to-VNet traffic through the hub additionally bills the hub router's per-GB data processing, carried on the hub's own component (which also bills hourly for existing, independent of this attachment)
         - inter-region spoke traffic adds standard inter-region data-transfer rates
       notes: Zero committed cost -- Virtual WAN's hourly connection units bill branches, never VNet attachments; an idle connection bills nothing, and the paid half of this pattern is the hub itself.
     - preset: 02-isolated-spoke
@@ -28,5 +28,5 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - the isolated route-table association and label-based propagation are free routing posture -- isolation costs exactly as much as any-to-any, because routing moves WHERE traffic flows (and where its per-GB charges land), not what the connection costs
-        - traffic the spoke does exchange bills VNet peering data per GB, plus the hub's per-GB data processing for VNet-to-VNet transit on the hub's kind
+        - traffic the spoke does exchange bills VNet peering data per GB, plus the hub's per-GB data processing for VNet-to-VNet transit on the hub's component
       notes: Zero committed cost -- custom route tables carry no meter; the attachment stays off the invoice whether it reaches every spoke or none.

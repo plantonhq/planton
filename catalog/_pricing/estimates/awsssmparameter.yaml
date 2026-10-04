@@ -29,5 +29,5 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - Standard-tier API interactions are free at standard throughput; flipping the ACCOUNT-level higher-throughput switch (not a field of this manifest) makes every interaction bill $0.05 per 10,000
-        - the customer-managed KMS key bills its monthly fee and per-request encrypt/decrypt charges on the referenced AwsKmsKey kind -- the AWS-managed aws/ssm default carries no monthly fee
+        - the customer-managed KMS key bills its monthly fee and per-request encrypt/decrypt charges on the referenced AwsKmsKey component -- the AWS-managed aws/ssm default carries no monthly fee
       notes: Tier unset means Standard -- permanently free of charge per the AWS Systems Manager pricing page; the zero here is a real free tier, not commitment-absence.

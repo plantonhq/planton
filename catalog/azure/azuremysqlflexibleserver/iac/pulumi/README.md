@@ -1,7 +1,7 @@
 # AzureMysqlFlexibleServer - Pulumi Module
 
-Pulumi implementation for the AzureMysqlFlexibleServer deployment
-component.
+Pulumi implementation for the AzureMysqlFlexibleServer
+kind.
 
 ## Architecture
 

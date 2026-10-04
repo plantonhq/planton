@@ -6,11 +6,11 @@
 
 ## Summary
 
-Systematically renamed 12 Kubernetes addon components to include the `Kubernetes` prefix, establishing naming consistency across all Kubernetes-based infrastructure addons. This refactoring also improved the kind rename script to handle directory-only renames without proto file validation, making it more flexible for bulk renaming operations.
+Systematically renamed 12 Kubernetes addon kinds to include the `Kubernetes` prefix, establishing naming consistency across all Kubernetes-based infrastructure addons. This refactoring also improved the kind rename script to handle directory-only renames without proto file validation, making it more flexible for bulk renaming operations.
 
 ## Problem Statement / Motivation
 
-The Planton codebase had inconsistent naming for Kubernetes addon components. While workload kinds (like `KubernetesPostgres`, `KubernetesArgocd`) followed the `Kubernetes*` prefix pattern, addon operators and infrastructure kinds had mixed naming:
+The Planton codebase had inconsistent naming for Kubernetes addon kinds. While workload kinds (like `KubernetesPostgres`, `KubernetesArgocd`) followed the `Kubernetes*` prefix pattern, addon operators and infrastructure kinds had mixed naming:
 
 - Some had no prefix: `CertManager`, `ExternalDns`, `IngressNginx`
 - Others had vendor prefixes: `StrimziKafkaOperator`, `ZalandoPostgresOperator`
@@ -19,14 +19,14 @@ The Planton codebase had inconsistent naming for Kubernetes addon components. Wh
 ### Pain Points
 
 - **Naming inconsistency**: Difficult to distinguish Kubernetes addons from other provider resources
-- **Discovery challenges**: No clear pattern for finding Kubernetes-related addon components
+- **Discovery challenges**: No clear pattern for finding Kubernetes-related addon kinds
 - **Categorization confusion**: Unclear which kinds were Kubernetes-specific vs provider-agnostic
 - **Script limitations**: The rename script required proto file validation, making it unsuitable when protos were already updated
 - **Manual effort risk**: Renaming 12 kinds manually would be error-prone and time-consuming
 
 ## Solution / What's New
 
-Established a consistent `Kubernetes*` naming convention for all Kubernetes addon components and improved the automated rename tooling to handle proto-independent renames.
+Established a consistent `Kubernetes*` naming convention for all Kubernetes addon kinds and improved the automated rename tooling to handle proto-independent renames.
 
 ### Rename Script Improvements
 
@@ -63,7 +63,7 @@ if old_kind_dir.exists() and old_kind_dir != new_kind_dir:
 
 ### Kinds Renamed
 
-All 12 Kubernetes addon components were systematically renamed:
+All 12 Kubernetes addon kinds were systematically renamed:
 
 | #   | Old Name                       | New Name                            | Category               |
 | --- | ------------------------------ | ----------------------------------- | ---------------------- |

@@ -233,7 +233,7 @@ func Resources(ctx *pulumi.Context, iacInput *azureaksclusterv1alpha1.AzureAksCl
 	// The CA certificate is public cluster identity (the TLS trust anchor), not
 	// credential material. The secret flag it inherits from the provider's
 	// sensitive kube_config attribute is deliberately unwrapped so the
-	// platform's cluster-connection materializer can read it as a plain stack
+	// platform's cluster-connection materializer can read it as a plain
 	// output -- the same posture as the EKS/GKE CA outputs.
 	ctx.Export(OpClusterCaCertificate, pulumi.Unsecret(
 		createdCluster.KubeConfigs.Index(pulumi.Int(0)).ClusterCaCertificate().Elem()))

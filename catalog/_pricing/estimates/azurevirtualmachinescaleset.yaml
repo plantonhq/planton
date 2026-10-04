@@ -31,7 +31,7 @@ spec:
       total_list_cost: "210.2400"
       exclusions:
         - fleet-wide data disks (data_disks) bill one managed disk per instance at each definition's tier
-        - instance-level public IPs configured inline bill per address; referenced subnets, load balancer pools, and application gateway pools bill on their own kinds
+        - instance-level public IPs configured inline bill per address; referenced subnets, load balancer pools, and application gateway pools bill on their own components
         - network egress follows traffic and client placement
       notes: Ephemeral OS disks live on instance-local storage and add no managed-disk charge, on any fleet size.
     - preset: 03-windows-uniform-rolling
@@ -52,6 +52,6 @@ spec:
       exclusions:
         - each instance's managed OS disk bills at the tier matching the configured storage SKU and size (image-inherited when unset), a per-instance managed-disk meter not yet priced here
         - fleet-wide data disks (data_disks) bill one managed disk per instance at each definition's tier
-        - instance-level public IPs configured inline bill per address; referenced subnets, load balancer pools, and application gateway pools bill on their own kinds
+        - instance-level public IPs configured inline bill per address; referenced subnets, load balancer pools, and application gateway pools bill on their own components
         - network egress follows traffic and client placement
       notes: Azure Hybrid Benefit prices every instance at the base compute rate; the Windows Server license obligation is carried by the customer's own licensing, not this bill.

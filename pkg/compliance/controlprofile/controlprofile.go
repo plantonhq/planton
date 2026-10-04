@@ -1,4 +1,4 @@
-// Package controlprofile loads and validates per-catalog kind control profiles
+// Package controlprofile loads and validates per-kind control profiles
 // -- the catalog/<provider>/<kind>/controls.yaml sidecars declaring each
 // kind's posture against the central control catalog
 // (pkg/compliance/controlcatalog). Enrollment is the file's presence: every

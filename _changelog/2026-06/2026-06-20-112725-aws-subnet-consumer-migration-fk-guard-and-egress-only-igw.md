@@ -16,7 +16,7 @@ set.
 
 ## Problem Statement / Motivation
 
-When `AwsVpc` became thin, its bundled `private_subnets`/`public_subnets` stack
+When `AwsVpc` became thin, its bundled `private_subnets`/`public_subnets`
 outputs were removed, but ~31 kinds still pointed their `subnet_ids` foreign
 keys at `AwsVpc.status.outputs.private_subnets.[*].id`. They compiled green while
 referencing a deleted output — a composition that silently fails to resolve at deploy

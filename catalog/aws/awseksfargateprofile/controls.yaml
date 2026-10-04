@@ -43,7 +43,7 @@ spec:
         reference: Matched pods' infrastructure actions (image pulls, log shipping) authenticate through the referenced pod_execution_role_arn's short-lived credentials; application-level AWS access uses the cluster's IAM-roles-for-service-accounts, never static keys.
     - control_id: no-legacy-auth
       status: not_applicable
-      notes: A profile has no authentication path of its own; cluster API authentication is governed on the AwsEksCluster kind.
+      notes: A profile has no authentication path of its own; cluster API authentication is governed on the AwsEksCluster component.
     - control_id: strong-user-auth
       status: not_applicable
       notes: The component itself enforces no end-user sign-in -- it packages no human sign-in surface; any credentials it carries are workload or administrative access, whose posture rbac and workload-identity carry.

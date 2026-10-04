@@ -56,7 +56,7 @@ spec:
       notes: No backups exist at this level to retain (see backup-recovery).
     - control_id: multi-zone-ha
       status: not_applicable
-      notes: The link exposes no zonal configuration -- availability follows the fronted NLB's subnet layout, chosen on the AwsNlb kind, and the AWS-managed path to it.
+      notes: The link exposes no zonal configuration -- availability follows the fronted NLB's subnet layout, chosen on the AwsNlb component, and the AWS-managed path to it.
     - control_id: deletion-protection
       status: not_applicable
       notes: No deletion-protection flag exists for VPC links. Deleting one severs every REST API integration that references it; the NLB itself is untouched.

@@ -3,7 +3,7 @@
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
 # ../estimates/. Both presets are genuinely zero-committed: neither enables
-# the stage cache cluster (the one meter on this kind that bills
+# the stage cache cluster (the one meter on this component that bills
 # hourly, traffic or none), so every charge follows request volume --
 # stated in exclusions, never padded into fabricated dollars. Schema:
 # finops/catalogkindcostestimatemodel/v1.
@@ -28,7 +28,7 @@ spec:
       hours_per_month: 730
       exclusions:
         - requests bill per million at the tiered REST API rate; api_key_required rejects unkeyed calls but rejected requests still traverse the gateway
-        - the proxied function's invocations and duration bill on its AwsLambda kind
+        - the proxied function's invocations and duration bill on its AwsLambda component
         - no cache cluster, detailed metrics, execution logging, or X-Ray tracing is enabled -- none of those meters exists on this preset
         - data transfer out bills per GB
       notes: Zero committed cost -- one keyed route to one function, and the stage cache (the spec's only always-on meter) stays off; nothing bills until orders arrive.

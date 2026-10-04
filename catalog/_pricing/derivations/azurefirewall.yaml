@@ -54,8 +54,8 @@ spec:
       basis: an unspecified tier deploys STANDARD (the spec's documented default), billing the same flat deployment fee every hour (x 730)
   exclusions:
     - text: data processing bills every GB the firewall inspects at the tier's per-GB rate -- the variable half of every firewall bill, following traffic
-    - text: the referenced public IPs bill hourly on their own kinds
-    - text: the attached AzureFirewallPolicy carries its own billing rules on its own kind
+    - text: the referenced public IPs bill hourly on their own components
+    - text: the attached AzureFirewallPolicy carries its own billing rules on its own component
     - text: prescaled capacity units are an opt-in reservation configured outside this spec; by default the firewall bills no capacity-unit charges
   notes:
     - text: Zone redundancy is free on Azure Firewall -- spanning availability zones changes availability posture, not the deployment meter.

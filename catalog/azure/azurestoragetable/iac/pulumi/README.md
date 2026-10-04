@@ -1,6 +1,6 @@
 # AzureStorageTable - Pulumi Module
 
-Pulumi implementation for the AzureStorageTable component.
+Pulumi implementation for the AzureStorageTable kind.
 
 ## Architecture
 

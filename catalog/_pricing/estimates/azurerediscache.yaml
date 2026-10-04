@@ -47,7 +47,7 @@ spec:
           list_cost: "1215.4500"
       total_list_cost: "1215.4500"
       exclusions:
-        - RDB snapshot storage and transactions bill on the persistence storage account's own kind
+        - RDB snapshot storage and transactions bill on the persistence storage account's own component
         - data transfer between availability zones for the cache's replication traffic follows write volume
         - network egress follows client placement
     - preset: 03-development

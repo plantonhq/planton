@@ -42,7 +42,7 @@ spec:
         - the cluster autoscaler grows the pool above the min_nodes floor up to max_nodes with workload demand -- each extra node bills the same monthly rate while it exists
         - outbound data transfer past the pooled free allowance (starting at 2,000 GiB per Basic node per month) bills 0.01 USD/GiB; inbound and node-to-node transfer are free
         - block storage volumes and load balancers created by the cluster's workloads (PersistentVolumeClaims, Services of type LoadBalancer) bill as their own DigitalOcean resources
-        - additional node pools bill on their own DigitalOceanKubernetesNodePool kinds
+        - additional node pools bill on their own DigitalOceanKubernetesNodePool components
       notes: Worker nodes bill at DigitalOcean's droplet rates -- the DOKS pricing page charges only the underlying droplets and prices per single node; the control plane, version updates, and the autoscaler are free. Priced at DigitalOcean's global rates -- the DOKS and droplet pricing pages carry no region dimension.
     - preset: 02-development
       region_assumption: nyc3
@@ -62,5 +62,5 @@ spec:
       exclusions:
         - outbound data transfer past the pooled free allowance (starting at 2,000 GiB per Basic node per month) bills 0.01 USD/GiB; inbound and node-to-node transfer are free
         - block storage volumes and load balancers created by the cluster's workloads (PersistentVolumeClaims, Services of type LoadBalancer) bill as their own DigitalOcean resources
-        - additional node pools bill on their own DigitalOceanKubernetesNodePool kinds
+        - additional node pools bill on their own DigitalOceanKubernetesNodePool components
       notes: Worker nodes bill at DigitalOcean's droplet rates -- the DOKS pricing page charges only the underlying droplets and prices per single node; the control plane, version updates, and the autoscaler are free. Priced at DigitalOcean's global rates -- the DOKS and droplet pricing pages carry no region dimension.

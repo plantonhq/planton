@@ -19,7 +19,7 @@ spec:
       exclusions:
         - the DATA_PROTECTION policy has no selection_criteria, so it covers EVERY log group in the region -- each GB those groups ingest is also a GB scanned at $0.12 per GB, a meter with no free allotment that starts with the account's first ingested byte
         - the ingestion being scanned bills separately on each AwsCloudwatchLogGroup ($0.50 per GB standard class, after the permanent 5 GB monthly free tier) -- the scan is a second meter over the same bytes
-        - both statements pin an empty FindingsDestination, so no findings-delivery spend exists; naming a log group, Firehose stream, or S3 bucket there would bill on that kind
+        - both statements pin an empty FindingsDestination, so no findings-delivery spend exists; naming a log group, Firehose stream, or S3 bucket there would bill on that component
       notes: Zero committed cost -- the policy object never bills and an account with silent log groups scans nothing; the $0.12/GB scan meter tracks region-wide ingestion volume, which the manifest cannot see.
     - preset: 02-field-indexing
       region_assumption: us-east-1

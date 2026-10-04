@@ -1,5 +1,5 @@
 // Package verify checks that GCP resources created by an E2E scenario exist
-// after DEPLOY and are gone after DESTROY. Each component has its own verifier
+// after DEPLOY and are gone after DESTROY. Each kind has its own verifier
 // because GCP verification is service-specific (iam serviceAccounts.get for a
 // service account, cloudresourcemanager getIamPolicy for a grant, ...). All
 // verifiers run against the same ambient ADC chain the deploy used, so a
@@ -163,7 +163,7 @@ type DeployFailureVerifier interface {
 	VerifyExpectedDeployFailure(ctx context.Context, svc *Services, serviceName, region, expectation string, deployErr error) error
 }
 
-// verifiers maps a component name to its verifier. New GCP components register
+// verifiers maps a kind name to its verifier. New GCP kinds register
 // here as they are forged.
 var verifiers = map[string]Verifier{
 	"gcpserviceaccount":                      &serviceAccountVerifier{},
@@ -354,7 +354,7 @@ var verifiers = map[string]Verifier{
 	"gcpcomputeimage":                        &computeImageVerifier{},
 }
 
-// GetVerifier returns the verifier for a component, or an error if none is registered.
+// GetVerifier returns the verifier for a kind, or an error if none is registered.
 func GetVerifier(kind string) (Verifier, error) {
 	v, ok := verifiers[kind]
 	if !ok {

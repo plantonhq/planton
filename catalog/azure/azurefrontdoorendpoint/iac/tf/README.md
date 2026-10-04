@@ -1,7 +1,7 @@
 # AzureFrontDoorEndpoint - Terraform Module
 
-Terraform implementation for the AzureFrontDoorEndpoint deployment
-component.
+Terraform implementation for the AzureFrontDoorEndpoint
+kind.
 
 ## Resources Created
 

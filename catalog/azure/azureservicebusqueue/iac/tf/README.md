@@ -1,7 +1,7 @@
 # AzureServiceBusQueue - Terraform Module
 
 OpenTofu/Terraform implementation for the AzureServiceBusQueue
-component, at 100% behavioral parity with the Pulumi module.
+kind, at 100% behavioral parity with the Pulumi module.
 
 ## Resources Created
 

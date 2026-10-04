@@ -44,12 +44,12 @@ spec:
     - field_path: workload_profile_name
       sku_meter: dedicated workload profile vCPU hours
       pricing_unit: vCPU-hours
-      impact: "Naming a Dedicated workload profile moves this app's compute off the per-second Consumption meters entirely: the ENVIRONMENT bills the profile's provisioned instances by the hour (on the AzureContainerAppEnvironment kind) whether this app is busy or not, and the app itself adds no meter."
+      impact: "Naming a Dedicated workload profile moves this app's compute off the per-second Consumption meters entirely: the ENVIRONMENT bills the profile's provisioned instances by the hour (on the AzureContainerAppEnvironment component) whether this app is busy or not, and the app itself adds no meter."
   free_tier: "The first 180,000 vCPU-seconds, 360,000 GiB-seconds, and 2 million requests per subscription per month are free on the Consumption plan (Microsoft's Container Apps pricing page, retrieved 2026-08-18). Estimates here price list rates without the grant."
   estimate_exclusions:
     - "active usage above the idle floor -- replicas processing traffic bill vCPU at the active rate (0.000024 USD/vCPU-second in eastus, 8x idle) and scale-out replicas between min and max bill entirely on demand; no manifest can know traffic"
     - "requests bill 0.40 USD per million in eastus past the 2-million free grant, following traffic volume"
-    - "apps placed on a Dedicated workload profile (workload_profile_name set) bill through the environment's profile instances on the AzureContainerAppEnvironment kind, not through these meters"
+    - "apps placed on a Dedicated workload profile (workload_profile_name set) bill through the environment's profile instances on the AzureContainerAppEnvironment component, not through these meters"
     - "Azure Files volumes an app mounts bill on their own AzureStorageShare component; container registry storage bills on the registry component"
-    - "the environment's own meters (Dedicated plan management, zone-redundancy prerequisites) bill on the AzureContainerAppEnvironment kind"
+    - "the environment's own meters (Dedicated plan management, zone-redundancy prerequisites) bill on the AzureContainerAppEnvironment component"
   notes: "Container Apps' pricing is a two-rate machine: idle seconds and active seconds. min_replicas is the honest committed spend -- Microsoft's pricing page states replicas kept always-running in idle mode bill the reduced idle rate when not processing requests, and a replica turns active (vCPU at 8x idle; memory unchanged) while starting up, serving traffic, or above the 0.01-core/1,000-bytes-per-second thresholds. Scale-to-zero apps genuinely bill nothing between events. The committed floor is min_replicas x the summed container allocations x the idle rates x 2,628,000 seconds a month; everything above it follows load. All rates read from Microsoft's Container Apps pricing page and the Retail Prices API (eastus) on 2026-08-18."

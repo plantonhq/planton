@@ -46,7 +46,7 @@ func (v *kafkaSchemaVerifier) VerifyAbsentFromOutputs(ctx context.Context, clien
 		return pkgerrors.Wrap(err, "digitaloceandatabasekafkaschema verify-absent failed")
 	}
 	if exists {
-		return &StillExistsError{Component: "digitaloceandatabasekafkaschema", ID: StringOutput(outputs, "subject_name")}
+		return &StillExistsError{Kind: "digitaloceandatabasekafkaschema", ID: StringOutput(outputs, "subject_name")}
 	}
 	return nil
 }

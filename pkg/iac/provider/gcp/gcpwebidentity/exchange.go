@@ -3,8 +3,8 @@
 // environment (OpenTofu, Terraform).
 //
 // Why an exchange here rather than a credentials file: the google provider's keyless form is an
-// Application Default Credentials "external account" file, and it is the wrong shape for a stack
-// job. It would write the minted token to disk, which the provider config promises never happens,
+// Application Default Credentials "external account" file, and it is the wrong shape for an
+// Infra Job. It would write the minted token to disk, which the provider config promises never happens,
 // and every engine process would redo the exchange with a token minted to live minutes, so a
 // command starting after that token expired would fail. Exchanging once, before any engine command
 // runs, hands the job an access token that lives about an hour: the same contract the AWS keyless

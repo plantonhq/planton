@@ -6,11 +6,11 @@
 # the provider's price book (../pricebook/). The committed floor is
 # provisioned-instance MEMORY multiplied by the auto-scaling minimum: when a
 # manifest references an AwsAppRunnerAutoScalingConfiguration, that minimum
-# lives on the referenced kind, so the refusal rule below fires on the
+# lives on the referenced component, so the refusal rule below fires on the
 # reference's presence -- pricing such a manifest at the account-default
 # floor of 1 would be knowably wrong (the catalog preset wiring that
 # reference does so precisely for a 2+ warm-instance posture); its committed
-# floor is priced at composition time, when a surface sees both kinds.
+# floor is priced at composition time, when a surface sees both components.
 # Schema: finops/catalogkindcostderivation/v1.
 apiVersion: finops.planton.dev/v1
 kind: CatalogKindCostDerivation
@@ -26,7 +26,7 @@ spec:
     - when:
         - field_path: auto_scaling_configuration_arn
           op: is_set
-      reason: the committed floor of provisioned instances lives on the referenced AwsAppRunnerAutoScalingConfiguration (its min_size) and is invisible in this manifest -- the honest estimate happens at composition time, when both kinds are visible
+      reason: the committed floor of provisioned instances lives on the referenced AwsAppRunnerAutoScalingConfiguration (its min_size) and is invisible in this manifest -- the honest estimate happens at composition time, when both components are visible
   lines:
     - sku_meter: provisioned instance memory
       quantity:
@@ -73,7 +73,7 @@ spec:
         - field_path: is_publicly_accessible
           op: equals
           value: "false"
-      text: the interface VPC endpoint carrying the VPC Ingress Connection bills hourly and per GB on its own AwsVpcEndpoint kind
+      text: the interface VPC endpoint carrying the VPC Ingress Connection bills hourly and per GB on its own AwsVpcEndpoint component
     - applies_when:
         - field_path: is_publicly_accessible
           op: is_set
@@ -93,4 +93,4 @@ spec:
         - field_path: is_publicly_accessible
           op: equals
           value: "false"
-      text: The private service (is_publicly_accessible false) is reachable only through the VPC Ingress Connection; App Runner itself adds no charge for the connection -- the endpoint carrying it bills as its own kind.
+      text: The private service (is_publicly_accessible false) is reachable only through the VPC Ingress Connection; App Runner itself adds no charge for the connection -- the endpoint carrying it bills as its own component.

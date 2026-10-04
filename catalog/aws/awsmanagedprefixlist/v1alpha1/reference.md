@@ -94,7 +94,7 @@ after, so a resize never transiently strands entries).
 
 The CIDR entries, each optionally described. Managed as the
 complete set - an entry removed here is removed at AWS. AWS
-versions the list on every entry change (the version stack
+versions the list on every entry change (the version
 output).
 
 - rule: entries must have unique cidr values

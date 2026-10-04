@@ -33,7 +33,7 @@ spec:
     - when:
         - field_path: dedicated_cluster_id
           op: is_set
-      reason: a namespace placed on a dedicated cluster bills through the cluster's capacity units on its own AzureEventHubCluster kind, not through these tier meters -- pricing the namespace's own tier would state a charge the cluster placement supersedes
+      reason: a namespace placed on a dedicated cluster bills through the cluster's capacity units on its own AzureEventHubCluster component, not through these tier meters -- pricing the namespace's own tier would state a charge the cluster placement supersedes
   lines:
     - sku_meter: throughput units
       applies_when:
@@ -88,4 +88,4 @@ spec:
           op: equals
           value: PREMIUM
       text: The price list publishes no Premium ingress or capture meters -- both are included in the PU rate.
-    - text: A namespace placed on a dedicated cluster (dedicated_cluster_id) bills through the cluster's capacity units on its own AzureEventHubCluster kind -- these rules refuse such a manifest rather than pricing tier meters the placement supersedes; the committed presets all deploy self-serve tiers.
+    - text: A namespace placed on a dedicated cluster (dedicated_cluster_id) bills through the cluster's capacity units on its own AzureEventHubCluster component -- these rules refuse such a manifest rather than pricing tier meters the placement supersedes; the committed presets all deploy self-serve tiers.

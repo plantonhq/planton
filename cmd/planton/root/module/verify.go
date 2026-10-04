@@ -19,8 +19,8 @@ import (
 var Verify = &cobra.Command{
 	Use:   "verify",
 	Short: "prove a module still conforms to its kind's contract",
-	Long: `Verifies that an IaC module directory honors the contract of a cloud
-resource kind — run it after every meaningful change to a customized module,
+	Long: `Verifies that an IaC module directory honors the contract of a
+catalog kind — run it after every meaningful change to a customized module,
 and before registering one for your organization's deployments.
 
 What is checked:

@@ -18,13 +18,13 @@ spec:
       evidence:
         type: spec_default
         reference: An execute rule's matched_data.public_key is the customer-provided public key Cloudflare uses to encrypt matched request payloads before storing them in firewall event logs -- only the holder of the matching private key can decrypt them, and payload logging cannot be enabled without supplying the key.
-      notes: Scope is narrow -- it covers only the matched-payload logs of managed-ruleset executions, because that is the only data at rest this kind can cause.
+      notes: Scope is narrow -- it covers only the matched-payload logs of managed-ruleset executions, because that is the only data at rest this component can cause.
     - control_id: enc-in-transit
       status: configurable
       field_path: rules.action_parameters.ssl
       evidence:
         type: spec_default
-        reference: A set_config rule in the http_config_settings phase sets the zone's SSL mode (off, flexible, full, strict, origin_pull) for matching requests, and automatic_https_rewrites and opportunistic_encryption sit beside it -- this kind can both raise and lower the transit-encryption posture of the traffic it matches.
+        reference: A set_config rule in the http_config_settings phase sets the zone's SSL mode (off, flexible, full, strict, origin_pull) for matching requests, and automatic_https_rewrites and opportunistic_encryption sit beside it -- this component can both raise and lower the transit-encryption posture of the traffic it matches.
       notes: Choosing off or flexible sends the Cloudflare-to-origin hop in cleartext for matched requests; set strict wherever the origin holds a certificate the edge trusts (a CloudflareOriginCaCertificate suffices).
     - control_id: no-public-access
       status: not_applicable
@@ -40,7 +40,7 @@ spec:
       field_path: rules.action
       evidence:
         type: spec_default
-        reference: This kind IS the edge request filter -- the http_request_firewall_custom and http_request_firewall_managed phases carry WAF custom rules and managed-ruleset executions (with per-category and per-rule overrides), the http_ratelimit phase carries rate limiting, and exposed_credential_check detects leaked-credential logins.
+        reference: This component IS the edge request filter -- the http_request_firewall_custom and http_request_firewall_managed phases carry WAF custom rules and managed-ruleset executions (with per-category and per-rule overrides), the http_ratelimit phase carries rate limiting, and exposed_credential_check detects leaked-credential logins.
       notes: A ruleset only protects what its rules cover; deploying a managed WAF ruleset via an execute rule requires a plan that includes it.
     - control_id: rbac
       status: not_applicable

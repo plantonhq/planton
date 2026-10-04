@@ -25,7 +25,7 @@ This tutorial walks you through deploying a managed Kubernetes cluster on Azure 
 
 ## What You Will Learn
 
-- How AKS fits in Planton's Infra Catalog as an Azure Infra Component
+- How AKS fits in Planton's Infra Catalog as an Azure catalog kind
 - How to write an `AzureAksCluster` manifest with system node pools, networking, and security configuration
 - How to deploy with `planton apply` and monitor progress in real time
 - How to connect `kubectl` to the new cluster
@@ -101,7 +101,7 @@ The key fields in this manifest:
 - **`kubernetesVersion`**: Pins the cluster to a specific Kubernetes minor version. Azure supports the current version and two previous minor versions.
 - **`controlPlaneSku`**: `STANDARD` provides an uptime SLA (99.95% with AZs) for ~$73/month. `FREE` has no SLA -- suitable for development.
 - **`networkPlugin` / `networkPluginMode`**: `AZURE_CNI` with `OVERLAY` is recommended. Pods get IPs from a private range (default `10.244.0.0/16`), separate from your VNet address space. Avoids subnet IP exhaustion at scale.
-- **`systemNodePool`**: Required. Runs cluster kinds (CoreDNS, metrics-server). `Standard_D4s_v5` (4 vCPUs, 16 GB) is recommended for production; `Standard_D2s_v3` for development. Spreading across 3 availability zones enables the 99.95% SLA tier.
+- **`systemNodePool`**: Required. Runs cluster components (CoreDNS, metrics-server). `Standard_D4s_v5` (4 vCPUs, 16 GB) is recommended for production; `Standard_D2s_v3` for development. Spreading across 3 availability zones enables the 99.95% SLA tier.
 - **`userNodePools`**: Where application workloads run, separated from system components. Add multiple pools for different workload profiles (compute, memory, Spot instances).
 
 ## Step 2: Deploy with `planton apply`

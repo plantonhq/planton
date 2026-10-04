@@ -30,7 +30,7 @@ spec:
       pricing_unit: endpoint-months
       impact: Free either way -- STATIC pins the address on-premises forwarders point at so recreation never breaks their configs, and changes nothing on the meter.
   estimate_exclusions:
-    - DNS forwarding rulesets bill their own flat monthly fee on the AzurePrivateDnsResolverForwardingRuleset kind that binds the outbound endpoints
+    - DNS forwarding rulesets bill their own flat monthly fee on the AzurePrivateDnsResolverForwardingRuleset component that binds the outbound endpoints
     - the resolver adds no per-query meter of its own -- queries it answers from private zones bill those zones' per-million query meter zone-side, and queries forwarded on-premises bill nothing in Azure
     - the anchor virtual network and the dedicated endpoint subnets are first-class components of their own
   notes: "Azure prices the resolver as pure rented plumbing: a flat monthly fee per endpoint (about 180 per endpoint-month at list, prorated to hours), the same rate inbound and outbound, in every billing geography. Nothing usage-shaped bills here -- the retail price family publishes NO query meter for the resolver, so query volume moves other components' bills (the private zones it answers from), never this one. The cost decisions are structural: how many endpoints each way (one is the norm, five the cap), and whether outbound forwarding is needed at all. This is what replaces a pair of DNS-server VMs -- the fee buys away the compute, patching, and HA engineering those cost."

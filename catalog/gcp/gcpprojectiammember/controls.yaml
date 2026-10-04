@@ -35,7 +35,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: This kind IS role-based access control -- the additive grant assigns exactly one role to one member, and managing the grant itself authorizes against resourcemanager.projects.setIamPolicy and getIamPolicy on the target project; no unauthenticated management path exists.
+        reference: This component IS role-based access control -- the additive grant assigns exactly one role to one member, and managing the grant itself authorizes against resourcemanager.projects.setIamPolicy and getIamPolicy on the target project; no unauthenticated management path exists.
       notes: Compose with GcpIamCustomRole for least-privilege role content -- the role reference resolves a custom role's fully-qualified name directly into this grant. Prefer scoped predefined or custom roles over the basic Owner/Editor/Viewer shapes.
     - control_id: workload-identity
       status: not_applicable

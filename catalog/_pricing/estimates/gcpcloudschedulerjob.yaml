@@ -30,7 +30,7 @@ spec:
           list_cost: "0.099999986"
       total_list_cost: "0.099999986"
       exclusions:
-        - "dispatch volume is free -- the meter counts job-days, not executions -- but whatever each dispatch invokes bills on its own kind: Cloud Run or Cloud Functions compute behind an HTTP target, Pub/Sub message charges behind a topic target"
+        - "dispatch volume is free -- the meter counts job-days, not executions -- but whatever each dispatch invokes bills on its own component: Cloud Run or Cloud Functions compute behind an HTTP target, Pub/Sub message charges behind a topic target"
         - network egress of dispatch requests follows target placement
       notes: The first 93 job-days per billing account per month are free -- exactly three always-on jobs (3 jobs x 31 days) -- so an account's first three jobs pay nothing and this may be one of them. List total shown without the free allotment, which is account-wide and not visible from any single manifest.
     - preset: 02-pubsub-publisher
@@ -49,7 +49,7 @@ spec:
           list_cost: "0.099999986"
       total_list_cost: "0.099999986"
       exclusions:
-        - "dispatch volume is free -- the meter counts job-days, not executions -- but whatever each dispatch invokes bills on its own kind: Cloud Run or Cloud Functions compute behind an HTTP target, Pub/Sub message charges behind a topic target"
+        - "dispatch volume is free -- the meter counts job-days, not executions -- but whatever each dispatch invokes bills on its own component: Cloud Run or Cloud Functions compute behind an HTTP target, Pub/Sub message charges behind a topic target"
         - network egress of dispatch requests follows target placement
       notes: The first 93 job-days per billing account per month are free -- exactly three always-on jobs (3 jobs x 31 days) -- so an account's first three jobs pay nothing and this may be one of them. List total shown without the free allotment, which is account-wide and not visible from any single manifest.
     - preset: 03-secure-cloud-run-trigger
@@ -68,6 +68,6 @@ spec:
           list_cost: "0.099999986"
       total_list_cost: "0.099999986"
       exclusions:
-        - "dispatch volume is free -- the meter counts job-days, not executions -- but whatever each dispatch invokes bills on its own kind: Cloud Run or Cloud Functions compute behind an HTTP target, Pub/Sub message charges behind a topic target"
+        - "dispatch volume is free -- the meter counts job-days, not executions -- but whatever each dispatch invokes bills on its own component: Cloud Run or Cloud Functions compute behind an HTTP target, Pub/Sub message charges behind a topic target"
         - network egress of dispatch requests follows target placement
       notes: The first 93 job-days per billing account per month are free -- exactly three always-on jobs (3 jobs x 31 days) -- so an account's first three jobs pay nothing and this may be one of them. List total shown without the free allotment, which is account-wide and not visible from any single manifest.

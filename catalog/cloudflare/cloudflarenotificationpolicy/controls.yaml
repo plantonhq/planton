@@ -53,7 +53,7 @@ spec:
       field_path: mechanisms
       evidence:
         type: spec_default
-        reference: This kind IS the monitoring-integration surface -- it routes Cloudflare's own alerts to email, PagerDuty, and webhook destinations the operator runs.
+        reference: This component IS the monitoring-integration surface -- it routes Cloudflare's own alerts to email, PagerDuty, and webhook destinations the operator runs.
     - control_id: backup-recovery
       status: not_applicable
       notes: Configuration-only surface, reproducible from the manifest.

@@ -2,7 +2,7 @@
 # estimates -- quantity assumptions derived from the preset manifests and
 # defended in prose. Prices live in the provider's price book (../pricebook/,
 # referenced by entry slug); the estimate generator joins the two and emits
-# ../estimates/. Both presets are genuinely zero-committed: the kind's
+# ../estimates/. Both presets are genuinely zero-committed: the component's
 # only Cloudflare-side meter (Workers Logpush delivery, $0.05 per million
 # past 10 million/month) is dataset-conditional, and neither preset pins a
 # metered dataset -- 01 ships http_requests and 02 ships audit_logs_v2, both

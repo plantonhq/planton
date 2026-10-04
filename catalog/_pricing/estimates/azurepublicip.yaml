@@ -55,5 +55,5 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - the address is drawn from a reserved prefix that already bills every address in its block per IP-hour from the moment the prefix exists -- that spend lives on the referenced AzurePublicIpPrefix kind, and Microsoft publishes no separate meter for the act of drawing an address from it
+        - the address is drawn from a reserved prefix that already bills every address in its block per IP-hour from the moment the prefix exists -- that spend lives on the referenced AzurePublicIpPrefix component, and Microsoft publishes no separate meter for the act of drawing an address from it
         - data transfer to and from the address bills per GB as bandwidth and follows traffic; a "RoutingPreference":"Internet" ip_tag moves egress to internet-transit bandwidth rates

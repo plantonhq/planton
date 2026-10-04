@@ -42,6 +42,6 @@ spec:
       exclusions:
         - RPU-hours bill per second while queries run at the pinned 32-RPU baseline up to the 128-RPU cap -- AWS's published example rate is $0.375 per RPU-hour (US East N. Virginia); idle meters zero, and the daily 200 RPU-hour deactivate limit HARD-CAPS the compute bill by turning queries off at the breach until the day resets
         - cross-region datasharing bills per terabyte transferred to consumers in other regions -- this preset's monthly 5 TB limit only LOGS at breach, so the transfer meter keeps running past it
-        - the managed VPC endpoint (bi-tools-vpc) and the ACM-fronted custom domain appear on no meter of the Redshift pricing page; the referenced ACM certificate is free public ACM issuance on its own kind
+        - the managed VPC endpoint (bi-tools-vpc) and the ACM-fronted custom domain appear on no meter of the Redshift pricing page; the referenced ACM certificate is free public ACM issuance on its own component
         - warehouse data bills Redshift Managed Storage GB-month on the attached namespace, never here
       notes: Zero committed cost -- commitment-absence, not a free service. This is the governed shape; the deactivate usage limit converts the workload's worst case into a hard daily budget (200 RPU-hours), which is a CEILING on spend, not a commitment of it. The RPU-hour rate is regional -- the pricing page publishes $0.375 (US East N. Virginia) as its worked example.

@@ -27,4 +27,4 @@ spec:
       basis: one connected branch is one connection unit x 730 hours -- the unit counts branch sites, not tunnels, so a two-link active-active connection bills the same as a single-link one; the region rides the owning gateway and is assumed eastus
   exclusions:
     - text: data leaving Azure through the tunnels bills at standard data-transfer rates and follows traffic
-    - text: the gateway's scale units (capacity) bill on the AzureVpnGateway kind; the hub's deployment hours and data processing bill on the AzureVirtualHub
+    - text: the gateway's scale units (capacity) bill on the AzureVpnGateway component; the hub's deployment hours and data processing bill on the AzureVirtualHub

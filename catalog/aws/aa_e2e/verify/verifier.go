@@ -1,5 +1,5 @@
 // Package verify checks that AWS resources created by an E2E scenario exist after
-// DEPLOY and are gone after DESTROY. Each component family has its own verifier
+// DEPLOY and are gone after DESTROY. Each kind family has its own verifier
 // because AWS verification is service-specific (HeadBucket for S3,
 // DescribeSubnets for a subnet, ...) -- unlike the single Management-API path a
 // SaaS provider uses. All verifiers run against the same ambient credential
@@ -41,7 +41,7 @@ type RuntimeCauseVerifier interface {
 	VerifyRuntimeFailureCause(ctx context.Context, cfg aws.Config, outputs map[string]interface{}, region, cause string) error
 }
 
-// verifiers maps a component name to its verifier. New AWS components register
+// verifiers maps a kind name to its verifier. New AWS kinds register
 // here as they are forged; today it carries the S3 walking-skeleton only.
 var verifiers = map[string]Verifier{
 	"awscertmanagercert":              &acmCertificateVerifier{},
@@ -270,7 +270,7 @@ var verifiers = map[string]Verifier{
 	"awsopensearchserverlesscollection": &openSearchServerlessCollectionVerifier{},
 }
 
-// GetVerifier returns the verifier for a component, or an error if none is registered.
+// GetVerifier returns the verifier for a kind, or an error if none is registered.
 func GetVerifier(kind string) (Verifier, error) {
 	v, ok := verifiers[kind]
 	if !ok {

@@ -16,7 +16,7 @@ spec:
       hours_per_month: 730
       exclusions:
         - the VPC network, its routing mode, and its firewall enforcement order bill nothing at any scale
-        - the network's real spend lives in separate kinds deployed into it -- Cloud NAT, static addresses, load balancers, and subnetworks' flow logs
+        - the network's real spend lives in separate components deployed into it -- Cloud NAT, static addresses, load balancers, and subnetworks' flow logs
       notes: A VPC network is free Google Cloud infrastructure -- the estimate is zero by the provider's pricing, not by omission.
     - preset: 02-custom-mode-global
       region_assumption: us-central1
@@ -24,5 +24,5 @@ spec:
       hours_per_month: 730
       exclusions:
         - the VPC network bills nothing at any scale; GLOBAL routing changes where Cloud Routers advertise routes, and any inter-region traffic that results bills as the workloads' data transfer, not here
-        - the network's real spend lives in separate kinds deployed into it
+        - the network's real spend lives in separate components deployed into it
       notes: A VPC network is free Google Cloud infrastructure -- the estimate is zero by the provider's pricing, not by omission.

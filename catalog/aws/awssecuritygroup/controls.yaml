@@ -20,7 +20,7 @@ spec:
       notes: A security group filters at layers 3 and 4 -- it neither terminates nor inspects TLS, and cannot require the traffic it admits to be encrypted. Transport encryption belongs to the workloads on each side.
     - control_id: no-public-access
       status: not_applicable
-      notes: The group has no endpoint of its own to expose. Whether the workloads BEHIND it are internet-reachable is exactly what its ingress rules decide -- that surface is assessed under restricted-ingress, where this kind is the enforcement mechanism.
+      notes: The group has no endpoint of its own to expose. Whether the workloads BEHIND it are internet-reachable is exactly what its ingress rules decide -- that surface is assessed under restricted-ingress, where this component is the enforcement mechanism.
     - control_id: restricted-ingress
       status: configurable
       field_path: ingress

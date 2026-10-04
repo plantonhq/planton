@@ -20,10 +20,10 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - DNS queries bill per million against the referenced profile and follow client traffic (recursive-resolver caching, tuned by the profile's TTL, absorbs most of it) -- the profile kind's spend, not this endpoint's
+        - DNS queries bill per million against the referenced profile and follow client traffic (recursive-resolver caching, tuned by the profile's TTL, absorbs most of it) -- the profile component's spend, not this endpoint's
         - the fast-interval health-check add-on bills per monitored endpoint but is switched by the referenced profile's probing interval, which this manifest cannot see
         - the HTTPS health-check add-on bills per monitored endpoint but is switched by the referenced profile's monitor protocol, which this manifest cannot see
-        - the destination itself -- the Azure resource, external service, or child profile -- bills on its own kinds
+        - the destination itself -- the Azure resource, external service, or child profile -- bills on its own components
       notes: A disabled endpoint leaves DNS answers and stops being probed -- Traffic Manager charges per MONITORED endpoint, so the monthly fee stops with the monitoring while the configuration stays deletable-free. Traffic Manager traffic never transits the service -- clients get the destination's address from DNS and connect directly -- so the health-check fee is the endpoint's whole committed bill.
     - preset: 02-external-endpoint
       region_assumption: global
@@ -31,8 +31,8 @@ spec:
       hours_per_month: 730
       total_list_cost: "0.00"
       exclusions:
-        - DNS queries bill per million against the referenced profile and follow client traffic (recursive-resolver caching, tuned by the profile's TTL, absorbs most of it) -- the profile kind's spend, not this endpoint's
+        - DNS queries bill per million against the referenced profile and follow client traffic (recursive-resolver caching, tuned by the profile's TTL, absorbs most of it) -- the profile component's spend, not this endpoint's
         - the fast-interval health-check add-on bills per monitored endpoint but is switched by the referenced profile's probing interval, which this manifest cannot see
         - the HTTPS health-check add-on bills per monitored endpoint but is switched by the referenced profile's monitor protocol, which this manifest cannot see
-        - the destination itself -- the Azure resource, external service, or child profile -- bills on its own kinds
+        - the destination itself -- the Azure resource, external service, or child profile -- bills on its own components
       notes: A disabled endpoint leaves DNS answers and stops being probed -- Traffic Manager charges per MONITORED endpoint, so the monthly fee stops with the monitoring while the configuration stays deletable-free. Traffic Manager traffic never transits the service -- clients get the destination's address from DNS and connect directly -- so the health-check fee is the endpoint's whole committed bill.

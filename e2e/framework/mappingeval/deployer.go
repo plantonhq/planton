@@ -143,7 +143,7 @@ func DeploySuite(t testing.TB, repoRoot, provider string, suite *mappingeval.Loa
 // TeardownSuite destroys deployed members in reverse order. One member's
 // destroy failure never stops the rest (stopping early would leak
 // everything deployed before it), but every failure is returned so the
-// caller FAILS the run -- a destroy that could not run means real cloud
+// caller FAILS the run -- a destroy that could not run means real provider
 // resources may still exist.
 func TeardownSuite(t testing.TB, deployed []DeployedMember) error {
 	var failures []error

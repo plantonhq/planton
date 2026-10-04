@@ -136,7 +136,7 @@ locals.CrdManifestURL = fmt.Sprintf(vars.CrdManifestURLFormat, locals.ChartVersi
 - **Version flexibility**: Users can deploy any Solr Operator version
 - **Explicit configuration**: Version is visible in the manifest specification
 - **Upgrade path**: Easy to test new versions before rolling out
-- **Consistency**: Same version mechanism can be applied to other operator components
+- **Consistency**: Same version mechanism can be applied to other operator kinds
 - **Clean IaC**: No hardcoded versions scattered across Terraform/Pulumi code
 
 ## Usage Examples
@@ -190,7 +190,7 @@ spec:
 
 - **Users**: Can now specify operator version in manifests
 - **Operations**: Easier version management and upgrades
-- **Consistency**: Pattern can be replicated to other Kubernetes operator components
+- **Consistency**: Pattern can be replicated to other Kubernetes operator kinds
 
 ## Related Work
 

@@ -1,6 +1,6 @@
 # AzureLinuxWebApp Terraform Module
 
-This directory contains the Terraform IaC implementation for the `AzureLinuxWebApp` component.
+This directory contains the Terraform IaC implementation for the `AzureLinuxWebApp` kind.
 
 ## Structure
 

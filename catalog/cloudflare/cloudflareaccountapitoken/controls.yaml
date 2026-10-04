@@ -44,7 +44,7 @@ spec:
       field_path: policies
       evidence:
         type: spec_default
-        reference: This kind IS an authorization surface -- each policy binds permission groups (allow or deny) to explicitly named account and zone resources, so least privilege is expressed here.
+        reference: This component IS an authorization surface -- each policy binds permission groups (allow or deny) to explicitly named account and zone resources, so least privilege is expressed here.
     - control_id: workload-identity
       status: configurable
       field_path: policies.permission_group_ids

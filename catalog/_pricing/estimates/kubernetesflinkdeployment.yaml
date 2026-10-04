@@ -32,5 +32,5 @@ spec:
         basis: 2 JobManagers x (250m CPU / 2Gi memory requests, 1000m CPU / 2Gi limits) from the spec-declared defaults (the modules apply them when the manifest omits resources); 4 TaskManagers x (1 CPU / 2Gi memory requests, 2 CPU / 4Gi limits)
       exclusions:
         - the dollar value of this capacity is the target cluster's node and storage-class economics
-        - object storage for checkpoints, savepoints, and HA metadata grows with the job's state size and checkpoint cadence; on a composed KubernetesSeaweedFs that capacity rides the SeaweedFS kind's own footprint
+        - object storage for checkpoints, savepoints, and HA metadata grows with the job's state size and checkpoint cadence; on a composed KubernetesSeaweedFs that capacity rides the SeaweedFS component's own footprint
       notes: the TaskManager count is stated from the job's parallelism at one slot per TaskManager (the Flink default) -- a taskmanager.numberOfTaskSlots entry in flink_configuration packs N slots per worker and divides the actual worker count, so the stated worker reservation is the one-slot ceiling with job_manager.resources omitted the modules deploy the CR default of 1 CPU / 2Gi for the JobManager -- a reservation this footprint cannot see

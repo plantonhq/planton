@@ -1,7 +1,7 @@
 # AzureMssqlFailoverGroup - Terraform Module
 
-Terraform implementation for the AzureMssqlFailoverGroup deployment
-component.
+Terraform implementation for the AzureMssqlFailoverGroup
+kind.
 
 ## Resources Created
 

@@ -31,7 +31,7 @@ spec:
       total_list_cost: "438.0000"
       exclusions:
         - experiment metadata stored ON the tracking server (runs, params, metrics) bills $0.10 per GB-month as tracking activity accumulates -- workload-driven, near zero at creation, invisible to this manifest
-        - MLflow artifacts (model files, run outputs) bill S3 storage and requests at the artifact_store_uri location, on the bucket's own kind
+        - MLflow artifacts (model files, run outputs) bill S3 storage and requests at the artifact_store_uri location, on the bucket's own component
         - data transfer out of the region follows client traffic
       notes: Estimated at the full month -- dedicated hourly capacity with no pause; deleting the server is the only off switch, and the artifacts survive deletion in the customer's S3 bucket.
     - preset: 02-regulated-experiment-tracking
@@ -51,7 +51,7 @@ spec:
       total_list_cost: "759.2000"
       exclusions:
         - experiment metadata stored ON the tracking server (runs, params, metrics) bills $0.10 per GB-month as tracking activity accumulates -- workload-driven, near zero at creation, invisible to this manifest
-        - MLflow artifacts (model files, run outputs) bill S3 storage and requests at the artifact_store_uri location, on the bucket's own kind
+        - MLflow artifacts (model files, run outputs) bill S3 storage and requests at the artifact_store_uri location, on the bucket's own component
         - models auto-registered into the SageMaker Model Registry add no registry charge -- the registry is free
         - data transfer out of the region follows client traffic
       notes: Estimated at the full month -- dedicated hourly capacity with no pause; deleting the server is the only off switch, and the artifacts survive deletion in the customer's S3 bucket.

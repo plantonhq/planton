@@ -55,7 +55,7 @@ type GcpCloudComposerUserWorkloadsSecretSpec struct {
 	// The Secret's key-value entries. Values MUST be base64-encoded
 	// (Kubernetes Secret semantics — e.g. `echo -n 'postgresql://...' |
 	// base64`); the API rejects raw values. The decoded material (Airflow
-	// connection URIs, passwords, tokens) is never placed in stack
+	// connection URIs, passwords, tokens) is never placed in
 	// outputs, and the entries are held as secrets in IaC state.
 	Data map[string]string `protobuf:"bytes,5,rep,name=data,proto3" json:"data,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
 	// Deletion policy for the Secret — what happens when this resource is

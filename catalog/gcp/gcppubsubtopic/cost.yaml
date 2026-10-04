@@ -26,7 +26,7 @@ spec:
       impact: Pinning persistence regions makes Pub/Sub route messages published elsewhere into an allowed region -- and the topic's project is billed inter-region data transfer for every rerouted message. enforce_in_transit rejects out-of-region publishes outright, trading availability for residency without a transfer fee.
     - field_path: kms_key_name
       sku_meter: Cloud KMS cryptographic operations
-      impact: CMEK topics call the referenced key to encrypt and decrypt message batches; those operations bill on the GcpKmsKey kind, not here. A disabled or revoked key stops publishes entirely -- the cost is availability, not just money.
+      impact: CMEK topics call the referenced key to encrypt and decrypt message batches; those operations bill on the GcpKmsKey component, not here. A disabled or revoked key stops publishes entirely -- the cost is availability, not just money.
   estimate_exclusions:
     - publish throughput bills as Message Delivery at $40/TiB after the billing account's first 10 GiB each calendar month (Google's stated free allotment) -- an idle topic bills nothing
     - retained bytes follow traffic multiplied by the retention window; delivery throughput and backlog storage bill on the subscription components

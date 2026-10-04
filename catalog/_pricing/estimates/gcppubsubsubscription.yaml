@@ -27,7 +27,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - push delivery bills as Message Delivery at $40/TiB after the monthly free 10 GiB -- OIDC token minting adds no Pub/Sub rate
-        - the consumer Cloud Run service's request handling bills on its own kind; delivery to a consumer in another region adds inter-region data-transfer fees to this project
+        - the consumer Cloud Run service's request handling bills on its own component; delivery to a consumer in another region adds inter-region data-transfer fees to this project
       notes: Zero committed at creation -- authenticated webhook delivery costs the same as anonymous; the spend follows the event volume pushed.
     - preset: 03-bigquery-delivery
       region_assumption: us-central1
@@ -36,7 +36,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - BigQuery delivery bills subscription throughput at $50/TiB with NO monthly free allotment -- every delivered byte meters from the first
-        - BigQuery storage on the written rows (and any later queries) bills on the table's kind; Pub/Sub adds no separate BigQuery ingestion charge
+        - BigQuery storage on the written rows (and any later queries) bills on the table's component; Pub/Sub adds no separate BigQuery ingestion charge
       notes: Zero committed at creation -- the managed export premium ($50/TiB vs $40, no free tier) starts with the first message written to the table.
     - preset: 04-dead-letter
       region_assumption: us-central1
@@ -46,5 +46,5 @@ spec:
       exclusions:
         - pull delivery bills $40/TiB after the monthly free 10 GiB; exactly-once delivery and the retry backoff add no rate
         - retain_acked_messages with the 14-day window bills message storage at $0.27/GiB-month on everything delivered and kept -- Google's priciest retention mechanism, chosen here deliberately for payment replay
-        - messages dead-lettered after 10 failed attempts land on the DLQ topic and bill onward on that topic's and its subscriptions' kinds
+        - messages dead-lettered after 10 failed attempts land on the DLQ topic and bill onward on that topic's and its subscriptions' components
       notes: Zero committed at creation -- at steady state the acked-retention storage is the preset's real cost line, roughly two weeks of delivered volume priced per GiB-month, and it scales with traffic, not time.

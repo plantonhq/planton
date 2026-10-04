@@ -11,7 +11,7 @@ spec:
     - service_name: ExpressRoute
       sku_meter: circuit fee
       pricing_unit: circuit-months
-      description: A service-provider circuit bills a flat monthly fee set by bandwidth, SKU tier, and billing family -- 436.00 for Standard Metered 1 Gbps, 1200.00 for Local Unlimited 1 Gbps in Zone 1 at list -- from the moment the service key is issued, even while the provider side sits unprovisioned. The fee covers a redundant port PAIR and is priced by the peering FACILITY's zone (Zone 1 through 4), not the ARM region. Circuits on an ExpressRoute Direct port are different -- Local and Standard circuit fees are included in the port's fee, billed on the AzureExpressRoutePort kind.
+      description: A service-provider circuit bills a flat monthly fee set by bandwidth, SKU tier, and billing family -- 436.00 for Standard Metered 1 Gbps, 1200.00 for Local Unlimited 1 Gbps in Zone 1 at list -- from the moment the service key is issued, even while the provider side sits unprovisioned. The fee covers a redundant port PAIR and is priced by the peering FACILITY's zone (Zone 1 through 4), not the ARM region. Circuits on an ExpressRoute Direct port are different -- Local and Standard circuit fees are included in the port's fee, billed on the AzureExpressRoutePort component.
   cost_drivers:
     - field_path: bandwidth_in_mbps
       sku_meter: circuit fee
@@ -32,7 +32,7 @@ spec:
     - field_path: express_route_port_id
       sku_meter: circuit fee
       pricing_unit: circuit-months
-      impact: Direct mode moves the committed money OFF this component -- Local and Standard circuit fees are included in the port's monthly fee (billed on the AzureExpressRoutePort kind), so the circuit itself commits nothing; only a PREMIUM circuit on a Direct port adds its own monthly fee here.
+      impact: Direct mode moves the committed money OFF this component -- Local and Standard circuit fees are included in the port's monthly fee (billed on the AzureExpressRoutePort component), so the circuit itself commits nothing; only a PREMIUM circuit on a Direct port adds its own monthly fee here.
     - field_path: bandwidth_in_gbps
       sku_meter: circuit fee
       pricing_unit: circuit-months

@@ -11,7 +11,7 @@ spec:
   controls:
     - control_id: enc-at-rest
       status: not_applicable
-      notes: The topic's messages rest on the Kafka brokers' persistent volumes; encryption of that storage is the Kafka cluster's and its storage classes' property, owned by the KubernetesKafka kind, not a seam of this spec.
+      notes: The topic's messages rest on the Kafka brokers' persistent volumes; encryption of that storage is the Kafka cluster's and its storage classes' property, owned by the KubernetesKafka component, not a seam of this spec.
     - control_id: enc-at-rest-cmk
       status: not_applicable
       notes: Customer-managed keys for the brokers' volumes are configured on the cluster's storage (see enc-at-rest); this spec has no seam for them.
@@ -44,7 +44,7 @@ spec:
       notes: Changes to the topic resource are Kubernetes API operations, captured by the target cluster's audit policy; data-plane access auditing is a Kafka broker concern owned by the cluster component.
     - control_id: monitoring-integration
       status: not_applicable
-      notes: Per-topic metrics (size, throughput, under-replicated partitions) are exported by the Kafka brokers and the topic operator, owned by the KubernetesKafka kind; this resource only surfaces reconcile status.
+      notes: Per-topic metrics (size, throughput, under-replicated partitions) are exported by the Kafka brokers and the topic operator, owned by the KubernetesKafka component; this resource only surfaces reconcile status.
     - control_id: backup-recovery
       status: not_applicable
       notes: The resource is declarative, but the DATA it names is not backed up through any seam here -- Kafka's native durability is replication (see multi-zone-ha), and topic-level backup (MirrorMaker replication, sink connectors to object storage) is separate machinery.
@@ -57,7 +57,7 @@ spec:
       evidence:
         type: spec_default
         reference: Empty inherits the cluster's default.replication.factor; setting 3 hosts each partition on three brokers with automatic leader failover, the production norm paired with min.insync.replicas=2 in config to survive one broker loss without losing acknowledged writes. The topic operator rejects a factor exceeding the broker count at reconcile time.
-      notes: Replication counts BROKERS; whether those brokers sit in distinct zones is the Kafka cluster's placement (rack awareness, broker anti-affinity), owned by the KubernetesKafka kind. The 03-high-throughput preset runs replicas 3.
+      notes: Replication counts BROKERS; whether those brokers sit in distinct zones is the Kafka cluster's placement (rack awareness, broker anti-affinity), owned by the KubernetesKafka component. The 03-high-throughput preset runs replicas 3.
     - control_id: deletion-protection
       status: not_applicable
       notes: Neither Kubernetes nor Strimzi offers a deletion-protection flag on KafkaTopic -- and deleting the resource propagates deletion of the TOPIC AND ITS DATA through the topic operator, which makes operational protection (namespace RBAC, change review) genuinely load-bearing here.

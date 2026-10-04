@@ -49,7 +49,7 @@ spec:
       notes: The component itself enforces no end-user sign-in -- it packages no human sign-in surface; any credentials it carries are workload or administrative access, whose posture rbac and workload-identity carry.
     - control_id: audit-logging
       status: not_applicable
-      notes: The spec exposes no audit surface of its own. Organizations management calls are recorded by AWS CloudTrail as account-level posture -- and granting cloudtrail.amazonaws.com trusted access here is the prerequisite for an ORGANIZATION trail capturing every member account, which lives on the AwsCloudtrail kind.
+      notes: The spec exposes no audit surface of its own. Organizations management calls are recorded by AWS CloudTrail as account-level posture -- and granting cloudtrail.amazonaws.com trusted access here is the prerequisite for an ORGANIZATION trail capturing every member account, which lives on the AwsCloudtrail component.
     - control_id: monitoring-integration
       status: not_applicable
       notes: Organizations publishes no CloudWatch metrics for the organization object; change signals (account joins, policy attachments) surface through CloudTrail events, an account-level integration outside this spec and the modules.

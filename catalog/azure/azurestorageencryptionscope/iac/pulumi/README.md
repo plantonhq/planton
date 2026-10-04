@@ -1,7 +1,7 @@
 # AzureStorageEncryptionScope - Pulumi Module
 
-Pulumi implementation for the AzureStorageEncryptionScope deployment
-component.
+Pulumi implementation for the AzureStorageEncryptionScope
+kind.
 
 ## Architecture
 

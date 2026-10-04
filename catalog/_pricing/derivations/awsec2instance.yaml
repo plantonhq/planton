@@ -157,7 +157,7 @@ spec:
           value: unlimited
       text: surplus CPU credits on a burstable type bill per vCPU-hour when sustained load outruns the credit balance
     - text: data transfer between AZs and out of the region follows the workload's traffic
-    - text: EBS snapshots taken of the volumes bill per GB-month outside this kind
+    - text: EBS snapshots taken of the volumes bill per GB-month outside this component
   notes:
     - applies_when:
         - field_path: market_type

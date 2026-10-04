@@ -39,7 +39,7 @@ spec:
           list_cost: "0.7500"
       total_list_cost: "2.7500"
       exclusions:
-        - the probed endpoint's own infrastructure, and any Route 53 hosted zones or DNS records the check gates, bill as their own kinds -- this fee covers only the health check itself
+        - the probed endpoint's own infrastructure, and any Route 53 hosted zones or DNS records the check gates, bill as their own components -- this fee covers only the health check itself
       notes: Health-check fees are global -- one published rate regardless of the manifest's region -- and prorated for partial months. If the probed target is an AWS resource in (or billed to) this account, the basic fee drops to the AWS-endpoint rate (with the first 50 such checks free) and each optional feature bills at half the non-AWS feature rate -- this estimate states the conservative non-AWS class.
     - preset: 02-cloudwatch-alarm
       region_assumption: us-east-1
@@ -57,6 +57,6 @@ spec:
           list_cost: "0.5000"
       total_list_cost: "0.5000"
       exclusions:
-        - the probed endpoint's own infrastructure, and any Route 53 hosted zones or DNS records the check gates, bill as their own kinds -- this fee covers only the health check itself
-        - the mirrored CloudWatch alarm and its metrics bill on CloudWatch, outside this kind
+        - the probed endpoint's own infrastructure, and any Route 53 hosted zones or DNS records the check gates, bill as their own components -- this fee covers only the health check itself
+        - the mirrored CloudWatch alarm and its metrics bill on CloudWatch, outside this component
       notes: Health-check fees are global -- one published rate regardless of the manifest's region -- and prorated for partial months.

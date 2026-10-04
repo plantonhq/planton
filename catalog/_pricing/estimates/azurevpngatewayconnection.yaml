@@ -31,7 +31,7 @@ spec:
       total_list_cost: "36.5000"
       exclusions:
         - data leaving Azure through the tunnels bills at standard data-transfer rates and follows traffic
-        - the gateway's scale units (capacity) bill on the AzureVpnGateway kind; the hub's deployment hours and data processing bill on the AzureVirtualHub
+        - the gateway's scale units (capacity) bill on the AzureVpnGateway component; the hub's deployment hours and data processing bill on the AzureVirtualHub
     - preset: 02-pinned-ipsec-connection
       region_assumption: eastus
       currency: USD
@@ -49,4 +49,4 @@ spec:
       total_list_cost: "36.5000"
       exclusions:
         - data leaving Azure through the tunnels bills at standard data-transfer rates and follows traffic
-        - the gateway's scale units (capacity) bill on the AzureVpnGateway kind; the hub's deployment hours and data processing bill on the AzureVirtualHub
+        - the gateway's scale units (capacity) bill on the AzureVpnGateway component; the hub's deployment hours and data processing bill on the AzureVirtualHub

@@ -1,7 +1,7 @@
 # AzurePostgresqlFlexibleServer - Terraform Module
 
-Terraform implementation for the AzurePostgresqlFlexibleServer deployment
-component.
+Terraform implementation for the AzurePostgresqlFlexibleServer
+kind.
 
 ## Resources Created
 

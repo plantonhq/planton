@@ -35,7 +35,7 @@ spec:
     - applies_when:
         - field_path: state.checkpoints_dir
           op: is_set
-      text: object storage for checkpoints, savepoints, and HA metadata grows with the job's state size and checkpoint cadence; on a composed KubernetesSeaweedFs that capacity rides the SeaweedFS kind's own footprint
+      text: object storage for checkpoints, savepoints, and HA metadata grows with the job's state size and checkpoint cadence; on a composed KubernetesSeaweedFs that capacity rides the SeaweedFS component's own footprint
     - applies_when:
         - field_path: job
           op: is_unset

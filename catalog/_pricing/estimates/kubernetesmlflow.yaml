@@ -23,5 +23,5 @@ spec:
         - the dollar value of this capacity is the target cluster's node and storage-class economics
         - a backend or artifact pvc block declared without a size is stated at its 5Gi or 10Gi spec-declared default; with no pvc block at all the modules still provision the volume, a reservation this footprint cannot count
         - object storage in the configured artifact bucket grows with every logged model and dataset
-        - the external backend store is a separate kind whose capacity rides its own footprint
+        - the external backend store is a separate component whose capacity rides its own footprint
         - the gc CronJob pod reserves capacity only while a scheduled run executes

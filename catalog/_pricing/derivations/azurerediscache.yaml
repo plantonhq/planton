@@ -65,12 +65,12 @@ spec:
         - field_path: redis_configuration.rdb_backup_enabled
           op: equals
           value: "true"
-      text: RDB snapshot storage and transactions bill on the persistence storage account's own kind
+      text: RDB snapshot storage and transactions bill on the persistence storage account's own component
     - applies_when:
         - field_path: redis_configuration.aof_backup_enabled
           op: equals
           value: "true"
-      text: AOF write-log storage and transactions bill on the persistence storage accounts' own kinds
+      text: AOF write-log storage and transactions bill on the persistence storage accounts' own components
     - applies_when:
         - field_path: zones
           op: is_set

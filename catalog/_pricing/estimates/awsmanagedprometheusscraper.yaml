@@ -31,7 +31,7 @@ spec:
       total_list_cost: "29.2000"
       exclusions:
         - metric samples collected bill $0.03 per 10M (us-east-1) on top of collector hours -- volume follows scrape_interval and target count in the scrape configuration and the size of the scraped fleet
-        - ingestion, storage, and query charges for the delivered metrics bill on the destination AMP workspace, not on this kind (the workspace's first 40M ingested samples per month are free, then tiered from $0.90 per 10M)
+        - ingestion, storage, and query charges for the delivered metrics bill on the destination AMP workspace, not on this component (the workspace's first 40M ingested samples per month are free, then tiered from $0.90 per 10M)
       notes: Creates run long (up to 30 minutes of collector provisioning) and deletes drain (up to 20) -- the meter follows the collector's existence, so the first and last partial hours are billed like any others.
     - preset: 02-vpc-static-targets
       region_assumption: us-east-1
@@ -50,5 +50,5 @@ spec:
       total_list_cost: "29.2000"
       exclusions:
         - metric samples collected bill $0.03 per 10M (us-east-1) on top of collector hours -- volume follows scrape_interval and target count in the scrape configuration and the size of the scraped fleet
-        - ingestion, storage, and query charges for the delivered metrics bill on the destination AMP workspace, not on this kind (the workspace's first 40M ingested samples per month are free, then tiered from $0.90 per 10M)
+        - ingestion, storage, and query charges for the delivered metrics bill on the destination AMP workspace, not on this component (the workspace's first 40M ingested samples per month are free, then tiered from $0.90 per 10M)
       notes: Creates run long (up to 30 minutes of collector provisioning) and deletes drain (up to 20) -- the meter follows the collector's existence, so the first and last partial hours are billed like any others.

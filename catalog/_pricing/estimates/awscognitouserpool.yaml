@@ -38,7 +38,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - the pinned PLUS tier (required for ENFORCED threat protection) bills every monthly active user from the first -- PLUS has no free allotment, so the first sign-in of the month starts the meter at the highest per-MAU rate
-        - MFA, verification, and invitation email route through the referenced SES identity at SES per-message rates on that kind
+        - MFA, verification, and invitation email route through the referenced SES identity at SES per-message rates on that component
         - if SMS factors are added later, every code the pool texts rides SNS per-message rates on the account -- the classic Cognito bill surprise
       notes: Zero committed cost -- hardening is free at rest; what PLUS removes is the free tier, not the usage gate, so an idle month still bills zero.
     - preset: 04-threat-protected

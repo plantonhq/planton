@@ -58,7 +58,7 @@ const (
 // for anything real, bring a custom `security.config` (your own
 // internal_users.yml and admin credentials) or rotate the admin
 // password through the security API immediately after install.
-// Clients read credentials from the Secret named in the stack
+// Clients read credentials from the Secret named in the
 // outputs — no credential ever appears in this spec unless you bring
 // your own security config.
 //

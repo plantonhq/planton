@@ -584,7 +584,7 @@ spec:
         - field_path: logging_configuration
           op: is_set
       text: CloudWatch Logs ingestion and storage for the enabled log modules depend on log level and DAG volume
-    - text: the DAG source bucket, execution role, and KMS key bill on their own kinds
+    - text: the DAG source bucket, execution role, and KMS key bill on their own components
   notes:
     - text: Estimated at the scaling floors -- the committed always-on spend; the environment fee already includes one worker, two schedulers, and two web servers.
     - applies_when:

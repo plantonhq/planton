@@ -1,6 +1,6 @@
 # AzureRedisLinkedServer - Pulumi Module
 
-Pulumi implementation for the AzureRedisLinkedServer component.
+Pulumi implementation for the AzureRedisLinkedServer kind.
 
 ## Architecture
 

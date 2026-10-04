@@ -229,7 +229,7 @@ spec:
     - applies_when:
         - field_path: s3_import
           op: is_set
-      text: the one-time S3 restore transfer and the source backup bucket's storage bill outside this kind
+      text: the one-time S3 restore transfer and the source backup bucket's storage bill outside this component
   notes:
     - applies_when:
         - field_path: replicate_source_db

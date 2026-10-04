@@ -34,7 +34,7 @@ spec:
     - requirement_id: "CC6.6"
       requirement_name: The entity implements logical access security measures to protect against threats from sources outside its system boundaries.
       control_ids: [no-public-access, restricted-ingress, edge-protection]
-      notes: Boundary protection at the kind grain -- no public exposure, declared ingress sources, and edge request filtering.
+      notes: Boundary protection at the component grain -- no public exposure, declared ingress sources, and edge request filtering.
     - requirement_id: "CC6.7"
       requirement_name: The entity restricts the transmission, movement, and removal of information to authorized internal and external users and processes, and protects it during transmission, movement, or removal to meet the entity's objectives.
       control_ids: [enc-in-transit]
@@ -42,23 +42,23 @@ spec:
     - requirement_id: "CC7.1"
       requirement_name: To meet its objectives, the entity uses detection and monitoring procedures to identify (1) changes to configurations that result in the introduction of new vulnerabilities, and (2) susceptibilities to newly discovered vulnerabilities.
       control_ids: [monitoring-integration]
-      notes: The kind's exported metrics and security-relevant runtime signals are what the entity's detection and monitoring procedures consume.
+      notes: The component's exported metrics and security-relevant runtime signals are what the entity's detection and monitoring procedures consume.
     - requirement_id: "CC7.2"
       requirement_name: The entity monitors system components and the operation of those components for anomalies that are indicative of malicious acts, natural disasters, and errors affecting the entity's ability to meet its objectives; anomalies are analyzed to determine whether they represent security events.
       control_ids: [monitoring-integration, audit-logging]
-      notes: Anomaly monitoring consumes the kind's exported operational signals; audit logs capture the administrative and access events anomalies are analyzed against.
+      notes: Anomaly monitoring consumes the component's exported operational signals; audit logs capture the administrative and access events anomalies are analyzed against.
     - requirement_id: "CC7.3"
       requirement_name: The entity evaluates security events to determine whether they could or have resulted in a failure of the entity to meet its objectives (security incidents) and, if so, takes actions to prevent or address such failures.
       control_ids: [audit-logging]
-      notes: Evaluation itself is the entity's process; the kind's contribution is the captured audit trail that evaluation consumes.
+      notes: Evaluation itself is the entity's process; the component's contribution is the captured audit trail that evaluation consumes.
     - requirement_id: "CC8.1"
       requirement_name: The entity authorizes, designs, develops or acquires, configures, documents, tests, approves, and implements changes to infrastructure, data, software, and procedures to meet its objectives.
       control_ids: [managed-patching, deletion-protection]
-      notes: The criterion's Manages Patch Changes point of focus (added 2022) names patch identification, testing, and implementation; deletion protection enforces explicit authorization before the most destructive change a kind accepts.
+      notes: The criterion's Manages Patch Changes point of focus (added 2022) names patch identification, testing, and implementation; deletion protection enforces explicit authorization before the most destructive change a component accepts.
     - requirement_id: "A1.1"
       requirement_name: The entity maintains, monitors, and evaluates current processing capacity and use of system components (infrastructure, data, and software) to manage capacity demand and to enable the implementation of additional capacity to help meet its objectives.
       control_ids: [monitoring-integration]
-      notes: Capacity evaluation consumes the kind's exported operational metrics; capacity planning itself is the entity's process.
+      notes: Capacity evaluation consumes the component's exported operational metrics; capacity planning itself is the entity's process.
     - requirement_id: "A1.2"
       requirement_name: The entity authorizes, designs, develops or acquires, implements, operates, approves, maintains, and monitors environmental protections, software, data backup processes, and recovery infrastructure to meet its objectives.
       control_ids: [backup-recovery, backup-retention-policy, multi-zone-ha]

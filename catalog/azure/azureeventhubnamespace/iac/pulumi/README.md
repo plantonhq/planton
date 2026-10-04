@@ -1,7 +1,7 @@
 # AzureEventHubNamespace - Pulumi Module
 
-Pulumi (Go) implementation for the AzureEventHubNamespace deployment
-component, at 100% behavioral parity with the Terraform module.
+Pulumi (Go) implementation for the AzureEventHubNamespace
+kind, at 100% behavioral parity with the Terraform module.
 
 ## Resources Created
 

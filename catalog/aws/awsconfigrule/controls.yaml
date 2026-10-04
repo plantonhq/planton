@@ -36,7 +36,7 @@ spec:
         reference: Every rule operation -- create, update, delete, remediation changes -- is IAM-authorized. Organization rules are additionally locked to the management account or Config delegated administrator; member accounts receive them and cannot modify them.
     - control_id: workload-identity
       status: not_applicable
-      notes: The rule itself runs no workload with credentials. A custom-lambda rule's evaluation code executes under the referenced function's execution role -- workload identity governed on the AwsLambda kind -- and Guard custom-policy rules run entirely inside AWS Config's engine.
+      notes: The rule itself runs no workload with credentials. A custom-lambda rule's evaluation code executes under the referenced function's execution role -- workload identity governed on the AwsLambda component -- and Guard custom-policy rules run entirely inside AWS Config's engine.
     - control_id: no-legacy-auth
       status: not_applicable
       notes: AWS Config has a single authentication path -- SigV4-signed IAM requests; no legacy or weaker protocol exists to disable.

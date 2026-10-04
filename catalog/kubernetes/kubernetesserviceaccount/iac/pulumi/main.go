@@ -1,4 +1,4 @@
-// Pulumi entrypoint for the KubernetesServiceAccount component.
+// Pulumi entrypoint for the KubernetesServiceAccount kind.
 // Loads the IaC input and delegates all resource creation to the module package.
 package main
 

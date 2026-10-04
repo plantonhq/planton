@@ -28,7 +28,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - queries bill per TB scanned as they run; the enforced 10 GiB bytes_scanned_cutoff_per_query cancels any query that would scan past the limit, capping the worst single-query bill rather than starting a meter
-        - SSE-KMS result encryption bills the KMS key's requests on the key's own kind -- Athena adds no encryption rate
+        - SSE-KMS result encryption bills the KMS key's requests on the key's own component -- Athena adds no encryption rate
         - result sets bill S3 storage and requests on the configured results bucket
       notes: Zero committed cost -- encryption and the scan cutoff are posture and brakes, not rates; spend still follows query volume alone.
     - preset: 03-spark-workgroup
@@ -38,7 +38,7 @@ spec:
       total_list_cost: "0.00"
       exclusions:
         - the wired execution role swaps the meter to Apache Spark -- sessions bill per DPU-hour while the driver and workers run, clocked by session lifetime rather than data scanned
-        - the customer-content KMS key bills its requests on the key's own kind
+        - the customer-content KMS key bills its requests on the key's own component
         - notebook results written to the configured S3 location bill on that bucket
       notes: Zero committed cost -- a Spark-enabled workgroup with no sessions running bills nothing; the DPU-hour meter starts when a notebook opens a session and runs until it closes.
     - preset: 04-managed-results-zero-bucket

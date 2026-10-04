@@ -73,7 +73,7 @@ spec:
       text: backup storage bills per GB-month of incremental backup data actually retained across the file system's volumes -- churn across the retention window drives it
     - text: capacity pool storage bills per GB-month actually consumed as volumes tier cold data (a tiering_policy decision on AwsFsxOntapVolume), plus per-operation request charges whenever tiered data is accessed
     - text: data transfer when clients access the file system from an Availability Zone other than the preferred one is traffic-dependent
-    - text: S3 Access Point requests and bandwidth against the file system bill on S3's own meters, outside this kind
+    - text: S3 Access Point requests and bandwidth against the file system bill on S3's own meters, outside this component
   notes:
     - applies_when:
         - field_path: deployment_type

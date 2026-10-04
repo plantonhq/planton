@@ -37,7 +37,7 @@ spec:
       status: enforced_by_default
       evidence:
         type: provider_default
-        reference: This kind IS the keyless-identity control's foundation -- the trust boundary external identities (CI systems, other clouds, on-prem estates) federate into without any service-account keys. FEDERATION_ONLY pools exchange external tokens for short-lived GCP credentials; TRUST_DOMAIN pools issue managed identities and mTLS certificates to Google Cloud workloads. No static credential exists anywhere in the path.
+        reference: This component IS the keyless-identity control's foundation -- the trust boundary external identities (CI systems, other clouds, on-prem estates) federate into without any service-account keys. FEDERATION_ONLY pools exchange external tokens for short-lived GCP credentials; TRUST_DOMAIN pools issue managed identities and mTLS certificates to Google Cloud workloads. No static credential exists anywhere in the path.
       notes: "Two levers tighten the posture: disabled is the emergency kill switch -- a disabled pool rejects all token exchanges and existing tokens stop granting access, reversibly; attestation_rules (TRUST_DOMAIN, max 50) allowlist exactly which Google Cloud workloads may receive a managed identity. GCP applies attestation rules through a second API call after pool create, so a failed apply can leave a pool without its rules -- re-apply converges."
     - control_id: no-legacy-auth
       status: not_applicable

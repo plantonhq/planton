@@ -31,7 +31,7 @@ spec:
       total_list_cost: "29.2000"
       exclusions:
         - data written and data read bill per GB and follow traffic entirely -- the usually dominant part of an on-demand bill
-        - enhanced fan-out consumers bill consumer-shard hours and retrieved GB on their own AwsKinesisStreamConsumer kinds
+        - enhanced fan-out consumers bill consumer-shard hours and retrieved GB on their own AwsKinesisStreamConsumer components
       notes: Only the stream-hour fee is committed at manifest time; the real bill follows the data written and read.
     - preset: 02-provisioned-encrypted
       region_assumption: us-east-1
@@ -60,8 +60,8 @@ spec:
       exclusions:
         - if retention_period_hours exceeds 168, data older than 7 days bills long-term storage per GB-month plus a per-GB retrieval charge when read back -- both data-volume-dependent
         - PUT payload units bill per million units and follow write volume
-        - KMS request charges follow record volume, and a customer-managed key bills its monthly fee on its own AwsKmsKey kind
-        - enhanced fan-out consumers bill consumer-shard hours and retrieved GB on their own AwsKinesisStreamConsumer kinds
+        - KMS request charges follow record volume, and a customer-managed key bills its monthly fee on its own AwsKmsKey component
+        - enhanced fan-out consumers bill consumer-shard hours and retrieved GB on their own AwsKinesisStreamConsumer components
       notes: The committed floor is exact -- shards times hours, plus the retention surcharge. Traffic above shard capacity throttles rather than bills; resizing shard_count is the cost lever.
     - preset: 03-production-analytics
       region_assumption: us-east-1
@@ -83,6 +83,6 @@ spec:
         - on-demand extended retention (data 1-7 days old) bills per GB-month on the data actually stored -- data-volume-dependent
         - if retention_period_hours exceeds 168, data older than 7 days bills long-term storage per GB-month plus a per-GB retrieval charge when read back -- both data-volume-dependent
         - enhanced shard-level metrics bill CloudWatch custom-metric charges per enabled metric per shard
-        - KMS request charges follow record volume, and a customer-managed key bills its monthly fee on its own AwsKmsKey kind
-        - enhanced fan-out consumers bill consumer-shard hours and retrieved GB on their own AwsKinesisStreamConsumer kinds
+        - KMS request charges follow record volume, and a customer-managed key bills its monthly fee on its own AwsKmsKey component
+        - enhanced fan-out consumers bill consumer-shard hours and retrieved GB on their own AwsKinesisStreamConsumer components
       notes: Only the stream-hour fee is committed at manifest time; the real bill follows the data written and read.

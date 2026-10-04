@@ -31,8 +31,8 @@ spec:
       total_list_cost: "912.5000"
       exclusions:
         - data processing bills every GB the firewall inspects at the tier's per-GB rate -- the variable half of every firewall bill, following traffic
-        - the referenced public IPs bill hourly on their own kinds
-        - the attached AzureFirewallPolicy carries its own billing rules on its own kind
+        - the referenced public IPs bill hourly on their own components
+        - the attached AzureFirewallPolicy carries its own billing rules on its own component
         - prescaled capacity units are an opt-in reservation configured outside this spec; by default the firewall bills no capacity-unit charges
       notes: Zone redundancy is free on Azure Firewall -- spanning availability zones changes availability posture, not the deployment meter.
     - preset: 02-forced-tunneling
@@ -52,7 +52,7 @@ spec:
       total_list_cost: "912.5000"
       exclusions:
         - data processing bills every GB the firewall inspects at the tier's per-GB rate -- the variable half of every firewall bill, following traffic
-        - the referenced public IPs bill hourly on their own kinds
-        - the attached AzureFirewallPolicy carries its own billing rules on its own kind
+        - the referenced public IPs bill hourly on their own components
+        - the attached AzureFirewallPolicy carries its own billing rules on its own component
         - prescaled capacity units are an opt-in reservation configured outside this spec; by default the firewall bills no capacity-unit charges
       notes: Zone redundancy is free on Azure Firewall -- spanning availability zones changes availability posture, not the deployment meter.
