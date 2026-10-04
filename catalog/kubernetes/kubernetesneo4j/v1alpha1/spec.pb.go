@@ -683,7 +683,7 @@ type KubernetesNeo4JSslScope struct {
 	// Existing TLS Secret (private.key + public.crt). Accepts a
 	// literal name or a KubernetesCertificate reference — the
 	// cert-manager seam (cert-manager Secrets carry tls.key/tls.crt;
-	// see the component docs for the key-name bridge).
+	// see the kind's docs for the key-name bridge).
 	Secret        *v1.StringValueOrRef `protobuf:"bytes,1,opt,name=secret,proto3" json:"secret,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache

@@ -7,7 +7,7 @@ import "catalog/aws/provider.proto";
 
 // aws-fsx-ontap-file-system iac-input
 message AwsFsxOntapFileSystemIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsFsxOntapFileSystem target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

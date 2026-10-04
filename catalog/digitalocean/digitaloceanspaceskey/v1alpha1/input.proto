@@ -7,7 +7,7 @@ import "catalog/digitalocean/provider.proto";
 
 //digital-ocean-spaces-key iac-input
 message DigitalOceanSpacesKeyIacInput {
-  //target infra-component
+  // the catalog object to deploy
   DigitalOceanSpacesKey target = 1;
   //provider-config
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;

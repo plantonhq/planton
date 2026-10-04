@@ -1,6 +1,6 @@
 // Failure-mode verification capabilities -- optional Harness extensions the
 // runner discovers by type assertion. They exist for scenarios whose PROOF is a
-// deliberate, precisely-attributed failure: a kind deployed with a
+// deliberate, precisely-attributed failure: a component deployed with a
 // credential that a real service rejects (the canonical case: a Planton runner
 // appliance with a fake enrollment token). The evidence bar is cause-pinning
 // with the provider's own APIs -- "everything worked except exactly the thing

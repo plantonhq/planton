@@ -6,7 +6,7 @@ It builds the object from the manifest's projection (`pkg/iac/pulumi/pulumimodul
 
 ## Prerequisites
 
-- The prometheus-operator CRDs on the cluster (see the `KubernetesKubePrometheusStack` component).
+- The prometheus-operator CRDs on the cluster (see the `KubernetesKubePrometheusStack` kind).
 - A Prometheus whose PodMonitor selector matches the object, for the pods to be scraped. The object applies with only the CRDs present.
 - The target namespace (see `KubernetesNamespace`).
 - Go toolchain and the Pulumi CLI, and access to the target cluster.

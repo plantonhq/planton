@@ -27,7 +27,7 @@ const (
 // to the IaC engine.
 type KubernetesReferenceGrantIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Target infra-component.
+	// the catalog object to deploy.
 	Target *KubernetesReferenceGrant `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// Kubernetes provider configuration (cluster credentials).
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`

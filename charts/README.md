@@ -112,7 +112,7 @@ components in this repo.
   parameter, or the deploying environment's default.
 - **Documentation is part of the artifact.** Template comments, parameter
   descriptions, and READMEs render publicly and are held to the same bar as
-  the component schemas' field comments.
+  the kind's schemas' field comments.
 - **No hardcoded provisioner.** Chart resources must not carry a
   `planton.dev/provisioner` annotation. The IaC provisioner (OpenTofu vs
   Pulumi) is a property of the deployment target, resolved from the

@@ -34,7 +34,7 @@ import (
 //   - It inherits the process environment (cloud CLI logins, ARM_* exports)
 //     plus E2E_RUN_ID (engine-scoped), E2E_SCENARIO, and E2E_SETUP_OUTPUT
 //     (see below).
-//   - A non-zero exit fails the lane BEFORE the kind deploys; the
+//   - A non-zero exit fails the lane BEFORE the component deploys; the
 //     dependency chain still tears down.
 //   - It must be IDEMPOTENT per lane (an in-lane retry may re-run it) and
 //     must seed ONLY into fixture-owned resources, so DEPENDENCIES-DOWN

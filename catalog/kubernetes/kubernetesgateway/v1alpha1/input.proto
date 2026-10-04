@@ -9,7 +9,7 @@ import "catalog/kubernetes/provider.proto";
 // StringValueOrRef references (namespace, gateway_class_name) to literal
 // strings before passing this to the IaC engine.
 message KubernetesGatewayIacInput {
-  // Target infra-component.
+  // the catalog object to deploy.
   KubernetesGateway target = 1;
   // Kubernetes provider configuration (cluster credentials).
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

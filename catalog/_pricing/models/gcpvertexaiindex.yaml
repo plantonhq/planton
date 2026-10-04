@@ -26,7 +26,7 @@ spec:
       exclusions:
         - the create triggers a batch build of whatever lives at gs://ml-embeddings/catalog/ at $3.00 per GiB of data processed -- the volume is the corpus's, not the manifest's, so the charge cannot be committed here
         - every later rebuild (a contents_delta_uri change) bills the same per-GiB rate, the full corpus when is_complete_overwrite is true and only the delta files otherwise
-        - the embedding files bill as Cloud Storage on their bucket; serving node-hours start on the catalog kinds
+        - the embedding files bill as Cloud Storage on their bucket; serving node-hours start on the GcpVertexAiIndexEndpoint and deployed-index components
       notes: Zero committed because the manifest names a directory, not a data volume -- a 768-dimension corpus stores roughly 3 KiB per vector (4 bytes per dimension), about 3 GiB per million vectors, and the bill follows what the pipeline actually puts at the URI.
     - preset: 03-brute-force-eval
       region_assumption: us-central1
@@ -35,5 +35,5 @@ spec:
       exclusions:
         - the create batch-builds the evaluation sample at gs://ml-embeddings/eval-sample/ at $3.00 per GiB of data processed -- brute-force is a geometry choice, not a separate meter, and a small eval corpus builds for cents
         - rebuilds on later data loads bill the same per-GiB rate
-        - serving this yardstick index (per node-hour, linear query cost) starts on the catalog kinds
+        - serving this yardstick index (per node-hour, linear query cost) starts on the GcpVertexAiIndexEndpoint and deployed-index components
       notes: Zero committed for the same reason as the batch preset -- the manifest commits no data volume; an eval sample is deliberately small, but the meter is the corpus's to start.

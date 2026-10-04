@@ -8,7 +8,7 @@ import "catalog/aws/provider.proto";
 // AwsCloudwatchCompositeAlarmIacInput is the input for the
 // aws-cloudwatch-composite-alarm IaC modules.
 message AwsCloudwatchCompositeAlarmIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsCloudwatchCompositeAlarm target = 1;
 
   // provider-config

@@ -7,7 +7,7 @@ import "catalog/aws/provider.proto";
 
 // aws-cognito-user-pool iac-input
 message AwsCognitoUserPoolIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsCognitoUserPool target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

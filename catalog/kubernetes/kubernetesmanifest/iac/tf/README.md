@@ -2,7 +2,7 @@
 
 ## Overview
 
-This Terraform module applies raw multi-document Kubernetes YAML — the KubernetesManifest component's escape-hatch contract — creating one `kubectl_manifest` resource per document, with an optional anchor namespace created first. The manifest content is applied exactly as written: no injected labels, no rewritten fields; the only defaulting is the anchor namespace, and only for documents that declare none.
+This Terraform module applies raw multi-document Kubernetes YAML — the KubernetesManifest kind's escape-hatch contract — creating one `kubectl_manifest` resource per document, with an optional anchor namespace created first. The manifest content is applied exactly as written: no injected labels, no rewritten fields; the only defaulting is the anchor namespace, and only for documents that declare none.
 
 ## Architecture
 

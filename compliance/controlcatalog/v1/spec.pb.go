@@ -155,7 +155,7 @@ type Control struct {
 	Name string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	// What the control asserts, as ONE testable sentence about the deployed
 	// resource. Write it so an auditor could check it against a live
-	// resource: "Data the kind stores is encrypted at rest." -- never
+	// resource: "Data the component stores is encrypted at rest." -- never
 	// aspirational language.
 	Statement string `protobuf:"bytes,3,opt,name=statement,proto3" json:"statement,omitempty"`
 	// The posture area the control belongs to.

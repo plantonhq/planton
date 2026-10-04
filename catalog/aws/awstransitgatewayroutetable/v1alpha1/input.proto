@@ -8,7 +8,7 @@ import "catalog/aws/provider.proto";
 // AwsTransitGatewayRouteTableIacInput is the input for the
 // aws-transit-gateway-route-table IaC modules.
 message AwsTransitGatewayRouteTableIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsTransitGatewayRouteTable target = 1;
 
   // provider-config

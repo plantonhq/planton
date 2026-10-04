@@ -5,7 +5,7 @@
 # of the module sources, cited in notes) until the live capture lane
 # upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
-# The component catalog.md says only that the token needs "Workers KV
+# The kind's catalog.md says only that the token needs "Workers KV
 # permissions" -- no more specific prose existed to migrate.
 apiVersion: iac.planton.dev/v1
 kind: CatalogKindPermissions

@@ -25,7 +25,7 @@ const (
 // cloudflare-email-routing-rule iac-input
 type CloudflareEmailRoutingRuleIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target infra-component
+	// the catalog object to deploy
 	Target *CloudflareEmailRoutingRule `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *cloudflare.CloudflareProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`

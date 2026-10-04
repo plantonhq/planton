@@ -25,7 +25,7 @@ const (
 // aws-s3-object-set iac-input
 type AwsS3ObjectSetIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target infra-component
+	// the catalog object to deploy
 	Target *AwsS3ObjectSet `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *aws.AwsProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`

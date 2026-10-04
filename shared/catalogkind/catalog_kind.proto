@@ -8184,7 +8184,7 @@ enum CatalogKind {
     version: "v1alpha1"
     id_prefix: "a0cdv"
     // Verification checks a custom domain that already exists; the DNS
-    // record it waits for is published by whichever DNS kind serves the
+    // record it waits for is published by whichever DNS component serves the
     // domain, so only the domain is a prerequisite.
     prerequisites: [Auth0CustomDomain]
   }];

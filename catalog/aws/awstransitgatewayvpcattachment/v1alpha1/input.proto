@@ -8,7 +8,7 @@ import "catalog/aws/provider.proto";
 // AwsTransitGatewayVpcAttachmentIacInput is the input for the
 // aws-transit-gateway-vpc-attachment IaC modules.
 message AwsTransitGatewayVpcAttachmentIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsTransitGatewayVpcAttachment target = 1;
 
   // provider-config

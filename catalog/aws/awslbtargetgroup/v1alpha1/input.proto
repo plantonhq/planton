@@ -7,7 +7,7 @@ import "catalog/aws/provider.proto";
 
 //aws-lb-target-group iac-input
 message AwsLbTargetGroupIacInput {
-  //target infra-component
+  // the catalog object to deploy
   AwsLbTargetGroup target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

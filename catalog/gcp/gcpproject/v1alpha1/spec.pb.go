@@ -126,7 +126,7 @@ type GcpProjectSpec struct {
 	// quota available even when false (the network exists momentarily).
 	AutoCreateNetwork *bool `protobuf:"varint,8,opt,name=auto_create_network,json=autoCreateNetwork,proto3,oneof" json:"auto_create_network,omitempty"`
 	// List of Cloud APIs to enable at project creation
-	// (e.g. "compute.googleapis.com"). Individual component kinds also
+	// (e.g. "compute.googleapis.com"). Individual kinds also
 	// enable the APIs they need, so this is a convenience for pre-warming a
 	// known set. Each entry must end with ".googleapis.com".
 	EnabledApis []string `protobuf:"bytes,9,rep,name=enabled_apis,json=enabledApis,proto3" json:"enabled_apis,omitempty"`

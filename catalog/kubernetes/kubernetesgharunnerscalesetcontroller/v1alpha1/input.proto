@@ -7,7 +7,7 @@ import "catalog/kubernetes/provider.proto";
 
 // KubernetesGhaRunnerScaleSetControllerIacInput defines the inputs required for the IaC modules.
 message KubernetesGhaRunnerScaleSetControllerIacInput {
-  // target infra-component
+  // the catalog object to deploy
   KubernetesGhaRunnerScaleSetController target = 1;
   // provider-config for Kubernetes
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

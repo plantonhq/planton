@@ -5,7 +5,7 @@
 # of the module sources, cited in notes) until the live capture lane
 # upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
-# The component's catalog.md states the requirement in prose ("a Cloudflare
+# The kind's catalog.md states the requirement in prose ("a Cloudflare
 # API token that has Load Balancing edit access") -- migrated here
 # losslessly; the precise account-scoped group for monitors is the pair
 # below (the zone-scoped "Load Balancers Write" group governs the

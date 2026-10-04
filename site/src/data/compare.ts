@@ -107,7 +107,7 @@ export const COMPARE: ComparePage = {
       both: 'Keep the orchestrator for the Terraform you already run outside Planton. Your Terraform stays yours: the modules are open-source Terraform and Pulumi, and what you already run is adopted, not rewritten.',
       planton: [
         // Chapter 11's claim; the validation the Coding Agents page already documents.
-        { label: 'Typed Self-Service, Not Authoring', text: 'Every component is a typed schema over an open-source module. A person or an agent writes a short manifest, the schema validates it before anything touches your cloud, and the module that runs is the same one every time.' },
+        { label: 'Typed Self-Service, Not Authoring', text: 'Every kind is a typed schema over an open-source module. A person or an agent writes a short manifest, the schema validates it before anything touches your cloud, and the module that runs is the same one every time.' },
         // Chapter 11, proof 1, second sentence
         { label: 'One Vocabulary, Not a Hundred Field Names', text: 'Every covered component reports its controls against the same fixed list of 17, so what you check is one vocabulary, not each kind\u2019s field names.' },
         { label: 'Every Door Obeys the Same Rules', text: rules.claim },

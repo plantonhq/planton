@@ -8,7 +8,7 @@ import "catalog/aws/provider.proto";
 // AwsFsxDataRepositoryAssociationIacInput is the input for the
 // aws-fsx-data-repository-association IaC modules.
 message AwsFsxDataRepositoryAssociationIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsFsxDataRepositoryAssociation target = 1;
 
   // provider-config

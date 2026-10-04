@@ -2,9 +2,9 @@
 
 ## When NOT to Use This
 
-**A first-class catalog kind always wins.** Typed components validate their configuration before anything reaches a cluster, export composable outputs other resources can reference, and teach their trade-offs field by field. A generic chart install does none of that — the chart's values surface is the contract, and a typo'd value is discovered when the chart's resources misbehave, not at validation.
+**A first-class catalog kind always wins.** Typed kinds validate their configuration before anything reaches a cluster, export composable outputs other resources can reference, and teach their trade-offs field by field. A generic chart install does none of that — the chart's values surface is the contract, and a typo'd value is discovered when the chart's resources misbehave, not at validation.
 
-**KubernetesHelmRelease is the catalog's sole intentional passthrough.** Reach for it only when the catalog has no component for the chart you need. It is never the recommended path where a first-class component exists.
+**KubernetesHelmRelease is the catalog's sole intentional passthrough.** Reach for it only when the catalog has no kind for the chart you need. It is never the recommended path where a first-class kind exists.
 
 ## Overview
 
@@ -143,11 +143,11 @@ This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that:
 
 ## When to Use
 
-Use **KubernetesHelmRelease** when — and only when — the catalog has no first-class component for the chart you need:
+Use **KubernetesHelmRelease** when — and only when — the catalog has no first-class kind for the chart you need:
 
 - Third-party or vendor charts outside the catalog's coverage
 - Internal charts your organization publishes to a private repository or OCI registry
-- Migrating Helm-managed workloads into declarative management before (or instead of) modeling them as typed components
+- Migrating Helm-managed workloads into declarative management before (or instead of) modeling them as typed kinds
 
 **Do NOT use** when:
 

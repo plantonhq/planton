@@ -9,7 +9,7 @@ import "catalog/kubernetes/provider.proto";
 // StringValueOrRef references (namespace, parent and backend names) to literal
 // strings before passing this to the IaC engine.
 message KubernetesUdpRouteIacInput {
-  // Target infra-component.
+  // the catalog object to deploy.
   KubernetesUdpRoute target = 1;
   // Kubernetes provider configuration (cluster credentials).
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

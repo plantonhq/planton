@@ -7,7 +7,7 @@ import "catalog/aws/provider.proto";
 
 // aws-redshift-cluster iac-input
 message AwsRedshiftClusterIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsRedshiftCluster target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

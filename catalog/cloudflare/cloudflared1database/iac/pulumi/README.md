@@ -182,7 +182,7 @@ Errors bubble up to the Pulumi CLI, which displays them to the user.
 
 ### Unit Tests
 
-The module does not include unit tests (Pulumi modules are typically integration-tested). The component-level tests in `v1/spec_test.go` validate the protobuf spec.
+The module does not include unit tests (Pulumi modules are typically integration-tested). The kind-level tests in `v1/spec_test.go` validate the protobuf spec.
 
 ### Integration Testing
 

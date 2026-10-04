@@ -9,7 +9,7 @@ Gateway that has opted in via `allowed_listeners`.
 ## Prerequisites
 
 - The Gateway API CRDs (v1.5.0 or newer) must already be installed on the
-  cluster (see the `KubernetesGatewayApiCrds` component).
+  cluster (see the `KubernetesGatewayApiCrds` kind).
 - A parent `Gateway` whose `allowed_listeners` permits attachment from this
   ListenerSet's namespace (see `KubernetesGateway`).
 - The target namespace must exist (see `KubernetesNamespace`).

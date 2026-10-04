@@ -51,7 +51,7 @@ type Issue struct {
 	Message      string
 }
 
-// Doc is one rendered infra-component document.
+// Doc is one rendered catalog object.
 type Doc struct {
 	File string
 	Kind string

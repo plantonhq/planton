@@ -419,7 +419,7 @@ TLS for the bolt (7687) listener.
 Existing TLS Secret (private.key + public.crt). Accepts a
 literal name or a KubernetesCertificate reference — the
 cert-manager seam (cert-manager Secrets carry tls.key/tls.crt;
-see the component docs for the key-name bridge).
+see the kind's docs for the key-name bridge).
 
 - references: KubernetesCertificate (`status.outputs.secret_name`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesCertificate, name: <that resource's name>, fieldPath: status.outputs.secret_name}} -- a bare string does not parse
@@ -437,7 +437,7 @@ TLS for the https (7473) listener.
 Existing TLS Secret (private.key + public.crt). Accepts a
 literal name or a KubernetesCertificate reference — the
 cert-manager seam (cert-manager Secrets carry tls.key/tls.crt;
-see the component docs for the key-name bridge).
+see the kind's docs for the key-name bridge).
 
 - references: KubernetesCertificate (`status.outputs.secret_name`)
 - rule: write as {value: <literal>} or {valueFrom: {kind: KubernetesCertificate, name: <that resource's name>, fieldPath: status.outputs.secret_name}} -- a bare string does not parse

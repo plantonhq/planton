@@ -8,7 +8,7 @@ namespaces to reference specified kinds of resources in this grant's namespace.
 ## Prerequisites
 
 - The Gateway API CRDs must already be installed on the cluster
-  (see the `KubernetesGatewayApiCrds` component).
+  (see the `KubernetesGatewayApiCrds` kind).
 - The target namespace must exist (see `KubernetesNamespace`). This is the "to"
   namespace -- the one whose resources the grant authorizes inbound references to.
 - Go toolchain and the Pulumi CLI.

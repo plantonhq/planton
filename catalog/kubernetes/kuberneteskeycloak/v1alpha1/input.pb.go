@@ -25,7 +25,7 @@ const (
 // keycloak-kubernetes iac-input
 type KubernetesKeycloakIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target infra-component
+	// the catalog object to deploy
 	Target *KubernetesKeycloak `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`

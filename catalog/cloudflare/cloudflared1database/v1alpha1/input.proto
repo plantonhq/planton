@@ -7,7 +7,7 @@ import "catalog/cloudflare/provider.proto";
 
 //cloudflare-d1-database iac-input
 message CloudflareD1DatabaseIacInput {
-  //target infra-component
+  // the catalog object to deploy
   CloudflareD1Database target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

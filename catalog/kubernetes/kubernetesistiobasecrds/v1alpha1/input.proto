@@ -8,7 +8,7 @@ import "catalog/kubernetes/provider.proto";
 // KubernetesIstioBaseCrdsIacInput provides the inputs for installing the Istio CRDs
 // on a Kubernetes cluster.
 message KubernetesIstioBaseCrdsIacInput {
-  // target infra-component
+  // the catalog object to deploy
   KubernetesIstioBaseCrds target = 1;
   // provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

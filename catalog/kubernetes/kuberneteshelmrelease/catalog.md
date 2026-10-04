@@ -1,6 +1,6 @@
 # Helm Release
 
-Installs an upstream Helm chart as a REAL Helm release — the catalog's sole intentional passthrough. Both engines perform an actual `helm install`: hooks run, the release secret is written, and `helm list` shows the release exactly as if installed by the Helm CLI. Reach for this only when the catalog has no first-class component for the chart you need: typed components validate their configuration before deploy, export composable outputs, and teach their trade-offs field by field — a generic chart install does none of that.
+Installs an upstream Helm chart as a REAL Helm release — the catalog's sole intentional passthrough. Both engines perform an actual `helm install`: hooks run, the release secret is written, and `helm list` shows the release exactly as if installed by the Helm CLI. Reach for this only when the catalog has no first-class kind for the chart you need: typed kinds validate their configuration before deploy, export composable outputs, and teach their trade-offs field by field — a generic chart install does none of that.
 
 ## What Gets Created
 
@@ -132,4 +132,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 ## Works With
 
 - [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- the placement target; reference one by name or compose it as a first-class resource.
-- First-class chart components -- when the catalog grows a typed component for a chart you run through this kind ([**Cert Manager**](/infra-catalog/kubernetes-cert-manager), [**Ingress NGINX**](/infra-catalog/kubernetes-ingress-nginx), [**Istio**](/infra-catalog/kubernetes-istio), and the rest already exist), prefer it: validation, outputs, and field-level teaching come with it.
+- First-class chart kinds -- when the catalog grows a typed kind for a chart you run through this kind ([**Cert Manager**](/infra-catalog/kubernetes-cert-manager), [**Ingress NGINX**](/infra-catalog/kubernetes-ingress-nginx), [**Istio**](/infra-catalog/kubernetes-istio), and the rest already exist), prefer it: validation, outputs, and field-level teaching come with it.

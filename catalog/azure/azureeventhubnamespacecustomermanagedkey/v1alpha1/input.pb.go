@@ -26,7 +26,7 @@ const (
 // IaC module. It contains the target resource and provider configuration.
 type AzureEventHubNamespaceCustomerManagedKeyIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target infra-component to be deployed
+	// the catalog object to deploy to be deployed
 	Target *AzureEventHubNamespaceCustomerManagedKey `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Azure authentication
 	ProviderConfig *azure.AzureProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`

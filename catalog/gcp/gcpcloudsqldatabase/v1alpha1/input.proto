@@ -7,7 +7,7 @@ import "catalog/gcp/provider.proto";
 
 //gcp-cloud-sql-database iac-input
 message GcpCloudSqlDatabaseIacInput {
-  //target infra-component
+  // the catalog object to deploy
   GcpCloudSqlDatabase target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

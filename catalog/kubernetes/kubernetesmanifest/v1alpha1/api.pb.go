@@ -26,7 +26,7 @@ const (
 // *
 // **KubernetesManifest** applies raw Kubernetes YAML following the Kubernetes
 // Resource Model (KRM) — the catalog's bring-your-own-manifest escape hatch
-// for resources no first-class component covers yet. Single or
+// for resources no first-class kind covers yet. Single or
 // multi-document manifests, core kinds or custom resources, applied
 // identically by both engines.
 type KubernetesManifest struct {

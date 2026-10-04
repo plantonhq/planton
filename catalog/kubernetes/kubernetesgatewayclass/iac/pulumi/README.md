@@ -6,7 +6,7 @@ on a target cluster using the typed crd2pulumi SDK.
 ## Prerequisites
 
 - The Gateway API CRDs must already be installed on the cluster
-  (see the `KubernetesGatewayApiCrds` component).
+  (see the `KubernetesGatewayApiCrds` kind).
 - Go toolchain and the Pulumi CLI.
 - Access to the target Kubernetes cluster.
 

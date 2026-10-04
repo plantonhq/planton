@@ -8,7 +8,7 @@ import "catalog/aws/provider.proto";
 // AwsRoute53HealthCheckIacInput is the input for the
 // aws-route53-health-check IaC modules.
 message AwsRoute53HealthCheckIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsRoute53HealthCheck target = 1;
 
   // provider-config

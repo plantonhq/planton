@@ -7,7 +7,7 @@ import "catalog/azure/provider.proto";
 
 //azure-front-door-origin-group iac-input
 message AzureFrontDoorOriginGroupIacInput {
-  //target infra-component
+  // the catalog object to deploy
   AzureFrontDoorOriginGroup target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

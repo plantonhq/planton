@@ -173,7 +173,7 @@ func RunKindTest(ctx context.Context, tc *provider.KindTestContext, harness prov
 	// SETUP: the scenario's data-plane seeding hook (see SetupScriptAnnotation).
 	// It runs after the dependency chain and reference resolution because the
 	// assets it seeds live INSIDE fixtures, and before VALIDATE because a
-	// seeding failure must stop the lane before any kind deploy.
+	// seeding failure must stop the lane before any component deploy.
 	if setupScript, annErr := ManifestAnnotation(tc.ManifestPath, SetupScriptAnnotation); annErr == nil && setupScript != "" {
 		setupStart := time.Now()
 		// The script may publish values the manifest under test consumes

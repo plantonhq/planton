@@ -25,7 +25,7 @@ const (
 // digital-ocean-certificate iac-input
 type DigitalOceanCertificateIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target infra-component
+	// the catalog object to deploy
 	Target *DigitalOceanCertificate `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *digitalocean.DigitalOceanProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`

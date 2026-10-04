@@ -7,7 +7,7 @@ import "catalog/gcp/provider.proto";
 
 //gcp-tpu-vm iac-input
 message GcpTpuVmIacInput {
-  //target infra-component
+  // the catalog object to deploy
   GcpTpuVm target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

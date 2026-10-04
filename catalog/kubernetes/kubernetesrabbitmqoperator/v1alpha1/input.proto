@@ -7,7 +7,7 @@ import "catalog/kubernetes/provider.proto";
 
 // kubernetes-rabbit-mq-operator iac-input
 message KubernetesRabbitMqOperatorIacInput {
-  // target infra-component
+  // the catalog object to deploy
   KubernetesRabbitMqOperator target = 1;
   // provider-credential
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

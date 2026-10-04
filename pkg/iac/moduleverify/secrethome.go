@@ -26,7 +26,7 @@ import (
 )
 
 // secretHome is one place a kind's schema sends secrets: a field whose value every viewer of the
-// resource reads (Refused), and the sibling the kind stores in a secret store instead
+// resource reads (Refused), and the sibling the component stores in a secret store instead
 // (Home). The platform refuses a secret reference in the refused field and points the author at
 // the home, so a module that never reads the home silently deploys without the value the author
 // was told to put there.

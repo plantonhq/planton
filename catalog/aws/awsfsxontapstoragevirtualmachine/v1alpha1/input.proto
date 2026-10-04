@@ -7,7 +7,7 @@ import "catalog/aws/provider.proto";
 
 // aws-fsx-ontap-storage-virtual-machine iac-input
 message AwsFsxOntapStorageVirtualMachineIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsFsxOntapStorageVirtualMachine target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

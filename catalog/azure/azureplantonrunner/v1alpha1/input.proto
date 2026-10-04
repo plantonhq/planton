@@ -7,7 +7,7 @@ import "catalog/azure/provider.proto";
 
 //azure-planton-runner iac-input
 message AzurePlantonRunnerIacInput {
-  //target infra-component
+  // the catalog object to deploy
   AzurePlantonRunner target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

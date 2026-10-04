@@ -8,7 +8,7 @@ import "catalog/aws/provider.proto";
 // AwsSnsSubscriptionIacInput is the input for the aws-sns-subscription
 // IaC modules.
 message AwsSnsSubscriptionIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsSnsSubscription target = 1;
 
   // provider-config

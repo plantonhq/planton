@@ -25,7 +25,7 @@ const (
 // gcp-document-ai-processor iac-input
 type GcpDocumentAiProcessorIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target infra-component
+	// the catalog object to deploy
 	Target *GcpDocumentAiProcessor `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config
 	ProviderConfig *gcp.GcpProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`

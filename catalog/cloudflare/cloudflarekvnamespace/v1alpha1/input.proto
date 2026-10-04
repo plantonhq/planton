@@ -7,7 +7,7 @@ import "catalog/cloudflare/provider.proto";
 
 //cloudflare-kv-namespace iac-input
 message CloudflareKvNamespaceIacInput {
-  //target infra-component
+  // the catalog object to deploy
   CloudflareKvNamespace target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

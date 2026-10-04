@@ -7,7 +7,7 @@ import "catalog/aws/provider.proto";
 
 // aws-rds-cluster iac-input
 message AwsRdsClusterIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsRdsCluster target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

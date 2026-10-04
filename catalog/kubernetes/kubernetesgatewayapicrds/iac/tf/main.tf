@@ -13,7 +13,7 @@
 #
 # For more information see:
 #  - ../../e2e/manifest.yaml for usage examples
-#  - ../README.md for component documentation
+#  - ../README.md for kind's documentation
 #  - ../../GUIDE.md for deployment patterns
 ##############################################
 

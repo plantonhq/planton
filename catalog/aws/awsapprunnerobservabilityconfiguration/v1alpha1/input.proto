@@ -8,7 +8,7 @@ import "catalog/aws/provider.proto";
 // AwsAppRunnerObservabilityConfigurationIacInput is the input for the
 // aws-app-runner-observability-configuration IaC modules.
 message AwsAppRunnerObservabilityConfigurationIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsAppRunnerObservabilityConfiguration target = 1;
 
   // provider-config

@@ -620,7 +620,7 @@ questions:
       environment worse than a normal misconfiguration?
     answer: >
       secretEnvironment for a value Planton or the author holds (the
-      kind stores and scopes it, a changed value registers a new
+      component stores and scopes it, a changed value registers a new
       revision); secrets for a Secrets Manager secret or SSM parameter
       someone else owns or several services share. environment is
       written into the task definition, and revisions are immutable and

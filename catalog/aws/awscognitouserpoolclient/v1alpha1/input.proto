@@ -8,7 +8,7 @@ import "catalog/aws/provider.proto";
 // AwsCognitoUserPoolClientIacInput is the input for the
 // aws-cognito-user-pool-client IaC modules.
 message AwsCognitoUserPoolClientIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsCognitoUserPoolClient target = 1;
 
   // provider-config

@@ -7,7 +7,7 @@ import "catalog/aws/provider.proto";
 
 // AwsWafIpSetIacInput is the input for the aws-waf-ip-set IaC modules.
 message AwsWafIpSetIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsWafIpSet target = 1;
 
   // provider-config

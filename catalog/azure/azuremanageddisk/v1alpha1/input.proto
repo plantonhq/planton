@@ -7,7 +7,7 @@ import "catalog/azure/provider.proto";
 
 //azure-managed-disk iac-input
 message AzureManagedDiskIacInput {
-  //target infra-component
+  // the catalog object to deploy
   AzureManagedDisk target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

@@ -8,7 +8,7 @@ import "catalog/kubernetes/provider.proto";
 // KubernetesPlantonOperatorIacInput provides the input for the Planton
 // operator IaC stack.
 message KubernetesPlantonOperatorIacInput {
-  // target infra-component
+  // the catalog object to deploy
   KubernetesPlantonOperator target = 1;
   // provider-config for Kubernetes provider
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

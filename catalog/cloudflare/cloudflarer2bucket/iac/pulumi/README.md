@@ -372,7 +372,7 @@ R2 does not support object versioning, so it is not modeled by this component.
 
 - [Pulumi Cloudflare Provider Docs](https://www.pulumi.com/registry/packages/cloudflare/)
 - [Cloudflare R2 API Docs](https://developers.cloudflare.com/api/operations/r2-create-bucket)
-- [Component README](../../README.md) - User-facing component documentation
+- [Kind README](../../README.md) - User-facing kind's documentation
 
 ## Support
 

@@ -85,7 +85,7 @@ These are the most important decisions when configuring a Kubernetes Manifest de
 
 **Readiness semantics** -- By default the deploy blocks until every applied resource becomes ready: Deployments, DaemonSets, and StatefulSets complete their rollout, and other kinds pass readiness checks. Set `skipAwait: true` to return as soon as the API server accepts every document -- for manifests whose readiness depends on something deployed later (a webhook configuration waiting on its Service) or that intentionally stay not-ready at install time.
 
-**Use case boundaries** -- A first-class catalog kind always wins: typed components validate configuration before deploy, export composable outputs, and document their trade-offs field by field -- raw YAML does none of that. Reach for a manifest only when the catalog has no component for what you need to apply (a vendor's install manifest, a CRD bundle, an exotic custom resource).
+**Use case boundaries** -- A first-class catalog kind always wins: typed kinds validate configuration before deploy, export composable outputs, and document their trade-offs field by field -- raw YAML does none of that. Reach for a manifest only when the catalog has no kind for what you need to apply (a vendor's install manifest, a CRD bundle, an exotic custom resource).
 
 ## Outputs and Dependencies
 
@@ -118,4 +118,4 @@ Browse the [Presets](#presets) tab for ready-to-deploy configurations.
 
 - [**Kubernetes Namespace**](/infra-catalog/kubernetes-namespace) -- provides the default namespace for manifest resources
 - [**Helm Release**](/infra-catalog/kubernetes-helm-release) -- the right escape hatch when the vendor publishes a chart rather than raw YAML
-- [**Kubernetes ConfigMap**](/infra-catalog/kubernetes-config-map) -- the typed component a single configuration document belongs in
+- [**Kubernetes ConfigMap**](/infra-catalog/kubernetes-config-map) -- the typed kind a single configuration document belongs in

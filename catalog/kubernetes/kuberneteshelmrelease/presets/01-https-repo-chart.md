@@ -2,7 +2,7 @@
 
 This preset installs [podinfo](https://github.com/stefanprodan/podinfo) 6.9.2 from its HTTPS Helm repository, with a `values_yaml` block overriding the chart's defaults. It is the baseline shape for the component: a public HTTP(S) chart repository, a pinned version, and a values file — the equivalent of `helm install -f values.yaml` expressed declaratively.
 
-**Before reaching for this component at all:** if the catalog has a first-class component for what you're deploying, use it instead. Typed components validate their configuration before deploy and export composable outputs; KubernetesHelmRelease is the intentional passthrough for charts no kind covers.
+**Before reaching for this component at all:** if the catalog has a first-class kind for what you're deploying, use it instead. Typed kinds validate their configuration before deploy and export composable outputs; KubernetesHelmRelease is the intentional passthrough for charts no kind covers.
 
 ## When to Use
 

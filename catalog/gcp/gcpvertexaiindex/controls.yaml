@@ -59,7 +59,7 @@ spec:
       evidence:
         type: provider_default
         reference: "Streaming indexes export stream-update metrics (request count, datapoint count, latencies -- aiplatform.googleapis.com/matching_engine/stream_update/*) to Cloud Monitoring automatically on the aiplatform.googleapis.com/Index monitored resource; no configuration exists or is needed."
-      notes: Serving-side signals (query request counts, latencies, replica and shard counts) ride the IndexEndpoint monitored resource and belong to the catalog kinds.
+      notes: Serving-side signals (query request counts, latencies, replica and shard counts) ride the IndexEndpoint monitored resource and belong to the index-endpoint component.
     - control_id: backup-recovery
       status: not_applicable
       notes: The service exposes no backup facility for an index. The recovery path is structural instead -- the embedding files at contents_delta_uri remain in Cloud Storage as the durable source of truth, and a batch rebuild reconstructs the index from them; streaming-only corpora need the writer to retain its own source data.

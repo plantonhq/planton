@@ -14,5 +14,5 @@ Terraform.
 ## Usage
 
 The module is executed by the Planton platform. `variables.tf` is
-GENERATED from the component spec (`planton tofu generate-variables
+GENERATED from the kind's spec (`planton tofu generate-variables
 AwsBedrockInferenceProfile`) — never edit it by hand.

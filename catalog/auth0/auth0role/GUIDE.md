@@ -113,7 +113,7 @@ The authoritative permission model means the deployed state matches the reviewed
 
 ### Audit Trail
 
-All role CRUD operations (create, update, delete) and permission changes are recorded in Auth0 tenant logs. Log retention depends on plan tier (2 days free, up to 30 days enterprise). For long-term retention, stream tenant logs to an external SIEM (see the `Auth0EventStream` component).
+All role CRUD operations (create, update, delete) and permission changes are recorded in Auth0 tenant logs. Log retention depends on plan tier (2 days free, up to 30 days enterprise). For long-term retention, stream tenant logs to an external SIEM (see the `Auth0EventStream` kind).
 
 ### Separation of Definition and Assignment
 

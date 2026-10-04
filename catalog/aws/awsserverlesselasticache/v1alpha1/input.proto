@@ -7,7 +7,7 @@ import "catalog/aws/provider.proto";
 
 // aws-serverless-elasticache iac-input
 message AwsServerlessElasticacheIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsServerlessElasticache target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

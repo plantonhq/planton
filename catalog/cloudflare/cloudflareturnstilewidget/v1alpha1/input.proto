@@ -7,7 +7,7 @@ import "catalog/cloudflare/provider.proto";
 
 //cloudflare-turnstile-widget iac-input
 message CloudflareTurnstileWidgetIacInput {
-  //target infra-component
+  // the catalog object to deploy
   CloudflareTurnstileWidget target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

@@ -2,13 +2,13 @@
 
 ## When NOT to Use This
 
-Before anything else: **a first-class catalog kind always wins.** Typed components validate configuration before deploy, export composable outputs other resources can reference, and document their trade-offs field by field — raw YAML does none of that. If the catalog has a component for what you're deploying (a Deployment, a Helm chart, a StorageClass, ...), use it.
+Before anything else: **a first-class catalog kind always wins.** Typed kinds validate configuration before deploy, export composable outputs other resources can reference, and document their trade-offs field by field — raw YAML does none of that. If the catalog has a component for what you're deploying (a Deployment, a Helm chart, a StorageClass, ...), use it.
 
 **KubernetesManifest** is the catalog's bring-your-own-manifest escape hatch, for the YAML no kind covers:
 
 - A vendor's install manifest, published as one raw file for `kubectl apply -f`
 - A CRD bundle — CRDs plus the custom resources that configure an operator
-- An exotic custom resource with no typed component
+- An exotic custom resource with no typed kind
 
 ## Overview
 
@@ -95,7 +95,7 @@ This kind includes both **Pulumi** (Go) and **Terraform** (HCL) modules that uph
 
 Use **KubernetesManifest** when:
 
-- The catalog has no component for the resource you need to apply
+- The catalog has no kind for the resource you need to apply
 - A vendor publishes raw install YAML and you want it lifecycle-managed, byte-for-byte as published
 - You are installing CRDs together with the custom resources that use them
 - A small bundle of plain objects (ConfigMaps, RBAC, quotas) should apply, update, and delete together
@@ -114,7 +114,7 @@ Use **KubernetesManifest** when:
 
 ## Best Practices
 
-1. **Exhaust the catalog first** — treat every KubernetesManifest resource as a pointer at a missing typed component
+1. **Exhaust the catalog first** — treat every KubernetesManifest resource as a pointer at a missing typed kind
 2. **Leave your own documents unanchored**: omit `metadata.namespace` and anchor through `spec.namespace`, so retargeting the bundle is a one-field change
 3. **Paste vendor manifests verbatim**: the pattern's value is byte-for-byte fidelity; upgrades are a paste of the next release's file
 4. **Skip the await on install bundles**: manifests with internal ordering (webhooks waiting on services) can deadlock a readiness await; `skip_await: true` is the safe setting for vendor installs

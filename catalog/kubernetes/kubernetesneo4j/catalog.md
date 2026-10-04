@@ -102,7 +102,7 @@ These are the most important decisions when configuring Neo4j. Explore the full 
 
 **Exposure** — `service.type` defaults to ClusterIP, a deliberate override of the chart's LoadBalancer default: exposure composes from first-class kinds (KubernetesIngress, Gateway API) over the exported service handle. For a direct cloud load balancer, set `type: LoadBalancer` and ride the provider recipe on `service.annotations`. This block shapes only the exposure Service `<name>-lb-neo4j`; in-cluster clients use the default Service — the endpoints in the outputs.
 
-**TLS** — `ssl.bolt` / `ssl.https` each reference an existing certificate Secret (a KubernetesCertificate reference resolves to its Secret name). Note the key-name bridge: the chart expects `private.key`/`public.crt` while cert-manager Secrets carry `tls.key`/`tls.crt` — see the component docs for the bridge.
+**TLS** — `ssl.bolt` / `ssl.https` each reference an existing certificate Secret (a KubernetesCertificate reference resolves to its Secret name). Note the key-name bridge: the chart expects `private.key`/`public.crt` while cert-manager Secrets carry `tls.key`/`tls.crt` — see the kind's docs for the bridge.
 
 **Escape hatch** — `helmValues` merges LAST over everything the typed fields render (Helm `-f` semantics, identical on both engines). It is for the chart surface beyond the typed fields — log4j XML, additional volumes/mounts, LDAP secrets, the operations sidecar, probes, PDB, per-service splits, the `NEO4J_PLUGINS` env key that activates APOC — never a substitute for them, and never a place for secrets.
 

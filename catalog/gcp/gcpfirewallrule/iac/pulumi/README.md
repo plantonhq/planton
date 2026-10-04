@@ -104,4 +104,4 @@ make update-deps   # Update Planton dependencies to latest
 
 ## Related
 
-- [Component README](../../README.md) — full API reference and usage guide
+- [Kind README](../../README.md) — full API reference and usage guide

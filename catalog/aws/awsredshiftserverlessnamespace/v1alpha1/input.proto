@@ -7,7 +7,7 @@ import "catalog/aws/provider.proto";
 
 // aws-redshift-serverless-namespace iac-input
 message AwsRedshiftServerlessNamespaceIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsRedshiftServerlessNamespace target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

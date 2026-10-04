@@ -25,7 +25,7 @@ const (
 // KubernetesGhaRunnerScaleSetControllerIacInput defines the inputs required for the IaC modules.
 type KubernetesGhaRunnerScaleSetControllerIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// target infra-component
+	// the catalog object to deploy
 	Target *KubernetesGhaRunnerScaleSetController `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// provider-config for Kubernetes
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`

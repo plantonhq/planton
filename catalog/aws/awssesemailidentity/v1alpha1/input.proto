@@ -8,7 +8,7 @@ import "catalog/aws/provider.proto";
 // AwsSesEmailIdentityIacInput is the input for the
 // aws-ses-email-identity IaC modules.
 message AwsSesEmailIdentityIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsSesEmailIdentity target = 1;
 
   // provider-config

@@ -7,7 +7,7 @@ import "catalog/azure/provider.proto";
 
 //azure-service-bus-disaster-recovery-config iac-input
 message AzureServiceBusDisasterRecoveryConfigIacInput {
-  //target infra-component
+  // the catalog object to deploy
   AzureServiceBusDisasterRecoveryConfig target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

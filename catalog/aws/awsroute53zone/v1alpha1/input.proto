@@ -7,7 +7,7 @@ import "catalog/aws/provider.proto";
 
 //aws-route53-zone iac-input
 message AwsRoute53ZoneIacInput {
-  //target infra-component
+  // the catalog object to deploy
   AwsRoute53Zone target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

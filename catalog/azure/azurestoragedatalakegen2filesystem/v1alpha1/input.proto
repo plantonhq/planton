@@ -7,7 +7,7 @@ import "catalog/azure/provider.proto";
 
 //azure-storage-data-lake-gen2-filesystem iac-input
 message AzureStorageDataLakeGen2FilesystemIacInput {
-  //target infra-component
+  // the catalog object to deploy
   AzureStorageDataLakeGen2Filesystem target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

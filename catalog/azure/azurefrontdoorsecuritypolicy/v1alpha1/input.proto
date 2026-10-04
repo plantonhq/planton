@@ -7,7 +7,7 @@ import "catalog/azure/provider.proto";
 
 //azure-front-door-security-policy iac-input
 message AzureFrontDoorSecurityPolicyIacInput {
-  //target infra-component
+  // the catalog object to deploy
   AzureFrontDoorSecurityPolicy target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

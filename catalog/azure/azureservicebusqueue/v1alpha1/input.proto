@@ -7,7 +7,7 @@ import "catalog/azure/provider.proto";
 
 //azure-service-bus-queue iac-input
 message AzureServiceBusQueueIacInput {
-  //target infra-component
+  // the catalog object to deploy
   AzureServiceBusQueue target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

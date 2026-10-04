@@ -7,7 +7,7 @@ import "catalog/gcp/provider.proto";
 
 //gcp-binary-authorization-policy iac-input
 message GcpBinaryAuthorizationPolicyIacInput {
-  //target infra-component
+  // the catalog object to deploy
   GcpBinaryAuthorizationPolicy target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

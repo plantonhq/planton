@@ -7,7 +7,7 @@ import "catalog/kubernetes/provider.proto";
 
 //superset-kubernetes iac-input
 message KubernetesSupersetIacInput {
-  //target infra-component
+  // the catalog object to deploy
   KubernetesSuperset target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

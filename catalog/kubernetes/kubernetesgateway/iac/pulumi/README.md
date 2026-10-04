@@ -6,7 +6,7 @@ target cluster using the typed crd2pulumi SDK.
 ## Prerequisites
 
 - The Gateway API CRDs must already be installed on the cluster
-  (see the `KubernetesGatewayApiCrds` component).
+  (see the `KubernetesGatewayApiCrds` kind).
 - A `GatewayClass` whose `controllerName` resolves to an installed controller
   (Istio, Envoy Gateway, NGINX, ...). See `KubernetesGatewayClass`.
 - The target namespace must exist (see `KubernetesNamespace`).

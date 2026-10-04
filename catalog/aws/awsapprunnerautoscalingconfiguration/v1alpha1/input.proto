@@ -8,7 +8,7 @@ import "catalog/aws/provider.proto";
 // AwsAppRunnerAutoScalingConfigurationIacInput is the input for the
 // aws-app-runner-auto-scaling-configuration IaC modules.
 message AwsAppRunnerAutoScalingConfigurationIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsAppRunnerAutoScalingConfiguration target = 1;
 
   // provider-config

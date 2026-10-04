@@ -10,7 +10,7 @@ import "catalog/kubernetes/provider.proto";
 // private registry is derived from the target's own spec
 // (`spec.pod.image_registries`), never from an input filled on the workload's behalf.
 message KubernetesDaemonSetIacInput {
-  // Target infra-component
+  // the catalog object to deploy
   KubernetesDaemonSet target = 1;
 
   // Provider configuration for Kubernetes

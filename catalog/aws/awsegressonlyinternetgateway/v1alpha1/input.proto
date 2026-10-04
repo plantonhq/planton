@@ -8,7 +8,7 @@ import "catalog/aws/provider.proto";
 // AwsEgressOnlyInternetGatewayIacInput is the input to the IaC modules (Pulumi
 // / Terraform) that deploy an AwsEgressOnlyInternetGateway resource.
 message AwsEgressOnlyInternetGatewayIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsEgressOnlyInternetGateway target = 1;
   // provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

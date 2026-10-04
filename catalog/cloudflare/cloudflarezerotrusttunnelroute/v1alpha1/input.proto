@@ -7,7 +7,7 @@ import "catalog/cloudflare/provider.proto";
 
 //cloudflare-zero-trust-tunnel-route iac-input
 message CloudflareZeroTrustTunnelRouteIacInput {
-  //target infra-component
+  // the catalog object to deploy
   CloudflareZeroTrustTunnelRoute target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

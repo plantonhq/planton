@@ -8,7 +8,7 @@ import "catalog/aws/provider.proto";
 // AwsBatchJobDefinitionIacInput is the input for the
 // aws-batch-job-definition IaC modules.
 message AwsBatchJobDefinitionIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsBatchJobDefinition target = 1;
 
   // provider-config

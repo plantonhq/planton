@@ -7,7 +7,7 @@ import "catalog/azure/provider.proto";
 
 //azure-cosmosdb-mongo-collection iac-input
 message AzureCosmosdbMongoCollectionIacInput {
-  //target infra-component
+  // the catalog object to deploy
   AzureCosmosdbMongoCollection target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

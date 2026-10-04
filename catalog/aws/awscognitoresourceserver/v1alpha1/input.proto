@@ -8,7 +8,7 @@ import "catalog/aws/provider.proto";
 // AwsCognitoResourceServerIacInput is the input for the
 // aws-cognito-resource-server IaC modules.
 message AwsCognitoResourceServerIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsCognitoResourceServer target = 1;
 
   // provider-config

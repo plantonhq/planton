@@ -30,7 +30,7 @@ export default function S04WhatIsPlanton() {
               • Cost and permissions <strong className="text-white">verified before deploy</strong>
             </li>
             <li>
-              • <strong className="text-white">600+ typed components</strong>{' '}
+              • <strong className="text-white">600+ typed kinds</strong>{' '}
               across 8 providers, open-source modules underneath
             </li>
             <li>

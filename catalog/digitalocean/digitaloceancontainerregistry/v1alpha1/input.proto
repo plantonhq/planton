@@ -7,7 +7,7 @@ import "catalog/digitalocean/provider.proto";
 
 //digital-ocean-container-registry iac-input
 message DigitalOceanContainerRegistryIacInput {
-  //target infra-component
+  // the catalog object to deploy
   DigitalOceanContainerRegistry target = 1;
   //provider-config
   dev.planton.digitalocean.DigitalOceanProviderConfig provider_config = 2;

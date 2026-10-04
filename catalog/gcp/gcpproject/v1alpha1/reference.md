@@ -142,7 +142,7 @@ quota available even when false (the network exists momentarily).
 `[]string`
 
 List of Cloud APIs to enable at project creation
-(e.g. "compute.googleapis.com"). Individual component kinds also
+(e.g. "compute.googleapis.com"). Individual kinds also
 enable the APIs they need, so this is a convenience for pre-warming a
 known set. Each entry must end with ".googleapis.com".
 

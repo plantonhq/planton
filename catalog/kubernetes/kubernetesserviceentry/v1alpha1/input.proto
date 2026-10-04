@@ -8,7 +8,7 @@ import "catalog/kubernetes/provider.proto";
 // KubernetesServiceEntryIacInput provides the inputs for creating the ServiceEntry on a
 // Kubernetes cluster.
 message KubernetesServiceEntryIacInput {
-  // target infra-component
+  // the catalog object to deploy
   KubernetesServiceEntry target = 1;
   // provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

@@ -11,9 +11,9 @@ This Pulumi module creates a namespaced Istio `Telemetry` resource on a target c
 ## Prerequisites
 
 - The Istio CRDs must already be installed on the cluster
-  (see the `KubernetesIstioBaseCrds` component).
+  (see the `KubernetesIstioBaseCrds` kind).
 - A running Istio control plane (istiod) to apply the configuration
-  (see the `KubernetesIstio` component). The CR applies successfully with only the
+  (see the `KubernetesIstio` kind). The CR applies successfully with only the
   CRDs present; it only affects telemetry where istiod and a data plane run.
 - The target namespace must exist (see `KubernetesNamespace`).
 - Go toolchain and the Pulumi CLI.

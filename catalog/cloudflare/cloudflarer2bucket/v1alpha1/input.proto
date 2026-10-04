@@ -7,7 +7,7 @@ import "catalog/cloudflare/provider.proto";
 
 //cloudflare-r2-bucket iac-input
 message CloudflareR2BucketIacInput {
-  //target infra-component
+  // the catalog object to deploy
   CloudflareR2Bucket target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

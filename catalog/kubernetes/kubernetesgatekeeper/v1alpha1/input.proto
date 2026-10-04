@@ -7,7 +7,7 @@ import "catalog/kubernetes/provider.proto";
 
 // KubernetesGatekeeperIacInput defines the inputs required for the IaC modules.
 message KubernetesGatekeeperIacInput {
-  // target infra-component
+  // the catalog object to deploy
   KubernetesGatekeeper target = 1;
   // provider-config for Kubernetes
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

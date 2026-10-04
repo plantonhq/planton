@@ -18,7 +18,7 @@ Kubernetes workload kinds (KubernetesPostgres, KubernetesValkey, and their
 siblings) declare their target namespace the same way: a required
 `spec.namespace` reference, plus a `createNamespace` boolean. When the flag is
 true, the kind's IaC module creates the namespace as its OWN resource:
-it enters that kind's state, and — as the spec documents — it is
+it enters that component's state, and — as the spec documents — it is
 **deleted with the resource**.
 
 Two consequences follow, both invisible at validation time and painful at
@@ -29,8 +29,8 @@ deploy time:
    creates and owns the namespace; the second fails, because its module
    issues a plain create for a namespace that now already exists.
 2. **The owner's teardown takes the neighborhood down.** Destroying the
-   kind that owns the namespace deletes the namespace — and everything
-   every other kind deployed into it.
+   component that owns the namespace deletes the namespace — and everything
+   every other component deployed into it.
 
 ## The composition
 

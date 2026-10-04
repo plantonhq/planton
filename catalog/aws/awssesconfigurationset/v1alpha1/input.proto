@@ -8,7 +8,7 @@ import "catalog/aws/provider.proto";
 // AwsSesConfigurationSetIacInput is the input for the
 // aws-ses-configuration-set IaC modules.
 message AwsSesConfigurationSetIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsSesConfigurationSet target = 1;
 
   // provider-config

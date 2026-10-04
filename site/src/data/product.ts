@@ -63,7 +63,7 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
     lede: POSITIONING.infraHub.line,
     forWhom: 'For the platform engineer who publishes the templates, and the developer or coding agent who deploys them.',
     steps: [
-      { title: 'Describe', text: 'Say what you need: in the console, from the CLI, or through your coding agent. Every component is a typed schema, so a wrong field fails before it touches your cloud.' },
+      { title: 'Describe', text: 'Say what you need: in the console, from the CLI, or through your coding agent. Every kind is a typed schema, so a wrong field fails before it touches your cloud.' },
       { title: 'Compose', text: 'Watch it compose on a live canvas: the components, how they connect, what each needs from the others.' },
       { title: 'Verify', text: 'See the monthly cost with its coverage stated, the least-privilege policy, and the controls each component enforces. Nothing exists yet.' },
       { title: 'Deploy', text: 'One Infra Job, kept: the exact configuration, the cost fact, the verdicts, who approved, and what exists afterward.' },
@@ -198,15 +198,15 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
     strip: 'providers',
     forWhom: 'For the platform engineer choosing what their organization may deploy, and the reviewer who wants the fact sheet before the deploy.',
     points: [
-      { label: 'A Fact Sheet on Every Component', text: verified.proof[3] },
+      { label: 'A Fact Sheet on Every Kind', text: verified.proof[3] },
       { label: 'Priced From a Named Release', text: verified.proof[1] },
       { label: 'Curated to What You Allow', text: rules.proof[2] },
-      { label: 'A Schema, Not a Wiki Page', text: 'Each component is a Protocol Buffer definition in the Kubernetes Resource Model shape with field-level validation, and SDKs generated in Go, Python, TypeScript, and Java.' },
+      { label: 'A Schema, Not a Wiki Page', text: 'Each kind is a Protocol Buffer definition in the Kubernetes Resource Model shape with field-level validation, and SDKs generated in Go, Python, TypeScript, and Java.' },
       { label: 'Open Source, Every Module', text: runs.proof[1] },
     ],
     artifact: {
       kind: 'record',
-      title: 'A component\u2019s fact sheet',
+      title: 'A kind\u2019s fact sheet',
       rows: [
         { label: 'kind', value: 'AwsRdsCluster \u00b7 aws.planton.dev/v1alpha1' },
         { label: 'schema', value: 'typed spec \u00b7 field-level validation \u00b7 SDKs in 4 languages' },
@@ -260,8 +260,8 @@ export const PRODUCT_PAGES: readonly ProductPage[] = [
     forWhom: 'For the engineer who wants to read what will run in their account before it runs, and the one planning the exit before the entry.',
     points: [
       { label: 'The Catalog', text: `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} catalog kinds across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers, each with its Pulumi and Terraform module, its cost fact sheet, its control posture with evidence, and its least-privilege permissions, all in one repository.` },
-      { label: 'The Charts', text: `${PLATFORM_STATS.INFRA_CHART_COUNT} Infra Charts: whole environments composed from those components and installed in one command.` },
-      { label: 'The CLI and the Engine', text: 'The open-source CLI validates manifests and runs the modules that ship with every component. It is the same engine the platform drives.' },
+      { label: 'The Charts', text: `${PLATFORM_STATS.INFRA_CHART_COUNT} Infra Charts: whole environments composed from those kinds and installed in one command.` },
+      { label: 'The CLI and the Engine', text: 'The open-source CLI validates manifests and runs the modules that ship with every kind. It is the same engine the platform drives.' },
       { label: 'Machine-Checked Facts', text: 'The cost data is priced from pinned price books, the control posture carries framework crosswalks, and the permission manifests are validated against the providers\u2019 own published inventories.' },
       { label: 'Counted, Not Claimed', text: proof.proof[0] },
     ],

@@ -7,7 +7,7 @@ import "catalog/kubernetes/provider.proto";
 
 //kubernetes-istio iac-input
 message KubernetesIstioIacInput {
-  //target infra-component
+  // the catalog object to deploy
   KubernetesIstio target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

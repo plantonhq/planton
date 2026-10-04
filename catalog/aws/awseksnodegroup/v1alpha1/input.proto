@@ -7,7 +7,7 @@ import "catalog/aws/provider.proto";
 
 //aws-eks-node-group iac-input
 message AwsEksNodeGroupIacInput {
-  //target infra-component
+  // the catalog object to deploy
   AwsEksNodeGroup target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

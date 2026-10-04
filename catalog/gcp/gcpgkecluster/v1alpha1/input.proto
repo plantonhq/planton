@@ -7,7 +7,7 @@ import "catalog/gcp/provider.proto";
 
 //input for gcp-gke-cluster stack
 message GcpGkeClusterIacInput {
-  //target infra-component
+  // the catalog object to deploy
   GcpGkeCluster target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

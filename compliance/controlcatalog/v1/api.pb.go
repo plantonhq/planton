@@ -44,7 +44,7 @@ const (
 //	  controls:
 //	    - id: enc-at-rest
 //	      name: Encryption at rest
-//	      statement: Data the kind stores is encrypted at rest.
+//	      statement: Data the component stores is encrypted at rest.
 //	      category: data_protection
 type ControlCatalog struct {
 	state         protoimpl.MessageState        `protogen:"open.v1"`

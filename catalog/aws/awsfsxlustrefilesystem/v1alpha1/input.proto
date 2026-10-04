@@ -7,7 +7,7 @@ import "catalog/aws/provider.proto";
 
 // aws-fsx-lustre-file-system iac-input
 message AwsFsxLustreFileSystemIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsFsxLustreFileSystem target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

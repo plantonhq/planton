@@ -2,7 +2,7 @@
 
 This preset is the "paste the vendor's install YAML" pattern: take the manifest a project publishes for `kubectl apply -f` — often hundreds of documents spanning CRDs, RBAC, Services, Deployments, and webhook configurations — and apply it exactly as downloaded, with Planton lifecycle management (declarative apply, update, destroy) wrapped around it. The manifest content is never mutated: no injected labels, no rewritten fields.
 
-Before reaching for this preset, check the catalog: many popular installs have a first-class component or ship as a Helm chart (use KubernetesHelmRelease for those). KubernetesManifest is the escape hatch for vendors that publish only raw YAML.
+Before reaching for this preset, check the catalog: many popular installs have a first-class kind or ship as a Helm chart (use KubernetesHelmRelease for those). KubernetesManifest is the escape hatch for vendors that publish only raw YAML.
 
 ## When to Use
 

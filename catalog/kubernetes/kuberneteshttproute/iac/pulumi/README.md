@@ -6,7 +6,7 @@ target cluster using the typed crd2pulumi SDK.
 ## Prerequisites
 
 - The Gateway API CRDs must already be installed on the cluster
-  (see the `KubernetesGatewayApiCrds` component).
+  (see the `KubernetesGatewayApiCrds` kind).
 - A `Gateway` the route attaches to via `parentRefs` (see `KubernetesGateway`).
 - The target namespace must exist (see `KubernetesNamespace`).
 - The backend Services the route forwards to.

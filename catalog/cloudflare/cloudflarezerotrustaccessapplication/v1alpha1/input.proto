@@ -7,7 +7,7 @@ import "catalog/cloudflare/provider.proto";
 
 //cloudflare-zero-trust-access-application iac-input
 message CloudflareZeroTrustAccessApplicationIacInput {
-  //target infra-component
+  // the catalog object to deploy
   CloudflareZeroTrustAccessApplication target = 1;
   //provider-config
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

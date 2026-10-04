@@ -92,7 +92,7 @@ message GcpProjectSpec {
   optional bool auto_create_network = 8 [(dev.planton.shared.options.default) = "false"];
 
   // List of Cloud APIs to enable at project creation
-  // (e.g. "compute.googleapis.com"). Individual component kinds also
+  // (e.g. "compute.googleapis.com"). Individual kinds also
   // enable the APIs they need, so this is a convenience for pre-warming a
   // known set. Each entry must end with ".googleapis.com".
   repeated string enabled_apis = 9 [(buf.validate.field).repeated = {

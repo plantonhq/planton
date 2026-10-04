@@ -7,7 +7,7 @@ import "catalog/kubernetes/provider.proto";
 
 //input for kubernetes-cluster-secret-store stack
 message KubernetesClusterSecretStoreIacInput {
-  //target infra-component
+  // the catalog object to deploy
   KubernetesClusterSecretStore target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

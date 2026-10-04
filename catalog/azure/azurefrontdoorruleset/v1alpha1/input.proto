@@ -7,7 +7,7 @@ import "catalog/azure/provider.proto";
 
 //azure-front-door-rule-set iac-input
 message AzureFrontDoorRuleSetIacInput {
-  //target infra-component
+  // the catalog object to deploy
   AzureFrontDoorRuleSet target = 1;
   //provider-config
   dev.planton.azure.AzureProviderConfig provider_config = 2;

@@ -185,7 +185,7 @@ dashboard exists.
   (`/api/v1/rules?type=alert`): a name that matched nothing changed
   nothing.
 - **No alert names a customer.** Messages render environment,
-  kind, summary and runbook only; a namespace on a shared cluster
+  component, summary and runbook only; a namespace on a shared cluster
   can be a customer's name.
 - **Proven, not assumed.** Fire a synthetic alert with `amtool alert
   add` and watch it arrive; stop Alertmanager and watch the outside
@@ -285,7 +285,7 @@ engine with every upstream setting.
   partial data, so give a rule that label only on purpose.
 - **The labels on a rule are the route; the annotations are the page.**
   Every alerting rule carries `severity` (the pager route matches
-  `page`), and `kind`; `environment` and `cluster` arrive through
+  `page`), and `component`; `environment` and `cluster` arrive through
   `prometheus.external_labels`. Its annotations carry a `summary` and a
   `runbook_url` whose first line is the first action. Keep their text
   static: a `{{ $labels.namespace }}` in an annotation can carry a
@@ -322,7 +322,7 @@ spec:
     - name: api-slo-alerts
       interval: 30s
       labels:
-        kind: api
+        component: api
       rules:
         - alert: ApiErrorBudgetFastBurn
           expr: job:slo_errors_per_request:ratio_rate1h{job="api"} > (14.4 * 0.001) and job:slo_errors_per_request:ratio_rate5m{job="api"} > (14.4 * 0.001)
@@ -488,7 +488,7 @@ kind refuses a Google sign-in that allows sign-up with none.
 
 The hub usually lives on a cluster that already runs its own
 monitoring agent (the stack and its Alertmanager, from "Alerts that
-reach a person"). Split the work by lifecycle, not by kind:
+reach a person"). Split the work by lifecycle, not by component:
 
 - **Collection belongs to the agent; storage and reading to the hub.**
   The daemonset log collector joins the agent, the same composition
@@ -796,10 +796,10 @@ spec:
   of totals over `$__range` per channel, sent and failed, answers "did it
   go out"; filter to the integrations in use so a silent pager shows as
   zero, not as absent.
-- **Name a kind by its container across metrics and logs.** The
+- **Name a component by its container across metrics and logs.** The
   container name (`postgres`, `openfga`, `temporal-history`) is the same
   in kube-state-metrics, cAdvisor and Loki's `k8s_container_name`, so one
-  mapping joins a kind's restarts, out-of-memory kills and error
+  mapping joins a component's restarts, out-of-memory kills and error
   lines in a row; its workloads come from the controllers that survive
   scaling to zero.
 - **An exporter that labels what it probes keeps its labels.** An
@@ -822,7 +822,7 @@ spec:
 
 The assembled shape renders as a hub: Grafana with three datasource edges
 into the stack, Loki and Tempo, the collector's edge into Loki, and every
-kind's namespace edge into the shared observability namespace — the
+component's namespace edge into the shared observability namespace — the
 telemetry topology is reviewable at a glance. The Signoz shape renders
 smaller — Signoz plus its ClickHouse (and the operator in the shared
 layer) — with application OTLP converging on one ingestion gateway.

@@ -317,7 +317,7 @@ message KubernetesNeo4jSslScope {
    * Existing TLS Secret (private.key + public.crt). Accepts a
    * literal name or a KubernetesCertificate reference — the
    * cert-manager seam (cert-manager Secrets carry tls.key/tls.crt;
-   * see the component docs for the key-name bridge).
+   * see the kind's docs for the key-name bridge).
    */
   dev.planton.shared.foreignkey.v1.StringValueOrRef secret = 1 [
     (dev.planton.shared.options.sensitive_exempt_reason) = "Name of an existing Kubernetes Secret (reference), not secret material",

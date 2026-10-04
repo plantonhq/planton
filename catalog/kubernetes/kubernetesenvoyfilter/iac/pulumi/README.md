@@ -6,9 +6,9 @@ crd2pulumi SDK.
 ## Prerequisites
 
 - The Istio CRDs must already be installed on the cluster
-  (see the `KubernetesIstioBaseCrds` component).
+  (see the `KubernetesIstioBaseCrds` kind).
 - A running Istio control plane (istiod) to translate the patches
-  (see the `KubernetesIstio` component). The CR applies successfully with only the CRDs
+  (see the `KubernetesIstio` kind). The CR applies successfully with only the CRDs
   present; the patches take effect only where istiod and a data plane are running.
 - The target namespace must exist (see `KubernetesNamespace`).
 - Go toolchain and the Pulumi CLI.

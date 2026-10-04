@@ -9,7 +9,7 @@ import "catalog/cloudflare/provider.proto";
 // the IaC module. It contains the target resource and provider
 // configuration.
 message CloudflareZeroTrustAccessInfrastructureTargetIacInput {
-  // target infra-component to be deployed
+  // the catalog object to deploy to be deployed
   CloudflareZeroTrustAccessInfrastructureTarget target = 1;
   // provider-config for Cloudflare authentication
   dev.planton.cloudflare.CloudflareProviderConfig provider_config = 2;

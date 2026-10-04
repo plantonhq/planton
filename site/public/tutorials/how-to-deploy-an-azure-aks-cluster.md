@@ -241,7 +241,7 @@ Here is what changed from the production configuration and why:
 - **Single availability zone**: `availabilityZones: ["1"]` instead of three zones. This reduces the minimum node count (no need to spread across zones) and may improve scheduling density.
 - **Smaller VM size**: `Standard_D2s_v3` (2 vCPUs, 8 GB RAM) is sufficient for development workloads and costs roughly half of `Standard_D4s_v5`.
 - **Lower autoscaling**: `minCount: 1` and `maxCount: 3`. A single system node is adequate for development. The cluster autoscaler adds nodes only when pods cannot be scheduled.
-- **No user node pools**: Applications run on the system node pool alongside cluster kinds. This is acceptable for development where workload isolation is not a concern.
+- **No user node pools**: Applications run on the system node pool alongside cluster components. This is acceptable for development where workload isolation is not a concern.
 
 Deploy the development configuration the same way:
 

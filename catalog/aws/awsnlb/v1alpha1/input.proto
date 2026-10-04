@@ -8,7 +8,7 @@ import "catalog/aws/provider.proto";
 // AwsNlbIacInput provides the inputs to the IaC modules
 // (Pulumi or Terraform) that provision the Network Load Balancer.
 message AwsNlbIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsNlb target = 1;
   // provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

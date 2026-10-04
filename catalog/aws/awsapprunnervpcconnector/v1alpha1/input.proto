@@ -8,7 +8,7 @@ import "catalog/aws/provider.proto";
 // AwsAppRunnerVpcConnectorIacInput is the input for the
 // aws-app-runner-vpc-connector IaC modules.
 message AwsAppRunnerVpcConnectorIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsAppRunnerVpcConnector target = 1;
 
   // provider-config

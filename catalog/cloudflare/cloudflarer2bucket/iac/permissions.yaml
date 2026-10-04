@@ -12,7 +12,7 @@
 # reference page; the live capture lane should settle it. (2) Event
 # notifications target a queue by ID; whether the R2 group alone authorizes
 # the subscription or a Queues-scoped permission is also checked is likewise
-# unstated. Both entries stay derived until proven. The component catalog.md
+# unstated. Both entries stay derived until proven. The kind's catalog.md
 # says only that the token needs "R2 permissions" -- no more specific prose
 # existed to migrate.
 apiVersion: iac.planton.dev/v1

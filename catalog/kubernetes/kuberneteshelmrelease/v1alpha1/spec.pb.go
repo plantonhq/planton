@@ -32,10 +32,10 @@ const (
 // Helm CLI.
 //
 // WHEN NOT TO USE THIS: a first-class catalog kind always wins. Typed
-// components validate their configuration before deploy, export composable
+// kinds validate their configuration before deploy, export composable
 // outputs, and teach their trade-offs field by field — a generic chart
 // install does none of that. Reach for KubernetesHelmRelease only when the
-// catalog has no component for the chart you need.
+// catalog has no kind for the chart you need.
 //
 // VALUES MODEL (Helm's own): `values_yaml` is the values file; `set`,
 // `set_string`, and `set_sensitive` are the `--set`-style overrides applied

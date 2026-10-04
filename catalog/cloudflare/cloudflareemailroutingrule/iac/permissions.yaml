@@ -5,7 +5,7 @@
 # of the module sources, cited in notes) until the live capture lane
 # upgrades it to `proven`. Schema: iac/catalogkindpermissions/v1.
 #
-# The component's catalog.md states the requirement in prose ("Email Routing
+# The kind's catalog.md states the requirement in prose ("Email Routing
 # edit access (and Workers Scripts access when routing to an Email Worker)")
 # -- migrated here losslessly. The Workers Scripts clause is catalog.md's
 # claim, NOT derivable from the modules' API surface: both engines call only

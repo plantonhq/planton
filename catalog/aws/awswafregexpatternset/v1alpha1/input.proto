@@ -8,7 +8,7 @@ import "catalog/aws/provider.proto";
 // AwsWafRegexPatternSetIacInput is the input for the
 // aws-waf-regex-pattern-set IaC modules.
 message AwsWafRegexPatternSetIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsWafRegexPatternSet target = 1;
 
   // provider-config

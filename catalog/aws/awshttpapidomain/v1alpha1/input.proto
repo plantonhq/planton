@@ -8,7 +8,7 @@ import "catalog/aws/provider.proto";
 // AwsHttpApiDomainIacInput is the input for the aws-http-api-domain IaC
 // modules.
 message AwsHttpApiDomainIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsHttpApiDomain target = 1;
 
   // provider-config

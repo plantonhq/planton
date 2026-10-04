@@ -2,7 +2,7 @@
 
 ## Overview
 
-This Pulumi module applies raw Kubernetes YAML — the KubernetesManifest component's escape-hatch contract — through the Kubernetes provider's `yaml/v2` ConfigGroup, with an optional anchor namespace created first. The manifest content is applied exactly as written: no injected labels, no rewritten fields; the only defaulting is the anchor namespace, and only for namespaced documents that declare none.
+This Pulumi module applies raw Kubernetes YAML — the KubernetesManifest kind's escape-hatch contract — through the Kubernetes provider's `yaml/v2` ConfigGroup, with an optional anchor namespace created first. The manifest content is applied exactly as written: no injected labels, no rewritten fields; the only defaulting is the anchor namespace, and only for namespaced documents that declare none.
 
 ## Architecture
 
@@ -66,4 +66,4 @@ go build ./module/...
 go build .
 ```
 
-> **Note**: reach for KubernetesManifest only when no first-class catalog kind covers what you need to apply — typed components validate configuration before deploy and export composable outputs. This module deliberately validates nothing about the manifest's content beyond YAML well-formedness; the API server is what judges the kinds, exactly as with `kubectl apply`.
+> **Note**: reach for KubernetesManifest only when no first-class catalog kind covers what you need to apply — typed kinds validate configuration before deploy and export composable outputs. This module deliberately validates nothing about the manifest's content beyond YAML well-formedness; the API server is what judges the kinds, exactly as with `kubectl apply`.

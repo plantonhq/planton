@@ -8,7 +8,7 @@ import "catalog/kubernetes/provider.proto";
 // KubernetesRequestAuthenticationIacInput provides the inputs for creating the
 // RequestAuthentication on a Kubernetes cluster.
 message KubernetesRequestAuthenticationIacInput {
-  // target infra-component
+  // the catalog object to deploy
   KubernetesRequestAuthentication target = 1;
   // provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

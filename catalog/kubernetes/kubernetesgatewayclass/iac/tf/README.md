@@ -7,7 +7,7 @@ Creates a cluster-scoped Kubernetes Gateway API `GatewayClass` via the
 time, so the class can be planned before the Gateway API CRDs exist -- which is
 what lets an Infra Chart deploy the CRDs and the class in a single run (and lets
 offline plan proofs work). At apply time the Gateway API CRDs must be installed
-(see the `KubernetesGatewayApiCrds` component).
+(see the `KubernetesGatewayApiCrds` kind).
 
 ## Usage
 

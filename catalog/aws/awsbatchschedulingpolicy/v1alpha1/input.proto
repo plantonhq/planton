@@ -8,7 +8,7 @@ import "catalog/aws/provider.proto";
 // AwsBatchSchedulingPolicyIacInput is the input for the
 // aws-batch-scheduling-policy IaC modules.
 message AwsBatchSchedulingPolicyIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsBatchSchedulingPolicy target = 1;
 
   // provider-config

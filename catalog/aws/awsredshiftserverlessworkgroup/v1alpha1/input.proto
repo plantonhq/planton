@@ -7,7 +7,7 @@ import "catalog/aws/provider.proto";
 
 // aws-redshift-serverless-workgroup iac-input
 message AwsRedshiftServerlessWorkgroupIacInput {
-  // target infra-component
+  // the catalog object to deploy
   AwsRedshiftServerlessWorkgroup target = 1;
   // provider-credential
   dev.planton.aws.AwsProviderConfig provider_config = 2;

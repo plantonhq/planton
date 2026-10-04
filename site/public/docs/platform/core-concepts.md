@@ -245,7 +245,7 @@ graph TD
 |---------|------------|
 | Infra Component | A deployed infrastructure instance (VPC, database, cluster) |
 | Catalog Kind | A type the Infra Catalog offers, the template for provisioning it (AWS VPC, GCP GKE Cluster) |
-| Infra Chart | A composed collection of Catalog Kinds deployed together |
+| Infra Chart | A template of catalog objects installed together as an Infra Stack |
 | Infra Stack | A deployed instance of an Infra Chart with specific configuration |
 | Infra Job | The atomic IaC execution unit (Pulumi/Terraform/OpenTofu) |
 | Service | Configuration bridge between a Git repo and a deployment target |

@@ -22,7 +22,7 @@ import { PLATFORM_STATS } from '@/data/platform-stats';
 const infraHubPoints = [
   'Describe what you need — it composes on a live canvas',
   'Cost and permissions verified before deploy',
-  `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} typed components across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers`,
+  `${PLATFORM_STATS.DEPLOYMENT_MODULE_COUNT} typed kinds across ${PLATFORM_STATS.CLOUD_PROVIDER_COUNT} providers`,
   'Publish as an Infra Chart — a template your team reuses',
 ];
 

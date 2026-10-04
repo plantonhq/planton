@@ -7,7 +7,7 @@ import "catalog/aws/provider.proto";
 
 //aws-auto-scaling-group iac-input
 message AwsAutoScalingGroupIacInput {
-  //target infra-component
+  // the catalog object to deploy
   AwsAutoScalingGroup target = 1;
   //provider-config
   dev.planton.aws.AwsProviderConfig provider_config = 2;

@@ -7,7 +7,7 @@ import "catalog/kubernetes/provider.proto";
 
 // KubernetesKeycloakOperatorIacInput defines the inputs required for the Keycloak Operator IaC modules.
 message KubernetesKeycloakOperatorIacInput {
-  // target infra-component
+  // the catalog object to deploy
   KubernetesKeycloakOperator target = 1;
   // provider-config for Kubernetes
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

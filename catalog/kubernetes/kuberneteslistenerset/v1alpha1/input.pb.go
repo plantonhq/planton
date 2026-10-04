@@ -27,7 +27,7 @@ const (
 // names) to literal strings before passing this to the IaC engine.
 type KubernetesListenerSetIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Target infra-component.
+	// the catalog object to deploy.
 	Target *KubernetesListenerSet `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// Kubernetes provider configuration (cluster credentials).
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`

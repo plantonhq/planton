@@ -26,7 +26,7 @@ message Control {
   string name = 2;
   // What the control asserts, as ONE testable sentence about the deployed
   // resource. Write it so an auditor could check it against a live
-  // resource: "Data the kind stores is encrypted at rest." -- never
+  // resource: "Data the component stores is encrypted at rest." -- never
   // aspirational language.
   string statement = 3;
   // The posture area the control belongs to.

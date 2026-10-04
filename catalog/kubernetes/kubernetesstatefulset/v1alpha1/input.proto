@@ -10,7 +10,7 @@ import "catalog/kubernetes/provider.proto";
 // image-pull Secret for a private registry is derived from the target's own spec
 // (`spec.pod.image_registries`), never from an input filled on the workload's behalf.
 message KubernetesStatefulSetIacInput {
-  // Target infra-component
+  // the catalog object to deploy
   KubernetesStatefulSet target = 1;
 
   // Provider-config for Kubernetes

@@ -9,7 +9,7 @@ import "catalog/kubernetes/provider.proto";
 // StringValueOrRef references (namespace) to literal strings before passing
 // this to the IaC engine.
 message KubernetesKarpenterIacInput {
-  // Target infra-component.
+  // the catalog object to deploy.
   KubernetesKarpenter target = 1;
   // Kubernetes provider configuration (cluster credentials).
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

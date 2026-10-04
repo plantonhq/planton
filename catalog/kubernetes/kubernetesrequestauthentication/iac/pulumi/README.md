@@ -6,9 +6,9 @@ cluster using the typed crd2pulumi SDK.
 ## Prerequisites
 
 - The Istio CRDs must already be installed on the cluster
-  (see the `KubernetesIstioBaseCrds` component).
+  (see the `KubernetesIstioBaseCrds` kind).
 - A running Istio control plane (istiod) to enforce the policy in the data plane
-  (see the `KubernetesIstio` component). The CR applies successfully with only the
+  (see the `KubernetesIstio` kind). The CR applies successfully with only the
   CRDs present; enforcement requires istiod.
 - The target namespace must exist (see `KubernetesNamespace`).
 - Go toolchain and the Pulumi CLI.

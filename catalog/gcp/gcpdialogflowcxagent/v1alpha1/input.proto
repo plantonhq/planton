@@ -7,7 +7,7 @@ import "catalog/gcp/provider.proto";
 
 //gcp-dialogflow-cx-agent iac-input
 message GcpDialogflowCxAgentIacInput {
-  //target infra-component
+  // the catalog object to deploy
   GcpDialogflowCxAgent target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

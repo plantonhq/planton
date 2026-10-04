@@ -28,7 +28,7 @@ const (
 // (`spec.pod.image_registries`), never from an input filled on the workload's behalf.
 type KubernetesStatefulSetIacInput struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
-	// Target infra-component
+	// the catalog object to deploy
 	Target *KubernetesStatefulSet `protobuf:"bytes,1,opt,name=target,proto3" json:"target,omitempty"`
 	// Provider-config for Kubernetes
 	ProviderConfig *kubernetes.KubernetesProviderConfig `protobuf:"bytes,2,opt,name=provider_config,json=providerConfig,proto3" json:"provider_config,omitempty"`

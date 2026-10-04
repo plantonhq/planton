@@ -7,7 +7,7 @@ import "catalog/kubernetes/provider.proto";
 
 //spark-operator-kubernetes iac-input
 message KubernetesSparkOperatorIacInput {
-  //target infra-component
+  // the catalog object to deploy
   KubernetesSparkOperator target = 1;
   //provider-config
   dev.planton.kubernetes.KubernetesProviderConfig provider_config = 2;

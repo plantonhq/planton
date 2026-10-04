@@ -7,7 +7,7 @@ import "catalog/gcp/provider.proto";
 
 //gcp-bigtable-instance iac-input
 message GcpBigtableInstanceIacInput {
-  //target infra-component
+  // the catalog object to deploy
   GcpBigtableInstance target = 1;
   //provider-config
   dev.planton.gcp.GcpProviderConfig provider_config = 2;

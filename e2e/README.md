@@ -225,7 +225,7 @@ previous instance's provider resource — the kind under test then failed
 with a stale resolved reference ("InvalidSubnet ... does not exist" moments
 after the fixture "deployed and verified"), and teardown destroyed one stack
 then burned its full retry budget on "no stack named" ghosts. That signature
-— a fixture that verified cleanly, a kind create rejecting the fixture's
+— a fixture that verified cleanly, a component create rejecting the fixture's
 id, and repeated "no stack named <truncated-name>" destroys — means stack-name
 collision, not a module defect.
 
@@ -479,7 +479,7 @@ The filename MUST end in `.setup.sh`. The repo's blanket `*.sh` gitignore would 
 
 The runner executes it as the `SETUP` phase -- after DEPENDENCIES-UP and
 reference resolution (the fixtures the script seeds into exist), before
-VALIDATE (a seeding failure stops the lane before any kind deploy). The
+VALIDATE (a seeding failure stops the lane before any component deploy). The
 script runs via bash from the repo root, once per engine lane, inheriting the
 process environment (cloud CLI logins, the harness's `ARM_*`/`PLANTON_E2E_*`
 exports) plus `E2E_RUN_ID` (engine-scoped), `E2E_SCENARIO`, and
@@ -525,7 +525,7 @@ Rules that keep the seam honest:
 
 ### Failure-mode lanes: a deliberate failure as machine-verified evidence
 
-Some scenarios PROVE by failing: a kind deployed with a credential a
+Some scenarios PROVE by failing: a component deployed with a credential a
 real service rejects (the canonical case: a Planton runner appliance with a
 fake enrollment token). The framework carries two annotation-activated
 shapes, both dispatching to optional harness capabilities
