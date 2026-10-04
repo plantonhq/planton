@@ -19,11 +19,16 @@ set -euo pipefail
 # WHAT IT CHECKS
 #   1. catalog/<provider>/<kind>/iac/tf/*.tf -- no `path.module}/..` and no
 #      string literal beginning with "../".
-#   2. catalog/<provider>/<kind>/iac/pulumi/**/*.go -- no parent-path string
-#      literal: "../<anything>" or exactly "..". (The Go ellipsis "..." in
-#      error text is not a path and is not matched.)
+#   2. catalog/<provider>/<kind>/iac/pulumi/**/*.go, test files excepted --
+#      no parent-path string literal: "../<anything>" or exactly "..". (The
+#      Go ellipsis "..." in error text is not a path and is not matched.)
 #
 # WHAT IT DOES NOT CHECK, ON PURPOSE
+# A module's _test.go files. A test runs only in the repository, where the
+# sibling engine's directory exists, and never in a published form; a
+# cross-engine twin test (the Pulumi module holding its OpenTofu twin's
+# template text equal) has to read the other engine's directory to do its
+# job.
 # Reads of paths the OPERATOR supplies at apply time (a manifest annotation
 # naming a docker-config file on the operator's own machine) are a
 # break-glass feature for experts applying a module from a laptop. They read
@@ -70,7 +75,7 @@ while IFS= read -r line; do
 done < <(
   {
     grep -rnE --include='*.tf' 'path\.module\}/\.\.|"\.\./' catalog/*/*/iac/tf 2>/dev/null || true
-    grep -rnE --include='*.go' '"\.\./|"\.\."' catalog/*/*/iac/pulumi 2>/dev/null || true
+    grep -rnE --include='*.go' --exclude='*_test.go' '"\.\./|"\.\."' catalog/*/*/iac/pulumi 2>/dev/null || true
   } | grep -E '^catalog/[^/]+/[^/]+/iac/(tf|pulumi)/' || true
 )
 

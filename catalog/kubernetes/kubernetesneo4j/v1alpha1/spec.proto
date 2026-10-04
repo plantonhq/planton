@@ -171,7 +171,10 @@ message KubernetesNeo4jSpec {
 
   /**
    * Create a ServiceMonitor for Prometheus scraping (requires the
-   * Prometheus Operator CRDs). Chart default: false.
+   * Prometheus Operator CRDs). Chart default: false. Neo4j serves
+   * Prometheus metrics in the enterprise edition only; on community
+   * the monitor scrapes nothing, so leave it off and watch the pod's
+   * readiness instead.
    */
   bool service_monitor_enabled = 18;
 

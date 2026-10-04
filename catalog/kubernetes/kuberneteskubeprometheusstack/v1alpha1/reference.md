@@ -1858,8 +1858,11 @@ disable — it is provider-internal and unreachable. Default true.
 
 `bool` · optional (explicit presence)
 
-Scrape CoreDNS (runs as pods in kube-system — reachable everywhere).
-Default true.
+Scrape CoreDNS on its metrics port (9153). Default true. GKE runs
+kube-dns, not CoreDNS: this scraper then dials a port kube-dns never
+opens and stays down, so turn it off there and scrape kube-dns's
+sidecar (`metrics`, 10054) with a KubernetesPodMonitor on
+`k8s-app: kube-dns` in kube-system.
 
 - default: `true`
 

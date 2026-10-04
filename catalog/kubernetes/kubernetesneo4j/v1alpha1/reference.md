@@ -518,7 +518,10 @@ Priority class name for the server pod.
 `bool`
 
 Create a ServiceMonitor for Prometheus scraping (requires the
-Prometheus Operator CRDs). Chart default: false.
+Prometheus Operator CRDs). Chart default: false. Neo4j serves
+Prometheus metrics in the enterprise edition only; on community
+the monitor scrapes nothing, so leave it off and watch the pod's
+readiness instead.
 
 ### spec.image
 

@@ -1544,7 +1544,14 @@ Emit Prometheus metrics via ServiceMonitor resources (one per
 server service). Requires the Prometheus Operator CRDs on the
 cluster — a KubernetesKubePrometheusStack composes naturally.
 When false (default), pods still carry prometheus.io scrape
-annotations for annotation-based collection.
+annotations for annotation-based collection. These monitors keep
+every series: Temporal serves its latencies as histograms per
+operation and per task queue, tens of thousands of series per
+installation even when idle. Where storage is budgeted, leave this
+off and declare a KubernetesServiceMonitor on the per-service
+headless Services' `metrics` port with a keep list (service and
+persistence requests and errors, approximate_backlog_age_seconds,
+task_schedule_to_start_latency with a few bounds).
 
 ### spec.logLevel
 

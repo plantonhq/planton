@@ -1824,7 +1824,12 @@ type KubernetesOpenBaoMetrics struct {
 	// Also create a ServiceMonitor (requires the Prometheus Operator
 	// CRDs — a KubernetesKubePrometheusStack — on the cluster; the
 	// install FAILS without them). The chart scrapes only the active
-	// node (every non-dev server runs in the chart's HA mode).
+	// node (every non-dev server runs in the chart's HA mode). OpenBao
+	// labels every series `cluster` with its own cluster id, and this
+	// monitor keeps it, so a Prometheus whose external labels name the
+	// Kubernetes cluster as `cluster` never adds its own to these series;
+	// where several clusters report to one hub, leave this off and
+	// declare a KubernetesServiceMonitor that drops the label.
 	ServiceMonitorEnabled bool `protobuf:"varint,2,opt,name=service_monitor_enabled,json=serviceMonitorEnabled,proto3" json:"service_monitor_enabled,omitempty"`
 	unknownFields         protoimpl.UnknownFields
 	sizeCache             protoimpl.SizeCache

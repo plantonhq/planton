@@ -167,9 +167,20 @@ dashboard exists.
   turn those `control_plane_scrapers` off together with their
   `default_rules.disabled_groups`, or the cluster carries targets that
   are down forever and alerts that can never clear. GKE's cluster DNS
-  is kube-dns, not CoreDNS, so `core_dns` goes off there too. After
-  install, every active target reading `up` is the check that the
-  posture is right.
+  is kube-dns, not CoreDNS, so `core_dns` goes off there too, and a
+  KubernetesPodMonitor on `k8s-app: kube-dns` in kube-system reads its
+  sidecar's `metrics` port (10054), whose probes answer "is cluster DNS
+  answering, and how fast?". After install, every active target reading
+  `up` -- and every monitor finding at least one target -- is the check
+  that the posture is right.
+- **Turn the cloud's managed collection off once the agent runs.** GKE
+  turns on Managed Service for Prometheus and its kube-state, cAdvisor,
+  kubelet and DCGM packages by default, each billed per sample, while the
+  agent already collects the same signals. On the cluster's
+  GcpGkeCluster set `monitoring.managed_prometheus_enabled: false` and
+  `monitoring.components: [SYSTEM_COMPONENTS]` together in one update --
+  an empty `components` list changes nothing, so the packages stay until
+  the free system components are named alone.
 - **A curated alert that misreads the cluster is replaced, not muted.**
   Every alert that fires on normal work teaches people to stop reading
   the channel before the real page arrives. On autoscaled node pools
@@ -178,8 +189,9 @@ dashboard exists.
   alert that misreads work done on purpose (CI build pods, a build
   machine at full CPU), disable it and declare the same alert name in a
   KubernetesPrometheusRule whose expression leaves that work out
-  (`kube_pod_owner{owner_kind!~"Job|TaskRun"}`, or `unless` the
-  machine's build taint from `kube_node_spec_taint`), keeping the
+  (`kube_pod_owner{owner_kind!~"Job|TaskRun"}`, every pod on a build
+  machine, or `unless` the machine's build taint from
+  `kube_node_spec_taint`), keeping the
   upstream `for`, severity and the `namespace` label Alertmanager's
   inhibitions read. Then read the loaded rules back
   (`/api/v1/rules?type=alert`): a name that matched nothing changed
@@ -346,10 +358,62 @@ exporters). Never a raw scrape config in the stack's `helm_values`, and
 never a kind's own monitor toggle where the monitor needs settings the
 toggle doesn't carry.
 
-- **Put the monitor beside the workload, on the agent.** Under the agent
-  stack's default `all_monitors` discovery every monitor in the cluster
-  loads with no label. A hub that only receives remote-written series
-  never scrapes, so a monitor never carries its `release` label.
+- **Put the monitor where it can install: beside the workload, or as a
+  class on the agent.** A monitor needs the Prometheus operator's CRDs,
+  and those arrive with the agent stack. Under the agent's default
+  `all_monitors` discovery every monitor in the cluster loads with no
+  label; a hub that only receives remote-written series never scrapes, so
+  a monitor never carries its `release` label.
+  - A workload whose composition installs **after** the agent carries its
+    own monitor beside it: the component's own switch
+    (`service_monitor_enabled` on KubernetesOpenBao, KubernetesValkey,
+    KubernetesOpenFga, KubernetesTemporal) or a KubernetesServiceMonitor in
+    its namespace.
+  - A component installed **before** the agent -- the cluster's own gateway,
+    istiod, cert-manager, external-dns, the database operator -- cannot: a
+    monitor, or a switch that renders one, in the cluster's composition
+    fails a fresh cluster's install the day it is rebuilt, because the CRD
+    does not exist yet. Watch it from the agent's composition with one
+    **class monitor** per kind of component: `namespace_selector: {any:
+    true}` and a selector every instance carries (every Istio gateway's
+    `gateway.networking.k8s.io/gateway-class-name: istio`, every
+    CloudNativePG instance's `cnpg.io/podRole: instance`). One monitor then
+    reads every instance on the cluster, including the one an environment
+    adds tomorrow, with no list to keep.
+- **A namespace's network policy must admit the agent.** A namespace that
+  admits only its own pods silently starves every monitor of it: the
+  target reads down with a dial timeout, and the stack's `TargetDown`
+  posts ten minutes later. Admit the agent's Prometheus pods (the
+  namespace selector `kubernetes.io/metadata.name: <agent namespace>` and
+  the pod selector `app.kubernetes.io/name: prometheus` in **one** peer)
+  on the metrics ports only, and apply the policy before the monitor, so
+  no target is ever down. On a shared cluster, tell environments apart by
+  namespace: relabeling a series' `environment` to the namespace's
+  environment gives the label two meanings next to the cluster-wide
+  signals that keep the agent's external `environment`.
+- **Read what a component's series carry before you keep them.** The
+  first scrape of a new component is where its surprises show:
+  - **A series that already has a label wins over the agent's external
+    label of the same name.** OpenBao labels every series `cluster` with
+    its own cluster id, so the hub never learns which Kubernetes cluster
+    the vault runs on: drop it with `metric_relabelings` `{regex: cluster,
+    action: labeldrop}`.
+  - **A component's own switch keeps every series it serves.** Temporal
+    serves its latencies per operation and per task queue, about 150,000
+    series in one idle environment: a keep list and a histogram thinned
+    to a few bounds (`metric_relabelings` dropping the other `le`
+    values) bring it to a few thousand. Count before and after with
+    `scrape_samples_post_metric_relabeling`.
+  - **A metric that names its subject's namespace needs `honor_labels`.**
+    cert-manager's certificate series carry the certificate's own
+    `namespace`; without `honor_labels: true` it becomes
+    `exported_namespace` beside the scrape target's, and an alert on a
+    certificate is placed in cert-manager's namespace instead of the
+    environment it serves.
+  - **A gateway's gRPC requests include long-lived streams.** A p95
+    over every request through an Istio gateway reads the streams'
+    lifetimes (tens of seconds); read front-door latency on
+    `request_protocol="http"` or per backend.
 - **Selectors match labels, not references.** A ServiceMonitor's
   `selector` matches the Service's labels and a PodMonitor's matches the
   pods'. The diagram draws no edge to either, so a reviewer checks the

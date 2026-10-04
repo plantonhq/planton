@@ -73,8 +73,18 @@ switch those `control_plane_scrapers` off AND name their groups in
 left on is a target that is down forever and a `TargetDown` that never
 clears; a rule group left on is an alert that can never fire truthfully.
 GKE runs kube-dns instead of CoreDNS, so nothing answers on CoreDNS's
-metrics port there: set `core_dns: false` too. The check that the posture
-is right: minutes after install, every active target reads `up`.
+metrics port there: set `core_dns: false` too, and watch kube-dns with a
+[KubernetesPodMonitor](../kubernetespodmonitor/GUIDE.md) on `k8s-app:
+kube-dns` in kube-system, port `metrics` (its sidecar's 10054, whose probe
+series `kubedns_probe_kubedns_errors` and `..._latency_ms` say whether
+cluster DNS answers and how fast). The check that the posture is right:
+minutes after install, every active target reads `up`.
+
+The components the cluster's own composition installs before this stack
+(the gateway, istiod, cert-manager, external-dns, the database operator)
+cannot carry their own monitor switches, because the monitor CRDs arrive
+with this stack: watch each kind from this stack's composition with one
+cluster-wide class monitor (the pattern's "Scraping as declared objects").
 
 ## Quiet the curated rules where they misread the cluster
 
@@ -98,7 +108,14 @@ arrives:
   `KubernetesPrometheusRule` whose expression leaves out what the cluster
   does on purpose (`kube_pod_owner{owner_kind!~"Job|TaskRun"}` for build
   pods; `unless` the machine carries your build taint, from
-  `kube_node_spec_taint`, for build machines). Both series ship with
+  `kube_node_spec_taint`, for build machines). Leave every pod ON a build
+  machine out of the not-ready replacement too (join `kube_pod_info` to
+  the taint): when a packed build machine runs out of memory and goes
+  dark, its log collector, node agents and the builds' affinity
+  assistants all go not ready together, an echo of the machine's failure.
+  Name that failure once, with a short-hold alert on the build machines'
+  free memory, because the cloud replaces a dark machine inside the 15
+  minutes `KubeNodeNotReady` waits. Both series ship with
   kube-state-metrics and need no label allowlist. Keep the upstream name,
   `for` and severity, so runbooks and habits carry over, and keep the
   labels Alertmanager's inhibitions and your routes read (`namespace`,

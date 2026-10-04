@@ -23,6 +23,40 @@ every proposal to that bar and say so plainly when a plan stops short of it.
    kind's `serviceMonitor` toggle needs. Each cluster keeps its OWN
    Alertmanager, so a cluster pages on its own and a central hub going down
    never silences it.
+   - **What the cluster installed before the stack is watched from the
+     stack's side.** The gateway, istiod, cert-manager, external-dns and
+     the database operator come with the cluster, before the monitor CRDs
+     exist, so their own `serviceMonitor` switches stay off (on a fresh
+     cluster they fail the install). Declare one class monitor per kind of
+     component beside the stack instead: a `KubernetesPodMonitor` or
+     `KubernetesServiceMonitor` with `namespace_selector: {any: true}` and
+     a selector every instance carries (the PodMonitor's `istio-gateways`
+     preset; `cnpg.io/podRole: instance` for every CloudNativePG
+     instance). Components installed after the stack (an environment's
+     vault, caches, workflow engine) turn their own switches on.
+   - **Every namespace with a NetworkPolicy admits the stack's Prometheus**
+     on the metrics ports, in one peer (namespace
+     `kubernetes.io/metadata.name: <stack namespace>` with pods
+     `app.kubernetes.io/name: prometheus`), applied before the monitors. A
+     fenced target reads down with a dial timeout and posts `TargetDown`
+     ten minutes later.
+   - **Read the serving code for the port.** A Planton runner and runner
+     tunnel (embedded konnectivity) serve `/metrics` on their health port
+     (8093); their admin port listens on the pod's loopback only. Neo4j
+     community serves no metrics at all.
+   - **Read what a new component's series carry, at its first scrape.**
+     A series that already has `cluster` keeps it over the stack's
+     external label (OpenBao's own cluster id: drop it with a
+     `labeldrop`); a component's own monitor switch keeps every series
+     (Temporal's per-task-queue histograms, about 150,000 series per idle
+     environment: declare the monitor with a keep list instead); a metric
+     naming its subject's namespace needs `honor_labels` (cert-manager's
+     certificates). Compare `scrape_samples_post_metric_relabeling` with
+     the hub's storage budget before you leave it running.
+   - **On GKE, turn the managed collection off** on the cluster:
+     `monitoring.managed_prometheus_enabled: false` with
+     `monitoring.components: [SYSTEM_COMPONENTS]` in one update (an empty
+     list keeps the billed packages).
 2. **Alert delivery in the same change**: `alertmanager.notifications`, not
    a follow-up. Out of the box Alertmanager notifies nobody.
 3. **The outside heartbeat**: `notifications.heartbeat` to a monitor that
@@ -83,8 +117,9 @@ Ask these before composing, in the person's words, not the chart's:
   misreads work done on purpose (Tekton build pods read not-ready once a
   step ends; a build machine sits at full CPU) is replaced, not muted:
   disable it and declare the same alert name in a `KubernetesPrometheusRule`
-  that leaves the work out (`kube_pod_owner{owner_kind!~"Job|TaskRun"}`;
-  `unless` the build taint in `kube_node_spec_taint`), keeping upstream's
+  that leaves the work out (`kube_pod_owner{owner_kind!~"Job|TaskRun"}`,
+  and every pod on a build machine, whose pods all go not ready when it
+  goes dark; `unless` the build taint in `kube_node_spec_taint`), keeping upstream's
   `for`, severity and `namespace` label (Alertmanager's info inhibition
   matches on it). Then the work's real failure needs its own alert: a
   build machine that runs out of memory goes dark and is replaced before
@@ -296,8 +331,12 @@ to decide with the person, and what to watch for:
 Do these with the person, and report what arrived and when:
 
 0. Minutes after install, confirm every active scrape target reads `up`
-   (Prometheus's targets page or API). A target that is down now is a
-   wrong scraper posture, not an incident.
+   (Prometheus's targets page or API) and every monitor has at least one
+   target (`/api/v1/scrape_pools` against the active targets: a monitor
+   whose selector matches nothing has no target and no error anywhere).
+   A target that is down now is a wrong scraper posture or a fence, not an
+   incident; a target that reads `unknown` was found since the last scrape,
+   so read again after one interval.
 1. Fire a channel alert from inside the Alertmanager pod:
    `amtool alert add alertname=Drill severity=warning environment=<env> --alertmanager.url=http://localhost:9093`.
    It must arrive in the channel, titled with the environment. Double-quote

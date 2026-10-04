@@ -81,6 +81,10 @@ exist to leak. `secretSync` materializes them AS Kubernetes Secrets for
 workloads that demand env-var or secretKeyRef semantics. Choose CSI when
 you can (smaller audit surface); sync when the workload API forces it.
 
+## Metrics: GKE's managed collection or your own agent, not both
+
+A new Standard cluster runs Google Cloud Managed Service for Prometheus and, by default, its kube-state, cAdvisor, kubelet and DCGM metric packages beside the free system metrics. Every package but `SYSTEM_COMPONENTS` is billed per sample ingested. A cluster that runs its own Prometheus agent ([KubernetesKubePrometheusStack](../../kubernetes/kuberneteskubeprometheusstack/GUIDE.md)) already collects the same signals, so turn GKE's off in one update: `monitoring.managed_prometheus_enabled: false` and `monitoring.components: [SYSTEM_COMPONENTS]`. Name the system components explicitly -- an empty `components` list sends nothing, so GKE keeps every package it runs now. The system components keep GKE's own console pages working and cost nothing. Check it with `gcloud container clusters describe <cluster> --format='yaml(monitoringConfig)'`: `managedPrometheusConfig` reads `{}` and the `gmp-system` collectors are gone.
+
 ## Destroy stance
 
 `deletionProtection` (default true) is the GKE-native guard — the API
