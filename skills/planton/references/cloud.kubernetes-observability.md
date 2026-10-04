@@ -44,6 +44,15 @@ every proposal to that bar and say so plainly when a plan stops short of it.
      tunnel (embedded konnectivity) serve `/metrics` on their health port
      (8093); their admin port listens on the pod's loopback only. Neo4j
      community serves no metrics at all.
+   - **Read what a new component's series carry, at its first scrape.**
+     A series that already has `cluster` keeps it over the stack's
+     external label (OpenBao's own cluster id: drop it with a
+     `labeldrop`); a component's own monitor switch keeps every series
+     (Temporal's per-task-queue histograms, about 150,000 series per idle
+     environment: declare the monitor with a keep list instead); a metric
+     naming its subject's namespace needs `honor_labels` (cert-manager's
+     certificates). Compare `scrape_samples_post_metric_relabeling` with
+     the hub's storage budget before you leave it running.
    - **On GKE, turn the managed collection off** on the cluster:
      `monitoring.managed_prometheus_enabled: false` with
      `monitoring.components: [SYSTEM_COMPONENTS]` in one update (an empty

@@ -391,6 +391,29 @@ toggle doesn't carry.
   namespace: relabeling a series' `environment` to the namespace's
   environment gives the label two meanings next to the cluster-wide
   signals that keep the agent's external `environment`.
+- **Read what a component's series carry before you keep them.** The
+  first scrape of a new component is where its surprises show:
+  - **A series that already has a label wins over the agent's external
+    label of the same name.** OpenBao labels every series `cluster` with
+    its own cluster id, so the hub never learns which Kubernetes cluster
+    the vault runs on: drop it with `metric_relabelings` `{regex: cluster,
+    action: labeldrop}`.
+  - **A component's own switch keeps every series it serves.** Temporal
+    serves its latencies per operation and per task queue, about 150,000
+    series in one idle environment: a keep list and a histogram thinned
+    to a few bounds (`metric_relabelings` dropping the other `le`
+    values) bring it to a few thousand. Count before and after with
+    `scrape_samples_post_metric_relabeling`.
+  - **A metric that names its subject's namespace needs `honor_labels`.**
+    cert-manager's certificate series carry the certificate's own
+    `namespace`; without `honor_labels: true` it becomes
+    `exported_namespace` beside the scrape target's, and an alert on a
+    certificate is placed in cert-manager's namespace instead of the
+    environment it serves.
+  - **A gateway's gRPC requests include long-lived streams.** A p95
+    over every request through an Istio gateway reads the streams'
+    lifetimes (tens of seconds); read front-door latency on
+    `request_protocol="http"` or per backend.
 - **Selectors match labels, not references.** A ServiceMonitor's
   `selector` matches the Service's labels and a PodMonitor's matches the
   pods'. The diagram draws no edge to either, so a reviewer checks the

@@ -226,6 +226,19 @@ the first to run them.
   (`stdout/` or `file/`). Keep the default `stdout` sink unless something
   rotates the file: with the `file` sink, a full audit volume makes
   OpenBao refuse every request until space is freed.
+- **Metrics on a multi-cluster hub: drop OpenBao's `cluster` label.**
+  `metrics.enabled` opens `/v1/sys/metrics` to an unauthenticated read
+  (the namespace's network policy decides who reaches it). OpenBao labels
+  every series `cluster` with its own cluster id, and a Prometheus adds
+  its external `cluster` label only to series that lack one, so with
+  `metrics.service_monitor_enabled` the vault's series name a random id
+  where every other series names the Kubernetes cluster. Where several
+  clusters report to one hub, keep the switch off and declare a
+  [KubernetesServiceMonitor](../kubernetesservicemonitor/GUIDE.md) on the
+  active node's Service (`openbao-active: "true"`, port `http`, path
+  `/v1/sys/metrics`, `params: {format: {values: [prometheus]}}`) with a
+  `metric_relabelings` step `{regex: cluster, action: labeldrop}`.
+  `vault_core_unsealed` then reads 1 per vault, by the Kubernetes cluster.
 - **"Restore again" is a changed declaration, never a deleted Job.** The
   restore Job is named by a hash of the declaration; naming a different
   `snapshotKey` (or switching to `latest`) is a new Job and a new restore.
