@@ -5,8 +5,8 @@ import { contentRoutes } from '@/lib/content-routes';
 /**
  * The sitemap, generated from the route registry and the content folders at
  * build time. It cannot list a page that does not exist, cannot omit one the
- * registry knows, and never lists a retired path or a noindex surface,
- * because none of those are in the two lists it reads.
+ * registry knows, and never lists a noindex surface, because none is in
+ * the two lists it reads.
  */
 export const dynamic = 'force-static';
 

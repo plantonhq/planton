@@ -14,7 +14,6 @@
  *
  * Content pages (docs, blog, changelog, tutorials) are walked from their
  * markdown folders by those same scripts; only their index pages appear here.
- * Retired paths live in ./retired-routes.ts.
  *
  * Relative imports carry their `.ts` extension so Node can execute this file
  * for the build-time generators without a bundler.

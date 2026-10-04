@@ -14,8 +14,8 @@
  *   <route>.md      one Markdown file beside each registered marketing page's HTML
  *
  * Coverage check: every exported HTML route must be a registered page, a
- * content page under a content index, a retired route, or under a prefix the
- * registry declares deliberately unregistered. Anything else fails the build,
+ * content page under a content index, or under a prefix the registry
+ * declares deliberately unregistered. Anything else fails the build,
  * so a new page cannot ship without appearing here.
  *
  * Usage:  node --experimental-strip-types scripts/generate-llms.mjs
@@ -387,19 +387,17 @@ async function main() {
   const compare = await load('src/data/compare.ts');
   const desktop = await load('src/data/desktop.ts');
   const desktopDownload = await load('src/data/desktop-download.ts');
-  const retiredModule = await load('src/data/retired-routes.ts');
 
   const site = registry.SITE;
   const pages = registry.SITE_PAGES;
   const personas = personasModule.PERSONAS;
-  const retired = new Set(retiredModule.RETIRED_ROUTES.map((r) => r.from));
   const contentIndexes = pages.filter((p) => p.group === 'content').map((p) => p.path);
 
   // ---- coverage -----------------------------------------------------------
   const registered = new Set(pages.map((p) => p.path));
   const unaccounted = [];
   for (const route of exportedRoutes()) {
-    if (registered.has(route) || retired.has(route)) continue;
+    if (registered.has(route)) continue;
     if (contentIndexes.some((idx) => route.startsWith(`${idx}/`))) continue;
     if (
       registry.UNREGISTERED_PREFIXES.some(
@@ -411,8 +409,8 @@ async function main() {
   }
   if (unaccounted.length) {
     fail(
-      `${unaccounted.length} exported page(s) are not in the route registry, not retired, and not under a declared unregistered prefix, so llms.txt and the sitemap would not know them. ` +
-        `Register each in src/data/site-pages.ts (or retire it in retired-routes.ts):\n  ${unaccounted.join('\n  ')}`
+      `${unaccounted.length} exported page(s) are not in the route registry and not under a declared unregistered prefix, so llms.txt and the sitemap would not know them. ` +
+        `Register each in src/data/site-pages.ts, or delete the page:\n  ${unaccounted.join('\n  ')}`
     );
     return;
   }
@@ -522,7 +520,7 @@ async function main() {
   fs.writeFileSync(path.join(exportDir, 'llms-full.txt'), full.join('\n'));
 
   console.log(
-    `\u2713 ${GENERATOR}: llms.txt (${marketing.length} pages, ${docs.length} documents), llms-full.txt, and ${marketing.length} per-page markdown files written; every exported route is registered, retired, content, or declared unregistered`
+    `\u2713 ${GENERATOR}: llms.txt (${marketing.length} pages, ${docs.length} documents), llms-full.txt, and ${marketing.length} per-page markdown files written; every exported route is registered, content, or declared unregistered`
   );
 }
 
